@@ -1,9 +1,13 @@
+// -*- C++ -*-
+#ifndef YODA_HISTO_H
+#define YODA_HISTO_H 1
+
 #include "YODA/AnalysisObject.h"
 
 namespace YODA {
 
   /// A 1-dimensional histogram.
-  class Histo1D : AnalysisObject {
+  class Histo1D : public AnalysisObject {
     
   public:
     enum ExtraBin { UNDERFLOW, OVERFLOW };
@@ -31,9 +35,12 @@ namespace YODA {
     /// @name Bin accessors
     //@{
     vector<Bin>& getBins();
+    iterator<Bin>& bins_begin();
+    iterator<Bin>& bins_end();
+    const const_iterator<Bin>& bins_begin() const;
+    const const_iterator<Bin>& bins_end() const;
     Bin& getBin(size_t binId);
     Bin& getBin(ExtraBin binType);
-    //Bin& getBinByCoord(double coord);
     size_t coordToIndex(double coord) const;
     //@}
 
@@ -41,9 +48,8 @@ namespace YODA {
     /// @name Whole histo data
     //@{
     double getTotalArea();
-    double getNumEntries();
     double getMean();
-    double getRMS();
+    // @todo double getRMS()?
     //@}
 
   private:
@@ -69,3 +75,5 @@ namespace YODA {
   //@}
   
 }
+
+#endif
