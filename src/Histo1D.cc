@@ -24,7 +24,7 @@ Histo1D::Histo1D(string path, string title, vector<double> binedges) :
 };
 
 
-Histo1D::Histo1D(string path, string title, size_t nbins, double lower, double upper) :
+Histo1D::Histo1D(string path, string title, size_t nbins, double lower, double upper, bool log) :
                 AnalysisObject ( path, title ),
                 _cachedBinEdges(),
                 _nbins ( nbins ),
@@ -33,8 +33,18 @@ Histo1D::Histo1D(string path, string title, size_t nbins, double lower, double u
                 _overflow ( Bin(0,1) ),
 		_binHash ()
 {
-  for (size_t i = 0; i <= _nbins; i++)
-    _cachedBinEdges.push_back(lower+(upper-lower)*i/_nbins);
+  if (!log)
+    for (size_t i = 0; i <= _nbins; i++)
+      _cachedBinEdges.push_back(lower+(upper-lower)*i/_nbins);
+  else {
+    // if (lower == 0.)
+    //  throw LogicError("YODA::Histo: log binning with 0 as lower bound.");
+    double c = log10(upper/lower)/nbins;
+    for(size_t i = 0; i< nbins; ++i) {
+      _cachedBinEdges.push_back(lower*pow(10.,c*i));
+    }
+    _cachedBinEdges.push_back(lower*pow(10.,c*(nbins+1)));
+  }
   for (size_t i = 0; i < _nbins; i++) {
     _bins.push_back( Bin(_cachedBinEdges[i], _cachedBinEdges[i+1]) );
     _binHash.insert(make_pair(_cachedBinEdges[i+1],i));

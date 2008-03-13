@@ -20,8 +20,10 @@ namespace YODA {
   public:
     /// @name Constructors
     //@{
-    Histo1D(std::string path, std::string title, size_t nbins, double lower, double upper);
-    //@todo Add constructor for logarithmic binning 
+    Histo1D(std::string path, std::string title,
+	    size_t nbins,
+	    double lower, double upper,
+	    bool log = false);
     Histo1D(std::string path, std::string title, std::vector<double> binedges);
     // Histo1D(std::string path, std::string title, const_iterator<double> binedges_begin,const_iterator<double> binedges_end);
     //@}

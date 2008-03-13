@@ -16,6 +16,11 @@ namespace YODA {
     RangeError(const std::string& what) : Exception(what) {} 
   };
 
+  class LogicError : public Exception {
+  public:
+    LogicError(const std::string& what) : Exception(what) {} 
+  };
+
 }
 
 #endif
