@@ -3,7 +3,7 @@
 #ifndef YODA_Bin_h
 #define YODA_Bin_h
 
-#include "YODA/Histo.fh"
+#include <utility>
 
 namespace YODA {
 

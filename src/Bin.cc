@@ -1,8 +1,11 @@
 #include "YODA/Bin.h"
 #include <cassert>
+#include <cmath>
 
 using namespace YODA;
 using std::pair;
+using std::make_pair;
+using std::sqrt;
 
 Bin::Bin(double low, double high) : _edges( make_pair(low,high) ),
 				    _numEntries(),
@@ -71,10 +74,30 @@ double Bin::focus() const
 
 double Bin::midpoint() const
 {
-  return ( _edges.second - _edges.first ) / 2;
+  return ( _edges.second + _edges.first ) / 2;
 }
 
-double area() const
+double Bin::area() const
 {
+  return _sumWeight;
+}
 
+double Bin::height() const
+{
+  return area() / width();
+}
+
+double Bin::areaError() const
+{
+  return sqrt( _sumWeight );
+}
+
+double Bin::heightError() const
+{
+  return areaError() / width();
+}
+
+double Bin::xError() const
+{
+  return sqrt( ( _sumXWeight * _sumXWeight - _sumX2Weight ) / _sumWeight );
 }
