@@ -92,7 +92,7 @@ namespace YODA {
   private:
 
     /// The bin limits
-    std::pair<double,double> _limits;
+    std::pair<double,double> _edges;
 
     /// The number of entries
     unsigned long _numEntries;
