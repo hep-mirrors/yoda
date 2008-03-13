@@ -99,7 +99,8 @@ double Bin::heightError() const
 
 double Bin::xError() const
 {
-  return sqrt( ( _sumXWeight * _sumXWeight - _sumX2Weight ) / _sumWeight );
+  return sqrt( ( _sumX2Weight * _sumWeight - _sumXWeight * _sumXWeight) 
+	       / ( _sumWeight * _sumWeight - _sumWeight2 ) * _sumWeight );
 }
 
 Bin& Bin::operator += (const Bin& toAdd) {
