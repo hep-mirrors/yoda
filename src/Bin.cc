@@ -101,3 +101,23 @@ double Bin::xError() const
 {
   return sqrt( ( _sumXWeight * _sumXWeight - _sumX2Weight ) / _sumWeight );
 }
+
+Bin& Bin::operator += (const Bin& toAdd) {
+  assert(_edges == toAdd._edges);
+  _numEntries += toAdd._numEntries;
+  _sumWeight += toAdd._sumWeight;
+  _sumWeight2 += toAdd._sumWeight2;
+  _sumXWeight += toAdd._sumXWeight;
+  _sumX2Weight += toAdd._sumX2Weight;
+  return *this;
+}
+
+Bin& Bin::operator -= (const Bin& toSubtract) {
+  assert(_edges == toSubtract._edges);
+  _numEntries -= toSubtract._numEntries;
+  _sumWeight -= toSubtract._sumWeight;
+  _sumWeight2 -= toSubtract._sumWeight2;
+  _sumXWeight -= toSubtract._sumXWeight;
+  _sumX2Weight -= toSubtract._sumX2Weight;
+  return *this;
+}

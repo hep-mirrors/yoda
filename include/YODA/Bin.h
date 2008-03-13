@@ -22,7 +22,7 @@ namespace YODA {
     Bin (std::pair<double,double> edges);
     //@}
 
-  public:
+  private:
 
     /// @brief Fill this bin with weight @a weight.
     /// @todo Be careful about negative weights.
@@ -84,10 +84,10 @@ namespace YODA {
   private:
 
     /// Add two bins (for use by Histo1D).
-    Bin operator += (const Bin&);
+    Bin& operator += (const Bin&);
 
     /// Subtract two bins
-    Bin operator -= (const Bin&);
+    Bin& operator -= (const Bin&);
 
   private:
 
