@@ -15,7 +15,7 @@ namespace YODA {
   class Histo1D : public AnalysisObject {
     
   public:
-    enum ExtraBin { UNDERFLOW, OVERFLOW, VALID };
+    enum ExtraBin { UNDERFLOWBIN, OVERFLOWBIN, VALIDBIN };
     
   public:
     /// @name Constructors
