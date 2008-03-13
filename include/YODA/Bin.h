@@ -1,15 +1,26 @@
+// -*- C++ -*-
+
+#ifndef YODA_Bin_h
+#define YODA_Bin_h
+
+#include "YODA/std.h"
+#include "YODA/Histo.fh"
+
 namespace YODA {
 
   /// @brief A Bin in a 1D histogram
   /// Lower edge is inclusive.
   class Bin {
 
+    /// Histo is a friend to add/subtract bins
+    friend class Histo;
+
   public:
 
     /// @name Constructor giving bin low and high edges.
     //@{
     Bin (double lowedge, double highedge);
-    Bin (pair<double,double> edges);
+    Bin (std::pair<double,double> edges);
     //@}
 
   public:
@@ -29,7 +40,7 @@ namespace YODA {
     double highEdge() const;
 
     /// Get the {low,high} edges as an STL @c pair.
-    pair<double,double> edges() const;
+    std::pair<double,double> edges() const;
 
     /// Separation of low and high edges, i.e. high-low.
     double width() const;
@@ -67,98 +78,40 @@ namespace YODA {
     /// @todo RMS?
     //@}
 
-  private:
-
-    double sumWeights () const;
-
-    double sumSquaredWeights () const;
-
   public:
 
-    // convert bin to datapoint assuming some statistics
-    // interpretation
-    //template<class Statistics>
-    //DataPoint convert ();
+    // @todo conversion to data point
 
   private:
 
     /// Add two bins (for use by Histo1D).
     Bin operator += (const Bin&);
+
+    /// Subtract two bins
     Bin operator -= (const Bin&);
 
   private:
 
-    pair<double,double> _limits;
+    /// The bin limits
+    std::pair<double,double> _limits;
 
-    size_t _numEntries;
+    /// The number of entries
+    unsigned long _numEntries;
 
+    /// The sum of weights
     double _sumWeight;
 
+    /// The sum of weights squared
     double _sumWeight2;
 
+    /// The sum of x*weight
     double _sumXWeight;
 
+    /// The sum of x^2 * weight
     double _sumX2Weight;
 
   };
 
 }
 
-
-
-/////////////////////////////
-// FROM AIDA/LWH HISTOGRAM1D
-
-
-  /**
-   * The weighted mean of a bin. 
-   * @param index The bin number (0...N-1) or OVERFLOW or UNDERFLOW.
-   * @return      The mean of the corresponding bin.
-   */
-  // double binMean(int index) const {
-  //   int i = index + 2;
-  //   return sumw[i] != 0.0? sumxw[i]/sumw[i]:
-  //     ( vax? vax->binMidPoint(index): fax->binMidPoint(index) );
-  // };
-
-  // /**
-  //  * The weighted RMS of a bin. 
-  //  * @param index The bin number (0...N-1) or OVERFLOW or UNDERFLOW.
-  //  * @return      The RMS of the corresponding bin.
-  //  */
-  // double binRms(int index) const {
-  //   int i = index + 2;
-  //   return sumw[i] == 0.0 || sum[i] < 2? ax->binWidth(index):
-  //     std::sqrt(std::max(sumw[i]*sumx2w[i] - sumxw[i]*sumxw[i], 0.0))/sumw[i];
-  // };
-
-  // /**
-  //  * Number of entries in the corresponding bin (ie the number of
-  //  * times fill was called for this bin).
-  //  * @param index The bin number (0...N-1) or OVERFLOW or UNDERFLOW.
-  //  * @return      The number of entries in the corresponding bin. 
-  //  */
-  // int binEntries(int index) const {
-  //   return sum[index + 2];
-  // }
-
-  // /**
-  //  * Total height of the corresponding bin (ie the sum of the weights
-  //  * in this bin).
-  //  * @param index The bin number (0...N-1) or OVERFLOW or UNDERFLOW.
-  //  * @return      The height of the corresponding bin.
-  //  */
-  // double binHeight(int index) const {
-  //   /// @todo While this is compatible with the reference AIDA implementation, it is not the bin height!
-  //   return sumw[index + 2];
-  // }
-
-  // /**
-  //  * The error of a given bin.
-  //  * @param index The bin number (0...N-1) or OVERFLOW or UNDERFLOW.
-  //  * @return      The error on the corresponding bin.
-  //  *
-  //  */
-  // double binError(int index) const {
-  //   return std::sqrt(sumw2[index + 2]);
-  // }
+#endif // YODA_Bin_h
