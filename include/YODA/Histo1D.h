@@ -57,7 +57,7 @@ namespace YODA {
 //    //@{
     double getTotalArea();
     double getMean();
-    // @todo double getRMS()?
+    double getSigma();
     //@}
 
   private:

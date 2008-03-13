@@ -129,5 +129,13 @@ double Histo1D::getMean() {
   return sumwx/sumw;
 }
 
-// double getRMS();
+
+double getSigma() {
+  double mean = getMean();
+  double sigma2 = 0;
+  for (size_t i = 0; i < _nbins; i++)
+    sigma2 += pow( (_bin[i].focus()-mean), 2) * _bin[i].sumWeight();
+  return std::sqrt(sigma2/getTotalArea());
+}
+
 
