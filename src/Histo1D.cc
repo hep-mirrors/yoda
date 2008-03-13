@@ -12,11 +12,15 @@ Histo1D::Histo1D(string path, string title, vector<double> binedges) :
                 _nbins ( binedges.size()-1 ),
                 _bins (),
                 _underflow ( Bin(0,1) ),
-                _overflow ( Bin(0,1) )
+                _overflow ( Bin(0,1) ),
+		_binHash ()
 {
   sort(_cachedBinEdges.begin(), _cachedBinEdges.end());
-  for (size_t i = 0; i < _nbins; i++)
+  for (size_t i = 0; i < _nbins; i++) {
     _bins.push_back( Bin(_cachedBinEdges[i], _cachedBinEdges[i+1]) );
+    // insert upper bound mapped to bin id
+    _binHash.insert(make_pair(_cachedBinEdges[i+1],i));
+  }
 };
 
 
@@ -26,12 +30,15 @@ Histo1D::Histo1D(string path, string title, size_t nbins, double lower, double u
                 _nbins ( nbins ),
                 _bins (),
                 _underflow ( Bin(0,1) ),
-                _overflow ( Bin(0,1) )
+                _overflow ( Bin(0,1) ),
+		_binHash ()
 {
   for (size_t i = 0; i <= _nbins; i++)
     _cachedBinEdges.push_back(lower+(upper-lower)*i/_nbins);
-  for (size_t i = 0; i < _nbins; i++)
+  for (size_t i = 0; i < _nbins; i++) {
     _bins.push_back( Bin(_cachedBinEdges[i], _cachedBinEdges[i+1]) );
+    _binHash.insert(make_pair(_cachedBinEdges[i+1],i));
+  }
 };
 
 // Histo1D::Histo1D(string path, string title, const_iterator<double> binedges_begin,const_iterator<double> binedges_end);
@@ -80,8 +87,12 @@ Bin& Histo1D::getBinByCoord(double x) {
 pair<Histo1D::ExtraBin, size_t> Histo1D::_coordToIndex(double coord) const {
   if ( coord < _cachedBinEdges[0] ) return make_pair(UNDERFLOW, 0);
   if ( coord >= _cachedBinEdges[_nbins+1] ) return make_pair(OVERFLOW, 0);
-  size_t i = 0;
-  while (_cachedBinEdges[i+1] < coord) i++;
+  // size_t i = 0;
+  //  while (_cachedBinEdges[i+1] < coord) i++;
+  // SP: this is faster, I think;
+  // if's above ensure, that we get
+  // a valid iterator back
+  size_t i = _binHash.upper_bound(coord)->second;
   return make_pair(VALID, i);
 };
 

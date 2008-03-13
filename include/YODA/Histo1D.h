@@ -7,6 +7,7 @@
 // #include "YODA/Exception.h"
 #include <vector>
 #include <string>
+#include <map>
 
 namespace YODA {
 
@@ -20,6 +21,7 @@ namespace YODA {
     /// @name Constructors
     //@{
     Histo1D(std::string path, std::string title, size_t nbins, double lower, double upper);
+    //@todo Add constructor for logarithmic binning 
     Histo1D(std::string path, std::string title, std::vector<double> binedges);
     // Histo1D(std::string path, std::string title, const_iterator<double> binedges_begin,const_iterator<double> binedges_end);
     //@}
@@ -71,8 +73,15 @@ namespace YODA {
 
     /// @name Caching data
     //@{
-    mutable std::vector<double> _cachedBinEdges;
-    mutable size_t _nbins;
+    // @todo why should these be mutable?
+    // mutable std::vector<double> _cachedBinEdges;
+    // mutable size_t _nbins;
+    std::vector<double> _cachedBinEdges;
+    size_t _nbins;
+
+    /// Map for fast bin finding
+    std::map<double,size_t> _binHash;
+
     //@}
   };
 
