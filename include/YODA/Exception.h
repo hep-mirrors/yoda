@@ -1,26 +1,29 @@
-#ifndef YODA_EXCEPTION_H
-#define YODA_EXCEPTION_H 1
+// -*- C++ -*-
+
+#ifndef YODA_Exception_h
+#define YODA_Exception_h
 
 #include <string>
 #include <exception>
+#include <stdexcept>
 
 namespace YODA {
 
   class Exception : public std::exception { 
   public:
-    Exception(const std::string& what) : std::exception(what) {}
+    Exception() : std::exception() {}
   };
 
-  class RangeError : public Exception {
+  class RangeError : public std::out_of_range {
   public:
-    RangeError(const std::string& what) : Exception(what) {} 
+    RangeError(const std::string& what) : std::out_of_range(what) {} 
   };
 
-  class LogicError : public Exception {
+  class LogicError : public std::logic_error {
   public:
-    LogicError(const std::string& what) : Exception(what) {} 
+    LogicError(const std::string& what) : std::logic_error(what) {} 
   };
 
 }
 
-#endif
+#endif // YODA_Exception_h

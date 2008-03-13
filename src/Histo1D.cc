@@ -39,8 +39,8 @@ Histo1D::Histo1D(string path, string title, size_t nbins, double lower, double u
     for (size_t i = 0; i <= _nbins; i++)
       _cachedBinEdges.push_back(lower+(upper-lower)*i/_nbins);
   else {
-    // if (lower == 0.)
-    //  throw LogicError("YODA::Histo: log binning with 0 as lower bound.");
+    if (lower == 0.)
+      throw LogicError("YODA::Histo: log binning with 0 as lower bound.");
     double c = log10(upper/lower)/nbins;
     for(size_t i = 0; i< nbins; ++i) {
       _cachedBinEdges.push_back(lower*pow(10.,c*i));
@@ -68,8 +68,8 @@ void Histo1D::fill(double x, double weight) {
 
 
 void Histo1D::fillBin(size_t index, double weight) {
-//  if (index >= _nbins)
-//    throw RangeError("YODA::Histo: index out of range");
+  if (index >= _nbins)
+    throw RangeError("YODA::Histo: index out of range");
   double x = _bins[index].midpoint();
   Histo1D::_bins[index].fill(x, weight);
 };
@@ -78,15 +78,17 @@ void Histo1D::fillBin(size_t index, double weight) {
 // vector<Bin>& Histo1D::getBins();
 
 Bin& Histo1D::getBin(size_t index) {
-//  if (index >= _nbins)
-//    throw RangeError("YODA::Histo: index out of range");
+  if (index >= _nbins)
+    throw RangeError("YODA::Histo: index out of range");
   return _bins[index];  
 };
 
 Bin& Histo1D::getBin(Histo1D::ExtraBin binType) {
   if (binType == UNDERFLOW) return _underflow;
   if (binType == OVERFLOW) return _overflow;
-//  throw RangeError("YODA::Histo: index out of range");
+  throw RangeError("YODA::Histo: index out of range");
+  // just to fix a warning
+  return _underflow;
 };
 
 Bin& Histo1D::getBinByCoord(double x) {

@@ -4,7 +4,7 @@
 
 #include "YODA/AnalysisObject.h"
 #include "YODA/Bin.h"
-// #include "YODA/Exception.h"
+#include "YODA/Exception.h"
 #include <vector>
 #include <string>
 #include <map>
