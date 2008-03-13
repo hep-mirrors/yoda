@@ -4,10 +4,11 @@ SUBDIRS = src include
 
 ## Deal with the Doxygen stuff
 if WITH_DOXYGEN
-.PHONY = dox
-dox:
+.PHONY = doxy
+doxy:
+	@echo "Running Doxygen..."
 	$(DOXYGEN) $(top_srcdir)/Doxyfile
-all-local: dox
+all-local: doxy
 	@true
 install-data-local:
 	$(install_sh_DATA) dox/html/* $(DESTDIR)$(pkgdatadir)/doc/html
