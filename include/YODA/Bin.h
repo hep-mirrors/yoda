@@ -58,3 +58,62 @@ private:
 };
 
 }
+
+
+
+/////////////////////////////
+// FROM AIDA/LWH HISTOGRAM1D
+
+
+  /**
+   * The weighted mean of a bin. 
+   * @param index The bin number (0...N-1) or OVERFLOW or UNDERFLOW.
+   * @return      The mean of the corresponding bin.
+   */
+  // double binMean(int index) const {
+  //   int i = index + 2;
+  //   return sumw[i] != 0.0? sumxw[i]/sumw[i]:
+  //     ( vax? vax->binMidPoint(index): fax->binMidPoint(index) );
+  // };
+
+  // /**
+  //  * The weighted RMS of a bin. 
+  //  * @param index The bin number (0...N-1) or OVERFLOW or UNDERFLOW.
+  //  * @return      The RMS of the corresponding bin.
+  //  */
+  // double binRms(int index) const {
+  //   int i = index + 2;
+  //   return sumw[i] == 0.0 || sum[i] < 2? ax->binWidth(index):
+  //     std::sqrt(std::max(sumw[i]*sumx2w[i] - sumxw[i]*sumxw[i], 0.0))/sumw[i];
+  // };
+
+  // /**
+  //  * Number of entries in the corresponding bin (ie the number of
+  //  * times fill was called for this bin).
+  //  * @param index The bin number (0...N-1) or OVERFLOW or UNDERFLOW.
+  //  * @return      The number of entries in the corresponding bin. 
+  //  */
+  // int binEntries(int index) const {
+  //   return sum[index + 2];
+  // }
+
+  // /**
+  //  * Total height of the corresponding bin (ie the sum of the weights
+  //  * in this bin).
+  //  * @param index The bin number (0...N-1) or OVERFLOW or UNDERFLOW.
+  //  * @return      The height of the corresponding bin.
+  //  */
+  // double binHeight(int index) const {
+  //   /// @todo While this is compatible with the reference AIDA implementation, it is not the bin height!
+  //   return sumw[index + 2];
+  // }
+
+  // /**
+  //  * The error of a given bin.
+  //  * @param index The bin number (0...N-1) or OVERFLOW or UNDERFLOW.
+  //  * @return      The error on the corresponding bin.
+  //  *
+  //  */
+  // double binError(int index) const {
+  //   return std::sqrt(sumw2[index + 2]);
+  // }
