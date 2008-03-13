@@ -11,8 +11,8 @@ namespace YODA {
   /// Lower edge is inclusive.
   class Bin {
 
-    /// Histo is a friend to add/subtract bins
-    friend class Histo;
+    /// Histo1D is a friend to add/subtract bins
+    friend class Histo1D;
 
   public:
 

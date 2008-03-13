@@ -1,14 +1,24 @@
+#include <string>
+
 namespace YODA {
 
   class AnalysisObject {
+
+    friend class Histo1D;
+
   public:
+    AnalysisObject(const std::string& path, const std::string& title) :
+                _path ( path ),
+                _title ( title )
+    {
+    }
     std::string getPath();
     AnalysisObject& setPath(const std::string& path);
 
     std::string getTitle();
     AnalysisObject& setTitle(const std::string& title);
 
-  private:
+  protected:
     std::string _path;
     std::string _title;
   };

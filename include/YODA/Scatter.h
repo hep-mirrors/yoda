@@ -6,14 +6,14 @@
 #include <vector>
 #include <string>
 #include "Point.h"
-#include "Histo.h"
+#include "Histo1D.h"
 
 namespace YODA {
 
   class Scatter : public AnalysisObject {
   public:
     Scatter(std::string name);
-    Scatter(const Histo &); // explicit?
+    Scatter(const Histo1D &); // explicit?
 
     Scatter(std::string name,
         const std::vector<double> & data, 
@@ -28,11 +28,11 @@ namespace YODA {
     Scatter & operator*=(const Scatter &);
     Scatter & operator/=(const Scatter &);
 
-    // don't use implicit Scatter -> Histo conversion if runtime problem
-    Scatter & operator+=(const Histo &);
-    Scatter & operator-=(const Histo &);
-    Scatter & operator*=(const Histo &);
-    Scatter & operator/=(const Histo &);
+    // don't use implicit Scatter -> Histo1D conversion if runtime problem
+    Scatter & operator+=(const Histo1D &);
+    Scatter & operator-=(const Histo1D &);
+    Scatter & operator*=(const Histo1D &);
+    Scatter & operator/=(const Histo1D &);
 
     string name() const;
   private:
@@ -52,15 +52,15 @@ namespace YODA {
   Scatter operator*(const Scatter &, const Scatter &);
   Scatter operator/(const Scatter &, const Scatter &);
 
-  Scatter operator+(const Scatter &, const Histo &);
-  Scatter operator-(const Scatter &, const Histo &);
-  Scatter operator*(const Scatter &, const Histo &);
-  Scatter operator/(const Scatter &, const Histo &);
+  Scatter operator+(const Scatter &, const Histo1D &);
+  Scatter operator-(const Scatter &, const Histo1D &);
+  Scatter operator*(const Scatter &, const Histo1D &);
+  Scatter operator/(const Scatter &, const Histo1D &);
 
-  Scatter operator+(const Histo &, const Scatter &);
-  Scatter operator-(const Histo &, const Scatter &);
-  Scatter operator*(const Histo &, const Scatter &);
-  Scatter operator/(const Histo &, const Scatter &);
+  Scatter operator+(const Histo1D &, const Scatter &);
+  Scatter operator-(const Histo1D &, const Scatter &);
+  Scatter operator*(const Histo1D &, const Scatter &);
+  Scatter operator/(const Histo1D &, const Scatter &);
 
 }
 
