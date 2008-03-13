@@ -28,6 +28,9 @@ namespace YODA {
     /// @todo Be careful about negative weights.
     void fill(double coord, double weight=1.0);
 
+    /// Reset this bin
+    void reset ();
+
   public:
 
     /// @name X-axis info

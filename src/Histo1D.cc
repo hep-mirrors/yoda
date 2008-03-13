@@ -55,6 +55,13 @@ Histo1D::Histo1D(string path, string title, size_t nbins, double lower, double u
 
 // Histo1D::Histo1D(string path, string title, const_iterator<double> binedges_begin,const_iterator<double> binedges_end);
 
+void Histo1D::reset () {
+  _underflow.reset();
+  _overflow.reset();
+  for (vector<Bin>::iterator b = _bins.begin();
+       b != _bins.end(); ++b)
+    b->reset();
+}
 
 void Histo1D::fill(double x, double weight) {
   pair<Histo1D::ExtraBin, size_t> index = _coordToIndex(x);

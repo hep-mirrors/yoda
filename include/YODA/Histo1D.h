@@ -35,9 +35,10 @@ namespace YODA {
     void fillBin(size_t index, double weight=1.0);
     //@}
     
-    /// @todo Annotations?
-    /// @todo Reset method
-
+    /// Reset the histogram: Keep the binning but
+    /// set all bin contents and related quantities
+    /// to zero
+    virtual void reset ();
 
   public:
     /// @name Bin accessors

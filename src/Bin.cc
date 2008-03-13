@@ -28,6 +28,13 @@ Bin::Bin(pair<double, double> edges) : _edges( edges ),
   assert( _edges.second >= _edges.first );
 }
 
+void Bin::reset () {
+  _numEntries = 0;
+  _sumWeight = 0.;
+  _sumWeight2 = 0.;
+  _sumXWeight = 0.;
+  _sumX2Weight = 0.;
+}
 
 void Bin::fill(double x, double w)
 {
