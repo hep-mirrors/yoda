@@ -34,7 +34,7 @@ AM_CONDITIONAL(WITH_DOXYGEN, test "$DOXYGEN")
 
 ## Decide whether to build the Python extension
 AC_ARG_ENABLE(pyext, [AC_HELP_STRING(--enable-pyext, [build Yoda Python module @<:@default=yes@:>@])], [], [enable_pyrivet=yes])
-AM_CONDITIONAL(ENABLE_PYRIVET, [test x$enable_pyext == xyes])
+AM_CONDITIONAL(ENABLE_PYEXT, [test x$enable_pyext == xyes])
 if test x$enable_pyext == xyes; then
   AM_PATH_PYTHON(2.3)
   AC_PROG_SWIG(1.3.21)
