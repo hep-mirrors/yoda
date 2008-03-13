@@ -1,4 +1,4 @@
-#include "YODA/Histo.h"
+#include "YODA/Histo1D.h"
 
 using namespace YODA;
 using std::pair;
@@ -57,9 +57,24 @@ void Histo1D::fillBin(size_t index, double weight) {
 
 
 // vector<Bin>& Histo1D::getBins();
-// Bin& Histo1D::getBin(size_t index);
-// Bin& Histo1D::getBin(ExtraBin binType);
-// Bin& Histo1D::getBinByCoord(double coord);
+
+Bin& Histo1D::getBin(size_t index) {
+//  if (index >= _nbins)
+//    throw RangeError("YODA::Histo: index out of range");
+  return _bins[index];  
+};
+
+Bin& Histo1D::getBin(Histo1D::ExtraBin binType) {
+  if (binType == UNDERFLOW) return _underflow;
+  if (binType == OVERFLOW) return _overflow;
+//  throw RangeError("YODA::Histo: index out of range");
+};
+
+Bin& Histo1D::getBinByCoord(double x) {
+  pair<Histo1D::ExtraBin, size_t> index = _coordToIndex(x);
+  if ( index.first == VALID ) return _bins[index.second];
+  return getBin(index.first);
+};
 
 
 pair<Histo1D::ExtraBin, size_t> Histo1D::_coordToIndex(double coord) const {

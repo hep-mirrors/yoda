@@ -1,6 +1,6 @@
 // -*- C++ -*-
-#ifndef YODA_HISTO_H
-#define YODA_HISTO_H 1
+#ifndef YODA_HISTO1D_H
+#define YODA_HISTO1D_H 1
 
 #include "YODA/AnalysisObject.h"
 #include "YODA/Bin.h"
@@ -43,9 +43,9 @@ namespace YODA {
 //    iterator<Bin>& bins_end();
 //    const const_iterator<Bin>& bins_begin() const;
 //    const const_iterator<Bin>& bins_end() const;
-//    Bin& getBin(size_t index);
-//    Bin& getBin(ExtraBin binType);
-//    Bin& getBinByCoord(double coord);
+    Bin& getBin(size_t index);
+    Bin& getBin(ExtraBin binType);
+    Bin& getBinByCoord(double x);
     //@}
 
 //  public:
