@@ -1,5 +1,7 @@
 #include "YODA/Histo1D.h"
 
+#include <cmath>
+
 using namespace YODA;
 using std::pair;
 using std::vector;
@@ -8,11 +10,11 @@ using std::make_pair;
 
 Histo1D::Histo1D(string path, string title, vector<double> binedges) :
                 AnalysisObject ( path, title ),
-                _cachedBinEdges( binedges ),
-                _nbins ( binedges.size()-1 ),
                 _bins (),
                 _underflow ( Bin(0,1) ),
                 _overflow ( Bin(0,1) ),
+                _cachedBinEdges( binedges ),
+                _nbins ( binedges.size()-1 ),
 		_binHash ()
 {
   sort(_cachedBinEdges.begin(), _cachedBinEdges.end());
@@ -26,11 +28,11 @@ Histo1D::Histo1D(string path, string title, vector<double> binedges) :
 
 Histo1D::Histo1D(string path, string title, size_t nbins, double lower, double upper, bool log) :
                 AnalysisObject ( path, title ),
-                _cachedBinEdges(),
-                _nbins ( nbins ),
                 _bins (),
                 _underflow ( Bin(0,1) ),
                 _overflow ( Bin(0,1) ),
+                _cachedBinEdges(),
+                _nbins ( nbins ),
 		_binHash ()
 {
   if (!log)
