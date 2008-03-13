@@ -21,9 +21,9 @@ namespace YODA {
     /// @name Constructors
     //@{
     Histo1D(std::string path, std::string title,
-	    size_t nbins,
-	    double lower, double upper,
-	    bool log = false);
+            size_t nbins,
+            double lower, double upper,
+            bool log = false);
     Histo1D(std::string path, std::string title, std::vector<double> binedges);
     // Histo1D(std::string path, std::string title, const_iterator<double> binedges_begin,const_iterator<double> binedges_end);
     //@}
@@ -55,8 +55,8 @@ namespace YODA {
 //  public:
 //    /// @name Whole histo data
 //    //@{
-//    double getTotalArea();
-//    double getMean();
+    double getTotalArea();
+    double getMean();
     // @todo double getRMS()?
     //@}
 

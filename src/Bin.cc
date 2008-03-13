@@ -103,6 +103,26 @@ double Bin::xError() const
 	       / ( _sumWeight * _sumWeight - _sumWeight2 ) * _sumWeight );
 }
 
+double Bin::sumWeight() const
+{
+  return _sumWeight;
+}
+
+double Bin::sumWeight2() const
+{
+  return _sumWeight2;
+}
+
+double Bin::sumXWeight() const
+{
+  return _sumXWeight;
+}
+
+double Bin::sumX2Weight() const
+{
+  return _sumX2Weight;
+}
+
 Bin& Bin::operator += (const Bin& toAdd) {
   assert(_edges == toAdd._edges);
   _numEntries += toAdd._numEntries;

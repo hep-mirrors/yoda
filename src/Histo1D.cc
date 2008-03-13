@@ -15,7 +15,7 @@ Histo1D::Histo1D(string path, string title, vector<double> binedges) :
                 _overflow ( Bin(0,1) ),
                 _cachedBinEdges( binedges ),
                 _nbins ( binedges.size()-1 ),
-		_binHash ()
+                _binHash ()
 {
   sort(_cachedBinEdges.begin(), _cachedBinEdges.end());
   for (size_t i = 0; i < _nbins; i++) {
@@ -33,7 +33,7 @@ Histo1D::Histo1D(string path, string title, size_t nbins, double lower, double u
                 _overflow ( Bin(0,1) ),
                 _cachedBinEdges(),
                 _nbins ( nbins ),
-		_binHash ()
+                _binHash ()
 {
   if (!log)
     for (size_t i = 0; i <= _nbins; i++)
@@ -111,7 +111,23 @@ pair<Histo1D::ExtraBin, size_t> Histo1D::_coordToIndex(double coord) const {
 };
 
 
-// double getTotalArea();
-// double getMean();
+double Histo1D::getTotalArea() {
+  double area = 0;
+  for (size_t i = 0; i < _nbins; i++)
+    area += _bins[i].area();
+  return area;
+};
+
+
+double Histo1D::getMean() {
+  double sumwx = 0;
+  double sumw  = 0;
+  for (size_t i = 0; i < _nbins; i++) {
+    sumwx += _bins[i].sumXWeight();
+    sumw  += _bins[i].sumWeight();
+  }
+  return sumwx/sumw;
+};
+
 // double getRMS();
 

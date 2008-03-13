@@ -99,15 +99,19 @@ namespace YODA {
 
     /// The sum of weights
     double _sumWeight;
+    double sumWeight() const;
 
     /// The sum of weights squared
     double _sumWeight2;
+    double sumWeight2() const;
 
     /// The sum of x*weight
     double _sumXWeight;
+    double sumXWeight() const;
 
     /// The sum of x^2 * weight
     double _sumX2Weight;
+    double sumX2Weight() const;
 
   };
 
