@@ -1,4 +1,8 @@
 // -*- C++ -*-
+//
+// This file is part of YODA -- Yet mor Objects for Data Analysis
+// Copyright (C) 2008 The YODA collaboration (see AUTHORS for details)
+//
 #ifndef YODA_Histo1D_h
 #define YODA_Histo1D_h
 
