@@ -33,7 +33,7 @@ AC_PATH_PROG(DOXYGEN, doxygen)
 AM_CONDITIONAL(WITH_DOXYGEN, test "$DOXYGEN")
 
 ## Decide whether to build the Python extension
-AC_ARG_ENABLE(pyext, [AC_HELP_STRING(--enable-pyext, [build Yoda Python module @<:@default=yes@:>@])], [], [enable_pyrivet=yes])
+AC_ARG_ENABLE(pyext, [AC_HELP_STRING(--enable-pyext, [build YODA Python module @<:@default=no@:>@])], [], [enable_pyext=no])
 AM_CONDITIONAL(ENABLE_PYEXT, [test x$enable_pyext == xyes])
 if test x$enable_pyext == xyes; then
   AM_PATH_PYTHON(2.3)
@@ -69,7 +69,7 @@ AC_CONFIG_FILES([Makefile])
 AC_CONFIG_FILES([include/Makefile include/YODA/Makefile])
 AC_CONFIG_FILES([src/Makefile])
 AC_CONFIG_FILES([tests/Makefile])
-#AC_CONFIG_FILES([pyext/Makefile])
+AC_CONFIG_FILES([pyext/Makefile])
 #AC_CONFIG_FILES([bin/Makefile bin/yoda-config])
 
 AC_OUTPUT
