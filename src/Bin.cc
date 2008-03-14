@@ -101,7 +101,7 @@ double Bin::height() const
 
 double Bin::areaError() const
 {
-  return sqrt( _sumWeight );
+  return sqrt( _sumWeight2 );
 }
 
 double Bin::heightError() const
