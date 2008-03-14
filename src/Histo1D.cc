@@ -8,7 +8,8 @@ using std::vector;
 using std::string;
 using std::make_pair;
 
-Histo1D::Histo1D(string path, string title, vector<double> binedges) :
+Histo1D::Histo1D(const string& path, const string& title,
+		 const vector<double>& binedges) :
                 AnalysisObject ( path, title ),
                 _bins (),
                 _underflow ( Bin(0,1) ),
@@ -26,7 +27,8 @@ Histo1D::Histo1D(string path, string title, vector<double> binedges) :
 }
 
 
-Histo1D::Histo1D(string path, string title, size_t nbins, double lower, double upper, bool log) :
+Histo1D::Histo1D(const string& path, const string& title,
+		 size_t nbins, double lower, double upper, bool log) :
                 AnalysisObject ( path, title ),
                 _bins (),
                 _underflow ( Bin(0,1) ),
@@ -53,7 +55,22 @@ Histo1D::Histo1D(string path, string title, size_t nbins, double lower, double u
   }
 }
 
-// Histo1D::Histo1D(string path, string title, const_iterator<double> binedges_begin,const_iterator<double> binedges_end);
+Histo1D::Histo1D(string path, string title,
+		 const vector<Bin>& bins) :
+                AnalysisObject ( path, title ),
+                _bins ( bins ),
+                _underflow ( Bin(0,1) ),
+                _overflow ( Bin(0,1) ),
+                _cachedBinEdges(),
+                _nbins ( bins.size() ),
+                _binHash ()
+{
+  for (size_t i = 0; i<_nbins; ++i) {
+    _cachedBinEdges.push_back(_bins[i].lowEdge());
+    _binHash.insert(make_pair(_bins[i].highEdge(),i));
+  }
+  _cachedBinEdges.push_back(_bins.back().highEdge());
+}
 
 void Histo1D::reset () {
   _underflow.reset();
@@ -81,8 +98,9 @@ void Histo1D::fillBin(size_t index, double weight) {
   Histo1D::_bins[index].fill(x, weight);
 }
 
-
-// vector<Bin>& Histo1D::getBins();
+vector<Bin>& Histo1D::getBins() {
+  return _bins;
+}
 
 Bin& Histo1D::getBin(size_t index) {
   if (index >= _nbins)
@@ -137,11 +155,11 @@ double Histo1D::getMean() {
 }
 
 
-double getSigma() {
+double Histo1D::getSigma() {
   double mean = getMean();
   double sigma2 = 0;
   for (size_t i = 0; i < _nbins; i++)
-    sigma2 += pow( (_bin[i].focus()-mean), 2) * _bin[i].sumWeight();
+    sigma2 += pow( (_bins[i].focus()-mean), 2) * _bins[i].sumWeight();
   return std::sqrt(sigma2/getTotalArea());
 }
 

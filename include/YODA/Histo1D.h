@@ -1,6 +1,6 @@
 // -*- C++ -*-
-#ifndef YODA_HISTO1D_H
-#define YODA_HISTO1D_H 1
+#ifndef YODA_Histo1D_h
+#define YODA_Histo1D_h
 
 #include "YODA/AnalysisObject.h"
 #include "YODA/Bin.h"
@@ -11,29 +11,47 @@
 
 namespace YODA {
 
-  /// A 1-dimensional histogram.
+  /// A  one-dimensional histogram.
   class Histo1D : public AnalysisObject {
     
   public:
+
+    /// Enumerate the type of bins
     enum ExtraBin { UNDERFLOWBIN, OVERFLOWBIN, VALIDBIN };
     
   public:
     /// @name Constructors
     //@{
-    Histo1D(std::string path, std::string title,
+
+    /// Constructor giving range and number of bins
+    Histo1D(const std::string& path, const std::string& title,
             size_t nbins,
             double lower, double upper,
             bool log = false);
-    Histo1D(std::string path, std::string title, std::vector<double> binedges);
-    // Histo1D(std::string path, std::string title, const_iterator<double> binedges_begin,const_iterator<double> binedges_end);
+
+    /// Constructor giving explicit bin edges
+    /// For n bins, binedges.size() == n+1, the last
+    /// one being the upper bound of the last bin
+    Histo1D(const std::string& path, const std::string& title,
+	    const std::vector<double>& binedges);
+
+    /// Constructor giving a vector of bins
+    Histo1D(std::string path, std::string title,
+	    const std::vector<Bin>& bins);
     //@}
     
   public:
     /// @name Filling methods
     //@{
+
+    /// Fill histo by value and weight
     void fill(double x, double weight=1.0);
+
+    /// Directly fill bin by bin index
     void fillBin(size_t index, double weight=1.0);
     //@}
+
+  public:
     
     /// Reset the histogram: Keep the binning but
     /// set all bin contents and related quantities
@@ -43,46 +61,69 @@ namespace YODA {
   public:
     /// @name Bin accessors
     //@{
-//    std::vector<Bin>& getBins();
-//    iterator<Bin>& bins_begin();
-//    iterator<Bin>& bins_end();
-//    const const_iterator<Bin>& bins_begin() const;
-//    const const_iterator<Bin>& bins_end() const;
+
+    /// Access the bin vector
+    std::vector<Bin>& getBins();
+
+    /// Access a bin by index
     Bin& getBin(size_t index);
+
+    /// Access a bin by type
     Bin& getBin(ExtraBin binType);
+
+    /// Access a bin bu coordinate
     Bin& getBinByCoord(double x);
     //@}
+  
+  public:
+    /// @name Whole histo data
+    //@{
 
-//  public:
-//    /// @name Whole histo data
-//    //@{
+    /// Get the total area
     double getTotalArea();
+
+    /// Get the mean
     double getMean();
+
+    /// Get the sigma
     double getSigma();
     //@}
 
   private:
+
     /// @name Bin data
     //@{
+
+    /// The bins contained in this histogram
     std::vector<Bin> _bins;
+
+    /// The underflow bin
     Bin _underflow;
+
+    /// The overflow bin
     Bin _overflow;
+
     //@}
 
     /// @name Private helper methods
     //@{
+
+    /// Bin lookup: convert value to corresponding bin index
     std::pair<ExtraBin, size_t> _coordToIndex(double coord) const;
+
     //@}
 
-    /// @name Caching data
+    /// @name Bin edge data and lookup tables
     //@{
-    // @todo why should these be mutable?
-    // mutable std::vector<double> _cachedBinEdges;
-    // mutable size_t _nbins;
+
+    /// Bin edges: lower edges, except lats entry,
+    /// which is the high edge of the last bin
     std::vector<double> _cachedBinEdges;
+
+    /// The number of bins
     size_t _nbins;
 
-    /// Map for fast bin finding
+    /// Map for fast bin lookup
     std::map<double,size_t> _binHash;
 
     //@}
@@ -98,4 +139,4 @@ namespace YODA {
   
 }
 
-#endif
+#endif // YODA_Histo1D_h
