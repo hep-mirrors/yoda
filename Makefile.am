@@ -1,5 +1,5 @@
 ACLOCAL_AMFLAGS = -I m4
-SUBDIRS = src include 
+SUBDIRS = src include tests
 #pyext data bin
 
 ## Deal with the Doxygen stuff

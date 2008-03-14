@@ -68,7 +68,7 @@ AC_EMPTY_SUBST
 AC_CONFIG_FILES([Makefile])
 AC_CONFIG_FILES([include/Makefile include/YODA/Makefile])
 AC_CONFIG_FILES([src/Makefile])
-#AC_CONFIG_FILES([tests/Makefile])
+AC_CONFIG_FILES([tests/Makefile])
 #AC_CONFIG_FILES([pyext/Makefile])
 #AC_CONFIG_FILES([bin/Makefile bin/yoda-config])
 

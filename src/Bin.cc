@@ -1,156 +1,157 @@
 // -*- C++ -*-
 //
-// This file is part of YODA -- Yet mor Objects for Data Analysis
+// This file is part of YODA -- Yet more Objects for Data Analysis
 // Copyright (C) 2008 The YODA collaboration (see AUTHORS for details)
 //
 #include "YODA/Bin.h"
+
 #include <cassert>
 #include <cmath>
+using namespace std;
 
-using namespace YODA;
-using std::pair;
-using std::make_pair;
-using std::sqrt;
+namespace YODA {
 
-Bin::Bin(double low, double high) : _edges( make_pair(low,high) ),
-				    _numEntries(),
-				    _sumWeight(),
-				    _sumWeight2(),
-				    _sumXWeight(),
-				    _sumX2Weight()
-{
-  assert( _edges.second >= _edges.first );
-}
+  Bin::Bin(double low, double high) : _edges( make_pair(low,high) ),
+                      _numEntries(),
+                      _sumWeight(),
+                      _sumWeight2(),
+                      _sumXWeight(),
+                      _sumX2Weight()
+  {
+    assert( _edges.second >= _edges.first );
+  }
 
 
-Bin::Bin(pair<double, double> edges) : _edges( edges ),
-				       _numEntries(),
-				       _sumWeight(),
-				       _sumWeight2(),
-				       _sumXWeight(),
-				       _sumX2Weight()
-{
-  assert( _edges.second >= _edges.first );
-}
+  Bin::Bin(std::pair<double, double> edges) : _edges( edges ),
+                         _numEntries(),
+                         _sumWeight(),
+                         _sumWeight2(),
+                         _sumXWeight(),
+                         _sumX2Weight()
+  {
+    assert( _edges.second >= _edges.first );
+  }
 
-void Bin::reset () {
-  _numEntries = 0;
-  _sumWeight = 0.;
-  _sumWeight2 = 0.;
-  _sumXWeight = 0.;
-  _sumX2Weight = 0.;
-}
+  void Bin::reset () {
+    _numEntries = 0;
+    _sumWeight = 0.;
+    _sumWeight2 = 0.;
+    _sumXWeight = 0.;
+    _sumX2Weight = 0.;
+  }
 
-void Bin::fill(double x, double w)
-{
-  assert( _edges.first != _edges.second 
-	  && x >= _edges.first 
-	  && x < _edges.second 
-	  || x == _edges.first );
-  
-  ++_numEntries;
+  void Bin::fill(double x, double w)
+  {
+    assert( _edges.first != _edges.second 
+        && x >= _edges.first 
+        && x < _edges.second 
+        || x == _edges.first );
 
-  _sumWeight += w;
-  _sumWeight2 += w * w;
-  
-  _sumXWeight += x * w;
-  _sumX2Weight += x * x * w;
-}
+    ++_numEntries;
 
+    _sumWeight += w;
+    _sumWeight2 += w * w;
 
-double Bin::lowEdge() const 
-{
-  return _edges.first;
-}
+    _sumXWeight += x * w;
+    _sumX2Weight += x * x * w;
+  }
 
 
-double Bin::highEdge() const 
-{
-  return _edges.second;
-}
+  double Bin::lowEdge() const 
+  {
+    return _edges.first;
+  }
 
-pair<double,double> Bin::edges() const
-{
-  return _edges;
-}
 
-double Bin::width() const
-{
-  return _edges.second - _edges.first;
-}
+  double Bin::highEdge() const 
+  {
+    return _edges.second;
+  }
 
-double Bin::focus() const
-{
-  return _sumXWeight / _sumWeight;
-}
+  pair<double,double> Bin::edges() const
+  {
+    return _edges;
+  }
 
-double Bin::midpoint() const
-{
-  return ( _edges.second + _edges.first ) / 2;
-}
+  double Bin::width() const
+  {
+    return _edges.second - _edges.first;
+  }
 
-double Bin::area() const
-{
-  return _sumWeight;
-}
+  double Bin::focus() const
+  {
+    return _sumXWeight / _sumWeight;
+  }
 
-double Bin::height() const
-{
-  return area() / width();
-}
+  double Bin::midpoint() const
+  {
+    return ( _edges.second + _edges.first ) / 2;
+  }
 
-double Bin::areaError() const
-{
-  return sqrt( _sumWeight2 );
-}
+  double Bin::area() const
+  {
+    return _sumWeight;
+  }
 
-double Bin::heightError() const
-{
-  return areaError() / width();
-}
+  double Bin::height() const
+  {
+    return area() / width();
+  }
 
-double Bin::xError() const
-{
-  return sqrt( ( _sumX2Weight * _sumWeight - _sumXWeight * _sumXWeight) 
-	       / ( _sumWeight * _sumWeight - _sumWeight2 ) * _sumWeight );
-}
+  double Bin::areaError() const
+  {
+    return sqrt( _sumWeight2 );
+  }
 
-double Bin::sumWeight() const
-{
-  return _sumWeight;
-}
+  double Bin::heightError() const
+  {
+    return areaError() / width();
+  }
 
-double Bin::sumWeight2() const
-{
-  return _sumWeight2;
-}
+  double Bin::xError() const
+  {
+    return sqrt( ( _sumX2Weight * _sumWeight - _sumXWeight * _sumXWeight) 
+             / ( _sumWeight * _sumWeight - _sumWeight2 ) * _sumWeight );
+  }
 
-double Bin::sumXWeight() const
-{
-  return _sumXWeight;
-}
+  double Bin::sumWeight() const
+  {
+    return _sumWeight;
+  }
 
-double Bin::sumX2Weight() const
-{
-  return _sumX2Weight;
-}
+  double Bin::sumWeight2() const
+  {
+    return _sumWeight2;
+  }
 
-Bin& Bin::operator += (const Bin& toAdd) {
-  assert(_edges == toAdd._edges);
-  _numEntries += toAdd._numEntries;
-  _sumWeight += toAdd._sumWeight;
-  _sumWeight2 += toAdd._sumWeight2;
-  _sumXWeight += toAdd._sumXWeight;
-  _sumX2Weight += toAdd._sumX2Weight;
-  return *this;
-}
+  double Bin::sumXWeight() const
+  {
+    return _sumXWeight;
+  }
 
-Bin& Bin::operator -= (const Bin& toSubtract) {
-  assert(_edges == toSubtract._edges);
-  _numEntries -= toSubtract._numEntries;
-  _sumWeight -= toSubtract._sumWeight;
-  _sumWeight2 -= toSubtract._sumWeight2;
-  _sumXWeight -= toSubtract._sumXWeight;
-  _sumX2Weight -= toSubtract._sumX2Weight;
-  return *this;
+  double Bin::sumX2Weight() const
+  {
+    return _sumX2Weight;
+  }
+
+  Bin& Bin::operator += (const Bin& toAdd) {
+    assert(_edges == toAdd._edges);
+    _numEntries += toAdd._numEntries;
+    _sumWeight += toAdd._sumWeight;
+    _sumWeight2 += toAdd._sumWeight2;
+    _sumXWeight += toAdd._sumXWeight;
+    _sumX2Weight += toAdd._sumX2Weight;
+    return *this;
+  }
+
+  Bin& Bin::operator -= (const Bin& toSubtract) {
+    assert(_edges == toSubtract._edges);
+    _numEntries -= toSubtract._numEntries;
+    _sumWeight -= toSubtract._sumWeight;
+    _sumWeight2 -= toSubtract._sumWeight2;
+    _sumXWeight -= toSubtract._sumXWeight;
+    _sumX2Weight -= toSubtract._sumX2Weight;
+    return *this;
+  }
+
 }

@@ -1,6 +1,6 @@
 // -*- C++ -*-
 //
-// This file is part of YODA -- Yet mor Objects for Data Analysis
+// This file is part of YODA -- Yet more Objects for Data Analysis
 // Copyright (C) 2008 The YODA collaboration (see AUTHORS for details)
 //
 #ifndef YODA_Histo1D_h
@@ -21,7 +21,7 @@ namespace YODA {
   public:
 
     /// Enumerate the type of bins
-    enum ExtraBin { UNDERFLOWBIN, OVERFLOWBIN, VALIDBIN };
+    enum BinType { UNDERFLOWBIN, OVERFLOWBIN, VALIDBIN };
     
   public:
     /// @name Constructors
@@ -67,16 +67,17 @@ namespace YODA {
     //@{
 
     /// Access the bin vector
-    std::vector<Bin>& getBins();
+    std::vector<Bin>& bins();
 
     /// Access a bin by index
-    Bin& getBin(size_t index);
+    Bin& bin(size_t index);
 
-    /// Access a bin by type
-    Bin& getBin(ExtraBin binType);
+    /// @brief Access the underflow and overflow bins by type.
+    /// Using the VALIDBIN enum value as an argument will throw an exception.
+    Bin& bin(BinType binType);
 
-    /// Access a bin bu coordinate
-    Bin& getBinByCoord(double x);
+    /// Access a bin by coordinate
+    Bin& binByCoord(double x);
     //@}
   
   public:
@@ -84,13 +85,13 @@ namespace YODA {
     //@{
 
     /// Get the total area
-    double getTotalArea();
+    double totalArea();
 
     /// Get the mean
-    double getMean();
+    double mean();
 
-    /// Get the sigma
-    double getSigma();
+    /// Get the standard deviation
+    double stdDev();
     //@}
 
   public:
@@ -126,7 +127,7 @@ namespace YODA {
     //@{
 
     /// Bin lookup: convert value to corresponding bin index
-    std::pair<ExtraBin, size_t> _coordToIndex(double coord) const;
+    std::pair<BinType, size_t> _coordToIndex(double coord) const;
 
     //@}
 
