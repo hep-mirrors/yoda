@@ -163,4 +163,36 @@ double Histo1D::getSigma() {
   return std::sqrt(sigma2/getTotalArea());
 }
 
+Histo1D& Histo1D::operator += (const Histo1D& toAdd) {
+  if (_cachedBinEdges != toAdd._cachedBinEdges
+      || _binHash != toAdd._binHash)
+    throw LogicError("YODA::Histo1D: Cannot add histograms with different binnings.");
+  for (size_t i = 0; i<_nbins; ++i)
+    _bins[i] += toAdd._bins[i];
+  _underflow += toAdd._underflow;
+  _overflow += toAdd._overflow;
+  return *this;
+}
 
+Histo1D& Histo1D::operator -= (const Histo1D& toSubtract) {
+  if (_cachedBinEdges != toSubtract._cachedBinEdges
+      || _binHash != toSubtract._binHash)
+    throw LogicError("YODA::Histo1D: Cannot subtract histograms with different binnings.");
+  for (size_t i = 0; i<_nbins; ++i)
+    _bins[i] += toSubtract._bins[i];
+  _underflow += toSubtract._underflow;
+  _overflow += toSubtract._overflow;
+  return *this;
+}
+
+Histo1D operator + (const Histo1D& first, const Histo1D& second) {
+  Histo1D tmp = first;
+  tmp += second;
+  return tmp;
+}
+
+Histo1D operator - (const Histo1D& first, const Histo1D& second) {
+  Histo1D tmp = first;
+  tmp -= second;
+  return tmp;
+}

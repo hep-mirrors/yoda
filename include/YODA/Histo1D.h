@@ -89,6 +89,19 @@ namespace YODA {
     double getSigma();
     //@}
 
+  public:
+
+    /// @name Adding and subtracting histograms
+    //@{
+
+    /// Add another histogram to this
+    Histo1D& operator += (const Histo1D& toAdd);
+
+    /// Subtract another histogram from this
+    Histo1D& operator -= (const Histo1D& toSubtract);
+
+    //@}
+
   private:
 
     /// @name Bin data
@@ -130,11 +143,15 @@ namespace YODA {
   };
 
 
-  /// @name Combining histos
+  /// @name Combining histos: global operators
   //@{
-  // add
-  // scale
-  // normalize
+
+  /// Add two histograms
+  Histo1D operator + (const Histo1D& first, const Histo1D& second);
+
+  /// Subtract two histograms
+  Histo1D operator - (const Histo1D& first, const Histo1D& second);
+
   //@}
   
 }
