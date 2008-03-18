@@ -6,9 +6,9 @@
 
 namespace YODA {
 
-  class AIDAWriter : public Writer {
+  class WriterAIDA : public Writer {
 
-    
+    virtual WriterAIDA::~WriterAIDA() { }
     
   }
 
