@@ -67,17 +67,17 @@ namespace YODA {
     //@{
 
     /// Access the bin vector
-    std::vector<Bin>& bins();
+    const std::vector<Bin>& bins() const;
 
     /// Access a bin by index
-    Bin& bin(size_t index);
+    const Bin& bin(size_t index) const;
 
     /// @brief Access the underflow and overflow bins by type.
     /// Using the VALIDBIN enum value as an argument will throw an exception.
-    Bin& bin(BinType binType);
+    const Bin& bin(BinType binType) const;
 
     /// Access a bin by coordinate
-    Bin& binByCoord(double x);
+    const Bin& binByCoord(double x) const;
     //@}
   
   public:
@@ -85,13 +85,13 @@ namespace YODA {
     //@{
 
     /// Get the total area
-    double totalArea();
+    double totalArea() const;
 
     /// Get the mean
-    double mean();
+    double mean() const;
 
     /// Get the standard deviation
-    double stdDev();
+    double stdDev() const;
     //@}
 
   public:

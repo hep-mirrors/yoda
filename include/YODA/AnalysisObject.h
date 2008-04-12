@@ -20,16 +20,16 @@ namespace YODA {
     AnalysisObject(const std::string& path, const std::string& title);
 
     /// Default destructor
-    virtual ~AnalysisObject ();
+    virtual ~AnalysisObject();
 
     /// Get the path
-    std::string getPath();
+    std::string path() const;
 
     /// Set the path returning the object with 
     void setPath(const std::string& path);
 
     /// Get the title
-    std::string getTitle();
+    std::string title() const;
 
     /// Set the title
     void setTitle(const std::string& title);
@@ -39,10 +39,10 @@ namespace YODA {
     ///@name Annotations
     //@{
     /// Add or set an annotation by name
-    void annotation (const std::string& name, const std::string& value);
+    void setAnnotation(const std::string& name, const std::string& value);
     
     /// Get the annotations
-    std::map<std::string,std::string> annotations () const;
+    std::map<std::string,std::string> annotations() const;
 
     /// Get an annotation by name
     std::string annotationValue (const std::string& name) const;

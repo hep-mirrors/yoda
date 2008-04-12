@@ -116,17 +116,20 @@ namespace YODA {
     Histo1D::_bins[index].fill(x, weight);
   }
 
-  vector<Bin>& Histo1D::bins() {
+
+  const vector<Bin>& Histo1D::bins() const {
     return _bins;
   }
 
-  Bin& Histo1D::bin(size_t index) {
+
+  const Bin& Histo1D::bin(size_t index) const {
     if (index >= _nbins)
       throw RangeError("YODA::Histo: index out of range");
     return _bins[index];  
   }
 
-  Bin& Histo1D::bin(Histo1D::BinType binType) {
+
+  const Bin& Histo1D::bin(Histo1D::BinType binType) const {
     if (binType == UNDERFLOWBIN) return _underflow;
     if (binType == OVERFLOWBIN) return _overflow;
     throw RangeError("YODA::Histo: index out of range");
@@ -134,7 +137,8 @@ namespace YODA {
     return _underflow;
   }
 
-  Bin& Histo1D::binByCoord(double x) {
+
+  const Bin& Histo1D::binByCoord(double x) const {
     pair<Histo1D::BinType, size_t> index = _coordToIndex(x);
     if ( index.first == VALIDBIN ) return _bins[index.second];
     return bin(index.first);
@@ -155,7 +159,7 @@ namespace YODA {
   }
 
 
-  double Histo1D::totalArea() {
+  double Histo1D::totalArea() const {
     double area = 0;
     for (size_t i = 0; i < _nbins; i++)
       area += _bins[i].area();
@@ -163,7 +167,7 @@ namespace YODA {
   }
 
 
-  double Histo1D::mean() {
+  double Histo1D::mean() const {
     double sumwx = 0;
     double sumw  = 0;
     for (size_t i = 0; i < _nbins; i++) {
@@ -174,13 +178,14 @@ namespace YODA {
   }
 
 
-  double Histo1D::stdDev() {
+  double Histo1D::stdDev() const {
     double mean = this->mean();
     double sigma2 = 0;
     for (size_t i = 0; i < _nbins; i++)
       sigma2 += pow( (_bins[i].focus()-mean), 2) * _bins[i].sumWeight();
     return std::sqrt(sigma2/totalArea());
   }
+
 
   Histo1D& Histo1D::operator += (const Histo1D& toAdd) {
     if (_cachedBinEdges != toAdd._cachedBinEdges

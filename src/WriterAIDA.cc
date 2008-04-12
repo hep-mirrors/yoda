@@ -4,8 +4,11 @@
 // Copyright (C) 2008 The YODA collaboration (see AUTHORS for details)
 //
 #include "YODA/WriterAIDA.h"
+#include "YODA/Histo1D.h"
 
 #include <iostream>
+#include <fstream>
+#include <typeinfo>
 using namespace std;
 
 
@@ -31,61 +34,109 @@ namespace YODA {
 
 
   bool WriterAIDA::write(ostream& stream, const AnalysisObject& ao) {
-    // RTTI goes here
+    // Use RTTI to decide which down-cast to do.
+    if (typeid(ao) == typeid(Histo1D())) {
+      return write(stream, static_cast<const Histo1D&>(ao));
+    }
+    return false;
   }
-  bool WriterAIDA::write(const string& filename, const AnalysisObject& ao) {}
 
 
-  bool WriterAIDA::write(ostream& stream, const Histo1D& h) {
+  bool WriterAIDA::write(const string& filename, const AnalysisObject& ao) {
+    ofstream outstream;
+    outstream.open(filename.c_str());
+    bool ok = write(outstream, ao);
+    outstream.close();
+    return ok;
+  }
+
+
+  bool WriterAIDA::write(ostream& stream, const vector<AnalysisObject>& aos) {
+    for (vector<AnalysisObject>::const_iterator ao = aos.begin(); ao != aos.end(); ++ao) {
+      const AnalysisObject& aoref = *ao;
+      bool ok = write(stream, aoref);
+      if (!ok) return false;
+    }
+    return true;
+  }
+
+
+  bool WriterAIDA::write(const std::string& filename, const vector<AnalysisObject>& aos) {
+    ofstream outstream;
+    outstream.open(filename.c_str());
+    bool ok = write(outstream, aos);
+    outstream.close();
+    return ok;
+  }
+
+
+  bool WriterAIDA::write(std::ostream& stream, 
+                         const vector<AnalysisObject>::const_iterator& begin, 
+                         const vector<AnalysisObject>::const_iterator& end) {
+    /// @todo
+    return true;
+  }
+
+
+  bool WriterAIDA::write(const std::string& filename,
+                         const vector<AnalysisObject>::const_iterator& begin, 
+                         const vector<AnalysisObject>::const_iterator& end) {
+    /// @todo
+    return true;
+  }
+
+
+
+  bool WriterAIDA::write(ostream& os, const Histo1D& h) {
     // <histogram1d>
-    os << "<histogram1d name=\"" << encodeForXML(h.name()) << "\""
+    os << "<histogram1d" // name=\"" << encodeForXML(h.name()) << "\""
        << " title=\"" << encodeForXML(h.title()) << "\""
        << " path=\"" << h.path() << "\">\n";
     // <axis>
-    os << "  <axis max=\"" << ax->upperEdge() << "\""
-       << " numberOfBins=\"" << ax->bins() << "\""
-       << " min=\"" << ax->lowerEdge() << "\""
+    os << "  <axis"
+       << " numberOfBins=\"" << h.bins().size() << "\""
        << " direction=\"x\">\n";
     // <binBorder>
-    for (int i = 0, N = ax->bins() - 1; i < N; ++i ) { //< @todo Replace with iterator over bins
-      os << "    <binBorder value=\"" << ax->binUpperEdge(i) << "\" />\n";
+    for (vector<Bin>::const_iterator b = h.bins().begin(); b != h.bins().end(); ++b) {
+      os << "    <binBorder value=\"" << b->highEdge() << "\" />\n";
     }
     os << "  </axis>\n";
     // <statistics>
-    os << "  <statistics entries=\"" << totalArea() << "\">\n";
-    os << "    <statistic mean=\"" << mean() << "\"" << " direction=\"x\" />\n";
+    os << "  <statistics entries=\"" << h.totalArea() << "\">\n";
+    os << "    <statistic mean=\"" << h.mean() << "\"" << " direction=\"x\" />\n";
     os << "  </statistics>\n";
 
     // Data section
     os << "  <data1d>\n";
     // Underflow and overflow
-    Bin uf = h.getBin(UNDERFLOW);
+    Bin uf = h.bin(Histo1D::UNDERFLOWBIN);
     os << "    <bin1d binNum=\"UNDERFLOW\"" 
        << " entries=\"" << uf.area() << "\""
        << " height=\"" << uf.height() << "\""
-       << " error=\"" << uf.error() << "\""
+       << " error=\"" << uf.heightError() << "\""
        << " weightedMean=\"" << uf.focus() << "\""
        << " />\n";
-    Bin of = h.getBin(OVERFLOW);
+    Bin of = h.bin(Histo1D::OVERFLOWBIN);
     os << "    <bin1d binNum=\"OVERFLOW\"" 
        << " entries=\"" << of.area() << "\""
        << " height=\"" << of.height() << "\""
-       << " error=\"" << of.error() << "\""
+       << " error=\"" << of.heightError() << "\""
        << " weightedMean=\"" << of.focus() << "\""
        << " />\n";
     // Normal bins
-    for (int i = 0; i < ax->bins() + 2; ++i) { //< @todo Replace with iterator over bins
-      Bin b = h.getBin(i);
-      os << "    <bin1d binNum=\"" << i << "\""
-         << " entries=\"" << b.area() << "\""
-         << " height=\"" << b.height() << "\""
-         << " error=\"" << b.error() << "\""
-         << " weightedMean=\"" << b.focus() << "\""
+    for (vector<Bin>::const_iterator b = h.bins().begin(); b != h.bins().end(); ++b) {
+      os << "    <bin1d"
+         << " entries=\"" << b->area() << "\""
+         << " height=\"" << b->height() << "\""
+         << " error=\"" << b->heightError() << "\""
+         << " weightedMean=\"" << b->focus() << "\""
          << " />\n";
     }
     os << "  </data1d>\n";
     os << "</histogram1d>\n";
     os << flush;
+    /// @todo How to check if it's gone wrong?
+    return true;
   }
 
 
