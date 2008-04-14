@@ -1,0 +1,12 @@
+2008-04-14  Andy Buckley  <andy@insectnation.org>
+
+	* Python SWIG interface now compiles and can be used: the subtlety
+	that was breaking it was that SWIG has to be prodded in pretty
+	non-obvious ways to make std::vectors of classes without
+	default (no-arg) constructors. See
+	http://osdir.com/ml/programming.swig/2004-04/msg00011.html for
+	about the only reference to this to be found anywhere!
+
+	* Basic AIDA writer now available - it doesn't yet output all the
+	necessary information though, especially not for merging parallel
+	runs.

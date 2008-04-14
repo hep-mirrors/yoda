@@ -1,5 +1,6 @@
-import yoda
+#! /usr/bin/env python
 
+from yoda import *
 NUM_SAMPLES = 1000
 
 h = Histo1D("/foo", "Title", 50, 0.0, 100.0)
