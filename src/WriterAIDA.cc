@@ -52,12 +52,7 @@ namespace YODA {
 
 
   bool WriterAIDA::write(ostream& stream, const vector<AnalysisObject>& aos) {
-    for (vector<AnalysisObject>::const_iterator ao = aos.begin(); ao != aos.end(); ++ao) {
-      const AnalysisObject& aoref = *ao;
-      bool ok = write(stream, aoref);
-      if (!ok) return false;
-    }
-    return true;
+    return write(stream, aos.begin(), aos.end());
   }
 
 
@@ -73,7 +68,11 @@ namespace YODA {
   bool WriterAIDA::write(std::ostream& stream, 
                          const vector<AnalysisObject>::const_iterator& begin, 
                          const vector<AnalysisObject>::const_iterator& end) {
-    /// @todo
+    for (vector<AnalysisObject>::const_iterator ao = begin; ao != end; ++ao) {
+      const AnalysisObject& aoref = *ao;
+      bool ok = write(stream, aoref);
+      if (!ok) return false;
+    }
     return true;
   }
 
@@ -81,8 +80,11 @@ namespace YODA {
   bool WriterAIDA::write(const std::string& filename,
                          const vector<AnalysisObject>::const_iterator& begin, 
                          const vector<AnalysisObject>::const_iterator& end) {
-    /// @todo
-    return true;
+    ofstream outstream;
+    outstream.open(filename.c_str());
+    bool ok = write(outstream, begin, end);
+    outstream.close();
+    return ok;
   }
 
 
