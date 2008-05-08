@@ -10,4 +10,4 @@ for i in range(NUM_SAMPLES):
     val = 2.718 ** exp
     h.fill(val);
 
-print h.mean(), "+-", h.stdDev();
+print h.mean(), "+-", h.stdDev(), h.variance()

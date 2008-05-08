@@ -1,0 +1,8 @@
+YODA TODO list
+==============
+
+* Store enough information for datafile merging to be well defined, with
+  appropriate statistical combinations for each data type.
+* Explicitly return NaN for profile histo points with no weight.
+* Write out to special data format or extend AIDA?
+* Write scripts to convert between data formats and to plot results.

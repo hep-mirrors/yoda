@@ -33,7 +33,7 @@ namespace YODA {
   }
 
 
-  bool WriterAIDA::write(ostream& stream, const AnalysisObject& ao) {
+  bool WriterAIDA::write(std::ostream& stream, const AnalysisObject& ao) {
     // Use RTTI to decide which down-cast to do.
     if (typeid(ao) == typeid(Histo1D())) {
       return write(stream, static_cast<const Histo1D&>(ao));
@@ -42,7 +42,7 @@ namespace YODA {
   }
 
 
-  bool WriterAIDA::write(const string& filename, const AnalysisObject& ao) {
+  bool WriterAIDA::write(const std::string& filename, const AnalysisObject& ao) {
     ofstream outstream;
     outstream.open(filename.c_str());
     bool ok = write(outstream, ao);
@@ -51,7 +51,7 @@ namespace YODA {
   }
 
 
-  bool WriterAIDA::write(ostream& stream, const vector<AnalysisObject>& aos) {
+  bool WriterAIDA::write(std::ostream& stream, const vector<AnalysisObject>& aos) {
     return write(stream, aos.begin(), aos.end());
   }
 
@@ -89,7 +89,7 @@ namespace YODA {
 
 
 
-  bool WriterAIDA::write(ostream& os, const Histo1D& h) {
+  bool WriterAIDA::write(std::ostream& os, const Histo1D& h) {
     // <histogram1d>
     os << "<histogram1d" // name=\"" << encodeForXML(h.name()) << "\""
        << " title=\"" << encodeForXML(h.title()) << "\""

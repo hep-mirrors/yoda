@@ -9,10 +9,10 @@
 #include <iostream>
 using namespace std;
 
-
 namespace YODA {
 
-  Histo1D::Histo1D(const string& path, const string& title,
+
+  Histo1D::Histo1D(const std::string& path, const std::string& title,
            const vector<double>& binedges) :
                   AnalysisObject ( path, title ),
                   _bins (),
@@ -31,7 +31,7 @@ namespace YODA {
   }
 
 
-  Histo1D::Histo1D(const string& path, const string& title,
+  Histo1D::Histo1D(const std::string& path, const std::string& title,
            size_t nbins, double lower, double upper, bool log) :
                   AnalysisObject ( path, title ),
                   _bins (),
@@ -69,7 +69,7 @@ namespace YODA {
   }
 
 
-  Histo1D::Histo1D(string path, string title,
+  Histo1D::Histo1D(std::string path, std::string title,
            const vector<Bin>& bins) :
                   AnalysisObject ( path, title ),
                   _bins ( bins ),
@@ -86,6 +86,7 @@ namespace YODA {
     _cachedBinEdges.push_back(_bins.back().highEdge());
   }
 
+
   void Histo1D::reset () {
     _underflow.reset();
     _overflow.reset();
@@ -93,6 +94,7 @@ namespace YODA {
          b != _bins.end(); ++b)
       b->reset();
   }
+
 
   void Histo1D::fill(double x, double weight) {
     pair<Histo1D::BinType, size_t> index = _coordToIndex(x);
@@ -178,12 +180,19 @@ namespace YODA {
   }
 
 
-  double Histo1D::stdDev() const {
-    double mean = this->mean();
+  double Histo1D::variance() const {
     double sigma2 = 0;
-    for (size_t i = 0; i < _nbins; i++)
-      sigma2 += pow( (_bins[i].focus()-mean), 2) * _bins[i].sumWeight();
-    return std::sqrt(sigma2/totalArea());
+    const double mean = this->mean();
+    for (size_t i = 0; i < _nbins; i++) {
+      const double diff = _bins[i].focus() - mean;
+      sigma2 += diff * diff * _bins[i].sumWeight();
+    }
+    return sigma2/totalArea();
+  }
+
+
+  double Histo1D::stdDev() const {
+    return std::sqrt(variance());
   }
 
 

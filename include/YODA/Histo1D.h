@@ -15,6 +15,7 @@
 
 namespace YODA {
 
+
   /// A  one-dimensional histogram.
   class Histo1D : public AnalysisObject {
     
@@ -90,6 +91,9 @@ namespace YODA {
     /// Get the mean
     double mean() const;
 
+    /// Get the variance
+    double variance() const;
+
     /// Get the standard deviation
     double stdDev() const;
     //@}
@@ -158,6 +162,7 @@ namespace YODA {
   Histo1D operator - (const Histo1D& first, const Histo1D& second);
 
   //@}
+
   
 }
 
