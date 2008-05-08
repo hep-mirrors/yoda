@@ -6,3 +6,5 @@ YODA TODO list
 * Explicitly return NaN for profile histo points with no weight.
 * Write out to special data format or extend AIDA?
 * Write scripts to convert between data formats and to plot results.
+* Add math utility functions like isZero(double, tolerance=1E-5), 
+  areEqual(double, double, fractolerance=1E-5), ...

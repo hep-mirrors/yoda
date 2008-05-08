@@ -104,7 +104,7 @@ namespace YODA {
     }
     os << "  </axis>\n";
     // <statistics>
-    os << "  <statistics entries=\"" << h.totalArea() << "\">\n";
+    os << "  <statistics entries=\"" << h.area() << "\">\n";
     os << "    <statistic mean=\"" << h.mean() << "\"" << " direction=\"x\" />\n";
     os << "  </statistics>\n";
 

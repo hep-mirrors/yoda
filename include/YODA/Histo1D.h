@@ -86,7 +86,10 @@ namespace YODA {
     //@{
 
     /// Get the total area
-    double totalArea() const;
+    double area() const;
+
+    /// Get sum of weights in histo (same as area)
+    double sumWeight() const;
 
     /// Get the mean
     double mean() const;
@@ -116,8 +119,10 @@ namespace YODA {
     /// @name Bin data
     //@{
 
+    typedef std::vector<Bin> Bins;
+
     /// The bins contained in this histogram
-    std::vector<Bin> _bins;
+    Bins _bins;
 
     /// The underflow bin
     Bin _underflow;

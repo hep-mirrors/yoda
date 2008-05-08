@@ -11,6 +11,7 @@ using namespace std;
 
 namespace YODA {
 
+
   Bin::Bin(double low, double high) : _edges( make_pair(low,high) ),
                       _numEntries(),
                       _sumWeight(),
@@ -80,7 +81,13 @@ namespace YODA {
 
   double Bin::focus() const
   {
-    return _sumXWeight / _sumWeight;
+    /// @todo Is this appropriate?
+    if (_sumWeight != 0) {
+      /// @todo What if sum(weight) is negative... use fabs()?
+      return _sumXWeight / _sumWeight;
+    } else {
+      return midpoint();
+    }
   }
 
   double Bin::midpoint() const
@@ -90,7 +97,7 @@ namespace YODA {
 
   double Bin::area() const
   {
-    return _sumWeight;
+    return sumWeight();
   }
 
   double Bin::height() const

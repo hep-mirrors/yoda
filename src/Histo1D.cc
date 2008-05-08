@@ -161,11 +161,17 @@ namespace YODA {
   }
 
 
-  double Histo1D::totalArea() const {
-    double area = 0;
-    for (size_t i = 0; i < _nbins; i++)
-      area += _bins[i].area();
-    return area;
+  double Histo1D::sumWeight() const {
+    double sumw = 0;
+    for (Bins::const_iterator b = bins().begin(); b != bins().end(); ++b) {
+      sumw += b->sumWeight();
+    }
+    return sumw;
+  }
+
+
+  double Histo1D::area() const {
+    return sumWeight();
   }
 
 
@@ -183,11 +189,11 @@ namespace YODA {
   double Histo1D::variance() const {
     double sigma2 = 0;
     const double mean = this->mean();
-    for (size_t i = 0; i < _nbins; i++) {
-      const double diff = _bins[i].focus() - mean;
-      sigma2 += diff * diff * _bins[i].sumWeight();
+    for (Bins::const_iterator b = bins().begin(); b != bins().end(); ++b) {
+      const double diff = b->focus() - mean;
+      sigma2 += diff * diff * b->sumWeight();
     }
-    return sigma2/totalArea();
+    return sigma2/sumWeight();
   }
 
 

@@ -10,7 +10,8 @@ _yoda_la_CXXFLAGS = $(AM_CXXFLAGS) -Wno-long-long -fno-strict-aliasing
 _yoda_la_LDFLAGS = -module -L$(top_builddir)/src
 _yoda_la_LIBADD = -lYODA
 
-yoda_wrap.cc yoda.py : $(SWIG_SOURCES)
+incdir=$(top_srcdir)/include/YODA
+yoda_wrap.cc yoda.py : $(SWIG_SOURCES) $(incdir)/Histo1D.h
 	$(SWIG) $(SWIG_PYTHON_OPT) -I$(top_srcdir)/include -o yoda_wrap.cc $(SWIG_SOURCES)
 
 EXTRA_DIST = PyTest.py
