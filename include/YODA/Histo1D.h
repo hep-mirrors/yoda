@@ -38,11 +38,11 @@ namespace YODA {
     /// For n bins, binedges.size() == n+1, the last
     /// one being the upper bound of the last bin
     Histo1D(const std::string& path, const std::string& title,
-	    const std::vector<double>& binedges);
+            const std::vector<double>& binedges);
 
     /// Constructor giving a vector of bins
     Histo1D(std::string path, std::string title,
-	    const std::vector<Bin>& bins);
+            const std::vector<Bin>& bins);
     //@}
     
   public:
