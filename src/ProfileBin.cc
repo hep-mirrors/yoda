@@ -78,8 +78,18 @@ namespace YODA {
     /// @todo Use implementation expression from Wikipedia... "1" -> avg weight.
     return stdDevY() / std::sqrt(sumWeight() - 1)
   }
+    
+  
+  double ProfileBin::sumYWeight() const {
+    return _sumYWeight;
+  }
   
   
+  double ProfileBin::sumY2Weight() const {
+    _sumY2Weight;
+  }
+  
+
   ProfileBin& ProfileBin::operator += (const ProfileBin& toAdd) {
     Bin::operator+=(toAdd);
     _sumYWeight  += toAdd._sumYWeight;
@@ -93,17 +103,7 @@ namespace YODA {
     _sumYWeight  -= toSubtract._sumYWeight;
     _sumY2Weight -= toSubtract._sumY2Weight;
   }
-  
-  
-  double ProfileBin::sumYWeight() const {
-    return _sumYWeight;
-  }
-  
-  
-  double ProfileBin::sumY2Weight() const {
-    _sumY2Weight;
-  }
-  
+
   
   ProfileBin operator + (const ProfileBin& a, const ProfileBin& b) {
     ProfileBin rtn(a);

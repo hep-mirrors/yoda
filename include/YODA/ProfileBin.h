@@ -6,15 +6,14 @@
 #ifndef YODA_ProfileBin_h
 #define YODA_ProfileBin_h
 
+#include "YODA/Bin.h"
 #include "YODA/Exception.h"
-#include <string>
-#include <utility>
 
 namespace YODA {
 
 
   /// A  one-dimensional profile histogram.
-  class ProfileBin : Bin {
+  class ProfileBin : public Bin {
 
     /// Profile1D is a friend to add/subtract bins
     friend class Profile1D;

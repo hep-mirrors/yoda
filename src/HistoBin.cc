@@ -3,7 +3,7 @@
 // This file is part of YODA -- Yet more Objects for Data Analysis
 // Copyright (C) 2008 The YODA collaboration (see AUTHORS for details)
 //
-#include "YODA/Bin.h"
+#include "YODA/HistoBin.h"
 
 #include <cassert>
 #include <cmath>
@@ -12,36 +12,22 @@ using namespace std;
 namespace YODA {
 
 
-  Bin::Bin(double low, double high) : _edges( make_pair(low,high) ),
-                      _numEntries(),
-                      _sumWeight(),
-                      _sumWeight2(),
-                      _sumXWeight(),
-                      _sumX2Weight()
-  {
-    assert( _edges.second >= _edges.first );
+  HistoBin::Bin(double low, double high) 
+    : Bin(low, high)
+  { }
+
+
+  HistoBin::Bin(std::pair<double, double> edges) 
+    : Bin(edges) 
+  { }
+
+
+  void HistoBin::reset() {
+    Bin::reset ();
   }
 
 
-  Bin::Bin(std::pair<double, double> edges) : _edges( edges ),
-                         _numEntries(),
-                         _sumWeight(),
-                         _sumWeight2(),
-                         _sumXWeight(),
-                         _sumX2Weight()
-  {
-    assert( _edges.second >= _edges.first );
-  }
-
-  void Bin::reset () {
-    _numEntries = 0;
-    _sumWeight = 0.;
-    _sumWeight2 = 0.;
-    _sumXWeight = 0.;
-    _sumX2Weight = 0.;
-  }
-
-  void Bin::fill(double x, double w)
+  void HistoBin::fill(double x, double w)
   {
     assert( _edges.first != _edges.second 
         && x >= _edges.first 
@@ -58,90 +44,31 @@ namespace YODA {
   }
 
 
-  double Bin::lowEdge() const 
-  {
-    return _edges.first;
-  }
-
-
-  double Bin::highEdge() const 
-  {
-    return _edges.second;
-  }
-
-  pair<double,double> Bin::edges() const
-  {
-    return _edges;
-  }
-
-  double Bin::width() const
-  {
-    return _edges.second - _edges.first;
-  }
-
-  double Bin::focus() const
-  {
-    /// @todo Is this appropriate?
-    if (_sumWeight != 0) {
-      /// @todo What if sum(weight) is negative... use fabs()?
-      return _sumXWeight / _sumWeight;
-    } else {
-      return midpoint();
-    }
-  }
-
-  double Bin::midpoint() const
-  {
-    return ( _edges.second + _edges.first ) / 2;
-  }
-
-  double Bin::area() const
+  double HistoBin::area() const
   {
     return sumWeight();
   }
 
-  double Bin::height() const
+
+  double HistoBin::height() const
   {
     return area() / width();
   }
 
-  double Bin::areaError() const
+
+  double HistoBin::areaError() const
   {
     return sqrt( _sumWeight2 );
   }
 
-  double Bin::heightError() const
+
+  double HistoBin::heightError() const
   {
     return areaError() / width();
   }
 
-  double Bin::xError() const
-  {
-    return sqrt( ( _sumX2Weight * _sumWeight - _sumXWeight * _sumXWeight) 
-             / ( _sumWeight * _sumWeight - _sumWeight2 ) * _sumWeight );
-  }
 
-  double Bin::sumWeight() const
-  {
-    return _sumWeight;
-  }
-
-  double Bin::sumWeight2() const
-  {
-    return _sumWeight2;
-  }
-
-  double Bin::sumXWeight() const
-  {
-    return _sumXWeight;
-  }
-
-  double Bin::sumX2Weight() const
-  {
-    return _sumX2Weight;
-  }
-
-  Bin& Bin::operator += (const Bin& toAdd) {
+  Bin& HistoBin::operator += (const Bin& toAdd) {
     assert(_edges == toAdd._edges);
     _numEntries += toAdd._numEntries;
     _sumWeight += toAdd._sumWeight;
@@ -151,7 +78,7 @@ namespace YODA {
     return *this;
   }
 
-  Bin& Bin::operator -= (const Bin& toSubtract) {
+  Bin& HistoBin::operator -= (const Bin& toSubtract) {
     assert(_edges == toSubtract._edges);
     _numEntries -= toSubtract._numEntries;
     _sumWeight -= toSubtract._sumWeight;
@@ -160,5 +87,20 @@ namespace YODA {
     _sumX2Weight -= toSubtract._sumX2Weight;
     return *this;
   }
+
+
+  Bin operator + (const Bin& a, const Bin& b) {
+    ProfileBin rtn(a);
+    rtn += a;
+    return rtn;
+  }
+
+
+  Bin operator - (const Bin& a, const Bin& b) {
+    ProfileBin rtn(a);
+    rtn -= a;
+    return rtn;
+  }
+
 
 }

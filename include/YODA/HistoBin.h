@@ -3,16 +3,16 @@
 // This file is part of YODA -- Yet more Objects for Data Analysis
 // Copyright (C) 2008 The YODA collaboration (see AUTHORS for details)
 //
-#ifndef YODA_Bin_h
-#define YODA_Bin_h
+#ifndef YODA_HistoBin_h
+#define YODA_HistoBin_h
 
-#include <utility>
+#include "YODA/Bin.h"
+#include "YODA/Exception.h"
 
 namespace YODA {
 
   /// @brief A Bin in a 1D histogram
-  /// Lower edge is inclusive.
-  class Bin {
+  class HistoBin : public Bin {
 
     /// Histo1D is a friend to add/subtract bins
     friend class Histo1D;
@@ -36,27 +36,6 @@ namespace YODA {
 
   public:
 
-    /// @name X-axis info
-    //@{
-    /// Lower limit of the bin (inclusive).
-    double lowEdge() const;
-
-    /// Upper limit of the bin (exclusive).
-    double highEdge() const;
-
-    /// Get the {low,high} edges as an STL @c pair.
-    std::pair<double,double> edges() const;
-
-    /// Separation of low and high edges, i.e. high-low.
-    double width() const;
-
-    /// The mean position in the bin.
-    double focus() const;
-
-    /// Geometric centre of the bin, i.e. high+low/2.0
-    double midpoint() const;
-    //@}
-
     /// @name Bin content info
     //@{
     /// The area is the sum of weights in the bin, i.e. the
@@ -69,6 +48,7 @@ namespace YODA {
 
     /// @name Error info
     //@{
+
     /// Error computed using binomial statistics on the sum of bin weights,
     /// i.e. err_area = sqrt{sum{weights}}
     double areaError() const;
@@ -80,12 +60,7 @@ namespace YODA {
     /// The x error is the standard error on the bin focus. 
     double xError() const;
 
-    /// @todo RMS?
     //@}
-
-  public:
-
-    // @todo conversion to data point
 
   private:
 
@@ -95,33 +70,15 @@ namespace YODA {
     /// Subtract two bins
     Bin& operator -= (const Bin&);
 
-  private:
-
-    /// The bin limits
-    std::pair<double,double> _edges;
-
-    /// The number of entries
-    unsigned long _numEntries;
-
-    /// The sum of weights
-    double _sumWeight;
-    double sumWeight() const;
-
-    /// The sum of weights squared
-    double _sumWeight2;
-    double sumWeight2() const;
-
-    /// The sum of x*weight
-    double _sumXWeight;
-    double sumXWeight() const;
-
-    /// The sum of x^2 * weight
-    double _sumX2Weight;
-    double sumX2Weight() const;
-
   };
 
-  /// @todo operator+ etc.
+
+  /// Add two bins
+  Bin operator + (const Bin& a, const Bin& b);
+
+  /// Subtract two bins
+  Bin operator - (const Bin& a, const Bin& b);
+
 
 }
 

@@ -6,34 +6,29 @@
 #ifndef YODA_Bin_h
 #define YODA_Bin_h
 
+#include <string>
 #include <utility>
 
 namespace YODA {
 
-  /// @brief A Bin in a 1D histogram
-  /// Lower edge is inclusive.
-  class Bin {
 
-    /// Histo1D is a friend to add/subtract bins
-    friend class Histo1D;
+  /// @brief Base class for bins in 1D normal and profile histograms.
+  /// The lower bin edge is inclusive. This base class provides no fill 
+  /// method, since the signatures for standard and profile histos differ.
+  class Bin {
 
   public:
 
-    /// @name Constructor giving bin low and high edges.
+    /// @name Constructors, giving bin low and high edges.
     //@{
     Bin(double lowedge, double highedge);
+    
     Bin(std::pair<double,double> edges);
     //@}
-
-  private:
-
-    /// @brief Fill this bin with weight @a weight.
-    /// @todo Be careful about negative weights.
-    void fill(double coord, double weight=1.0);
-
+    
     /// Reset this bin
-    void reset ();
-
+    void reset();
+    
   public:
 
     /// @name X-axis info
@@ -57,38 +52,22 @@ namespace YODA {
     double midpoint() const;
     //@}
 
-    /// @name Bin content info
-    //@{
-    /// The area is the sum of weights in the bin, i.e. the
-    /// width of the bin has no influence on this figure.
-    double area() const;
 
-    /// The height is defined as area/width.
-    double height() const;
+    /// @name X error info
+    //@{
+    /// The variance of x-values in the bin.
+    double xVariance() const;
+
+    /// The standard deviation (spread) of x-values in the bin.
+    double xStdDev() const;
+
+    /// The standard error on the bin focus. 
+    double xStdError() const;
     //@}
 
-    /// @name Error info
-    //@{
-    /// Error computed using binomial statistics on the sum of bin weights,
-    /// i.e. err_area = sqrt{sum{weights}}
-    double areaError() const;
-
-    /// As for the height vs. area, the height error includes a scaling factor
-    /// of the bin width, i.e. err_height = sqrt{sum{weights}} / width.
-    double heightError() const;
-
-    /// The x error is the standard error on the bin focus. 
-    double xError() const;
-
-    //@}
+    public:
 
   protected:
-
-    /// Add two bins (for use by Histo1D).
-    Bin& operator += (const Bin&);
-
-    /// Subtract two bins
-    Bin& operator -= (const Bin&);
 
     /// The bin limits
     std::pair<double,double> _edges;
@@ -113,8 +92,6 @@ namespace YODA {
     double sumX2Weight() const;
 
   };
-
-  /// @todo operator+ etc.
 
 }
 
