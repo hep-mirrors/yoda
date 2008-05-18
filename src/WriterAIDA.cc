@@ -90,7 +90,7 @@ namespace YODA {
 
 
   bool WriterAIDA::write(std::ostream& os, const Histo1D& h) {
-    /// @todo This method should be hidden. <aida> tag wrapper comes from public functions.
+    /// @todo This method should be hidden. "aida" tag wrapper to come from public functions.
 
     // <histogram1d>
     os << "<histogram1d" // name=\"" << encodeForXML(h.name()) << "\""

@@ -14,7 +14,7 @@ namespace YODA {
 
 
   /// A  one-dimensional profile histogram.
-  class ProfileBin {
+  class ProfileBin : Bin {
 
     /// Profile1D is a friend to add/subtract bins
     friend class Profile1D;
@@ -37,35 +37,7 @@ namespace YODA {
     /// Reset the bin.
     void reset();
 
-
-    /// Get sum of weights in histo.
-    double sumWeight() const;
-
-    /// Get sum of squared weights in histo.
-    double sumWeight2() const;
-
   public:
-
-    /// @name X-axis info
-    //@{
-    /// Lower limit of the bin (inclusive).
-    double lowEdge() const;
-
-    /// Upper limit of the bin (exclusive).
-    double highEdge() const;
-
-    /// Get the {low,high} edges as an STL @c pair.
-    std::pair<double,double> edges() const;
-
-    /// Separation of low and high edges, i.e. high-low.
-    double width() const;
-
-    /// The mean position in the bin.
-    double focus() const;
-
-    /// Geometric centre of the bin, i.e. high+low/2.0
-    double midpoint() const;
-    //@}
 
     /// @name Bin content info
     //@{
@@ -86,30 +58,6 @@ namespace YODA {
     /// Subtract two bins
     ProfileBin& operator -= (const ProfileBin&);
 
-  private:
-
-    /// The bin limits
-    std::pair<double,double> _edges;
-
-    /// The number of entries
-    unsigned long _numEntries;
-
-    /// The sum of weights
-    double _sumWeight;
-    double sumWeight() const;
-
-    /// The sum of weights squared
-    double _sumWeight2;
-    double sumWeight2() const;
-
-    /// The sum of x*weight
-    double _sumXWeight;
-    double sumXWeight() const;
-
-    /// The sum of x^2 * weight
-    double _sumX2Weight;
-    double sumX2Weight() const;
-
     /// The sum of y*weight
     double _sumYWeight;
     double sumYWeight() const;
@@ -120,7 +68,11 @@ namespace YODA {
 
   };
 
-  /// @todo operator+ etc.
+
+  ProfileBin& operator + (const ProfileBin& a, const ProfileBin& b);
+
+
+  ProfileBin& operator - (const ProfileBin& a, const ProfileBin& b);
 
 }
 

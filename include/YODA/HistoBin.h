@@ -80,15 +80,22 @@ namespace YODA {
     /// The x error is the standard error on the bin focus. 
     double xError() const;
 
+    /// @todo RMS?
     //@}
 
-  protected:
+  public:
+
+    // @todo conversion to data point
+
+  private:
 
     /// Add two bins (for use by Histo1D).
     Bin& operator += (const Bin&);
 
     /// Subtract two bins
     Bin& operator -= (const Bin&);
+
+  private:
 
     /// The bin limits
     std::pair<double,double> _edges;
