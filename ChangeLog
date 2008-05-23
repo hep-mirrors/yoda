@@ -1,3 +1,14 @@
+2008-05-23  Andy Buckley  <andy@insectnation.org>
+
+	* Added Dbn1D class to centralise the calculation of statistics
+	from unbounded, unbinned, weighted distributions.
+
+2008-05-15  Andy Buckley  <andy@insectnation.org>
+
+	* Added Profile1D class.
+
+	* Fixed NaN errors from zero weights.
+
 2008-04-14  Andy Buckley  <andy@insectnation.org>
 
 	* Python SWIG interface now compiles and can be used: the subtlety

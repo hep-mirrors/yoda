@@ -65,30 +65,6 @@ namespace YODA {
   }
 
 
-  bool WriterAIDA::write(std::ostream& stream, 
-                         const vector<AnalysisObject>::const_iterator& begin, 
-                         const vector<AnalysisObject>::const_iterator& end) {
-    for (vector<AnalysisObject>::const_iterator ao = begin; ao != end; ++ao) {
-      const AnalysisObject& aoref = *ao;
-      bool ok = write(stream, aoref);
-      if (!ok) return false;
-    }
-    return true;
-  }
-
-
-  bool WriterAIDA::write(const std::string& filename,
-                         const vector<AnalysisObject>::const_iterator& begin, 
-                         const vector<AnalysisObject>::const_iterator& end) {
-    ofstream outstream;
-    outstream.open(filename.c_str());
-    bool ok = write(outstream, begin, end);
-    outstream.close();
-    return ok;
-  }
-
-
-
   bool WriterAIDA::write(std::ostream& os, const Histo1D& h) {
     /// @todo This method should be hidden. "aida" tag wrapper to come from public functions.
 
