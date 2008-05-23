@@ -4,7 +4,16 @@ YODA TODO list
 * Store enough information for datafile merging to be well defined, with
   appropriate statistical combinations for each data type.
 * Explicitly return NaN for profile histo points with no weight.
-* Write out to special data format or extend AIDA?
 * Write scripts to convert between data formats and to plot results.
 * Add math utility functions like isZero(double, tolerance=1E-5), 
   areEqual(double, double, fractolerance=1E-5), ...
+
+Data line definition:
+H1D: xl xh y dy w w2 n wx wx2 (dysys,...)
+P1D: xl xh y dy w w2 n wx wx2 wy wy2 (dysys,...)?
+Define integration with Hendrik's flat format:
+"#" marks for comments: gnuplot compatibility
+Metadata as special comments
+Suggesting logx, logy, etc.?
+
+* Incorporate/extend Hendrik's make_plot script
