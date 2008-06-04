@@ -35,13 +35,25 @@ namespace YODA {
     /// Reset the internal counters.
     void reset();
 
+
   public:
+
+    /// @name High-level info
+    //@{
+
+    // bool isUnfilled() const {
+    //   return (numEntries() == 0);
+    // }
+
+    // bool isEmpty() const {
+    //   return (sumW() == 0)
+    // }
+
+    //@}
+
 
     /// @name Distribution statistics
     //@{
-
-    /// Number of entries (number of times @c fill was called, ignoring weights)
-    double numEntries() const;
 
     /// Weighted mean, \f$ \bar{x} \f$, of distribution.
     double mean() const;
@@ -54,6 +66,37 @@ namespace YODA {
 
     /// Weighted standard error, \f$ \sim \sigma/\sqrt{N-1} \f$, of distribution.
     double stdErr() const;
+
+    //@}
+
+
+    /// @name Raw distribution running sums
+    //@{
+
+    /// Number of entries (number of times @c fill was called, ignoring weights)
+    unsigned long numEntries() const {
+      return _numFills;
+    }
+
+    /// The sum of weights
+    double sumW() const {
+      return _sumW;
+    }
+
+    /// The sum of weights squared
+    double sumW2() const {
+      return _sumW2;
+    }
+
+    /// The sum of x*weight
+    double sumWX() const {
+      return _sumWX;
+    }
+
+    /// The sum of x^2 * weight
+    double sumWX2() const {
+      return _sumWX2;
+    }
 
     //@}
 

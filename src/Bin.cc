@@ -27,11 +27,7 @@ namespace YODA {
 
 
   void Bin::reset () {
-    _numEntries = 0;
-    _sumWeight = 0.0;
-    _sumWeight2 = 0.0;
-    _sumXWeight = 0.0;
-    _sumX2Weight = 0.0;
+    _xdbn.reset();
   }
 
 
@@ -56,10 +52,8 @@ namespace YODA {
 
 
   double Bin::focus() const {
-    /// @todo Is this appropriate?
-    if (_sumWeight != 0) {
-      /// @todo What if sum(weight) is negative... use fabs()?
-      return _sumXWeight / _sumWeight;
+    if (_xdbn.sumW() != 0) {
+      return xMean();
     } else {
       return midpoint();
     }
@@ -71,42 +65,24 @@ namespace YODA {
   }
 
 
-  double Bin::xVariance() const {
-    const double num = sumX2Weight()*sumWeight() - sumXWeight()*sumXWeight();
-    const double denom = sumWeight()*sumWeight() - sumWeight2();    
-    return num/denom;
-  }
+  // double Bin::xMean() const {
+  //   return _xdbn.mean();
+  // }
 
 
-  double Bin::xStdDev() const {
-    return sqrt(xVariance());
-  }
+  // double Bin::xVariance() const {
+  //   return _xdbn.variance();
+  // }
 
 
-  double Bin::xStdError() const {
-    /// @todo Correct to proper weighted defn with &lt;w&gt; rather than "1"
-    return sqrt(xVariance() / (sumWeight() - 1));
-  }
+  // double Bin::xStdDev() const {
+  //   return _xdbn.stdDev();
+  // }
 
 
-  double Bin::sumWeight() const {
-    return _sumWeight;
-  }
-
-
-  double Bin::sumWeight2() const {
-    return _sumWeight2;
-  }
-
-
-  double Bin::sumXWeight() const {
-    return _sumXWeight;
-  }
-
-
-  double Bin::sumX2Weight() const {
-    return _sumX2Weight;
-  }
+  // double Bin::xStdError() const {
+  //   return _xdbn.stdErr();
+  // }
 
 
 }

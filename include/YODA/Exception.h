@@ -32,7 +32,6 @@ namespace YODA {
     LogicError(const std::string& what) : std::logic_error(what) {} 
   };
 
-
   /// @brief Errors relating to event/bin weights
   /// Arises in computing statistical quantities because e.g. the bin
   /// weight is zero or negative.

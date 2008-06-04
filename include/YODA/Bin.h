@@ -6,6 +6,7 @@
 #ifndef YODA_Bin_h
 #define YODA_Bin_h
 
+#include "YODA/Dbn1D.h"
 #include <string>
 #include <utility>
 
@@ -45,7 +46,7 @@ namespace YODA {
     /// Separation of low and high edges, i.e. high-low.
     double width() const;
 
-    /// The mean position in the bin.
+    /// The mean position in the bin, or the midpoint if that is not available.
     double focus() const;
 
     /// Geometric centre of the bin, i.e. high+low/2.0
@@ -53,43 +54,64 @@ namespace YODA {
     //@}
 
 
-    /// @name X error info
+    /// @name X distribution statistics
     //@{
-    /// The variance of x-values in the bin.
-    double xVariance() const;
 
+    /// Mean value of x-values in the bin.
+    double xMean() const {
+      return _xdbn.mean();
+    }
+
+    /// The variance of x-values in the bin.
+    double xVariance() const {
+      return _xdbn.variance();
+    }
+    
     /// The standard deviation (spread) of x-values in the bin.
-    double xStdDev() const;
+    double xStdDev() const {
+      return _xdbn.stdDev();
+    }
 
     /// The standard error on the bin focus. 
-    double xStdError() const;
+    double xStdError() const {
+      return _xdbn.stdErr();
+    }
     //@}
 
-    public:
+  public:
+
+    /// The number of entries
+    unsigned long numEntries() const {
+      return _xdbn.numEntries();
+    }
+
+    /// The sum of weights
+    double sumW() const {
+      return _xdbn.sumW();
+    }
+
+    /// The sum of weights squared
+    double sumW2() const {
+      return _xdbn.sumW2();
+    }
+
+    /// The sum of x*weight
+    double sumWX() const {
+      return _xdbn.sumWX();
+    }
+
+    /// The sum of x^2 * weight
+    double sumWX2() const {
+      return _xdbn.sumWX2();
+    }
 
   protected:
 
     /// The bin limits
     std::pair<double,double> _edges;
 
-    /// The number of entries
-    unsigned long _numEntries;
-
-    /// The sum of weights
-    double _sumWeight;
-    double sumWeight() const;
-
-    /// The sum of weights squared
-    double _sumWeight2;
-    double sumWeight2() const;
-
-    /// The sum of x*weight
-    double _sumXWeight;
-    double sumXWeight() const;
-
-    /// The sum of x^2 * weight
-    double _sumX2Weight;
-    double sumX2Weight() const;
+    // Distribution of weighted x values    
+    Dbn1D _xdbn;
 
   };
 

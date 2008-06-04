@@ -23,24 +23,16 @@ namespace YODA {
 
 
   void HistoBin::reset() {
-    Bin::reset ();
+    Bin::reset();
   }
 
 
-  void HistoBin::fill(double x, double w)
-  {
+  void HistoBin::fill(double x, double w) {
     assert( _edges.first != _edges.second 
-        && x >= _edges.first 
-        && x < _edges.second 
-        || x == _edges.first );
-
-    ++_numEntries;
-
-    _sumWeight += w;
-    _sumWeight2 += w * w;
-
-    _sumXWeight += x * w;
-    _sumX2Weight += x * x * w;
+            && x >= _edges.first 
+            && x < _edges.second 
+            || x == _edges.first );
+    _xdbn.fill(x, w);
   }
 
 

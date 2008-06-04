@@ -9,14 +9,16 @@
 #include <vector>
 #include <string>
 
-
 namespace YODA {
+
 
   /// Pure virtual base class for various output writers.
   class Writer {
   public:
 
-    virtual ~Writer() {}
+    //Writer() = 0;
+
+    virtual ~Writer() = 0;
 
     /// @name Writing a single analysis object.
     //@{

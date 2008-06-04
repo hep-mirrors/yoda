@@ -34,22 +34,30 @@ namespace YODA {
   
   double mean() const {
     /// @todo Handle zero/negative sum weight
+    /// @todo What if sum(weight) is negative... use fabs()?
     return _sumWX/_sumW;
   }
   
   
   double variance() const {
-    
+    // Weighted variance defined as
+    // sig2 = ( sum(wx**2) * sum(w) - sum(wx)**2 ) / ( sum(w)**2 - sum(w**2) )
+    // see http://en.wikipedia.org/wiki/Weighted_mean
+    const double num = _sumWX2*_sumW - _sumWX*_sumWX;
+    const double den = _sumW*_sumW - _sumW2;
+    const double var = num/den;
+    return var;
   }
   
   
   double stdDev() const {
-    return std::sqrt(variance));
+    return std::sqrt(variance());
   }
   
   
   double stdErr() const {
-    
+    /// @todo Handle zero/negative sum weight
+    return std::sqrt(variance() / _sumW);
   }
   
 

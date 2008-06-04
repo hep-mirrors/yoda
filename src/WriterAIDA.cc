@@ -77,7 +77,7 @@ namespace YODA {
        << " numberOfBins=\"" << h.bins().size() << "\""
        << " direction=\"x\">\n";
     // <binBorder>
-    for (vector<Bin>::const_iterator b = h.bins().begin(); b != h.bins().end(); ++b) {
+    for (vector<HistoBin>::const_iterator b = h.bins().begin(); b != h.bins().end(); ++b) {
       os << "    <binBorder value=\"" << b->highEdge() << "\" />\n";
     }
     os << "  </axis>\n";
@@ -89,14 +89,14 @@ namespace YODA {
     // Data section
     os << "  <data1d>\n";
     // Underflow and overflow
-    Bin uf = h.bin(Histo1D::UNDERFLOWBIN);
+    HistoBin uf = h.bin(Histo1D::UNDERFLOWBIN);
     os << "    <bin1d binNum=\"UNDERFLOW\"" 
        << " entries=\"" << uf.area() << "\""
        << " height=\"" << uf.height() << "\""
        << " error=\"" << uf.heightError() << "\""
        << " weightedMean=\"" << uf.focus() << "\""
        << " />\n";
-    Bin of = h.bin(Histo1D::OVERFLOWBIN);
+    HistoBin of = h.bin(Histo1D::OVERFLOWBIN);
     os << "    <bin1d binNum=\"OVERFLOW\"" 
        << " entries=\"" << of.area() << "\""
        << " height=\"" << of.height() << "\""
@@ -104,7 +104,7 @@ namespace YODA {
        << " weightedMean=\"" << of.focus() << "\""
        << " />\n";
     // Normal bins
-    for (vector<Bin>::const_iterator b = h.bins().begin(); b != h.bins().end(); ++b) {
+    for (vector<HistoBin>::const_iterator b = h.bins().begin(); b != h.bins().end(); ++b) {
       os << "    <bin1d"
          << " entries=\"" << b->area() << "\""
          << " height=\"" << b->height() << "\""

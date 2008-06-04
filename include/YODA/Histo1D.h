@@ -7,7 +7,7 @@
 #define YODA_Histo1D_h
 
 #include "YODA/AnalysisObject.h"
-#include "YODA/Bin.h"
+#include "YODA/HistoBin.h"
 #include "YODA/Exception.h"
 #include <vector>
 #include <string>
@@ -42,7 +42,7 @@ namespace YODA {
 
     /// Constructor giving a vector of bins
     Histo1D(std::string path, std::string title,
-            const std::vector<Bin>& bins);
+            const std::vector<HistoBin>& bins);
     //@}
     
   public:
@@ -68,17 +68,17 @@ namespace YODA {
     //@{
 
     /// Access the bin vector
-    const std::vector<Bin>& bins() const;
+    const std::vector<HistoBin>& bins() const;
 
     /// Access a bin by index
-    const Bin& bin(size_t index) const;
+    const HistoBin& bin(size_t index) const;
 
     /// @brief Access the underflow and overflow bins by type.
     /// Using the VALIDBIN enum value as an argument will throw an exception.
-    const Bin& bin(BinType binType) const;
+    const HistoBin& bin(BinType binType) const;
 
     /// Access a bin by coordinate
-    const Bin& binByCoord(double x) const;
+    const HistoBin& binByCoord(double x) const;
     //@}
   
   public:
@@ -119,16 +119,16 @@ namespace YODA {
     /// @name Bin data
     //@{
 
-    typedef std::vector<Bin> Bins;
+    typedef std::vector<HistoBin> Bins;
 
     /// The bins contained in this histogram
     Bins _bins;
 
     /// The underflow bin
-    Bin _underflow;
+    HistoBin _underflow;
 
     /// The overflow bin
-    Bin _overflow;
+    HistoBin _overflow;
 
     //@}
 
@@ -168,7 +168,7 @@ namespace YODA {
 
   //@}
 
-  
+
 }
 
-#endif // YODA_Histo1D_h
+#endif

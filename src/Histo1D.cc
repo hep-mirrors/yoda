@@ -16,15 +16,15 @@ namespace YODA {
            const vector<double>& binedges) :
                   AnalysisObject ( path, title ),
                   _bins (),
-                  _underflow ( Bin(0,1) ),
-                  _overflow ( Bin(0,1) ),
+                  _underflow ( HistoBin(0,1) ),
+                  _overflow ( HistoBin(0,1) ),
                   _cachedBinEdges( binedges ),
                   _nbins ( binedges.size()-1 ),
                   _binHash ()
   {
     sort(_cachedBinEdges.begin(), _cachedBinEdges.end());
     for (size_t i = 0; i < _nbins; i++) {
-      _bins.push_back( Bin(_cachedBinEdges[i], _cachedBinEdges[i+1]) );
+      _bins.push_back( HistoBin(_cachedBinEdges[i], _cachedBinEdges[i+1]) );
       // Insert upper bound mapped to bin ID
       _binHash.insert(make_pair(_cachedBinEdges[i+1],i));
     }
@@ -35,8 +35,8 @@ namespace YODA {
            size_t nbins, double lower, double upper, bool log) :
                   AnalysisObject ( path, title ),
                   _bins (),
-                  _underflow ( Bin(0,1) ),
-                  _overflow ( Bin(0,1) ),
+                  _underflow ( HistoBin(0,1) ),
+                  _overflow ( HistoBin(0,1) ),
                   _cachedBinEdges(),
                   _nbins ( nbins ),
                   _binHash ()
@@ -62,7 +62,7 @@ namespace YODA {
     //cout << "Added bin edges:";
     for (size_t i = 0; i < _nbins; i++) {
       //cout << " " << _cachedBinEdges[i];
-      _bins.push_back( Bin(_cachedBinEdges[i], _cachedBinEdges[i+1]) );
+      _bins.push_back( HistoBin(_cachedBinEdges[i], _cachedBinEdges[i+1]) );
       _binHash.insert(make_pair(_cachedBinEdges[i+1],i));
     }
     //cout << " " << _cachedBinEdges[_nbins] << endl;
@@ -70,11 +70,11 @@ namespace YODA {
 
 
   Histo1D::Histo1D(std::string path, std::string title,
-           const vector<Bin>& bins) :
+           const vector<HistoBin>& bins) :
                   AnalysisObject ( path, title ),
                   _bins ( bins ),
-                  _underflow ( Bin(0,1) ),
-                  _overflow ( Bin(0,1) ),
+                  _underflow ( HistoBin(0,1) ),
+                  _overflow ( HistoBin(0,1) ),
                   _cachedBinEdges(),
                   _nbins ( bins.size() ),
                   _binHash ()
@@ -90,7 +90,7 @@ namespace YODA {
   void Histo1D::reset () {
     _underflow.reset();
     _overflow.reset();
-    for (vector<Bin>::iterator b = _bins.begin();
+    for (vector<HistoBin>::iterator b = _bins.begin();
          b != _bins.end(); ++b)
       b->reset();
   }
@@ -119,19 +119,19 @@ namespace YODA {
   }
 
 
-  const vector<Bin>& Histo1D::bins() const {
+  const vector<HistoBin>& Histo1D::bins() const {
     return _bins;
   }
 
 
-  const Bin& Histo1D::bin(size_t index) const {
+  const HistoBin& Histo1D::bin(size_t index) const {
     if (index >= _nbins)
       throw RangeError("YODA::Histo: index out of range");
     return _bins[index];  
   }
 
 
-  const Bin& Histo1D::bin(Histo1D::BinType binType) const {
+  const HistoBin& Histo1D::bin(Histo1D::BinType binType) const {
     if (binType == UNDERFLOWBIN) return _underflow;
     if (binType == OVERFLOWBIN) return _overflow;
     throw RangeError("YODA::Histo: index out of range");
@@ -140,7 +140,7 @@ namespace YODA {
   }
 
 
-  const Bin& Histo1D::binByCoord(double x) const {
+  const HistoBin& Histo1D::binByCoord(double x) const {
     pair<Histo1D::BinType, size_t> index = _coordToIndex(x);
     if ( index.first == VALIDBIN ) return _bins[index.second];
     return bin(index.first);
@@ -164,7 +164,7 @@ namespace YODA {
   double Histo1D::sumWeight() const {
     double sumw = 0;
     for (Bins::const_iterator b = bins().begin(); b != bins().end(); ++b) {
-      sumw += b->sumWeight();
+      sumw += b->sumW();
     }
     return sumw;
   }
@@ -179,8 +179,8 @@ namespace YODA {
     double sumwx = 0;
     double sumw  = 0;
     for (size_t i = 0; i < _nbins; i++) {
-      sumwx += _bins[i].sumXWeight();
-      sumw  += _bins[i].sumWeight();
+      sumwx += _bins[i].sumWX();
+      sumw  += _bins[i].sumW();
     }
     return sumwx/sumw;
   }
@@ -191,7 +191,7 @@ namespace YODA {
     const double mean = this->mean();
     for (Bins::const_iterator b = bins().begin(); b != bins().end(); ++b) {
       const double diff = b->focus() - mean;
-      sigma2 += diff * diff * b->sumWeight();
+      sigma2 += diff * diff * b->sumW();
     }
     return sigma2/sumWeight();
   }

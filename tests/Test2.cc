@@ -17,8 +17,8 @@ int main() {
     h.fill(num);
   }
 
-  WriterAIDA writer;
-  writer.write(cout, h);
+  Writer w = WriterAIDA::create();
+  w.write(cout, h);
 
   return EXIT_SUCCESS;
 }

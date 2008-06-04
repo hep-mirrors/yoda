@@ -21,8 +21,8 @@ namespace YODA {
 
     /// @name Constructor giving bin low and high edges.
     //@{
-    Bin(double lowedge, double highedge);
-    Bin(std::pair<double,double> edges);
+    HistoBin(double lowedge, double highedge);
+    HistoBin(std::pair<double,double> edges);
     //@}
 
   private:
