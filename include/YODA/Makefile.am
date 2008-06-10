@@ -3,7 +3,5 @@ include_HEADERS = \
     AnalysisObject.h \
     Histo1D.h Bin.h \
     Scatter.h Point.h \
-    Profile.h ProfileBin.h \
+    Profile1D.h ProfileBin.h \
     Writer.h WriterAIDA.h
-
-#Tree.h

@@ -28,17 +28,15 @@ namespace YODA {
 
 
   void HistoBin::fill(double x, double w) {
-    assert( _edges.first != _edges.second 
-            && x >= _edges.first 
-            && x < _edges.second 
-            || x == _edges.first );
+    assert( _edges.first < _edges.second );
+    assert( x >= _edges.first && x < _edges.second );
     _xdbn.fill(x, w);
   }
 
 
   double HistoBin::area() const
   {
-    return sumWeight();
+    return sumW();
   }
 
 
@@ -50,7 +48,7 @@ namespace YODA {
 
   double HistoBin::areaError() const
   {
-    return sqrt( _sumWeight2 );
+    return sqrt( sumW2() );
   }
 
 
@@ -60,36 +58,37 @@ namespace YODA {
   }
 
 
-  Bin& HistoBin::operator += (const Bin& toAdd) {
-    assert(_edges == toAdd._edges);
-    _numEntries += toAdd._numEntries;
-    _sumWeight += toAdd._sumWeight;
-    _sumWeight2 += toAdd._sumWeight2;
-    _sumXWeight += toAdd._sumXWeight;
-    _sumX2Weight += toAdd._sumX2Weight;
-    return *this;
-  }
-
-  Bin& HistoBin::operator -= (const Bin& toSubtract) {
-    assert(_edges == toSubtract._edges);
-    _numEntries -= toSubtract._numEntries;
-    _sumWeight -= toSubtract._sumWeight;
-    _sumWeight2 -= toSubtract._sumWeight2;
-    _sumXWeight -= toSubtract._sumXWeight;
-    _sumX2Weight -= toSubtract._sumX2Weight;
+  HistoBin& HistoBin::add(const HistoBin& hb) {
+    Bin::add(hb);
     return *this;
   }
 
 
-  Bin operator + (const Bin& a, const Bin& b) {
-    ProfileBin rtn(a);
+  HistoBin& HistoBin::subtract(const HistoBin& hb) {
+    Bin::subtract(hb);
+    return *this;
+  }
+
+
+  HistoBin& HistoBin::operator += (const HistoBin& toAdd) {
+    return add(toAdd);
+  }
+
+
+  HistoBin& HistoBin::operator -= (const HistoBin& toSubtract) {
+    return subtract(toSubtract);
+  }
+
+
+  HistoBin operator + (const HistoBin& a, const HistoBin& b) {
+    HistoBin rtn(a);
     rtn += a;
     return rtn;
   }
 
 
-  Bin operator - (const Bin& a, const Bin& b) {
-    ProfileBin rtn(a);
+  HistoBin operator - (const HistoBin& a, const HistoBin& b) {
+    HistoBin rtn(a);
     rtn -= a;
     return rtn;
   }

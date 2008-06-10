@@ -8,6 +8,9 @@ YODA TODO list
 * Add math utility functions like isZero(double, tolerance=1E-5), 
   areEqual(double, double, fractolerance=1E-5), ...
 
+* Store "norm" and "scale" as members (and write out in histo header), rather
+   than convert type or scale internally. API for this?
+
 Data line definition:
 H1D: xl xh y dy w w2 n wx wx2 (dysys,...)
 P1D: xl xh y dy w w2 n wx wx2 wy wy2 (dysys,...)?
@@ -17,3 +20,9 @@ Metadata as special comments
 Suggesting logx, logy, etc.?
 
 * Incorporate/extend Hendrik's make_plot script
+
+* Think about providing an interface for integral distributions
+
+* Consider "X/Y" naming scheme for Profile1D... if we extend to 2D histos, then
+   "Y" is inappropriate and we should probably use something else to be
+   future-proof.

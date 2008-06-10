@@ -29,6 +29,7 @@ namespace YODA {
     
     /// Reset this bin
     void reset();
+
     
   public:
 
@@ -54,56 +55,60 @@ namespace YODA {
     //@}
 
 
+  public:
+
     /// @name X distribution statistics
     //@{
 
     /// Mean value of x-values in the bin.
-    double xMean() const {
-      return _xdbn.mean();
-    }
+    double xMean() const;
 
     /// The variance of x-values in the bin.
-    double xVariance() const {
-      return _xdbn.variance();
-    }
+    double xVariance() const;
     
     /// The standard deviation (spread) of x-values in the bin.
-    double xStdDev() const {
-      return _xdbn.stdDev();
-    }
+    double xStdDev() const;
 
     /// The standard error on the bin focus. 
-    double xStdError() const {
-      return _xdbn.stdErr();
-    }
+    double xStdError() const;
     //@}
+
 
   public:
 
     /// The number of entries
-    unsigned long numEntries() const {
-      return _xdbn.numEntries();
-    }
+    unsigned long numEntries() const;
 
     /// The sum of weights
-    double sumW() const {
-      return _xdbn.sumW();
-    }
+    double sumW() const;
 
     /// The sum of weights squared
-    double sumW2() const {
-      return _xdbn.sumW2();
-    }
+    double sumW2() const;
 
     /// The sum of x*weight
-    double sumWX() const {
-      return _xdbn.sumWX();
-    }
+    double sumWX() const;
 
     /// The sum of x^2 * weight
-    double sumWX2() const {
-      return _xdbn.sumWX2();
-    }
+    double sumWX2() const;
+
+
+  public:
+
+    /// Add two bins
+    Bin& operator += (const Bin&);
+
+    /// Subtract one bin from another
+    Bin& operator -= (const Bin&);
+
+
+  protected:
+
+    /// Add two bins (internal, explicitly named version)
+    Bin& add(const Bin&);
+
+    /// Subtract one bin from another (internal, explicitly named version)
+    Bin& subtract(const Bin&);
+
 
   protected:
 
@@ -114,6 +119,14 @@ namespace YODA {
     Dbn1D _xdbn;
 
   };
+
+
+  /// Add two bins
+  Bin operator + (const Bin& a, const Bin& b);
+
+  /// Subtract one bin from another
+  Bin operator - (const Bin& a, const Bin& b);
+
 
 }
 

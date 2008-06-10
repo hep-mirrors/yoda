@@ -59,6 +59,55 @@ namespace YODA {
     /// @todo Handle zero/negative sum weight
     return std::sqrt(variance() / _sumW);
   }
+
+
+
+
+  Dbn1D& Dbn1D::add(const Dbn1D& d) {
+    _numFills += d._numFills;
+    _sumW     += d._sumW;
+    _sumW2    += d._sumW2;
+    _sumWX    += d._sumWX;
+    _sumWX2   += d._sumWX2;
+    return *this;
+  }
+
+
+  Dbn1D& Dbn1D::subtract(const Dbn1D& d) {
+    _numFills += d._numFills; //< @todo Hmm, what's best?!?
+    _sumW     -= d._sumW;
+    _sumW2    -= d._sumW2;
+    _sumWX    -= d._sumWX;
+    _sumWX2   -= d._sumWX2;
+    return *this;
+  }
+
+
+  Dbn1D& Dbn1D::operator += (const Dbn1D& d) {
+    return add(d);
+  }
+
+
+  Dbn1D& Dbn1D::operator -= (const Dbn1D& d) {
+    return subtract(d);
+  }
+
+
+  Dbn1D operator + (const Dbn1D& a, const Dbn1D& b) {
+    Dbn1D rtn = a;
+    rtn += b;
+    return rtn;
+  }
+
+
+  Dbn1D operator - (const Dbn1D& a, const Dbn1D& b) {
+    Dbn1D rtn = a;
+    rtn -= b;
+    return rtn;
+  }
+
+
+
   
 
 }

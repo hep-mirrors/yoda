@@ -19,89 +19,70 @@ namespace YODA {
 
     
   void ProfileBin::fill(double x, double y, double w) {
-    assert( edges().first != edges().second 
-            && x >= edges().first 
-            && x < edges().second 
-            || x == edges().first );
-
-    ++_numEntries;
-
-    _sumWeight += w;
-    _sumWeight2 += w * w;
-
-    _sumXWeight += x * w;
-    _sumX2Weight += x * x * w;
-
-    _sumYWeight += y * w;
-    _sumY2Weight += y * y * w;
+    assert( _edges.first < _edges.second );
+    assert( x >= _edges.first && x < _edges.second );
+    _xdbn.fill(x, w);
+    _ydbn.fill(y, w);
   }
 
   
   void ProfileBin::reset() {
     Bin::reset();
-    _sumYWeight = 0.0;
-    _sumY2Weight = 0.0;
+    _ydbn.reset();
   }
   
   
   double ProfileBin::meanY() const {
-    if (sumWeight() == 0) {
-      throw WeightError("Attempting to divide by bin weight sum = 0.");
-    }
-    if (sumWeight() < 0) {
-      /// @todo What if sum(weight) is negative... use fabs()?
-      throw WeightError("Attempting to divide by negative bin weight... what to do?");
-    }
-    return _sumYWeight / _sumWeight;
+    return _ydbn.mean();
   }
   
   
-  double ProfileBin::stdDevY() const {
-    return std::sqrt(varianceY());
+  double ProfileBin::yStdDev() const {
+    return _ydbn.stdDev();
   }
   
   
-  double ProfileBin::varianceY() const {
-    if (sumWeight() == 0) {
-      throw WeightError("Attempting to divide by bin weight sum = 0.");
-    }
-    if (sumWeight() < 0) {
-      /// @todo What if sum(weight) is negative... use fabs()?
-      throw WeightError("Attempting to divide by negative bin weight... what to do?");
-    }
-    /// @todo Use implementation expression from Wikipedia...
-    return sumY2Weight()/sumWeight() - meanY() * meanY();
+  double ProfileBin::yVariance() const {
+    return _ydbn.variance();
   }
   
   
-  double ProfileBin::stdErrY() const {
-    /// @todo Use implementation expression from Wikipedia... "1" -> avg weight.
-    return stdDevY() / std::sqrt(sumWeight() - 1)
+  double ProfileBin::yStdErr() const {
+    return _ydbn.stdErr();
   }
     
   
   double ProfileBin::sumYWeight() const {
-    return _sumYWeight;
+    return _ydbn.sumWX();
   }
   
   
   double ProfileBin::sumY2Weight() const {
-    _sumY2Weight;
+    return _ydbn.sumWX2;
   }
   
 
-  ProfileBin& ProfileBin::operator += (const ProfileBin& toAdd) {
-    Bin::operator+=(toAdd);
-    _sumYWeight  += toAdd._sumYWeight;
-    _sumY2Weight += toAdd._sumY2Weight;
+  ProfileBin& ProfileBin::add(const ProfileBin& pb) {
+    Bin::add(pb);
+    _ydbn += pb._ydbn;
     return *this;
+  }
+
+
+  ProfileBin& ProfileBin::subtract(const ProfileBin& pb) {
+    Bin::subtract(pb);
+    _ydbn -= pb._ydbn;
+    return *this;
+  }
+
+
+  ProfileBin& ProfileBin::operator += (const ProfileBin& toAdd) {
+    return add(toAdd);
   }
   
   
   ProfileBin& ProfileBin::operator -= (const ProfileBin&) {
-    Bin::operator-=(toSubtract);
-    _sumYWeight  -= toSubtract._sumYWeight;
-    _sumY2Weight -= toSubtract._sumY2Weight;
+    return subtract(toSubtract);
   }
 
   

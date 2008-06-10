@@ -100,6 +100,24 @@ namespace YODA {
 
     //@}
 
+  public:
+
+    /// Add two dbns
+    Dbn1D& operator += (const Dbn1D&);
+
+    /// Subtract one dbn from another
+    Dbn1D& operator -= (const Dbn1D&);
+
+
+  protected:
+
+    /// Add two dbns (internal, explicitly named version)
+    Dbn1D& add(const Dbn1D&);
+
+    /// Subtract one dbn from another (internal, explicitly named version)
+    Dbn1D& subtract(const Dbn1D&);
+
+
   private:
 
     unsigned int _numFills;
@@ -109,6 +127,14 @@ namespace YODA {
     double _sumWX2;
 
   };
+
+
+  /// Add two dbns
+  Dbn1D operator + (const Dbn1D& a, const Dbn1D& b);
+
+  /// Subtract one dbn from another
+  Dbn1D operator - (const Dbn1D& a, const Dbn1D& b);
+
 
 
 }

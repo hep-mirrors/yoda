@@ -18,6 +18,7 @@ namespace YODA {
     /// Profile1D is a friend to add/subtract bins
     friend class Profile1D;
 
+
   public:
     /// @name Constructors
     //@{
@@ -27,6 +28,7 @@ namespace YODA {
     ProfileBin(double lowedge, double highedge);
     ProfileBin(std::pair<double,double> edges);
     //@}
+
     
   private:
 
@@ -36,20 +38,22 @@ namespace YODA {
     /// Reset the bin.
     void reset();
 
+
   public:
 
     /// @name Bin content info
     //@{
-    double meanY() const;
+    double yMean() const;
 
-    double stdDevY() const;
+    double yStdDev() const;
 
-    double varianceY() const;
+    double yVariance() const;
 
-    double stdErrY() const;
+    double yStdErr() const;
     //@}
 
-  private:
+
+  public:
 
     /// Add two bins (for use by Profile1D).
     ProfileBin& operator += (const ProfileBin&);
@@ -57,19 +61,35 @@ namespace YODA {
     /// Subtract two bins
     ProfileBin& operator -= (const ProfileBin&);
 
+
+  protected:
+
+    /// Add two bins (internal, explicitly named version)
+    ProfileBin& add(const ProfileBin&);
+
+    /// Subtract one bin from another (internal, explicitly named version)
+    ProfileBin& subtract(const ProfileBin&);
+
+
+  public:
+
     /// The sum of y*weight
-    double _sumYWeight;
-    double sumYWeight() const;
+    double sumWY() const;
 
     /// The sum of y^2 * weight
-    double _sumY2Weight;
-    double sumY2Weight() const;
+    double sumWY2() const;
+
+
+  private:
+
+    // Distribution of weighted y values
+    Dbn1D _ydbn;
+
 
   };
 
 
   ProfileBin& operator + (const ProfileBin& a, const ProfileBin& b);
-
 
   ProfileBin& operator - (const ProfileBin& a, const ProfileBin& b);
 

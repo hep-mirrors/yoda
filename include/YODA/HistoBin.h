@@ -62,13 +62,23 @@ namespace YODA {
 
     //@}
 
-  private:
+
+  public:
 
     /// Add two bins (for use by Histo1D).
-    Bin& operator += (const Bin&);
+    HistoBin& operator += (const HistoBin&);
 
     /// Subtract two bins
-    Bin& operator -= (const Bin&);
+    HistoBin& operator -= (const HistoBin&);
+
+
+  protected:
+
+    /// Add two bins (internal, explicitly named version)
+    HistoBin& add(const HistoBin&);
+
+    /// Subtract one bin from another (internal, explicitly named version)
+    HistoBin& subtract(const HistoBin&);
 
   };
 
