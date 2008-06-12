@@ -107,9 +107,4 @@ namespace YODA {
   }
 
 
-
-  
-
 }
-
-#endif

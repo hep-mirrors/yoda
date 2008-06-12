@@ -30,10 +30,10 @@ namespace YODA {
     //@}
 
     
-  private:
+  public:
 
     /// Fill histo by value and weight.
-    void fill(double x, double y, double weight=1.0);
+    void fill(double x, double d, double weight=1.0);
     
     /// Reset the bin.
     void reset();
@@ -43,13 +43,13 @@ namespace YODA {
 
     /// @name Bin content info
     //@{
-    double yMean() const;
+    double mean() const;
 
-    double yStdDev() const;
+    double stdDev() const;
 
-    double yVariance() const;
+    double variance() const;
 
-    double yStdErr() const;
+    double stdErr() const;
     //@}
 
 
@@ -73,25 +73,25 @@ namespace YODA {
 
   public:
 
-    /// The sum of y*weight
-    double sumWY() const;
+    /// The sum of d*weight
+    double sumWD() const;
 
-    /// The sum of y^2 * weight
-    double sumWY2() const;
+    /// The sum of d^2 * weight
+    double sumWD2() const;
 
 
   private:
 
-    // Distribution of weighted y values
-    Dbn1D _ydbn;
+    // Distribution of weighted data values
+    Dbn1D _ddbn;
 
 
   };
 
 
-  ProfileBin& operator + (const ProfileBin& a, const ProfileBin& b);
+  ProfileBin operator + (const ProfileBin& a, const ProfileBin& b);
 
-  ProfileBin& operator - (const ProfileBin& a, const ProfileBin& b);
+  ProfileBin operator - (const ProfileBin& a, const ProfileBin& b);
 
 }
 

@@ -12,12 +12,12 @@ using namespace std;
 namespace YODA {
 
 
-  HistoBin::Bin(double low, double high) 
+  HistoBin::HistoBin(double low, double high) 
     : Bin(low, high)
   { }
 
 
-  HistoBin::Bin(std::pair<double, double> edges) 
+  HistoBin::HistoBin(std::pair<double, double> edges) 
     : Bin(edges) 
   { }
 

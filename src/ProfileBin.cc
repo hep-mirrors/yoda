@@ -4,6 +4,7 @@
 // Copyright (C) 2008 The YODA collaboration (see AUTHORS for details)
 //
 #include "YODA/ProfileBin.h"
+#include <cassert>
 
 namespace YODA {
 
@@ -18,60 +19,60 @@ namespace YODA {
   { }
 
     
-  void ProfileBin::fill(double x, double y, double w) {
+  void ProfileBin::fill(double x, double d, double w) {
     assert( _edges.first < _edges.second );
     assert( x >= _edges.first && x < _edges.second );
     _xdbn.fill(x, w);
-    _ydbn.fill(y, w);
+    _ddbn.fill(d, w);
   }
 
   
   void ProfileBin::reset() {
     Bin::reset();
-    _ydbn.reset();
+    _ddbn.reset();
   }
   
   
-  double ProfileBin::meanY() const {
-    return _ydbn.mean();
+  double ProfileBin::mean() const {
+    return _ddbn.mean();
   }
   
   
-  double ProfileBin::yStdDev() const {
-    return _ydbn.stdDev();
+  double ProfileBin::stdDev() const {
+    return _ddbn.stdDev();
   }
   
   
-  double ProfileBin::yVariance() const {
-    return _ydbn.variance();
+  double ProfileBin::variance() const {
+    return _ddbn.variance();
   }
   
   
-  double ProfileBin::yStdErr() const {
-    return _ydbn.stdErr();
+  double ProfileBin::stdErr() const {
+    return _ddbn.stdErr();
   }
     
   
-  double ProfileBin::sumYWeight() const {
-    return _ydbn.sumWX();
+  double ProfileBin::sumWD() const {
+    return _ddbn.sumWX();
   }
   
   
-  double ProfileBin::sumY2Weight() const {
-    return _ydbn.sumWX2;
+  double ProfileBin::sumWD2() const {
+    return _ddbn.sumWX2();
   }
   
 
   ProfileBin& ProfileBin::add(const ProfileBin& pb) {
     Bin::add(pb);
-    _ydbn += pb._ydbn;
+    _ddbn += pb._ddbn;
     return *this;
   }
 
 
   ProfileBin& ProfileBin::subtract(const ProfileBin& pb) {
     Bin::subtract(pb);
-    _ydbn -= pb._ydbn;
+    _ddbn -= pb._ddbn;
     return *this;
   }
 
@@ -81,7 +82,7 @@ namespace YODA {
   }
   
   
-  ProfileBin& ProfileBin::operator -= (const ProfileBin&) {
+  ProfileBin& ProfileBin::operator -= (const ProfileBin& toSubtract) {
     return subtract(toSubtract);
   }
 

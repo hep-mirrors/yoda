@@ -14,9 +14,6 @@ namespace YODA {
   /// @brief A Bin in a 1D histogram
   class HistoBin : public Bin {
 
-    /// Histo1D is a friend to add/subtract bins
-    friend class Histo1D;
-
   public:
 
     /// @name Constructor giving bin low and high edges.
@@ -25,7 +22,8 @@ namespace YODA {
     HistoBin(std::pair<double,double> edges);
     //@}
 
-  private:
+
+  public:
 
     /// @brief Fill this bin with weight @a weight.
     /// @todo Be careful about negative weights.
@@ -33,6 +31,7 @@ namespace YODA {
 
     /// Reset this bin
     void reset ();
+
 
   public:
 
