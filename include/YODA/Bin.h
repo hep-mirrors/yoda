@@ -76,6 +76,9 @@ namespace YODA {
 
   public:
 
+    /// @name Raw x distribution statistics
+    //@{
+
     /// The number of entries
     unsigned long numEntries() const;
 
@@ -91,24 +94,33 @@ namespace YODA {
     /// The sum of x^2 * weight
     double sumWX2() const;
 
+    //@}
+
 
   public:
+
+    /// @name Operators
+    //@{
 
     /// Add two bins
     Bin& operator += (const Bin&);
 
     /// Subtract one bin from another
     Bin& operator -= (const Bin&);
+    //@}
 
 
   protected:
+
+    /// @name Named operators
+    //@{
 
     /// Add two bins (internal, explicitly named version)
     Bin& add(const Bin&);
 
     /// Subtract one bin from another (internal, explicitly named version)
     Bin& subtract(const Bin&);
-
+    //@}
 
   protected:
 
