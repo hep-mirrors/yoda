@@ -9,7 +9,7 @@
 namespace YODA {
   
   
-  void fill(double val, double weight) {
+  void Dbn1D::fill(double val, double weight) {
     _numFills += 1;
     _sumW += weight;
     _sumW2 += weight*weight;
@@ -18,7 +18,7 @@ namespace YODA {
   }
   
   
-  void reset() {
+  void Dbn1D::reset() {
     _numFills = 0;
     _sumW = 0;
     _sumW2 = 0;
@@ -27,19 +27,39 @@ namespace YODA {
   }
   
   
-  double numEntries() const {
+  unsigned long Dbn1D::numEntries() const {
     return _numFills;
   }
   
+
+  double Dbn1D::sumW() const {
+    return _sumW;
+  }
+
+
+  double Dbn1D::sumW2() const {
+    return _sumW2;
+  }
   
-  double mean() const {
+  
+  double Dbn1D::sumWX() const {
+    return _sumWX;
+  }
+  
+  
+  double Dbn1D::sumWX2() const {
+    return _sumWX2;
+  }
+  
+
+  double Dbn1D::mean() const {
     /// @todo Handle zero/negative sum weight
     /// @todo What if sum(weight) is negative... use fabs()?
     return _sumWX/_sumW;
   }
   
   
-  double variance() const {
+  double Dbn1D::variance() const {
     // Weighted variance defined as
     // sig2 = ( sum(wx**2) * sum(w) - sum(wx)**2 ) / ( sum(w)**2 - sum(w**2) )
     // see http://en.wikipedia.org/wiki/Weighted_mean
@@ -50,12 +70,12 @@ namespace YODA {
   }
   
   
-  double stdDev() const {
+  double Dbn1D::stdDev() const {
     return std::sqrt(variance());
   }
   
   
-  double stdErr() const {
+  double Dbn1D::stdErr() const {
     /// @todo Handle zero/negative sum weight
     return std::sqrt(variance() / _sumW);
   }

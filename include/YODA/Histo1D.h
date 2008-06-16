@@ -20,10 +20,13 @@ namespace YODA {
   class Histo1D : public AnalysisObject {
     
   public:
-
     /// Enumerate the type of bins
     enum BinType { UNDERFLOWBIN, OVERFLOWBIN, VALIDBIN };
-    
+
+    /// Enumerate the type of distribution
+    enum DistType { DIFF=0, DIFFERENTIAL=0, INT=1, INTEGRAL=1 };
+
+
   public:
     /// @name Constructors
     //@{
@@ -32,18 +35,21 @@ namespace YODA {
     Histo1D(const std::string& path, const std::string& title,
             size_t nbins,
             double lower, double upper,
-            bool log = false);
+            DistType disttype = DIFFERENTIAL);
 
-    /// Constructor giving explicit bin edges
+    /// @brief Constructor giving explicit bin edges.
     /// For n bins, binedges.size() == n+1, the last
     /// one being the upper bound of the last bin
     Histo1D(const std::string& path, const std::string& title,
-            const std::vector<double>& binedges);
+            const std::vector<double>& binedges,
+            DistType disttype = DIFFERENTIAL);
 
     /// Constructor giving a vector of bins
     Histo1D(std::string path, std::string title,
-            const std::vector<HistoBin>& bins);
+            const std::vector<HistoBin>& bins,
+            DistType disttype = DIFFERENTIAL);
     //@}
+
     
   public:
     /// @name Filling methods
@@ -56,12 +62,13 @@ namespace YODA {
     void fillBin(size_t index, double weight=1.0);
     //@}
 
+
   public:
     
-    /// Reset the histogram: Keep the binning but
-    /// set all bin contents and related quantities
-    /// to zero
+    /// @brief Reset the histogram. 
+    /// Keep the binning but set all bin contents and related quantities to zero
     virtual void reset ();
+
 
   public:
     /// @name Bin accessors
@@ -80,6 +87,7 @@ namespace YODA {
     /// Access a bin by coordinate
     const HistoBin& binByCoord(double x) const;
     //@}
+
   
   public:
     /// @name Whole histo data
@@ -101,6 +109,7 @@ namespace YODA {
     double stdDev() const;
     //@}
 
+
   public:
 
     /// @name Adding and subtracting histograms
@@ -113,6 +122,7 @@ namespace YODA {
     Histo1D& operator -= (const Histo1D& toSubtract);
 
     //@}
+
 
   private:
 
@@ -152,6 +162,10 @@ namespace YODA {
 
     /// Map for fast bin lookup
     std::map<double,size_t> _binHash;
+
+    /// Is the distribution integral or differential?
+    /// @todo Do this with types instead?!?
+    DistType _disttype;
 
     //@}
   };

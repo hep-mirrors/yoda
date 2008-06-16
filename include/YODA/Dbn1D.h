@@ -74,30 +74,19 @@ namespace YODA {
     //@{
 
     /// Number of entries (number of times @c fill was called, ignoring weights)
-    unsigned long numEntries() const {
-      return _numFills;
-    }
+    unsigned long numEntries() const;
 
     /// The sum of weights
-    double sumW() const {
-      return _sumW;
-    }
+    double sumW() const;
 
     /// The sum of weights squared
-    double sumW2() const {
-      return _sumW2;
-    }
+    double sumW2() const;
 
     /// The sum of x*weight
-    double sumWX() const {
-      return _sumWX;
-    }
+    double sumWX() const;
 
     /// The sum of x^2 * weight
-    double sumWX2() const {
-      return _sumWX2;
-    }
-
+    double sumWX2() const;
     //@}
 
   public:
@@ -120,7 +109,7 @@ namespace YODA {
 
   private:
 
-    unsigned int _numFills;
+    unsigned long _numFills;
     double _sumW;
     double _sumW2;
     double _sumWX;
@@ -134,7 +123,6 @@ namespace YODA {
 
   /// Subtract one dbn from another
   Dbn1D operator - (const Dbn1D& a, const Dbn1D& b);
-
 
 
 }

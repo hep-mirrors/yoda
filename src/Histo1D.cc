@@ -13,14 +13,15 @@ namespace YODA {
 
 
   Histo1D::Histo1D(const std::string& path, const std::string& title,
-           const vector<double>& binedges) :
-                  AnalysisObject ( path, title ),
-                  _bins (),
-                  _underflow ( HistoBin(0,1) ),
-                  _overflow ( HistoBin(0,1) ),
-                  _cachedBinEdges( binedges ),
-                  _nbins ( binedges.size()-1 ),
-                  _binHash ()
+           const vector<double>& binedges, DistType disttype) :
+    AnalysisObject( path, title ),
+    _bins(),
+    _underflow( HistoBin(0,1) ),
+    _overflow( HistoBin(0,1) ),
+    _cachedBinEdges( binedges ),
+    _nbins( binedges.size()-1 ),
+    _binHash(),
+    _disttype(disttype)
   {
     sort(_cachedBinEdges.begin(), _cachedBinEdges.end());
     for (size_t i = 0; i < _nbins; i++) {
@@ -31,53 +32,41 @@ namespace YODA {
   }
 
 
+
   Histo1D::Histo1D(const std::string& path, const std::string& title,
-           size_t nbins, double lower, double upper, bool log) :
-                  AnalysisObject ( path, title ),
-                  _bins (),
-                  _underflow ( HistoBin(0,1) ),
-                  _overflow ( HistoBin(0,1) ),
-                  _cachedBinEdges(),
-                  _nbins ( nbins ),
-                  _binHash ()
+           size_t nbins, double lower, double upper, DistType disttype) :
+    AnalysisObject( path, title ),
+    _bins(),
+    _underflow( HistoBin(0,1) ),
+    _overflow( HistoBin(0,1) ),
+    _cachedBinEdges(),
+    _nbins( nbins ),
+    _binHash(),
+    _disttype(disttype)
   {
-    if (!log) {
-      const double binwidth = (upper-lower)/static_cast<double>(_nbins);
-      for (size_t i = 0; i <= _nbins; i++) {
-        const double edge = lower + binwidth*i;
-        //cout << " " << edge << flush;
-        _cachedBinEdges.push_back(edge);
-      }
-      //cout << endl;
-    } else {
-      if (lower <= 0.0) {
-        throw LogicError("YODA::Histo: log binning with 0 as lower bound.");
-      }
-      double c = log10(upper/lower)/nbins;
-      for (size_t i = 0; i< nbins; ++i) {
-        _cachedBinEdges.push_back(lower*pow(10.,c*i));
-      }
-      _cachedBinEdges.push_back(lower*pow(10.,c*(nbins+1)));
+    const double binwidth = (upper-lower)/static_cast<double>(_nbins);
+    for (size_t i = 0; i <= _nbins; i++) {
+      const double edge = lower + binwidth*i;
+      _cachedBinEdges.push_back(edge);
     }
-    //cout << "Added bin edges:";
     for (size_t i = 0; i < _nbins; i++) {
-      //cout << " " << _cachedBinEdges[i];
       _bins.push_back( HistoBin(_cachedBinEdges[i], _cachedBinEdges[i+1]) );
       _binHash.insert(make_pair(_cachedBinEdges[i+1],i));
     }
-    //cout << " " << _cachedBinEdges[_nbins] << endl;
   }
 
 
+
   Histo1D::Histo1D(std::string path, std::string title,
-           const vector<HistoBin>& bins) :
-                  AnalysisObject ( path, title ),
-                  _bins ( bins ),
-                  _underflow ( HistoBin(0,1) ),
-                  _overflow ( HistoBin(0,1) ),
-                  _cachedBinEdges(),
-                  _nbins ( bins.size() ),
-                  _binHash ()
+                   const vector<HistoBin>& bins, DistType disttype) :
+    AnalysisObject( path, title ),
+    _bins( bins ),
+    _underflow( HistoBin(0,1) ),
+    _overflow( HistoBin(0,1) ),
+    _cachedBinEdges(),
+    _nbins( bins.size() ),
+    _binHash(),
+    _disttype(disttype)
   {
     for (size_t i = 0; i<_nbins; ++i) {
       _cachedBinEdges.push_back(_bins[i].lowEdge());

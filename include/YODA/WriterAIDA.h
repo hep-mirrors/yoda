@@ -18,17 +18,18 @@ namespace YODA {
   class WriterAIDA : public Writer {
   private:
     WriterAIDA() { }
+
+    static Writer* _instance;
     
   public:
 
     static Writer& create() {
-      /// @todo Singleton? Manage memory properly
-      WriterAIDA* rtn = new WriterAIDA();
-      return *rtn;
+      if (!_instance) {
+        _instance = new WriterAIDA();
+      }
+      return *_instance;
     }
         
-    bool write(std::ostream& stream, const Histo1D& h);
-
     bool write(std::ostream& stream, const AnalysisObject& ao);
     bool write(const std::string& filename, const AnalysisObject& ao);
     bool write(std::ostream& stream, const std::vector<AnalysisObject>& aos);
@@ -39,6 +40,9 @@ namespace YODA {
     bool write(const std::string& filename,
                const std::vector<AnalysisObject>::const_iterator& begin, 
                const std::vector<AnalysisObject>::const_iterator& end);
+
+  protected:
+    bool writeHisto(std::ostream& stream, const Histo1D& h);
 
   };
 

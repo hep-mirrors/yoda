@@ -26,3 +26,9 @@ Suggesting logx, logy, etc.?
 * Consider "X/Y" naming scheme for Profile1D... if we extend to 2D histos, then
    "Y" is inappropriate and we should probably use something else to be
    future-proof.
+
+* Does Writer hierarchy make sense? Yes, for plugins...
+
+* Output header and footer
+
+* Sort out collection iterator args

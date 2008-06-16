@@ -17,7 +17,7 @@ int main() {
     h.fill(num);
   }
 
-  Writer w = WriterAIDA::create();
+  Writer& w = WriterAIDA::create();
   w.write(cout, h);
 
   return EXIT_SUCCESS;

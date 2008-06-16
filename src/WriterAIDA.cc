@@ -13,6 +13,9 @@ using namespace std;
 
 
 namespace YODA {
+
+  Writer* WriterAIDA::_instance = 0;
+
   
   string encodeForXML(const string& in) {
     string out = in;
@@ -36,7 +39,7 @@ namespace YODA {
   bool WriterAIDA::write(std::ostream& stream, const AnalysisObject& ao) {
     // Use RTTI to decide which down-cast to do.
     if (typeid(ao) == typeid(Histo1D())) {
-      return write(stream, static_cast<const Histo1D&>(ao));
+      return writeHisto(stream, static_cast<const Histo1D&>(ao));
     }
     return false;
   }
@@ -65,7 +68,33 @@ namespace YODA {
   }
 
 
-  bool WriterAIDA::write(std::ostream& os, const Histo1D& h) {
+  /// @todo Do these bool returns serve any real purpose?
+  bool WriterAIDA::write(std::ostream& stream, 
+                         const std::vector<AnalysisObject>::const_iterator& begin, 
+                         const std::vector<AnalysisObject>::const_iterator& end) {
+    bool ok = true;
+    for (std::vector<AnalysisObject>::const_iterator ao = begin; ao != end; ++ao) {
+      ok = write(stream, *ao);
+      if (!ok) {
+        throw Exception("Error when writing to output stream");
+      }
+    }
+    return ok;
+  }
+
+
+  bool WriterAIDA::write(const std::string& filename,
+                         const std::vector<AnalysisObject>::const_iterator& begin, 
+                         const std::vector<AnalysisObject>::const_iterator& end) {
+    ofstream outstream;
+    outstream.open(filename.c_str());
+    bool ok = write(outstream, begin, end);
+    outstream.close();
+    return ok;
+  }
+
+
+  bool WriterAIDA::writeHisto(std::ostream& os, const Histo1D& h) {
     /// @todo This method should be hidden. "aida" tag wrapper to come from public functions.
 
     // <histogram1d>
@@ -120,16 +149,5 @@ namespace YODA {
   }
 
 
-  
-  // bool WriterAIDA::write(ostream& stream, const string& format, const vector<AnalysisObject>& ao) {}
-  // bool WriterAIDA::write(const string& filename, const string& format, const vector<AnalysisObject>& ao) {}
-  // bool WriterAIDA::write(const string& filename, const vector<AnalysisObject>& ao) {}
-
-  // bool WriterAIDA::write(ostream& stream, const string& format, 
-  //            const iterator<AnalysisObject>& begin, const iterator<AnalysisObject>& end) {}
-  // bool WriterAIDA::write(const string& filename, const string& format, 
-  //            const iterator<AnalysisObject>& begin, const iterator<AnalysisObject>& end) {}
-  // bool WriterAIDA::write(const string& filename, 
-  //            const iterator<AnalysisObject>& begin, const iterator<AnalysisObject>& end) {}
 
 }

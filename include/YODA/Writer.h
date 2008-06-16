@@ -16,9 +16,8 @@ namespace YODA {
   class Writer {
   public:
 
-    //Writer() = 0;
-
-    virtual ~Writer() = 0;
+    /// Virtual destructor
+    virtual ~Writer() {}
 
     /// @name Writing a single analysis object.
     //@{

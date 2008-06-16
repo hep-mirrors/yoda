@@ -3,6 +3,7 @@ if ENABLE_PYEXT
 BUILT_SOURCES = yoda_wrap.cc
 SWIG_SOURCES  = yoda.i
 python_PYTHON = yoda.py
+
 pyexec_LTLIBRARIES = _yoda.la
 _yoda_la_SOURCES = yoda_wrap.cc $(SWIG_SOURCES)
 _yoda_la_CPPFLAGS = $(AM_CPPFLAGS) $(SWIG_PYTHON_CPPFLAGS) -I$(top_srcdir)/include
@@ -10,9 +11,9 @@ _yoda_la_CXXFLAGS = $(AM_CXXFLAGS) -Wno-long-long -fno-strict-aliasing
 _yoda_la_LDFLAGS = -module -L$(top_builddir)/src
 _yoda_la_LIBADD = -lYODA
 
-incdir=$(top_srcdir)/include/YODA
-yoda_wrap.cc yoda.py : $(SWIG_SOURCES) $(incdir)/Histo1D.h
-	$(SWIG) $(SWIG_PYTHON_OPT) -I$(top_srcdir)/include -o yoda_wrap.cc $(SWIG_SOURCES)
+incdir = $(top_srcdir)/include/YODA
+yoda_wrap.cc : $(SWIG_SOURCES) $(incdir)/Histo1D.h $(incdir)/Profile1D.h
+	$(SWIG) $(SWIG_PYTHON_OPT) -I$(incdir) -o yoda_wrap.cc $(SWIG_SOURCES)
 
 EXTRA_DIST = PyTest.py
 TESTS = PyTest.py
