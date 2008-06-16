@@ -3,8 +3,11 @@ YODA TODO list
 
 * Store enough information for datafile merging to be well defined, with
   appropriate statistical combinations for each data type.
+
 * Explicitly return NaN for profile histo points with no weight.
+
 * Write scripts to convert between data formats and to plot results.
+
 * Add math utility functions like isZero(double, tolerance=1E-5), 
   areEqual(double, double, fractolerance=1E-5), ...
 
@@ -31,4 +34,9 @@ Suggesting logx, logy, etc.?
 
 * Output header and footer
 
-* Sort out collection iterator args
+* Sort out collection iterator args (needs templates)
+
+* Move writer iteration and collection stuff into Writer, leaving WriterYODA 
+   and WriterAIDA to just implement the actual format writing parts.
+
+* Rename AnalysisObject -> Plotable?
