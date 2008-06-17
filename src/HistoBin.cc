@@ -12,13 +12,13 @@ using namespace std;
 namespace YODA {
 
 
-  HistoBin::HistoBin(double low, double high) 
-    : Bin(low, high)
+  HistoBin::HistoBin(double low, double high, BinType type) 
+    : Bin(low, high, type)
   { }
 
 
-  HistoBin::HistoBin(std::pair<double, double> edges) 
-    : Bin(edges) 
+  HistoBin::HistoBin(std::pair<double, double> edges, BinType type) 
+    : Bin(edges, type) 
   { }
 
 
@@ -31,6 +31,11 @@ namespace YODA {
     assert( _edges.first < _edges.second );
     assert( x >= _edges.first && x < _edges.second );
     _xdbn.fill(x, w);
+  }
+
+
+  void HistoBin::fillBin(double weight=1.0) {
+    _xdbn.fill(midpoint(), weight);
   }
 
 

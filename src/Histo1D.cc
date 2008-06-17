@@ -13,97 +13,75 @@ namespace YODA {
 
 
   Histo1D::Histo1D(const std::string& path, const std::string& title,
-           const vector<double>& binedges, DistType disttype) :
+           const vector<double>& binedges) :
     AnalysisObject( path, title ),
+    _axis(binedges),
     _bins(),
-    _underflow( HistoBin(0,1) ),
-    _overflow( HistoBin(0,1) ),
-    _cachedBinEdges( binedges ),
-    _nbins( binedges.size()-1 ),
-    _binHash(),
-    _disttype(disttype)
+    _underflow( HistoBin(0,1,Bin::UNDERFLOWBIN) ),
+    _overflow( HistoBin(0,1,Bin::OVERFLOWBIN) )
   {
-    sort(_cachedBinEdges.begin(), _cachedBinEdges.end());
-    for (size_t i = 0; i < _nbins; i++) {
-      _bins.push_back( HistoBin(_cachedBinEdges[i], _cachedBinEdges[i+1]) );
-      // Insert upper bound mapped to bin ID
-      _binHash.insert(make_pair(_cachedBinEdges[i+1],i));
+    for (size_t i = 0; i < _axis.numBins(); ++i) {
+      const pair<double, double> edges = _axis.binEdges(i);
+      _bins.push_back( HistoBin(edges.first, edges.second) );
     }
   }
-
 
 
   Histo1D::Histo1D(const std::string& path, const std::string& title,
-           size_t nbins, double lower, double upper, DistType disttype) :
+           size_t nbins, double lower, double upper) :
     AnalysisObject( path, title ),
+    _axis(nbins, lower, upper),
     _bins(),
-    _underflow( HistoBin(0,1) ),
-    _overflow( HistoBin(0,1) ),
-    _cachedBinEdges(),
-    _nbins( nbins ),
-    _binHash(),
-    _disttype(disttype)
+    _underflow( HistoBin(0,1,Bin::UNDERFLOWBIN) ),
+    _overflow( HistoBin(0,1,Bin::OVERFLOWBIN) )
   {
-    const double binwidth = (upper-lower)/static_cast<double>(_nbins);
-    for (size_t i = 0; i <= _nbins; i++) {
-      const double edge = lower + binwidth*i;
-      _cachedBinEdges.push_back(edge);
-    }
-    for (size_t i = 0; i < _nbins; i++) {
-      _bins.push_back( HistoBin(_cachedBinEdges[i], _cachedBinEdges[i+1]) );
-      _binHash.insert(make_pair(_cachedBinEdges[i+1],i));
+    for (size_t i = 0; i < _axis.numBins(); ++i) {
+      const pair<double, double> edges = _axis.binEdges(i);
+      _bins.push_back( HistoBin(edges.first, edges.second) );
     }
   }
 
 
-
   Histo1D::Histo1D(std::string path, std::string title,
-                   const vector<HistoBin>& bins, DistType disttype) :
+                   const vector<HistoBin>& bins) :
     AnalysisObject( path, title ),
-    _bins( bins ),
-    _underflow( HistoBin(0,1) ),
-    _overflow( HistoBin(0,1) ),
-    _cachedBinEdges(),
-    _nbins( bins.size() ),
-    _binHash(),
-    _disttype(disttype)
+    _axis(1, 0.0, 1.0),
+    _bins(bins),
+    _underflow( HistoBin(0,1,Bin::UNDERFLOWBIN) ),
+    _overflow( HistoBin(0,1,Bin::OVERFLOWBIN) )
   {
-    for (size_t i = 0; i<_nbins; ++i) {
-      _cachedBinEdges.push_back(_bins[i].lowEdge());
-      _binHash.insert(make_pair(_bins[i].highEdge(),i));
+    vector<double> binedges;
+    for (size_t i = 0; i < _bins.size(); ++i) {
+      binedges.push_back(_bins[i].lowEdge());
     }
-    _cachedBinEdges.push_back(_bins.back().highEdge());
+    binedges.push_back(_bins.back().highEdge());
+    _axis = Axis(binedges);
   }
 
 
   void Histo1D::reset () {
     _underflow.reset();
     _overflow.reset();
-    for (vector<HistoBin>::iterator b = _bins.begin();
-         b != _bins.end(); ++b)
+    for (Bins::iterator b = _bins.begin(); b != _bins.end(); ++b) {
       b->reset();
+    }
   }
 
 
   void Histo1D::fill(double x, double weight) {
-    pair<Histo1D::BinType, size_t> index = _coordToIndex(x);
-    //cout << "Coord-to-index: coord=" << x << " -> " << index.second 
-    //     << " (" << index.first << ")" << endl;
-    if ( index.first == VALIDBIN ) {
-      //cout << "Filling bin " << index.second << " with " << x 
-      //     << " (w=" << weight << ")" << endl;
-      _bins[index.second].fill(x, weight);
-    } else if (index.first == UNDERFLOWBIN)
-      _underflow.fill(0.5, weight);
-    else
-      _overflow.fill(0.5, weight);
+    HistoBin& b = _binByCoord(x);
+    if ( b.type() == Bin::VALIDBIN ) {
+      b.fill(x, weight);
+    } else {
+      b.fillBin(weight);
+    }
   }
 
 
   void Histo1D::fillBin(size_t index, double weight) {
     if (index >= _nbins)
       throw RangeError("YODA::Histo: index out of range");
-    double x = _bins[index].midpoint();
+    const double x = _bins[index].midpoint();
     Histo1D::_bins[index].fill(x, weight);
   }
 
@@ -116,7 +94,7 @@ namespace YODA {
   const HistoBin& Histo1D::bin(size_t index) const {
     if (index >= _nbins)
       throw RangeError("YODA::Histo: index out of range");
-    return _bins[index];  
+    return _bins[index];
   }
 
 
@@ -124,29 +102,20 @@ namespace YODA {
     if (binType == UNDERFLOWBIN) return _underflow;
     if (binType == OVERFLOWBIN) return _overflow;
     throw RangeError("YODA::Histo: index out of range");
-    // just to fix a warning
+    // Just to fix a warning:
     return _underflow;
   }
 
 
-  const HistoBin& Histo1D::binByCoord(double x) const {
-    pair<Histo1D::BinType, size_t> index = _coordToIndex(x);
+  HistoBin& Histo1D::_binByCoord(double x) const {
+    pair<Histo1D::BinType, size_t> index = _axis.findBinIndex(x);
     if ( index.first == VALIDBIN ) return _bins[index.second];
     return bin(index.first);
   }
 
 
-  pair<Histo1D::BinType, size_t> Histo1D::_coordToIndex(double coord) const {
-    //cout << "Upper/lower bounds: " << _cachedBinEdges[0] << ", " << _cachedBinEdges[_nbins] << endl;
-    if ( coord < _cachedBinEdges[0] ) return make_pair(UNDERFLOWBIN, 0);
-    if ( coord >= _cachedBinEdges[_nbins] ) return make_pair(OVERFLOWBIN, 0);
-    // size_t i = 0;
-    //  while (_cachedBinEdges[i+1] < coord) i++;
-    // SP: this is faster, I think;
-    // if's above ensure, that we get
-    // a valid iterator back
-    size_t i = _binHash.upper_bound(coord)->second;
-    return make_pair(VALIDBIN, i);
+  const HistoBin& Histo1D::binByCoord(double x) const {
+    return _binByCoord(x);
   }
 
 
@@ -192,32 +161,37 @@ namespace YODA {
 
 
   Histo1D& Histo1D::operator += (const Histo1D& toAdd) {
-    if (_cachedBinEdges != toAdd._cachedBinEdges
-        || _binHash != toAdd._binHash)
+    if (_axis != toAdd._axis) {
       throw LogicError("YODA::Histo1D: Cannot add histograms with different binnings.");
-    for (size_t i = 0; i<_nbins; ++i)
+    }
+    for (size_t i = 0; i < _nbins; ++i) {
       _bins[i] += toAdd._bins[i];
+    }
     _underflow += toAdd._underflow;
     _overflow += toAdd._overflow;
     return *this;
   }
 
+
   Histo1D& Histo1D::operator -= (const Histo1D& toSubtract) {
-    if (_cachedBinEdges != toSubtract._cachedBinEdges
-        || _binHash != toSubtract._binHash)
+    if (_axis != toAdd._axis) {
       throw LogicError("YODA::Histo1D: Cannot subtract histograms with different binnings.");
-    for (size_t i = 0; i<_nbins; ++i)
+    }
+    for (size_t i = 0; i < _nbins; ++i) {
       _bins[i] += toSubtract._bins[i];
+    }
     _underflow += toSubtract._underflow;
     _overflow += toSubtract._overflow;
     return *this;
   }
+
 
   Histo1D operator + (const Histo1D& first, const Histo1D& second) {
     Histo1D tmp = first;
     tmp += second;
     return tmp;
   }
+
 
   Histo1D operator - (const Histo1D& first, const Histo1D& second) {
     Histo1D tmp = first;

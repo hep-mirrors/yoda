@@ -8,6 +8,7 @@
 
 #include "YODA/AnalysisObject.h"
 #include "YODA/ProfileBin.h"
+#include "YODA/Axis.h"
 #include "YODA/Exception.h"
 #include <vector>
 #include <string>
@@ -99,10 +100,10 @@ namespace YODA {
     //@{
 
     /// Add another histogram to this
-    Histo1D& operator += (const Histo1D& toAdd);
+    Profile1D& operator += (const Profile1D& toAdd);
 
     /// Subtract another histogram from this
-    Histo1D& operator -= (const Histo1D& toSubtract);
+    Profile1D& operator -= (const Profile1D& toSubtract);
 
     //@}
 
@@ -111,7 +112,10 @@ namespace YODA {
     /// @name Bin data
     //@{
 
-    typedef std::vector<ProfileBin> Bins;
+    typedef vector<ProfileBin> Bins;
+
+    /// The bins contained in this histogram
+    Axis _axis;
 
     /// The bins contained in this histogram
     Bins _bins;
@@ -121,7 +125,6 @@ namespace YODA {
 
     /// The overflow bin
     ProfileBin _overflow;
-
 
   };
 

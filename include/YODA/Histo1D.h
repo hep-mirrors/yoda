@@ -8,6 +8,7 @@
 
 #include "YODA/AnalysisObject.h"
 #include "YODA/HistoBin.h"
+#include "YODA/Axis.h"
 #include "YODA/Exception.h"
 #include <vector>
 #include <string>
@@ -18,14 +19,6 @@ namespace YODA {
 
   /// A  one-dimensional histogram.
   class Histo1D : public AnalysisObject {
-    
-  public:
-    /// Enumerate the type of bins
-    enum BinType { UNDERFLOWBIN, OVERFLOWBIN, VALIDBIN };
-
-    /// Enumerate the type of distribution
-    enum DistType { DIFF=0, DIFFERENTIAL=0, INT=1, INTEGRAL=1 };
-
 
   public:
     /// @name Constructors
@@ -34,20 +27,17 @@ namespace YODA {
     /// Constructor giving range and number of bins
     Histo1D(const std::string& path, const std::string& title,
             size_t nbins,
-            double lower, double upper,
-            DistType disttype = DIFFERENTIAL);
+            double lower, double upper);
 
     /// @brief Constructor giving explicit bin edges.
     /// For n bins, binedges.size() == n+1, the last
     /// one being the upper bound of the last bin
     Histo1D(const std::string& path, const std::string& title,
-            const std::vector<double>& binedges,
-            DistType disttype = DIFFERENTIAL);
+            const std::vector<double>& binedges);
 
     /// Constructor giving a vector of bins
     Histo1D(std::string path, std::string title,
-            const std::vector<HistoBin>& bins,
-            DistType disttype = DIFFERENTIAL);
+            const std::vector<HistoBin>& bins);
     //@}
 
     
@@ -60,14 +50,11 @@ namespace YODA {
 
     /// Directly fill bin by bin index
     void fillBin(size_t index, double weight=1.0);
-    //@}
 
-
-  public:
-    
     /// @brief Reset the histogram. 
     /// Keep the binning but set all bin contents and related quantities to zero
-    virtual void reset ();
+    virtual void reset();
+    //@}
 
 
   public:
@@ -82,11 +69,16 @@ namespace YODA {
 
     /// @brief Access the underflow and overflow bins by type.
     /// Using the VALIDBIN enum value as an argument will throw an exception.
-    const HistoBin& bin(BinType binType) const;
+    const HistoBin& bin(Bin::BinType binType) const;
 
     /// Access a bin by coordinate
     const HistoBin& binByCoord(double x) const;
     //@}
+
+
+  protected:
+    /// Access a bin by coordinate (non-const)
+    HistoBin& _binByCoord(double x) const;
 
   
   public:
@@ -128,8 +120,10 @@ namespace YODA {
 
     /// @name Bin data
     //@{
+    typedef vector<HistoBin> Bins;
 
-    typedef std::vector<HistoBin> Bins;
+    /// Definition of bin edges
+    Axis _axis;
 
     /// The bins contained in this histogram
     Bins _bins;
@@ -139,33 +133,6 @@ namespace YODA {
 
     /// The overflow bin
     HistoBin _overflow;
-
-    //@}
-
-    /// @name Private helper methods
-    //@{
-
-    /// Bin lookup: convert value to corresponding bin index
-    std::pair<BinType, size_t> _coordToIndex(double coord) const;
-
-    //@}
-
-    /// @name Bin edge data and lookup tables
-    //@{
-
-    /// Bin edges: lower edges, except lats entry,
-    /// which is the high edge of the last bin
-    std::vector<double> _cachedBinEdges;
-
-    /// The number of bins
-    size_t _nbins;
-
-    /// Map for fast bin lookup
-    std::map<double,size_t> _binHash;
-
-    /// Is the distribution integral or differential?
-    /// @todo Do this with types instead?!?
-    DistType _disttype;
 
     //@}
   };

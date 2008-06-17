@@ -12,14 +12,14 @@ using namespace std;
 namespace YODA {
 
 
-  Bin::Bin(double lowedge, double highedge) 
+  Bin::Bin(double lowedge, double highedge, BinType type) 
     : _edges( make_pair(lowedge, highedge) )
   {
     assert( _edges.second >= _edges.first );
   }
 
 
-  Bin::Bin(std::pair<double, double> edges) 
+  Bin::Bin(std::pair<double, double> edges, BinType type) 
     : _edges( edges )
   {
     assert( _edges.second >= _edges.first );

@@ -20,16 +20,27 @@ namespace YODA {
 
   public:
 
+    /// Enumerate the type of bins
+    enum BinType { UNDERFLOWBIN, OVERFLOWBIN, VALIDBIN };
+
+
     /// @name Constructors, giving bin low and high edges.
     //@{
-    Bin(double lowedge, double highedge);
+    Bin(double lowedge, double highedge, BinType type=VALIDBIN);
     
-    Bin(std::pair<double,double> edges);
+    Bin(std::pair<double,double> edges, BinType type=VALIDBIN);
     //@}
     
+
+    /// @name Miscellaneous
+    //@{
+
     /// Reset this bin
     void reset();
 
+    /// Bin type (normal, under/overflow)
+    BinType type() const { return _type; }
+    //@}
     
   public:
 
@@ -126,6 +137,8 @@ namespace YODA {
 
     /// The bin limits
     std::pair<double,double> _edges;
+
+    BinType _type;
 
     // Distribution of weighted x values    
     Dbn1D _xdbn;

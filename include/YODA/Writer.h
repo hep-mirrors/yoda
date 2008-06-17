@@ -7,8 +7,8 @@
 #include "YODA/AnalysisObject.h"
 #include "YODA/Histo1D.h"
 #include "YODA/Profile1D.h"
-#include <vector>
 #include <string>
+#include <fstream>
 
 namespace YODA {
 
@@ -23,50 +23,59 @@ namespace YODA {
     /// @name Writing a single analysis object.
     //@{
     /// Write out object @a ao to output stream @a stream.
-    bool write(std::ostream& stream, const AnalysisObject& ao);
+    void write(std::ostream& stream, const AnalysisObject& ao);
     /// Write out object @a ao to file @a filename.
-    bool write(const std::string& filename, const AnalysisObject& ao);
+    void write(const std::string& filename, const AnalysisObject& ao);
     //@}
 
 
     /// @name Writing multiple analysis objects by collection.
-    /// @todo Template on the collection type? Traits?
     //@{
-    /// Write out the vector of objects @a objs to output stream @a stream.
-    bool write(std::ostream& stream, const std::vector<AnalysisObject>& aos);
-    /// Write out the vector of objects @a objs to file @a filename.
-    bool write(const std::string& filename, const std::vector<AnalysisObject>& aos);
+    /// Write out a collection of objects @a objs to output stream @a stream.
+    template <template<typename> class LIST>
+    void write(std::ostream& stream, const LIST<AnalysisObject>& aos) {
+      write(stream, aos.begin(), aos.end());
+    }
+    /// Write out a collection of objects @a objs to file @a filename.
+    template <template<typename> class LIST>
+    void write(const std::string& filename, const LIST<AnalysisObject>& aos) {
+      write(filename, aos.begin(), aos.end());
+    }
     //@}
+
 
     /// @name Writing multiple analysis objects by iterator range.
     //@{
     /// Write out the objects specified by start iterator @a begin and end
     /// iterator @a end to output stream @a stream.
-    bool write(std::ostream& stream,
-               const std::vector<AnalysisObject>::const_iterator& begin, 
-               const std::vector<AnalysisObject>::const_iterator& end);
+    template <typename ITER>
+    void write(std::ostream& stream, const ITER& begin, const ITER& end) {
+      for (ITER ao = begin; ao != end; ++ao) {
+        write(stream, *ao);
+        // if (!ok) {
+        //   throw Exception("Error when writing to output stream");
+        // }
+      }
+    }
     /// Write out the objects specified by start iterator @a begin and end
     /// iterator @a end to file @a filename.
-    bool write(const std::string& filename,
-               const std::vector<AnalysisObject>::const_iterator& begin, 
-               const std::vector<AnalysisObject>::const_iterator& end);
+    template <typename ITER>
+    void write(const std::string& filename,
+               const ITER& begin, 
+               const ITER& end) {
+      std::ofstream outstream;
+      outstream.open(filename.c_str());
+      write(outstream, begin, end);
+      outstream.close();
+    }
     //@}
 
 
   protected:
-    virtual bool writeHeader(std::ostream& stream) = 0;
-    virtual bool writeFooter(std::ostream& stream) = 0;
-    virtual bool writeHisto(std::ostream& stream, const Histo1D& h) = 0;
-    virtual bool writeProfile(std::ostream& stream, const Profile1D& p) = 0;
-
-    /// @brief Find the file extension.
-    /// The file extension is defined here as the part of the file base name
-    /// from the first @c . character to the end, excluding the leading dot. 
-    /// It is returned as a lower-case string for ease of comparison.
-    /// This way, multi-part extensions like @c .aida.xml or @c .dat.gz can 
-    /// be used without being chopped to only show the last part.
-    //std::string _getFileExtension(const std::string& filename) {
-    //}
+    virtual void writeHeader(std::ostream& stream) = 0;
+    virtual void writeFooter(std::ostream& stream) = 0;
+    virtual void writeHisto(std::ostream& stream, const Histo1D& h) = 0;
+    virtual void writeProfile(std::ostream& stream, const Profile1D& p) = 0;
 
   };
 

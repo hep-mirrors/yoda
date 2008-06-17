@@ -9,13 +9,13 @@
 namespace YODA {
 
  
-  ProfileBin::ProfileBin(double lowedge, double highedge)
-    : Bin(lowedge, highedge)
+  ProfileBin::ProfileBin(double lowedge, double highedge, BinType type)
+    : Bin(lowedge, highedge, type)
   { }
 
 
-  ProfileBin::ProfileBin(std::pair<double,double> edges) 
-    : Bin(edges)
+  ProfileBin::ProfileBin(std::pair<double,double> edges, BinType type)
+    : Bin(edges, type)
   { }
 
     
@@ -24,6 +24,11 @@ namespace YODA {
     assert( x >= _edges.first && x < _edges.second );
     _xdbn.fill(x, w);
     _ddbn.fill(d, w);
+  }
+
+
+  void ProfileBin::fillBin(double d, double w=1.0) {
+    _xdbn.fill(midpoint(), d, w);
   }
 
   

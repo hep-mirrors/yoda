@@ -18,16 +18,18 @@ namespace YODA {
 
     /// @name Constructor giving bin low and high edges.
     //@{
-    HistoBin(double lowedge, double highedge);
-    HistoBin(std::pair<double,double> edges);
+    HistoBin(double lowedge, double highedge, BinType type=VALIDBIN);
+    HistoBin(std::pair<double,double> edges, BinType type=VALIDBIN);
     //@}
 
 
   public:
 
-    /// @brief Fill this bin with weight @a weight.
-    /// @todo Be careful about negative weights.
+    /// @brief Fill this bin with weight @a weight at position @a coord.
     void fill(double coord, double weight=1.0);
+
+    /// @brief Fill this bin with weight @a weight.
+    void fillBin(double weight=1.0);
 
     /// Reset this bin
     void reset ();

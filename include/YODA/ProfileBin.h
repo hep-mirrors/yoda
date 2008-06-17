@@ -25,8 +25,8 @@ namespace YODA {
 
     /// @name Constructor giving bin low and high edges.
     //@{
-    ProfileBin(double lowedge, double highedge);
-    ProfileBin(std::pair<double,double> edges);
+    ProfileBin(double lowedge, double highedge, BinType type=VALIDBIN);
+    ProfileBin(std::pair<double,double> edges, BinType type=VALIDBIN);
     //@}
 
     
@@ -34,6 +34,9 @@ namespace YODA {
 
     /// Fill histo by value and weight.
     void fill(double x, double d, double weight=1.0);
+
+    /// Fill histo with @a weight at bin midpoint.
+    void fillBin(double d, double weight=1.0);
     
     /// Reset the bin.
     void reset();

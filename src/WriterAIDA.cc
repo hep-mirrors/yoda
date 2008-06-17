@@ -6,8 +6,6 @@
 #include "YODA/WriterAIDA.h"
 
 #include <iostream>
-#include <fstream>
-#include <typeinfo>
 using namespace std;
 
 namespace YODA {
@@ -35,12 +33,16 @@ namespace YODA {
   }
 
 
+  void WriterAIDA::writeHeader(std::ostream& stream) { 
+    stream << "<aida>" << "\n";
+  }
 
+  void WriterAIDA::writeFooter(std::ostream& stream) { 
+    stream << "</aida>" << "\n";
+  }
 
-
-  bool WriterAIDA::writeHisto(std::ostream& os, const Histo1D& h) {
-    /// @todo This method should be hidden. "aida" tag wrapper to come from public functions.
-
+  void WriterAIDA::writeHisto(std::ostream& os, const Histo1D& h) {
+    cout << "FOO" << endl;
     // <histogram1d>
     os << "<histogram1d" // name=\"" << encodeForXML(h.name()) << "\""
        << " title=\"" << encodeForXML(h.title()) << "\""
@@ -62,14 +64,14 @@ namespace YODA {
     // Data section
     os << "  <data1d>\n";
     // Underflow and overflow
-    HistoBin uf = h.bin(Histo1D::UNDERFLOWBIN);
+    HistoBin uf = h.bin(Bin::UNDERFLOWBIN);
     os << "    <bin1d binNum=\"UNDERFLOW\"" 
        << " entries=\"" << uf.area() << "\""
        << " height=\"" << uf.height() << "\""
        << " error=\"" << uf.heightError() << "\""
        << " weightedMean=\"" << uf.focus() << "\""
        << " />\n";
-    HistoBin of = h.bin(Histo1D::OVERFLOWBIN);
+    HistoBin of = h.bin(Bin::OVERFLOWBIN);
     os << "    <bin1d binNum=\"OVERFLOW\"" 
        << " entries=\"" << of.area() << "\""
        << " height=\"" << of.height() << "\""
@@ -88,10 +90,10 @@ namespace YODA {
     os << "  </data1d>\n";
     os << "</histogram1d>\n";
     os << flush;
-    /// @todo How to check if it's gone wrong?
-    return true;
   }
 
-
+  void WriterAIDA::writeProfile(std::ostream& stream, const Profile1D& p) { 
+    //
+  }
 
 }
