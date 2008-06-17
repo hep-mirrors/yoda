@@ -6,6 +6,7 @@
 
 #include "YODA/AnalysisObject.h"
 #include "YODA/Histo1D.h"
+#include "YODA/Profile1D.h"
 #include <vector>
 #include <string>
 
@@ -21,43 +22,43 @@ namespace YODA {
 
     /// @name Writing a single analysis object.
     //@{
-    /// Write out object @a ao to output stream @a stream in the
-    /// format specified by @a format. @a format will be treated case-insensitively.
-    virtual bool write(std::ostream& stream, const AnalysisObject& ao) = 0;
-    /// Write out object @a ao to file @a filename in the format specified by @a format.
-    /// @a format will be treated case-insensitively.
-    virtual bool write(const std::string& filename, const AnalysisObject& ao) = 0;
+    /// Write out object @a ao to output stream @a stream.
+    bool write(std::ostream& stream, const AnalysisObject& ao);
+    /// Write out object @a ao to file @a filename.
+    bool write(const std::string& filename, const AnalysisObject& ao);
     //@}
 
 
     /// @name Writing multiple analysis objects by collection.
+    /// @todo Template on the collection type? Traits?
     //@{
-    /// Write out the vector of objects @a objs to output stream @a stream in the
-    /// format specified by @a format. @a format will be treated case-insensitively.
-    virtual bool write(std::ostream& stream, const std::vector<AnalysisObject>& aos) = 0;
-    /// Write out the vector of objects @a objs to file @a filename in the
-    /// format specified by @a format. @a format will be treated case-insensitively.
-    virtual bool write(const std::string& filename, const std::vector<AnalysisObject>& aos) = 0;
+    /// Write out the vector of objects @a objs to output stream @a stream.
+    bool write(std::ostream& stream, const std::vector<AnalysisObject>& aos);
+    /// Write out the vector of objects @a objs to file @a filename.
+    bool write(const std::string& filename, const std::vector<AnalysisObject>& aos);
     //@}
 
     /// @name Writing multiple analysis objects by iterator range.
     //@{
     /// Write out the objects specified by start iterator @a begin and end
-    /// iterator @a end to output stream @a stream in the format specified by 
-    /// @a format.  @a format will be treated case-insensitively.
-    virtual bool write(std::ostream& stream, 
-                       const std::vector<AnalysisObject>::const_iterator& begin, 
-                       const std::vector<AnalysisObject>::const_iterator& end) = 0;
+    /// iterator @a end to output stream @a stream.
+    bool write(std::ostream& stream,
+               const std::vector<AnalysisObject>::const_iterator& begin, 
+               const std::vector<AnalysisObject>::const_iterator& end);
     /// Write out the objects specified by start iterator @a begin and end
-    /// iterator @a end to file @a filename in the format specified by @a format. 
-    /// @a format will be treated case-insensitively.
-    virtual bool write(const std::string& filename,
-                       const std::vector<AnalysisObject>::const_iterator& begin, 
-                       const std::vector<AnalysisObject>::const_iterator& end) = 0;
+    /// iterator @a end to file @a filename.
+    bool write(const std::string& filename,
+               const std::vector<AnalysisObject>::const_iterator& begin, 
+               const std::vector<AnalysisObject>::const_iterator& end);
     //@}
 
 
   protected:
+    virtual bool writeHeader(std::ostream& stream) = 0;
+    virtual bool writeFooter(std::ostream& stream) = 0;
+    virtual bool writeHisto(std::ostream& stream, const Histo1D& h) = 0;
+    virtual bool writeProfile(std::ostream& stream, const Profile1D& p) = 0;
+
     /// @brief Find the file extension.
     /// The file extension is defined here as the part of the file base name
     /// from the first @c . character to the end, excluding the leading dot. 

@@ -30,20 +30,22 @@ namespace YODA {
       return *_instance;
     }
         
-    bool write(std::ostream& stream, const AnalysisObject& ao);
-    bool write(const std::string& filename, const AnalysisObject& ao);
-    bool write(std::ostream& stream, const std::vector<AnalysisObject>& aos);
-    bool write(const std::string& filename, const std::vector<AnalysisObject>& aos);
-    bool write(std::ostream& stream, 
-               const std::vector<AnalysisObject>::const_iterator& begin, 
-               const std::vector<AnalysisObject>::const_iterator& end);
-    bool write(const std::string& filename,
-               const std::vector<AnalysisObject>::const_iterator& begin, 
-               const std::vector<AnalysisObject>::const_iterator& end);
+    // bool write(std::ostream& stream, const AnalysisObject& ao);
+    // bool write(const std::string& filename, const AnalysisObject& ao);
+    // bool write(std::ostream& stream, const std::vector<AnalysisObject>& aos);
+    // bool write(const std::string& filename, const std::vector<AnalysisObject>& aos);
+    // bool write(std::ostream& stream, 
+    //            const std::vector<AnalysisObject>::const_iterator& begin, 
+    //            const std::vector<AnalysisObject>::const_iterator& end);
+    // bool write(const std::string& filename,
+    //            const std::vector<AnalysisObject>::const_iterator& begin, 
+    //            const std::vector<AnalysisObject>::const_iterator& end);
 
   protected:
+    bool writeHeader(std::ostream& stream) { return true; }
+    bool writeFooter(std::ostream& stream) { return true; }
     bool writeHisto(std::ostream& stream, const Histo1D& h);
-
+    bool writeProfile(std::ostream& stream, const Profile1D& p) { return true; }
   };
 
 }
