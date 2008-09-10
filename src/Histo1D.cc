@@ -69,7 +69,7 @@ namespace YODA {
 
 
   void Histo1D::fill(double x, double weight) {
-    HistoBin& b = _binByCoord(x);
+    HistoBin& b = binByCoord(x);
     if ( b.type() == Bin::VALIDBIN ) {
       b.fill(x, weight);
     } else {
@@ -79,10 +79,15 @@ namespace YODA {
 
 
   void Histo1D::fillBin(size_t index, double weight) {
-    if (index >= _nbins)
+    if (index >= bins().size())
       throw RangeError("YODA::Histo: index out of range");
-    const double x = _bins[index].midpoint();
-    Histo1D::_bins[index].fill(x, weight);
+    HistoBin& hb = bins().at(index);
+    hb.fill(hb.midpoint(), weight);
+  }
+
+
+  vector<HistoBin>& Histo1D::bins() {
+    return _bins;
   }
 
 
@@ -91,31 +96,49 @@ namespace YODA {
   }
 
 
-  const HistoBin& Histo1D::bin(size_t index) const {
-    if (index >= _nbins)
+  HistoBin& Histo1D::bin(size_t index) {
+    if (index >= bins().size())
       throw RangeError("YODA::Histo: index out of range");
     return _bins[index];
   }
 
 
-  const HistoBin& Histo1D::bin(Histo1D::BinType binType) const {
-    if (binType == UNDERFLOWBIN) return _underflow;
-    if (binType == OVERFLOWBIN) return _overflow;
+  const HistoBin& Histo1D::bin(size_t index) const {
+    if (index >= bins().size())
+      throw RangeError("YODA::Histo: index out of range");
+    return _bins[index];
+  }
+
+
+  HistoBin& Histo1D::bin(Bin::BinType binType) {
+    if (binType == Bin::UNDERFLOWBIN) return _underflow;
+    if (binType == Bin::OVERFLOWBIN) return _overflow;
     throw RangeError("YODA::Histo: index out of range");
     // Just to fix a warning:
     return _underflow;
   }
 
 
-  HistoBin& Histo1D::_binByCoord(double x) const {
-    pair<Histo1D::BinType, size_t> index = _axis.findBinIndex(x);
-    if ( index.first == VALIDBIN ) return _bins[index.second];
+  const HistoBin& Histo1D::bin(Bin::BinType binType) const {
+    if (binType == Bin::UNDERFLOWBIN) return _underflow;
+    if (binType == Bin::OVERFLOWBIN) return _overflow;
+    throw RangeError("YODA::Histo: index out of range");
+    // Just to fix a warning:
+    return _underflow;
+  }
+
+
+  HistoBin& Histo1D::binByCoord(double x) {
+    pair<Bin::BinType, size_t> index = _axis.findBinIndex(x);
+    if ( index.first == Bin::VALIDBIN ) return _bins[index.second];
     return bin(index.first);
   }
 
 
   const HistoBin& Histo1D::binByCoord(double x) const {
-    return _binByCoord(x);
+    pair<Bin::BinType, size_t> index = _axis.findBinIndex(x);
+    if ( index.first == Bin::VALIDBIN ) return _bins[index.second];
+    return bin(index.first);
   }
 
 
@@ -136,7 +159,7 @@ namespace YODA {
   double Histo1D::mean() const {
     double sumwx = 0;
     double sumw  = 0;
-    for (size_t i = 0; i < _nbins; i++) {
+    for (size_t i = 0; i < bins().size(); i++) {
       sumwx += _bins[i].sumWX();
       sumw  += _bins[i].sumW();
     }
@@ -164,7 +187,7 @@ namespace YODA {
     if (_axis != toAdd._axis) {
       throw LogicError("YODA::Histo1D: Cannot add histograms with different binnings.");
     }
-    for (size_t i = 0; i < _nbins; ++i) {
+    for (size_t i = 0; i < bins().size(); ++i) {
       _bins[i] += toAdd._bins[i];
     }
     _underflow += toAdd._underflow;
@@ -174,10 +197,10 @@ namespace YODA {
 
 
   Histo1D& Histo1D::operator -= (const Histo1D& toSubtract) {
-    if (_axis != toAdd._axis) {
+    if (_axis != toSubtract._axis) {
       throw LogicError("YODA::Histo1D: Cannot subtract histograms with different binnings.");
     }
-    for (size_t i = 0; i < _nbins; ++i) {
+    for (size_t i = 0; i < bins().size(); ++i) {
       _bins[i] += toSubtract._bins[i];
     }
     _underflow += toSubtract._underflow;

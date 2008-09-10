@@ -11,8 +11,8 @@ _yoda_la_CXXFLAGS = $(AM_CXXFLAGS) -Wno-long-long -fno-strict-aliasing
 _yoda_la_LDFLAGS = -module -L$(top_builddir)/src
 _yoda_la_LIBADD = -lYODA
 
-incdir = $(top_srcdir)/include/YODA
-yoda_wrap.cc : $(SWIG_SOURCES) $(incdir)/Histo1D.h $(incdir)/Profile1D.h
+incdir = $(top_srcdir)/include
+yoda_wrap.cc : $(SWIG_SOURCES) $(incdir)/YODA/Histo1D.h $(incdir)/YODA/Profile1D.h
 	$(SWIG) $(SWIG_PYTHON_OPT) -I$(incdir) -o yoda_wrap.cc $(SWIG_SOURCES)
 
 EXTRA_DIST = PyTest.py

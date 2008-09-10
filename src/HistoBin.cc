@@ -34,7 +34,7 @@ namespace YODA {
   }
 
 
-  void HistoBin::fillBin(double weight=1.0) {
+  void HistoBin::fillBin(double weight) {
     _xdbn.fill(midpoint(), weight);
   }
 

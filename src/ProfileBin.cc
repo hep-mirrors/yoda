@@ -27,8 +27,9 @@ namespace YODA {
   }
 
 
-  void ProfileBin::fillBin(double d, double w=1.0) {
-    _xdbn.fill(midpoint(), d, w);
+  void ProfileBin::fillBin(double d, double w) {
+    _xdbn.fill(midpoint(), w);
+    _ddbn.fill(d, w);
   }
 
   

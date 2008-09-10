@@ -62,23 +62,36 @@ namespace YODA {
     //@{
 
     /// Access the bin vector
+    std::vector<HistoBin>& bins();
+
+    /// Access the bin vector (const version)
     const std::vector<HistoBin>& bins() const;
 
     /// Access a bin by index
+    HistoBin& bin(size_t index);
+
+    /// Access a bin by index (const version)
     const HistoBin& bin(size_t index) const;
 
-    /// @brief Access the underflow and overflow bins by type.
+    /// @brief Access the underflow and overflow bins by type
+    /// Using the VALIDBIN enum value as an argument will throw an exception.
+    HistoBin& bin(Bin::BinType binType);
+
+    /// @brief Access the underflow and overflow bins by type (const version)
     /// Using the VALIDBIN enum value as an argument will throw an exception.
     const HistoBin& bin(Bin::BinType binType) const;
 
-    /// Access a bin by coordinate
+    /// Access a bin by coordinate (non-const version)
+    HistoBin& binByCoord(double x);
+
+    /// Access a bin by coordinate (const version)
     const HistoBin& binByCoord(double x) const;
+
+
     //@}
 
 
   protected:
-    /// Access a bin by coordinate (non-const)
-    HistoBin& _binByCoord(double x) const;
 
   
   public:
@@ -120,7 +133,7 @@ namespace YODA {
 
     /// @name Bin data
     //@{
-    typedef vector<HistoBin> Bins;
+    typedef std::vector<HistoBin> Bins;
 
     /// Definition of bin edges
     Axis _axis;
