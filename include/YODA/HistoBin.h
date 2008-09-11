@@ -58,9 +58,6 @@ namespace YODA {
     /// of the bin width, i.e. err_height = sqrt{sum{weights}} / width.
     double heightError() const;
 
-    /// The x error is the standard error on the bin focus. 
-    double xError() const;
-
     //@}
 
 

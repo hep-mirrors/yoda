@@ -6,8 +6,6 @@
   using namespace YODA;
 %}
 
-//%ignore YODA::Bin::Bin();
-//%ignore std::vector<YODA::Bin>::vector(size_type);
 
 %feature("ignore") std::vector<YODA::HistoBin>::vector(size_type size);
 %feature("ignore") std::vector<YODA::HistoBin>::resize(size_type size);
@@ -23,6 +21,9 @@
 %include "YODA/AnalysisObject.h"
 %include "YODA/Histo1D.h"
 %include "YODA/Profile1D.h"
+%include "YODA/Bin.h"
+%include "YODA/HistoBin.h"
+%include "YODA/ProfileBin.h"
 
 %template(HistoBins) std::vector<YODA::HistoBin>;
 %template(ProfileBins) std::vector<YODA::ProfileBin>;
