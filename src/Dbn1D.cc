@@ -12,6 +12,7 @@ namespace YODA {
   void Dbn1D::fill(double val, double weight) {
     _numFills += 1;
     _sumW += weight;
+    /// @todo Do we need a factor of sign(W) here?
     _sumW2 += weight*weight;
     _sumWX += weight*val;
     _sumWX2 += weight*val*val;

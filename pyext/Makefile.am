@@ -15,14 +15,14 @@ incdir = $(top_srcdir)/include
 yoda_wrap.cc : $(SWIG_SOURCES) $(incdir)/YODA/Histo1D.h $(incdir)/YODA/Profile1D.h
 	$(SWIG) $(SWIG_PYTHON_OPT) -I$(incdir) -o yoda_wrap.cc $(SWIG_SOURCES)
 
-EXTRA_DIST = PyTest.py
-TESTS = PyTest.py
+EXTRA_DIST = PyTest.py TestNegWeights.py
+TESTS = PyTest.py TestNegWeights.py
 TESTS_ENVIRONMENT = \
   PYTHONPATH=$(PYTHONPATH):$(top_builddir)/pyext:$(top_builddir)/pyext/.libs \
   python
 
 else
 
-EXTRA_DIST = yoda.i PyTest.py
+EXTRA_DIST = yoda.i PyTest.py TestNegWeights.py
 
 endif
