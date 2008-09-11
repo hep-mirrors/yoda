@@ -44,6 +44,9 @@ namespace YODA {
     /// Constructor giving a vector of bins
     Profile1D(std::string path, std::string title,
               const std::vector<ProfileBin>& xbins);
+
+    /// Destructor
+    ~Profile1D() {}
     //@}
     
   public:
@@ -54,7 +57,7 @@ namespace YODA {
     void fill(double x, double y, double weight=1.0);
 
     /// Directly fill bin by bin index
-    //void fillBin(size_t index, double y, double weight=1.0);
+    void fillBin(size_t index, double y, double weight=1.0);
     //@}
 
   public:
@@ -69,14 +72,27 @@ namespace YODA {
     //@{
 
     /// Access the bin vector
+    std::vector<ProfileBin>& bins();
+
+    /// Access the bin vector
     const std::vector<ProfileBin>& bins() const;
+
+    /// Access a bin by index
+    ProfileBin& bin(size_t index);
 
     /// Access a bin by index
     const ProfileBin& bin(size_t index) const;
 
     /// @brief Access the underflow and overflow bins by type.
     /// Using the VALIDBIN enum value as an argument will throw an exception.
-    const ProfileBin& bin(BinType binType) const;
+    ProfileBin& bin(Bin::BinType binType);
+
+    /// @brief Access the underflow and overflow bins by type.
+    /// Using the VALIDBIN enum value as an argument will throw an exception.
+    const ProfileBin& bin(Bin::BinType binType) const;
+
+    /// Access a bin by x-coordinate.
+    ProfileBin& binByCoord(double x);
 
     /// Access a bin by x-coordinate.
     const ProfileBin& binByCoord(double x) const;

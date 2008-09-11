@@ -13,7 +13,7 @@ namespace YODA {
 
 
   Histo1D::Histo1D(const std::string& path, const std::string& title,
-           const vector<double>& binedges) :
+                   const vector<double>& binedges) :
     AnalysisObject( path, title ),
     _axis(binedges),
     _bins(),

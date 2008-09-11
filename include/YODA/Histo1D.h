@@ -38,6 +38,9 @@ namespace YODA {
     /// Constructor giving a vector of bins
     Histo1D(std::string path, std::string title,
             const std::vector<HistoBin>& bins);
+
+    /// Destructor
+    ~Histo1D() {}
     //@}
 
     

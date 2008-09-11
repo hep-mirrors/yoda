@@ -8,9 +8,14 @@
 
 //%ignore YODA::Bin::Bin();
 //%ignore std::vector<YODA::Bin>::vector(size_type);
+
 %feature("ignore") std::vector<YODA::HistoBin>::vector(size_type size);
 %feature("ignore") std::vector<YODA::HistoBin>::resize(size_type size);
 %feature("ignore") std::vector<YODA::HistoBin>::pop();
+
+%feature("ignore") std::vector<YODA::ProfileBin>::vector(size_type size);
+%feature("ignore") std::vector<YODA::ProfileBin>::resize(size_type size);
+%feature("ignore") std::vector<YODA::ProfileBin>::pop();
 
 %include "std_string.i"
 %include "std_vector.i"
