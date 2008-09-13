@@ -13,6 +13,21 @@ namespace YODA {
   
   
   /// Constructor giving range and number of bins
+  void Profile1D::_ctorFromAxis() {
+    for (size_t i = 0; i < _axis.numBins(); ++i) {
+      const pair<double, double> edges = _axis.binEdges(i);
+      _bins.push_back( ProfileBin(edges.first, edges.second) );
+    }
+  }
+  Profile1D::Profile1D(size_t nxbins, double xlower, double xupper) :
+    AnalysisObject(),
+    _axis(nxbins, xlower, xupper),
+    _bins(),
+    _underflow( ProfileBin(0,1,Bin::UNDERFLOWBIN) ),
+    _overflow( ProfileBin(0,1,Bin::OVERFLOWBIN) )
+  {
+    _ctorFromAxis();
+  }
   Profile1D::Profile1D(const std::string& path, const std::string& title,
                        size_t nxbins,
                        double xlower, double xupper) :
@@ -22,16 +37,28 @@ namespace YODA {
     _underflow( ProfileBin(0,1,Bin::UNDERFLOWBIN) ),
     _overflow( ProfileBin(0,1,Bin::OVERFLOWBIN) )
   {
-    for (size_t i = 0; i < _axis.numBins(); ++i) {
-      const pair<double, double> edges = _axis.binEdges(i);
-      _bins.push_back( ProfileBin(edges.first, edges.second) );
-    }
+    _ctorFromAxis();
   }
   
   
   /// Constructor giving explicit bin edges
   /// For n bins, binedges.size() == n+1, the last
   /// one being the upper bound of the last bin
+  void Profile1D::_ctorFromEdges() {
+    for (size_t i = 0; i < _axis.numBins(); ++i) {
+      const pair<double, double> edges = _axis.binEdges(i);
+      _bins.push_back( ProfileBin(edges.first, edges.second) );
+    }
+  }
+  Profile1D::Profile1D(const std::vector<double>& xbinedges) :
+    AnalysisObject(),
+    _axis(xbinedges),
+    _bins(),
+    _underflow( ProfileBin(0,1,Bin::UNDERFLOWBIN) ),
+    _overflow( ProfileBin(0,1,Bin::OVERFLOWBIN) )
+  {
+    _ctorFromEdges();
+  }
   Profile1D::Profile1D(const std::string& path, const std::string& title,
                        const std::vector<double>& xbinedges) :
     AnalysisObject( path, title ),
@@ -40,14 +67,28 @@ namespace YODA {
     _underflow( ProfileBin(0,1,Bin::UNDERFLOWBIN) ),
     _overflow( ProfileBin(0,1,Bin::OVERFLOWBIN) )
   {
-    for (size_t i = 0; i < _axis.numBins(); ++i) {
-      const pair<double, double> edges = _axis.binEdges(i);
-      _bins.push_back( ProfileBin(edges.first, edges.second) );
-    }
+    _ctorFromEdges();
   }
 
 
   /// Constructor giving a vector of bins
+  void Profile1D::_ctorFromBins() {
+    vector<double> binedges;
+    for (size_t i = 0; i < _bins.size(); ++i) {
+      binedges.push_back(_bins[i].lowEdge());
+    }
+    binedges.push_back(_bins.back().highEdge());
+    _axis = Axis(binedges);
+  }
+  Profile1D::Profile1D(const std::vector<ProfileBin>& xbins) :
+    AnalysisObject(),
+    _axis(1, 0.0, 1.0),
+    _bins(xbins),
+    _underflow( ProfileBin(0,1,Bin::UNDERFLOWBIN) ),
+    _overflow( ProfileBin(0,1,Bin::OVERFLOWBIN) )
+  {
+    _ctorFromBins();
+  }
   Profile1D::Profile1D(std::string path, std::string title,
                        const vector<ProfileBin>& xbins) :
     AnalysisObject( path, title ),
@@ -56,12 +97,7 @@ namespace YODA {
     _underflow( ProfileBin(0,1,Bin::UNDERFLOWBIN) ),
     _overflow( ProfileBin(0,1,Bin::OVERFLOWBIN) )
   {
-    vector<double> binedges;
-    for (size_t i = 0; i < _bins.size(); ++i) {
-      binedges.push_back(_bins[i].lowEdge());
-    }
-    binedges.push_back(_bins.back().highEdge());
-    _axis = Axis(binedges);
+    _ctorFromBins();
   }
 
 

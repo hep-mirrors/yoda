@@ -1,3 +1,24 @@
+2008-09-12  Andy Buckley  <andy@insectnation.org>
+
+	* Started work on a little plotting tool, initially for Herwig++
+	parton pT cut testing, but incrementally enhancing it to be a
+	command-line quick plotter seems like a good idea.
+
+	* Added some more test programs... working towards a proper test
+	suite.
+
+	* Added "no path & title" constructors - you don't always want to
+	write out the histo, since sometimes it's just a good way to
+	gather statistics.
+
+	* Fixed YODA mapping to allow use of vectors of bins as Python
+	lists.
+
+	* Added Profile1D functionality.
+
+	* Fixed Dbn1D to use sign(weight) as part of the "w**2" measure,
+	so that negative weights behave themselves.
+
 2008-05-23  Andy Buckley  <andy@insectnation.org>
 
 	* Added Dbn1D class to centralise the calculation of statistics

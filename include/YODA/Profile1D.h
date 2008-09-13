@@ -45,9 +45,27 @@ namespace YODA {
     Profile1D(std::string path, std::string title,
               const std::vector<ProfileBin>& xbins);
 
-    /// Destructor
-    ~Profile1D() {}
+    /// Constructor giving range and number of bins
+    Profile1D(size_t nxbins, double xlower, double xupper);
+
+    /// Constructor giving explicit bin edges
+    /// For n bins, binedges.size() == n+1, the last
+    /// one being the upper bound of the last bin
+    Profile1D(const std::vector<double>& xbinedges);
+
+    /// Constructor giving a vector of bins
+    Profile1D(const std::vector<ProfileBin>& xbins);
     //@}
+
+
+  private:
+    /// @name Constructor helper methods
+    //@{
+    void _ctorFromBins();
+    void _ctorFromEdges();
+    void _ctorFromAxis();
+    //@}
+
     
   public:
     /// @name Filling methods
@@ -59,6 +77,7 @@ namespace YODA {
     /// Directly fill bin by bin index
     void fillBin(size_t index, double y, double weight=1.0);
     //@}
+
 
   public:
     
@@ -72,10 +91,10 @@ namespace YODA {
     //@{
 
     /// Access the bin vector
-    std::vector<ProfileBin>& bins();
+    std::vector<YODA::ProfileBin>& bins();
 
     /// Access the bin vector
-    const std::vector<ProfileBin>& bins() const;
+    const std::vector<YODA::ProfileBin>& bins() const;
 
     /// Access a bin by index
     ProfileBin& bin(size_t index);

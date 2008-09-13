@@ -39,8 +39,25 @@ namespace YODA {
     Histo1D(std::string path, std::string title,
             const std::vector<HistoBin>& bins);
 
-    /// Destructor
-    ~Histo1D() {}
+    /// Constructor giving range and number of bins
+    Histo1D(size_t nbins, double lower, double upper);
+
+    /// @brief Constructor giving explicit bin edges.
+    /// For n bins, binedges.size() == n+1, the last
+    /// one being the upper bound of the last bin
+    Histo1D(const std::vector<double>& binedges);
+
+    /// Constructor giving a vector of bins
+    Histo1D(const std::vector<HistoBin>& bins);
+    //@}
+
+
+  private:
+    /// @name Constructor helper methods
+    //@{
+    void _ctorFromBins();
+    void _ctorFromEdges();
+    void _ctorFromAxis();
     //@}
 
     
@@ -65,10 +82,10 @@ namespace YODA {
     //@{
 
     /// Access the bin vector
-    std::vector<HistoBin>& bins();
+    std::vector<YODA::HistoBin>& bins();
 
     /// Access the bin vector (const version)
-    const std::vector<HistoBin>& bins() const;
+    const std::vector<YODA::HistoBin>& bins() const;
 
     /// Access a bin by index
     HistoBin& bin(size_t index);

@@ -16,6 +16,9 @@ namespace YODA {
 
   public:
 
+    /// Default constructor
+    AnalysisObject();
+
     /// Constructor giving a path and title
     AnalysisObject(const std::string& path, const std::string& title);
 

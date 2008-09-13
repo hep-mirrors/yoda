@@ -10,10 +10,16 @@ using namespace std;
 namespace YODA {
 
 
-  AnalysisObject::AnalysisObject (const std::string& path, const std::string& title)
-    : _path(path), _title(title), _annotations () {}
+  AnalysisObject::AnalysisObject()
+    : _annotations () 
+  { }
 
-  AnalysisObject::~AnalysisObject () {}
+  AnalysisObject::AnalysisObject(const std::string& path, const std::string& title)
+    : _path(path), _title(title), _annotations () 
+  { }
+
+  AnalysisObject::~AnalysisObject() 
+  { }
 
   string AnalysisObject::path() const {
     return _path;
