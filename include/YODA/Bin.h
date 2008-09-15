@@ -23,7 +23,6 @@ namespace YODA {
     /// Enumerate the type of bins
     enum BinType { UNDERFLOWBIN, OVERFLOWBIN, VALIDBIN };
 
-
     /// @name Constructors, giving bin low and high edges.
     //@{
     Bin(double lowedge, double highedge, BinType type=VALIDBIN);

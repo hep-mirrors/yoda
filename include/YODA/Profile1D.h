@@ -21,19 +21,13 @@ namespace YODA {
   class Profile1D : public AnalysisObject {
 
   public:
-
-    /// Enumerate the type of bins
-    enum BinType { UNDERFLOWBIN, OVERFLOWBIN, VALIDBIN };
-
-
-  public:
     /// @name Constructors
     //@{
 
     /// Constructor giving range and number of bins
     Profile1D(const std::string& path, const std::string& title,
-              size_t nxbins,
-              double xlower, double xupper);
+              size_t nxbins, double xlower, double xupper,
+              Axis::Binning binning=Axis::LINEAR);
 
     /// Constructor giving explicit bin edges
     /// For n bins, binedges.size() == n+1, the last
@@ -46,7 +40,8 @@ namespace YODA {
               const std::vector<ProfileBin>& xbins);
 
     /// Constructor giving range and number of bins
-    Profile1D(size_t nxbins, double xlower, double xupper);
+    Profile1D(size_t nxbins, double xlower, double xupper, 
+              Axis::Binning binning=Axis::LINEAR);
 
     /// Constructor giving explicit bin edges
     /// For n bins, binedges.size() == n+1, the last

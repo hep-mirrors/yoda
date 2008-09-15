@@ -12,99 +12,46 @@ using namespace std;
 namespace YODA {
 
 
-  void Histo1D::_ctorFromEdges() {
-    for (size_t i = 0; i < _axis.numBins(); ++i) {
-      const pair<double, double> edges = _axis.binEdges(i);
-      _bins.push_back( HistoBin(edges.first, edges.second) );
-    }
-  }
-
-
   Histo1D::Histo1D(const std::string& path, const std::string& title,
                    const vector<double>& binedges) :
     AnalysisObject( path, title ),
-    _axis(binedges),
-    _bins(),
-    _underflow( HistoBin(0,1,Bin::UNDERFLOWBIN) ),
-    _overflow( HistoBin(0,1,Bin::OVERFLOWBIN) )
-  {
-    _ctorFromEdges();
-  }
+    _axis(binedges)
+  {  }
 
 
   Histo1D::Histo1D(const std::vector<double>& binedges) :
     AnalysisObject(),
-    _axis(binedges),
-    _bins(),
-    _underflow( HistoBin(0,1,Bin::UNDERFLOWBIN) ),
-    _overflow( HistoBin(0,1,Bin::OVERFLOWBIN) )
-  {
-    _ctorFromEdges();
-  }
+    _axis(binedges)
+  {  }
 
-
-  void Histo1D::_ctorFromAxis() {
-    for (size_t i = 0; i < _axis.numBins(); ++i) {
-      const pair<double, double> edges = _axis.binEdges(i);
-      _bins.push_back( HistoBin(edges.first, edges.second) );
-    }
-  }
 
   Histo1D::Histo1D(const std::string& path, const std::string& title,
-                   size_t nbins, double lower, double upper) :
+                   size_t nbins, double lower, double upper, Axis::Binning binning) :
     AnalysisObject( path, title ),
-    _axis(nbins, lower, upper),
-    _bins(),
-    _underflow( HistoBin(0,1,Bin::UNDERFLOWBIN) ),
-    _overflow( HistoBin(0,1,Bin::OVERFLOWBIN) )
-  {
-    _ctorFromAxis();
-  }
+    _axis(nbins, lower, upper, binning)
+  {  }
 
 
-  Histo1D::Histo1D(size_t nbins, double lower, double upper) :
+  Histo1D::Histo1D(size_t nbins, double lower, double upper, Axis::Binning binning) :
     AnalysisObject(),
-    _axis(nbins, lower, upper),
-    _bins(),
-    _underflow( HistoBin(0,1,Bin::UNDERFLOWBIN) ),
-    _overflow( HistoBin(0,1,Bin::OVERFLOWBIN) )
-  {
-    _ctorFromAxis();
-  }
-
-
-  void Histo1D::_ctorFromBins() {
-    vector<double> binedges;
-    for (size_t i = 0; i < _bins.size(); ++i) {
-      binedges.push_back(_bins[i].lowEdge());
-    }
-    binedges.push_back(_bins.back().highEdge());
-    _axis = Axis(binedges);
-  }
+    _axis(nbins, lower, upper, binning)
+  {  }
 
 
   Histo1D::Histo1D(std::string path, std::string title,
                    const vector<HistoBin>& bins) :
     AnalysisObject( path, title ),
-    _axis(1, 0.0, 1.0),
-    _bins(bins),
-    _underflow( HistoBin(0,1,Bin::UNDERFLOWBIN) ),
-    _overflow( HistoBin(0,1,Bin::OVERFLOWBIN) )
-  {
-    _ctorFromBins();
-  }
+    _axis(bins)
+  {  }
 
 
   Histo1D::Histo1D(const std::vector<HistoBin>& bins) :
     AnalysisObject(),
-    _axis(1, 0.0, 1.0),
-    _bins(bins),
-    _underflow( HistoBin(0,1,Bin::UNDERFLOWBIN) ),
-    _overflow( HistoBin(0,1,Bin::OVERFLOWBIN) )
-  {
-    _ctorFromBins();
-  }
+    _axis(bins)
+  {  }
 
+
+  /////////////////////////////////////////////////
 
 
   void Histo1D::reset () {
