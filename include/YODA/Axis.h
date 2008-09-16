@@ -23,7 +23,6 @@ namespace YODA {
   enum Binning { LINEAR, LOG };
 
 
-
   template <typename BIN>
   class Axis {
   public:
@@ -32,11 +31,6 @@ namespace YODA {
 
 
   private:
-
-    void _mkExtraBins() {
-      _underflow = BIN(0, 1, Bin::UNDERFLOWBIN);
-      _overflow =  BIN(0, 1, Bin::OVERFLOWBIN);
-    }
 
 
     void _mkBinHash() {
@@ -54,7 +48,6 @@ namespace YODA {
       for (size_t i = 0; i < nbins; ++i) {
         _bins.push_back( BIN(binedges.at(i), binedges.at(i+1)) );
       }
-      _mkExtraBins();
 
       // Make cached edges
       _cachedBinEdges = binedges;
@@ -67,7 +60,6 @@ namespace YODA {
 
     void _mkAxis(const Bins& bins) {
       _bins = bins;
-      _mkExtraBins();
 
       // Make cached edges
       for (size_t i = 0; i < bins.size(); ++i) {
@@ -122,20 +114,26 @@ namespace YODA {
   public:
 
     Axis(const vector<double>& binedges) :
-      _bins()
+      _underflow(0, 1, Bin::UNDERFLOWBIN),
+      _overflow(0, 1, Bin::OVERFLOWBIN)
     {
       _mkAxis(binedges);
     }
 
 
-    Axis(size_t nbins, double lower, double upper, Binning binning)
+    Axis(size_t nbins, double lower, double upper, Binning binning) :
+      _underflow(0, 1, Bin::UNDERFLOWBIN),
+      _overflow(0, 1, Bin::OVERFLOWBIN)
     {
       vector<double> binedges = _mkEdges(nbins, lower, upper, binning);
       _mkAxis(binedges);
     }
 
     
-    Axis(const Bins& bins) {
+    Axis(const vector<BIN>& bins) :
+      _underflow(0, 1, Bin::UNDERFLOWBIN),
+      _overflow(0, 1, Bin::OVERFLOWBIN)
+    {
       _mkAxis(bins);
     }
 

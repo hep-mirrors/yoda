@@ -133,8 +133,10 @@ namespace YODA {
     /// @name Bin data
     //@{
 
-    /// The bins contained in this histogram
+    /// The bins contained in this profile histogram
     Axis<ProfileBin> _axis;
+
+    //@}
 
   };
 

@@ -162,6 +162,7 @@ namespace YODA {
 
 
   Histo1D& Histo1D::operator += (const Histo1D& toAdd) {
+    /// @todo Use Axis<>::operator+= instead
     if (_axis != toAdd._axis) {
       throw LogicError("YODA::Histo1D: Cannot add histograms with different binnings.");
     }
@@ -175,6 +176,8 @@ namespace YODA {
 
 
   Histo1D& Histo1D::operator -= (const Histo1D& toSubtract) {
+    /// @todo Use Axis<>::operator-= instead
+
     if (_axis != toSubtract._axis) {
       throw LogicError("YODA::Histo1D: Cannot subtract histograms with different binnings.");
     }
