@@ -1,6 +1,12 @@
 YODA TODO list
 ==============
 
+* Deal with integral vs. differential histos
+   Only use diff but represent as / convert to int?
+
+* Get height measure "right" for log binning
+   Really? Or ditch "height"?
+
 * Store enough information for datafile merging to be well defined, with
   appropriate statistical combinations for each data type.
 

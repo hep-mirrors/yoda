@@ -17,7 +17,7 @@ namespace YODA {
 
   Profile1D::Profile1D(size_t nxbins, double xlower, double xupper, Binning binning) :
     AnalysisObject(),
-    _axis(nxbins, xlower, xupper binning)
+    _axis(nxbins, xlower, xupper, binning)
   {  }
 
 
@@ -30,14 +30,14 @@ namespace YODA {
   
   Profile1D::Profile1D(const std::vector<double>& xbinedges) :
     AnalysisObject(),
-    _axis(xbinedges),
+    _axis(xbinedges)
   {  }
 
 
   Profile1D::Profile1D(const std::string& path, const std::string& title,
                        const std::vector<double>& xbinedges) :
     AnalysisObject( path, title ),
-    _axis(xbinedges),
+    _axis(xbinedges)
   {  }
 
 

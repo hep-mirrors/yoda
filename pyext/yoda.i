@@ -18,6 +18,10 @@
 %include "std_string.i"
 %include "std_vector.i"
 
+namespace YODA {
+  enum Binning { LINEAR, LOG };
+}
+
 %include "YODA/AnalysisObject.h"
 %include "YODA/Histo1D.h"
 %include "YODA/Profile1D.h"
