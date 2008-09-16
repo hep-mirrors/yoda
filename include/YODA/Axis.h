@@ -12,30 +12,34 @@
 #include <string>
 #include <vector>
 #include <cassert>
+#include <cmath>
+#include <algorithm>
+
 using namespace std;
 
 namespace YODA {
 
+  /// Enumerate the type of binning
+  enum Binning { LINEAR, LOG };
 
-  template <BIN>
+
+
+  template <typename BIN>
   class Axis {
   public:
 
-    /// Enumerate the type of binning
-    enum Binning { LINEAR, LOG };
-
-    typedef std::vector<BIN> Bins;
+    typedef typename std::vector<BIN> Bins;
 
 
   private:
 
-    void Axis::_mkExtraBins() {
+    void _mkExtraBins() {
       _underflow = BIN(0, 1, Bin::UNDERFLOWBIN);
       _overflow =  BIN(0, 1, Bin::OVERFLOWBIN);
     }
 
 
-    void Axis::_mkBinHash() {
+    void _mkBinHash() {
       for (size_t i = 0; i < numBins(); i++) {
         // Insert upper bound mapped to bin ID
         _binHash.insert(make_pair(_cachedBinEdges[i+1],i));
@@ -43,7 +47,7 @@ namespace YODA {
     }
 
 
-    void Axis::_mkAxis(const vector<double>& binedges) {
+    void _mkAxis(const vector<double>& binedges) {
       const size_t nbins = binedges.size() - 1;
 
       // Make bins
@@ -54,14 +58,14 @@ namespace YODA {
 
       // Make cached edges
       _cachedBinEdges = binedges;
-      sort(_cachedBinEdges.begin(), _cachedBinEdges.end());
+      std::sort(_cachedBinEdges.begin(), _cachedBinEdges.end());
 
       // Make hash
       _mkBinHash();
     }
 
 
-    void Axis::_mkAxis(const Bins& bins) {
+    void _mkAxis(const Bins& bins) {
       _bins = bins;
       _mkExtraBins();
 
@@ -76,28 +80,33 @@ namespace YODA {
     }
 
 
-    vector<double> Axis::_mkEdges(size_t nbins, double lower, 
-                                  double upper, Binning binning) {
+    vector<double> _mkEdges(size_t nbins, double lower, 
+                            double upper, Binning binning) {
       assert(upper > lower);
       vector<double> rtn;
       
+
       switch(binning) {
       case LINEAR:
-        const double binwidth = (upper-lower)/static_cast<double>(nbins);
-        for (size_t i = 0; i <= nbins; ++i) {
-          const double edge = lower + binwidth*i;
-          rtn.push_back(edge);
+        {
+          const double binwidth = (upper-lower)/static_cast<double>(nbins);
+          for (size_t i = 0; i <= nbins; ++i) {
+            const double edge = lower + binwidth*i;
+            rtn.push_back(edge);
+          }
         }
         break;
 
       case LOG:
-        const double logupper = std::log10(upper);
-        const double loglower = std::log10(lower);
-        const double logbinwidth = (logupper-loglower)/static_cast<double>(nbins);
-        for (size_t i = 0; i <= nbins; ++i) {
-          const double logedge = loglower + logbinwidth*i;
-          const double edge = pow(10, logedge);
-          rtn.push_back(edge);
+        {
+          const double logupper = std::log10(upper);
+          const double loglower = std::log10(lower);
+          const double logbinwidth = (logupper-loglower)/static_cast<double>(nbins);
+          for (size_t i = 0; i <= nbins; ++i) {
+            const double logedge = loglower + logbinwidth*i;
+            const double edge = pow(10, logedge);
+            rtn.push_back(edge);
+          }
         }
         break;
 
@@ -112,7 +121,9 @@ namespace YODA {
 
   public:
 
-    Axis(const vector<double>& binedges) {
+    Axis(const vector<double>& binedges) :
+      _bins()
+    {
       _mkAxis(binedges);
     }
 
@@ -134,18 +145,70 @@ namespace YODA {
 
   public:
 
-    unsigned int numBins() {
+    unsigned int numBins() const {
       return _bins.size();
     }
 
 
-    pair<double,double> binEdges(size_t binId) {
+    Bins& bins() {
+      return _bins;
+    }
+
+
+    const Bins& bins() const {
+      return _bins;
+    }
+
+
+    pair<double,double> binEdges(size_t binId) const {
       assert(binId < numBins());
       return make_pair(_cachedBinEdges[binId], _cachedBinEdges[binId+1]);
     }
 
 
-  public:
+    BIN& bin(size_t index) {
+      if (index >= numBins())
+        throw RangeError("YODA::Histo: index out of range");
+      return _bins[index];
+    }
+
+
+    const BIN& bin(size_t index) const {
+      if (index >= numBins())
+        throw RangeError("YODA::Histo: index out of range");
+      return _bins[index];
+    }
+
+
+    BIN& bin(Bin::BinType binType) {
+      if (binType == Bin::UNDERFLOWBIN) return _underflow;
+      if (binType == Bin::OVERFLOWBIN) return _overflow;
+      throw RangeError("YODA::Histo: index out of range");
+      return _underflow;
+    }
+
+
+    const BIN& bin(Bin::BinType binType) const {
+      if (binType == Bin::UNDERFLOWBIN) return _underflow;
+      if (binType == Bin::OVERFLOWBIN) return _overflow;
+      throw RangeError("YODA::Histo: index out of range");
+      return _underflow;
+    }
+
+
+    BIN& binByCoord(double x) {
+      pair<Bin::BinType, size_t> index = findBinIndex(x);
+      if ( index.first == Bin::VALIDBIN ) return _bins[index.second];
+      return bin(index.first);
+    }
+
+
+    const BIN& binByCoord(double x) const {
+      pair<Bin::BinType, size_t> index = findBinIndex(x);
+      if ( index.first == Bin::VALIDBIN ) return _bins[index.second];
+      return bin(index.first);
+    }
+
 
     std::pair<Bin::BinType, size_t> findBinIndex(double coord) const {
       if ( coord < _cachedBinEdges[0] ) return make_pair(Bin::UNDERFLOWBIN, 0);
@@ -153,12 +216,25 @@ namespace YODA {
       size_t i = _binHash.upper_bound(coord)->second;
       return make_pair(Bin::VALIDBIN, i);
     }
-    
+
+
+    void reset () {
+      _underflow.reset();
+      _overflow.reset();
+      for (typename Bins::iterator b = _bins.begin(); b != _bins.end(); ++b) {
+        b->reset();
+      }
+    }    
+
+
+  public:
+
     bool operator == (const Axis& other) const {
       return 
         _cachedBinEdges == other._cachedBinEdges &&
         _binHash == other._binHash;
     }
+
     
     bool operator != (const Axis& other) const {
       return ! operator == (other);

@@ -27,7 +27,7 @@ namespace YODA {
     /// Constructor giving range and number of bins
     Profile1D(const std::string& path, const std::string& title,
               size_t nxbins, double xlower, double xupper,
-              Axis::Binning binning=Axis::LINEAR);
+              Binning binning=LINEAR);
 
     /// Constructor giving explicit bin edges
     /// For n bins, binedges.size() == n+1, the last
@@ -41,7 +41,7 @@ namespace YODA {
 
     /// Constructor giving range and number of bins
     Profile1D(size_t nxbins, double xlower, double xupper, 
-              Axis::Binning binning=Axis::LINEAR);
+              Binning binning=LINEAR);
 
     /// Constructor giving explicit bin edges
     /// For n bins, binedges.size() == n+1, the last
@@ -50,15 +50,6 @@ namespace YODA {
 
     /// Constructor giving a vector of bins
     Profile1D(const std::vector<ProfileBin>& xbins);
-    //@}
-
-
-  private:
-    /// @name Constructor helper methods
-    //@{
-    void _ctorFromBins();
-    void _ctorFromEdges();
-    void _ctorFromAxis();
     //@}
 
     
@@ -142,19 +133,8 @@ namespace YODA {
     /// @name Bin data
     //@{
 
-    typedef vector<ProfileBin> Bins;
-
     /// The bins contained in this histogram
-    Axis _axis;
-
-    /// The bins contained in this histogram
-    Bins _bins;
-
-    /// The underflow bin
-    ProfileBin _underflow;
-
-    /// The overflow bin
-    ProfileBin _overflow;
+    Axis<ProfileBin> _axis;
 
   };
 

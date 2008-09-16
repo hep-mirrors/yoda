@@ -7,6 +7,7 @@ libYODA_la_SOURCES = \
     HistoBin.cc \
     ProfileBin.cc \
 	Histo1D.cc \
-	Profile1D.cc \
     Writer.cc \
     WriterAIDA.cc
+
+# 	Profile1D.cc 

@@ -12,6 +12,9 @@ using namespace std;
 namespace YODA {
 
 
+  typedef vector<HistoBin> Bins;
+
+
   Histo1D::Histo1D(const std::string& path, const std::string& title,
                    const vector<double>& binedges) :
     AnalysisObject( path, title ),
@@ -26,13 +29,13 @@ namespace YODA {
 
 
   Histo1D::Histo1D(const std::string& path, const std::string& title,
-                   size_t nbins, double lower, double upper, Axis::Binning binning) :
+                   size_t nbins, double lower, double upper, Binning binning) :
     AnalysisObject( path, title ),
     _axis(nbins, lower, upper, binning)
   {  }
 
 
-  Histo1D::Histo1D(size_t nbins, double lower, double upper, Axis::Binning binning) :
+  Histo1D::Histo1D(size_t nbins, double lower, double upper, Binning binning) :
     AnalysisObject(),
     _axis(nbins, lower, upper, binning)
   {  }
@@ -55,11 +58,7 @@ namespace YODA {
 
 
   void Histo1D::reset () {
-    _underflow.reset();
-    _overflow.reset();
-    for (Bins::iterator b = _bins.begin(); b != _bins.end(); ++b) {
-      b->reset();
-    }
+    _axis.reset();
   }
 
 
@@ -82,58 +81,42 @@ namespace YODA {
 
 
   vector<HistoBin>& Histo1D::bins() {
-    return _bins;
+    return _axis.bins();
   }
 
 
   const vector<HistoBin>& Histo1D::bins() const {
-    return _bins;
+    return _axis.bins();
   }
 
 
   HistoBin& Histo1D::bin(size_t index) {
-    if (index >= bins().size())
-      throw RangeError("YODA::Histo: index out of range");
-    return _bins[index];
+    return _axis.bin(index);
   }
 
 
   const HistoBin& Histo1D::bin(size_t index) const {
-    if (index >= bins().size())
-      throw RangeError("YODA::Histo: index out of range");
-    return _bins[index];
+    return _axis.bin(index);
   }
 
 
   HistoBin& Histo1D::bin(Bin::BinType binType) {
-    if (binType == Bin::UNDERFLOWBIN) return _underflow;
-    if (binType == Bin::OVERFLOWBIN) return _overflow;
-    throw RangeError("YODA::Histo: index out of range");
-    // Just to fix a warning:
-    return _underflow;
+    return _axis.bin(binType);
   }
 
 
   const HistoBin& Histo1D::bin(Bin::BinType binType) const {
-    if (binType == Bin::UNDERFLOWBIN) return _underflow;
-    if (binType == Bin::OVERFLOWBIN) return _overflow;
-    throw RangeError("YODA::Histo: index out of range");
-    // Just to fix a warning:
-    return _underflow;
+    return _axis.bin(binType);
   }
 
 
   HistoBin& Histo1D::binByCoord(double x) {
-    pair<Bin::BinType, size_t> index = _axis.findBinIndex(x);
-    if ( index.first == Bin::VALIDBIN ) return _bins[index.second];
-    return bin(index.first);
+    return _axis.binByCoord(x);
   }
 
 
   const HistoBin& Histo1D::binByCoord(double x) const {
-    pair<Bin::BinType, size_t> index = _axis.findBinIndex(x);
-    if ( index.first == Bin::VALIDBIN ) return _bins[index.second];
-    return bin(index.first);
+    return _axis.binByCoord(x);
   }
 
 
@@ -155,8 +138,8 @@ namespace YODA {
     double sumwx = 0;
     double sumw  = 0;
     for (size_t i = 0; i < bins().size(); i++) {
-      sumwx += _bins[i].sumWX();
-      sumw  += _bins[i].sumW();
+      sumwx += bins().at(i).sumWX();
+      sumw  += bins().at(i).sumW();
     }
     return sumwx/sumw;
   }
@@ -183,10 +166,10 @@ namespace YODA {
       throw LogicError("YODA::Histo1D: Cannot add histograms with different binnings.");
     }
     for (size_t i = 0; i < bins().size(); ++i) {
-      _bins[i] += toAdd._bins[i];
+      bins().at(i) += toAdd.bins().at(i);
     }
-    _underflow += toAdd._underflow;
-    _overflow += toAdd._overflow;
+    _axis.bin(UNDERFLOW) += toAdd._axis.bin(UNDERFLOW);
+    _axis.bin(OVERFLOW)  += toAdd._axis.bin(OVERFLOW);
     return *this;
   }
 
@@ -196,10 +179,10 @@ namespace YODA {
       throw LogicError("YODA::Histo1D: Cannot subtract histograms with different binnings.");
     }
     for (size_t i = 0; i < bins().size(); ++i) {
-      _bins[i] += toSubtract._bins[i];
+      bins().at(i) += toSubtract.bins().at(i);
     }
-    _underflow += toSubtract._underflow;
-    _overflow += toSubtract._overflow;
+    _axis.bin(UNDERFLOW) += toSubtract._axis.bin(UNDERFLOW);
+    _axis.bin(OVERFLOW)  += toSubtract._axis.bin(OVERFLOW);
     return *this;
   }
 
