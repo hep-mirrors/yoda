@@ -228,6 +228,7 @@ namespace YODA {
   public:
 
     bool operator == (const Axis& other) const {
+      /// @todo Need/want to compare bin hash?
       return 
         _cachedBinEdges == other._cachedBinEdges &&
         _binHash == other._binHash;
@@ -237,6 +238,34 @@ namespace YODA {
     bool operator != (const Axis& other) const {
       return ! operator == (other);
     }
+
+
+  public:
+
+    Axis<BIN>& operator += (const Axis<BIN>& toAdd) {
+      if (*this != toAdd) {
+        throw LogicError("YODA::Histo1D: Cannot add axes with different binnings.");
+      }
+      for (size_t i = 0; i < bins().size(); ++i) {
+        bins().at(i) += toAdd.bins().at(i);
+      }
+      bin(UNDERFLOW) += toAdd.bin(UNDERFLOW);
+      bin(OVERFLOW)  += toAdd.bin(OVERFLOW);
+      return *this;
+    }
+
+
+    Axis<BIN>& operator -= (const Axis<BIN>& toSubtract) {
+      if (*this != toSubtract) {
+        throw LogicError("YODA::Histo1D: Cannot subtract axes with different binnings.");
+      }
+      for (size_t i = 0; i < bins().size(); ++i) {
+        bins().at(i) += toSubtract.bins().at(i);
+      }
+      bin(UNDERFLOW) += toSubtract.bin(UNDERFLOW);
+      bin(OVERFLOW)  += toSubtract.bin(OVERFLOW);
+    return *this;
+  }
 
     
   private:
@@ -262,6 +291,25 @@ namespace YODA {
     //@}
 
   };
+
+
+
+  template <typename BIN>
+  Axis<BIN> operator + (const Axis<BIN>& first, const Axis<BIN>& second) {
+    Axis<BIN> tmp = first;
+    tmp += second;
+    return tmp;
+  }
+
+
+  template <typename BIN>
+  Axis<BIN> operator - (const Axis<BIN>& first, const Axis<BIN>& second) {
+    Axis<BIN> tmp = first;
+    tmp -= second;
+    return tmp;
+  }
+
+
 
 }
 

@@ -162,30 +162,13 @@ namespace YODA {
 
 
   Histo1D& Histo1D::operator += (const Histo1D& toAdd) {
-    /// @todo Use Axis<>::operator+= instead
-    if (_axis != toAdd._axis) {
-      throw LogicError("YODA::Histo1D: Cannot add histograms with different binnings.");
-    }
-    for (size_t i = 0; i < bins().size(); ++i) {
-      bins().at(i) += toAdd.bins().at(i);
-    }
-    _axis.bin(UNDERFLOW) += toAdd._axis.bin(UNDERFLOW);
-    _axis.bin(OVERFLOW)  += toAdd._axis.bin(OVERFLOW);
+    _axis += toAdd._axis;
     return *this;
   }
 
 
   Histo1D& Histo1D::operator -= (const Histo1D& toSubtract) {
-    /// @todo Use Axis<>::operator-= instead
-
-    if (_axis != toSubtract._axis) {
-      throw LogicError("YODA::Histo1D: Cannot subtract histograms with different binnings.");
-    }
-    for (size_t i = 0; i < bins().size(); ++i) {
-      bins().at(i) += toSubtract.bins().at(i);
-    }
-    _axis.bin(UNDERFLOW) += toSubtract._axis.bin(UNDERFLOW);
-    _axis.bin(OVERFLOW)  += toSubtract._axis.bin(OVERFLOW);
+    _axis -= toSubtract._axis;
     return *this;
   }
 
