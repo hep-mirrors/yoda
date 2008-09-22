@@ -1,6 +1,7 @@
 %module yoda
 
 %{
+  #define SWIG_FILE_WITH_INIT
   #include "YODA/Histo1D.h"
   #include "YODA/Profile1D.h"
   using namespace YODA;
