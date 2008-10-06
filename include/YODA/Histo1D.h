@@ -24,7 +24,7 @@ namespace YODA {
     /// @name Constructors
     //@{
 
-    /// Constructor giving range and number of bins
+    /// Constructor giving range and number of bins.
     Histo1D(const std::string& path, const std::string& title,
             size_t nbins, double lower, double upper,
             Binning binning=LINEAR);
@@ -35,20 +35,20 @@ namespace YODA {
     Histo1D(const std::string& path, const std::string& title,
             const std::vector<double>& binedges);
 
-    /// Constructor giving a vector of bins
+    /// Constructor giving a vector of bins.
     Histo1D(std::string path, std::string title,
             const std::vector<HistoBin>& bins);
 
-    /// Constructor giving range and number of bins
+    /// Constructor giving range and number of bins (no path or title).
     Histo1D(size_t nbins, double lower, double upper, 
             Binning binning=LINEAR);
 
-    /// @brief Constructor giving explicit bin edges.
+    /// @brief Constructor giving explicit bin edges (no path or title).
     /// For n bins, binedges.size() == n+1, the last
     /// one being the upper bound of the last bin
     Histo1D(const std::vector<double>& binedges);
 
-    /// Constructor giving a vector of bins
+    /// Constructor giving a vector of bins (no path or title).
     Histo1D(const std::vector<HistoBin>& bins);
     //@}
 

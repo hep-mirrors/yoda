@@ -10,61 +10,60 @@
 #include <vector>
 #include <string>
 #include "Point.h"
-#include "Histo1D.h"
 
 namespace YODA {
 
+
+  template <size_t N>
   class Scatter : public AnalysisObject {
+
   public:
-    Scatter(std::string name);
-    Scatter(const Histo1D &); // explicit?
+    Scatter();
 
-    Scatter(std::string name,
-        const std::vector<double> & data, 
-        const std::vector<double> & yerrors,
-        const std::vector<double> & xerrors = std::vector<double>());
+    Scatter(const std::string& path, const std::string& title);
 
-    void addErrors(const std::vector<double> & yerrors, 
-           const std::vector<double> & xerrors = std::vector<double>());
+    Scatter(const std::vector<YODA::Point<N> >& points);
 
-    Scatter & operator+=(const Scatter &);
-    Scatter & operator-=(const Scatter &);
-    Scatter & operator*=(const Scatter &);
-    Scatter & operator/=(const Scatter &);
+    Scatter(const std::string& path, const std::string& title,
+            const std::vector<YODA::Point<N> >& points);
 
-    // don't use implicit Scatter -> Histo1D conversion if runtime problem
-    Scatter & operator+=(const Histo1D &);
-    Scatter & operator-=(const Histo1D &);
-    Scatter & operator*=(const Histo1D &);
-    Scatter & operator/=(const Histo1D &);
 
-    string name() const;
+    Scatter& point(size_t index);
+    const Scatter& point(size_t index) const;
+
+    Scatter& addPoint(const Point&);
+
+
+
+    Scatter combineWith(const Scatter& other);
+    Scatter combineWith(const std::vector<Scatter> others);
+
+    Scatter& operator+=(const Scatter&);
+    Scatter& operator-=(const Scatter&);
+    Scatter& operator*=(const Scatter&);
+    Scatter& operator/=(const Scatter&);
+
+
   private:
-    // for debugging
-    bool isConsistent() const;
+
+    // For debugging
+    bool _isConsistent() const;
+
 
   private:
+
     std::vector<Point> _points;
-    // treat as cache
-    std::vector<double> _binlimits;
-    double _sumweights;
-    std::string _name;
   };
+
+
+
+  Scatter combine(const Scatter& a, const Scatter& b);
+  Scatter combine(const std::vector<Scatter> scatters);
 
   Scatter operator+(const Scatter &, const Scatter &);
   Scatter operator-(const Scatter &, const Scatter &);
   Scatter operator*(const Scatter &, const Scatter &);
   Scatter operator/(const Scatter &, const Scatter &);
-
-  Scatter operator+(const Scatter &, const Histo1D &);
-  Scatter operator-(const Scatter &, const Histo1D &);
-  Scatter operator*(const Scatter &, const Histo1D &);
-  Scatter operator/(const Scatter &, const Histo1D &);
-
-  Scatter operator+(const Histo1D &, const Scatter &);
-  Scatter operator-(const Histo1D &, const Scatter &);
-  Scatter operator*(const Histo1D &, const Scatter &);
-  Scatter operator/(const Histo1D &, const Scatter &);
 
 }
 
