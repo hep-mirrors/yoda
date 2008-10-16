@@ -4,7 +4,7 @@
 // Copyright (C) 2008 The YODA collaboration (see AUTHORS for details)
 //
 #ifndef YODA_POINT_H
-#define YODA_POINT_H 1
+#define YODA_POINT_H
 
 #include <vector>
 #include <string>
@@ -13,23 +13,22 @@
 namespace YODA {
 
 
-  template <size_t N>
-  class Point {
+  /// Enum for specifying how different error classes are to be combined.
+  enum ErrorCombScheme { QUAD_COMB, LIN_COMB, HYBRID_COMB };
 
-    /// @todo Allow multiple (enum/string-typed) errors
+  // Forward declaration (see bottom of file)
+  struct ErrorCombiner;
+
+
+
+  class Point {
 
   public:
 
     /// @name Constructors
     //@{
 
-    /// Asymmetric (general) errors
-    Point(const std::vector<double>& values,
-          const std::vector<std::pair<double,double> >& errors);
-
-    /// Symmetric errors
-    Point(const std::vector<double>& values,
-          const std::vector<double>& errors);
+    Point();
 
     //@}
 
@@ -39,21 +38,38 @@ namespace YODA {
     /// @name Errors
     //@{
 
-    enum ErrorCombScheme { QUADRATURE, LINEAR, QUAD_STAT_LIN_SYS };
+    /// @todo Make the PointError a class with an error type enum and annotation.
+    typedef std::vector<std::pair<double,double> > ErrorSet;
 
+    /// Get the value of this point in direction @a dim.
     double value(size_t dim);
-    std::pair<double,double> error(ErrorCombScheme=QUADRATURE);
-    double symmError(ErrorCombScheme=QUADRATURE);
 
-    std::vector<std::pair<double,double> > errors();
-    std::vector<double> symmErrors();
+    /// Get the effective error of this point.
+    std::pair<double,double> error(size_t dim, ErrorCombScheme ecs=QUAD_COMB);
+    /// Get the effective error of this point, passing an explicit combining functor.
+    std::pair<double,double> error(size_t dim, ErrorCombiner& ec);
+
+    /// Get the effective plus/minus-averaged error of this point
+    double symmError(size_t dim, ErrorCombScheme ecs=QUAD_COMB);
+    /// Get the effective plus/minus-averaged error of this point, passing an explicit combining functor.
+    double symmError(size_t dim, ErrorCombiner& ec);
+
+    //std::vector<std::pair<double,double> > errors(ErrorCombScheme ecs=QUAD_COMB);
+    //std::vector<std::pair<double,double> > errors(ErrorCombiner& ec);
+    //std::vector<double> symmErrors(ErrorCombScheme ecs=QUAD_COMB);
+    //std::vector<double> symmErrors(ErrorCombiner& ec);
+
     //@}
+
+
+    /// How many dimensions in this instantiation?
+    virtual size_t numDims() = 0;
 
 
   private:
 
     std::vector<double> _values;
-    std::vector<std::pair<double,double> > _errors;
+    std::vector<ErrorSet> _errors;
   };
 
 
@@ -62,17 +78,39 @@ namespace YODA {
 
 
 
-  // // 1D specialisation
-  // class Point1D : public Point<2> {
+  // 1D specialisation
+  class Point1D : public Point {
+  public:
 
-  // };
+    /// Asymmetric (general) errors
+    Point1D(const std::vector<double>& values,
+            const std::vector<std::pair<double,double> >& errors);
+
+    /// Symmetric errors
+    Point1D(const std::vector<double>& values,
+            const std::vector<double>& errors);
+
+  public:
+    size_t numDims();
+  };
 
 
 
-  // // 2D specialisation
-  // class Point2D : public Point<2> {
+  // 2D specialisation
+  class Point2D : public Point {
+  public:
 
-  // public:
+    /// Asymmetric (general) errors
+    Point2D(const std::vector<double>& values,
+            const std::vector<std::pair<double,double> >& errors);
+
+    /// Symmetric errors
+    Point2D(const std::vector<double>& values,
+            const std::vector<double>& errors);
+
+  public:
+    size_t numDims();
+
   //   Point2D(double x, double y,
   //         double xerror,
   //         double yerror);
@@ -101,8 +139,15 @@ namespace YODA {
   //   std::vector<double> getXErrorPlus();
   //   std::vector<double> getYErrorMinus();
   //   std::vector<double> getYErrorPlus();
+  };
 
-  // };
+
+
+  /// The ErrorCombiner interface
+  struct ErrorCombiner { 
+    std::pair<double,double> combine_errs(const Point::ErrorSet::const_iterator& begin,
+                                          const Point::ErrorSet::const_iterator& end);
+  };
 
 }
 

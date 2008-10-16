@@ -5,20 +5,17 @@ YODA TODO list
    Only use diff but represent as / convert to int?
 
 * Get height measure "right" for log binning
-   Really? Or ditch "height"?
+   Really? Or ditch "height"? Have to be careful with Jacobian factors.
 
-* Store enough information for datafile merging to be well defined, with
-  appropriate statistical combinations for each data type.
+* Store enough information for datafile merging to be well defined
+   With appropriate statistical combinations for each data type.
 
 * Explicitly return NaN for profile histo points with no weight.
 
 * Write scripts to convert between data formats and to plot results.
 
-* Add math utility functions like isZero(double, tolerance=1E-5), 
-  areEqual(double, double, fractolerance=1E-5), ...
-
-* Store "norm" and "scale" as members (and write out in histo header), rather
-   than convert type or scale internally. API for this?
+* Store "norm" and "scale" as members (and write out in histo header)
+   Rather than convert type or scale internally. API for this?
 
 Data line definition:
 H1D: xl xh y dy w w2 n wx wx2 (dysys,...)
@@ -30,13 +27,8 @@ Suggesting logx, logy, etc.?
 
 * Incorporate/extend Hendrik's make_plot script
 
-* Think about providing an interface for integral distributions
-
-* Consider "X/Y" naming scheme for Profile1D... if we extend to 2D histos, then
-   "Y" is inappropriate and we should probably use something else to be
-   future-proof.
-
-* Does Writer hierarchy make sense? Yes, for plugins...
+* Does Writer hierarchy make sense? 
+   Yes, for plugins...
 
 * Output header and footer
 
