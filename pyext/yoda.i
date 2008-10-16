@@ -4,6 +4,7 @@
   #define SWIG_FILE_WITH_INIT
   #include "YODA/Histo1D.h"
   #include "YODA/Profile1D.h"
+  #include "YODA/Scatter.h"
   using namespace YODA;
 %}
 
@@ -32,3 +33,12 @@ namespace YODA {
 
 %template(HistoBins) std::vector<YODA::HistoBin>;
 %template(ProfileBins) std::vector<YODA::ProfileBin>;
+
+%include "YODA/Scatter.h"
+%include "YODA/Point.h"
+
+%template(Scatter1D) YODA::Scatter<1>;
+%template(Point1D) YODA::Point<1>;
+
+%template(Scatter2D) YODA::Scatter<2>;
+%template(Point2D) YODA::Point<2>;
