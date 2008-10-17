@@ -81,8 +81,40 @@ namespace YODA {
   }
 
 
-  //std::vector<std::pair<double,double> > Point::errors();
-  //std::vector<double> Point::symmErrors();
+  vector<Point::PointError> Point::errors(ErrorCombiner& ec) {
+    vector<PointError> rtn(numDims());
+    for (size_t dim = 0; dim < numDims(); ++dim) {
+      rtn[dim] = error(dim, ec);
+    }
+    return rtn;
+  }
+
+
+  vector<Point::PointError> Point::errors(ErrorCombScheme ecs) {
+    vector<PointError> rtn(numDims());
+    for (size_t dim = 0; dim < numDims(); ++dim) {
+      rtn[dim] = error(dim, ecs);
+    }
+    return rtn;
+  }
+
+
+  vector<double> Point::symmErrors(ErrorCombiner& ec) {
+    vector<PointError> rtn(numDims());
+    for (size_t dim = 0; dim < numDims(); ++dim) {
+      rtn[dim] = symmError(dim, ec);
+    }
+    return rtn;
+  }
+
+
+  vector<Point::PointError> Point::symmErrors(ErrorCombScheme ecs) {
+    vector<double> rtn(numDims());
+    for (size_t dim = 0; dim < numDims(); ++dim) {
+      rtn[dim] = symmError(dim, ecs);
+    }
+    return rtn;
+  }
 
 
 
@@ -90,14 +122,25 @@ namespace YODA {
 
 
 
-  // // Asymmetric (general) errors
-  // Point2D::Point1D(const std::vector<double>& values,
-  //         const std::vector<std::pair<double,double> >& errors);
+  // Asymmetric (general) errors
+  Point1D::Point1D(const std::vector<double>& values,
+                   const std::vector<std::pair<double,double> >& errors)
+    : _values(values), _errors(errors)
+  {  }
   
-  // // Symmetric errors
-  // Point2D::Point1D(const std::vector<double>& values,
-  //         const std::vector<double>& errors);
+
+  // Symmetric errors
+  Point1D::Point1D(const std::vector<double>& values,
+                   const std::vector<double>& errors)
+    : _values(values)
+  {
+    /// @todo Replace this with symm error constructors on PointError.
+    for (std::vector<double>::const_iterator e = errors.begin(); e != errors.end(); ++e) {
+      _errors.push_back(make_pair(*e, *e));
+    }
+  }
   
+
   size_t Point1D::numDims() const {
     return 1;
   }
@@ -107,14 +150,23 @@ namespace YODA {
   //////////////////////////////////////////////
 
 
-
-  // // Asymmetric (general) errors
-  // Point2D::Point2D(const std::vector<double>& values,
-  //         const std::vector<std::pair<double,double> >& errors);
+  Point2D::Point2D(const std::vector<double>& values,
+                   const std::vector<std::pair<double,double> >& errors)
+    : _values(values), _errors(errors)
+  {  }
   
-  // // Symmetric errors
-  // Point2D::Point2D(const std::vector<double>& values,
-  //         const std::vector<double>& errors);
+
+  // Symmetric errors
+  Point2D::Point2D(const std::vector<double>& values,
+                   const std::vector<double>& errors)
+    : _values(values)
+  {
+    /// @todo Replace this with symm error constructors on PointError.
+    for (std::vector<double>::const_iterator e = errors.begin(); e != errors.end(); ++e) {
+      _errors.push_back(make_pair(*e, *e));
+    }
+  }
+
 
   size_t Point2D::numDims() const {
     return 2;

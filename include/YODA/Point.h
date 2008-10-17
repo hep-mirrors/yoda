@@ -38,26 +38,32 @@ namespace YODA {
     /// @name Errors
     //@{
 
-    /// @todo Make the PointError a class with an error type enum and annotation.
-    typedef std::vector<std::pair<double,double> > ErrorSet;
+    /// @todo Make the PointError a class with an error type enum, origin annotation and plus/minus accessors.
+    typedef std::pair<double,double> PointError;
+
+    /// A collection of point errors
+    typedef std::vector<PointError> ErrorSet;
 
     /// Get the value of this point in direction @a dim.
-    double value(size_t dim);
+    virtual double value(size_t dim);
 
-    /// Get the effective error of this point.
-    std::pair<double,double> error(size_t dim, ErrorCombScheme ecs=QUAD_COMB);
-    /// Get the effective error of this point, passing an explicit combining functor.
-    std::pair<double,double> error(size_t dim, ErrorCombiner& ec);
+    /// Get the effective error of this point in direction @a dim.
+    virtual std::pair<double,double> error(size_t dim, ErrorCombScheme ecs=QUAD_COMB);
+    /// Get the effective error of this point in direction @a dim, passing an explicit combining functor.
+    virtual std::pair<double,double> error(size_t dim, ErrorCombiner& ec);
+    /// Get the effective plus/minus-averaged error of this point in direction @a dim.
+    virtual double symmError(size_t dim, ErrorCombScheme ecs=QUAD_COMB);
+    /// Get the effective plus/minus-averaged error of this point in direction @a dim, passing an explicit combining functor.
+    virtual double symmError(size_t dim, ErrorCombiner& ec);
 
-    /// Get the effective plus/minus-averaged error of this point
-    double symmError(size_t dim, ErrorCombScheme ecs=QUAD_COMB);
-    /// Get the effective plus/minus-averaged error of this point, passing an explicit combining functor.
-    double symmError(size_t dim, ErrorCombiner& ec);
-
-    //std::vector<std::pair<double,double> > errors(ErrorCombScheme ecs=QUAD_COMB);
-    //std::vector<std::pair<double,double> > errors(ErrorCombiner& ec);
-    //std::vector<double> symmErrors(ErrorCombScheme ecs=QUAD_COMB);
-    //std::vector<double> symmErrors(ErrorCombiner& ec);
+    /// Get the effective error of this point, in all directions.
+    virtual std::vector<std::pair<double,double> > errors(ErrorCombScheme ecs=QUAD_COMB);
+    /// Get the effective error of this point, in all directions, passing an explicit combining functor.
+    virtual std::vector<std::pair<double,double> > errors(ErrorCombiner& ec);
+    /// Get the effective plus/minus-averaged error of this point in all directions.
+    virtual std::vector<double> symmErrors(ErrorCombScheme ecs=QUAD_COMB);
+    /// Get the effective plus/minus-averaged error of this point in all directions, passing an explicit combining functor.
+    virtual std::vector<double> symmErrors(ErrorCombiner& ec);
 
     //@}
 
@@ -66,7 +72,7 @@ namespace YODA {
     virtual size_t numDims() const = 0;
 
     
-  private:
+  protected:
 
     std::vector<double> _values;
     std::vector<ErrorSet> _errors;
@@ -90,6 +96,8 @@ namespace YODA {
     Point1D(const std::vector<double>& values,
             const std::vector<double>& errors);
 
+    /// @todo Add simple (no "dimension arg") value and error accessors
+
   public:
     size_t numDims() const;
   };
@@ -110,6 +118,8 @@ namespace YODA {
 
   public:
     size_t numDims() const;
+
+    /// @todo Add X, Y value and error accessors
 
   //   Point2D(double x, double y,
   //         double xerror,
@@ -145,8 +155,9 @@ namespace YODA {
 
   /// The ErrorCombiner interface
   struct ErrorCombiner { 
-    std::pair<double,double> combine_errs(const Point::ErrorSet::const_iterator& begin,
-                                          const Point::ErrorSet::const_iterator& end);
+    virtual std::pair<double,double> 
+    combine_errs(const Point::ErrorSet::const_iterator& begin,
+                 const Point::ErrorSet::const_iterator& end) = 0;
   };
 
 }
