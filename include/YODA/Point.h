@@ -63,9 +63,9 @@ namespace YODA {
 
 
     /// How many dimensions in this instantiation?
-    virtual size_t numDims() = 0;
+    virtual size_t numDims() const = 0;
 
-
+    
   private:
 
     std::vector<double> _values;
@@ -91,7 +91,7 @@ namespace YODA {
             const std::vector<double>& errors);
 
   public:
-    size_t numDims();
+    size_t numDims() const;
   };
 
 
@@ -109,7 +109,7 @@ namespace YODA {
             const std::vector<double>& errors);
 
   public:
-    size_t numDims();
+    size_t numDims() const;
 
   //   Point2D(double x, double y,
   //         double xerror,

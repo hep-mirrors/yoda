@@ -1,17 +1,31 @@
 #include "YODA/Scatter.h"
+#include "YODA/MathUtils.h"
+
+using namespace std;
 
 namespace YODA {
 
 
-  Scatter::Scatter() { }
+  Scatter::Scatter() 
+  {  }
 
+
+  Scatter::Scatter(const std::string& path, const std::string& title) 
+    : AnalysisObject(path, title)
+  {  }
+
+  
 
   ////////////////////////////////////////////
 
 
 
+  Scatter1D::Scatter1D()
+  {  }
+
+
   Scatter1D::Scatter1D(const std::string& path, const std::string& title) 
-    : AnalysisObject(path, title)
+    : Scatter(path, title)
   {  }
   
 
@@ -22,7 +36,7 @@ namespace YODA {
   
   Scatter1D::Scatter1D(const std::string& path, const std::string& title,
                        const std::vector<YODA::Point1D>& points) 
-    : AnalysisObject(path, title),
+    : Scatter(path, title),
       _points(points)
   {  }
 
@@ -43,7 +57,7 @@ namespace YODA {
 
 
   Point1D& Scatter1D::point(size_t index) {
-    assert(index < numPoints();
+    assert(index < numPoints());
     return _points.at(index);
   }
 
@@ -77,7 +91,7 @@ namespace YODA {
   }
   
   
-  size_t Scatter1D::numDims() {
+  size_t Scatter1D::numDims() const {
     return 1;
   }
   
@@ -107,10 +121,13 @@ namespace YODA {
   
   ////////////////////////////////////////////
   
+
+  Scatter2D::Scatter2D()
+  {  }
   
   
   Scatter2D::Scatter2D(const std::string& path, const std::string& title)
-    : AnalysisObject(path, title)
+    : Scatter(path, title)
   {  }
   
   
@@ -121,7 +138,7 @@ namespace YODA {
   
   Scatter2D::Scatter2D(const std::string& path, const std::string& title,
                        const std::vector<YODA::Point2D>& points)
-    : AnalysisObject(path, title),
+    : Scatter(path, title),
       _points(points)
   {  }
 
@@ -136,13 +153,13 @@ namespace YODA {
   }
 
 
-  const vector<Point1D>& Scatter2D::points() const {
+  const vector<Point2D>& Scatter2D::points() const {
     return _points;
   }
   
   
   Point2D& Scatter2D::point(size_t index) {
-    assert(index < numPoints();
+    assert(index < numPoints());
     return _points.at(index);
   }
   
@@ -152,14 +169,14 @@ namespace YODA {
   }
   
   
-  Scatter2D& Scatter2D::addPoint(const Point2D&) {
+  Scatter2D& Scatter2D::addPoint(const Point2D& pt) {
     _points.push_back(pt);
     return *this;
   }
   
   
   Scatter2D& Scatter2D::combineWith(const Scatter2D& other) {
-    for (vector<Point1D>::const_iterator pt = other.points().begin(); 
+    for (vector<Point2D>::const_iterator pt = other.points().begin(); 
          pt != other.points().end(); ++pt) {
       addPoint(*pt);
     }
@@ -168,7 +185,7 @@ namespace YODA {
   
   
   Scatter2D& Scatter2D::combineWith(const std::vector<Scatter2D>& others) {
-    for (vector<Scatter1D>::const_iterator s = others.begin(); 
+    for (vector<Scatter2D>::const_iterator s = others.begin(); 
          s != others.end(); ++s) {
       combineWith(*s);
     }
@@ -176,7 +193,7 @@ namespace YODA {
   }
   
   
-  size_t Scatter2D::numDims() {
+  size_t Scatter2D::numDims() const {
     return 2;
   }
 
@@ -187,15 +204,15 @@ namespace YODA {
 
 
   Scatter2D combine(const Scatter2D& a, const Scatter2D& b) {
-    Scatter1D rtn = a;
+    Scatter2D rtn = a;
     rtn.combineWith(b);
     return rtn;
   }
 
 
   Scatter2D combine(const std::vector<Scatter2D>& scatters) {
-    Scatter1D rtn;
-    for (vector<Scatter1D>::const_iterator s = scatters.begin(); 
+    Scatter2D rtn;
+    for (vector<Scatter2D>::const_iterator s = scatters.begin(); 
          s != scatters.end(); ++s) {
       rtn.combineWith(*s);
     }

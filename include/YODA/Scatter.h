@@ -19,8 +19,10 @@ namespace YODA {
   public:
     Scatter();
 
+    Scatter(const std::string& path, const std::string& title);
+
     /// How many dimensions in this instantiation?
-    virtual size_t numDims() = 0;
+    virtual size_t numDims() const = 0;
 
     virtual size_t numPoints() const = 0;
 
@@ -32,6 +34,8 @@ namespace YODA {
 
   class Scatter1D : Scatter {
   public:
+    Scatter1D();
+
     Scatter1D(const std::string& path, const std::string& title);
 
     Scatter1D(const std::vector<YODA::Point1D>& points);
@@ -49,6 +53,7 @@ namespace YODA {
     Scatter1D& combineWith(const Scatter1D& other);
     Scatter1D& combineWith(const std::vector<Scatter1D>& others);
 
+    size_t numDims() const;
     void reset();
 
   private:
@@ -64,6 +69,8 @@ namespace YODA {
 
   class Scatter2D : Scatter {
   public:
+    Scatter2D();
+
     Scatter2D(const std::string& path, const std::string& title);
 
     Scatter2D(const std::vector<YODA::Point2D>& points);
@@ -81,6 +88,7 @@ namespace YODA {
     Scatter2D& combineWith(const Scatter2D& other);
     Scatter2D& combineWith(const std::vector<Scatter2D>& others);
 
+    size_t numDims() const;
     void reset();
 
   private:

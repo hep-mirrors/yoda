@@ -98,7 +98,7 @@ namespace YODA {
   // Point2D::Point1D(const std::vector<double>& values,
   //         const std::vector<double>& errors);
   
-  size_t Point1D::numDims() {
+  size_t Point1D::numDims() const {
     return 1;
   }
 
@@ -116,7 +116,7 @@ namespace YODA {
   // Point2D::Point2D(const std::vector<double>& values,
   //         const std::vector<double>& errors);
 
-  size_t Point2D::numDims() {
+  size_t Point2D::numDims() const {
     return 2;
   }
 
