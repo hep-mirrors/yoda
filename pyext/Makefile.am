@@ -12,7 +12,7 @@ _yoda_la_LDFLAGS = -module -L$(top_builddir)/src
 _yoda_la_LIBADD = -lYODA
 
 incdir = $(top_srcdir)/include
-yoda_wrap.cc : $(SWIG_SOURCES) $(incdir)/YODA/Histo1D.h $(incdir)/YODA/Profile1D.h
+yoda_wrap.cc : $(SWIG_SOURCES) $(incdir)/YODA/AnalysisObject.h $(incdir)/YODA/Histo1D.h $(incdir)/YODA/Profile1D.h $(incdir)/YODA/Scatter.h
 	$(SWIG) $(SWIG_PYTHON_OPT) -I$(incdir) -o yoda_wrap.cc $(SWIG_SOURCES)
 
 EXTRA_DIST = PyTest.py TestNegWeights.py

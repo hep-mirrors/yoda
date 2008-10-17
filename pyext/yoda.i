@@ -36,9 +36,3 @@ namespace YODA {
 
 %include "YODA/Scatter.h"
 %include "YODA/Point.h"
-
-// %template(Scatter1D) YODA::Scatter<1>;
-// %template(Point1D) YODA::Point<1>;
-
-// %template(Scatter2D) YODA::Scatter<2>;
-// %template(Point2D) YODA::Point<2>;
