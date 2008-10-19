@@ -26,7 +26,7 @@ namespace YODA {
       writeProfile(stream, static_cast<const Profile1D&>(ao));
     } else {
       cerr << "OTHER" << endl;
-      throw Error("Unrecognised analysis object type in Writer::write");
+      throw Exception("Unrecognised analysis object type in Writer::write");
     }
     writeFooter(stream);
   }

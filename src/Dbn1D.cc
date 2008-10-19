@@ -67,13 +67,13 @@ namespace YODA {
     // sig2 = ( sum(wx**2) * sum(w) - sum(wx)**2 ) / ( sum(w)**2 - sum(w**2) )
     // see http://en.wikipedia.org/wiki/Weighted_mean
     if (sumW() == 0) {
-      throw Error("Requested width of a distribution with no net fill weights");
+      throw Exception("Requested width of a distribution with no net fill weights");
     } 
     const double num = _sumWX2*_sumW - _sumWX*_sumWX;
     const double den = _sumW*_sumW - _sumW2;
     //std::cerr << "***" << num << ", " << den << std::endl;
     if (numEntries() < 2 || (fabs(num) < 1E-10 && fabs(den) < 1E-10)) {
-      throw Error("Requested width of a distribution with only one effective entry");
+      throw Exception("Requested width of a distribution with only one effective entry");
     } 
     const double var = num/den;
     return var;
@@ -88,7 +88,7 @@ namespace YODA {
   double Dbn1D::stdErr() const {
     // Handle zero/negative sum weight
     if (sumW() == 0) {
-      throw Error("Requested std error of a distribution with no net fill weights");
+      throw Exception("Requested std error of a distribution with no net fill weights");
     } 
     return std::sqrt(variance() / sumW());
   }

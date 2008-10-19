@@ -6,6 +6,7 @@
 #ifndef YODA_POINT_H
 #define YODA_POINT_H
 
+#include "YODA/Error.h"
 #include <vector>
 #include <string>
 #include <map>
@@ -13,22 +14,28 @@
 namespace YODA {
 
 
-  /// Enum for specifying how different error classes are to be combined.
-  enum ErrorCombScheme { QUAD_COMB, LIN_COMB, HYBRID_COMB };
-
-  // Forward declaration (see bottom of file)
-  struct ErrorCombiner;
-
-
-
   class Point {
-
   public:
 
     /// @name Constructors
     //@{
 
+    // Default constructor
     Point();
+
+
+    /// Values but no errors
+    Point(const std::vector<double>& values);
+
+
+    /// Values with asymmetric (general) errors
+    Point(const std::vector<double>& values,
+          const std::vector<ErrorSet>& errors);
+
+
+    /// Values with symmetric errors
+    Point(const std::vector<double>& values,
+          const std::vector<std::vector<double> >& errors);
 
     //@}
 
@@ -37,12 +44,6 @@ namespace YODA {
 
     /// @name Errors
     //@{
-
-    /// @todo Make the PointError a class with an error type enum, origin annotation and plus/minus accessors.
-    typedef std::pair<double,double> PointError;
-
-    /// A collection of point errors
-    typedef std::vector<PointError> ErrorSet;
 
     /// Get the value of this point in direction @a dim.
     virtual double value(size_t dim);
@@ -88,14 +89,24 @@ namespace YODA {
   class Point1D : public Point {
   public:
 
-    /// Asymmetric (general) errors
+    // Default constructor
+    Point1D();
+
+
+    /// Values but no errors
+    Point1D(const std::vector<double>& values);
+
+
+    /// Values with asymmetric (general) errors
     Point1D(const std::vector<double>& values,
             const std::vector<std::pair<double,double> >& errors);
 
-    /// Symmetric errors
-    Point1D(const std::vector<double>& values,
-            const std::vector<double>& errors);
 
+    /// Values with symmetric errors
+    Point1D(const std::vector<double>& values,
+          const std::vector<double>& errors);
+
+    //public:
     /// @todo Add simple (no "dimension arg") value and error accessors
 
   public:
@@ -108,13 +119,22 @@ namespace YODA {
   class Point2D : public Point {
   public:
 
-    /// Asymmetric (general) errors
+    // Default constructor
+    Point2D();
+
+
+    /// Values but no errors
+    Point2D(const std::vector<double>& values);
+
+
+    /// Values with asymmetric (general) errors
     Point2D(const std::vector<double>& values,
             const std::vector<std::pair<double,double> >& errors);
 
-    /// Symmetric errors
+
+    /// Values with symmetric errors
     Point2D(const std::vector<double>& values,
-            const std::vector<double>& errors);
+          const std::vector<double>& errors);
 
   public:
     size_t numDims() const;
@@ -151,14 +171,6 @@ namespace YODA {
   //   std::vector<double> getYErrorPlus();
   };
 
-
-
-  /// The ErrorCombiner interface
-  struct ErrorCombiner { 
-    virtual std::pair<double,double> 
-    combine_errs(const Point::ErrorSet::const_iterator& begin,
-                 const Point::ErrorSet::const_iterator& end) = 0;
-  };
 
 }
 
