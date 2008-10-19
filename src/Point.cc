@@ -13,76 +13,99 @@ namespace YODA {
 
 
   // Values but no errors
-  Point::Point(const vector<double>& values)
-    : _values(values)
+  Point::Point(const vector<double>& value)
+    : _value(value)
   {  }
 
 
   // Asymmetric (general) errors
-  Point::Point(const vector<double>& values,
-               const vector<ErrorSet>& errors)
-    : _values(values), _errors(errors)
+  Point::Point(const vector<double>& value,
+               const ErrorSet& errors)
+    : _value(value), _errors(errors)
   {  }
   
 
   // Symmetric errors
-  Point::Point(const vector<double>& values,
-               const vector<vector<double> >& errors)
-    : _values(values)
-  {
-    /// @todo Replace this with symm error constructors on PointError.
-    for (vector<vector<double> >::const_iterator es = errors.begin(); es != errors.end(); ++es) {
-      vector<pair<double, double> > errs;
-      for (vector<double>::const_iterator e = es->begin(); e != es->end(); ++e) {
-        errs.push_back(make_pair(*e, *e));
-      }
-      _errors.push_back(errs);
-    }
-  }
+  // Point::Point(const vector<double>& value,
+  //              const vector<vector<double> >& errors)
+  //   : _value(value)
+  // {
+  //   setErrors(errors);
+  // }
   
 
   ///////////////////////////////
 
 
-  double Point::value(size_t dim) {
-    assert(dim < numDims());
-    return _values.at(dim);
+  vector<double> Point::value() const {
+    return _value;
   }
 
 
-  struct QuadErrComb : public ErrorCombiner {
-    pair<double,double> combine_errs(const Point::ErrorSet::const_iterator& begin,
-                                     const Point::ErrorSet::const_iterator& end) {
-      double up(0), down(0);
-      for (Point::ErrorSet::const_iterator e = begin; e != end; ++e) {
-        down += sq(e->first);
-        up += sq(e->second);
-      }
-      return make_pair(sqrt(down), sqrt(up));
-    }
-  };
-
-
-  struct LinErrComb : public ErrorCombiner {
-    pair<double,double> combine_errs(const Point::ErrorSet::const_iterator& begin,
-                                     const Point::ErrorSet::const_iterator& end) {
-      double up(0), down(0);
-      for (Point::ErrorSet::const_iterator e = begin; e != end; ++e) {
-        down += e->first;
-        up += e->second;
-      }
-      return make_pair(down, up);
-    }
-  };
-
-
-  pair<double,double> Point::error(size_t dim, ErrorCombiner& ec) {
+  double Point::value(size_t dim) const {
     assert(dim < numDims());
-    return ec.combine_errs(_errors.at(dim).begin(), _errors.at(dim).end());
+    return _value.at(dim);
   }
 
 
-  pair<double,double> Point::error(size_t dim, ErrorCombScheme ecs) {
+  void Point::setValue(const vector<double>& values) {
+    assert(values.size() == numDims());
+    _value = values;
+  }
+
+
+  void Point::setValue(size_t dim, double value) {
+    assert(dim < numDims());
+    _value[dim] = value;
+  }
+
+
+
+  void Point::setErrors(const ErrorSet& errors) {
+    _errors = errors;
+  }
+
+
+  // void setErrors(const std::vector<std::vector<std::pair<double,double> > >& errors) {
+  //   assert(errors.size() == numDims());
+  //   for (size_t dim = 0; dim != errors.size(); ++dim) {
+  //     for (vector<double>::const_iterator e = errors[i].begin(); e != errors[i].end(); ++e) {
+  //       _errors[dim].push_back(PointError(dim, *e));
+  //     }
+  //   }
+  // }
+
+
+  // void setErrors(const std::vector<std::vector<double> >& errors) {
+  //   assert(errors.size() == numDims());
+  //   for (size_t dim = 0; dim != errors.size(); ++dim) {
+  //     for (vector<double>::const_iterator e = errors[i].begin(); e != errors[i].end(); ++e) {
+  //       _errors[dim].push_back(PointError(dim, *e));
+  //     }
+  //   }
+  // }
+  
+
+  void Point::addError(const PointError& error) {
+    _errors.push_back(error);
+  }
+
+
+  // void addError(const std::vector<double>& error) {
+  // }
+
+
+  // void addError(const std::vector<std::pair<double,double> >& error) {
+  // }
+
+
+  pair<double,double> Point::error(size_t dim, ErrorCombiner& ec) const {
+    assert(dim < numDims());
+    return ec.combine_errs(_errors.begin(), _errors.end()).at(dim);
+  }
+
+
+  pair<double,double> Point::error(size_t dim, ErrorCombScheme ecs) const {
     assert(dim < numDims());
     pair<double,double> rtn = make_pair(0.0, 0.0);
     if (ecs == QUAD_COMB) {
@@ -103,65 +126,67 @@ namespace YODA {
   }
 
 
-  double Point::symmError(size_t dim, ErrorCombiner& ec) {
+  double Point::symmError(size_t dim, ErrorCombiner& ec) const {
     pair<double,double> errs = error(dim, ec);
     return (errs.first + errs.second)/2.0;
   }
 
 
-  double Point::symmError(size_t dim, ErrorCombScheme ecs) {
+  double Point::symmError(size_t dim, ErrorCombScheme ecs) const {
     pair<double,double> errs = error(dim, ecs);
     return (errs.first + errs.second)/2.0;
   }
 
+  /// @todo Reinstate
 
-  vector<Point::PointError> Point::errors(ErrorCombiner& ec) {
-    vector<PointError> rtn(numDims());
-    for (size_t dim = 0; dim < numDims(); ++dim) {
-      rtn[dim] = error(dim, ec);
-    }
-    return rtn;
-  }
-
-
-  vector<Point::PointError> Point::errors(ErrorCombScheme ecs) {
-    vector<PointError> rtn(numDims());
-    for (size_t dim = 0; dim < numDims(); ++dim) {
-      rtn[dim] = error(dim, ecs);
-    }
-    return rtn;
-  }
+  // vector<PointError> Point::errors(ErrorCombiner& ec) const {
+  //   vector<PointError> rtn(numDims());
+  //   for (size_t dim = 0; dim < numDims(); ++dim) {
+  //     rtn[dim] = error(dim, ec);
+  //   }
+  //   return rtn;
+  // }
 
 
-  vector<double> Point::symmErrors(ErrorCombiner& ec) {
-    vector<double> rtn(numDims());
-    for (size_t dim = 0; dim < numDims(); ++dim) {
-      const double err = symmError(dim, ec);
-      rtn[dim] = err;
-    }
-    return rtn;
-  }
+  // vector<PointError> Point::errors(ErrorCombScheme ecs) const {
+  //   vector<PointError> rtn(numDims());
+  //   for (size_t dim = 0; dim < numDims(); ++dim) {
+  //     rtn[dim] = error(dim, ecs);
+  //   }
+  //   return rtn;
+  // }
 
 
-  vector<double> Point::symmErrors(ErrorCombScheme ecs) {
-    vector<double> rtn(numDims());
-    for (size_t dim = 0; dim < numDims(); ++dim) {
-      const double err = symmError(dim, ecs);
-      rtn[dim] = err;
-    }
-    return rtn;
-  }
+  // vector<double> Point::symmErrors(ErrorCombiner& ec) const {
+  //   vector<double> rtn(numDims());
+  //   for (size_t dim = 0; dim < numDims(); ++dim) {
+  //     const double err = symmError(dim, ec);
+  //     rtn[dim] = err;
+  //   }
+  //   return rtn;
+  // }
+
+
+  // vector<double> Point::symmErrors(ErrorCombScheme ecs) const {
+  //   vector<double> rtn(numDims());
+  //   for (size_t dim = 0; dim < numDims(); ++dim) {
+  //     const double err = symmError(dim, ecs);
+  //     rtn[dim] = err;
+  //   }
+  //   return rtn;
+  // }
 
 
 
   //////////////////////////////////////////////
 
 
+
   // Default constructor
   Point1D::Point1D() 
     : Point()
   {  }
-
+  
 
   // Values but no errors
   Point1D::Point1D(const vector<double>& values)
@@ -170,33 +195,26 @@ namespace YODA {
 
 
   // Asymmetric (general) errors
-  Point1D::Point1D(const vector<double>& values,
-                   const vector<pair<double,double> >& errors)
-    : Point(values)
-  {  
-    for (vector<pair<double,double> >::const_iterator e = errors.begin();
-         e != errors.end(); ++e) {
-      ErrorSet es;
-      es.push_back(*e);
-      _errors.push_back(es);
-    }
-  }
+  Point1D::Point1D(const vector<double>& value,
+                   const ErrorSet& errors)
+    : Point(value, errors)
+  {  }
   
 
   // Symmetric errors
-  Point1D::Point1D(const vector<double>& values,
-                   const vector<double>& errors)
-    : Point(values)
-  {
-    for (vector<double>::const_iterator e = errors.begin();
-         e != errors.end(); ++e) {
-      ErrorSet es;
-      PointError pe = make_pair(*e,*e);
-      es.push_back(pe);
-      _errors.push_back(es);
-    }
-
-}
+  // Point1D::Point1D(const vector<double>& values,
+  //                  const vector<double>& errors)
+  //   : Point(values)
+  // {
+  //   for (vector<double>::const_iterator e = errors.begin();
+  //        e != errors.end(); ++e) {
+  //     ErrorSet es;
+  //     PointError pe = make_pair(*e,*e);
+  //     es.push_back(pe);
+  //     _errors.push_back(es);
+  //   }
+  //
+  // }
   
 
   size_t Point1D::numDims() const {
@@ -215,38 +233,31 @@ namespace YODA {
 
 
   // Values but no errors
-  Point2D::Point2D(const vector<double>& values)
-    : Point(values)
+  Point2D::Point2D(const vector<double>& value)
+    : Point(value)
   {  }
 
 
   // Asymmetric (general) errors
-  Point2D::Point2D(const vector<double>& values,
-                   const vector<pair<double,double> >& errors)
-    : Point(values)
-  {  
-    for (vector<pair<double,double> >::const_iterator e = errors.begin();
-         e != errors.end(); ++e) {
-      ErrorSet es;
-      es.push_back(*e);
-      _errors.push_back(es);
-    }
-  }
+  Point2D::Point2D(const vector<double>& value,
+                   const ErrorSet& errors)
+    : Point(value, errors)
+  {  }
   
 
   // Symmetric errors
-  Point2D::Point2D(const vector<double>& values,
-                   const vector<double>& errors)
-    : Point(values)
-  {
-    for (vector<double>::const_iterator e = errors.begin();
-         e != errors.end(); ++e) {
-      ErrorSet es;
-      PointError pe = make_pair(*e,*e);
-      es.push_back(pe);
-      _errors.push_back(es);
-    }
-  }
+  // Point2D::Point2D(const vector<double>& values,
+  //                  const vector<double>& errors)
+  //   : Point(values)
+  // {
+  //   for (vector<double>::const_iterator e = errors.begin();
+  //        e != errors.end(); ++e) {
+  //     ErrorSet es;
+  //     PointError pe = make_pair(*e,*e);
+  //     es.push_back(pe);
+  //     _errors.push_back(es);
+  //   }
+  // }
   
 
   size_t Point2D::numDims() const {

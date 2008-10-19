@@ -103,7 +103,7 @@ namespace YODA {
         break;
 
       default:
-        throw Error("Invalid binning style... what went wrong?");
+        throw Exception("Invalid binning style... what went wrong?");
       }
 
       return rtn;
