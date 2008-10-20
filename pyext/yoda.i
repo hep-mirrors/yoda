@@ -50,5 +50,6 @@ namespace YODA {
 %ignore YODA::Point::symmError(size_t dim, ErrorCombiner& ec);
 %ignore YODA::Point::errors(size_t dim, ErrorCombiner& ec);
 %ignore YODA::Point::symmErrors(size_t dim, ErrorCombiner& ec);
-%include "YODA/Scatter.h"
+%include "YODA/Error.h"
 %include "YODA/Point.h"
+%include "YODA/Scatter.h"
