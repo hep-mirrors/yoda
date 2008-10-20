@@ -22,7 +22,10 @@
 // STL class support
 %include "std_string.i"
 %include "std_vector.i"
-
+%include "std_map.i"
+%template(DoubleList) std::vector<double>;
+%template(DoublePair) std::pair<double, double>;
+%template(IntDoubleDict) std::map<size_t, double>;
 
 ////////////////////////////////////////////////
 

@@ -42,7 +42,6 @@ namespace YODA {
   }
 
   void WriterAIDA::writeHisto(std::ostream& os, const Histo1D& h) {
-    cout << "FOO" << endl;
     // <histogram1d>
     os << "<histogram1d" // name=\"" << encodeForXML(h.name()) << "\""
        << " title=\"" << encodeForXML(h.title()) << "\""
@@ -92,8 +91,15 @@ namespace YODA {
     os << flush;
   }
 
+
   void WriterAIDA::writeProfile(std::ostream& stream, const Profile1D& p) { 
     //
   }
+
+
+  void WriterAIDA::writeScatter(std::ostream& stream, const Scatter& p) {
+    //
+  }
+
 
 }

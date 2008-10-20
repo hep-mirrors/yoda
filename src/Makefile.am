@@ -12,4 +12,5 @@ libYODA_la_SOURCES = \
     Point.cc \
     Scatter.cc \
     Writer.cc \
-    WriterAIDA.cc
+    WriterAIDA.cc \
+    WriterYODA.cc

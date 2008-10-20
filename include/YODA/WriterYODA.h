@@ -3,8 +3,8 @@
 // This file is part of YODA -- Yet more Objects for Data Analysis
 // Copyright (C) 2008 The YODA collaboration (see AUTHORS for details)
 //
-#ifndef YODA_WRITERAIDA_H
-#define YODA_WRITERAIDA_H
+#ifndef YODA_WRITERYODA_H
+#define YODA_WRITERYODA_H
 
 #include "YODA/AnalysisObject.h"
 #include "YODA/Writer.h"
@@ -17,9 +17,9 @@
 namespace YODA {
 
   /// Are we going to use inheritance or polymorphism anywhere between output format objects?
-  class WriterAIDA : public Writer {
+  class WriterYODA : public Writer {
   private:
-    WriterAIDA() { }
+    WriterYODA() { }
 
     static Writer* _instance;
     
@@ -27,7 +27,7 @@ namespace YODA {
 
     static Writer& create() {
       if (!_instance) {
-        _instance = new WriterAIDA();
+        _instance = new WriterYODA();
       }
       return *_instance;
     }
