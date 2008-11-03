@@ -10,15 +10,6 @@
 %}
 
 
-// STL vector methods to ignore (for classes with no default constructor)
-%feature("ignore") std::vector<YODA::HistoBin>::vector(size_type size);
-%feature("ignore") std::vector<YODA::HistoBin>::resize(size_type size);
-%feature("ignore") std::vector<YODA::HistoBin>::pop();
-%feature("ignore") std::vector<YODA::ProfileBin>::vector(size_type size);
-%feature("ignore") std::vector<YODA::ProfileBin>::resize(size_type size);
-%feature("ignore") std::vector<YODA::ProfileBin>::pop();
-
-
 // STL class support
 %include "std_string.i"
 %include "std_vector.i"
@@ -38,21 +29,48 @@
 namespace YODA {
   enum Binning { LINEAR, LOG };
 }
-%include "YODA/Histo1D.h"
-%include "YODA/Profile1D.h"
+
+
+// Histos
+%feature("ignore") std::vector<YODA::HistoBin>::vector(size_type size);
+%feature("ignore") std::vector<YODA::HistoBin>::resize(size_type size);
+%feature("ignore") std::vector<YODA::HistoBin>::pop();
 %include "YODA/Bin.h"
 %include "YODA/HistoBin.h"
-%include "YODA/ProfileBin.h"
+%include "YODA/Histo1D.h"
 %template(HistoBins) std::vector<YODA::HistoBin>;
+
+
+// Profile histos
+%feature("ignore") std::vector<YODA::ProfileBin>::vector(size_type size);
+%feature("ignore") std::vector<YODA::ProfileBin>::resize(size_type size);
+%feature("ignore") std::vector<YODA::ProfileBin>::pop();
+%include "YODA/ProfileBin.h"
+%include "YODA/Profile1D.h"
 %template(ProfileBins) std::vector<YODA::ProfileBin>;
 
 
-// Scatter plots
+// Scatter plot errors
 %ignore YODA::ErrorCombiner;
+%include "YODA/Error.h"
+%template(PointError1D) YODA::PointError<1>;
+%template(PointError2D) YODA::PointError<2>;
+%template(ErrorSet1D) YODA::ErrorSet<1>; // ?
+%template(ErrorSet2D) YODA::ErrorSet<2>; // ?
+
+
+// Scatter plot points
 %ignore YODA::Point::error(size_t dim, ErrorCombiner& ec);
 %ignore YODA::Point::symmError(size_t dim, ErrorCombiner& ec);
 %ignore YODA::Point::errors(size_t dim, ErrorCombiner& ec);
 %ignore YODA::Point::symmErrors(size_t dim, ErrorCombiner& ec);
-%include "YODA/Error.h"
 %include "YODA/Point.h"
+
+
+// Scatter plots
 %include "YODA/Scatter.h"
+%template(Point1D) YODA::Point<1>;
+%template(Point2D) YODA::Point<2>;
+%template(Scatter1D) YODA::Scatter<1>;
+%template(Scatter2D) YODA::Scatter<2>;
+

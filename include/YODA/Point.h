@@ -14,6 +14,7 @@
 namespace YODA {
 
 
+  template <size_t N>
   class Point {
   public:
 
@@ -30,12 +31,7 @@ namespace YODA {
 
     /// Values with asymmetric (general) errors
     Point(const std::vector<double>& values,
-          const ErrorSet& errors);
-
-
-    /// Values with symmetric errors
-    // Point(const std::vector<double>& values,
-    //       const std::vector<std::vector<double> >& errors);
+          const ErrorSet<N>& errors);
 
     //@}
 
@@ -91,7 +87,7 @@ namespace YODA {
 
 
     /// Set the errors on this point, for all directions simultaneously.
-    virtual void setErrors(const ErrorSet& errors);
+    virtual void setErrors(const ErrorSet<N>& errors);
     // virtual void setErrors(const std::vector<std::vector<std::pair<double,double> > >& errors);
     // virtual void setErrors(const std::vector<std::vector<double> >& errors);
 
@@ -104,13 +100,15 @@ namespace YODA {
 
 
     /// How many dimensions in this instantiation?
-    virtual size_t numDims() const = 0;
+    size_t numDims() const {
+      return N;
+    }
 
     
   protected:
 
-    std::vector<double> _value;
-    ErrorSet _errors;
+    double _value[N];
+    ErrorSet<N> _errors;
   };
 
 
@@ -119,61 +117,7 @@ namespace YODA {
 
 
 
-  // 1D specialisation
-  class Point1D : public Point {
-  public:
-
-    // Default constructor
-    Point1D();
-
-
-    /// Values but no errors
-    Point1D(const std::vector<double>& value);
-
-
-    /// Values with asymmetric (general) errors
-    Point1D(const std::vector<double>& value,
-            const ErrorSet& errors);
-
-
-    /// Values with symmetric errors
-    // Point1D(const std::vector<double>& values,
-    //       const std::vector<double>& errors);
-
-    //public:
-    /// @todo Add simple (no "dimension arg") value and error accessors
-
-  public:
-    size_t numDims() const;
-  };
-
-
-
-  // 2D specialisation
-  class Point2D : public Point {
-  public:
-
-    // Default constructor
-    Point2D();
-
-
-    /// Values but no errors
-    Point2D(const std::vector<double>& value);
-
-
-    /// Values with asymmetric (general) errors
-    Point2D(const std::vector<double>& value,
-            const ErrorSet& errors);
-
-
-    /// Values with symmetric errors
-    // Point2D(const std::vector<double>& values,
-    //       const std::vector<double>& errors);
-
-  public:
-    size_t numDims() const;
-
-    /// @todo Add X, Y value and error accessors
+  /// @todo Add X, Y value and error accessors
 
   //   Point2D(double x, double y,
   //         double xerror,

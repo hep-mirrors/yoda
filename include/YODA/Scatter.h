@@ -4,17 +4,17 @@
 // Copyright (C) 2008 The YODA collaboration (see AUTHORS for details)
 //
 #ifndef YODA_SCATTER_H
-#define YODA_SCATTER_H 1
+#define YODA_SCATTER_H
 
 #include "YODA/AnalysisObject.h"
 #include "YODA/Point.h"
 #include <vector>
 #include <string>
 
-
 namespace YODA {
 
 
+  template <size_t N>
   class Scatter : public AnalysisObject {
   public:
     Scatter();
@@ -22,81 +22,49 @@ namespace YODA {
     Scatter(const std::string& path, const std::string& title);
 
     /// How many dimensions in this instantiation?
-    virtual size_t numDims() const = 0;
+    virtual size_t numDims() const {
+      return N;
+    }
 
     virtual size_t numPoints() const = 0;
 
-    virtual void reset() = 0;
+    Scatter();
 
-  };
+    Scatter(const std::string& path, const std::string& title);
 
+    Scatter(const std::vector<YODA::Point<N> >& points);
 
-
-  class Scatter1D : Scatter {
-  public:
-    Scatter1D();
-
-    Scatter1D(const std::string& path, const std::string& title);
-
-    Scatter1D(const std::vector<YODA::Point1D>& points);
-
-    Scatter1D(const std::string& path, const std::string& title,
-              const std::vector<YODA::Point1D>& points);
+    Scatter(const std::string& path, const std::string& title,
+            const std::vector<YODA::Point<N> >& points);
 
     size_t numPoints() const;
-    std::vector<Point1D>& points();
-    const std::vector<Point1D>& points() const;
-    Point1D& point(size_t index);
-    const Point1D& point(size_t index) const;
-    Scatter1D& addPoint(const Point1D&);
 
-    Scatter1D& combineWith(const Scatter1D& other);
-    Scatter1D& combineWith(const std::vector<Scatter1D>& others);
+    std::vector<Point<N> >& points();
 
-    size_t numDims() const;
+    const std::vector<Point<N> >& points() const;
+
+    Point<N>& point(size_t index);
+
+    const Point<N>& point(size_t index) const;
+
+    Scatter& addPoint(const Point<N>&);
+
+    Scatter1D& combineWith(const Scatter<N>& other);
+    Scatter1D& combineWith(const std::vector<Scatter<N> >& others);
+
+    /// Something like findNearest(vec<N>, tolerance)?
+
     void reset();
 
   private:
-    std::vector<Point1D> _points;    
+    std::vector<Point<N> > _points;
   };
 
-  Scatter1D combine(const Scatter1D& a, const Scatter1D& b);
-  Scatter1D combine(const std::vector<Scatter1D>& scatters);
+  template <size_t N>
+  Scatter<N> combine(const Scatter<N>& a, const Scatter<N>& b);
 
-
-  ////////////////////////////////////////////////////////
-
-
-  class Scatter2D : Scatter {
-  public:
-    Scatter2D();
-
-    Scatter2D(const std::string& path, const std::string& title);
-
-    Scatter2D(const std::vector<YODA::Point2D>& points);
-
-    Scatter2D(const std::string& path, const std::string& title,
-              const std::vector<YODA::Point2D>& points);
-
-    size_t numPoints() const;
-    std::vector<Point2D>& points();
-    const std::vector<Point2D>& points() const;
-    Point2D& point(size_t index);
-    const Point2D& point(size_t index) const;
-    Scatter2D& addPoint(const Point2D&);
-
-    Scatter2D& combineWith(const Scatter2D& other);
-    Scatter2D& combineWith(const std::vector<Scatter2D>& others);
-
-    size_t numDims() const;
-    void reset();
-
-  private:
-    std::vector<Point2D> _points;
-  };
-
-  Scatter2D combine(const Scatter2D& a, const Scatter2D& b);
-  Scatter2D combine(const std::vector<Scatter2D>& scatters);
+  template <size_t N>
+  Scatter<N> combine(const std::vector<Scatter<N> >& scatters);
 
 
 }

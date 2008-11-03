@@ -47,6 +47,7 @@ namespace YODA {
 
 
   /// PointError is a collection of related {@link Error1D}s with some metadata.
+  template <size_t N>
   class PointError {
   public:
     PointError(ErrorType type=ERR_STAT, 
@@ -86,33 +87,37 @@ namespace YODA {
     PointError& setAnnotation(const std::string& ann);
 
   private:
-    std::map<size_t, YODA::Error1D> _errors;
+    YODA::Error1D _errors[N];
     YODA::ErrorType _type;
     std::string _annotation;
   };
 
 
+
   /// A collection of point errors
-  typedef std::vector<YODA::PointError> ErrorSet;
+  /// @todo Make this a templated typedef with "typename"?
+  template <size_t N>
+  typedef typename std::vector<YODA::PointError<N> > ErrorSet;
+
 
 
   /// The ErrorCombiner interface
   struct ErrorCombiner { 
-    virtual std::vector<std::pair<double,double> >
+    virtual std::vector<YODA::Error1D>
     combine_errs(const ErrorSet::const_iterator& begin,
                  const ErrorSet::const_iterator& end) = 0;
   };
 
 
   struct QuadErrComb : public ErrorCombiner {
-    virtual std::vector<std::pair<double,double> >
+    virtual std::vector<YODA::Error1D>
     combine_errs(const ErrorSet::const_iterator& begin,
                  const ErrorSet::const_iterator& end);
   };
 
 
   struct LinErrComb : public ErrorCombiner {
-    virtual std::vector<std::pair<double,double> >
+    virtual std::vector<YODA::Error1D>
     combine_errs(const ErrorSet::const_iterator& begin,
                  const ErrorSet::const_iterator& end);
   };
