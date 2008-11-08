@@ -97,7 +97,7 @@ namespace YODA {
 
   public:
     Error1D error(size_t dim) const { 
-      map<size_t, Error1D>::const_iterator ie =_errors.find(dim);
+      std::map<size_t, Error1D>::const_iterator ie =_errors.find(dim);
       if (ie == _errors.end()) {
         /// @todo Check num dimensions
         //if (dim >= numDims())
@@ -179,35 +179,38 @@ namespace YODA {
 
 
 
-  /// A collection of point errors
-  /// @todo Make this a templated typedef with "typename"?
-  template <size_t N>
-  typedef typename std::vector<YODA::PointError<N> > ErrorSet;
+  ////////////////////////////////////////////////
 
 
 
   /// The ErrorCombiner interface
   struct ErrorCombiner { 
-    virtual std::vector<YODA::Error1D>
-    combine_errs(const ErrorSet::const_iterator& begin,
-                 const ErrorSet::const_iterator& end) = 0;
+    // template <typename T>
+    // virtual std::vector<Error1D>
+    // combine_errs(const iterator& begin,
+    //              const iterator& end) = 0;
+
+    template <size_t N>
+    virtual std::vector<Error1D>
+    combine_errs(const std::vector< PointError<N> >& errs) = 0;
   };
 
 
   struct QuadErrComb : public ErrorCombiner {
-    virtual std::vector<YODA::Error1D>
-    combine_errs(const ErrorSet::const_iterator& begin,
-                 const ErrorSet::const_iterator& end);
+    template <size_t N>
+    std::vector<Error1D>
+    combine_errs(const std::vector< PointError<N> >& errs);
   };
 
 
   struct LinErrComb : public ErrorCombiner {
-    virtual std::vector<YODA::Error1D>
-    combine_errs(const ErrorSet::const_iterator& begin,
-                 const ErrorSet::const_iterator& end);
+    template <size_t N>
+    std::vector<Error1D>
+    combine_errs(const std::vector< PointError<N> >& errs);
   };
 
 
 }
+
 
 #endif
