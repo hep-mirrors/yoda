@@ -22,16 +22,20 @@ namespace YODA {
     //@{
 
     // Default constructor
-    Point();
+    Point() {  }
 
 
     /// Values but no errors
-    Point(const std::vector<double>& values);
+    Point(const std::vector<double>& values)
+      : _values(values)
+    {  }
 
 
     /// Values with asymmetric (general) errors
     Point(const std::vector<double>& values,
-          const ErrorSet<N>& errors);
+          const ErrorSet<N>& errors)
+      : _value(value), _errors(errors)
+    {  }
 
     //@}
 
@@ -42,16 +46,28 @@ namespace YODA {
     //@{
 
     /// Get the value of this point.
-    virtual std::vector<double> value() const;
+    virtual std::vector<double> value() const {
+      assert(_value.size() == N);
+      return _value;
+    }
 
     /// Get the value of this point in direction @a dim.
-    virtual double value(size_t dim) const;
+    virtual double value(size_t dim) const {
+      assert(dim < numDims());
+      return _value.at(dim);
+    }
 
     /// Set the value of this point in direction @a dim.
-    virtual void setValue(const std::vector<double>& values);
+    virtual void setValue(const std::vector<double>& values) {
+      assert(values.size() == numDims());
+      _value = values;
+    }
 
     /// Set the value of this point in direction @a dim.
-    virtual void setValue(size_t dim, double value);
+    virtual void setValue(size_t dim, double value) {
+      assert(dim < numDims());
+      _value[dim] = value;
+    }
 
     //@}
 
@@ -60,16 +76,43 @@ namespace YODA {
     //@{
 
     /// Get the effective error of this point in direction @a dim.
-    virtual std::pair<double,double> error(size_t dim, ErrorCombScheme ecs=QUAD_COMB) const;
+    virtual std::pair<double,double> error(size_t dim, ErrorCombScheme ecs=QUAD_COMB) const {
+      assert(dim < numDims());
+      pair<double,double> rtn = make_pair(0.0, 0.0);
+      if (ecs == QUAD_COMB) {
+        QuadErrComb qec;
+        rtn = error(dim, qec);
+      } else if (ecs == LIN_COMB) {
+        LinErrComb lec;
+        rtn = error(dim, lec);
+      } else if (ecs == HYBRID_COMB) {
+        throw Exception("HYBRID_COMB error combination not yet supported");
+        /// @todo HYBRID_COMB error combination support needed
+        //QuadLinErrComb qlec;
+        //rtn = error(qlec);
+      } else {
+        throw Exception("Requested unknown error combination scheme... how?!?");
+      }
+      return rtn;
+    }
 
     /// Get the effective error of this point in direction @a dim, passing an explicit combining functor.
-    virtual std::pair<double,double> error(size_t dim, ErrorCombiner& ec) const;
+    virtual std::pair<double,double> error(size_t dim, ErrorCombiner& ec) const {
+      assert(dim < numDims());
+      return ec.combine_errs(_errors.begin(), _errors.end()).at(dim);
+    }
 
     /// Get the effective plus/minus-averaged error of this point in direction @a dim.
-    virtual double symmError(size_t dim, ErrorCombScheme ecs=QUAD_COMB) const;
+    virtual double symmError(size_t dim, ErrorCombScheme ecs=QUAD_COMB) const {
+      pair<double,double> errs = error(dim, ecs);
+      return (errs.first + errs.second)/2.0;
+    }
 
     /// Get the effective plus/minus-averaged error of this point in direction @a dim, passing an explicit combining functor.
-    virtual double symmError(size_t dim, ErrorCombiner& ec) const;
+    virtual double symmError(size_t dim, ErrorCombiner& ec) const {
+      pair<double,double> errs = error(dim, ec);
+      return (errs.first + errs.second)/2.0;
+    }
 
     /// @todo Reinstate
 
@@ -87,12 +130,18 @@ namespace YODA {
 
 
     /// Set the errors on this point, for all directions simultaneously.
-    virtual void setErrors(const ErrorSet<N>& errors);
+    virtual void setErrors(const ErrorSet<N>& errors) {
+      _errors = errors;
+    }
+
+
     // virtual void setErrors(const std::vector<std::vector<std::pair<double,double> > >& errors);
     // virtual void setErrors(const std::vector<std::vector<double> >& errors);
 
     /// Add an error to this point.
-    virtual void addError(const PointError& error);
+    virtual void addError(const PointError& error) {
+      _errors.push_back(error);
+    }
     // virtual void addError(const std::vector<double>& error);
     // virtual void addError(const std::vector<std::pair<double,double> >& error);
 
