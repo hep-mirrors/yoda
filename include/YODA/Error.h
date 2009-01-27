@@ -183,24 +183,25 @@ namespace YODA {
 
 
 
-  /// The ErrorCombiner interface
+  // /// The ErrorCombiner interface
+  // template <size_t N>
+  // struct ErrorCombiner {
+
+  //   /// @todo Provide iterator-range version
+  //   template <typename ITER>
+  //   virtual std::vector<Error1D>
+  //   combine_errs(const ITER& begin, const ITER& end) = 0;
+
+  //   virtual std::vector<Error1D>
+  //   combine_errs(const std::vector< PointError<N> >& errs) = 0;
+  // };
+
+
   template <size_t N>
-  struct ErrorCombiner { 
-    // template <typename T>
-    // virtual std::vector<Error1D>
-    // combine_errs(const iterator& begin,
-    //              const iterator& end) = 0;
-
-    virtual std::vector<Error1D>
-    combine_errs(const std::vector< PointError<N> >& errs) = 0;
-  };
-
-
-  template <size_t N>
-  struct QuadErrComb : public ErrorCombiner {
+  struct QuadErrComb { // : public ErrorCombiner<N> {
     std::vector<Error1D>
     combine_errs(const std::vector< PointError<N> >& errs) {
-      vector<Error1D> rtn;
+      std::vector<Error1D> rtn;
       return rtn;
       // const size_t numDims = begin->numDims();
       // double up(0), down(0);
@@ -215,10 +216,10 @@ namespace YODA {
 
 
   template <size_t N>
-  struct LinErrComb : public ErrorCombiner {
+  struct LinErrComb { //: public ErrorCombiner<N> {
     std::vector<Error1D>
     combine_errs(const std::vector< PointError<N> >& errs) {
-      vector<Error1D> rtn;
+      std::vector<Error1D> rtn;
       return rtn;
       // const size_t numDims = begin->numDims();
       // double up(0), down(0);

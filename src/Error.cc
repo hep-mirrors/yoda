@@ -89,34 +89,34 @@ namespace YODA {
 
 
   
-  vector<pair<double,double> >
-  QuadErrComb::combine_errs(const ErrorSet::const_iterator& begin,
-                            const ErrorSet::const_iterator& end) {
-    vector<pair<double,double> > rtn;
-    return rtn;
-    // const size_t numDims = begin->numDims();
-    // double up(0), down(0);
-    // for (ErrorSet::const_iterator e = begin; e != end; ++e) {
-    //   down += sq(e->minusErr());
-    //   up += sq(e->plusErr());
-    // }
-    // return make_pair(sqrt(down), sqrt(up));
-  }
+  // vector<pair<double,double> >
+  // QuadErrComb::combine_errs(const ErrorSet::const_iterator& begin,
+  //                           const ErrorSet::const_iterator& end) {
+  //   vector<pair<double,double> > rtn;
+  //   return rtn;
+  //   // const size_t numDims = begin->numDims();
+  //   // double up(0), down(0);
+  //   // for (ErrorSet::const_iterator e = begin; e != end; ++e) {
+  //   //   down += sq(e->minusErr());
+  //   //   up += sq(e->plusErr());
+  //   // }
+  //   // return make_pair(sqrt(down), sqrt(up));
+  // }
   
 
-  vector<pair<double,double> >
-  LinErrComb::combine_errs(const ErrorSet::const_iterator& begin,
-                           const ErrorSet::const_iterator& end) {
-    vector<pair<double,double> > rtn;
-    return rtn;
-    // const size_t numDims = begin->numDims();
-    // double up(0), down(0);
-    // for (ErrorSet::const_iterator e = begin; e != end; ++e) {
-    //   down += e->minusErr();
-    //   up += e->plusErr();
-    // }
-    // return make_pair(down, up);
-  }
+  // vector<pair<double,double> >
+  // LinErrComb::combine_errs(const ErrorSet::const_iterator& begin,
+  //                          const ErrorSet::const_iterator& end) {
+  //   vector<pair<double,double> > rtn;
+  //   return rtn;
+  //   // const size_t numDims = begin->numDims();
+  //   // double up(0), down(0);
+  //   // for (ErrorSet::const_iterator e = begin; e != end; ++e) {
+  //   //   down += e->minusErr();
+  //   //   up += e->plusErr();
+  //   // }
+  //   // return make_pair(down, up);
+  // }
   
 
 }

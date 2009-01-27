@@ -79,7 +79,7 @@ namespace YODA {
     }
 
 
-    Scatter1D& combineWith(const Scatter<N>& other) {
+    Scatter& combineWith(const Scatter<N>& other) {
       for (vector<Point1D>::const_iterator pt = other.points().begin(); 
            pt != other.points().end(); ++pt) {
         addPoint(*pt);
@@ -88,7 +88,7 @@ namespace YODA {
     }
   
 
-    Scatter1D& combineWith(const std::vector<Scatter<N> >& others) {
+    Scatter& combineWith(const std::vector<Scatter<N> >& others) {
       for (vector<Scatter1D>::const_iterator s = others.begin(); 
            s != others.end(); ++s) {
         combineWith(*s);
@@ -97,7 +97,7 @@ namespace YODA {
     }
 
 
-    /// Something like findNearest(vec<N>, tolerance)?
+    /// @todo Something like findNearest(vec<N>, tolerance)?
 
     void reset() {
       _points.clear();
