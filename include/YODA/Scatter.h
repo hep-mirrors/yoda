@@ -73,14 +73,14 @@ namespace YODA {
     }
 
 
-    Scatter& addPoint(const Point<N>&) {
+    Scatter& addPoint(const Point<N>& pt) {
       _points.push_back(pt);
       return *this;
     }
 
 
     Scatter& combineWith(const Scatter<N>& other) {
-      for (vector<Point1D>::const_iterator pt = other.points().begin(); 
+      for (typename std::vector< Point<N> >::const_iterator pt = other.points().begin(); 
            pt != other.points().end(); ++pt) {
         addPoint(*pt);
       }
@@ -89,7 +89,7 @@ namespace YODA {
   
 
     Scatter& combineWith(const std::vector<Scatter<N> >& others) {
-      for (vector<Scatter1D>::const_iterator s = others.begin(); 
+      for (typename std::vector< Scatter<N> >::const_iterator s = others.begin(); 
            s != others.end(); ++s) {
         combineWith(*s);
       }
@@ -120,9 +120,9 @@ namespace YODA {
 
 
   template <size_t N>
-  inline Scatter<N> combine(const std::vector<Scatter<N> >& scatters) {
+  inline Scatter<N> combine(const std::vector< Scatter<N> >& scatters) {
     Scatter<N> rtn;
-    for (vector<Scatter1D>::const_iterator s = scatters.begin(); 
+    for (typename std::vector< Scatter<N> >::const_iterator s = scatters.begin(); 
          s != scatters.end(); ++s) {
       rtn.combineWith(*s);
     }

@@ -97,9 +97,9 @@ namespace YODA {
   }
 
 
-  void WriterAIDA::writeScatter(std::ostream& stream, const Scatter& p) {
-    //
-  }
+  // void WriterAIDA::writeScatter(std::ostream& stream, const Scatter& p) {
+  //   //
+  // }
 
 
 }

@@ -63,42 +63,42 @@ namespace YODA {
   }
 
 
-  void writeScatterData1D(std::ostream& os, const Scatter& s) {
-    const Scatter1D& s1 = dynamic_cast<const Scatter1D&>(s);
-    for (vector<Point1D>::const_iterator p = s1.points().begin(); p != s1.points().end(); ++p) {
-      /// @todo Write all errors, plus annotations & type
-      os << p->value(0) << "+-(" << p->symmError(0) << ")";
-      os << "\n";
-    }
-  }
+  // void writeScatterData1D(std::ostream& os, const Scatter& s) {
+  //   const Scatter1D& s1 = dynamic_cast<const Scatter1D&>(s);
+  //   for (vector<Point1D>::const_iterator p = s1.points().begin(); p != s1.points().end(); ++p) {
+  //     /// @todo Write all errors, plus annotations & type
+  //     os << p->value(0) << "+-(" << p->symmError(0) << ")";
+  //     os << "\n";
+  //   }
+  // }
 
 
-  void writeScatterData2D(std::ostream& os, const Scatter& s) {
-    const Scatter2D& s2 = dynamic_cast<const Scatter2D&>(s);
-    for (vector<Point2D>::const_iterator p = s2.points().begin(); p != s2.points().end(); ++p) {
-      /// @todo Write all errors, plus annotations & type
-      os << p->value(0) << "+-(" << p->symmError(0) << ")";
-      os << "\t";
-      os << p->value(1) << "+-(" << p->symmError(1) << ")";
-      os << "\n";
-    }
-  }
+  // void writeScatterData2D(std::ostream& os, const Scatter& s) {
+  //   const Scatter2D& s2 = dynamic_cast<const Scatter2D&>(s);
+  //   for (vector<Point2D>::const_iterator p = s2.points().begin(); p != s2.points().end(); ++p) {
+  //     /// @todo Write all errors, plus annotations & type
+  //     os << p->value(0) << "+-(" << p->symmError(0) << ")";
+  //     os << "\t";
+  //     os << p->value(1) << "+-(" << p->symmError(1) << ")";
+  //     os << "\n";
+  //   }
+  // }
 
 
-  void WriterYODA::writeScatter(std::ostream& os, const Scatter& s) {
-    os << "## BEGIN SCATTER\n";
-    os << "## Title: " << s.title() << "\n";
-    os << "## Path: " << s.path() << "\n";
-    os << "## NDims: " << s.numDims() << "\n";
-    os << "# x1+-(m1,p1)\t x2+-(m1,p1)\t ...\n";
-    if (s.numDims() == 1) {
-      writeScatterData1D(os, s);
-    } else if (s.numDims() == 2) {
-      writeScatterData2D(os, s);
-    }
-    os << "## END SCATTER\n";
-    os << flush;
-  }
+  // void WriterYODA::writeScatter(std::ostream& os, const Scatter& s) {
+  //   os << "## BEGIN SCATTER\n";
+  //   os << "## Title: " << s.title() << "\n";
+  //   os << "## Path: " << s.path() << "\n";
+  //   os << "## NDims: " << s.numDims() << "\n";
+  //   os << "# x1+-(m1,p1)\t x2+-(m1,p1)\t ...\n";
+  //   if (s.numDims() == 1) {
+  //     writeScatterData1D(os, s);
+  //   } else if (s.numDims() == 2) {
+  //     writeScatterData2D(os, s);
+  //   }
+  //   os << "## END SCATTER\n";
+  //   os << flush;
+  // }
 
 
 }

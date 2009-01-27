@@ -37,7 +37,7 @@ namespace YODA {
     void writeFooter(std::ostream& stream);
     void writeHisto(std::ostream& stream, const Histo1D& h);
     void writeProfile(std::ostream& stream, const Profile1D& p);
-    void writeScatter(std::ostream& stream, const Scatter& p);
+    //void writeScatter(std::ostream& stream, const Scatter& p);
   };
 
 }

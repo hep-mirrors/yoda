@@ -55,8 +55,8 @@ namespace YODA {
 %include "YODA/Error.h"
 %template(PointError1D) YODA::PointError<1>;
 %template(PointError2D) YODA::PointError<2>;
-%template(ErrorSet1D) YODA::ErrorSet<1>; // ?
-%template(ErrorSet2D) YODA::ErrorSet<2>; // ?
+//%template(ErrorSet1D) YODA::ErrorSet<1>; // ?
+//%template(ErrorSet2D) YODA::ErrorSet<2>; // ?
 
 
 // Scatter plot points
@@ -73,4 +73,3 @@ namespace YODA {
 %template(Point2D) YODA::Point<2>;
 %template(Scatter1D) YODA::Scatter<1>;
 %template(Scatter2D) YODA::Scatter<2>;
-
