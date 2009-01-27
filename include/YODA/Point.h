@@ -8,6 +8,8 @@
 
 #include "YODA/Error.h"
 #include "YODA/Exception.h"
+#include "YODA/Util.h"
+
 #include <vector>
 #include <string>
 #include <map>
@@ -34,7 +36,7 @@ namespace YODA {
 
 
     /// Values with asymmetric (general) errors
-    Point(const std::vector<double>& values,
+    Point(const std::vector<double>& value,
           const std::vector< PointError<N> >& errors)
       : _value(value), _errors(errors)
     {  }
@@ -50,7 +52,9 @@ namespace YODA {
     /// Get the value of this point.
     virtual std::vector<double> value() const {
       assert(_value.size() == N);
-      return _value;
+      std::vector<double> rtn(N);
+      std::copy(_value.begin(), _value.end(), rtn.begin());
+      return rtn;
     }
 
     /// Get the value of this point in direction @a dim.
@@ -80,7 +84,7 @@ namespace YODA {
     /// Get the effective error of this point in direction @a dim.
     YODA::Error1D error(size_t dim, ErrorCombScheme ecs=QUAD_COMB) const {
       assert(dim < numDims());
-      std::pair<double,double> rtn = std::make_pair(0.0, 0.0);
+      Error1D rtn = std::make_pair(0.0, 0.0);
       if (ecs == QUAD_COMB) {
         QuadErrComb<N> qec;
         rtn = error(dim, qec);
@@ -160,7 +164,7 @@ namespace YODA {
     
   protected:
 
-    double _value[N];
+    nvector<double,N> _value;
     std::vector< PointError<N> > _errors;
   };
 

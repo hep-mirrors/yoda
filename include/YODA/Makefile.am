@@ -1,7 +1,7 @@
 include_HEADERS = \
-    Exception.h \
+    Exception.h Util.h \
     AnalysisObject.h \
     Histo1D.h Bin.h \
     Scatter.h Point.h \
     Profile1D.h ProfileBin.h \
-    Writer.h WriterAIDA.h
+    Writer.h WriterAIDA.h WriterYODA.h

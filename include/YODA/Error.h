@@ -6,11 +6,14 @@
 #ifndef YODA_ERROR_H
 #define YODA_ERROR_H
 
+#include "YODA/Util.h"
+
 #include <vector>
 #include <string>
 #include <map>
 
 namespace YODA {
+
 
 
   /// Enum for specifying different error classes.
@@ -56,7 +59,7 @@ namespace YODA {
     {  }
 
 
-    PointError(std::map<size_t, Error1D> err1Ds, 
+    PointError(std::vector<Error1D> err1Ds, 
                ErrorType type=ERR_STAT, const std::string& ann="")
       : _errors(err1Ds), _type(type), _annotation(ann)
     {  }
@@ -97,14 +100,7 @@ namespace YODA {
 
   public:
     Error1D error(size_t dim) const { 
-      std::map<size_t, Error1D>::const_iterator ie =_errors.find(dim);
-      if (ie == _errors.end()) {
-        /// @todo Check num dimensions
-        //if (dim >= numDims())
-        //throw Exception("Requesting");
-        return Error1D();
-      }
-      return ie->second;
+      return _errors[dim];
     }
 
 
@@ -172,7 +168,7 @@ namespace YODA {
 
 
   private:
-    YODA::Error1D _errors[N];
+    nvector<YODA::Error1D, N> _errors;
     YODA::ErrorType _type;
     std::string _annotation;
   };
