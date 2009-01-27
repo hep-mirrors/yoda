@@ -184,29 +184,50 @@ namespace YODA {
 
 
   /// The ErrorCombiner interface
+  template <size_t N>
   struct ErrorCombiner { 
     // template <typename T>
     // virtual std::vector<Error1D>
     // combine_errs(const iterator& begin,
     //              const iterator& end) = 0;
 
-    template <size_t N>
     virtual std::vector<Error1D>
     combine_errs(const std::vector< PointError<N> >& errs) = 0;
   };
 
 
+  template <size_t N>
   struct QuadErrComb : public ErrorCombiner {
-    template <size_t N>
     std::vector<Error1D>
-    combine_errs(const std::vector< PointError<N> >& errs);
+    combine_errs(const std::vector< PointError<N> >& errs) {
+      vector<Error1D> rtn;
+      return rtn;
+      // const size_t numDims = begin->numDims();
+      // double up(0), down(0);
+      // for (ErrorSet::const_iterator e = begin; e != end; ++e) {
+      //   down += sq(e->minusErr());
+      //   up += sq(e->plusErr());
+      // }
+      // return make_pair(sqrt(down), sqrt(up));
+    }
   };
 
 
+
+  template <size_t N>
   struct LinErrComb : public ErrorCombiner {
-    template <size_t N>
     std::vector<Error1D>
-    combine_errs(const std::vector< PointError<N> >& errs);
+    combine_errs(const std::vector< PointError<N> >& errs) {
+      vector<Error1D> rtn;
+      return rtn;
+      // const size_t numDims = begin->numDims();
+      // double up(0), down(0);
+      // for (ErrorSet::const_iterator e = begin; e != end; ++e) {
+      //   down += e->minusErr();
+      //   up += e->plusErr();
+      // }
+      // return make_pair(down, up);
+    }
   };
 
 
