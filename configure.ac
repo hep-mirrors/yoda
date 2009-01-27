@@ -33,13 +33,12 @@ AC_PATH_PROG(DOXYGEN, doxygen)
 AM_CONDITIONAL(WITH_DOXYGEN, test "$DOXYGEN")
 
 ## Decide whether to build the Python extension
+AZ_PYTHON_DEFAULT
 AC_ARG_ENABLE(pyext, [AC_HELP_STRING(--enable-pyext, [build YODA Python module @<:@default=no@:>@])], [], [enable_pyext=no])
 AM_CONDITIONAL(ENABLE_PYEXT, [test x$enable_pyext == xyes])
 if test x$enable_pyext == xyes; then
-  AM_PATH_PYTHON(2.3)
-  AC_PROG_SWIG(1.3.21)
-  SWIG_ENABLE_CXX
-  SWIG_PYTHON
+  AZ_PYTHON_PATH
+  AZ_PYTHON_VERSION_ENSURE([2.3])
 fi
 
 ## Optional ROOT analysis framework
@@ -69,7 +68,19 @@ AC_CONFIG_FILES([Makefile])
 AC_CONFIG_FILES([include/Makefile include/YODA/Makefile])
 AC_CONFIG_FILES([src/Makefile])
 AC_CONFIG_FILES([tests/Makefile])
-AC_CONFIG_FILES([pyext/Makefile])
+AC_CONFIG_FILES([pyext/Makefile pyext/setup.py])
 #AC_CONFIG_FILES([bin/Makefile bin/yoda-config])
 
 AC_OUTPUT
+
+if test x$enable_pyext == xyes; then
+   cat <<EOF
+
+************************************************************
+YODA CONFIGURED!
+
+Now build and install (to the $prefix tree) with e.g.
+make -j2 && make -j2 install
+************************************************************
+EOF
+fi

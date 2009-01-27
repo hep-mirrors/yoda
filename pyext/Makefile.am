@@ -1,28 +1,30 @@
+EXTRA_DIST = yoda.i ez_setup.py
+
+## Bundling SWIG-built sources with the tarball for SL4 compat
+EXTRA_DIST += yoda_wrap.cc yoda.py
+yoda_wrap.cc yoda.py: yoda.i
+	swig -c++ -python -I$(top_srcdir)/include -o yoda_wrap.cc $<
+
+
 if ENABLE_PYEXT
 
-BUILT_SOURCES = yoda_wrap.cc
-SWIG_SOURCES  = yoda.i
-python_PYTHON = yoda.py
+all-local: yoda_wrap.cc
+	$(PYTHON) setup.py build
 
-pyexec_LTLIBRARIES = _yoda.la
-_yoda_la_SOURCES = yoda_wrap.cc $(SWIG_SOURCES)
-_yoda_la_CPPFLAGS = $(AM_CPPFLAGS) $(SWIG_PYTHON_CPPFLAGS) -I$(top_srcdir)/include
-_yoda_la_CXXFLAGS = $(AM_CXXFLAGS) -Wno-long-long -fno-strict-aliasing
-_yoda_la_LDFLAGS = -module -L$(top_builddir)/src
-_yoda_la_LIBADD = -lYODA
+install-exec-local:
+	$(PYTHON) setup.py install --prefix=$(prefix)
 
-incdir = $(top_srcdir)/include
-yoda_wrap.cc : $(SWIG_SOURCES) $(incdir)/YODA/AnalysisObject.h $(incdir)/YODA/Histo1D.h $(incdir)/YODA/Profile1D.h $(incdir)/YODA/Scatter.h
-	$(SWIG) $(SWIG_PYTHON_OPT) -I$(incdir) -o yoda_wrap.cc $(SWIG_SOURCES)
+uninstall-local:
+	rm -rf $(libdir)/python*/site-packages/yoda*
 
-EXTRA_DIST = PyTest.py TestNegWeights.py
-TESTS = PyTest.py TestNegWeights.py
-TESTS_ENVIRONMENT = \
-  PYTHONPATH=$(PYTHONPATH):$(top_builddir)/pyext:$(top_builddir)/pyext/.libs \
-  python
+clean-local:
+	$(PYTHON) setup.py clean --all
+	@rm -f $(top_builddir)/*.pyc
 
-else
-
-EXTRA_DIST = yoda.i PyTest.py TestNegWeights.py
+distclean-local:
+	@rm -rf yoda.egg-info
+	@rm -rf dist
+	@rm -f yoda.py
+	@rm -f yoda_wrap.cc
 
 endif

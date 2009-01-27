@@ -1,0 +1,46 @@
+#! /usr/bin/env python
+
+## Get setuptools
+import ez_setup
+ez_setup.use_setuptools()
+from setuptools import setup, Extension
+
+longdesc = """This is a SWIG wrapper on the YODA 
+(Yet more Objects for Data Analysis) data analysis library.
+All the functionality (histograms, profile histograms,
+scatter plots, and I/O) of YODA's C++ API is to be provided
+for Python developers through this module.
+"""
+
+## Extension definition
+import os
+incdir = os.path.abspath('@top_srcdir@/include')
+srcdir = os.path.abspath('@top_srcdir@/src')
+ext = Extension('_yoda',
+                ['yoda_wrap.cc'],
+                include_dirs=[incdir],
+                library_dirs=[srcdir, os.path.join(srcdir,'.libs')],
+                libraries=['YODA'])
+
+## Setup definition
+setup(name = 'yoda',
+      version = '@PACKAGE_VERSION@',
+      include_package_data = True,
+      ext_modules=[ext],
+      py_modules = ['yoda'],
+      
+      author = ['Andy Buckley'],
+      author_email = 'andy@insectnation.org',
+      url = 'http://projects.hepforge.org/yoda/',
+      description = 'YODA: a Python interface to the YODA data analysis library.',
+      long_description = longdesc,
+      keywords = 'data analysis histograms particle physics motecarlo cedar mcnet',
+      license = 'GPL',
+      classifiers = ['Development Status :: 4 - Beta',
+                   'Environment :: Console',
+                   'Intended Audience :: Science/Research',
+                   'License :: OSI Approved :: GNU General Public License (GPL)',
+                   'Operating System :: OS Independent',
+                   'Programming Language :: Python',
+                   'Topic :: Scientific/Engineering :: Physics']
+      )
