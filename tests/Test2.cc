@@ -1,7 +1,7 @@
 #include "YODA/Histo1D.h"
 #include "YODA/WriterAIDA.h"
 #include <cmath>
-#include <iostream>
+#include <fstream>
 #include <unistd.h>
 
 using namespace std;
@@ -17,8 +17,12 @@ int main() {
     h.fill(num);
   }
 
+  ofstream file("test2.aida");
+
   Writer& w = WriterAIDA::create();
-  w.write(cout, h);
+  w.write(file, h);
+
+  file.close();
 
   return EXIT_SUCCESS;
 }

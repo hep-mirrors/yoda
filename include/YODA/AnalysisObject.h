@@ -37,6 +37,9 @@ namespace YODA {
     /// Set the title
     void setTitle(const std::string& title);
 
+    /// Get the name
+    std::string name() const;
+
   public:
 
     ///@name Annotations

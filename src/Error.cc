@@ -17,7 +17,7 @@ namespace YODA {
   {  }
 
 
-  Error1D::Error1D(pair<double,double> pm_errs) 
+  Error1D::Error1D(std::pair<double,double> pm_errs) 
   {  
     _minus = pm_errs.first;
     _plus = pm_errs.second;
@@ -68,7 +68,7 @@ namespace YODA {
   }
 
 
-  Error1D& Error1D::setErrs(pair<double,double> pm_errs) {  
+  Error1D& Error1D::setErrs(std::pair<double,double> pm_errs) {  
     setMinusErr(pm_errs.first);
     setPlusErr(pm_errs.second);
     return *this;

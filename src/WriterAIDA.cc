@@ -43,7 +43,7 @@ namespace YODA {
 
   void WriterAIDA::writeHisto(std::ostream& os, const Histo1D& h) {
     // <histogram1d>
-    os << "<histogram1d" // name=\"" << encodeForXML(h.name()) << "\""
+    os << "<histogram1d name=\"" << encodeForXML(h.name()) << "\""
        << " title=\"" << encodeForXML(h.title()) << "\""
        << " path=\"" << h.path() << "\">\n";
     // <axis>
@@ -51,7 +51,10 @@ namespace YODA {
        << " numberOfBins=\"" << h.bins().size() << "\""
        << " direction=\"x\">\n";
     // <binBorder>
-    for (vector<HistoBin>::const_iterator b = h.bins().begin(); b != h.bins().end(); ++b) {
+    vector<HistoBin>::const_iterator firstbin = h.bins().begin();
+    os << "    <binBorder value=\"" << firstbin->lowEdge() << "\" />\n";
+    for (vector<HistoBin>::const_iterator b = firstbin; 
+	 b != h.bins().end(); ++b) {
       os << "    <binBorder value=\"" << b->highEdge() << "\" />\n";
     }
     os << "  </axis>\n";

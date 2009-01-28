@@ -30,19 +30,19 @@ namespace YODA {
     //@}
 
 
-    /// @name Writing multiple analysis objects by collection.
-    //@{
-    /// Write out a collection of objects @a objs to output stream @a stream.
-    template <template<typename> class LIST>
-    void write(std::ostream& stream, const LIST<AnalysisObject>& aos) {
-      write(stream, aos.begin(), aos.end());
-    }
-    /// Write out a collection of objects @a objs to file @a filename.
-    template <template<typename> class LIST>
-    void write(const std::string& filename, const LIST<AnalysisObject>& aos) {
-      write(filename, aos.begin(), aos.end());
-    }
-    //@}
+    // /// @name Writing multiple analysis objects by collection.
+    // //@{
+    // /// Write out a collection of objects @a objs to output stream @a stream.
+    // template <template<typename> class LIST>
+    // void write(std::ostream& stream, const LIST<AnalysisObject>& aos) {
+    //   write(stream, aos.begin(), aos.end());
+    // }
+    // /// Write out a collection of objects @a objs to file @a filename.
+    // template <template<typename> class LIST>
+    // void write(const std::string& filename, const LIST<AnalysisObject>& aos) {
+    //   write(filename, aos.begin(), aos.end());
+    // }
+    // //@}
 
 
     /// @name Writing multiple analysis objects by iterator range.
@@ -51,12 +51,14 @@ namespace YODA {
     /// iterator @a end to output stream @a stream.
     template <typename ITER>
     void write(std::ostream& stream, const ITER& begin, const ITER& end) {
+      writeHeader(stream);
       for (ITER ao = begin; ao != end; ++ao) {
-        write(stream, *ao);
+        writeBody(stream, *ao);
         // if (!ok) {
         //   throw Exception("Error when writing to output stream");
         // }
       }
+      writeFooter(stream);
     }
     /// Write out the objects specified by start iterator @a begin and end
     /// iterator @a end to file @a filename.
@@ -74,6 +76,7 @@ namespace YODA {
 
   protected:
     virtual void writeHeader(std::ostream& stream) = 0;
+    void writeBody(std::ostream& stream, const AnalysisObject& ao);
     virtual void writeFooter(std::ostream& stream) = 0;
     virtual void writeHisto(std::ostream& stream, const Histo1D& h) = 0;
     virtual void writeProfile(std::ostream& stream, const Profile1D& p) = 0;

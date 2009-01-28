@@ -15,7 +15,7 @@ namespace YODA {
   Bin::Bin(double lowedge, double highedge, BinType type) 
     : _edges( make_pair(lowedge, highedge) )
   {
-    assert( _edges.second >= _edges.first );
+    assert( _edges.second > _edges.first );
   }
 
 

@@ -37,6 +37,15 @@ namespace YODA {
     _title = title;
   }
 
+  string AnalysisObject::name() const {
+    size_t pos = _path.rfind('/');
+    if (pos == string::npos)
+      throw Exception("No slash found in path.");
+    if (pos == _path.size() - 1)
+      throw Exception("Trailing slash found in path.");
+    return _path.substr(pos + 1);
+  }
+
   void AnalysisObject::setAnnotation(const std::string& name, const std::string& value) {
     _annotations[name] = value;
   }
