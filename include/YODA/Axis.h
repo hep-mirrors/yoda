@@ -74,6 +74,7 @@ namespace YODA {
 
     vector<double> _mkEdges(size_t nbins, double lower, 
                             double upper, Binning binning) {
+      assert(nbins > 0);
       assert(upper > lower);
       vector<double> rtn;
       
@@ -117,6 +118,7 @@ namespace YODA {
       _underflow(0, 1, Bin::UNDERFLOWBIN),
       _overflow(0, 1, Bin::OVERFLOWBIN)
     {
+      assert(binedges.size() > 1);
       _mkAxis(binedges);
     }
 
@@ -134,6 +136,7 @@ namespace YODA {
       _underflow(0, 1, Bin::UNDERFLOWBIN),
       _overflow(0, 1, Bin::OVERFLOWBIN)
     {
+      assert(!bins.empty());
       _mkAxis(bins);
     }
 
