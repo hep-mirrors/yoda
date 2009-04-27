@@ -12,10 +12,10 @@ all-local: yoda_wrap.cc
 	$(PYTHON) setup.py build
 
 install-exec-local:
-	$(PYTHON) setup.py install --prefix=$(prefix)
+	$(PYTHON) setup.py install --prefix=$(DESTDIR)$(prefix)
 
 uninstall-local:
-	rm -rf $(libdir)/python*/site-packages/yoda*
+	rm -rf $(DESTDIR)$(libdir)/python*/site-packages/yoda*
 
 clean-local:
 	$(PYTHON) setup.py clean --all
