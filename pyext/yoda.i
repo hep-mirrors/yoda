@@ -6,6 +6,9 @@
   #include "YODA/Histo1D.h"
   #include "YODA/Profile1D.h"
   #include "YODA/Scatter.h"
+
+  #include "YODA/WriterYODA.h"
+  #include "YODA/WriterAIDA.h"
   using namespace YODA;
 %}
 
@@ -73,3 +76,16 @@ namespace YODA {
 %template(Point2D) YODA::Point<2>;
 %template(Scatter1D) YODA::Scatter<1>;
 %template(Scatter2D) YODA::Scatter<2>;
+
+
+// I/O
+%include "YODA/Writer.h"
+%inline %{
+  namespace YODA {
+    Writer* get_writer(const std::string& name) {
+      if (name == "AIDA") return &WriterAIDA::create();
+      if (name == "YODA") return &WriterYODA::create();
+      return 0;
+    }
+  }
+%}

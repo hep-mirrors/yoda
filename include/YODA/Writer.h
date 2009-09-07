@@ -1,8 +1,10 @@
 // -*- C++ -*-
 //
 // This file is part of YODA -- Yet more Objects for Data Analysis
-// Copyright (C) 2008 The YODA collaboration (see AUTHORS for details)
+// Copyright (C) 2008-2009 The YODA collaboration (see AUTHORS for details)
 //
+#ifndef YODA_Writer_h
+#define YODA_Writer_h
 
 #include "YODA/AnalysisObject.h"
 #include "YODA/Histo1D.h"
@@ -84,4 +86,7 @@ namespace YODA {
 
   };
 
+
 }
+
+#endif

@@ -1,5 +1,9 @@
+#! /usr/bin/env python
+
 import random
 import unittest
+import YODA
+
 
 class TestSequenceFunctions(unittest.TestCase):
     
@@ -20,6 +24,7 @@ class TestSequenceFunctions(unittest.TestCase):
         self.assertRaises(ValueError, random.sample, self.seq, 20)
         for element in random.sample(self.seq, 5):
             self.assert_(element in self.seq)
+
 
 if __name__ == '__main__':
     unittest.main()
