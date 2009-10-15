@@ -41,6 +41,9 @@ if test x$enable_pyext == xyes; then
   AZ_PYTHON_VERSION_ENSURE([2.3])
 fi
 
+## Test to see if we have to install libyaml-cpp
+AC_CEDAR_LIBRARYANDHEADERS([yaml-cpp], , , [AC_MSG_NOTICE([YODA will install the yaml-cpp library])])
+
 ## Optional ROOT analysis framework
 #AC_ARG_ENABLE([ROOT], [AC_HELP_STRING(--enable-root, [build with ROOT output @<:@default=yes@:>@])], [], [enable_root=yes])
 #if test "x$enable_root" != "xno"; then
@@ -67,6 +70,7 @@ AC_EMPTY_SUBST
 AC_CONFIG_FILES([Makefile])
 AC_CONFIG_FILES([include/Makefile include/YODA/Makefile])
 AC_CONFIG_FILES([src/Makefile])
+AC_CONFIG_FILES([src/yaml-cpp/Makefile])
 AC_CONFIG_FILES([tests/Makefile])
 AC_CONFIG_FILES([pyext/Makefile pyext/setup.py])
 #AC_CONFIG_FILES([bin/Makefile bin/yoda-config])
