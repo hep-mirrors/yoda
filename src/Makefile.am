@@ -15,7 +15,7 @@ libYODA_la_SOURCES = \
     WriterAIDA.cc \
     WriterYODA.cc
 
-libYODA_la_CPPFLAGS = -I$(srcdir)/yaml-cpp $(CPPFLAGS)
+libYODA_la_CPPFLAGS = -I$(srcdir)/yaml-cpp $(AM_CPPFLAGS)
 
 ## NB. Using $(top_builddir)/src rather than $(builddir) because of SL4 automake bug
 if WITH_YAML_CPP
@@ -23,5 +23,5 @@ libYODA_la_LDFLAGS = $(AM_LDFLAGS) -L$(YAML_CPPLIBPATH)
 libYODA_la_LIBADD = -lyaml-cpp
 else
 SUBDIRS = yaml-cpp
-libYODA_la_LIBADD = $(top_builddir)/src/Tools/yaml-cpp/libyaml-cpp.la
+libYODA_la_LIBADD = $(top_builddir)/src/yaml-cpp/libyaml-cpp.la
 endif
