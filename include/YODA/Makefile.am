@@ -1,4 +1,4 @@
-include_HEADERS = \
+pkginclude_HEADERS = \
     Exception.h Util.h \
     AnalysisObject.h \
     Histo1D.h Bin.h \

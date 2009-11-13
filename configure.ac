@@ -1,7 +1,7 @@
 ## Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.59)
-AC_INIT([Yoda],[0.1.0],[yoda@projects.hepforge.org],[Yoda])
+AC_INIT([YODA],[0.1.0],[yoda@projects.hepforge.org],[YODA])
 AM_INIT_AUTOMAKE
 AC_CONFIG_SRCDIR([src/Bin.cc])
 AC_CONFIG_HEADERS([include/YODA/YodaConfig.hh])
