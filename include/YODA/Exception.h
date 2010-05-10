@@ -14,33 +14,41 @@ namespace YODA {
 
 
   /// @brief Generic unspecialised YODA runtime error.
-  /// NB. We don't use "Error" because that's a useful stats 
+  /// NB. We don't use "Error" because that's a useful stats
   /// word to have available!
   class Exception : public std::runtime_error {
   public:
-    Exception(const std::string& what) : std::runtime_error(what) {} 
+    Exception(const std::string& what) : std::runtime_error(what) {}
   };
 
 
   /// Error for e.g. use of invalid bin ranges.
   class RangeError : public Exception {
   public:
-    RangeError(const std::string& what) : Exception(what) {} 
+    RangeError(const std::string& what) : Exception(what) {}
   };
 
 
   /// @todo Clarify where this might arise!
   class LogicError : public Exception {
   public:
-    LogicError(const std::string& what) : Exception(what) {} 
+    LogicError(const std::string& what) : Exception(what) {}
   };
+
 
   /// @brief Errors relating to event/bin weights
   /// Arises in computing statistical quantities because e.g. the bin
   /// weight is zero or negative.
   class WeightError : public Exception {
   public:
-    WeightError(const std::string& what) : Exception(what) {} 
+    WeightError(const std::string& what) : Exception(what) {}
+  };
+
+
+  /// @brief Errors relating to insufficient (effective) statistics
+  class LowStatsError : public Exception {
+  public:
+    LowStatsError(const std::string& what) : Exception(what) {}
   };
 
 

@@ -15,8 +15,8 @@ namespace YODA {
   /// centralise the calculation of statistics of unbounded, unbinned sampled
   /// distributions. Each distribution fill contributes a weight, \f$ w \f$, and
   /// a value, \f$ x \f$. By storing the total number of fills (ignoring
-  /// weights), \f$ \sum w \f$, \f$ \sum w^2 \f$, \f$ \sum wx \f$, 
-  /// and \f$ \sum wx^2 \f$, the Dbn1D can calculate the mean and spread 
+  /// weights), \f$ \sum w \f$, \f$ \sum w^2 \f$, \f$ \sum wx \f$,
+  /// and \f$ \sum wx^2 \f$, the Dbn1D can calculate the mean and spread
   /// (\f$ \sigma^2 \f$, \f$ \sigma \f$ and \f$ \hat{\sigma} \f$) of the
   /// sampled distribution. It is used to provide this information in bins
   /// and for the "hidden" \f$ y \f$ distribution in profile histogram bins.
@@ -76,6 +76,9 @@ namespace YODA {
     /// Number of entries (number of times @c fill was called, ignoring weights)
     unsigned long numEntries() const;
 
+    /// Effective number of entries \f$ = (\sum w)^2 / \sum w^2 \f$
+    double effNumEntries() const;
+
     /// The sum of weights
     double sumW() const;
 
@@ -87,7 +90,9 @@ namespace YODA {
 
     /// The sum of x^2 * weight
     double sumWX2() const;
+
     //@}
+
 
   public:
 
