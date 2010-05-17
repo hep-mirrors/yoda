@@ -61,15 +61,12 @@ namespace YODA {
 
 
   double Dbn1D::mean() const {
-    /// @todo Handle zero/negative sum weight
-    /// @todo What if sum(weight) is negative... use fabs()?
+    // I think this is ok, even for negative sum(w)
     return _sumWX/_sumW;
   }
 
 
   double Dbn1D::variance() const {
-    /// @todo Check definition
-
     // Weighted variance defined as
     // sig2 = ( sum(wx**2) * sum(w) - sum(wx)**2 ) / ( sum(w)**2 - sum(w**2) )
     // see http://en.wikipedia.org/wiki/Weighted_mean
@@ -80,6 +77,9 @@ namespace YODA {
     const double den = _sumW*_sumW - _sumW2;
     if (effNumEntries() < 2) {
       throw LowStatsError("Requested width of a distribution with only one effective entry");
+    }
+    if (den == 0) {
+      throw WeightError("Undefined weighted variance");
     }
     /// @todo Isn't this sensitive to the overall scale of the weights?
     if (fabs(num) < 1E-10 && fabs(den) < 1E-10) {

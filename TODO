@@ -1,6 +1,17 @@
 YODA TODO list
 ==============
 
+* Use boost
+
+* Book histos and profiles:
+  - from Scatter
+  - from each other (via temp Scatter?)
+  - by log and linear scale divisions
+  - explicitly from vector
+  - ???
+
+* Allow setting of all weight moments on bins and histos for persistency loading
+
 * Deal with integral vs. differential histos
    Only use diff but represent as / convert to int?
 
@@ -25,16 +36,14 @@ Define integration with Hendrik's flat format:
 Metadata as special comments
 Suggesting logx, logy, etc.?
 
-* Incorporate/extend Hendrik's make_plot script
-
-* Does Writer hierarchy make sense? 
+* Does Writer hierarchy make sense?
    Yes, for plugins...
 
 * Output header and footer
 
 * Sort out collection iterator args (needs templates)
 
-* Move writer iteration and collection stuff into Writer, leaving WriterYODA 
+* Move writer iteration and collection stuff into Writer, leaving WriterYODA
    and WriterAIDA to just implement the actual format writing parts.
 
 * Rename AnalysisObject -> Plotable?
