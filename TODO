@@ -17,6 +17,8 @@ YODA TODO list
 
 * Use inline functions... excluding them was a misunderstanding/red herring.
 
+* Add scaleX, scaleY, scaleXY to Scatter2D. Arbitrary function transforms on Scatters?
+
 * Store an overall Dbn1D in Histo1D (and profile?) rather than overflow and
   underflow. Remove the bin type thing.
 
