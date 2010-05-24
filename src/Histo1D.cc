@@ -57,11 +57,6 @@ namespace YODA {
   /////////////////////////////////////////////////
 
 
-  void Histo1D::reset () {
-    _axis.reset();
-  }
-
-
   void Histo1D::fill(double x, double weight) {
     HistoBin& b = binByCoord(x);
     if ( b.type() == Bin::VALIDBIN ) {

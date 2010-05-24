@@ -12,11 +12,15 @@ YODA TODO list
 
 * Remove path from analysis objects
 
-* Weight rescaling with scaleW(scalefactor) on Histo1D and Dbn1D
+* Sort axis contents (lazily)... allow arbitrary bins, but ensure that there is
+  no bin edge overlap.
 
-* Store an overall Dbn1D in Histo1D (and profile?) rather than overflow and underflow
+* Use inline functions... excluding them was a misunderstanding/red herring.
 
-* Histo1D::integral()
+* Store an overall Dbn1D in Histo1D (and profile?) rather than overflow and
+  underflow. Remove the bin type thing.
+
+* Histo1D::integral() -- either calc from histo-level Dbn1D or from bins.
 
 * Rename Exception.h -> Exceptions.h, Util.h -> Utils.h
 

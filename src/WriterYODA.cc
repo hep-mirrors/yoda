@@ -15,16 +15,16 @@ namespace YODA {
 
   Writer* WriterYODA::_instance = 0;
 
-  
-  void WriterYODA::writeHeader(std::ostream& os) { 
-    // os << 
+
+  void WriterYODA::writeHeader(std::ostream& os) {
+    // os <<
     //   "# BEGIN PLOT\n"
     //   "LogY=0\n"
     //   "Title=Test Histo\n"
     //   "# END PLOT\n\n";
   }
 
-  void WriterYODA::writeFooter(std::ostream& os) { 
+  void WriterYODA::writeFooter(std::ostream& os) {
     os << flush;
   }
 
@@ -54,7 +54,7 @@ namespace YODA {
   }
 
 
-  void WriterYODA::writeProfile(std::ostream& os, const Profile1D& p) { 
+  void WriterYODA::writeProfile(std::ostream& os, const Profile1D& p) {
     cerr << "WriterYODA::writeProfile() NOT UPDATED YET\n;";
     os << "## BEGIN PROFILE1D\n";
     os << "## Title: " << p.title() << "\n";
@@ -66,7 +66,7 @@ namespace YODA {
       os << b->mean() << "\t" << b->stdErr() << "\t";
       os << b->sumW() << "\t" << b->sumW2() << "\t";
       os << b->sumWX() << "\t" << b->sumWX2() << "\t";
-      os << b->sumWD() << "\t" << b->sumWD2();
+      os << b->sumWY() << "\t" << b->sumWY2();
       os << "\n";
     }
     //HistoBin of = p.bin(Bin::OVERFLOWBIN);

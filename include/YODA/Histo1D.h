@@ -40,7 +40,7 @@ namespace YODA {
             const std::vector<HistoBin>& bins);
 
     /// Constructor giving range and number of bins (no path or title).
-    Histo1D(size_t nbins, double lower, double upper, 
+    Histo1D(size_t nbins, double lower, double upper,
             Binning binning=LINEAR);
 
     /// @brief Constructor giving explicit bin edges (no path or title).
@@ -52,9 +52,10 @@ namespace YODA {
     Histo1D(const std::vector<HistoBin>& bins);
     //@}
 
-    
+
   public:
-    /// @name Filling methods
+
+    /// @name Modifiers
     //@{
 
     /// Fill histo by value and weight
@@ -63,13 +64,22 @@ namespace YODA {
     /// Directly fill bin by bin index
     void fillBin(size_t index, double weight=1.0);
 
-    /// @brief Reset the histogram. 
+    /// @brief Reset the histogram.
     /// Keep the binning but set all bin contents and related quantities to zero
-    virtual void reset();
+    virtual void reset() {
+      _axis.reset();
+    }
+
+    /// Rescale as if all fill weights had been different by factor @a scalefactor.
+    void scaleW(double scalefactor) {
+      _axis.scaleW(scalefactor);
+    }
+
     //@}
 
 
   public:
+
     /// @name Bin accessors
     //@{
 
@@ -99,13 +109,9 @@ namespace YODA {
     /// Access a bin by coordinate (const version)
     const HistoBin& binByCoord(double x) const;
 
-
     //@}
 
 
-  protected:
-
-  
   public:
     /// @name Whole histo data
     //@{

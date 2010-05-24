@@ -28,12 +28,28 @@ namespace YODA {
       reset();
     }
 
+
+    /// @name Modifiers
+    //@{
+
     /// @brief Contribute a sample at @a val with weight @a weight.
     /// @todo Be careful about negative weights.
     void fill(double val, double weight=1.0);
 
     /// Reset the internal counters.
     void reset();
+
+    /// Rescale as if all fill weights had been different by factor @a scalefactor.
+    void scaleW(double scalefactor) {
+      const double sf = scalefactor;
+      const double sf2 = sf*sf;
+      _sumW *= sf;
+      _sumW2 *= sf2;
+      _sumWX *= sf;
+      _sumWX2 *= sf2;
+    }
+
+    //@}
 
 
   public:

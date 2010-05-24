@@ -19,6 +19,7 @@ using namespace std;
 
 namespace YODA {
 
+
   /// Enumerate the type of binning
   enum Binning { LINEAR, LOG };
 
@@ -72,12 +73,12 @@ namespace YODA {
     }
 
 
-    vector<double> _mkEdges(size_t nbins, double lower, 
+    vector<double> _mkEdges(size_t nbins, double lower,
                             double upper, Binning binning) {
       assert(nbins > 0);
       assert(upper > lower);
       vector<double> rtn;
-      
+
 
       switch(binning) {
       case LINEAR:
@@ -131,7 +132,7 @@ namespace YODA {
       _mkAxis(binedges);
     }
 
-    
+
     Axis(const vector<BIN>& bins) :
       _underflow(0, 1, Bin::UNDERFLOWBIN),
       _overflow(0, 1, Bin::OVERFLOWBIN)
@@ -219,25 +220,34 @@ namespace YODA {
     }
 
 
-    void reset () {
+    void reset() {
       _underflow.reset();
       _overflow.reset();
       for (typename Bins::iterator b = _bins.begin(); b != _bins.end(); ++b) {
         b->reset();
       }
-    }    
+    }
+
+
+    void scaleW(double scalefactor) {
+      _underflow.scaleW(scalefactor);
+      _overflow.scaleW(scalefactor);
+      for (typename Bins::iterator b = _bins.begin(); b != _bins.end(); ++b) {
+        b->scaleW(scalefactor);
+      }
+    }
 
 
   public:
 
     bool operator == (const Axis& other) const {
       /// @todo Need/want to compare bin hash?
-      return 
+      return
         _cachedBinEdges == other._cachedBinEdges &&
         _binHash == other._binHash;
     }
 
-    
+
     bool operator != (const Axis& other) const {
       return ! operator == (other);
     }
@@ -270,7 +280,7 @@ namespace YODA {
     return *this;
   }
 
-    
+
   private:
 
     /// @name Bin data

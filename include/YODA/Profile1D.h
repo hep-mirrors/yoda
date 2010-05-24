@@ -19,7 +19,6 @@ namespace YODA {
 
   /// A  one-dimensional profile histogram.
   class Profile1D : public AnalysisObject {
-
   public:
     /// @name Constructors
     //@{
@@ -40,7 +39,7 @@ namespace YODA {
               const std::vector<ProfileBin>& xbins);
 
     /// Constructor giving range and number of bins
-    Profile1D(size_t nxbins, double xlower, double xupper, 
+    Profile1D(size_t nxbins, double xlower, double xupper,
               Binning binning=LINEAR);
 
     /// Constructor giving explicit bin edges
@@ -52,9 +51,8 @@ namespace YODA {
     Profile1D(const std::vector<ProfileBin>& xbins);
     //@}
 
-    
-  public:
-    /// @name Filling methods
+
+    /// @name Modifiers
     //@{
 
     /// Fill histo by value and weight
@@ -62,17 +60,19 @@ namespace YODA {
 
     /// Directly fill bin by bin index
     void fillBin(size_t index, double y, double weight=1.0);
+
+    /// @brief Reset the histogram
+    /// Keep the binning but set all bin contents and related quantities to zero
+    void reset();
+
+    /// Rescale as if all fill weights had been different by factor @a scalefactor.
+    void scaleW(double scalefactor) {
+      _axis.scaleW(scalefactor);
+    }
+
     //@}
 
 
-  public:
-    
-    /// Reset the histogram: Keep the binning but
-    /// set all bin contents and related quantities
-    /// to zero
-    void reset();
-
-  public:
     /// @name Bin accessors
     //@{
 
@@ -102,7 +102,7 @@ namespace YODA {
     /// Access a bin by x-coordinate.
     const ProfileBin& binByCoord(double x) const;
     //@}
-  
+
   public:
     /// @name Whole histo data
     //@{

@@ -11,6 +11,7 @@
 
 namespace YODA {
 
+
   /// @brief A Bin in a 1D histogram
   class HistoBin : public Bin {
 
@@ -25,6 +26,9 @@ namespace YODA {
 
   public:
 
+    /// @name Modifiers
+    //@{
+
     /// @brief Fill this bin with weight @a weight at position @a coord.
     void fill(double coord, double weight=1.0);
 
@@ -32,7 +36,16 @@ namespace YODA {
     void fillBin(double weight=1.0);
 
     /// Reset this bin
-    void reset ();
+    void reset() {
+      Bin::reset();
+    }
+
+    /// Rescale as if all fill weights had been different by factor @a scalefactor.
+    void scaleW(double scalefactor) {
+      _xdbn.scaleW(scalefactor);
+    }
+
+    //@}
 
 
   public:

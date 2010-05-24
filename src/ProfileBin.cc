@@ -8,7 +8,7 @@
 
 namespace YODA {
 
- 
+
   ProfileBin::ProfileBin(double lowedge, double highedge, BinType type)
     : Bin(lowedge, highedge, type)
   { }
@@ -18,67 +18,67 @@ namespace YODA {
     : Bin(edges, type)
   { }
 
-    
+
   void ProfileBin::fill(double x, double d, double w) {
     assert( _edges.first < _edges.second );
     assert( x >= _edges.first && x < _edges.second );
     _xdbn.fill(x, w);
-    _ddbn.fill(d, w);
+    _ydbn.fill(d, w);
   }
 
 
   void ProfileBin::fillBin(double d, double w) {
     _xdbn.fill(midpoint(), w);
-    _ddbn.fill(d, w);
+    _ydbn.fill(d, w);
   }
 
-  
+
   void ProfileBin::reset() {
     Bin::reset();
-    _ddbn.reset();
+    _ydbn.reset();
   }
-  
-  
+
+
   double ProfileBin::mean() const {
-    return _ddbn.mean();
+    return _ydbn.mean();
   }
-  
-  
+
+
   double ProfileBin::stdDev() const {
-    return _ddbn.stdDev();
+    return _ydbn.stdDev();
   }
-  
-  
+
+
   double ProfileBin::variance() const {
-    return _ddbn.variance();
+    return _ydbn.variance();
   }
-  
-  
+
+
   double ProfileBin::stdErr() const {
-    return _ddbn.stdErr();
+    return _ydbn.stdErr();
   }
-    
-  
-  double ProfileBin::sumWD() const {
-    return _ddbn.sumWX();
+
+
+  double ProfileBin::sumWY() const {
+    return _ydbn.sumWX();
   }
-  
-  
-  double ProfileBin::sumWD2() const {
-    return _ddbn.sumWX2();
+
+
+  double ProfileBin::sumWY2() const {
+    return _ydbn.sumWX2();
   }
-  
+
 
   ProfileBin& ProfileBin::add(const ProfileBin& pb) {
     Bin::add(pb);
-    _ddbn += pb._ddbn;
+    _ydbn += pb._ydbn;
     return *this;
   }
 
 
   ProfileBin& ProfileBin::subtract(const ProfileBin& pb) {
     Bin::subtract(pb);
-    _ddbn -= pb._ddbn;
+    _ydbn -= pb._ydbn;
     return *this;
   }
 
@@ -86,25 +86,25 @@ namespace YODA {
   ProfileBin& ProfileBin::operator += (const ProfileBin& toAdd) {
     return add(toAdd);
   }
-  
-  
+
+
   ProfileBin& ProfileBin::operator -= (const ProfileBin& toSubtract) {
     return subtract(toSubtract);
   }
 
-  
+
   ProfileBin operator + (const ProfileBin& a, const ProfileBin& b) {
     ProfileBin rtn(a);
     rtn += a;
     return rtn;
   }
-  
-  
+
+
   ProfileBin operator - (const ProfileBin& a, const ProfileBin& b) {
     ProfileBin rtn(a);
     rtn -= a;
     return rtn;
   }
-  
+
 
 }

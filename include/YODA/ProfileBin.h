@@ -20,26 +20,38 @@ namespace YODA {
 
 
   public:
+
     /// @name Constructors
     //@{
 
-    /// @name Constructor giving bin low and high edges.
-    //@{
+    /// Constructor giving bin low and high edges.
     ProfileBin(double lowedge, double highedge, BinType type=VALIDBIN);
+
+    /// Constructor giving bin low and high edges as a pair.
     ProfileBin(std::pair<double,double> edges, BinType type=VALIDBIN);
+
     //@}
 
-    
-  public:
+
+    /// @name Modifiers
+    //@{
 
     /// Fill histo by value and weight.
     void fill(double x, double d, double weight=1.0);
 
     /// Fill histo with @a weight at bin midpoint.
     void fillBin(double d, double weight=1.0);
-    
+
     /// Reset the bin.
     void reset();
+
+    /// Rescale as if all fill weights had been different by factor @a scalefactor.
+    void scaleW(double scalefactor) {
+      _xdbn.scaleW(scalefactor);
+      _ydbn.scaleW(scalefactor);
+    }
+
+    //@}
 
 
   public:
@@ -76,17 +88,17 @@ namespace YODA {
 
   public:
 
-    /// The sum of d*weight
-    double sumWD() const;
+    /// The sum of y*weight
+    double sumWY() const;
 
-    /// The sum of d^2 * weight
-    double sumWD2() const;
+    /// The sum of y^2 * weight
+    double sumWY2() const;
 
 
   private:
 
     // Distribution of weighted data values
-    Dbn1D _ddbn;
+    Dbn1D _ydbn;
 
 
   };
