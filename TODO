@@ -10,6 +10,19 @@ YODA TODO list
   - explicitly from vector
   - ???
 
+* Remove path from analysis objects
+
+* Weight rescaling with scaleW(scalefactor) on Histo1D and Dbn1D
+
+* Store an overall Dbn1D in Histo1D (and profile?) rather than overflow and underflow
+
+* Histo1D::integral()
+
+* Rename Exception.h -> Exceptions.h, Util.h -> Utils.h
+
+* Implement histo/histo -> scatter, profile/profile -> scatter and
+  scatter/scatter -> scatter. Also multiplication?
+
 * Allow setting of all weight moments on bins and histos for persistency loading
 
 * Deal with integral vs. differential histos

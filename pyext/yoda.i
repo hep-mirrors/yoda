@@ -5,7 +5,9 @@
   #define SWIG_FILE_WITH_INIT
   #include "YODA/Histo1D.h"
   #include "YODA/Profile1D.h"
-  #include "YODA/Scatter.h"
+
+  #include "YODA/Point2D.h"
+  #include "YODA/Scatter2D.h"
 
   #include "YODA/WriterYODA.h"
   #include "YODA/WriterAIDA.h"
@@ -53,29 +55,34 @@ namespace YODA {
 %template(ProfileBins) std::vector<YODA::ProfileBin>;
 
 
-// Scatter plot errors
-%ignore YODA::ErrorCombiner;
-%include "YODA/Error.h"
-%template(PointError1D) YODA::PointError<1>;
-%template(PointError2D) YODA::PointError<2>;
-//%template(ErrorSet1D) YODA::ErrorSet<1>; // ?
-//%template(ErrorSet2D) YODA::ErrorSet<2>; // ?
+// // Scatter plot errors
+// %ignore YODA::ErrorCombiner;
+// %include "YODA/Error.h"
+// %template(PointError1D) YODA::PointError<1>;
+// %template(PointError2D) YODA::PointError<2>;
+// //%template(ErrorSet1D) YODA::ErrorSet<1>; // ?
+// //%template(ErrorSet2D) YODA::ErrorSet<2>; // ?
 
 
-// Scatter plot points
-%ignore YODA::Point::error(size_t dim, ErrorCombiner& ec);
-%ignore YODA::Point::symmError(size_t dim, ErrorCombiner& ec);
-%ignore YODA::Point::errors(size_t dim, ErrorCombiner& ec);
-%ignore YODA::Point::symmErrors(size_t dim, ErrorCombiner& ec);
-%include "YODA/Point.h"
+// // Scatter plot points
+// %ignore YODA::Point::error(size_t dim, ErrorCombiner& ec);
+// %ignore YODA::Point::symmError(size_t dim, ErrorCombiner& ec);
+// %ignore YODA::Point::errors(size_t dim, ErrorCombiner& ec);
+// %ignore YODA::Point::symmErrors(size_t dim, ErrorCombiner& ec);
+// %include "YODA/Point.h"
+
+
+// // Scatter plots
+// %include "YODA/Scatter.h"
+// %template(Point1D) YODA::Point<1>;
+// %template(Point2D) YODA::Point<2>;
+// %template(Scatter1D) YODA::Scatter<1>;
+// %template(Scatter2D) YODA::Scatter<2>;
 
 
 // Scatter plots
-%include "YODA/Scatter.h"
-%template(Point1D) YODA::Point<1>;
-%template(Point2D) YODA::Point<2>;
-%template(Scatter1D) YODA::Scatter<1>;
-%template(Scatter2D) YODA::Scatter<2>;
+%include "YODA/Point2D.h"
+%include "YODA/Scatter2D.h"
 
 
 // I/O
