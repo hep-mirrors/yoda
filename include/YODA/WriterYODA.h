@@ -22,7 +22,7 @@ namespace YODA {
     WriterYODA() { }
 
     static Writer* _instance;
-    
+
   public:
 
     static Writer& create() {
@@ -31,13 +31,13 @@ namespace YODA {
       }
       return *_instance;
     }
-        
+
   protected:
     void writeHeader(std::ostream& stream);
     void writeFooter(std::ostream& stream);
-    void writeHisto(std::ostream& stream, const Histo1D& h);
-    void writeProfile(std::ostream& stream, const Profile1D& p);
-    //void writeScatter(std::ostream& stream, const Scatter& p);
+    void writeHisto(std::ostream& stream, const Histo1D& h, const std::string& path);
+    void writeProfile(std::ostream& stream, const Profile1D& p, const std::string& path);
+    //void writeScatter(std::ostream& stream, const Scatter& p, const std::string& path);
   };
 
 }

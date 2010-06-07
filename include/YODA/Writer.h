@@ -66,7 +66,7 @@ namespace YODA {
     /// iterator @a end to file @a filename.
     template <typename ITER>
     void write(const std::string& filename,
-               const ITER& begin, 
+               const ITER& begin,
                const ITER& end) {
       std::ofstream outstream;
       outstream.open(filename.c_str());
@@ -80,9 +80,9 @@ namespace YODA {
     virtual void writeHeader(std::ostream& stream) = 0;
     void writeBody(std::ostream& stream, const AnalysisObject& ao);
     virtual void writeFooter(std::ostream& stream) = 0;
-    virtual void writeHisto(std::ostream& stream, const Histo1D& h) = 0;
-    virtual void writeProfile(std::ostream& stream, const Profile1D& p) = 0;
-    //virtual void writeScatter(std::ostream& stream, const Scatter<N>& p) = 0;
+    virtual void writeHisto(std::ostream& stream, const Histo1D& h, const std::string& path) = 0;
+    virtual void writeProfile(std::ostream& stream, const Profile1D& p, const std::string& path) = 0;
+    //virtual void writeScatter(std::ostream& stream, const Scatter<N>& p, const std::string& path) = 0;
 
   };
 

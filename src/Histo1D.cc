@@ -15,117 +15,18 @@ namespace YODA {
   typedef vector<HistoBin> Bins;
 
 
-  Histo1D::Histo1D(const std::string& path, const std::string& title,
-                   const vector<double>& binedges) :
-    AnalysisObject( path, title ),
-    _axis(binedges)
-  {  }
-
-
-  Histo1D::Histo1D(const std::vector<double>& binedges) :
-    AnalysisObject(),
-    _axis(binedges)
-  {  }
-
-
-  Histo1D::Histo1D(const std::string& path, const std::string& title,
-                   size_t nbins, double lower, double upper, Binning binning) :
-    AnalysisObject( path, title ),
-    _axis(nbins, lower, upper, binning)
-  {  }
-
-
-  Histo1D::Histo1D(size_t nbins, double lower, double upper, Binning binning) :
-    AnalysisObject(),
-    _axis(nbins, lower, upper, binning)
-  {  }
-
-
-  Histo1D::Histo1D(std::string path, std::string title,
-                   const vector<HistoBin>& bins) :
-    AnalysisObject( path, title ),
-    _axis(bins)
-  {  }
-
-
-  Histo1D::Histo1D(const std::vector<HistoBin>& bins) :
-    AnalysisObject(),
-    _axis(bins)
-  {  }
-
-
-  /////////////////////////////////////////////////
-
-
   void Histo1D::fill(double x, double weight) {
     HistoBin& b = binByCoord(x);
-    if ( b.type() == Bin::VALIDBIN ) {
-      b.fill(x, weight);
-    } else {
-      b.fillBin(weight);
-    }
+    b.fill(x, weight);
   }
 
 
-  void Histo1D::fillBin(size_t index, double weight) {
-    if (index >= bins().size())
-      throw RangeError("YODA::Histo: index out of range");
-    HistoBin& hb = bins().at(index);
-    hb.fill(hb.midpoint(), weight);
-  }
-
-
-  vector<HistoBin>& Histo1D::bins() {
-    return _axis.bins();
-  }
-
-
-  const vector<HistoBin>& Histo1D::bins() const {
-    return _axis.bins();
-  }
-
-
-  HistoBin& Histo1D::bin(size_t index) {
-    return _axis.bin(index);
-  }
-
-
-  const HistoBin& Histo1D::bin(size_t index) const {
-    return _axis.bin(index);
-  }
-
-
-  HistoBin& Histo1D::bin(Bin::BinType binType) {
-    return _axis.bin(binType);
-  }
-
-
-  const HistoBin& Histo1D::bin(Bin::BinType binType) const {
-    return _axis.bin(binType);
-  }
-
-
-  HistoBin& Histo1D::binByCoord(double x) {
-    return _axis.binByCoord(x);
-  }
-
-
-  const HistoBin& Histo1D::binByCoord(double x) const {
-    return _axis.binByCoord(x);
-  }
-
-
-  double Histo1D::sumWeight() const {
+  double Histo1D::sumW() const {
     double sumw = 0;
     for (Bins::const_iterator b = bins().begin(); b != bins().end(); ++b) {
       sumw += b->sumW();
     }
     return sumw;
-  }
-
-
-  double Histo1D::area() const {
-    return sumWeight();
   }
 
 
@@ -147,38 +48,8 @@ namespace YODA {
       const double diff = b->focus() - mean;
       sigma2 += diff * diff * b->sumW();
     }
-    return sigma2/sumWeight();
+    return sigma2/sumW();
   }
 
-
-  double Histo1D::stdDev() const {
-    return std::sqrt(variance());
-  }
-
-
-  Histo1D& Histo1D::operator += (const Histo1D& toAdd) {
-    _axis += toAdd._axis;
-    return *this;
-  }
-
-
-  Histo1D& Histo1D::operator -= (const Histo1D& toSubtract) {
-    _axis -= toSubtract._axis;
-    return *this;
-  }
-
-
-  Histo1D operator + (const Histo1D& first, const Histo1D& second) {
-    Histo1D tmp = first;
-    tmp += second;
-    return tmp;
-  }
-
-
-  Histo1D operator - (const Histo1D& first, const Histo1D& second) {
-    Histo1D tmp = first;
-    tmp -= second;
-    return tmp;
-  }
 
 }

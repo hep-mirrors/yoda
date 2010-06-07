@@ -2,6 +2,23 @@ YODA TODO list
 ==============
 
 * Use boost
+  Sort out collection iterator args: use Boost::Range
+
+* Store an overall Dbn1D in Histo1D (and profile?) rather than overflow and
+  underflow. Remove the bin type enum.
+
+* Histo1D::integral() -- either calc from histo-level Dbn1D or from bins.
+
+* Rename Exception.h -> Exceptions.h, Util.h -> Utils.h
+
+* Sort axis contents (lazily)... allow arbitrary bins, but ensure that there is
+  no bin edge overlap.
+
+* Use inline functions... excluding them was a misunderstanding/red herring.
+
+* SWIG-generated Python -> yoda/core.py, with yoda/__init__.py containing "from
+  yoda.core import *". Then rest of package can contain hand-written Python
+  niceties.
 
 * Book histos and profiles:
   - from Scatter
@@ -10,35 +27,24 @@ YODA TODO list
   - explicitly from vector
   - ???
 
-* Remove path from analysis objects
-
-* Sort axis contents (lazily)... allow arbitrary bins, but ensure that there is
-  no bin edge overlap.
-
-* Use inline functions... excluding them was a misunderstanding/red herring.
-
 * Add scaleX, scaleY, scaleXY to Scatter2D. Arbitrary function transforms on Scatters?
-
-* Store an overall Dbn1D in Histo1D (and profile?) rather than overflow and
-  underflow. Remove the bin type thing.
-
-* Histo1D::integral() -- either calc from histo-level Dbn1D or from bins.
-
-* Rename Exception.h -> Exceptions.h, Util.h -> Utils.h
 
 * Implement histo/histo -> scatter, profile/profile -> scatter and
   scatter/scatter -> scatter. Also multiplication?
 
 * Allow setting of all weight moments on bins and histos for persistency loading
 
-* Deal with integral vs. differential histos
-   Only use diff but represent as / convert to int?
+* Store a type name string on each type, to ease dynamic_casts when loading from
+  persistency.
+
+* Transform differential to integral histos... or allow representation/querying
+  as such. How to do this if bin edges don't match?
 
 * Get height measure "right" for log binning
-   Really? Or ditch "height"? Have to be careful with Jacobian factors.
+  Really? Or ditch "height"? Have to be careful with Jacobian factors.
 
 * Store enough information for datafile merging to be well defined
-   With appropriate statistical combinations for each data type.
+  That means appropriate statistical combinations for each data type.
 
 * Explicitly return NaN for profile histo points with no weight.
 
@@ -57,12 +63,3 @@ Suggesting logx, logy, etc.?
 
 * Does Writer hierarchy make sense?
    Yes, for plugins...
-
-* Output header and footer
-
-* Sort out collection iterator args (needs templates)
-
-* Move writer iteration and collection stuff into Writer, leaving WriterYODA
-   and WriterAIDA to just implement the actual format writing parts.
-
-* Rename AnalysisObject -> Plotable?

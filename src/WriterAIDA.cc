@@ -13,7 +13,7 @@ namespace YODA {
 
   Writer* WriterAIDA::_instance = 0;
 
-  
+
   string encodeForXML(const string& in) {
     string out = in;
     typedef pair<string, string> CharsToEntities;
@@ -33,19 +33,21 @@ namespace YODA {
   }
 
 
-  void WriterAIDA::writeHeader(std::ostream& stream) { 
+  void WriterAIDA::writeHeader(std::ostream& stream) {
     stream << "<aida>" << "\n";
   }
 
-  void WriterAIDA::writeFooter(std::ostream& stream) { 
+  void WriterAIDA::writeFooter(std::ostream& stream) {
     stream << "</aida>" << "\n";
   }
 
-  void WriterAIDA::writeHisto(std::ostream& os, const Histo1D& h) {
+  void WriterAIDA::writeHisto(std::ostream& os, const Histo1D& h, const std::string& path) {
     // <histogram1d>
-    os << "<histogram1d name=\"" << encodeForXML(h.name()) << "\""
+    /// @todo Parse the path and take the last part (use boost)
+    const string name = path;
+    os << "<histogram1d name=\"" << encodeForXML(name) << "\""
        << " title=\"" << encodeForXML(h.title()) << "\""
-       << " path=\"" << h.path() << "\">\n";
+       << " path=\"" << path << "\">\n";
     // <axis>
     os << "  <axis"
        << " numberOfBins=\"" << h.bins().size() << "\""
@@ -53,7 +55,7 @@ namespace YODA {
     // <binBorder>
     vector<HistoBin>::const_iterator firstbin = h.bins().begin();
     os << "    <binBorder value=\"" << firstbin->lowEdge() << "\" />\n";
-    for (vector<HistoBin>::const_iterator b = firstbin; 
+    for (vector<HistoBin>::const_iterator b = firstbin;
 	 b != h.bins().end(); ++b) {
       os << "    <binBorder value=\"" << b->highEdge() << "\" />\n";
     }
@@ -65,21 +67,6 @@ namespace YODA {
 
     // Data section
     os << "  <data1d>\n";
-    // Underflow and overflow
-    HistoBin uf = h.bin(Bin::UNDERFLOWBIN);
-    os << "    <bin1d binNum=\"UNDERFLOW\"" 
-       << " entries=\"" << uf.area() << "\""
-       << " height=\"" << uf.height() << "\""
-       << " error=\"" << uf.heightError() << "\""
-       << " weightedMean=\"" << uf.focus() << "\""
-       << " />\n";
-    HistoBin of = h.bin(Bin::OVERFLOWBIN);
-    os << "    <bin1d binNum=\"OVERFLOW\"" 
-       << " entries=\"" << of.area() << "\""
-       << " height=\"" << of.height() << "\""
-       << " error=\"" << of.heightError() << "\""
-       << " weightedMean=\"" << of.focus() << "\""
-       << " />\n";
     // Normal bins
     for (vector<HistoBin>::const_iterator b = h.bins().begin(); b != h.bins().end(); ++b) {
       os << "    <bin1d"
@@ -95,7 +82,7 @@ namespace YODA {
   }
 
 
-  void WriterAIDA::writeProfile(std::ostream& stream, const Profile1D& p) { 
+  void WriterAIDA::writeProfile(std::ostream& stream, const Profile1D& p, const std::string& path) {
     //
   }
 

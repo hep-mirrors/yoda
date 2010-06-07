@@ -24,18 +24,20 @@ namespace YODA {
     //   "# END PLOT\n\n";
   }
 
+
   void WriterYODA::writeFooter(std::ostream& os) {
     os << flush;
   }
 
-  void WriterYODA::writeHisto(std::ostream& os, const Histo1D& h) {
+
+  void WriterYODA::writeHisto(std::ostream& os, const Histo1D& h, const std::string& path) {
     ios_base::fmtflags oldflags = os.flags();
 
     const int precision = 6;
     os << scientific << showpoint << setprecision(precision);
 
-    os << "# BEGIN HISTO1D " << h.path() << "\n";
-    os << "AidaPath=" << h.path() << "\n";
+    os << "# BEGIN HISTO1D " << path << "\n";
+    os << "AidaPath=" << path << "\n";
     os << "Title=" << h.title() << "\n";
     os << "## Mean: " << h.mean() << "\n";
     os << "## Area: " << h.area() << "\n";
@@ -54,11 +56,11 @@ namespace YODA {
   }
 
 
-  void WriterYODA::writeProfile(std::ostream& os, const Profile1D& p) {
+  void WriterYODA::writeProfile(std::ostream& os, const Profile1D& p, const std::string& path) {
     cerr << "WriterYODA::writeProfile() NOT UPDATED YET\n;";
     os << "## BEGIN PROFILE1D\n";
     os << "## Title: " << p.title() << "\n";
-    os << "## Path: " << p.path() << "\n";
+    os << "## Path: " << path << "\n";
     os << "# xlow\t xhigh\t yval\t yerr\t sumw\t sumw2\t sumwx\t sumwx2\t sumwy\t sumwy2 \n";
     //HistoBin uf = p.bin(Bin::UNDERFLOWBIN);
     for (vector<ProfileBin>::const_iterator b = p.bins().begin(); b != p.bins().end(); ++b) {
@@ -74,7 +76,7 @@ namespace YODA {
   }
 
 
-  // void writeScatterData1D(std::ostream& os, const Scatter& s) {
+  // void writeScatterData1D(std::ostream& os, const Scatter& s, const std::string& path) {
   //   const Scatter1D& s1 = dynamic_cast<const Scatter1D&>(s);
   //   for (vector<Point1D>::const_iterator p = s1.points().begin(); p != s1.points().end(); ++p) {
   //     /// @todo Write all errors, plus annotations & type
@@ -84,7 +86,7 @@ namespace YODA {
   // }
 
 
-  // void writeScatterData2D(std::ostream& os, const Scatter& s) {
+  // void writeScatterData2D(std::ostream& os, const Scatter& s, const std::string& path) {
   //   const Scatter2D& s2 = dynamic_cast<const Scatter2D&>(s);
   //   for (vector<Point2D>::const_iterator p = s2.points().begin(); p != s2.points().end(); ++p) {
   //     /// @todo Write all errors, plus annotations & type
@@ -96,10 +98,10 @@ namespace YODA {
   // }
 
 
-  // void WriterYODA::writeScatter(std::ostream& os, const Scatter& s) {
+  // void WriterYODA::writeScatter(std::ostream& os, const Scatter& s, const std::string& path) {
   //   os << "## BEGIN SCATTER\n";
   //   os << "## Title: " << s.title() << "\n";
-  //   os << "## Path: " << s.path() << "\n";
+  //   os << "## Path: " << path << "\n";
   //   os << "## NDims: " << s.numDims() << "\n";
   //   os << "# x1+-(m1,p1)\t x2+-(m1,p1)\t ...\n";
   //   if (s.numDims() == 1) {

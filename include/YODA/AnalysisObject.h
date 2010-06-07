@@ -17,52 +17,55 @@ namespace YODA {
   public:
 
     /// Default constructor
-    AnalysisObject();
+    AnalysisObject() { }
 
-    /// Constructor giving a path and title
-    AnalysisObject(const std::string& path, const std::string& title);
+    /// Constructor giving a title
+    AnalysisObject(const std::string& title)
+      : _title(title)
+    { }
 
     /// Default destructor
-    virtual ~AnalysisObject();
-
-    /// Get the path
-    std::string path() const;
-
-    /// Set the path returning the object with 
-    void setPath(const std::string& path);
+    virtual ~AnalysisObject() { }
 
     /// Get the title
-    std::string title() const;
+    const std::string& title() const {
+      return _title;
+    }
 
     /// Set the title
-    void setTitle(const std::string& title);
+    void setTitle(const std::string& title) {
+      _title = title;
+    }
 
-    /// Get the name
-    std::string name() const;
 
   public:
 
     ///@name Annotations
     //@{
+
     /// Add or set an annotation by name
-    void setAnnotation(const std::string& name, const std::string& value);
-    
+    void setAnnotation(const std::string& name, const std::string& value) {
+      _annotations[name] = value;
+    }
+
     /// Get the annotations
-    std::map<std::string,std::string> annotations() const;
+    std::map<std::string,std::string> annotations() const {
+      return _annotations;
+    }
 
     /// Get an annotation by name
-    std::string annotationValue (const std::string& name) const;
+    const std::string& annotation(const std::string& name) const;
+
     //@}
+
 
   public:
 
     /// Reset this analysis object
     virtual void reset () = 0;
 
-  private:
 
-    /// The path
-    std::string _path;
+  private:
 
     /// The title
     std::string _title;
@@ -72,9 +75,6 @@ namespace YODA {
 
   };
 
-  // AnalysisObject& mv(AnalysisObject& ao, const std::string newpath);
-  // AnalysisObject& cp(AnalysisObject& ao, const std::string newpath);
-  // AnalysisObject& rm(AnalysisObject& ao, const std::string newpath);
 
 }
 

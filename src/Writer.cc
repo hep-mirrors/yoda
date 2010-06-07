@@ -11,11 +11,13 @@ using namespace std;
 
 namespace YODA {
 
+
   void Writer::write(std::ostream& stream, const AnalysisObject& ao) {
     writeHeader(stream);
     writeBody(stream, ao);
     writeFooter(stream);
   }
+
 
   void Writer::write(const std::string& filename, const AnalysisObject& ao) {
     ofstream outstream;
@@ -24,17 +26,20 @@ namespace YODA {
     outstream.close();
   }
 
+
   void Writer::writeBody(std::ostream& stream, const AnalysisObject& ao) {
+    /// @todo Do this for real!
+
     // Use RTTI to decide which down-cast to do.
-    const Histo1D example_histo("/foo", "Title", 1, 0.0, 1.0);
-    const Profile1D example_profile("/foo", "Title", 1, 0.0, 1.0);
+    const Histo1D example_histo(1, 0.0, 1.0, "Hist1D title");
+    const Profile1D example_profile(1, 0.0, 1.0, "Prof1D title");
     if (typeid(ao) == typeid(example_histo)) {
       cout << "H" << endl;
-      writeHisto(stream, static_cast<const Histo1D&>(ao));
-    } 
+      writeHisto(stream, static_cast<const Histo1D&>(ao), "/foo");
+    }
     else if (typeid(ao) == typeid(example_profile)) {
       cout << "P" << endl;
-      writeProfile(stream, static_cast<const Profile1D&>(ao));
+      writeProfile(stream, static_cast<const Profile1D&>(ao), "/foo");
     } else {
       cerr << "OTHER" << endl;
       throw Exception("Unrecognised analysis object type in Writer::write");
@@ -42,5 +47,4 @@ namespace YODA {
   }
 
 
-  
 }

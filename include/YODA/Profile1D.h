@@ -20,35 +20,35 @@ namespace YODA {
   /// A  one-dimensional profile histogram.
   class Profile1D : public AnalysisObject {
   public:
+
     /// @name Constructors
     //@{
 
     /// Constructor giving range and number of bins
-    Profile1D(const std::string& path, const std::string& title,
-              size_t nxbins, double xlower, double xupper,
-              Binning binning=LINEAR);
-
-    /// Constructor giving explicit bin edges
-    /// For n bins, binedges.size() == n+1, the last
-    /// one being the upper bound of the last bin
-    Profile1D(const std::string& path, const std::string& title,
-              const std::vector<double>& xbinedges);
-
-    /// Constructor giving a vector of bins
-    Profile1D(std::string path, std::string title,
-              const std::vector<ProfileBin>& xbins);
-
-    /// Constructor giving range and number of bins
     Profile1D(size_t nxbins, double xlower, double xupper,
-              Binning binning=LINEAR);
+              const std::string& title="",
+              Binning binning=LINEAR)
+      : AnalysisObject(title),
+        _axis(nxbins, xlower, xupper, binning)
+    { }
 
     /// Constructor giving explicit bin edges
     /// For n bins, binedges.size() == n+1, the last
     /// one being the upper bound of the last bin
-    Profile1D(const std::vector<double>& xbinedges);
+    Profile1D(const std::vector<double>& xbinedges,
+              const std::string& title="")
+      : AnalysisObject(title),
+        _axis(xbinedges)
+    {  }
 
     /// Constructor giving a vector of bins
-    Profile1D(const std::vector<ProfileBin>& xbins);
+    Profile1D(const std::vector<ProfileBin>& xbins,
+              const std::string& title="")
+      : AnalysisObject(title),
+        _axis(xbins)
+    {  }
+
+
     //@}
 
 
@@ -58,12 +58,11 @@ namespace YODA {
     /// Fill histo by value and weight
     void fill(double x, double y, double weight=1.0);
 
-    /// Directly fill bin by bin index
-    void fillBin(size_t index, double y, double weight=1.0);
-
     /// @brief Reset the histogram
     /// Keep the binning but set all bin contents and related quantities to zero
-    void reset();
+    void reset() {
+      _axis.reset();
+    }
 
     /// Rescale as if all fill weights had been different by factor @a scalefactor.
     void scaleW(double scalefactor) {
@@ -77,43 +76,45 @@ namespace YODA {
     //@{
 
     /// Access the bin vector
-    std::vector<YODA::ProfileBin>& bins();
+    /// @todo Convert to a sorted bin set/list
+    std::vector<YODA::ProfileBin>& bins() {
+      return _axis.bins();
+    }
 
     /// Access the bin vector
-    const std::vector<YODA::ProfileBin>& bins() const;
-
-    /// Access a bin by index
-    ProfileBin& bin(size_t index);
-
-    /// Access a bin by index
-    const ProfileBin& bin(size_t index) const;
-
-    /// @brief Access the underflow and overflow bins by type.
-    /// Using the VALIDBIN enum value as an argument will throw an exception.
-    ProfileBin& bin(Bin::BinType binType);
-
-    /// @brief Access the underflow and overflow bins by type.
-    /// Using the VALIDBIN enum value as an argument will throw an exception.
-    const ProfileBin& bin(Bin::BinType binType) const;
+    /// @todo Convert to a sorted bin set/list
+    const std::vector<YODA::ProfileBin>& bins() const {
+      return _axis.bins();
+    }
 
     /// Access a bin by x-coordinate.
-    ProfileBin& binByCoord(double x);
+    ProfileBin& binByCoord(double x) {
+      /// @todo If no bin, throw an exception?
+      return _axis.binByCoord(x);
+    }
 
     /// Access a bin by x-coordinate.
-    const ProfileBin& binByCoord(double x) const;
+    const ProfileBin& binByCoord(double x) const {
+      /// @todo If no bin, throw an exception?
+      return _axis.binByCoord(x);
+    }
+
     //@}
 
+
   public:
+
     /// @name Whole histo data
     //@{
 
     /// Get sum of weights in histo.
-    double sumWeight() const;
+    double sumW() const;
 
     /// Get sum of squared weights in histo.
-    double sumWeight2() const;
+    double sumW2() const;
 
     //@}
+
 
   public:
 
@@ -121,12 +122,19 @@ namespace YODA {
     //@{
 
     /// Add another histogram to this
-    Profile1D& operator += (const Profile1D& toAdd);
+    Profile1D& operator += (const Profile1D& toAdd) {
+      _axis += toAdd._axis;
+      return *this;
+    }
 
     /// Subtract another histogram from this
-    Profile1D& operator -= (const Profile1D& toSubtract);
+    Profile1D& operator -= (const Profile1D& toSubtract) {
+      _axis -= toSubtract._axis;
+      return *this;
+    }
 
     //@}
+
 
   private:
 
@@ -145,10 +153,18 @@ namespace YODA {
   //@{
 
   /// Add two profile histograms
-  Profile1D operator + (const Profile1D& first, const Profile1D& second);
+  inline Profile1D operator + (const Profile1D& first, const Profile1D& second) {
+    Profile1D tmp = first;
+    tmp += second;
+    return tmp;
+  }
 
   /// Subtract two profile histograms
-  Profile1D operator - (const Profile1D& first, const Profile1D& second);
+  inline Profile1D operator - (const Profile1D& first, const Profile1D& second) {
+    Profile1D tmp = first;
+    tmp -= second;
+    return tmp;
+  }
 
   //@}
 

@@ -25,31 +25,30 @@ namespace YODA {
     //@{
 
     /// Constructor giving range and number of bins.
-    Histo1D(const std::string& path, const std::string& title,
-            size_t nbins, double lower, double upper,
-            Binning binning=LINEAR);
+    Histo1D(size_t nbins, double lower, double upper,
+            const std::string& title="",
+            Binning binning=LINEAR)
+    : AnalysisObject(title),
+      _axis(nbins, lower, upper, binning)
+    { }
 
     /// @brief Constructor giving explicit bin edges.
     /// For n bins, binedges.size() == n+1, the last
     /// one being the upper bound of the last bin
-    Histo1D(const std::string& path, const std::string& title,
-            const std::vector<double>& binedges);
+    Histo1D(const std::vector<double>& binedges,
+            const std::string& title="")
+      : AnalysisObject(title),
+        _axis(binedges)
+    { }
 
     /// Constructor giving a vector of bins.
-    Histo1D(std::string path, std::string title,
-            const std::vector<HistoBin>& bins);
+    /// @todo Allow any iterable of bins (use Boost::Range?)
+    Histo1D(const std::vector<HistoBin>& bins,
+            const std::string& title="")
+      : AnalysisObject(title),
+        _axis(bins)
+    { }
 
-    /// Constructor giving range and number of bins (no path or title).
-    Histo1D(size_t nbins, double lower, double upper,
-            Binning binning=LINEAR);
-
-    /// @brief Constructor giving explicit bin edges (no path or title).
-    /// For n bins, binedges.size() == n+1, the last
-    /// one being the upper bound of the last bin
-    Histo1D(const std::vector<double>& binedges);
-
-    /// Constructor giving a vector of bins (no path or title).
-    Histo1D(const std::vector<HistoBin>& bins);
     //@}
 
 
@@ -60,9 +59,6 @@ namespace YODA {
 
     /// Fill histo by value and weight
     void fill(double x, double weight=1.0);
-
-    /// Directly fill bin by bin index
-    void fillBin(size_t index, double weight=1.0);
 
     /// @brief Reset the histogram.
     /// Keep the binning but set all bin contents and related quantities to zero
@@ -84,52 +80,64 @@ namespace YODA {
     //@{
 
     /// Access the bin vector
-    std::vector<YODA::HistoBin>& bins();
+    std::vector<YODA::HistoBin>& bins() {
+      return _axis.bins();
+    }
 
     /// Access the bin vector (const version)
-    const std::vector<YODA::HistoBin>& bins() const;
-
-    /// Access a bin by index
-    HistoBin& bin(size_t index);
-
-    /// Access a bin by index (const version)
-    const HistoBin& bin(size_t index) const;
-
-    /// @brief Access the underflow and overflow bins by type
-    /// Using the VALIDBIN enum value as an argument will throw an exception.
-    HistoBin& bin(Bin::BinType binType);
-
-    /// @brief Access the underflow and overflow bins by type (const version)
-    /// Using the VALIDBIN enum value as an argument will throw an exception.
-    const HistoBin& bin(Bin::BinType binType) const;
+    const std::vector<YODA::HistoBin>& bins() const {
+      return _axis.bins();
+    }
 
     /// Access a bin by coordinate (non-const version)
-    HistoBin& binByCoord(double x);
+    HistoBin& binByCoord(double x) {
+      return _axis.binByCoord(x);
+    }
 
     /// Access a bin by coordinate (const version)
-    const HistoBin& binByCoord(double x) const;
+    const HistoBin& binByCoord(double x) const {
+      return _axis.binByCoord(x);
+    }
 
     //@}
 
 
   public:
+
     /// @name Whole histo data
     //@{
 
     /// Get the total area
-    double area() const;
+    /// @deprecated Use integral() instead
+    double area() const {
+      return integral();
+    }
+
+    /// Get the total area of the histogram
+    /// @todo Differentiate between using all fills, and only fills which landed in bins
+    double integral() const {
+      return sumW();
+    }
 
     /// Get sum of weights in histo (same as area)
-    double sumWeight() const;
+    /// @todo Really same as area? Aren't heights sqrt(sum(w**2))?
+    /// @todo Differentiate between using all fills, and only fills which landed in bins
+    double sumW() const;
 
     /// Get the mean
+    /// @todo Differentiate between using all fills, and only fills which landed in bins
     double mean() const;
 
     /// Get the variance
+    /// @todo Differentiate between using all fills, and only fills which landed in bins
     double variance() const;
 
     /// Get the standard deviation
-    double stdDev() const;
+    /// @todo Differentiate between using all fills, and only fills which landed in bins
+    double stdDev() const {
+      return std::sqrt(variance());
+    }
+
     //@}
 
 
@@ -139,10 +147,16 @@ namespace YODA {
     //@{
 
     /// Add another histogram to this
-    Histo1D& operator += (const Histo1D& toAdd);
+    Histo1D& operator += (const Histo1D& toAdd) {
+      _axis += toAdd._axis;
+      return *this;
+    }
 
     /// Subtract another histogram from this
-    Histo1D& operator -= (const Histo1D& toSubtract);
+    Histo1D& operator -= (const Histo1D& toSubtract) {
+      _axis -= toSubtract._axis;
+      return *this;
+    }
 
     //@}
 
@@ -156,6 +170,7 @@ namespace YODA {
     Axis<HistoBin> _axis;
 
     //@}
+
   };
 
 
@@ -163,10 +178,18 @@ namespace YODA {
   //@{
 
   /// Add two histograms
-  Histo1D operator + (const Histo1D& first, const Histo1D& second);
+  inline Histo1D operator + (const Histo1D& first, const Histo1D& second) {
+    Histo1D tmp = first;
+    tmp += second;
+    return tmp;
+  }
 
   /// Subtract two histograms
-  Histo1D operator - (const Histo1D& first, const Histo1D& second);
+  inline Histo1D operator - (const Histo1D& first, const Histo1D& second) {
+    Histo1D tmp = first;
+    tmp -= second;
+    return tmp;
+  }
 
   //@}
 
