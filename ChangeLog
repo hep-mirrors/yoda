@@ -1,3 +1,15 @@
+2010-09-19  Andy Buckley  <andy@insectnation.org>
+
+	* Restarting ChangeLog contributions! Many changes in the huge
+	time since last update... activity on YODA has renewed and we have
+	a better picture of the distinctive features we require. New idea:
+	named weight vector filling, allowing "parallel" histograms for
+	various event weight variations. I/O remains an awkward issue,
+	especially since the classes are now much richer than they used to
+	be, and don't know about paths. Output can be easily put on top:
+	not an issue... and we can probably do something with
+	pickling. But reading in from C++?
+
 2008-09-16  Andy Buckley  <andy@insectnation.org>
 
 	* Moved duplicate Histo1D/Profile1D code on to Axis, making Axis a

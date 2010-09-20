@@ -5,42 +5,40 @@ import ez_setup
 ez_setup.use_setuptools()
 from setuptools import setup, Extension
 
-longdesc = """This is a SWIG wrapper on the YODA 
-(Yet more Objects for Data Analysis) data analysis library.
-All the functionality (histograms, profile histograms,
-scatter plots, and I/O) of YODA's C++ API is to be provided
-for Python developers through this module.
+"""A SWIG wrapper on the YODA (Yet more Objects for Data Analysis) data analysis
+library.  All the functionality (histograms, profile histograms, scatter plots,
+and I/O) of YODA's C++ API are (or at least should be) provided for Python use
+via this module.
 """
 
 ## Extension definition
 import os
 incdir = os.path.abspath('@top_srcdir@/include')
 srcdir = os.path.abspath('@top_srcdir@/src')
-ext = Extension('_yoda',
-                ['yoda_wrap.cc'],
+ext = Extension('_yodawrap',
+                ['@srcdir@/yoda/yodawrap_wrap.cc'],
                 include_dirs=[incdir],
                 library_dirs=[srcdir, os.path.join(srcdir,'.libs')],
                 libraries=['YODA'])
 
 ## Setup definition
-setup(name = 'yoda',
+setup(name = 'YODA',
       version = '@PACKAGE_VERSION@',
-      include_package_data = True,
-      ext_modules=[ext],
-      py_modules = ['yoda'],
-      
+      ext_package = 'yoda',
+      ext_modules = [ext],
+      py_modules = ['yoda.__init__', 'yoda.yodawrap'],
       author = ['Andy Buckley'],
       author_email = 'andy@insectnation.org',
       url = 'http://projects.hepforge.org/yoda/',
-      description = 'YODA: a Python interface to the YODA data analysis library.',
-      long_description = longdesc,
-      keywords = 'data analysis histograms particle physics motecarlo cedar mcnet',
+      description = 'A Python interface to the YODA data analysis library',
+      long_description = __doc__,
+      keywords = 'data analysis histograms particle physics montecarlo cedar mcnet',
       license = 'GPL',
       classifiers = ['Development Status :: 4 - Beta',
-                   'Environment :: Console',
-                   'Intended Audience :: Science/Research',
-                   'License :: OSI Approved :: GNU General Public License (GPL)',
-                   'Operating System :: OS Independent',
-                   'Programming Language :: Python',
-                   'Topic :: Scientific/Engineering :: Physics']
+                     'Environment :: Console',
+                     'Intended Audience :: Science/Research',
+                     'License :: OSI Approved :: GNU General Public License (GPL)',
+                     'Operating System :: OS Independent',
+                     'Programming Language :: Python',
+                     'Topic :: Scientific/Engineering :: Physics']
       )

@@ -14,22 +14,19 @@ namespace YODA {
 
 
   /// @brief Base class for bins in 1D normal and profile histograms.
-  /// The lower bin edge is inclusive. This base class provides no fill 
+  /// The lower bin edge is inclusive. This base class provides no fill
   /// method, since the signatures for standard and profile histos differ.
   class Bin {
 
   public:
 
-    /// Enumerate the type of bins
-    enum BinType { UNDERFLOWBIN, OVERFLOWBIN, VALIDBIN };
-
     /// @name Constructors, giving bin low and high edges.
     //@{
-    Bin(double lowedge, double highedge, BinType type=VALIDBIN);
-    
-    Bin(std::pair<double,double> edges, BinType type=VALIDBIN);
+    Bin(double lowedge, double highedge);
+
+    Bin(std::pair<double,double> edges);
     //@}
-    
+
 
     /// @name Miscellaneous
     //@{
@@ -37,10 +34,9 @@ namespace YODA {
     /// Reset this bin
     void reset();
 
-    /// Bin type (normal, under/overflow)
-    BinType type() const { return _type; }
     //@}
-    
+
+
   public:
 
     /// @name X-axis info
@@ -75,11 +71,11 @@ namespace YODA {
 
     /// The variance of x-values in the bin.
     double xVariance() const;
-    
+
     /// The standard deviation (spread) of x-values in the bin.
     double xStdDev() const;
 
-    /// The standard error on the bin focus. 
+    /// The standard error on the bin focus.
     double xStdError() const;
     //@}
 
@@ -137,9 +133,7 @@ namespace YODA {
     /// The bin limits
     std::pair<double,double> _edges;
 
-    BinType _type;
-
-    // Distribution of weighted x values    
+    // Distribution of weighted x values
     Dbn1D _xdbn;
 
   };

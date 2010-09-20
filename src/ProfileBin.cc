@@ -9,13 +9,13 @@
 namespace YODA {
 
 
-  ProfileBin::ProfileBin(double lowedge, double highedge, BinType type)
-    : Bin(lowedge, highedge, type)
+  ProfileBin::ProfileBin(double lowedge, double highedge)
+    : Bin(lowedge, highedge)
   { }
 
 
-  ProfileBin::ProfileBin(std::pair<double,double> edges, BinType type)
-    : Bin(edges, type)
+  ProfileBin::ProfileBin(std::pair<double,double> edges)
+    : Bin(edges)
   { }
 
 

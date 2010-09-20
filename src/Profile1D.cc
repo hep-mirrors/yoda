@@ -16,12 +16,9 @@ namespace YODA {
 
 
   void Profile1D::fill(double x, double y, double weight) {
+    /// @todo Fill the underflow and overflow nicely
     ProfileBin& b = binByCoord(x);
-    if ( b.type() == Bin::VALIDBIN ) {
-      b.fill(x, y, weight);
-    } else {
-      b.fillBin(y, weight);
-    }
+    b.fill(x, y, weight);
   }
 
 

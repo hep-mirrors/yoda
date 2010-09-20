@@ -12,14 +12,14 @@ using namespace std;
 namespace YODA {
 
 
-  Bin::Bin(double lowedge, double highedge, BinType type) 
+  Bin::Bin(double lowedge, double highedge)
     : _edges( make_pair(lowedge, highedge) )
   {
     assert( _edges.second > _edges.first );
   }
 
 
-  Bin::Bin(std::pair<double, double> edges, BinType type) 
+  Bin::Bin(std::pair<double, double> edges)
     : _edges( edges )
   {
     assert( _edges.second >= _edges.first );
@@ -69,46 +69,46 @@ namespace YODA {
     return _xdbn.mean();
   }
 
-  
+
   double Bin::xVariance() const {
     return _xdbn.variance();
   }
 
-  
+
   double Bin::xStdDev() const {
     return _xdbn.stdDev();
   }
 
-  
+
   double Bin::xStdError() const {
     return _xdbn.stdErr();
   }
 
-  
+
   unsigned long Bin::numEntries() const {
     return _xdbn.numEntries();
   }
 
-  
+
   double Bin::sumW() const {
     return _xdbn.sumW();
   }
 
-  
+
   double Bin::sumW2() const {
     return _xdbn.sumW2();
   }
 
-  
+
   double Bin::sumWX() const {
     return _xdbn.sumWX();
   }
-  
+
 
   double Bin::sumWX2() const {
     return _xdbn.sumWX2();
   }
-  
+
 
   Bin& Bin::add(const Bin& b) {
     assert(_edges == b._edges);

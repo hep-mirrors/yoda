@@ -70,14 +70,13 @@ namespace YODA {
     // Weighted variance defined as
     // sig2 = ( sum(wx**2) * sum(w) - sum(wx)**2 ) / ( sum(w)**2 - sum(w**2) )
     // see http://en.wikipedia.org/wiki/Weighted_mean
-    if (effNumEntries() == 0) {
+    if (effNumEntries() == 0.0) {
       throw LowStatsError("Requested width of a distribution with no net fill weights");
+    } else if (effNumEntries() <= 1.0) {
+      throw LowStatsError("Requested width of a distribution with only one effective entry");
     }
     const double num = _sumWX2*_sumW - _sumWX*_sumWX;
     const double den = _sumW*_sumW - _sumW2;
-    if (effNumEntries() < 2) {
-      throw LowStatsError("Requested width of a distribution with only one effective entry");
-    }
     if (den == 0) {
       throw WeightError("Undefined weighted variance");
     }

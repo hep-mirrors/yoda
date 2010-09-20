@@ -1,11 +1,16 @@
 YODA TODO list
 ==============
 
-* Use boost
+* Make Bins type into an "indexed set" type, with built-in caching (remove binHash and cachedBinEdges).
+
+* Add (named) Weights object, allowing named or vectorised fills. Autoconversion to/from double.
+
+* Look into pickling of C++ interfaced classes.
+
+* Use boost foreach etc.
   Sort out collection iterator args: use Boost::Range
 
-* Store an overall Dbn1D in Histo1D (and profile?) rather than overflow and
-  underflow. Remove the bin type enum.
+* Fill overall and under/overflow Dbn1Ds in Histo1D and Profile1D.
 
 * Histo1D::integral() -- either calc from histo-level Dbn1D or from bins.
 
@@ -15,10 +20,6 @@ YODA TODO list
   no bin edge overlap.
 
 * Use inline functions... excluding them was a misunderstanding/red herring.
-
-* SWIG-generated Python -> yoda/core.py, with yoda/__init__.py containing "from
-  yoda.core import *". Then rest of package can contain hand-written Python
-  niceties.
 
 * Book histos and profiles:
   - from Scatter
@@ -62,4 +63,4 @@ Metadata as special comments
 Suggesting logx, logy, etc.?
 
 * Does Writer hierarchy make sense?
-   Yes, for plugins...
+   Yes, for plugins... but let's emphasise non-IO operation first

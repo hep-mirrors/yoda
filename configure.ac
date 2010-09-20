@@ -1,7 +1,7 @@
 ## Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.59)
-AC_INIT([YODA],[0.1.0],[yoda@projects.hepforge.org],[YODA])
+AC_INIT([YODA],[0.2.0],[yoda@projects.hepforge.org],[YODA])
 AM_INIT_AUTOMAKE
 AC_CONFIG_SRCDIR([src/Bin.cc])
 AC_CONFIG_HEADERS([include/YODA/YodaConfig.hh])
@@ -32,14 +32,83 @@ AC_SUBST([LIB_SUFFIX])
 AC_PATH_PROG(DOXYGEN, doxygen)
 AM_CONDITIONAL(WITH_DOXYGEN, test "$DOXYGEN")
 
-## Decide whether to build the Python extension
+## Python extension
+AC_ARG_ENABLE(pyext, [AC_HELP_STRING(--disable-pyext,
+  [don't build Python module (default=build)])],
+  [], [enable_pyext=yes])
 AZ_PYTHON_DEFAULT
-AC_ARG_ENABLE(pyext, [AC_HELP_STRING(--enable-pyext, [build YODA Python module @<:@default=no@:>@])], [], [enable_pyext=no])
-AM_CONDITIONAL(ENABLE_PYEXT, [test x$enable_pyext == xyes])
+## Basic Python checks
 if test x$enable_pyext == xyes; then
   AZ_PYTHON_PATH
-  AZ_PYTHON_VERSION_ENSURE([2.3])
+  AZ_PYTHON_VERSION_ENSURE([2.4])
+  PYTHON_VERSION=`$PYTHON -c "import sys; print '.'.join(map(str, sys.version_info@<:@:2@:>@));"`
+  AC_SUBST(PYTHON_VERSION)
+  RIVET_PYTHONPATH=`$PYTHON -c "import distutils.sysconfig; print distutils.sysconfig.get_python_lib(prefix='$prefix');"`
+  AC_SUBST(YODA_PYTHONPATH)
+  ## Test for Python header
+  if test -x "$PYTHON"; then
+    AC_MSG_CHECKING([for Python include path])
+    python_incpath=`$PYTHON -c "import distutils.sysconfig; print distutils.sysconfig.get_python_inc();"`
+    AC_MSG_RESULT([$python_incpath])
+    python_header="$python_incpath/Python.h"
+    if test -z "$python_incpath"; then
+      AC_MSG_ERROR([Can't build Python extension since include directory cannot be determined from distutils])
+      enable_pyext=no
+    elif test ! -e "$python_header"; then
+      AC_MSG_ERROR([Can't build Python extension since header file $python_header cannot be found])
+      enable_pyext=no
+    fi
+  else
+    AC_MSG_ERROR([Can't build Python extension since python can't be found])
+    enable_pyext=no
+  fi
 fi
+## SWIG checks
+if test x$enable_pyext == xyes; then
+  AC_PROG_SWIG
+  if test x$SWIG == x; then
+    AC_MSG_ERROR([Can't build Python extension since swig could not be found])
+    enable_pyext=no
+  else
+    ## Test that SWIG makes a compilable source file...
+    ## cf. g++ 4.x requires that string literal is "_const_ char*"
+    cat > conftest.i <<EOL
+%module conftest
+%{
+  void foo();
+%}
+void foo();
+EOL
+    AC_MSG_CHECKING([if $SWIG can make a Python function wrapper])
+    flag_ok=yes
+    stat_string=`$SWIG -c++ -python conftest.i 2>&1 1>&5` ; test -z "$stat_string" || flag_ok=no
+    AC_MSG_RESULT([$flag_ok])
+    if test x$flag_ok != xyes; then
+      AC_MSG_ERROR([Can't build Python extension since $SWIG is not able to make a Python wrapper])
+      enable_pyext=no
+    else
+      swig_compiler=$CXX
+      AC_CEDAR_CHECKCXXFLAG([-Wno-format], [AC_MSG_NOTICE([adding -Wno-format to swig compilation test]);
+        swig_compiler="$swig_compiler -Wno-format"])
+      AC_MSG_CHECKING([if $SWIG is compatible with the $CXX compiler])
+      flag_ok=yes
+      if test x$flag_ok == xyes; then
+        stat_string=`$swig_compiler -c conftest_wrap.cxx -I$python_incpath 2>&1 1>&5` ; test -z "$stat_string" || flag_ok=no
+      fi
+      AC_MSG_RESULT([$flag_ok])
+      if test x$flag_ok != xyes; then
+        AC_MSG_ERROR([Can't build Python extension since $SWIG is not compatible with $CXX. Get a newer SWIG version!])
+        enable_pyext=no
+      fi
+    fi
+  fi
+  rm -rf conftest*
+fi
+## Finish
+if test x$enable_pyext == xyes; then
+  AC_MSG_NOTICE([All Python build checks successful: 'yoda' Python extension will be built])
+fi
+AM_CONDITIONAL(ENABLE_PYEXT, [test x$enable_pyext == xyes])
 
 ## Test to see if we have to install libyaml-cpp
 AC_CEDAR_LIBRARYANDHEADERS([yaml-cpp], , , [AC_MSG_NOTICE([YODA will install the yaml-cpp library])])
@@ -72,7 +141,7 @@ AC_CONFIG_FILES([include/Makefile include/YODA/Makefile])
 AC_CONFIG_FILES([src/Makefile])
 AC_CONFIG_FILES([src/yaml-cpp/Makefile])
 AC_CONFIG_FILES([tests/Makefile])
-AC_CONFIG_FILES([pyext/Makefile pyext/setup.py])
+AC_CONFIG_FILES([pyext/Makefile pyext/yoda/Makefile pyext/setup.py])
 #AC_CONFIG_FILES([bin/Makefile bin/yoda-config])
 
 AC_OUTPUT

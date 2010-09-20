@@ -115,28 +115,19 @@ namespace YODA {
 
   public:
 
-    Axis(const vector<double>& binedges) :
-      _underflow(0, 1, Bin::UNDERFLOWBIN),
-      _overflow(0, 1, Bin::OVERFLOWBIN)
-    {
+    Axis(const vector<double>& binedges) {
       assert(binedges.size() > 1);
       _mkAxis(binedges);
     }
 
 
-    Axis(size_t nbins, double lower, double upper, Binning binning) :
-      _underflow(0, 1, Bin::UNDERFLOWBIN),
-      _overflow(0, 1, Bin::OVERFLOWBIN)
-    {
+    Axis(size_t nbins, double lower, double upper, Binning binning) {
       vector<double> binedges = _mkEdges(nbins, lower, upper, binning);
       _mkAxis(binedges);
     }
 
 
-    Axis(const vector<BIN>& bins) :
-      _underflow(0, 1, Bin::UNDERFLOWBIN),
-      _overflow(0, 1, Bin::OVERFLOWBIN)
-    {
+    Axis(const vector<BIN>& bins) {
       assert(!bins.empty());
       _mkAxis(bins);
     }
@@ -168,6 +159,17 @@ namespace YODA {
     }
 
 
+    double lowEdge() const {
+      /// @todo Check that this is still okay when bins are auto-sorted
+      return _bins.front().lowEdge();
+    }
+
+    double highEdge() const {
+      /// @todo Check that this is still okay when bins are auto-sorted
+      return _bins.back().highEdge();
+    }
+
+
     BIN& bin(size_t index) {
       if (index >= numBins())
         throw RangeError("YODA::Histo: index out of range");
@@ -178,45 +180,28 @@ namespace YODA {
     const BIN& bin(size_t index) const {
       if (index >= numBins())
         throw RangeError("YODA::Histo: index out of range");
+      /// @todo Fix via "indexed set" of bins
       return _bins[index];
     }
 
 
-    BIN& bin(Bin::BinType binType) {
-      if (binType == Bin::UNDERFLOWBIN) return _underflow;
-      if (binType == Bin::OVERFLOWBIN) return _overflow;
-      throw RangeError("YODA::Histo: index out of range");
-      return _underflow;
-    }
-
-
-    const BIN& bin(Bin::BinType binType) const {
-      if (binType == Bin::UNDERFLOWBIN) return _underflow;
-      if (binType == Bin::OVERFLOWBIN) return _overflow;
-      throw RangeError("YODA::Histo: index out of range");
-      return _underflow;
-    }
-
-
     BIN& binByCoord(double x) {
-      pair<Bin::BinType, size_t> index = findBinIndex(x);
-      if ( index.first == Bin::VALIDBIN ) return _bins[index.second];
-      return bin(index.first);
+      return bin(findBinIndex(x));
     }
 
 
     const BIN& binByCoord(double x) const {
-      pair<Bin::BinType, size_t> index = findBinIndex(x);
-      if ( index.first == Bin::VALIDBIN ) return _bins[index.second];
-      return bin(index.first);
+      return bin(findBinIndex(x));
     }
 
 
-    std::pair<Bin::BinType, size_t> findBinIndex(double coord) const {
-      if ( coord < _cachedBinEdges[0] ) return make_pair(Bin::UNDERFLOWBIN, 0);
-      if ( coord >= _cachedBinEdges[numBins()] ) return make_pair(Bin::OVERFLOWBIN, 0);
+    size_t findBinIndex(double coord) const {
+      /// @todo Improve!
+      if (coord < _cachedBinEdges[0] || coord >= _cachedBinEdges[numBins()]) {
+        throw RangeError("Coordinate is outside the valid range: you should request the underlow or overflow");
+      }
       size_t i = _binHash.upper_bound(coord)->second;
-      return make_pair(Bin::VALIDBIN, i);
+      return i;
     }
 
 
@@ -262,8 +247,8 @@ namespace YODA {
       for (size_t i = 0; i < bins().size(); ++i) {
         bins().at(i) += toAdd.bins().at(i);
       }
-      bin(UNDERFLOW) += toAdd.bin(UNDERFLOW);
-      bin(OVERFLOW)  += toAdd.bin(OVERFLOW);
+      _underflow += toAdd._underflow;
+      _overflow  += toAdd._overflow;
       return *this;
     }
 
@@ -275,13 +260,20 @@ namespace YODA {
       for (size_t i = 0; i < bins().size(); ++i) {
         bins().at(i) += toSubtract.bins().at(i);
       }
-      bin(UNDERFLOW) += toSubtract.bin(UNDERFLOW);
-      bin(OVERFLOW)  += toSubtract.bin(OVERFLOW);
+      _underflow -= toSubtract._underflow;
+      _overflow  -= toSubtract._overflow;
     return *this;
   }
 
 
   private:
+
+
+    /// @todo Store bins in a more flexible (and sorted) way
+    /// @todo Check non-overlap of bins
+    /// @todo Bin access by index
+    /// @todo Overall y-dbn for profiles?
+
 
     /// @name Bin data
     //@{
@@ -289,11 +281,13 @@ namespace YODA {
     /// The bins contained in this histogram
     Bins _bins;
 
-    /// The underflow bin
-    BIN _underflow;
+    /// A distribution counter for overflow fills
+    Dbn1D _underflow;
+    /// A distribution counter for underlow fills
+    Dbn1D _overflow;
 
-    /// The overflow bin
-    BIN _overflow;
+    /// A distribution counter for the whole histogram
+    Dbn1D _dbn;
 
     /// Bin edges: lower edges, except last entry,
     /// which is the high edge of the last bin

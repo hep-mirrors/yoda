@@ -20,8 +20,8 @@ namespace YODA {
     Scatter2D() {  }
 
 
-    Scatter2D(const std::string& path, const std::string& title)
-      : AnalysisObject(path, title)
+    Scatter2D(const std::string& title)
+      : AnalysisObject(title)
     {  }
 
 
@@ -30,9 +30,9 @@ namespace YODA {
     {  }
 
 
-    Scatter2D(const std::string& path, const std::string& title,
+    Scatter2D(const std::string& title,
               const std::set<YODA::Point2D>& points)
-      : AnalysisObject(path, title),
+      : AnalysisObject(title),
         _points(points)
     {  }
 

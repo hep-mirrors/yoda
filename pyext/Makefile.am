@@ -1,30 +1,25 @@
-EXTRA_DIST = yoda.i ez_setup.py
-
-## Bundling SWIG-built sources with the tarball for SL4 compat
-EXTRA_DIST += yoda_wrap.cc yoda.py
-yoda_wrap.cc yoda.py: yoda.i
-	swig -c++ -python -I$(top_srcdir)/include -o yoda_wrap.cc $<
-
+EXTRA_DIST = ez_setup.py
 
 if ENABLE_PYEXT
 
-all-local: yoda_wrap.cc
+SUBDIRS = yoda .
+
+all-local: yoda/yodawrap_wrap.cc
 	$(PYTHON) setup.py build
 
 install-exec-local:
 	$(PYTHON) setup.py install --prefix=$(DESTDIR)$(prefix)
 
 uninstall-local:
-	rm -rf $(DESTDIR)$(libdir)/python*/site-packages/yoda*
+	rm -rf $(DESTDIR)$(YODA_PYTHONPATH)/yoda
 
 clean-local:
 	$(PYTHON) setup.py clean --all
 	@rm -f $(top_builddir)/*.pyc
+	@rm -rf $(builddir)/build
+	@rm -rf dist
 
 distclean-local:
 	@rm -rf yoda.egg-info
-	@rm -rf dist
-	@rm -f yoda.py
-	@rm -f yoda_wrap.cc
 
 endif

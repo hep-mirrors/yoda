@@ -25,10 +25,10 @@ namespace YODA {
     //@{
 
     /// Constructor giving bin low and high edges.
-    ProfileBin(double lowedge, double highedge, BinType type=VALIDBIN);
+    ProfileBin(double lowedge, double highedge);
 
     /// Constructor giving bin low and high edges as a pair.
-    ProfileBin(std::pair<double,double> edges, BinType type=VALIDBIN);
+    ProfileBin(std::pair<double,double> edges);
 
     //@}
 

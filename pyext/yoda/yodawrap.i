@@ -1,5 +1,4 @@
-%module yoda
-
+%module yodawrap
 
 %{
   #define SWIG_FILE_WITH_INIT
@@ -81,6 +80,12 @@ namespace YODA {
 
 
 // Scatter plots
+%ignore operator ==(const YODA::Point2D&, const YODA::Point2D&);
+%ignore operator !=(const YODA::Point2D&, const YODA::Point2D&);
+%ignore operator <(const YODA::Point2D&, const YODA::Point2D&);
+%ignore operator <=(const YODA::Point2D&, const YODA::Point2D&);
+%ignore operator >(const YODA::Point2D&, const YODA::Point2D&);
+%ignore operator >=(const YODA::Point2D&, const YODA::Point2D&);
 %include "YODA/Point2D.h"
 %include "YODA/Scatter2D.h"
 
