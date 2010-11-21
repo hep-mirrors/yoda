@@ -18,27 +18,16 @@ namespace YODA {
     class indexedset : public std::set<T> {
     public:
 
-      // T& operator[](size_t index) {
-      //   if (index >= this->size()) {
-      //     throw std::range_error("Requested index larger than indexed set size");
-      //   }
-      //   size_t i = 0;
-      //   for (typename std::set<T>::iterator it = this->begin(); it == this->end(); ++it) {
-      //     if (i == index) return *it;
-      //     i += 1;
-      //   }
-      //   // This should never be called: just keeping the compiler happy:
-      //   return (*this)[0];
-      // }
 
-
+      /// @brief Const index-access operator
+      /// Non-const is not permitted with sets (== self-keyed maps) as it would change ordering.
       const T& operator[](size_t index) const {
         if (index >= this->size()) {
           throw std::range_error("Requested index larger than indexed set size");
         }
         size_t i = 0;
-        for (typename indexedset<T>::const_iterator it = this->begin(); it == this->end(); ++it) {
-          std::cout << i << "/" << index << ", " << (*it) << std::endl;
+        for (typename indexedset<T>::const_iterator it = this->begin(); it != this->end(); ++it) {
+          // std::cout << i << "/" << index << ", " << (*it) << std::endl;
           if (i == index) return *it;
           i += 1;
         }

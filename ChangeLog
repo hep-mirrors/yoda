@@ -1,3 +1,10 @@
+2010-11-21  Andy Buckley  <andy@insectnation.org>
+
+	* Adding indexed set for holding bins on axes. Still not sure it's
+	what we want, as (I just realised) STL sets are iterator-immutable
+	because they are self-keyed and changes to elements would also
+	change their sorting.
+
 2010-09-19  Andy Buckley  <andy@insectnation.org>
 
 	* Restarting ChangeLog contributions! Many changes in the huge

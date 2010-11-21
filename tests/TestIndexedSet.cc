@@ -1,6 +1,7 @@
 #include "YODA/indexedset.h"
 #include <iostream>
 #include <cstdlib>
+#include <set>
 
 using namespace std;
 using namespace YODA;
@@ -13,9 +14,13 @@ int main() {
   iset.insert(2);
   iset.insert(4);
 
-  cout << iset[3] << " == 4: "
+  // for (utils::indexedset<int>::const_iterator it = iset.begin(); it != iset.end(); ++it) {
+  //   cout << *it << endl;
+  // }
+
+  cout << "iset[3]: " << iset[3] << " == 4: "
        << boolalpha << (iset[3] == 4)
        << endl;
 
-  return EXIT_SUCCESS;
+  return (iset[3] == 4) ? EXIT_SUCCESS : EXIT_FAILURE;
 }
