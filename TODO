@@ -1,25 +1,26 @@
 YODA TODO list
 ==============
 
-* Make Bins type into an "indexed set" type, with built-in caching (remove binHash and cachedBinEdges).
+NOW
 
-* Add (named) Weights object, allowing named or vectorised fills. Autoconversion to/from double.
+* Make Bins type into a sorted_vector contained on Axis, with built-in caching (remove binHash and cachedBinEdges).
 
-* Look into pickling of C++ interfaced classes.
+* Axis::scale
+
+* Rename Exception.h -> Exceptions.h, Util.h -> Utils.h
+
+* Fill overall and under/overflow Dbn1Ds in Histo1D and Profile1D.
 
 * Use boost foreach etc.
   Sort out collection iterator args: use Boost::Range
 
-* Fill overall and under/overflow Dbn1Ds in Histo1D and Profile1D.
+* Use inline functions... excluding them was a misunderstanding/red herring.
 
 * Histo1D::integral() -- either calc from histo-level Dbn1D or from bins.
 
-* Rename Exception.h -> Exceptions.h, Util.h -> Utils.h
 
-* Sort axis contents (lazily)... allow arbitrary bins, but ensure that there is
-  no bin edge overlap.
 
-* Use inline functions... excluding them was a misunderstanding/red herring.
+NEXT
 
 * Book histos and profiles:
   - from Scatter
@@ -33,23 +34,31 @@ YODA TODO list
 * Implement histo/histo -> scatter, profile/profile -> scatter and
   scatter/scatter -> scatter. Also multiplication?
 
-* Allow setting of all weight moments on bins and histos for persistency loading
-
-* Store a type name string on each type, to ease dynamic_casts when loading from
-  persistency.
-
 * Transform differential to integral histos... or allow representation/querying
   as such. How to do this if bin edges don't match?
 
 * Get height measure "right" for log binning
   Really? Or ditch "height"? Have to be careful with Jacobian factors.
 
-* Store enough information for datafile merging to be well defined
-  That means appropriate statistical combinations for each data type.
-
-* Explicitly return NaN for profile histo points with no weight.
+* Explicitly return NaN for profile histo points with no weight (workaround?).
 
 * Write scripts to convert between data formats and to plot results.
+
+* Add a named Weights object, allowing named or vectorised fills? Autoconversion to/from double.
+
+
+
+PERSISTENCY
+
+* Look into pickling of C++ interfaced classes.
+
+* Allow setting of all weight moments on bins and histos for persistency loading
+
+* Store a type name string on each type, to ease dynamic_casts when loading from
+  persistency.
+
+* Store enough information for datafile merging to be well defined
+  That means appropriate statistical combinations for each data type.
 
 * Store "norm" and "scale" as members (and write out in histo header)
    Rather than convert type or scale internally. API for this?
