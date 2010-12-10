@@ -6,3 +6,7 @@ pkginclude_HEADERS = \
     Scatter2D.h Point2D.h \
     Scatter.h Point.h \
     Writer.h WriterAIDA.h WriterYODA.h
+
+noinst_HEADERS = \
+	indexedset.h \
+	sortedvector.h

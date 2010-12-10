@@ -9,8 +9,8 @@
 #include "YODA/AnalysisObject.h"
 #include "YODA/Exception.h"
 #include "YODA/Bin.h"
+#include "YODA/sortedvector.h"
 #include <string>
-#include <vector>
 #include <cassert>
 #include <cmath>
 #include <algorithm>
@@ -28,7 +28,7 @@ namespace YODA {
   class Axis {
   public:
 
-    typedef typename std::vector<BIN> Bins;
+    typedef typename utils::sortedvector<BIN> Bins;
 
 
   private:
@@ -73,6 +73,7 @@ namespace YODA {
     }
 
 
+    /// @todo Move to be a set of external helper functions -- separate functions for log, lin, etc.
     vector<double> _mkEdges(size_t nbins, double lower,
                             double upper, Binning binning) {
       assert(nbins > 0);
@@ -115,19 +116,35 @@ namespace YODA {
 
   public:
 
+    /// Constructor with a list of bin edges
+    /// @todo Accept a general iterable
     Axis(const vector<double>& binedges) {
       assert(binedges.size() > 1);
       _mkAxis(binedges);
     }
 
 
+    /// Constructor with histogram limits, number of bins, and a bin distribution enum
+    /// @deprecated Binning enum to be removed in favour of edge vector helper functions
     Axis(size_t nbins, double lower, double upper, Binning binning) {
       vector<double> binedges = _mkEdges(nbins, lower, upper, binning);
       _mkAxis(binedges);
     }
 
 
+    /// @todo Accept a general iterable and remove this silly special-casing for std::vector
     Axis(const vector<BIN>& bins) {
+      assert(!bins.empty());
+      Bins sbins;
+      for (typename vector<BIN>::const_iterator b = bins.begin(); b != bins.end(); ++b) {
+        sbins.insert(*b);
+      }
+      _mkAxis(sbins);
+    }
+
+
+    /// @todo Accept a general iterable
+    Axis(const Bins& bins) {
       assert(!bins.empty());
       _mkAxis(bins);
     }
@@ -214,6 +231,14 @@ namespace YODA {
     }
 
 
+    /// Scale the axis coordinates (i.e. bin edges)
+    /// @todo Base this on a general transformation of the axis coordinates via a supplied function (object)
+    void scale(double scalefactor) {
+      /// @todo Implement!
+      throw std::runtime_error("Axis coordinate transformations not yet implemented! Pester me, please.");
+    }
+
+
     void scaleW(double scalefactor) {
       _underflow.scaleW(scalefactor);
       _overflow.scaleW(scalefactor);
@@ -238,8 +263,6 @@ namespace YODA {
     }
 
 
-  public:
-
     Axis<BIN>& operator += (const Axis<BIN>& toAdd) {
       if (*this != toAdd) {
         throw LogicError("YODA::Histo1D: Cannot add axes with different binnings.");
@@ -262,8 +285,8 @@ namespace YODA {
       }
       _underflow -= toSubtract._underflow;
       _overflow  -= toSubtract._overflow;
-    return *this;
-  }
+      return *this;
+    }
 
 
   private:

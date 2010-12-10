@@ -9,8 +9,8 @@ using namespace YODA;
 
 
 int main() {
-  
-  Histo1D h("/foo", "Test Histo", 20, 0.0, 1.0);
+
+  Histo1D h(20, 0.0, 1.0);
   for (size_t n = 0; n < 1000; ++n) {
     const double num = rand()/static_cast<double>(RAND_MAX);
     //cout << "Filling with " << num << endl;

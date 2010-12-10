@@ -1,3 +1,16 @@
+2010-12-10  Andy Buckley  <andy@insectnation.org>
+
+	* Some tweaks to Axis, Bin, etc. to use the sortedvector. Seems to
+	be working! (I must be checking it wrongly...)
+
+	* Adding another candidate object for the axis bin container: a
+	sorted extension to STL std::vector with an insert method. This
+	will do as a development placeholder: a proper sorted & indexed
+	container may be substituted later.
+
+	* Fix test code: titles are no longer given as histogram
+	constructor arguments.
+
 2010-11-21  Andy Buckley  <andy@insectnation.org>
 
 	* Adding indexed set for holding bins on axes. Still not sure it's
