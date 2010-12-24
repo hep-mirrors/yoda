@@ -1,7 +1,7 @@
 // -*- C++ -*-
 //
 // This file is part of YODA -- Yet more Objects for Data Analysis
-// Copyright (C) 2008-2009 The YODA collaboration (see AUTHORS for details)
+// Copyright (C) 2008-2010 The YODA collaboration (see AUTHORS for details)
 //
 #include "YODA/Dbn1D.h"
 #include <cmath>
@@ -61,7 +61,7 @@ namespace YODA {
 
 
   double Dbn1D::mean() const {
-    // I think this is ok, even for negative sum(w)
+    // This is ok, even for negative sum(w)
     return _sumWX/_sumW;
   }
 
