@@ -4,7 +4,7 @@ AC_PREREQ(2.59)
 AC_INIT([YODA],[0.2.0],[yoda@projects.hepforge.org],[YODA])
 AM_INIT_AUTOMAKE
 AC_CONFIG_SRCDIR([src/Bin.cc])
-AC_CONFIG_HEADERS([include/YODA/YodaConfig.hh])
+AC_CONFIG_HEADERS([include/YODA/YodaConfig.h])
 
 ## OS X
 AC_CEDAR_OSX
