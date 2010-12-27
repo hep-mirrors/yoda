@@ -2,6 +2,8 @@
 #ifndef YODA_MathUtils_H
 #define YODA_MathUtils_H
 
+#include <YODA/YodaConfig.hh>
+
 #include <stdexcept>
 #include <string>
 #include <ostream>
@@ -10,6 +12,7 @@
 #include <cmath>
 #include <map>
 #include <vector>
+#include <utility>
 #include <algorithm>
 #include <numeric>
 #include <cassert>
@@ -136,7 +139,7 @@ namespace YODA {
 
   /// Alternative version of inRange for doubles, which accepts a pair for the range arguments.
   template<typename NUM>
-  inline bool inRange(NUM value, pair<NUM, NUM> lowhigh,
+  inline bool inRange(NUM value, std::pair<NUM, NUM> lowhigh,
                       RangeBoundary lowbound=CLOSED, RangeBoundary highbound=OPEN) {
     return inRange(value, lowhigh.first, lowhigh.second, lowbound, highbound);
   }
@@ -159,7 +162,7 @@ namespace YODA {
   }
 
   /// Alternative version of @c inRange for ints, which accepts a pair for the range arguments.
-  inline bool inRange(int value, pair<int, int> lowhigh,
+  inline bool inRange(int value, std::pair<int, int> lowhigh,
                       RangeBoundary lowbound=CLOSED, RangeBoundary highbound=OPEN) {
     return inRange(value, lowhigh.first, lowhigh.second, lowbound, highbound);
   }
@@ -214,10 +217,10 @@ namespace YODA {
   //@{
 
   /// Make a list of @a nbins + 1 values equally spaced between @a start and @a end inclusive.
-  inline vector<double> linspace(double start, double end, size_t nbins) {
+  inline std::vector<double> linspace(double start, double end, size_t nbins) {
     assert(end >= start);
     assert(nbins > 0);
-    vector<double> rtn;
+    std::vector<double> rtn;
     const double interval = (end-start)/static_cast<double>(nbins);
     double edge = start;
     while (inRange(edge, start, end, CLOSED, CLOSED)) {
@@ -230,16 +233,16 @@ namespace YODA {
 
 
   /// Make a list of @a nbins + 1 values exponentially spaced between @a start and @a end inclusive.
-  inline vector<double> logspace(double start, double end, size_t nbins) {
+  inline std::vector<double> logspace(double start, double end, size_t nbins) {
     assert(end >= start);
     assert(start > 0);
     assert(nbins > 0);
     const double logstart = std::log(start);
     const double logend = std::log(end);
-    const vector<double> logvals = linspace(logstart, logend, nbins);
-    vector<double> rtn;
-    foreach (double logval, logvals) {
-      rtn.push_back(std::exp(logval));
+    const std::vector<double> logvals = linspace(logstart, logend, nbins);
+    std::vector<double> rtn;
+    for (size_t i = 1; i < logvals.size(); ++i) {
+      rtn.push_back(std::exp(logvals[i]));
     }
     assert(rtn.size() == nbins+1);
     return rtn;
@@ -249,7 +252,7 @@ namespace YODA {
   /// @brief Return the bin index of the given value, @a val, given a vector of bin edges
   /// NB. The @a binedges vector must be sorted
   template <typename NUM>
-  inline int index_between(const NUM& val, const vector<NUM>& binedges) {
+  inline int index_between(const NUM& val, const std::vector<NUM>& binedges) {
     if (!inRange(val, binedges.front(), binedges.back())) return -1; //< Out of histo range
     int index = -1;
     for (size_t i = 1; i < binedges.size(); ++i) {
@@ -269,7 +272,7 @@ namespace YODA {
   //@{
 
   /// Calculate the mean of a sample
-  inline double mean(const vector<int>& sample) {
+  inline double mean(const std::vector<int>& sample) {
     double mean = 0.0;
     for (size_t i=0; i<sample.size(); ++i) {
       mean += sample[i];
@@ -279,7 +282,7 @@ namespace YODA {
 
 
   /// Calculate the covariance (variance) between two samples
-  inline double covariance(const vector<int>& sample1, const vector<int>& sample2) {
+  inline double covariance(const std::vector<int>& sample1, const std::vector<int>& sample2) {
     const double mean1 = mean(sample1);
     const double mean2 = mean(sample2);
     const int N = sample1.size();
@@ -294,7 +297,7 @@ namespace YODA {
 
 
   /// Calculate the correlation strength between two samples
-  inline double correlation(const vector<int>& sample1, const vector<int>& sample2) {
+  inline double correlation(const std::vector<int>& sample1, const std::vector<int>& sample2) {
     const double cov = covariance(sample1, sample2);
     const double var1 = covariance(sample1, sample1);
     const double var2 = covariance(sample2, sample2);
