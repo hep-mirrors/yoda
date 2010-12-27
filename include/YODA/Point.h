@@ -8,7 +8,7 @@
 
 #include "YODA/Error.h"
 #include "YODA/Exception.h"
-#include "YODA/Util.h"
+#include "YODA/nvector.h"
 
 #include <vector>
 #include <string>
@@ -161,7 +161,7 @@ namespace YODA {
       return N;
     }
 
-    
+
   protected:
 
     nvector<double,N> _value;

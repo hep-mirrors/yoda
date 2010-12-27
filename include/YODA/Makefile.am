@@ -1,5 +1,5 @@
 pkginclude_HEADERS = \
-    Exception.h Util.h MathUtils.h \
+    Exception.h MathUtils.h \
     AnalysisObject.h Bin.h \
     Histo1D.h HistoBin.h  \
     Profile1D.h ProfileBin.h \
@@ -9,4 +9,5 @@ pkginclude_HEADERS = \
 
 noinst_HEADERS = \
 	indexedset.h \
-	sortedvector.h
+	sortedvector.h \
+	nvector.h

@@ -3,8 +3,8 @@
 // This file is part of YODA -- Yet more Objects for Data Analysis
 // Copyright (C) 2008-2010 The YODA collaboration (see AUTHORS for details)
 //
-#ifndef YODA_UTIL_H
-#define YODA_UTIL_H
+#ifndef YODA_NVECTOR_H
+#define YODA_NVECTOR_H
 
 #include <vector>
 #include <utility>
@@ -25,13 +25,13 @@ namespace YODA {
       }
     }
 
-    nvector(const nvector<T,N>& other) { 
+    nvector(const nvector<T,N>& other) {
       for (size_t i = 0; i < N; ++i) {
         _vals[i] = other[i];
       }
     }
 
-    nvector(const std::vector<T>& stdvec) { 
+    nvector(const std::vector<T>& stdvec) {
       assert(stdvec.size() == N);
       for (size_t i = 0; i < N; ++i) {
         _vals[i] = stdvec[i];
