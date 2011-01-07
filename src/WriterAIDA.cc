@@ -4,6 +4,7 @@
 // Copyright (C) 2008-2010 The YODA collaboration (see AUTHORS for details)
 //
 #include "YODA/WriterAIDA.h"
+#include "YODA/utils/StringUtils.h"
 
 #include <iostream>
 using namespace std;
@@ -14,80 +15,72 @@ namespace YODA {
   Writer* WriterAIDA::_instance = 0;
 
 
-  string encodeForXML(const string& in) {
-    string out = in;
-    typedef pair<string, string> CharsToEntities;
-    vector<CharsToEntities> cs2es;
-    cs2es.push_back(make_pair("&", "&amp;"));
-    cs2es.push_back(make_pair("<", "&lt;"));
-    cs2es.push_back(make_pair(">", "&gt;"));
-
-    for (vector<CharsToEntities>::const_iterator c2e = cs2es.begin();
-         c2e != cs2es.end(); ++c2e) {
-      string::size_type pos = -1;
-      while ( ( pos = out.find(c2e->first, pos + 1) ) != string::npos ) {
-        out.replace(pos, 1, c2e->second);
-      }
-    }
-    return out;
-  }
 
 
   void WriterAIDA::writeHeader(std::ostream& stream) {
-    stream << "<aida>" << "\n";
+    stream << "<?"; //xml ';//version="1.0" encoding="UTF-8"?>\n';
+    stream << "<!DOCTYPE aida SYSTEM \"http://aida.freehep.org/schemas/3.0/aida.dtd\">\n";
+    stream << "<aida>\n";
+    stream << "  <implementation version=\"1.0\" package=\"YODA\"/>\n";
   }
 
   void WriterAIDA::writeFooter(std::ostream& stream) {
-    stream << "</aida>" << "\n";
+    stream << "</aida>\n";
   }
 
-  void WriterAIDA::writeHisto(std::ostream& os, const Histo1D& h, const std::string& path) {
-    // <histogram1d>
+  void WriterAIDA::writeHisto1D(std::ostream& os, const Histo1D& h, const std::string& path) {
     /// @todo Parse the path and take the last part (use boost)
     const string name = path;
-    os << "<histogram1d name=\"" << encodeForXML(name) << "\""
-       << " title=\"" << encodeForXML(h.title()) << "\""
+    os << "  <dataPointSet name=\"" << utils::encodeForXML(name) << "\""
+       << " title=\"" << utils::encodeForXML(h.title()) << "\""
        << " path=\"" << path << "\">\n";
-    // <axis>
-    os << "  <axis"
-       << " numberOfBins=\"" << h.bins().size() << "\""
-       << " direction=\"x\">\n";
-    // <binBorder>
-    vector<HistoBin>::const_iterator firstbin = h.bins().begin();
-    os << "    <binBorder value=\"" << firstbin->lowEdge() << "\" />\n";
-    for (vector<HistoBin>::const_iterator b = firstbin;
-	 b != h.bins().end(); ++b) {
-      os << "    <binBorder value=\"" << b->highEdge() << "\" />\n";
-    }
-    os << "  </axis>\n";
-    // <statistics>
-    os << "  <statistics entries=\"" << h.area() << "\">\n";
-    os << "    <statistic mean=\"" << h.mean() << "\"" << " direction=\"x\" />\n";
-    os << "  </statistics>\n";
-
-    // Data section
-    os << "  <data1d>\n";
-    // Normal bins
+    os << "  <dimension dim=\"0\" title=\"\" />\n";
+    os << "  <dimension dim=\"1\" title=\"\" />\n";
     for (vector<HistoBin>::const_iterator b = h.bins().begin(); b != h.bins().end(); ++b) {
-      os << "    <bin1d"
-         << " entries=\"" << b->area() << "\""
-         << " height=\"" << b->height() << "\""
-         << " error=\"" << b->heightError() << "\""
-         << " weightedMean=\"" << b->focus() << "\""
-         << " />\n";
+      os << "    <dataPoint>\n";
+      const double x = b->focus();
+      const double ex_m = b->focus() - b->lowEdge();
+      const double ex_p = b->highEdge() - b->focus();
+      os << "      <measurement value=\"" << x
+         << "\" errorMinus=\"" << ex_m << "\" errorPlus=\"" << ex_p << "/>\n";
+      const double y = b->height();
+      const double ey = b->heightError();
+      os << "      <measurement value=\"" << y
+         << "\" errorMinus=\"" << ey << "\" errorPlus=\"" << ey << "/>\n";
+      os << "    </dataPoint>\n";
     }
-    os << "  </data1d>\n";
-    os << "</histogram1d>\n";
+    os << "  </dataPointSet>\n";
     os << flush;
   }
 
 
-  void WriterAIDA::writeProfile(std::ostream& stream, const Profile1D& p, const std::string& path) {
-    //
+  void WriterAIDA::writeProfile1D(std::ostream& os, const Profile1D& p, const std::string& path) {
+    /// @todo Parse the path and take the last part (use boost)
+    const string name = path;
+    os << "  <dataPointSet name=\"" << utils::encodeForXML(name) << "\""
+       << " title=\"" << utils::encodeForXML(p.title()) << "\""
+       << " path=\"" << path << "\">\n";
+    os << "  <dimension dim=\"0\" title=\"\" />\n";
+    os << "  <dimension dim=\"1\" title=\"\" />\n";
+    for (vector<ProfileBin>::const_iterator b = p.bins().begin(); b != p.bins().end(); ++b) {
+      os << "    <dataPoint>\n";
+      const double x = b->focus();
+      const double ex_m = b->focus() - b->lowEdge();
+      const double ex_p = b->highEdge() - b->focus();
+      os << "      <measurement value=\"" << x
+         << "\" errorMinus=\"" << ex_m << "\" errorPlus=\"" << ex_p << "/>\n";
+      const double y = b->mean();
+      const double ey = b->stdErr();
+      os << "      <measurement value=\"" << y
+         << "\" errorMinus=\"" << ey << "\" errorPlus=\"" << ey << "/>\n";
+      os << "    </dataPoint>\n";
+    }
+    os << "  </dataPointSet>\n";
+    os << flush;
   }
 
 
-  // void WriterAIDA::writeScatter(std::ostream& stream, const Scatter& p) {
+  // void WriterAIDA::writeScatter2D(std::ostream& stream, const Scatter2D& p, const std::string& path) {
   //   //
   // }
 

@@ -17,6 +17,10 @@ namespace YODA {
 
   class Scatter2D : public AnalysisObject {
   public:
+
+    /// @name Constructors
+    //@{
+
     Scatter2D() {  }
 
 
@@ -35,6 +39,21 @@ namespace YODA {
       : AnalysisObject(title),
         _points(points)
     {  }
+
+    //@}
+
+
+    /// @name Persistency hooks
+    //@{
+
+    /// Get name of the analysis object type, for persisting
+    std::string _aotype() const { return "Scatter2D"; }
+
+    /// Set the state of the profile object, for unpersisting
+    /// @todo Need to set annotations (do that on AO), all-histo Dbns, and dbns for every bin. Delegate!
+    // void _setstate() = 0;
+
+    //@}
 
 
     ///////////////////////////////////////////////////

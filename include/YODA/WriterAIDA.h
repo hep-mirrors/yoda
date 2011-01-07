@@ -16,7 +16,7 @@
 namespace YODA {
 
 
-  /// Are we going to use inheritance or polymorphism anywhere between output format objects?
+  /// @todo Are we going to use inheritance or polymorphism anywhere between output format objects?
   class WriterAIDA : public Writer {
   private:
 
@@ -37,11 +37,13 @@ namespace YODA {
   protected:
     void writeHeader(std::ostream& stream);
     void writeFooter(std::ostream& stream);
-    void writeHisto(std::ostream& stream, const Histo1D& h, const std::string& path);
-    void writeProfile(std::ostream& stream, const Profile1D& p, const std::string& path);
-    /// @todo Do Scatter2D I/O
-    //void writeScatter(std::ostream& stream, const Scatter& p, const std::string& path);
+
+    void writeHisto1D(std::ostream& os, const Histo1D& h, const std::string& path);
+    void writeProfile1D(std::ostream& os, const Profile1D& h, const std::string& path);
+    // void writeScatter2D(std::ostream& os, const Scatter2D& h, const std::string& path);
+
   };
+
 
 }
 

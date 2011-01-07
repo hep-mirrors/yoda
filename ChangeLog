@@ -1,3 +1,14 @@
+2011-01-07  Andy Buckley  <andy@insectnation.org>
+
+	* Sorting out autoheaders to be more useful.
+
+	* Rewriting AIDA writer to use DPS representation (no reloading)
+	for Histo1D and Profile1D objects.
+
+	* Adding persistency system hooks, since RTTI just sucks too much.
+
+	* Renaming test files to have more meaningful names.
+
 2010-12-10  Andy Buckley  <andy@insectnation.org>
 
 	* Some tweaks to Axis, Bin, etc. to use the sortedvector. Seems to

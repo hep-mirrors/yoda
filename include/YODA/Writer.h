@@ -9,7 +9,7 @@
 #include "YODA/AnalysisObject.h"
 #include "YODA/Histo1D.h"
 #include "YODA/Profile1D.h"
-#include "YODA/Scatter.h"
+// #include "YODA/Scatter2D.h"
 #include <string>
 #include <fstream>
 
@@ -25,10 +25,13 @@ namespace YODA {
 
     /// @name Writing a single analysis object.
     //@{
+
     /// Write out object @a ao to output stream @a stream.
     void write(std::ostream& stream, const AnalysisObject& ao);
+
     /// Write out object @a ao to file @a filename.
     void write(const std::string& filename, const AnalysisObject& ao);
+
     //@}
 
 
@@ -49,6 +52,7 @@ namespace YODA {
 
     /// @name Writing multiple analysis objects by iterator range.
     //@{
+
     /// Write out the objects specified by start iterator @a begin and end
     /// iterator @a end to output stream @a stream.
     template <typename ITER>
@@ -62,6 +66,7 @@ namespace YODA {
       }
       writeFooter(stream);
     }
+
     /// Write out the objects specified by start iterator @a begin and end
     /// iterator @a end to file @a filename.
     template <typename ITER>
@@ -73,16 +78,21 @@ namespace YODA {
       write(outstream, begin, end);
       outstream.close();
     }
+
     //@}
 
 
   protected:
+
+    /// Main writer elements
     virtual void writeHeader(std::ostream& stream) = 0;
     void writeBody(std::ostream& stream, const AnalysisObject& ao);
     virtual void writeFooter(std::ostream& stream) = 0;
-    virtual void writeHisto(std::ostream& stream, const Histo1D& h, const std::string& path) = 0;
-    virtual void writeProfile(std::ostream& stream, const Profile1D& p, const std::string& path) = 0;
-    //virtual void writeScatter(std::ostream& stream, const Scatter<N>& p, const std::string& path) = 0;
+
+    /// Specific AO type writer implementations
+    virtual void writeHisto1D(std::ostream& os, const Histo1D& h, const std::string& path) = 0;
+    virtual void writeProfile1D(std::ostream& os, const Profile1D& h, const std::string& path) = 0;
+    // virtual void writeScatter2D(std::ostream& os, const Scatter2D& h, const std::string& path) = 0;
 
   };
 

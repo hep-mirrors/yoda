@@ -4,7 +4,14 @@ AC_PREREQ(2.59)
 AC_INIT([YODA],[0.2.0],[yoda@projects.hepforge.org],[YODA])
 AM_INIT_AUTOMAKE
 AC_CONFIG_SRCDIR([src/Bin.cc])
-AC_CONFIG_HEADERS([include/YODA/YodaConfig.h])
+AC_CONFIG_MACRO_DIR([m4])
+
+AC_CONFIG_HEADERS([include/YODA/DummyConfig.h include/YODA/YodaConfig.h include/YODA/BuildConfig.h])
+AC_DEFINE_UNQUOTED(YODA_VERSION, "$PACKAGE_VERSION", "YODA version string")
+AC_DEFINE_UNQUOTED(YODA_NAME, "$PACKAGE_NAME", "YODA name string")
+AC_DEFINE_UNQUOTED(YODA_STRING, "$PACKAGE_STRING", "YODA name and version string")
+AC_DEFINE_UNQUOTED(YODA_TARNAME, "$PACKAGE_TARNAME", "YODA short name string")
+AC_DEFINE_UNQUOTED(YODA_BUGREPORT, "$PACKAGE_BUGREPORT", "YODA contact email address")
 
 ## OS X
 AC_CEDAR_OSX

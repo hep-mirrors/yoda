@@ -1,22 +1,47 @@
 YODA TODO list
 ==============
 
+
 NOW
 
-* Make Bins type into a sorted_vector contained on Axis, with built-in caching (remove binHash and cachedBinEdges).
-
-* Axis::scale
-
-* Rename Exception.h -> Exceptions.h, Util.h -> Utils.h
-
-* Fill overall and under/overflow Dbn1Ds in Histo1D and Profile1D.
+* Rename Exception.h -> Exceptions.h, utils -> Utils (for both dir and namespace)
+  Move sortedvector and indexedset into Utils dir
 
 * Use boost foreach etc.
   Sort out collection iterator args: use Boost::Range
 
-* Use inline functions... excluding them was a misunderstanding/red herring.
+* Make Bins type into a sorted_vector contained on Axis, with built-in caching
+  (remove binHash and cachedBinEdges).
+
+* Fill overall and under/overflow Dbn1Ds in Histo1D and Profile1D.
 
 * Histo1D::integral() -- either calc from histo-level Dbn1D or from bins.
+
+* Be explicit about x and y variables on ProfileBin -- it's not clear that
+  "stdErr" etc. refer to the y direction.
+
+* Add negative-weighted mean test(s)
+
+
+* Sort out persistency paths
+
+* Titles etc. as annotations in output
+
+* Read back from flat format
+
+* Make persistency to file/string much easier... shouldn't (ever?) need to
+  explicitly instantiate a Writer or create the file that it'll write to.
+
+* Really need a special Title attr? What about just another annotation with helper functions?
+
+
+Scatter2D s;
+s.addPoint(0.2, 0.2, 0.1, 0.1, 0.03, 0.05);
+s.addPoint(Point2D(0.4, 0.3, 0.1, 0.1));
+/// @todo How to represent multiple errors? Point2D has a vector of Error2D. Don't assume any combination rules
+s.addPoints(pointvector);
+
+Scatter2D s2(h1d);
 
 
 
@@ -29,7 +54,9 @@ NEXT
   - explicitly from vector
   - ???
 
-* Add scaleX, scaleY, scaleXY to Scatter2D. Arbitrary function transforms on Scatters?
+* Convert DPS output to use interim Scatter construction
+
+* Axis::scale -> scaleX, scaleY, scaleXY to Scatter2D. Arbitrary function transforms on Scatters?
 
 * Implement histo/histo -> scatter, profile/profile -> scatter and
   scatter/scatter -> scatter. Also multiplication?
@@ -51,11 +78,6 @@ NEXT
 PERSISTENCY
 
 * Look into pickling of C++ interfaced classes.
-
-* Allow setting of all weight moments on bins and histos for persistency loading
-
-* Store a type name string on each type, to ease dynamic_casts when loading from
-  persistency.
 
 * Store enough information for datafile merging to be well defined
   That means appropriate statistical combinations for each data type.

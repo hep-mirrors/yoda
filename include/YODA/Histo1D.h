@@ -24,7 +24,10 @@ namespace YODA {
     /// @name Constructors
     //@{
 
+    /// @todo Should not *need* a title... add more constructors and rm default values?
+
     /// Constructor giving range and number of bins.
+    /// @todo Remove binning enum stuff
     Histo1D(size_t nbins, double lower, double upper,
             const std::string& title="",
             Binning binning=LINEAR)
@@ -53,6 +56,19 @@ namespace YODA {
 
 
   public:
+
+    /// @name Persistency hooks
+    //@{
+
+    /// Get name of the analysis object type, for persisting
+    std::string _aotype() const { return "Histo1D"; }
+
+    /// Set the state of the histo object, for unpersisting
+    /// @todo Need to set annotations (do that on AO), all-histo Dbns, and dbns for every bin. Delegate!
+    // void _setstate() = 0;
+
+    //@}
+
 
     /// @name Modifiers
     //@{

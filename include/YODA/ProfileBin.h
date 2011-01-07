@@ -58,6 +58,9 @@ namespace YODA {
 
     /// @name Bin content info
     //@{
+
+    /// Make the "y" explicit?
+
     double mean() const;
 
     double stdDev() const;
@@ -65,6 +68,7 @@ namespace YODA {
     double variance() const;
 
     double stdErr() const;
+
     //@}
 
 

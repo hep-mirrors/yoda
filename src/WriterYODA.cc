@@ -30,7 +30,7 @@ namespace YODA {
   }
 
 
-  void WriterYODA::writeHisto(std::ostream& os, const Histo1D& h, const std::string& path) {
+  void WriterYODA::writeHisto1D(std::ostream& os, const Histo1D& h, const std::string& path) {
     ios_base::fmtflags oldflags = os.flags();
 
     const int precision = 6;
@@ -56,7 +56,7 @@ namespace YODA {
   }
 
 
-  void WriterYODA::writeProfile(std::ostream& os, const Profile1D& p, const std::string& path) {
+  void WriterYODA::writeProfile1D(std::ostream& os, const Profile1D& p, const std::string& path) {
     cerr << "WriterYODA::writeProfile() NOT UPDATED YET\n;";
     os << "## BEGIN PROFILE1D\n";
     os << "## Title: " << p.title() << "\n";

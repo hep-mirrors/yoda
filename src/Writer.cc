@@ -7,6 +7,8 @@
 #include "YODA/Writer.h"
 #include <iostream>
 #include <typeinfo>
+#include <sstream>
+
 using namespace std;
 
 namespace YODA {
@@ -28,21 +30,16 @@ namespace YODA {
 
 
   void Writer::writeBody(std::ostream& stream, const AnalysisObject& ao) {
-    /// @todo Do this for real!
-
-    // Use RTTI to decide which down-cast to do.
-    const Histo1D example_histo(1, 0.0, 1.0, "Hist1D title");
-    const Profile1D example_profile(1, 0.0, 1.0, "Prof1D title");
-    if (typeid(ao) == typeid(example_histo)) {
-      cout << "H" << endl;
-      writeHisto(stream, static_cast<const Histo1D&>(ao), "/foo");
-    }
-    else if (typeid(ao) == typeid(example_profile)) {
-      cout << "P" << endl;
-      writeProfile(stream, static_cast<const Profile1D&>(ao), "/foo");
+    const string aotype = ao._aotype();
+    /// @todo Handle paths -- where to set them?
+    if (aotype == "Histo1D") {
+      writeHisto1D(stream, dynamic_cast<const Histo1D&>(ao), "/foo");
+    } else if (aotype == "Profile1D") {
+      writeProfile1D(stream, dynamic_cast<const Profile1D&>(ao), "/foo");
     } else {
-      cerr << "OTHER" << endl;
-      throw Exception("Unrecognised analysis object type in Writer::write");
+      ostringstream oss;
+      oss << "Unrecognised analysis object type " << aotype << " in Writer::write";
+      throw Exception(oss.str());
     }
   }
 
