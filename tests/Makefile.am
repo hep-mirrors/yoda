@@ -1,12 +1,17 @@
-check_PROGRAMS = test1 test2 test3 testindexedset testsortedvector
+check_PROGRAMS = \
+  testhisto1Da testhisto1Db \
+  testprofile1Da \
+  testindexedset testsortedvector
 
 AM_CPPFLAGS = -I$(top_srcdir)/include
 AM_LDFLAGS = -L$(top_builddir)/src -lYODA
 
-test1_SOURCES = Test1.cc
-test2_SOURCES = Test2.cc
-test3_SOURCES = Test3.cc
+testhisto1Da_SOURCES = TestHisto1Da.cc
+testhisto1Db_SOURCES = TestHisto1Db.cc
+testprofile1Da_SOURCES = TestProfile1Da.cc
 testindexedset_SOURCES = TestIndexedSet.cc
 testsortedvector_SOURCES = TestSortedVector.cc
 
-TESTS = test1 test2 test3 testindexedset testsortedvector
+TESTS = \
+  testhisto1Da testhisto1Db testprofile1Da \
+  testindexedset testsortedvector

@@ -1,5 +1,6 @@
 #include "YODA/Histo1D.h"
 #include "YODA/WriterAIDA.h"
+#include "YODA/WriterYODA.h"
 #include <cmath>
 #include <fstream>
 #include <unistd.h>
@@ -17,12 +18,16 @@ int main() {
     h.fill(num);
   }
 
-  ofstream file("test2.aida");
-
-  Writer& w = WriterAIDA::create();
-  w.write(file, h);
-
+  /// @todo These should be one-liners
+  ofstream file("test.aida");
+  Writer& w1 = WriterAIDA::create();
+  w1.write(file, h);
   file.close();
+
+  ofstream file2("test.yoda");
+  WriterYODA::create().write(file2, h);
+  file2.close();
+
 
   return EXIT_SUCCESS;
 }
