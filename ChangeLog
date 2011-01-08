@@ -1,3 +1,9 @@
+2011-01-08  Andy Buckley  <andy@insectnation.org>
+
+	* Enabling quiet compilation.
+
+	* More annotation functionality.
+
 2011-01-07  Andy Buckley  <andy@insectnation.org>
 
 	* Sorting out autoheaders to be more useful.
