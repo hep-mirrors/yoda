@@ -54,14 +54,29 @@ namespace YODA {
       _annotations[name] = value;
     }
 
-    /// Get all the annotations
-    std::map<std::string,std::string> annotations() const {
+    /// Check if an annotation is defined
+    bool hasAnnotation(const std::string& name, const std::string& value) const {
+      return _annotations.find(name) != _annotations.end();
+    }
+
+    /// Get all the annotations (as const ref)
+    const std::map<std::string,std::string>& annotations() const {
       return _annotations;
     }
 
     /// Get an annotation by name
-    /// @todo What if it isn't defined? Return by value?
+    /// @todo What if it isn't defined? Return by value instead, or throw KeyException?
     const std::string& annotation(const std::string& name) const;
+
+    /// Delete an annotation by name
+    void rmAnnotation(const std::string& name) {
+      _annotations.erase(name);
+    }
+
+    /// Delete an annotation by name
+    void clearAnnotations() {
+      _annotations.clear();
+    }
 
     //@}
 
