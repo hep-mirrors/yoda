@@ -4,6 +4,7 @@ AC_PREREQ(2.59)
 AC_INIT([YODA],[0.2.0],[yoda@projects.hepforge.org],[YODA])
 AM_INIT_AUTOMAKE
 AC_CONFIG_SRCDIR([src/Bin.cc])
+m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 AC_CONFIG_MACRO_DIR([m4])
 
 AC_CONFIG_HEADERS([include/YODA/DummyConfig.h include/YODA/YodaConfig.h include/YODA/BuildConfig.h])
