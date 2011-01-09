@@ -1,12 +1,12 @@
 // -*- C++ -*-
 //
 // This file is part of YODA -- Yet more Objects for Data Analysis
-// Copyright (C) 2008-2010 The YODA collaboration (see AUTHORS for details)
+// Copyright (C) 2008-2011 The YODA collaboration (see AUTHORS for details)
 //
 #ifndef YODA_POINT2D_H
 #define YODA_POINT2D_H
 
-#include "YODA/Exception.h"
+#include "YODA/Exceptions.h"
 #include "YODA/Util.h"
 #include "YODA/MathUtils.h"
 

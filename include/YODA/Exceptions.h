@@ -1,7 +1,7 @@
 // -*- C++ -*-
 //
 // This file is part of YODA -- Yet more Objects for Data Analysis
-// Copyright (C) 2008-2010 The YODA collaboration (see AUTHORS for details)
+// Copyright (C) 2008-2011 The YODA collaboration (see AUTHORS for details)
 //
 #ifndef YODA_Exception_h
 #define YODA_Exception_h
@@ -29,7 +29,7 @@ namespace YODA {
   };
 
 
-  /// @todo Clarify where this might arise!
+  /// Error for places where it should not have been possible to get to!
   class LogicError : public Exception {
   public:
     LogicError(const std::string& what) : Exception(what) {}
@@ -49,6 +49,13 @@ namespace YODA {
   class LowStatsError : public Exception {
   public:
     LowStatsError(const std::string& what) : Exception(what) {}
+  };
+
+
+  /// @brief Error for unfound or broken AnalysisObject annotations
+  class AnnotationError : public Exception {
+  public:
+    AnnotationError(const std::string& what) : Exception(what) {}
   };
 
 

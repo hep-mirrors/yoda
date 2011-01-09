@@ -1,7 +1,7 @@
 // -*- C++ -*-
 //
 // This file is part of YODA -- Yet more Objects for Data Analysis
-// Copyright (C) 2008-2010 The YODA collaboration (see AUTHORS for details)
+// Copyright (C) 2008-2011 The YODA collaboration (see AUTHORS for details)
 //
 
 #include "YODA/Writer.h"
@@ -31,11 +31,10 @@ namespace YODA {
 
   void Writer::writeBody(std::ostream& stream, const AnalysisObject& ao) {
     const string aotype = ao._aotype();
-    /// @todo Handle paths -- where to set them?
     if (aotype == "Histo1D") {
-      writeHisto1D(stream, dynamic_cast<const Histo1D&>(ao), "/foo");
+      writeHisto1D(stream, dynamic_cast<const Histo1D&>(ao));
     } else if (aotype == "Profile1D") {
-      writeProfile1D(stream, dynamic_cast<const Profile1D&>(ao), "/foo");
+      writeProfile1D(stream, dynamic_cast<const Profile1D&>(ao));
     } else {
       ostringstream oss;
       oss << "Unrecognised analysis object type " << aotype << " in Writer::write";

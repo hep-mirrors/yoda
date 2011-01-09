@@ -1,7 +1,7 @@
 // -*- C++ -*-
 //
 // This file is part of YODA -- Yet more Objects for Data Analysis
-// Copyright (C) 2008-2010 The YODA collaboration (see AUTHORS for details)
+// Copyright (C) 2008-2011 The YODA collaboration (see AUTHORS for details)
 //
 #include "YODA/Dbn1D.h"
 #include <cmath>

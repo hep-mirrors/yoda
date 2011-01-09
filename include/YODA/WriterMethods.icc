@@ -1,0 +1,67 @@
+// This file contains boilerplate code for static writer functions in all
+// classes inheriting from Writer. These methods just forward to the methods on
+// the Writer base class, but code duplication can't be avoided without a
+// preprocessor hack like this, AFAIK.
+
+
+/// @name Writing a single analysis object.
+//@{
+
+/// Write out object @a ao to output stream @a stream.
+static void write(std::ostream& stream, const AnalysisObject& ao) {
+  create().write(stream, ao);
+}
+
+/// Write out object @a ao to file @a filename.
+static void write(const std::string& filename, const AnalysisObject& ao) {
+  create().write(filename, ao);
+}
+
+//@}
+
+
+/// @name Writing multiple analysis objects by collection.
+//@{
+
+/// @todo Find a successful way to generically refer to STL containers: want to
+/// be able to iterate over vector, list, deque, set, multiset, map & multimap
+
+/// Write out a collection of objects @a objs to output stream @a stream.
+/// @todo This doesn't compile
+template <template<typename> class LIST>
+static void write(std::ostream& stream,
+                  const LIST<AnalysisObject*>& aos) {
+  create().write(stream, aos);
+}
+
+/// Write out a collection of objects @a objs to file @a filename.
+/// @todo This doesn't compile
+template <template<typename> class LIST>
+static void write(const std::string& filename,
+                  const LIST<AnalysisObject*>& aos) {
+  create().write(filename, aos);
+}
+
+//@}
+
+
+/// @name Writing multiple analysis objects by iterator range.
+//@{
+
+/// Write out the objects specified by start iterator @a begin and end
+/// iterator @a end to output stream @a stream.
+template <typename ITER>
+static void write(std::ostream& stream, const ITER& begin, const ITER& end) {
+  create().write(stream, begin, end);
+}
+
+/// Write out the objects specified by start iterator @a begin and end
+/// iterator @a end to file @a filename.
+template <typename ITER>
+static void write(const std::string& filename,
+           const ITER& begin,
+           const ITER& end) {
+  create().write(filename, begin, end);
+}
+
+//@}

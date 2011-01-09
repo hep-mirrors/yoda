@@ -1,13 +1,13 @@
 // -*- C++ -*-
 //
 // This file is part of YODA -- Yet more Objects for Data Analysis
-// Copyright (C) 2008-2010 The YODA collaboration (see AUTHORS for details)
+// Copyright (C) 2008-2011 The YODA collaboration (see AUTHORS for details)
 //
 #ifndef YODA_POINT_H
 #define YODA_POINT_H
 
 #include "YODA/Error.h"
-#include "YODA/Exception.h"
+#include "YODA/Exceptions.h"
 #include "YODA/nvector.h"
 
 #include <vector>

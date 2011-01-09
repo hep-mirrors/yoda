@@ -1,13 +1,13 @@
 // -*- C++ -*-
 //
 // This file is part of YODA -- Yet more Objects for Data Analysis
-// Copyright (C) 2008-2010 The YODA collaboration (see AUTHORS for details)
+// Copyright (C) 2008-2011 The YODA collaboration (see AUTHORS for details)
 //
 #ifndef YODA_Axis_h
 #define YODA_Axis_h
 
 #include "YODA/AnalysisObject.h"
-#include "YODA/Exception.h"
+#include "YODA/Exceptions.h"
 #include "YODA/Bin.h"
 #include "YODA/sortedvector.h"
 #include <string>

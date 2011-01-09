@@ -1,6 +1,6 @@
 #include "YODA/Error.h"
 #include "YODA/MathUtils.h"
-#include "YODA/Exception.h"
+#include "YODA/Exceptions.h"
 #include <map>
 
 using namespace std;

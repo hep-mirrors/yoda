@@ -1,7 +1,7 @@
 // -*- C++ -*-
 //
 // This file is part of YODA -- Yet more Objects for Data Analysis
-// Copyright (C) 2008-2010 The YODA collaboration (see AUTHORS for details)
+// Copyright (C) 2008-2011 The YODA collaboration (see AUTHORS for details)
 //
 #include "YODA/WriterAIDA.h"
 #include "YODA/utils/StringUtils.h"
@@ -12,13 +12,8 @@ using namespace std;
 namespace YODA {
 
 
-  Writer* WriterAIDA::_instance = 0;
-
-
-
-
   void WriterAIDA::writeHeader(std::ostream& stream) {
-    stream << "<?"; //xml ';//version="1.0" encoding="UTF-8"?>\n';
+    stream << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
     stream << "<!DOCTYPE aida SYSTEM \"http://aida.freehep.org/schemas/3.0/aida.dtd\">\n";
     stream << "<aida>\n";
     stream << "  <implementation version=\"1.0\" package=\"YODA\"/>\n";
@@ -28,12 +23,12 @@ namespace YODA {
     stream << "</aida>\n";
   }
 
-  void WriterAIDA::writeHisto1D(std::ostream& os, const Histo1D& h, const std::string& path) {
+  void WriterAIDA::writeHisto1D(std::ostream& os, const Histo1D& h) {
     /// @todo Parse the path and take the last part (use boost)
-    const string name = path;
+    const string name = h.path();
     os << "  <dataPointSet name=\"" << utils::encodeForXML(name) << "\""
        << " title=\"" << utils::encodeForXML(h.title()) << "\""
-       << " path=\"" << path << "\">\n";
+       << " path=\"" << h.path() << "\">\n";
     os << "  <dimension dim=\"0\" title=\"\" />\n";
     os << "  <dimension dim=\"1\" title=\"\" />\n";
     for (vector<HistoBin>::const_iterator b = h.bins().begin(); b != h.bins().end(); ++b) {
@@ -54,12 +49,12 @@ namespace YODA {
   }
 
 
-  void WriterAIDA::writeProfile1D(std::ostream& os, const Profile1D& p, const std::string& path) {
+  void WriterAIDA::writeProfile1D(std::ostream& os, const Profile1D& p) {
     /// @todo Parse the path and take the last part (use boost)
-    const string name = path;
+    const string name = p.path();
     os << "  <dataPointSet name=\"" << utils::encodeForXML(name) << "\""
        << " title=\"" << utils::encodeForXML(p.title()) << "\""
-       << " path=\"" << path << "\">\n";
+       << " path=\"" << p.path() << "\">\n";
     os << "  <dimension dim=\"0\" title=\"\" />\n";
     os << "  <dimension dim=\"1\" title=\"\" />\n";
     for (vector<ProfileBin>::const_iterator b = p.bins().begin(); b != p.bins().end(); ++b) {
@@ -80,7 +75,7 @@ namespace YODA {
   }
 
 
-  // void WriterAIDA::writeScatter2D(std::ostream& stream, const Scatter2D& p, const std::string& path) {
+  // void WriterAIDA::writeScatter2D(std::ostream& stream, const Scatter2D& p) {
   //   //
   // }
 

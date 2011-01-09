@@ -1,3 +1,23 @@
+2011-01-09  Andy Buckley  <andy@insectnation.org>
+
+	* Updating copyright comments to be valid into 2011.
+
+	* Persistency fixes, and changing the interface to use the annotated path.
+
+	* Using annotations for path and title.
+
+	* Adding tests of collection and iterator range AO writing.
+
+	* Adding static write functions on Writer*.h implementations to
+	avoid needing to make an explicit Writer object via the create()
+	functions.
+
+	* Rename Exception.h -> Exceptions.h
+
+	* Added AnnotationError.
+
+	* Re-enable persistency of collections with begin/end iterators.
+
 2011-01-08  Andy Buckley  <andy@insectnation.org>
 
 	* Enabling quiet compilation.

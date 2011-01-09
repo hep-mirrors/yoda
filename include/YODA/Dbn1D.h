@@ -1,12 +1,12 @@
 // -*- C++ -*-
 //
 // This file is part of YODA -- Yet more Objects for Data Analysis
-// Copyright (C) 2008-2010 The YODA collaboration (see AUTHORS for details)
+// Copyright (C) 2008-2011 The YODA collaboration (see AUTHORS for details)
 //
 #ifndef YODA_Dbn1D_h
 #define YODA_Dbn1D_h
 
-#include "YODA/Exception.h"
+#include "YODA/Exceptions.h"
 
 namespace YODA {
 
