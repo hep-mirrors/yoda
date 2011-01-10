@@ -1,13 +1,13 @@
 ## Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.59)
-AC_INIT([YODA],[0.2.0],[yoda@projects.hepforge.org],[YODA])
+AC_INIT([YODA],[0.3.0],[yoda@projects.hepforge.org],[YODA])
 AM_INIT_AUTOMAKE
 AC_CONFIG_SRCDIR([src/Bin.cc])
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 AC_CONFIG_MACRO_DIR([m4])
 
-AC_CONFIG_HEADERS([include/YODA/DummyConfig.h include/YODA/YodaConfig.h include/YODA/BuildConfig.h])
+AC_CONFIG_HEADERS([include/YODA/Config/DummyConfig.h include/YODA/Config/YodaConfig.h include/YODA/Config/BuildConfig.h])
 AC_DEFINE_UNQUOTED(YODA_VERSION, "$PACKAGE_VERSION", "YODA version string")
 AC_DEFINE_UNQUOTED(YODA_NAME, "$PACKAGE_NAME", "YODA name string")
 AC_DEFINE_UNQUOTED(YODA_STRING, "$PACKAGE_STRING", "YODA name and version string")
@@ -144,7 +144,7 @@ AC_SUBST(AM_CPPFLAGS)
 AC_SUBST(AM_CXXFLAGS)
 
 AC_EMPTY_SUBST
-AC_CONFIG_FILES([Makefile])
+AC_CONFIG_FILES([Makefile Doxyfile])
 AC_CONFIG_FILES([include/Makefile include/YODA/Makefile])
 AC_CONFIG_FILES([src/Makefile])
 AC_CONFIG_FILES([src/yaml-cpp/Makefile])

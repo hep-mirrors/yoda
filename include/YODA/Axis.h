@@ -9,7 +9,8 @@
 #include "YODA/AnalysisObject.h"
 #include "YODA/Exceptions.h"
 #include "YODA/Bin.h"
-#include "YODA/sortedvector.h"
+#include "YODA/Utils/sortedvector.h"
+#include "YODA/Utils/MathUtils.h"
 #include <string>
 #include <cassert>
 #include <cmath>
@@ -20,20 +21,30 @@ using namespace std;
 namespace YODA {
 
 
-  /// Enumerate the type of binning
-  enum Binning { LINEAR, LOG };
-
-
   template <typename BIN>
   class Axis {
   public:
 
-    typedef typename utils::sortedvector<BIN> Bins;
+    typedef typename Utils::sortedvector<BIN> Bins;
+
+
+    /// @name Helper functions to make bin edge vectors (see @file MathUtils.h)
+    //@{
+
+    static inline std::vector<double> mkBinEdgesLin(double start, double end, size_t nbins) {
+      return linspace(start, end, nbins);
+    }
+
+    static inline std::vector<double> mkBinEdgesLog(double start, double end, size_t nbins) {
+      return logspace(start, end, nbins);
+    }
+
+    //@}
 
 
   private:
 
-
+    /// @todo Remove
     void _mkBinHash() {
       for (size_t i = 0; i < numBins(); i++) {
         // Insert upper bound mapped to bin ID
@@ -44,17 +55,13 @@ namespace YODA {
 
     void _mkAxis(const vector<double>& binedges) {
       const size_t nbins = binedges.size() - 1;
-
-      // Make bins
       for (size_t i = 0; i < nbins; ++i) {
         _bins.push_back( BIN(binedges.at(i), binedges.at(i+1)) );
       }
 
-      // Make cached edges
+      /// @todo Remove
       _cachedBinEdges = binedges;
       std::sort(_cachedBinEdges.begin(), _cachedBinEdges.end());
-
-      // Make hash
       _mkBinHash();
     }
 
@@ -62,62 +69,19 @@ namespace YODA {
     void _mkAxis(const Bins& bins) {
       _bins = bins;
 
-      // Make cached edges
+      /// @todo Remove
       for (size_t i = 0; i < bins.size(); ++i) {
         _cachedBinEdges.push_back(bins.at(i).lowEdge());
       }
       _cachedBinEdges.push_back(bins.back().highEdge());
-
-      // Make hash
       _mkBinHash();
     }
-
-
-    /// @todo Move to be a set of external helper functions -- separate functions for log, lin, etc.
-    vector<double> _mkEdges(size_t nbins, double lower,
-                            double upper, Binning binning) {
-      assert(nbins > 0);
-      assert(upper > lower);
-      vector<double> rtn;
-
-
-      switch(binning) {
-      case LINEAR:
-        {
-          const double binwidth = (upper-lower)/static_cast<double>(nbins);
-          for (size_t i = 0; i <= nbins; ++i) {
-            const double edge = lower + binwidth*i;
-            rtn.push_back(edge);
-          }
-        }
-        break;
-
-      case LOG:
-        {
-          const double logupper = std::log10(upper);
-          const double loglower = std::log10(lower);
-          const double logbinwidth = (logupper-loglower)/static_cast<double>(nbins);
-          for (size_t i = 0; i <= nbins; ++i) {
-            const double logedge = loglower + logbinwidth*i;
-            const double edge = pow(10, logedge);
-            rtn.push_back(edge);
-          }
-        }
-        break;
-
-      default:
-        throw Exception("Invalid binning style... what went wrong?");
-      }
-
-      return rtn;
-    }
-
 
 
   public:
 
     /// Constructor with a list of bin edges
-    /// @todo Accept a general iterable
+    /// @todo Accept a general iterable and remove this silly special-casing for std::vector
     Axis(const vector<double>& binedges) {
       assert(binedges.size() > 1);
       _mkAxis(binedges);
@@ -125,10 +89,8 @@ namespace YODA {
 
 
     /// Constructor with histogram limits, number of bins, and a bin distribution enum
-    /// @deprecated Binning enum to be removed in favour of edge vector helper functions
-    Axis(size_t nbins, double lower, double upper, Binning binning) {
-      vector<double> binedges = _mkEdges(nbins, lower, upper, binning);
-      _mkAxis(binedges);
+    Axis(size_t nbins, double lower, double upper) {
+      _mkAxis(linspace(nbins, lower, upper));
     }
 
 
@@ -143,7 +105,7 @@ namespace YODA {
     }
 
 
-    /// @todo Accept a general iterable
+    /// @todo Accept a general iterable (and remove this internal detail special-casing?)
     Axis(const Bins& bins) {
       assert(!bins.empty());
       _mkAxis(bins);

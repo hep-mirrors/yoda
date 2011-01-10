@@ -29,26 +29,25 @@ namespace YODA {
     /// Constructor giving range and number of bins.
     /// @todo Remove binning enum stuff
     Histo1D(size_t nbins, double lower, double upper,
-            const std::string& title="",
-            Binning binning=LINEAR)
-    : AnalysisObject(title),
-      _axis(nbins, lower, upper, binning)
+            const std::string& path="", const std::string& title="")
+      : AnalysisObject(path, title),
+      _axis(nbins, lower, upper)
     { }
 
     /// @brief Constructor giving explicit bin edges.
     /// For n bins, binedges.size() == n+1, the last
     /// one being the upper bound of the last bin
     Histo1D(const std::vector<double>& binedges,
-            const std::string& title="")
-      : AnalysisObject(title),
+            const std::string& path="", const std::string& title="")
+      : AnalysisObject(path, title),
         _axis(binedges)
     { }
 
     /// Constructor giving a vector of bins.
     /// @todo Allow any iterable of bins (use Boost::Range?)
     Histo1D(const std::vector<HistoBin>& bins,
-            const std::string& title="")
-      : AnalysisObject(title),
+            const std::string& path="", const std::string& title="")
+      : AnalysisObject(path, title),
         _axis(bins)
     { }
 

@@ -4,7 +4,7 @@
 // Copyright (C) 2008-2011 The YODA collaboration (see AUTHORS for details)
 //
 #include "YODA/WriterAIDA.h"
-#include "YODA/utils/StringUtils.h"
+#include "YODA/Utils/StringUtils.h"
 
 #include <iostream>
 using namespace std;
@@ -26,8 +26,8 @@ namespace YODA {
   void WriterAIDA::writeHisto1D(std::ostream& os, const Histo1D& h) {
     /// @todo Parse the path and take the last part (use boost)
     const string name = h.path();
-    os << "  <dataPointSet name=\"" << utils::encodeForXML(name) << "\""
-       << " title=\"" << utils::encodeForXML(h.title()) << "\""
+    os << "  <dataPointSet name=\"" << Utils::encodeForXML(name) << "\""
+       << " title=\"" << Utils::encodeForXML(h.title()) << "\""
        << " path=\"" << h.path() << "\">\n";
     os << "  <dimension dim=\"0\" title=\"\" />\n";
     os << "  <dimension dim=\"1\" title=\"\" />\n";
@@ -52,8 +52,8 @@ namespace YODA {
   void WriterAIDA::writeProfile1D(std::ostream& os, const Profile1D& p) {
     /// @todo Parse the path and take the last part (use boost)
     const string name = p.path();
-    os << "  <dataPointSet name=\"" << utils::encodeForXML(name) << "\""
-       << " title=\"" << utils::encodeForXML(p.title()) << "\""
+    os << "  <dataPointSet name=\"" << Utils::encodeForXML(name) << "\""
+       << " title=\"" << Utils::encodeForXML(p.title()) << "\""
        << " path=\"" << p.path() << "\">\n";
     os << "  <dimension dim=\"0\" title=\"\" />\n";
     os << "  <dimension dim=\"1\" title=\"\" />\n";

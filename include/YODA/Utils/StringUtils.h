@@ -7,7 +7,7 @@
 #define YODA_STRINGUTILS_H
 
 namespace YODA {
-  namespace utils {
+  namespace Utils {
 
     /// Replace
     string encodeForXML(const string& in) {

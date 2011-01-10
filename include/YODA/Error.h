@@ -6,14 +6,13 @@
 #ifndef YODA_ERROR_H
 #define YODA_ERROR_H
 
-#include "YODA/nvector.h"
+#include "YODA/Utils/nvector.h"
 
 #include <vector>
 #include <string>
 #include <map>
 
 namespace YODA {
-
 
 
   /// Enum for specifying different error classes.

@@ -2,7 +2,7 @@
 #ifndef YODA_MathUtils_H
 #define YODA_MathUtils_H
 
-#include <YODA/BuildConfig.h>
+#include <YODA/Config/BuildConfig.h>
 
 #include <stdexcept>
 #include <string>

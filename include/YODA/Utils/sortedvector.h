@@ -7,7 +7,7 @@
 #include <iostream>
 
 namespace YODA {
-  namespace utils {
+  namespace Utils {
 
 
     /// @brief Specialisation of std::vector to allow indexed access to ordered elements

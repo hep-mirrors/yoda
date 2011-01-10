@@ -1,3 +1,28 @@
+2011-01-10  Andy Buckley  <andy@insectnation.org>
+
+	* Move (generated) config files into the Config subdir.
+
+	* Move sortedvector and indexedset into the Utils dir.
+
+	* Move the "utils" directory and namespace to "Utils"
+
+	* Put the Doxyfile under configure control by moving it to
+	Doxyfile.in and using the @PACKAGE_VERSION@ token.
+
+	* Make Doxygen find the .icc file and hide functions with name _*
+	and in the YAML namespace.
+
+	* Removing the Binning argument and enum in favour of explicit bin
+	edge vectors, possibly produced explicitly via the MathUtils
+	linspace and logspace functions, or the new Axis::mkBinEdgesLin/Log
+	alias functions.
+
+	* Fixed Axis, Histo1D and Profile1D constructors, by adding a path
+	argument, passing the path and title args to the AnalysisObject
+	base constructor properly.
+
+	* Removed several old and unused files such as Tree.h
+
 2011-01-09  Andy Buckley  <andy@insectnation.org>
 
 	* Updating copyright comments to be valid into 2011.

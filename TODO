@@ -4,9 +4,17 @@ YODA TODO list
 
 NOW
 
-* Make Doxygen find the .icc file
 
-* Fix constructors: add path arg and rm binning arg
+* Remove YAML
+
+* Remove templated scatter stuff
+
+* Hide inappropriate classes from Doxygen, and upgrade Doxyfile
+
+* Use boost foreach etc.
+  Sort out collection iterator args: use Boost::Range
+  Add lexical_cast support to annotation get and set functions
+  Provide for persistency from containers of pointers to AOs and Boost::any
 
 * Scatter2D:
 
@@ -18,31 +26,22 @@ NOW
 
   Scatter2D s2(h1d);
 
+* Convert DPS output to use interim Scatter construction
 
-
-* utils -> Utils (for both dir and namespace)
-  Move sortedvector and indexedset into Utils dir
-
-* Use boost foreach etc.
-  Sort out collection iterator args: use Boost::Range
 
 
 * Make Bins type into a sorted_vector contained on Axis, with built-in caching
   (remove binHash and cachedBinEdges).
+  Fill overall and under/overflow Dbn1Ds in Histo1D and Profile1D.
+  Add bin-comparison and negative-weighted mean test(s)
+  Histo1D::integral() -- either calc from histo-level Dbn1D or from bins.
 
-* Fill overall and under/overflow Dbn1Ds in Histo1D and Profile1D.
-
-* Histo1D::integral() -- either calc from histo-level Dbn1D or from bins.
-
-* Add lexical_cast support to annotation get and set functions
-
-
-* Provide for persistency from containers of pointers to AOs and Boost::any
+* Axis -> Axis1D
 
 * Be explicit about x and y variables on ProfileBin -- it's not clear that
   "stdErr" etc. refer to the y direction.
 
-* Add negative-weighted mean test(s)
+
 
 * Read back from flat format
 
@@ -60,7 +59,6 @@ NEXT
   - explicitly from vector
   - ???
 
-* Convert DPS output to use interim Scatter construction
 
 * Axis::scale -> scaleX, scaleY, scaleXY to Scatter2D. Arbitrary function transforms on Scatters?
 

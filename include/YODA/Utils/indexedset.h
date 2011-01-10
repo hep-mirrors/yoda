@@ -6,7 +6,7 @@
 #include <iostream>
 
 namespace YODA {
-  namespace utils {
+  namespace Utils {
 
 
     /// @brief Specialisation of std::set to allow indexed access to ordered set elements
