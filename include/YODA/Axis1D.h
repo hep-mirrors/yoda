@@ -21,6 +21,7 @@ using namespace std;
 namespace YODA {
 
 
+  /// @brief A 1D templated container of ordered bins
   template <typename BIN>
   class Axis1D {
   public:

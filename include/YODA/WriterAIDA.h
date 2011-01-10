@@ -16,6 +16,7 @@
 namespace YODA {
 
 
+  /// @brief Persistency writer for AIDA XML format.
   class WriterAIDA : public Writer {
   public:
 

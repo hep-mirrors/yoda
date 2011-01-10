@@ -74,7 +74,7 @@ namespace YODA {
 
 
 
-  // void WriterAIDA::writeScatter2D(std::ostream& stream, const Scatter2D& p) {
+  // void WriterYODA::writeScatter2D(std::ostream& stream, const Scatter2D& p) {
   //   ios_base::fmtflags oldflags = os.flags();
   //   const int precision = 6;
   //   os << scientific << showpoint << setprecision(precision);
