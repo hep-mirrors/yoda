@@ -5,8 +5,6 @@ YODA TODO list
 NOW
 
 
-* Hide inappropriate classes from Doxygen, and upgrade Doxyfile
-
 * Use boost foreach etc.
   Sort out collection iterator args: use Boost::Range
   Add lexical_cast support to annotation get and set functions
