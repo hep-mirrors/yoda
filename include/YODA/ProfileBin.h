@@ -12,7 +12,7 @@
 namespace YODA {
 
 
-  /// A  one-dimensional profile histogram.
+  /// A Bin in a 1D profile histogram.
   class ProfileBin : public Bin {
 
     /// Profile1D is a friend to add/subtract bins
