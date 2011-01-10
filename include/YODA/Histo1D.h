@@ -8,7 +8,7 @@
 
 #include "YODA/AnalysisObject.h"
 #include "YODA/HistoBin.h"
-#include "YODA/Axis.h"
+#include "YODA/Axis1D.h"
 #include "YODA/Exceptions.h"
 #include <vector>
 #include <string>
@@ -182,7 +182,7 @@ namespace YODA {
     //@{
 
     /// Definition of bin edges and contents
-    Axis<HistoBin> _axis;
+    Axis1D<HistoBin> _axis;
 
     //@}
 

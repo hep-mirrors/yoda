@@ -147,7 +147,7 @@ namespace YODA {
 
 
   /// Bins are compared for axis sorting by lower edge position
-  /// @todo Check for overlaps somewhere... on Axis, I guess.
+  /// @todo Check for overlaps somewhere... on Axis1D, I guess.
   inline bool operator<(const Bin& a, const Bin& b) {
     return b.edges().first > a.edges().first;
   }

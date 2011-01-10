@@ -3,8 +3,8 @@
 // This file is part of YODA -- Yet more Objects for Data Analysis
 // Copyright (C) 2008-2011 The YODA collaboration (see AUTHORS for details)
 //
-#ifndef YODA_Axis_h
-#define YODA_Axis_h
+#ifndef YODA_Axis1D_h
+#define YODA_Axis1D_h
 
 #include "YODA/AnalysisObject.h"
 #include "YODA/Exceptions.h"
@@ -22,7 +22,7 @@ namespace YODA {
 
 
   template <typename BIN>
-  class Axis {
+  class Axis1D {
   public:
 
     typedef typename Utils::sortedvector<BIN> Bins;
@@ -82,20 +82,20 @@ namespace YODA {
 
     /// Constructor with a list of bin edges
     /// @todo Accept a general iterable and remove this silly special-casing for std::vector
-    Axis(const vector<double>& binedges) {
+    Axis1D(const vector<double>& binedges) {
       assert(binedges.size() > 1);
       _mkAxis(binedges);
     }
 
 
     /// Constructor with histogram limits, number of bins, and a bin distribution enum
-    Axis(size_t nbins, double lower, double upper) {
+    Axis1D(size_t nbins, double lower, double upper) {
       _mkAxis(linspace(nbins, lower, upper));
     }
 
 
     /// @todo Accept a general iterable and remove this silly special-casing for std::vector
-    Axis(const vector<BIN>& bins) {
+    Axis1D(const vector<BIN>& bins) {
       assert(!bins.empty());
       Bins sbins;
       for (typename vector<BIN>::const_iterator b = bins.begin(); b != bins.end(); ++b) {
@@ -106,7 +106,7 @@ namespace YODA {
 
 
     /// @todo Accept a general iterable (and remove this internal detail special-casing?)
-    Axis(const Bins& bins) {
+    Axis1D(const Bins& bins) {
       assert(!bins.empty());
       _mkAxis(bins);
     }
@@ -212,7 +212,7 @@ namespace YODA {
 
   public:
 
-    bool operator == (const Axis& other) const {
+    bool operator == (const Axis1D& other) const {
       /// @todo Need/want to compare bin hash?
       return
         _cachedBinEdges == other._cachedBinEdges &&
@@ -220,12 +220,12 @@ namespace YODA {
     }
 
 
-    bool operator != (const Axis& other) const {
+    bool operator != (const Axis1D& other) const {
       return ! operator == (other);
     }
 
 
-    Axis<BIN>& operator += (const Axis<BIN>& toAdd) {
+    Axis1D<BIN>& operator += (const Axis1D<BIN>& toAdd) {
       if (*this != toAdd) {
         throw LogicError("YODA::Histo1D: Cannot add axes with different binnings.");
       }
@@ -238,7 +238,7 @@ namespace YODA {
     }
 
 
-    Axis<BIN>& operator -= (const Axis<BIN>& toSubtract) {
+    Axis1D<BIN>& operator -= (const Axis1D<BIN>& toSubtract) {
       if (*this != toSubtract) {
         throw LogicError("YODA::Histo1D: Cannot subtract axes with different binnings.");
       }
@@ -287,16 +287,16 @@ namespace YODA {
 
 
   template <typename BIN>
-  Axis<BIN> operator + (const Axis<BIN>& first, const Axis<BIN>& second) {
-    Axis<BIN> tmp = first;
+  Axis1D<BIN> operator + (const Axis1D<BIN>& first, const Axis1D<BIN>& second) {
+    Axis1D<BIN> tmp = first;
     tmp += second;
     return tmp;
   }
 
 
   template <typename BIN>
-  Axis<BIN> operator - (const Axis<BIN>& first, const Axis<BIN>& second) {
-    Axis<BIN> tmp = first;
+  Axis1D<BIN> operator - (const Axis1D<BIN>& first, const Axis1D<BIN>& second) {
+    Axis1D<BIN> tmp = first;
     tmp -= second;
     return tmp;
   }

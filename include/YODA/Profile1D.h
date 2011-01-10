@@ -8,7 +8,7 @@
 
 #include "YODA/AnalysisObject.h"
 #include "YODA/ProfileBin.h"
-#include "YODA/Axis.h"
+#include "YODA/Axis1D.h"
 #include "YODA/Exceptions.h"
 #include <vector>
 #include <string>
@@ -154,7 +154,7 @@ namespace YODA {
     //@{
 
     /// The bins contained in this profile histogram
-    Axis<ProfileBin> _axis;
+    Axis1D<ProfileBin> _axis;
 
     //@}
 

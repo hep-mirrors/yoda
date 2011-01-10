@@ -7,8 +7,6 @@ NOW
 
 * Remove YAML
 
-* Remove templated scatter stuff
-
 * Hide inappropriate classes from Doxygen, and upgrade Doxyfile
 
 * Use boost foreach etc.
@@ -35,8 +33,6 @@ NOW
   Fill overall and under/overflow Dbn1Ds in Histo1D and Profile1D.
   Add bin-comparison and negative-weighted mean test(s)
   Histo1D::integral() -- either calc from histo-level Dbn1D or from bins.
-
-* Axis -> Axis1D
 
 * Be explicit about x and y variables on ProfileBin -- it's not clear that
   "stdErr" etc. refer to the y direction.

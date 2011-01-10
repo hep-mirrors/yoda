@@ -1,5 +1,9 @@
 2011-01-10  Andy Buckley  <andy@insectnation.org>
 
+	* Renaming Axis -> Axis1D
+
+	* Removing dead-end templated Scatter stuff.
+
 	* Move (generated) config files into the Config subdir.
 
 	* Move sortedvector and indexedset into the Utils dir.
