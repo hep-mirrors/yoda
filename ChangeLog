@@ -1,5 +1,8 @@
 2011-01-10  Andy Buckley  <andy@insectnation.org>
 
+	* Removing unused YAML stuff: we aren't going that way for
+	persistency anymore.
+
 	* Renaming Axis -> Axis1D
 
 	* Removing dead-end templated Scatter stuff.

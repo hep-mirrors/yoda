@@ -5,8 +5,6 @@ YODA TODO list
 NOW
 
 
-* Remove YAML
-
 * Hide inappropriate classes from Doxygen, and upgrade Doxyfile
 
 * Use boost foreach etc.
