@@ -1,4 +1,4 @@
-#include "YODA/sortedvector.h"
+#include "YODA/Utils/sortedvector.h"
 #include <iostream>
 #include <cstdlib>
 #include <set>
@@ -7,7 +7,7 @@ using namespace std;
 using namespace YODA;
 
 int main() {
-  utils::sortedvector<int> sv;
+  Utils::sortedvector<int> sv;
   sv.insert(1);
   sv.insert(5);
   sv.insert(3);

@@ -4,6 +4,9 @@ YODA TODO list
 
 NOW
 
+* Persist annotations and whole-histo Dbn1D
+
+* Convert DPS output to use interim Scatter construction
 
 * Use boost foreach etc.
   Sort out collection iterator args: use Boost::Range
@@ -19,8 +22,6 @@ NOW
   s.addPoints(pointvector);
 
   Scatter2D s2(h1d);
-
-* Convert DPS output to use interim Scatter construction
 
 
 

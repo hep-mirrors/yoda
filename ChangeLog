@@ -1,5 +1,7 @@
 2011-01-11  Andy Buckley  <andy@insectnation.org>
 
+	* Write out annotations in YODA format.
+
 	* Make Scatter2D representations of Histo1D and Profile1D.
 
 	* Write out Scatter2D objects in AIDA and YODA formats.

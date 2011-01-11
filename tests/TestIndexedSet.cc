@@ -1,4 +1,4 @@
-#include "YODA/indexedset.h"
+#include "YODA/Utils/indexedset.h"
 #include <iostream>
 #include <cstdlib>
 #include <set>
@@ -7,7 +7,7 @@ using namespace std;
 using namespace YODA;
 
 int main() {
-  utils::indexedset<int> iset;
+  Utils::indexedset<int> iset;
   iset.insert(1);
   iset.insert(5);
   iset.insert(3);
