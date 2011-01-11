@@ -39,6 +39,8 @@ namespace YODA {
     ///@name Annotations
     //@{
 
+    typedef std::map<std::string,std::string> Annotations;
+
     /// Add or set an annotation by name
     /// @todo Template on arg type with lexical_cast, cf. AGILe setParam
     void setAnnotation(const std::string& name, const std::string& value) {
@@ -51,8 +53,13 @@ namespace YODA {
     }
 
     /// Get all the annotations (as const ref)
-    const std::map<std::string,std::string>& annotations() const {
+    const Annotations& annotations() const {
       return _annotations;
+    }
+
+    /// Set all annotations at once
+    void setAnnotations(const Annotations& anns) {
+      _annotations = anns;
     }
 
     /// Get an annotation by name

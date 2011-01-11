@@ -148,8 +148,8 @@ namespace YODA {
 
   /// Make a Scatter2D representation of a Histo1D
   inline Scatter2D mkScatter(const Histo1D& h) {
-    /// @todo Copy annotations? All of them?
     Scatter2D rtn;
+    rtn.setAnnotations(h.annotations());
     foreach (const HistoBin& b, h.bins()) {
       const double x = b.focus();
       const double ex_m = b.focus() - b.lowEdge();
@@ -166,8 +166,8 @@ namespace YODA {
 
   /// Make a Scatter2D representation of a Profile1D
   inline Scatter2D mkScatter(const Profile1D& p) {
-    /// @todo Copy annotations? All of them?
     Scatter2D rtn;
+    rtn.setAnnotations(p.annotations());
     foreach (const ProfileBin& b, p.bins()) {
       const double x = b.focus();
       const double ex_m = b.focus() - b.lowEdge();

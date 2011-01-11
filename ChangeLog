@@ -1,5 +1,10 @@
 2011-01-11  Andy Buckley  <andy@insectnation.org>
 
+	* Write out annotations in AIDA format, and copy annotations in
+	mkScatter -- using a new AnalysisObject::setAnnotations method.
+
+	* Convert DPS output to use interim Scatter construction
+
 	* Make (unused) yoda.plot subpackage.
 
 	* Write out annotations in YODA format.

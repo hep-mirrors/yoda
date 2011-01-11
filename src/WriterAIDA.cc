@@ -19,59 +19,19 @@ namespace YODA {
     stream << "  <implementation version=\"1.0\" package=\"YODA\"/>\n";
   }
 
+
   void WriterAIDA::writeFooter(std::ostream& stream) {
     stream << "</aida>\n";
   }
 
+
   void WriterAIDA::writeHisto1D(std::ostream& os, const Histo1D& h) {
-    /// @todo Parse the path and take the last part (use boost)
-    const string name = h.path();
-    os << "  <dataPointSet name=\"" << Utils::encodeForXML(name) << "\""
-       << " title=\"" << Utils::encodeForXML(h.title()) << "\""
-       << " path=\"" << h.path() << "\">\n";
-    os << "  <dimension dim=\"0\" title=\"\" />\n";
-    os << "  <dimension dim=\"1\" title=\"\" />\n";
-    for (vector<HistoBin>::const_iterator b = h.bins().begin(); b != h.bins().end(); ++b) {
-      os << "    <dataPoint>\n";
-      const double x = b->focus();
-      const double ex_m = b->focus() - b->lowEdge();
-      const double ex_p = b->highEdge() - b->focus();
-      os << "      <measurement value=\"" << x
-         << "\" errorMinus=\"" << ex_m << "\" errorPlus=\"" << ex_p << "/>\n";
-      const double y = b->height();
-      const double ey = b->heightError();
-      os << "      <measurement value=\"" << y
-         << "\" errorMinus=\"" << ey << "\" errorPlus=\"" << ey << "/>\n";
-      os << "    </dataPoint>\n";
-    }
-    os << "  </dataPointSet>\n";
-    os << flush;
+    writeScatter2D(os, mkScatter(h));
   }
 
 
   void WriterAIDA::writeProfile1D(std::ostream& os, const Profile1D& p) {
-    /// @todo Parse the path and take the last part (use boost)
-    const string name = p.path();
-    os << "  <dataPointSet name=\"" << Utils::encodeForXML(name) << "\""
-       << " title=\"" << Utils::encodeForXML(p.title()) << "\""
-       << " path=\"" << p.path() << "\">\n";
-    os << "  <dimension dim=\"0\" title=\"\" />\n";
-    os << "  <dimension dim=\"1\" title=\"\" />\n";
-    for (vector<ProfileBin>::const_iterator b = p.bins().begin(); b != p.bins().end(); ++b) {
-      os << "    <dataPoint>\n";
-      const double x = b->focus();
-      const double ex_m = b->focus() - b->lowEdge();
-      const double ex_p = b->highEdge() - b->focus();
-      os << "      <measurement value=\"" << x
-         << "\" errorMinus=\"" << ex_m << "\" errorPlus=\"" << ex_p << "/>\n";
-      const double y = b->mean();
-      const double ey = b->stdErr();
-      os << "      <measurement value=\"" << y
-         << "\" errorMinus=\"" << ey << "\" errorPlus=\"" << ey << "/>\n";
-      os << "    </dataPoint>\n";
-    }
-    os << "  </dataPointSet>\n";
-    os << flush;
+    writeScatter2D(os, mkScatter(p));
   }
 
 
@@ -83,6 +43,10 @@ namespace YODA {
        << " path=\"" << s.path() << "\">\n";
     os << "  <dimension dim=\"0\" title=\"\" />\n";
     os << "  <dimension dim=\"1\" title=\"\" />\n";
+    typedef pair<string,string> sspair;
+    foreach (const sspair& kv, s.annotations()) {
+      os << "  <annotation name=\"" << kv.first << "\" value=\"" << kv.second << "\" />\n";
+    }
     foreach (Point2D pt, s.points()) {
       os << "    <dataPoint>\n";
       os << "      <measurement value=\"" << pt.x()

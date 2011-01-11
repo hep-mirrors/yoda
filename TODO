@@ -4,9 +4,7 @@ YODA TODO list
 
 NOW
 
-* Persist annotations and whole-histo Dbn1D
-
-* Convert DPS output to use interim Scatter construction
+* Persist whole-histo Dbn1D
 
 * Use boost foreach etc.
   Sort out collection iterator args: use Boost::Range
