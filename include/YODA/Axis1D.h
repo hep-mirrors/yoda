@@ -91,7 +91,8 @@ namespace YODA {
 
     /// Constructor with histogram limits, number of bins, and a bin distribution enum
     Axis1D(size_t nbins, double lower, double upper) {
-      _mkAxis(linspace(nbins, lower, upper));
+      std::cout << lower << " " << upper << std::endl;
+      _mkAxis(linspace(lower, upper, nbins));
     }
 
 

@@ -10,8 +10,13 @@ NOW
 
 * Use boost foreach etc.
   Sort out collection iterator args: use Boost::Range
-  Add lexical_cast support to annotation get and set functions
   Provide for persistency from containers of pointers to AOs and Boost::any
+
+* Add lexical_cast support to annotation get and set functions
+
+* Be explicit about x and y variables on ProfileBin -- it's not clear that
+  "stdErr" etc. refer to the y direction.
+  Bin -> Bin1D, etc.
 
 * Scatter2D:
 
@@ -30,10 +35,6 @@ NOW
   Fill overall and under/overflow Dbn1Ds in Histo1D and Profile1D.
   Add bin-comparison and negative-weighted mean test(s)
   Histo1D::integral() -- either calc from histo-level Dbn1D or from bins.
-
-* Be explicit about x and y variables on ProfileBin -- it's not clear that
-  "stdErr" etc. refer to the y direction.
-
 
 
 * Read back from flat format

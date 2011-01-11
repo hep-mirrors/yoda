@@ -24,14 +24,12 @@ namespace YODA {
     /// @name Constructors
     //@{
 
-    /// @todo Should not *need* a title... add more constructors and rm default values?
-
     /// Constructor giving range and number of bins.
     /// @todo Remove binning enum stuff
     Histo1D(size_t nbins, double lower, double upper,
             const std::string& path="", const std::string& title="")
       : AnalysisObject(path, title),
-      _axis(nbins, lower, upper)
+        _axis(nbins, lower, upper)
     { }
 
     /// @brief Constructor giving explicit bin edges.
@@ -107,6 +105,16 @@ namespace YODA {
     /// Access the bin vector (const version)
     const std::vector<YODA::HistoBin>& bins() const {
       return _axis.bins();
+    }
+
+    /// Access a bin by index (non-const version)
+    HistoBin& bin(size_t index) {
+      return _axis.bins()[index];
+    }
+
+    /// Access a bin by index (const version)
+    const HistoBin& bin(size_t index) const {
+      return _axis.bins()[index];
     }
 
     /// Access a bin by coordinate (non-const version)
