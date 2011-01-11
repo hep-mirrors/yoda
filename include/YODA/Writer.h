@@ -9,7 +9,7 @@
 #include "YODA/AnalysisObject.h"
 #include "YODA/Histo1D.h"
 #include "YODA/Profile1D.h"
-// #include "YODA/Scatter2D.h"
+#include "YODA/Scatter2D.h"
 #include <string>
 #include <fstream>
 
@@ -92,7 +92,7 @@ namespace YODA {
     /// Specific AO type writer implementations
     virtual void writeHisto1D(std::ostream& os, const Histo1D& h) = 0;
     virtual void writeProfile1D(std::ostream& os, const Profile1D& p) = 0;
-    // virtual void writeScatter2D(std::ostream& os, const Scatter2D& s) = 0;
+    virtual void writeScatter2D(std::ostream& os, const Scatter2D& s) = 0;
 
   };
 

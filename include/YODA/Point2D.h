@@ -7,17 +7,17 @@
 #define YODA_POINT2D_H
 
 #include "YODA/Exceptions.h"
-#include "YODA/Util.h"
-#include "YODA/MathUtils.h"
-
+#include "YODA/Utils/MathUtils.h"
 #include <utility>
 
 namespace YODA {
 
 
-  /// @todo Add Point2D sorting operation in x value (subsidiary sorting by x errors, I suppose)
+  /// A 2D data point to be contained in a Scatter2D
   class Point2D {
   public:
+
+    /// @todo Add Point2D sorting operation in x value (subsidiary sorting by x errors, I suppose)
 
     typedef std::pair<double,double> ValuePair;
 
@@ -136,6 +136,16 @@ namespace YODA {
       _ex.second = explus;
     }
 
+    /// Get value minus negative x-error
+    const double xMin() const {
+      return _x - _ex.first;
+    }
+
+    /// Get value plus positive x-error
+    const double xMax() const {
+      return _x + _ex.second;
+    }
+
     //@}
 
 
@@ -179,6 +189,16 @@ namespace YODA {
       _ey.second = eyplus;
     }
 
+    /// Get value minus negative y-error
+    const double yMin() const {
+      return _y - _ey.first;
+    }
+
+    /// Get value plus positive y-error
+    const double yMax() const {
+      return _y + _ey.second;
+    }
+
     //@}
 
 
@@ -197,72 +217,56 @@ namespace YODA {
   };
 
 
-}
 
+  /// @name Comparison operators
+  //@{
 
-
-/// @name Comparison operators
-//@{
-
-/// Equality test of x characteristics only
-inline bool operator==(const YODA::Point2D& a, const YODA::Point2D& b) {
-  const bool same_val = YODA::fuzzyEquals(a.x(), b.x());
-  const bool same_eminus = YODA::fuzzyEquals(a.xErrMinus(), b.xErrMinus());
-  const bool same_eplus = YODA::fuzzyEquals(a.xErrPlus(), b.xErrPlus());
-  return same_val && same_eminus && same_eplus;
-}
-
-/// Equality test of x characteristics only
-inline bool operator!=(const YODA::Point2D& a, const YODA::Point2D& b) {
-  return !(a == b);
-}
-
-/// Less-than operator used to sort bins by x-ordering
-inline bool operator<(const YODA::Point2D& a, const YODA::Point2D& b) {
-  if (!YODA::fuzzyEquals(a.x(), b.x())) {
-    return a.x() < b.x();
+  /// Equality test of x characteristics only
+  inline bool operator==(const YODA::Point2D& a, const YODA::Point2D& b) {
+    const bool same_val = YODA::fuzzyEquals(a.x(), b.x());
+    const bool same_eminus = YODA::fuzzyEquals(a.xErrMinus(), b.xErrMinus());
+    const bool same_eplus = YODA::fuzzyEquals(a.xErrPlus(), b.xErrPlus());
+    return same_val && same_eminus && same_eplus;
   }
-  if (!YODA::fuzzyEquals(a.xErrMinus(), b.xErrMinus())) {
-    return a.xErrMinus() < b.xErrMinus();
+
+  /// Equality test of x characteristics only
+  inline bool operator!=(const YODA::Point2D& a, const YODA::Point2D& b) {
+    return !(a == b);
   }
-  if (!YODA::fuzzyEquals(a.xErrPlus(), b.xErrPlus())) {
-    return a.xErrPlus() < b.xErrPlus();
+
+  /// Less-than operator used to sort bins by x-ordering
+  inline bool operator<(const YODA::Point2D& a, const YODA::Point2D& b) {
+    if (!YODA::fuzzyEquals(a.x(), b.x())) {
+      return a.x() < b.x();
+    }
+    if (!YODA::fuzzyEquals(a.xErrMinus(), b.xErrMinus())) {
+      return a.xErrMinus() < b.xErrMinus();
+    }
+    if (!YODA::fuzzyEquals(a.xErrPlus(), b.xErrPlus())) {
+      return a.xErrPlus() < b.xErrPlus();
+    }
+    return false;
   }
-  return false;
-}
 
-/// Less-than-or-equals operator used to sort bins by x-ordering
-inline bool operator<=(const YODA::Point2D& a, const YODA::Point2D& b) {
-  if (a == b) return true;
-  return a < b;
-}
-
-/// Greater-than operator used to sort bins by x-ordering
-inline bool operator>(const YODA::Point2D& a, const YODA::Point2D& b) {
-  return !(a <= b);
-}
-
-/// Greater-than-or-equals operator used to sort bins by x-ordering
-inline bool operator>=(const YODA::Point2D& a, const YODA::Point2D& b) {
-  return !(a < b);
-}
-
-//@}
-
-
-//////////////////////////////////
-
-
-// Operator for Point2D sorting in STL containers
-#include <functional>
-namespace std {
-  template <>
-  inline bool
-  less<YODA::Point2D>::operator()(const YODA::Point2D& a, const YODA::Point2D& b) const {
-    bool rtn = ::operator<(a, b);
-    return rtn;
+  /// Less-than-or-equals operator used to sort bins by x-ordering
+  inline bool operator<=(const YODA::Point2D& a, const YODA::Point2D& b) {
+    if (a == b) return true;
+    return a < b;
   }
-}
 
+  /// Greater-than operator used to sort bins by x-ordering
+  inline bool operator>(const YODA::Point2D& a, const YODA::Point2D& b) {
+    return !(a <= b);
+  }
+
+  /// Greater-than-or-equals operator used to sort bins by x-ordering
+  inline bool operator>=(const YODA::Point2D& a, const YODA::Point2D& b) {
+    return !(a < b);
+  }
+
+  //@}
+
+
+}
 
 #endif

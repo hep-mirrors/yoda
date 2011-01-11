@@ -73,16 +73,24 @@ namespace YODA {
   }
 
 
+  void WriterYODA::writeScatter2D(std::ostream& os, const Scatter2D& s) {
+    ios_base::fmtflags oldflags = os.flags();
+    const int precision = 6;
+    os << scientific << showpoint << setprecision(precision);
 
-  // void WriterYODA::writeScatter2D(std::ostream& stream, const Scatter2D& p) {
-  //   ios_base::fmtflags oldflags = os.flags();
-  //   const int precision = 6;
-  //   os << scientific << showpoint << setprecision(precision);
+    os << "## BEGIN SCATTER2D\n";
+    os << "## Title: " << s.title() << "\n";
+    os << "## Path: " << s.path() << "\n";
+    os << "# xval\t xerr-\t xerr+\t yval\t yerr-\t yerr+ \n";
+    foreach (Point2D pt, s.points()) {
+      os << pt.x() << "\t" << pt.xErrMinus() << "\t" << pt.xErrMinus() << "\t";
+      os << pt.y() << "\t" << pt.yErrMinus() << "\t" << pt.yErrMinus() << "\n";
+    }
+    os << "## END SCATTER2D\n";
 
-  //   //
-
-  //   os.flags(oldflags);
-  // }
+    os << flush;
+    os.flags(oldflags);
+  }
 
 
 }

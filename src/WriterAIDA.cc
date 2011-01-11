@@ -75,9 +75,25 @@ namespace YODA {
   }
 
 
-  // void WriterAIDA::writeScatter2D(std::ostream& stream, const Scatter2D& p) {
-  //   //
-  // }
+  void WriterAIDA::writeScatter2D(std::ostream& os, const Scatter2D& s) {
+    /// @todo Parse the path and take the last part (use boost via StringUtils)
+    const string name = s.path();
+    os << "  <dataPointSet name=\"" << Utils::encodeForXML(name) << "\""
+       << " title=\"" << Utils::encodeForXML(s.title()) << "\""
+       << " path=\"" << s.path() << "\">\n";
+    os << "  <dimension dim=\"0\" title=\"\" />\n";
+    os << "  <dimension dim=\"1\" title=\"\" />\n";
+    foreach (Point2D pt, s.points()) {
+      os << "    <dataPoint>\n";
+      os << "      <measurement value=\"" << pt.x()
+         << "\" errorMinus=\"" << pt.xErrMinus() << "\" errorPlus=\"" << pt.xErrPlus() << "/>\n";
+      os << "      <measurement value=\"" << pt.y()
+         << "\" errorMinus=\"" << pt.yErrMinus() << "\" errorPlus=\"" << pt.yErrPlus() << "/>\n";
+      os << "    </dataPoint>\n";
+    }
+    os << "  </dataPointSet>\n";
+    os << flush;
+  }
 
 
 }

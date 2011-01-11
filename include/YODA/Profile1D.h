@@ -17,7 +17,7 @@
 namespace YODA {
 
 
-  /// A  one-dimensional profile histogram.
+  /// A one-dimensional profile histogram.
   class Profile1D : public AnalysisObject {
   public:
 
@@ -86,6 +86,11 @@ namespace YODA {
 
     /// @name Bin accessors
     //@{
+
+    /// Number of bins on this axis (not counting under/overflow)
+    size_t numBins() const {
+      return bins().size();
+    }
 
     /// Access the bin vector
     /// @todo Convert to a sorted bin set/list

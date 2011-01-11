@@ -94,6 +94,11 @@ namespace YODA {
     /// @name Bin accessors
     //@{
 
+    /// Number of bins on this axis (not counting under/overflow)
+    size_t numBins() const {
+      return bins().size();
+    }
+
     /// Access the bin vector
     std::vector<YODA::HistoBin>& bins() {
       return _axis.bins();

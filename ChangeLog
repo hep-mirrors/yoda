@@ -1,3 +1,12 @@
+2011-01-11  Andy Buckley  <andy@insectnation.org>
+
+	* Make Scatter2D representations of Histo1D and Profile1D.
+
+	* Write out Scatter2D objects in AIDA and YODA formats.
+
+	* Make Scatter2D and Point2D work. Add a few extra
+	methods... evolution and tweaking required.
+
 2011-01-10  Andy Buckley  <andy@insectnation.org>
 
 	* Add Boost checks and header includes. Not used yet.
