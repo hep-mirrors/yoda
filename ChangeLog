@@ -1,5 +1,7 @@
 2011-01-11  Andy Buckley  <andy@insectnation.org>
 
+	* Add lexical_cast support to annotation get and set functions.
+
 	* Write out annotations in AIDA format, and copy annotations in
 	mkScatter -- using a new AnalysisObject::setAnnotations method.
 

@@ -1,7 +1,6 @@
 lib_LTLIBRARIES = libYODA.la
 
 libYODA_la_SOURCES = \
-    AnalysisObject.cc \
     Dbn1D.cc \
     Bin.cc \
     HistoBin.cc \
@@ -11,6 +10,3 @@ libYODA_la_SOURCES = \
     Writer.cc \
     WriterAIDA.cc \
     WriterYODA.cc
-# Error.cc
-# Point.cc
-# Scatter.cc

@@ -4,13 +4,7 @@ YODA TODO list
 
 NOW
 
-* Persist whole-histo Dbn1D
-
-* Use boost foreach etc.
-  Sort out collection iterator args: use Boost::Range
-  Provide for persistency from containers of pointers to AOs and Boost::any
-
-* Add lexical_cast support to annotation get and set functions
+* Provide for persistency from containers of pointers to AOs and Boost::any
 
 * Be explicit about x and y variables on ProfileBin -- it's not clear that
   "stdErr" etc. refer to the y direction.
@@ -26,33 +20,21 @@ NOW
 
   Scatter2D s2(h1d);
 
-
-
 * Make Bins type into a sorted_vector contained on Axis, with built-in caching
   (remove binHash and cachedBinEdges).
   Fill overall and under/overflow Dbn1Ds in Histo1D and Profile1D.
   Add bin-comparison and negative-weighted mean test(s)
-  Histo1D::integral() -- either calc from histo-level Dbn1D or from bins.
 
 
-* Read back from flat format
-
-* Rebinning -- base global rebin on merges of n adjacent bins (via iterator ranges)
-
-* Terminal histos via WriterTerminal
-
-
-NEXT
+* Histo1D::integral() -- either calc from histo-level Dbn1D or from bins.
 
 * Book histos and profiles:
   - from Scatter
   - from each other (via temp Scatter?)
-  - by log and linear scale divisions
-  - explicitly from vector
-  - ???
 
+* Axis::scale -> scaleX, scaleY, scaleXY to Scatter2D.
 
-* Axis::scale -> scaleX, scaleY, scaleXY to Scatter2D. Arbitrary function transforms on Scatters?
+* Arbitrary function transforms on Scatters
 
 * Implement histo/histo -> scatter, profile/profile -> scatter and
   scatter/scatter -> scatter. Also multiplication?
@@ -60,10 +42,24 @@ NEXT
 * Transform differential to integral histos... or allow representation/querying
   as such. How to do this if bin edges don't match?
 
-* Get height measure "right" for log binning
-  Really? Or ditch "height"? Have to be careful with Jacobian factors.
 
-* Explicitly return NaN for profile histo points with no weight (workaround?).
+
+NEXT
+
+* Persist whole-histo Dbn1D
+
+* Read back from flat format
+
+* Rebinning:
+  merge of 2 adjacent bins
+  merges of n adjacent bins (via iterator ranges)
+  global rebinning by integer factor (on widths or on bin groups?)
+
+* Explicitly return NaN for profile histo points with no weight? Or throw LowStatsError?
+
+* Terminal histos via WriterTerminal
+
+* Bin division with binomial correlation (Efficiency1D)
 
 * Write scripts to convert between data formats and to plot results.
 
@@ -73,7 +69,7 @@ NEXT
 
 PERSISTENCY
 
-* Look into pickling of C++ interfaced classes.
+* Look into pickling of C++ interfaced classes. WriterS10n
 
 * Store enough information for datafile merging to be well defined
   That means appropriate statistical combinations for each data type.
@@ -88,6 +84,3 @@ Define integration with Hendrik's flat format:
 "#" marks for comments: gnuplot compatibility
 Metadata as special comments
 Suggesting logx, logy, etc.?
-
-* Does Writer hierarchy make sense?
-   Yes, for plugins... but let's emphasise non-IO operation first

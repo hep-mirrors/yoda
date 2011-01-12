@@ -23,6 +23,7 @@ namespace YODA {
     /// Virtual destructor
     virtual ~Writer() {}
 
+
     /// @name Writing a single analysis object.
     //@{
 
@@ -39,14 +40,14 @@ namespace YODA {
     //@{
 
     /// Write out a collection of objects @a objs to output stream @a stream.
-    template <template<typename> class LIST>
-    void write(std::ostream& stream, const LIST<AnalysisObject*>& aos) {
+    template <typename AOLIST>
+    void write(std::ostream& stream, const AOLIST& aos) {
       write(stream, aos.begin(), aos.end());
     }
 
     /// Write out a collection of objects @a objs to file @a filename.
-    template <template<typename> class LIST>
-    void write(const std::string& filename, const LIST<AnalysisObject*>& aos) {
+    template <typename AOLIST>
+    void write(const std::string& filename, const AOLIST& aos) {
       write(filename, aos.begin(), aos.end());
     }
 
@@ -58,10 +59,10 @@ namespace YODA {
 
     /// Write out the objects specified by start iterator @a begin and end
     /// iterator @a end to output stream @a stream.
-    template <typename ITER>
-    void write(std::ostream& stream, const ITER& begin, const ITER& end) {
+    template <typename AOITER>
+    void write(std::ostream& stream, const AOITER& begin, const AOITER& end) {
       writeHeader(stream);
-      for (ITER ipao = begin; ipao != end; ++ipao) {
+      for (AOITER ipao = begin; ipao != end; ++ipao) {
         writeBody(stream, **ipao);
       }
       writeFooter(stream);
@@ -69,10 +70,10 @@ namespace YODA {
 
     /// Write out the objects specified by start iterator @a begin and end
     /// iterator @a end to file @a filename.
-    template <typename ITER>
+    template <typename AOITER>
     void write(const std::string& filename,
-               const ITER& begin,
-               const ITER& end) {
+               const AOITER& begin,
+               const AOITER& end) {
       std::ofstream outstream;
       outstream.open(filename.c_str());
       write(outstream, begin, end);

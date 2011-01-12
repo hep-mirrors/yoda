@@ -7,6 +7,7 @@
 #define YODA_AnalysisObject_h
 
 #include "YODA/Exceptions.h"
+#include "YODA/Config/BuildConfig.h"
 #include <string>
 #include <map>
 
@@ -16,6 +17,9 @@ namespace YODA {
   class AnalysisObject {
 
   public:
+
+    /// @name Creation and destruction
+    //@{
 
     /// Default constructor
     AnalysisObject() { }
@@ -33,18 +37,22 @@ namespace YODA {
     /// Reset this analysis object
     virtual void reset() = 0;
 
+    //@}
+
 
   public:
 
     ///@name Annotations
     //@{
 
+    /// Collection type for annotations, as a string-string map.
     typedef std::map<std::string,std::string> Annotations;
 
-    /// Add or set an annotation by name
-    /// @todo Template on arg type with lexical_cast, cf. AGILe setParam
-    void setAnnotation(const std::string& name, const std::string& value) {
-      _annotations[name] = value;
+    /// @brief Add or set an annotation by name
+    /// Note: Templated on arg type, but stored as a string.
+    template <typename T>
+    void setAnnotation(const std::string& name, const T& value) {
+      _annotations[name] = boost::lexical_cast<std::string>(value);
     }
 
     /// Check if an annotation is defined
@@ -62,9 +70,24 @@ namespace YODA {
       _annotations = anns;
     }
 
-    /// Get an annotation by name
-    /// @todo Template on return type with lexical_cast, cf. AGILe setParam. Default is string
-    const std::string& annotation(const std::string& name) const;
+    /// @brief Get an annotation by name (as a string)
+    const std::string& annotation(const std::string& name) const {
+      Annotations::const_iterator v = _annotations.find(name);
+      if (v == _annotations.end()) {
+        std::string missing = "YODA::AnalysisObject: No annotation named " + name;
+        throw AnnotationError(missing);
+      }
+      return v->second;
+    }
+
+    /// @brief Get an annotation by name (copied to another type)
+    /// Note: templated on return type, with default as string
+    template <typename T>
+    const T annotation(const std::string& name) const {
+      std::string s = annotation(name);
+      return boost::lexical_cast<T>(s);
+    }
+
 
     /// Delete an annotation by name
     void rmAnnotation(const std::string& name) {
