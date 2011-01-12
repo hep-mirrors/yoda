@@ -6,27 +6,26 @@ NOW
 
 * Provide for persistency from containers of pointers to AOs and Boost::any
 
+* Type annotations in mkScatter
+
 * Be explicit about x and y variables on ProfileBin -- it's not clear that
   "stdErr" etc. refer to the y direction.
   Bin -> Bin1D, etc.
 
-* Scatter2D:
-
-  Scatter2D s;
-  s.addPoint(0.2, 0.2, 0.1, 0.1, 0.03, 0.05);
-  s.addPoint(Point2D(0.4, 0.3, 0.1, 0.1));
-  /// @todo How to represent multiple errors? Point2D has a vector of Error2D. Don't assume any combination rules
-  s.addPoints(pointvector);
-
-  Scatter2D s2(h1d);
+* Scatter2D s2(h1d)?
 
 * Make Bins type into a sorted_vector contained on Axis, with built-in caching
   (remove binHash and cachedBinEdges).
   Fill overall and under/overflow Dbn1Ds in Histo1D and Profile1D.
+
+* Tests:
   Add bin-comparison and negative-weighted mean test(s)
+  Test bin-by-index sorted behaviour on Histo and Profile
 
 
-* Histo1D::integral() -- either calc from histo-level Dbn1D or from bins.
+* Histo1D::integral() -- either calc from histo-level Dbn1D or from bin index/iterator ranges.
+
+* Read Scatters from AIDA DPS
 
 * Book histos and profiles:
   - from Scatter
@@ -45,6 +44,8 @@ NOW
 
 
 NEXT
+
+* Multiple errors via a vector of Error2D. Combination rule enum (QUAD, LIN) on error() method
 
 * Persist whole-histo Dbn1D
 

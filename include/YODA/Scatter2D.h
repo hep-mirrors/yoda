@@ -22,6 +22,7 @@ namespace YODA {
   class Scatter2D : public AnalysisObject {
   public:
 
+    /// Type of the native Point2D collection
     typedef Utils::sortedvector<Point2D> Points;
 
 
@@ -39,9 +40,83 @@ namespace YODA {
         _points(points)
     {  }
 
-    /// @todo Add constructor from Range
+    /// @todo Add constructor from generic container/Range
 
-    /// @todo Add convenience 2, 4 and 6 vector<double> constructors
+    /// Values with no errors
+    Scatter2D(const std::vector<double>& x, const std::vector<double>& y,
+              const std::string& path="", const std::string& title="")
+      : AnalysisObject(path, title)
+    {
+      assert(x.size() == y.size());
+      for (size_t i = 0; i < x.size(); ++i) {
+        addPoint(x[i], y[i]);
+      }
+    }
+
+    /// Values with symmetric errors on x and y
+    Scatter2D(const std::vector<double>& x, const std::vector<double>& y,
+              const std::vector<double>& ex, const std::vector<double>& ey,
+              const std::string& path="", const std::string& title="")
+      : AnalysisObject(path, title)
+    {
+      assert(x.size() == y.size() && x.size() == ex.size() && x.size() == ey.size());
+      for (size_t i = 0; i < x.size(); ++i) {
+        addPoint(x[i], y[i], ex[i], ey[i]);
+      }
+    }
+
+    /// Values with symmetric errors on x and asymmetric errors on y
+    Scatter2D(const std::vector<double>& x, const std::vector<double>& y,
+              const std::vector<double>& ex, const std::vector<std::pair<double,double> >& ey,
+              const std::string& path="", const std::string& title="")
+      : AnalysisObject(path, title)
+    {
+      assert(x.size() == y.size() && x.size() == ex.size() && x.size() == ey.size());
+      for (size_t i = 0; i < x.size(); ++i) {
+        addPoint(Point2D(x[i], y[i], ex[i], ey[i]));
+      }
+    }
+
+    /// Values with asymmetric errors on x and symmetric errors on y
+    Scatter2D(const std::vector<double>& x, const std::vector<double>& y,
+              const std::vector<std::pair<double,double> >& ex, const std::vector<double>& ey,
+              const std::string& path="", const std::string& title="")
+      : AnalysisObject(path, title)
+    {
+      assert(x.size() == y.size() && x.size() == ex.size() && x.size() == ey.size());
+      for (size_t i = 0; i < x.size(); ++i) {
+        addPoint(Point2D(x[i], y[i], ex[i], ey[i]));
+      }
+    }
+
+    /// Values with asymmetric errors on both x and y
+    Scatter2D(const std::vector<double>& x, const std::vector<double>& y,
+              const std::vector<std::pair<double,double> >& ex, const std::vector<std::pair<double,double> >& ey,
+              const std::string& path="", const std::string& title="")
+      : AnalysisObject(path, title)
+    {
+      assert(x.size() == y.size() && x.size() == ex.size() && x.size() == ey.size());
+      for (size_t i = 0; i < x.size(); ++i) {
+        addPoint(Point2D(x[i], y[i], ex[i], ey[i]));
+      }
+    }
+
+    /// Values with completely explicit asymmetric errors
+    Scatter2D(const std::vector<double>& x, const std::vector<double>& y,
+              const std::vector<double>& exminus,
+              const std::vector<double>& explus,
+              const std::vector<double>& eyminus,
+              const std::vector<double>& eyplus,
+              const std::string& path="", const std::string& title="")
+      : AnalysisObject(path, title)
+    {
+      assert(x.size() == y.size() &&
+             x.size() == exminus.size() && x.size() == explus.size() &&
+             x.size() == eyminus.size() && x.size() == eyplus.size());
+      for (size_t i = 0; i < x.size(); ++i) {
+        addPoint(Point2D(x[i], exminus[i], explus[i], y[i], eyminus[i], eyplus[i]));
+      }
+    }
 
     //@}
 
@@ -67,6 +142,8 @@ namespace YODA {
 
     ///////////////////////////////////////////////////
 
+    /// @name Point accessors
+    //@{
 
     size_t numPoints() const {
       return _points.size();
@@ -89,25 +166,67 @@ namespace YODA {
       return _points.at(index);
     }
 
+    //@}
+
+
+    /// @name Point adders
+    //@{
 
     Scatter2D& addPoint(const Point2D& pt) {
       _points.insert(pt);
       return *this;
     }
 
+    Scatter2D& addPoint(double x, double y) {
+      _points.insert(Point2D(x, y));
+      return *this;
+    }
 
-    /// @todo Add convenience 2, 4 and 6 double addPoint variants, plus pairs
+    Scatter2D& addPoint(double x, double y, double ex, double ey) {
+      _points.insert(Point2D(x, y, ex, ey));
+      return *this;
+    }
 
+    Scatter2D& addPoint(double x, double y, pair<double,double> ex, double ey) {
+      _points.insert(Point2D(x, y, ex, ey));
+      return *this;
+    }
 
-    Scatter2D& combineWith(const Scatter2D& other) {
-      foreach (const Point2D& pt, other.points()) {
+    Scatter2D& addPoint(double x, double y, double ex, pair<double,double> ey) {
+      _points.insert(Point2D(x, y, ex, ey));
+      return *this;
+    }
+
+    Scatter2D& addPoint(double x, double y, pair<double,double> ex, pair<double,double> ey) {
+      _points.insert(Point2D(x, y, ex, ey));
+      return *this;
+    }
+
+    Scatter2D& addPoint(double x, double exminus, double explus,
+                        double y, double eyminus, double eyplus) {
+      _points.insert(Point2D(x, exminus, explus, y, eyminus, eyplus));
+      return *this;
+    }
+
+    Scatter2D& addPoints(Points pts) {
+      foreach (const Point2D& pt, pts) {
         addPoint(pt);
       }
       return *this;
     }
 
+    //@}
 
-    /// @todo Convert to accept a Range
+
+    /// @todo Better name?
+    Scatter2D& combineWith(const Scatter2D& other) {
+      addPoints(other.points());
+      return *this;
+    }
+
+
+    /// @todo Better name?
+    /// @todo Convert to accept a Range or generic
     Scatter2D& combineWith(const std::vector<Scatter2D>& others) {
       foreach (const Scatter2D& s, others) {
         combineWith(s);

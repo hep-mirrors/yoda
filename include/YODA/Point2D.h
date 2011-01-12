@@ -17,8 +17,6 @@ namespace YODA {
   class Point2D {
   public:
 
-    /// @todo Add Point2D sorting operation in x value (subsidiary sorting by x errors, I suppose)
-
     typedef std::pair<double,double> ValuePair;
 
 
@@ -52,7 +50,7 @@ namespace YODA {
 
 
     /// Values with symmetric errors on x and asymmetric errors on y
-    Point2D(double x, double y, double ex, std::pair<double,double> ey)
+    Point2D(double x, double y, double ex, const std::pair<double,double>& ey)
       : _x(x), _y(y), _ey(ey)
     {
       _ex = make_pair<double, double>(ex, ex);
@@ -60,7 +58,7 @@ namespace YODA {
 
 
     /// Values with asymmetric errors on x and symmetric errors on y
-    Point2D(double x, double y, std::pair<double,double> ex, double ey)
+    Point2D(double x, double y, const std::pair<double,double>& ex, double ey)
       : _x(x), _y(y), _ex(ex)
     {
       _ey = make_pair<double, double>(ey, ey);
@@ -68,7 +66,7 @@ namespace YODA {
 
 
     /// Values with asymmetric errors on both x and y
-    Point2D(double x, double y, std::pair<double,double> ex, std::pair<double,double> ey)
+    Point2D(double x, double y, const std::pair<double,double>& ex, const std::pair<double,double>& ey)
       : _x(x), _y(y), _ex(ex), _ey(ey)
     {
     }

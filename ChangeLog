@@ -1,3 +1,8 @@
+2011-01-12  Andy Buckley  <andy@insectnation.org>
+
+	* Added many vector constructors and addPoint functions to
+	Scatter2D.
+
 2011-01-11  Andy Buckley  <andy@insectnation.org>
 
 	* Add lexical_cast support to annotation get and set functions.
