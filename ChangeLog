@@ -1,5 +1,7 @@
 2011-01-12  Andy Buckley  <andy@insectnation.org>
 
+	* Type annotations in mkScatter
+
 	* Added many vector constructors and addPoint functions to
 	Scatter2D.
 
