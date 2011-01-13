@@ -43,10 +43,12 @@ namespace YODA {
        << " path=\"" << s.path() << "\">\n";
     os << "  <dimension dim=\"0\" title=\"\" />\n";
     os << "  <dimension dim=\"1\" title=\"\" />\n";
+    os << "  <annotation>\n";
     typedef pair<string,string> sspair;
     foreach (const sspair& kv, s.annotations()) {
-      os << "  <annotation name=\"" << kv.first << "\" value=\"" << kv.second << "\" />\n";
+      os << "    <item key=\"" << kv.first << "\" value=\"" << kv.second << "\" />\n";
     }
+    os << "  </annotation>\n";
     foreach (Point2D pt, s.points()) {
       os << "    <dataPoint>\n";
       os << "      <measurement value=\"" << pt.x()

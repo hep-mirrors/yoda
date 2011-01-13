@@ -24,8 +24,8 @@ namespace YODA {
 
   double Histo1D::sumW() const {
     double sumw = 0;
-    for (Bins::const_iterator b = bins().begin(); b != bins().end(); ++b) {
-      sumw += b->sumW();
+    foreach (const Bin& b, bins()) {
+      sumw += b.sumW();
     }
     return sumw;
   }
@@ -45,9 +45,9 @@ namespace YODA {
   double Histo1D::variance() const {
     double sigma2 = 0;
     const double mean = this->mean();
-    for (Bins::const_iterator b = bins().begin(); b != bins().end(); ++b) {
-      const double diff = b->focus() - mean;
-      sigma2 += diff * diff * b->sumW();
+    foreach (const Bin& b, bins()) {
+      const double diff = b.focus() - mean;
+      sigma2 += diff * diff * b.sumW();
     }
     return sigma2/sumW();
   }

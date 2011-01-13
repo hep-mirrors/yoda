@@ -1,22 +1,18 @@
 YODA TODO list
 ==============
 
-
 NOW
 
 * Provide for persistency from containers of pointers to AOs and Boost::any
-
-* Type annotations in mkScatter
 
 * Be explicit about x and y variables on ProfileBin -- it's not clear that
   "stdErr" etc. refer to the y direction.
   Bin -> Bin1D, etc.
 
-* Scatter2D s2(h1d)?
+* Fill and use overall and under/overflow Dbn1Ds in Histo1D and Profile1D.
 
 * Make Bins type into a sorted_vector contained on Axis, with built-in caching
   (remove binHash and cachedBinEdges).
-  Fill overall and under/overflow Dbn1Ds in Histo1D and Profile1D.
 
 * Tests:
   Add bin-comparison and negative-weighted mean test(s)
@@ -35,6 +31,8 @@ NOW
 
 * Arbitrary function transforms on Scatters
 
+* Scatter2D s2(h1d)?
+
 * Implement histo/histo -> scatter, profile/profile -> scatter and
   scatter/scatter -> scatter. Also multiplication?
 
@@ -45,7 +43,9 @@ NOW
 
 NEXT
 
-* Multiple errors via a vector of Error2D. Combination rule enum (QUAD, LIN) on error() method
+* Scatter2D -> Scatter<N> again (?) with specialisations for 1D, 2D and 3D
+
+* Multiple errors on Scatter2D via a vector of Error2D. Combination rule enum arg (QUAD, LIN) on error() method
 
 * Persist whole-histo Dbn1D
 

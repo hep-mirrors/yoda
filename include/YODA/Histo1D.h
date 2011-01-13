@@ -148,7 +148,6 @@ namespace YODA {
     }
 
     /// Get sum of weights in histo (same as area)
-    /// @todo Really same as area? Aren't heights sqrt(sum(w**2))?
     /// @todo Differentiate between using all fills, and only fills which landed in bins
     double sumW() const;
 
