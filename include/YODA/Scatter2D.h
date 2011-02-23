@@ -270,7 +270,7 @@ namespace YODA {
     Scatter2D rtn;
     rtn.setAnnotations(h.annotations());
     rtn.setAnnotation("Type", h._aotype());
-    foreach (const HistoBin& b, h.bins()) {
+    foreach (const HistoBin1D& b, h.bins()) {
       const double x = b.focus();
       const double ex_m = b.focus() - b.lowEdge();
       const double ex_p = b.highEdge() - b.focus();
@@ -289,7 +289,7 @@ namespace YODA {
     Scatter2D rtn;
     rtn.setAnnotations(p.annotations());
     rtn.setAnnotation("Type", p._aotype());
-    foreach (const ProfileBin& b, p.bins()) {
+    foreach (const ProfileBin1D& b, p.bins()) {
       const double x = b.focus();
       const double ex_m = b.focus() - b.lowEdge();
       const double ex_p = b.highEdge() - b.focus();

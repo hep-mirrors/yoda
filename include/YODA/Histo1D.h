@@ -7,7 +7,7 @@
 #define YODA_Histo1D_h
 
 #include "YODA/AnalysisObject.h"
-#include "YODA/HistoBin.h"
+#include "YODA/HistoBin1D.h"
 #include "YODA/Axis1D.h"
 #include "YODA/Exceptions.h"
 #include <vector>
@@ -43,7 +43,7 @@ namespace YODA {
 
     /// Constructor giving a vector of bins.
     /// @todo Allow any iterable of bins (use Boost::Range?)
-    Histo1D(const std::vector<HistoBin>& bins,
+    Histo1D(const std::vector<HistoBin1D>& bins,
             const std::string& path="", const std::string& title="")
       : AnalysisObject(path, title),
         _axis(bins)
@@ -98,32 +98,32 @@ namespace YODA {
     }
 
     /// Access the bin vector
-    std::vector<YODA::HistoBin>& bins() {
+    std::vector<YODA::HistoBin1D>& bins() {
       return _axis.bins();
     }
 
     /// Access the bin vector (const version)
-    const std::vector<YODA::HistoBin>& bins() const {
+    const std::vector<YODA::HistoBin1D>& bins() const {
       return _axis.bins();
     }
 
     /// Access a bin by index (non-const version)
-    HistoBin& bin(size_t index) {
+    HistoBin1D& bin(size_t index) {
       return _axis.bins()[index];
     }
 
     /// Access a bin by index (const version)
-    const HistoBin& bin(size_t index) const {
+    const HistoBin1D& bin(size_t index) const {
       return _axis.bins()[index];
     }
 
     /// Access a bin by coordinate (non-const version)
-    HistoBin& binByCoord(double x) {
+    HistoBin1D& binByCoord(double x) {
       return _axis.binByCoord(x);
     }
 
     /// Access a bin by coordinate (const version)
-    const HistoBin& binByCoord(double x) const {
+    const HistoBin1D& binByCoord(double x) const {
       return _axis.binByCoord(x);
     }
 
@@ -194,7 +194,7 @@ namespace YODA {
     //@{
 
     /// Definition of bin edges and contents
-    Axis1D<HistoBin> _axis;
+    Axis1D<HistoBin1D> _axis;
 
     //@}
 

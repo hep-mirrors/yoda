@@ -5,19 +5,7 @@ NOW
 
 * Provide for persistency from containers of pointers to AOs and Boost::any
 
-* Be explicit about x and y variables on ProfileBin -- it's not clear that
-  "stdErr" etc. refer to the y direction.
-  Bin -> Bin1D, etc.
-
 * Fill and use overall and under/overflow Dbn1Ds in Histo1D and Profile1D.
-
-* Make Bins type into a sorted_vector contained on Axis, with built-in caching
-  (remove binHash and cachedBinEdges).
-
-* Tests:
-  Add bin-comparison and negative-weighted mean test(s)
-  Test bin-by-index sorted behaviour on Histo and Profile
-
 
 * Histo1D::integral() -- either calc from histo-level Dbn1D or from bin index/iterator ranges.
 
@@ -28,6 +16,14 @@ NOW
   - from each other (via temp Scatter?)
 
 * Axis::scale -> scaleX, scaleY, scaleXY to Scatter2D.
+
+
+
+* Built-in caching on sorted_vector Axis (remove binHash and cachedBinEdges).
+
+* Tests:
+  Add bin-comparison and negative-weighted mean test(s)
+  Test bin-by-index sorted behaviour on Histo and Profile
 
 * Arbitrary function transforms on Scatters
 

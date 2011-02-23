@@ -29,29 +29,27 @@
 %include "YODA/AnalysisObject.h"
 
 
-// Standard histograms and profile histograms
-namespace YODA {
-  enum Binning { LINEAR, LOG };
-}
+// Bins
+%include "YODA/Bin.h"
+%include "YODA/Bin1D.h"
 
 
 // Histos
-%feature("ignore") std::vector<YODA::HistoBin>::vector(size_type size);
-%feature("ignore") std::vector<YODA::HistoBin>::resize(size_type size);
-%feature("ignore") std::vector<YODA::HistoBin>::pop();
-%include "YODA/Bin.h"
-%include "YODA/HistoBin.h"
+%feature("ignore") std::vector<YODA::HistoBin1D>::vector(size_type size);
+%feature("ignore") std::vector<YODA::HistoBin1D>::resize(size_type size);
+%feature("ignore") std::vector<YODA::HistoBin1D>::pop();
+%include "YODA/HistoBin1D.h"
 %include "YODA/Histo1D.h"
-%template(HistoBins) std::vector<YODA::HistoBin>;
+%template(HistoBin1Ds) std::vector<YODA::HistoBin1D>;
 
 
 // Profile histos
-%feature("ignore") std::vector<YODA::ProfileBin>::vector(size_type size);
-%feature("ignore") std::vector<YODA::ProfileBin>::resize(size_type size);
-%feature("ignore") std::vector<YODA::ProfileBin>::pop();
-%include "YODA/ProfileBin.h"
+%feature("ignore") std::vector<YODA::ProfileBin1D>::vector(size_type size);
+%feature("ignore") std::vector<YODA::ProfileBin1D>::resize(size_type size);
+%feature("ignore") std::vector<YODA::ProfileBin1D>::pop();
+%include "YODA/ProfileBin1D.h"
 %include "YODA/Profile1D.h"
-%template(ProfileBins) std::vector<YODA::ProfileBin>;
+%template(ProfileBin1Ds) std::vector<YODA::ProfileBin1D>;
 
 
 // // Scatter plot errors

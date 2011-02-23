@@ -3,7 +3,7 @@
 // This file is part of YODA -- Yet more Objects for Data Analysis
 // Copyright (C) 2008-2011 The YODA collaboration (see AUTHORS for details)
 //
-#include "YODA/Bin.h"
+#include "YODA/Bin1D.h"
 
 #include <cassert>
 #include <cmath>
@@ -12,46 +12,46 @@ using namespace std;
 namespace YODA {
 
 
-  Bin::Bin(double lowedge, double highedge)
+  Bin1D::Bin1D(double lowedge, double highedge)
     : _edges( make_pair(lowedge, highedge) )
   {
     assert( _edges.second > _edges.first );
   }
 
 
-  Bin::Bin(std::pair<double, double> edges)
+  Bin1D::Bin1D(std::pair<double, double> edges)
     : _edges( edges )
   {
     assert( _edges.second >= _edges.first );
   }
 
 
-  void Bin::reset () {
+  void Bin1D::reset () {
     _xdbn.reset();
   }
 
 
-  double Bin::lowEdge() const {
+  double Bin1D::lowEdge() const {
     return _edges.first;
   }
 
 
-  double Bin::highEdge() const {
+  double Bin1D::highEdge() const {
     return _edges.second;
   }
 
 
-  pair<double,double> Bin::edges() const {
+  pair<double,double> Bin1D::edges() const {
     return _edges;
   }
 
 
-  double Bin::width() const {
+  double Bin1D::width() const {
     return _edges.second - _edges.first;
   }
 
 
-  double Bin::focus() const {
+  double Bin1D::focus() const {
     if (_xdbn.sumW() != 0) {
       return xMean();
     } else {
@@ -60,89 +60,89 @@ namespace YODA {
   }
 
 
-  double Bin::midpoint() const {
+  double Bin1D::midpoint() const {
     return ( _edges.second + _edges.first ) / 2;
   }
 
 
-  double Bin::xMean() const {
+  double Bin1D::xMean() const {
     return _xdbn.mean();
   }
 
 
-  double Bin::xVariance() const {
+  double Bin1D::xVariance() const {
     return _xdbn.variance();
   }
 
 
-  double Bin::xStdDev() const {
+  double Bin1D::xStdDev() const {
     return _xdbn.stdDev();
   }
 
 
-  double Bin::xStdError() const {
+  double Bin1D::xStdError() const {
     return _xdbn.stdErr();
   }
 
 
-  unsigned long Bin::numEntries() const {
+  unsigned long Bin1D::numEntries() const {
     return _xdbn.numEntries();
   }
 
 
-  double Bin::sumW() const {
+  double Bin1D::sumW() const {
     return _xdbn.sumW();
   }
 
 
-  double Bin::sumW2() const {
+  double Bin1D::sumW2() const {
     return _xdbn.sumW2();
   }
 
 
-  double Bin::sumWX() const {
+  double Bin1D::sumWX() const {
     return _xdbn.sumWX();
   }
 
 
-  double Bin::sumWX2() const {
+  double Bin1D::sumWX2() const {
     return _xdbn.sumWX2();
   }
 
 
-  Bin& Bin::add(const Bin& b) {
+  Bin1D& Bin1D::add(const Bin1D& b) {
     assert(_edges == b._edges);
     _xdbn += b._xdbn;
     return *this;
   }
 
 
-  Bin& Bin::subtract(const Bin& b) {
+  Bin1D& Bin1D::subtract(const Bin1D& b) {
     assert(_edges == b._edges);
     _xdbn -= b._xdbn;
     return *this;
   }
 
 
-  Bin& Bin::operator += (const Bin& b) {
+  Bin1D& Bin1D::operator += (const Bin1D& b) {
     return add(b);
   }
 
 
-  Bin& Bin::operator -= (const Bin& b) {
+  Bin1D& Bin1D::operator -= (const Bin1D& b) {
     return subtract(b);
   }
 
 
-  Bin operator + (const Bin& a, const Bin& b) {
-    Bin rtn = a;
+  Bin1D operator + (const Bin1D& a, const Bin1D& b) {
+    Bin1D rtn = a;
     rtn += b;
     return rtn;
   }
 
 
-  Bin operator - (const Bin& a, const Bin& b) {
-    Bin rtn = a;
+  Bin1D operator - (const Bin1D& a, const Bin1D& b) {
+    Bin1D rtn = a;
     rtn -= b;
     return rtn;
   }

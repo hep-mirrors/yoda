@@ -12,12 +12,12 @@ using namespace std;
 namespace YODA {
 
 
-  typedef vector<ProfileBin> Bins;
+  typedef vector<ProfileBin1D> Bins;
 
 
   void Profile1D::fill(double x, double y, double weight) {
     /// @todo Fill the underflow and overflow nicely
-    ProfileBin& b = binByCoord(x);
+    ProfileBin1D& b = binByCoord(x);
     b.fill(x, y, weight);
   }
 

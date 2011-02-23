@@ -1,9 +1,7 @@
 #! /usr/bin/env python
 
-## Get setuptools
-import ez_setup
-ez_setup.use_setuptools()
-from setuptools import setup, Extension
+## Get setup tools
+from distutils.core import setup, Extension
 
 """A SWIG wrapper on the YODA (Yet more Objects for Data Analysis) data analysis
 library.  All the functionality (histograms, profile histograms, scatter plots,

@@ -1,3 +1,12 @@
+2011-02-22  Andy Buckley  <andy@insectnation.org>
+
+	* Use distutils rather than setuptools for the Python interface
+	build.
+
+	* Renaming Bin, HistoBin and ProfileBin to be Bin1D, HistoBin1D,
+	ProfileBin1D. Bin is now a top-level abstract class with minimal
+	functionality to be shared between 1D and 2D bins.
+
 2011-01-12  Andy Buckley  <andy@insectnation.org>
 
 	* Type annotations in mkScatter

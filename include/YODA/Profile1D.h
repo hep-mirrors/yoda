@@ -7,7 +7,7 @@
 #define YODA_Profile1D_h
 
 #include "YODA/AnalysisObject.h"
-#include "YODA/ProfileBin.h"
+#include "YODA/ProfileBin1D.h"
 #include "YODA/Axis1D.h"
 #include "YODA/Exceptions.h"
 #include <vector>
@@ -41,7 +41,7 @@ namespace YODA {
     {  }
 
     /// Constructor giving a vector of bins
-    Profile1D(const std::vector<ProfileBin>& xbins,
+    Profile1D(const std::vector<ProfileBin1D>& xbins,
               const std::string& path="", const std::string& title="")
       : AnalysisObject(path, title),
         _axis(xbins)
@@ -94,24 +94,24 @@ namespace YODA {
 
     /// Access the bin vector
     /// @todo Convert to a sorted bin set/list
-    std::vector<YODA::ProfileBin>& bins() {
+    std::vector<YODA::ProfileBin1D>& bins() {
       return _axis.bins();
     }
 
     /// Access the bin vector
     /// @todo Convert to a sorted bin set/list
-    const std::vector<YODA::ProfileBin>& bins() const {
+    const std::vector<YODA::ProfileBin1D>& bins() const {
       return _axis.bins();
     }
 
     /// Access a bin by x-coordinate.
-    ProfileBin& binByCoord(double x) {
+    ProfileBin1D& binByCoord(double x) {
       /// @todo If no bin, throw an exception?
       return _axis.binByCoord(x);
     }
 
     /// Access a bin by x-coordinate.
-    const ProfileBin& binByCoord(double x) const {
+    const ProfileBin1D& binByCoord(double x) const {
       /// @todo If no bin, throw an exception?
       return _axis.binByCoord(x);
     }
@@ -159,7 +159,7 @@ namespace YODA {
     //@{
 
     /// The bins contained in this profile histogram
-    Axis1D<ProfileBin> _axis;
+    Axis1D<ProfileBin1D> _axis;
 
     //@}
 

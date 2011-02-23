@@ -47,7 +47,7 @@ namespace YODA {
     os << "# Mean: " << h.mean() << "\n";
     os << "# Area: " << h.area() << "\n";
     os << "# xlow\t\t xhigh\t\t yval\t\t yerr\t\t sumw\t\t sumw2\t\t sumwx\t\t sumwx2\n";
-    for (vector<HistoBin>::const_iterator b = h.bins().begin(); b != h.bins().end(); ++b) {
+    for (vector<HistoBin1D>::const_iterator b = h.bins().begin(); b != h.bins().end(); ++b) {
       os << b->lowEdge() << '\t' << b->highEdge() << '\t';
       os << b->height() << '\t' << b->heightError() << '\t';
       os << b->sumW() << '\t' << b->sumW2() << '\t';
@@ -67,7 +67,7 @@ namespace YODA {
     os << "# BEGIN PROFILE1D\n";
     _writeAnnotations(os, p);
     os << "# xlow\t xhigh\t yval\t yerr\t sumw\t sumw2\t sumwx\t sumwx2\t sumwy\t sumwy2 \n";
-    for (vector<ProfileBin>::const_iterator b = p.bins().begin(); b != p.bins().end(); ++b) {
+    for (vector<ProfileBin1D>::const_iterator b = p.bins().begin(); b != p.bins().end(); ++b) {
       os << b->lowEdge() << "\t" << b->highEdge() << "\t";
       os << b->mean() << "\t" << b->stdErr() << "\t";
       os << b->sumW() << "\t" << b->sumW2() << "\t";

@@ -3,17 +3,17 @@
 // This file is part of YODA -- Yet more Objects for Data Analysis
 // Copyright (C) 2008-2011 The YODA collaboration (see AUTHORS for details)
 //
-#ifndef YODA_ProfileBin_h
-#define YODA_ProfileBin_h
+#ifndef YODA_ProfileBin1D_h
+#define YODA_ProfileBin1D_h
 
-#include "YODA/Bin.h"
+#include "YODA/Bin1D.h"
 #include "YODA/Exceptions.h"
 
 namespace YODA {
 
 
   /// A Bin in a 1D profile histogram.
-  class ProfileBin : public Bin {
+  class ProfileBin1D : public Bin1D {
 
     /// Profile1D is a friend to add/subtract bins
     friend class Profile1D;
@@ -25,10 +25,10 @@ namespace YODA {
     //@{
 
     /// Constructor giving bin low and high edges.
-    ProfileBin(double lowedge, double highedge);
+    ProfileBin1D(double lowedge, double highedge);
 
     /// Constructor giving bin low and high edges as a pair.
-    ProfileBin(std::pair<double,double> edges);
+    ProfileBin1D(std::pair<double,double> edges);
 
     //@}
 
@@ -75,19 +75,19 @@ namespace YODA {
   public:
 
     /// Add two bins (for use by Profile1D).
-    ProfileBin& operator += (const ProfileBin&);
+    ProfileBin1D& operator += (const ProfileBin1D&);
 
     /// Subtract two bins
-    ProfileBin& operator -= (const ProfileBin&);
+    ProfileBin1D& operator -= (const ProfileBin1D&);
 
 
   protected:
 
     /// Add two bins (internal, explicitly named version)
-    ProfileBin& add(const ProfileBin&);
+    ProfileBin1D& add(const ProfileBin1D&);
 
     /// Subtract one bin from another (internal, explicitly named version)
-    ProfileBin& subtract(const ProfileBin&);
+    ProfileBin1D& subtract(const ProfileBin1D&);
 
 
   public:
@@ -108,9 +108,9 @@ namespace YODA {
   };
 
 
-  ProfileBin operator + (const ProfileBin& a, const ProfileBin& b);
+  ProfileBin1D operator + (const ProfileBin1D& a, const ProfileBin1D& b);
 
-  ProfileBin operator - (const ProfileBin& a, const ProfileBin& b);
+  ProfileBin1D operator - (const ProfileBin1D& a, const ProfileBin1D& b);
 
 }
 

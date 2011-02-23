@@ -3,24 +3,24 @@
 // This file is part of YODA -- Yet more Objects for Data Analysis
 // Copyright (C) 2008-2011 The YODA collaboration (see AUTHORS for details)
 //
-#ifndef YODA_HistoBin_h
-#define YODA_HistoBin_h
+#ifndef YODA_HistoBin1D_h
+#define YODA_HistoBin1D_h
 
-#include "YODA/Bin.h"
+#include "YODA/Bin1D.h"
 #include "YODA/Exceptions.h"
 
 namespace YODA {
 
 
   /// @brief A Bin in a 1D histogram
-  class HistoBin : public Bin {
+  class HistoBin1D : public Bin1D {
 
   public:
 
     /// @name Constructor giving bin low and high edges.
     //@{
-    HistoBin(double lowedge, double highedge);
-    HistoBin(std::pair<double,double> edges);
+    HistoBin1D(double lowedge, double highedge);
+    HistoBin1D(std::pair<double,double> edges);
     //@}
 
 
@@ -77,28 +77,28 @@ namespace YODA {
   public:
 
     /// Add two bins (for use by Histo1D).
-    HistoBin& operator += (const HistoBin&);
+    HistoBin1D& operator += (const HistoBin1D&);
 
     /// Subtract two bins
-    HistoBin& operator -= (const HistoBin&);
+    HistoBin1D& operator -= (const HistoBin1D&);
 
 
   protected:
 
     /// Add two bins (internal, explicitly named version)
-    HistoBin& add(const HistoBin&);
+    HistoBin1D& add(const HistoBin1D&);
 
     /// Subtract one bin from another (internal, explicitly named version)
-    HistoBin& subtract(const HistoBin&);
+    HistoBin1D& subtract(const HistoBin1D&);
 
   };
 
 
   /// Add two bins
-  Bin operator + (const Bin& a, const Bin& b);
+  HistoBin1D operator + (const HistoBin1D& a, const HistoBin1D& b);
 
   /// Subtract two bins
-  Bin operator - (const Bin& a, const Bin& b);
+  HistoBin1D operator - (const HistoBin1D& a, const HistoBin1D& b);
 
 
 }

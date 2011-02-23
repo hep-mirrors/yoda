@@ -1,9 +1,9 @@
 pkginclude_HEADERS = \
     Exceptions.h  \
-    AnalysisObject.h \
-	Axis1D.h Bin.h \
-    Histo1D.h HistoBin.h  \
-    Profile1D.h ProfileBin.h \
+    AnalysisObject.h Bin.h \
+	Axis1D.h Bin1D.h \
+    Histo1D.h HistoBin1D.h  \
+    Profile1D.h ProfileBin1D.h \
     Scatter2D.h Point2D.h \
     Writer.h WriterAIDA.h WriterYODA.h
 

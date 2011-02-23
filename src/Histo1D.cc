@@ -12,12 +12,12 @@ using namespace std;
 namespace YODA {
 
 
-  typedef vector<HistoBin> Bins;
+  typedef vector<HistoBin1D> Bins;
 
 
   void Histo1D::fill(double x, double weight) {
     /// @todo Fill the underflow and overflow nicely
-    HistoBin& b = binByCoord(x);
+    HistoBin1D& b = binByCoord(x);
     b.fill(x, weight);
   }
 
@@ -45,7 +45,7 @@ namespace YODA {
   double Histo1D::variance() const {
     double sigma2 = 0;
     const double mean = this->mean();
-    foreach (const Bin& b, bins()) {
+    foreach (const Bin1D& b, bins()) {
       const double diff = b.focus() - mean;
       sigma2 += diff * diff * b.sumW();
     }
