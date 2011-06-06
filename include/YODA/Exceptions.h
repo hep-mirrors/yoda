@@ -59,6 +59,13 @@ namespace YODA {
   };
 
 
+  /// @brief Error for file reading errors
+  class ReadError : public Exception {
+  public:
+    ReadError(const std::string& what) : Exception(what) {}
+  };
+
+
 }
 
 #endif

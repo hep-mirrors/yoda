@@ -29,10 +29,11 @@ namespace YODA {
 
   protected:
 
-    virtual void readGenericAO(std::istream& stream) = 0;
-    // virtual void readHisto(std::istream& stream, const Histo1D& h) = 0;
-    // virtual void readProfile(std::istream& stream, const Profile1D& p) = 0;
-    virtual void readScatter(std::istream& stream, const Scatter2D& p) = 0;
+    void readDoc(std::istream& stream, vector<AnalysisObject*>& aos);
+    //void readGenericAO(std::istream& stream);
+    // virtual void readHisto(std::istream& stream, const Histo1D& h);
+    // virtual void readProfile(std::istream& stream, const Profile1D& p);
+    //void readScatter(std::istream& stream, const Scatter2D& p);
 
 
   private:

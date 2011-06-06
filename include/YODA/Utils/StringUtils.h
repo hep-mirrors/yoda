@@ -10,7 +10,7 @@ namespace YODA {
   namespace Utils {
 
     /// Replace
-    string encodeForXML(const string& in) {
+    inline string encodeForXML(const string& in) {
       string out = in;
       typedef pair<string, string> CharsToEntities;
       vector<CharsToEntities> cs2es;

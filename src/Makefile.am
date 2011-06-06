@@ -9,4 +9,6 @@ libYODA_la_SOURCES = \
     Profile1D.cc \
     Writer.cc \
     WriterAIDA.cc \
-    WriterYODA.cc
+    WriterYODA.cc \
+    Reader.cc \
+    ReaderAIDA.cc

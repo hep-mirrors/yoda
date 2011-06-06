@@ -31,8 +31,8 @@ namespace YODA {
     Point2D(double x, double y, double ex=0.0, double ey=0.0)
       : _x(x), _y(y)
     {
-      _ex = make_pair<double, double>(ex, ex);
-      _ey = make_pair<double, double>(ey, ey);
+      _ex = make_pair(ex, ex);
+      _ey = make_pair(ey, ey);
     }
 
 
@@ -44,8 +44,8 @@ namespace YODA {
             double eyplus)
       : _x(x), _y(y)
     {
-      _ex = make_pair<double, double>(exminus, explus);
-      _ey = make_pair<double, double>(eyplus, eyplus);
+      _ex = make_pair(exminus, explus);
+      _ey = make_pair(eyplus, eyplus);
     }
 
 
@@ -53,7 +53,7 @@ namespace YODA {
     Point2D(double x, double y, double ex, const std::pair<double,double>& ey)
       : _x(x), _y(y), _ey(ey)
     {
-      _ex = make_pair<double, double>(ex, ex);
+      _ex = make_pair(ex, ex);
     }
 
 
@@ -61,7 +61,7 @@ namespace YODA {
     Point2D(double x, double y, const std::pair<double,double>& ex, double ey)
       : _x(x), _y(y), _ex(ex)
     {
-      _ey = make_pair<double, double>(ey, ey);
+      _ey = make_pair(ey, ey);
     }
 
 

@@ -5,6 +5,7 @@
 //
 #include "YODA/ReaderAIDA.h"
 #include "YODA/Utils/StringUtils.h"
+#include "YODA/Exceptions.h"
 #include "TinyXML/tinyxml.h"
 
 #include <iostream>
@@ -14,13 +15,13 @@ namespace YODA {
 
 
   void ReaderAIDA::readDoc(std::istream& stream, vector<AnalysisObject*>& aos) {
-    TiXmlDocument doc();
+    TiXmlDocument doc;
     stream >> doc;
     if (doc.Error()) {
       string err = "Error in " + string(doc.Value());
       err += ": " + string(doc.ErrorDesc());
       cerr << err << endl;
-      throw Error(err);
+      throw ReadError(err);
     }
 
     // Return value, to be populated
@@ -28,7 +29,7 @@ namespace YODA {
     try {
       // Walk down tree to get to the <paper> element
       const TiXmlNode* aidaN = doc.FirstChild("aida");
-      if (!aidaN) throw Error("Couldn't get <aida> root element");
+      if (!aidaN) throw ReadError("Couldn't get <aida> root element");
       for (const TiXmlNode* dpsN = aidaN->FirstChild("dataPointSet"); dpsN; dpsN = dpsN->NextSibling()) {
         const TiXmlElement* dpsE = dpsN->ToElement();
         const string plotname = dpsE->Attribute("name");
@@ -47,9 +48,9 @@ namespace YODA {
             const string ycentreStr   = yMeasE->Attribute("value");
             const string yerrplusStr  = yMeasE->Attribute("errorPlus");
             const string yerrminusStr = yMeasE->Attribute("errorMinus");
-            //if (!centreStr) throw Error("Couldn't get a valid bin centre");
-            //if (!errplusStr) throw Error("Couldn't get a valid bin err+");
-            //if (!errminusStr) throw Error("Couldn't get a valid bin err-");
+            //if (!centreStr) throw ReadError("Couldn't get a valid bin centre");
+            //if (!errplusStr) throw ReadError("Couldn't get a valid bin err+");
+            //if (!errminusStr) throw ReadError("Couldn't get a valid bin err-");
             istringstream xssC(xcentreStr);
             istringstream xssP(xerrplusStr);
             istringstream xssM(xerrminusStr);
@@ -59,7 +60,7 @@ namespace YODA {
             double xcentre, xerrplus, xerrminus, ycentre, yerrplus, yerrminus;
             xssC >> xcentre; xssP >> xerrplus; xssM >> xerrminus;
             yssC >> ycentre; yssP >> yerrplus; yssM >> yerrminus;
-            dps.addPoint(xcentre, xerrminus, xerrplus, ycentre, yerrminus, yerrplus);
+            dps->addPoint(xcentre, xerrminus, xerrplus, ycentre, yerrminus, yerrplus);
           } else {
             cerr << "Couldn't get <measurement> tag" << endl;
             /// @todo Throw an exception here?
