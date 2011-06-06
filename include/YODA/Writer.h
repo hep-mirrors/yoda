@@ -40,14 +40,16 @@ namespace YODA {
     //@{
 
     /// Write out a collection of objects @a objs to output stream @a stream.
-    template <typename AOLIST>
-    void write(std::ostream& stream, const AOLIST& aos) {
+    // template <typename AOLIST>
+    // void write(std::ostream& stream, const AOLIST& aos) {
+    void write(std::ostream& stream, const std::vector<AnalysisObject*>& aos) {
       write(stream, aos.begin(), aos.end());
     }
 
     /// Write out a collection of objects @a objs to file @a filename.
-    template <typename AOLIST>
-    void write(const std::string& filename, const AOLIST& aos) {
+    // template <typename AOLIST>
+    // void write(const std::string& filename, const AOLIST& aos) {
+    void write(const std::string& filename, const std::vector<AnalysisObject*>& aos) {
       write(filename, aos.begin(), aos.end());
     }
 

@@ -37,7 +37,7 @@ namespace YODA {
 
     /// Reset this bin
     void reset() {
-      Bin::reset();
+      Bin1D::reset();
     }
 
     /// Rescale as if all fill weights had been different by factor @a scalefactor.

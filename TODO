@@ -3,6 +3,10 @@ YODA TODO list
 
 NOW
 
+* Work out how to generically use templates + traits/whatever to generically do a
+  write(out, const somecontainer<AnalysisObject*>&) without having the template match
+  single AOs as well... (SOMEONE, PLEASE!!)
+
 * Fill and use overall and under/overflow Dbn1Ds in Histo1D and Profile1D. (AB)
 
 * Histo1D::integral() -- either calc from histo-level Dbn1D or from bin index/iterator ranges. (AB)

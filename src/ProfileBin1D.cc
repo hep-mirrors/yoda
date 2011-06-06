@@ -34,7 +34,7 @@ namespace YODA {
 
 
   void ProfileBin1D::reset() {
-    Bin::reset();
+    Bin1D::reset();
     _ydbn.reset();
   }
 

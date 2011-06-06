@@ -1,3 +1,5 @@
+SUBDIRS = tinyxml .
+
 lib_LTLIBRARIES = libYODA.la
 
 libYODA_la_SOURCES = \
@@ -12,3 +14,6 @@ libYODA_la_SOURCES = \
     WriterYODA.cc \
     Reader.cc \
     ReaderAIDA.cc
+
+libYODA_la_LIBADD = tinyxml/libtinyxml.la
+libYODA_la_CPPFLAGS = $(AM_CPPFLAGS) -DTIXML_USE_STL

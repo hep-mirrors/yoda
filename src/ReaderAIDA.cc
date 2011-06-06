@@ -6,7 +6,7 @@
 #include "YODA/ReaderAIDA.h"
 #include "YODA/Utils/StringUtils.h"
 #include "YODA/Exceptions.h"
-#include "TinyXML/tinyxml.h"
+#include "tinyxml/tinyxml.h"
 
 #include <iostream>
 using namespace std;

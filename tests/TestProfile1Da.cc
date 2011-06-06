@@ -16,8 +16,8 @@ int main() {
     h.fill(x, y, 2);
   }
 
-  const vector<ProfileBin>& bins = h.bins();
-  for (vector<ProfileBin>::const_iterator b = bins.begin(); b != bins.end(); ++b) {
+  const vector<ProfileBin1D>& bins = h.bins();
+  for (vector<ProfileBin1D>::const_iterator b = bins.begin(); b != bins.end(); ++b) {
     cout << b->mean() << ", " << b->stdDev() << ", " << b->stdErr() << endl;
   }
 
