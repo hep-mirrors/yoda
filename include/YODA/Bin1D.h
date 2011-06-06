@@ -32,7 +32,7 @@ namespace YODA {
     //@{
 
     /// Reset this bin
-    void reset();
+    virtual void reset();
 
     //@}
 

@@ -3,23 +3,30 @@ YODA TODO list
 
 NOW
 
-* Provide for persistency from containers of pointers to AOs and Boost::any
+* Fill and use overall and under/overflow Dbn1Ds in Histo1D and Profile1D. (AB)
 
-* Fill and use overall and under/overflow Dbn1Ds in Histo1D and Profile1D.
+* Histo1D::integral() -- either calc from histo-level Dbn1D or from bin index/iterator ranges. (AB)
 
-* Histo1D::integral() -- either calc from histo-level Dbn1D or from bin index/iterator ranges.
+* Read Scatters from AIDA DPS (HH)
 
-* Read Scatters from AIDA DPS
-
-* Book histos and profiles:
+* Book histos and profiles: (HH)
   - from Scatter
   - from each other (via temp Scatter?)
 
-* Axis::scale -> scaleX, scaleY, scaleXY to Scatter2D.
+* New "flat" file format (HH)
 
 
+
+NEXT
+
+* Implement histo/histo -> scatter, profile/profile -> scatter and
+  scatter/scatter -> scatter. Also multiplication? (AB)
 
 * Built-in caching on sorted_vector Axis (remove binHash and cachedBinEdges).
+
+* Provide for persistency from containers of pointers to AOs and Boost::any
+
+* Axis::scale -> scaleX, scaleY, scaleXY to Scatter2D.
 
 * Tests:
   Add bin-comparison and negative-weighted mean test(s)
@@ -29,15 +36,12 @@ NOW
 
 * Scatter2D s2(h1d)?
 
-* Implement histo/histo -> scatter, profile/profile -> scatter and
-  scatter/scatter -> scatter. Also multiplication?
-
 * Transform differential to integral histos... or allow representation/querying
   as such. How to do this if bin edges don't match?
 
 
 
-NEXT
+AND AFTER THAT...
 
 * Scatter2D -> Scatter<N> again (?) with specialisations for 1D, 2D and 3D
 
