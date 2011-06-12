@@ -33,7 +33,6 @@ int main() {
   vector<AnalysisObject*> hs;
   hs.push_back(&h1);
   hs.push_back(&h2);
-  /// @todo Make this work
   WriterAIDA::write("test.aida", hs);
   WriterAIDA::write("test.aida", hs.begin(), hs.end());
 

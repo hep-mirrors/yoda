@@ -17,6 +17,8 @@
 // STL class support
 %include "std_string.i"
 %include "std_vector.i"
+%include "std_list.i"
+%include "std_set.i"
 %include "std_map.i"
 %template(DoubleList) std::vector<double>;
 %template(DoublePair) std::pair<double, double>;
@@ -89,13 +91,18 @@
 
 
 // I/O
+%template(AOVector) std::vector<AnalysisObject*>;
+%template(AOList) std::list<AnalysisObject*>;
+%template(AOSet) std::set<AnalysisObject*>;
 %include "YODA/Writer.h"
-%inline %{
-  namespace YODA {
-    Writer* get_writer(const std::string& name) {
-      if (name == "AIDA") return &WriterAIDA::create();
-      if (name == "YODA") return &WriterYODA::create();
-      return 0;
-    }
-  }
-%}
+%include "YODA/WriterAIDA.h"
+%include "YODA/WriterYODA.h"
+// %inline %{
+//   namespace YODA {
+//     Writer* get_writer(const std::string& name) {
+//       if (name == "AIDA") return &WriterAIDA::create();
+//       if (name == "YODA") return &WriterYODA::create();
+//       return 0;
+//     }
+//   }
+// %}

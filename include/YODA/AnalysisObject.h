@@ -55,6 +55,13 @@ namespace YODA {
       _annotations[name] = boost::lexical_cast<std::string>(value);
     }
 
+    /// @brief Add or set an annotation by name
+    /// Note: Templated on arg type, but stored as a string. Synonym for setAnnotation
+    template <typename T>
+    void addAnnotation(const std::string& name, const T& value) {
+      setAnnotation(name, value);
+    }
+
     /// Check if an annotation is defined
     bool hasAnnotation(const std::string& name) const {
       return _annotations.find(name) != _annotations.end();
