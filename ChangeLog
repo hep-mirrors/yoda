@@ -1,3 +1,14 @@
+2011-06-12  Andy Buckley  <andy@insectnation.org>
+
+	* Removing Histo1D::area
+
+	* Filling and using under/overflow and total db on Histo1D, and
+	adding boolean arg to integral, sumW, etc.
+
+	* Fixing for C++ change in behaviour of std::make_pair
+
+	* Adding addAnnotation, and mapping annotations to Python.
+
 2011-02-22  Andy Buckley  <andy@insectnation.org>
 
 	* Use distutils rather than setuptools for the Python interface

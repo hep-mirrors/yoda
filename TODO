@@ -3,11 +3,11 @@ YODA TODO list
 
 NOW
 
-* Fill and use overall and under/overflow Dbn1Ds in Histo1D and Profile1D. (AB)
+* Total dbn on Profile1D (AB)
 
-* Histo1D::integral() -- either calc from histo-level Dbn1D or from bin index/iterator ranges. (AB)
+* Histo1D::integral(bin1id, bin2id) (AB)
 
-* Read Scatters from AIDA DPS (HH)
+* Test Scatters from AIDA DPS (AB)
 
 * Book histos and profiles: (HH)
   - from Scatter

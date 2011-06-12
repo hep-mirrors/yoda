@@ -21,7 +21,7 @@ int main() {
   }
 
   cout << "Mean value = " << h.mean() << " +- " << h.stdDev() << endl;
-  cout << "Total area = " << h.area() << endl;
+  cout << "Total area = " << h.integral() << endl;
 
   const HistoBin1D& highestBin = *( max_element(h.bins().begin(), h.bins().end(), compareHeight) );
   const double maxHeight = highestBin.height();

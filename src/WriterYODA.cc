@@ -45,7 +45,7 @@ namespace YODA {
     os << "# BEGIN HISTO1D " << h.path() << "\n";
     _writeAnnotations(os, h);
     os << "# Mean: " << h.mean() << "\n";
-    os << "# Area: " << h.area() << "\n";
+    os << "# Area: " << h.integral() << "\n";
     os << "# xlow\t\t xhigh\t\t yval\t\t yerr\t\t sumw\t\t sumw2\t\t sumwx\t\t sumwx2\n";
     for (vector<HistoBin1D>::const_iterator b = h.bins().begin(); b != h.bins().end(); ++b) {
       os << b->lowEdge() << '\t' << b->highEdge() << '\t';

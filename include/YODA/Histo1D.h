@@ -97,6 +97,16 @@ namespace YODA {
       return bins().size();
     }
 
+    /// Low edge of this histo's axis
+    double lowEdge() const {
+      return _axis.lowEdge();
+    }
+
+    /// High edge of this histo's axis
+    double highEdge() const {
+      return _axis.highEdge();
+    }
+
     /// Access the bin vector
     std::vector<YODA::HistoBin1D>& bins() {
       return _axis.bins();
@@ -135,34 +145,28 @@ namespace YODA {
     /// @name Whole histo data
     //@{
 
-    /// Get the total area
-    /// @deprecated Use integral() instead
-    double area() const {
-      return integral();
-    }
-
     /// Get the total area of the histogram
     /// @todo Differentiate between using all fills, and only fills which landed in bins
-    double integral() const {
-      return sumW();
+    double integral(bool includeoverflows=true) const {
+      return sumW(includeoverflows);
     }
 
     /// Get sum of weights in histo (same as area)
     /// @todo Differentiate between using all fills, and only fills which landed in bins
-    double sumW() const;
+    double sumW(bool includeoverflows=true) const;
 
     /// Get the mean
     /// @todo Differentiate between using all fills, and only fills which landed in bins
-    double mean() const;
+    double mean(bool includeoverflows=true) const;
 
     /// Get the variance
     /// @todo Differentiate between using all fills, and only fills which landed in bins
-    double variance() const;
+    double variance(bool includeoverflows=true) const;
 
     /// Get the standard deviation
     /// @todo Differentiate between using all fills, and only fills which landed in bins
-    double stdDev() const {
-      return std::sqrt(variance());
+    double stdDev(bool includeoverflows=true) const {
+      return std::sqrt(variance(includeoverflows));
     }
 
     //@}

@@ -16,13 +16,18 @@ namespace YODA {
 
 
   void Histo1D::fill(double x, double weight) {
-    /// @todo Fill the underflow and overflow nicely
+    // Fill the underflow and overflow nicely
+    _axis.totalDbn().fill(x, weight);
+    if (x < _axis.lowEdge()) { _axis.underflow().fill(x, weight); return; }
+    if (x > _axis.highEdge()) { _axis.overflow().fill(x, weight); return; }
+    // Fill the normal bins
     HistoBin1D& b = binByCoord(x);
     b.fill(x, weight);
   }
 
 
-  double Histo1D::sumW() const {
+  double Histo1D::sumW(bool includeoverflows) const {
+    if (includeoverflows) return _axis.totalDbn().sumW();
     double sumw = 0;
     foreach (const Bin& b, bins()) {
       sumw += b.sumW();
@@ -31,7 +36,8 @@ namespace YODA {
   }
 
 
-  double Histo1D::mean() const {
+  double Histo1D::mean(bool includeoverflows) const {
+    if (includeoverflows) return _axis.totalDbn().mean();
     double sumwx = 0;
     double sumw  = 0;
     for (size_t i = 0; i < bins().size(); i++) {
@@ -42,7 +48,8 @@ namespace YODA {
   }
 
 
-  double Histo1D::variance() const {
+  double Histo1D::variance(bool includeoverflows) const {
+    if (includeoverflows) return _axis.totalDbn().variance();
     double sigma2 = 0;
     const double mean = this->mean();
     foreach (const Bin1D& b, bins()) {

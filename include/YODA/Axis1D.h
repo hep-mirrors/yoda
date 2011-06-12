@@ -134,7 +134,7 @@ namespace YODA {
     }
 
 
-    pair<double,double> binEdges(size_t binId) const {
+    std::pair<double,double> binEdges(size_t binId) const {
       assert(binId < numBins());
       return make_pair(_cachedBinEdges[binId], _cachedBinEdges[binId+1]);
     }
@@ -176,6 +176,31 @@ namespace YODA {
     }
 
 
+    Dbn1D& totalDbn() {
+      return _dbn;
+    }
+
+    const Dbn1D& totalDbn() const {
+      return _dbn;
+    }
+
+    Dbn1D& underflow() {
+      return _underflow;
+    }
+
+    const Dbn1D& underflow() const {
+      return _underflow;
+    }
+
+    Dbn1D& overflow() {
+      return _overflow;
+    }
+
+    const Dbn1D& overflow() const {
+      return _overflow;
+    }
+
+
     size_t findBinIndex(double coord) const {
       /// @todo Improve!
       if (coord < _cachedBinEdges[0] || coord >= _cachedBinEdges[numBins()]) {
@@ -187,6 +212,7 @@ namespace YODA {
 
 
     void reset() {
+      _dbn.reset();
       _underflow.reset();
       _overflow.reset();
       for (typename Bins::iterator b = _bins.begin(); b != _bins.end(); ++b) {
@@ -204,6 +230,7 @@ namespace YODA {
 
 
     void scaleW(double scalefactor) {
+      _dbn.scaleW(scalefactor);
       _underflow.scaleW(scalefactor);
       _overflow.scaleW(scalefactor);
       for (typename Bins::iterator b = _bins.begin(); b != _bins.end(); ++b) {
@@ -234,6 +261,7 @@ namespace YODA {
       for (size_t i = 0; i < bins().size(); ++i) {
         bins().at(i) += toAdd.bins().at(i);
       }
+      _dbn += toAdd._dbn;
       _underflow += toAdd._underflow;
       _overflow  += toAdd._overflow;
       return *this;
@@ -247,6 +275,7 @@ namespace YODA {
       for (size_t i = 0; i < bins().size(); ++i) {
         bins().at(i) += toSubtract.bins().at(i);
       }
+      _dbn -= toSubtract._dbn;
       _underflow -= toSubtract._underflow;
       _overflow  -= toSubtract._overflow;
       return *this;
