@@ -29,6 +29,12 @@
 
 // YODA base object
 %include "YODA/AnalysisObject.h"
+namespace YODA {
+  %extend AnalysisObject {
+    %template(setAnnotation) setAnnotation<std::string>;
+    %template(addAnnotation) addAnnotation<std::string>;
+  };
+}
 
 
 // Bins
