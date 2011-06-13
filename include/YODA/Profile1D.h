@@ -93,26 +93,22 @@ namespace YODA {
     }
 
     /// Access the bin vector
-    /// @todo Convert to a sorted bin set/list
     std::vector<YODA::ProfileBin1D>& bins() {
       return _axis.bins();
     }
 
     /// Access the bin vector
-    /// @todo Convert to a sorted bin set/list
     const std::vector<YODA::ProfileBin1D>& bins() const {
       return _axis.bins();
     }
 
     /// Access a bin by x-coordinate.
     ProfileBin1D& binByCoord(double x) {
-      /// @todo If no bin, throw an exception?
       return _axis.binByCoord(x);
     }
 
     /// Access a bin by x-coordinate.
     const ProfileBin1D& binByCoord(double x) const {
-      /// @todo If no bin, throw an exception?
       return _axis.binByCoord(x);
     }
 
@@ -125,10 +121,10 @@ namespace YODA {
     //@{
 
     /// Get sum of weights in histo.
-    double sumW() const;
+    double sumW(bool includeoverflows=true) const;
 
     /// Get sum of squared weights in histo.
-    double sumW2() const;
+    double sumW2(bool includeoverflows=true) const;
 
     //@}
 

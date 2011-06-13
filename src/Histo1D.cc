@@ -36,6 +36,16 @@ namespace YODA {
   }
 
 
+  double Histo1D::sumW2(bool includeoverflows) const {
+    if (includeoverflows) return _axis.totalDbn().sumW2();
+    double sumw2 = 0;
+    foreach (const Bin& b, bins()) {
+      sumw2 += b.sumW2();
+    }
+    return sumw2;
+  }
+
+
   double Histo1D::mean(bool includeoverflows) const {
     if (includeoverflows) return _axis.totalDbn().mean();
     double sumwx = 0;

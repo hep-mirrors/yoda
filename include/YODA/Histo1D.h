@@ -146,25 +146,23 @@ namespace YODA {
     //@{
 
     /// Get the total area of the histogram
-    /// @todo Differentiate between using all fills, and only fills which landed in bins
     double integral(bool includeoverflows=true) const {
       return sumW(includeoverflows);
     }
 
-    /// Get sum of weights in histo (same as area)
-    /// @todo Differentiate between using all fills, and only fills which landed in bins
+    /// Get sum of weights in histo
     double sumW(bool includeoverflows=true) const;
 
+    /// Get sum of squared weights in histo
+    double sumW2(bool includeoverflows=true) const;
+
     /// Get the mean
-    /// @todo Differentiate between using all fills, and only fills which landed in bins
     double mean(bool includeoverflows=true) const;
 
     /// Get the variance
-    /// @todo Differentiate between using all fills, and only fills which landed in bins
     double variance(bool includeoverflows=true) const;
 
     /// Get the standard deviation
-    /// @todo Differentiate between using all fills, and only fills which landed in bins
     double stdDev(bool includeoverflows=true) const {
       return std::sqrt(variance(includeoverflows));
     }

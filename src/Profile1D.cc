@@ -22,7 +22,8 @@ namespace YODA {
   }
 
 
-  double Profile1D::sumW() const {
+  double Profile1D::sumW(bool includeoverflows) const {
+    if (includeoverflows) return _axis.totalDbn().sumW();
     double sumw = 0;
     for (Bins::const_iterator b = bins().begin(); b != bins().end(); ++b) {
       sumw += b->sumW();
@@ -31,7 +32,8 @@ namespace YODA {
   }
 
 
-  double Profile1D::sumW2() const {
+  double Profile1D::sumW2(bool includeoverflows) const {
+    if (includeoverflows) return _axis.totalDbn().sumW2();
     double sumw2 = 0;
     for (Bins::const_iterator b = bins().begin(); b != bins().end(); ++b) {
       sumw2 += b->sumW2();
