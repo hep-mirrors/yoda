@@ -26,35 +26,48 @@ namespace YODA {
 
 
   void WriterAIDA::writeHisto1D(std::ostream& os, const Histo1D& h) {
-    writeScatter2D(os, mkScatter(h));
+    Scatter2D tmp = mkScatter(h);
+    tmp.setAnnotation("Type", "Histo1D");
+    writeScatter2D(os, tmp);
   }
 
 
   void WriterAIDA::writeProfile1D(std::ostream& os, const Profile1D& p) {
-    writeScatter2D(os, mkScatter(p));
+    Scatter2D tmp = mkScatter(p);
+    tmp.setAnnotation("Type", "Profile1D");
+    writeScatter2D(os, tmp);
   }
 
 
   void WriterAIDA::writeScatter2D(std::ostream& os, const Scatter2D& s) {
-    /// @todo Parse the path and take the last part (use boost via StringUtils)
-    const string name = s.path();
+    string name = "";
+    string path = "/";
+    const size_t slashpos = s.path().rfind("/");
+    if (slashpos != string::npos) {
+      name = s.path().substr(slashpos+1, s.path().length() - slashpos - 1);
+      path = s.path().substr(0, slashpos+1);
+    }
     os << "  <dataPointSet name=\"" << Utils::encodeForXML(name) << "\""
        << " title=\"" << Utils::encodeForXML(s.title()) << "\""
-       << " path=\"" << s.path() << "\">\n";
-    os << "  <dimension dim=\"0\" title=\"\" />\n";
-    os << "  <dimension dim=\"1\" title=\"\" />\n";
-    os << "  <annotation>\n";
+       << " path=\"" << Utils::encodeForXML(path) << "\">\n";
+    os << "    <dimension dim=\"0\" title=\"\" />\n";
+    os << "    <dimension dim=\"1\" title=\"\" />\n";
+    os << "    <annotation>\n";
     typedef pair<string,string> sspair;
     foreach (const sspair& kv, s.annotations()) {
-      os << "    <item key=\"" << kv.first << "\" value=\"" << kv.second << "\" />\n";
+      os << "      <item key=\"" << Utils::encodeForXML(kv.first)
+         << "\" value=\"" << Utils::encodeForXML(kv.second) << "\" />\n";
     }
-    os << "  </annotation>\n";
+    if (!s.hasAnnotation("Type")) {
+      os << "      <item key=\"Type\" value=\"Scatter2D\" />\n";
+    }
+    os << "    </annotation>\n";
     foreach (Point2D pt, s.points()) {
       os << "    <dataPoint>\n";
       os << "      <measurement value=\"" << pt.x()
-         << "\" errorMinus=\"" << pt.xErrMinus() << "\" errorPlus=\"" << pt.xErrPlus() << "/>\n";
+         << "\" errorMinus=\"" << pt.xErrMinus() << "\" errorPlus=\"" << pt.xErrPlus() << "\"/>\n";
       os << "      <measurement value=\"" << pt.y()
-         << "\" errorMinus=\"" << pt.yErrMinus() << "\" errorPlus=\"" << pt.yErrPlus() << "/>\n";
+         << "\" errorMinus=\"" << pt.yErrMinus() << "\" errorPlus=\"" << pt.yErrPlus() << "\"/>\n";
       os << "    </dataPoint>\n";
     }
     os << "  </dataPointSet>\n";

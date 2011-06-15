@@ -27,7 +27,7 @@ namespace YODA {
     /// Constructor giving range and number of bins
     Profile1D(size_t nxbins, double xlower, double xupper,
               const std::string& path="", const std::string& title="")
-      : AnalysisObject(path, title),
+      : AnalysisObject("Profile1D", path, title),
         _axis(nxbins, xlower, xupper)
     { }
 
@@ -36,14 +36,14 @@ namespace YODA {
     /// one being the upper bound of the last bin
     Profile1D(const std::vector<double>& xbinedges,
               const std::string& path="", const std::string& title="")
-      : AnalysisObject(path, title),
+      : AnalysisObject("Profile1D", path, title),
         _axis(xbinedges)
     {  }
 
     /// Constructor giving a vector of bins
     Profile1D(const std::vector<ProfileBin1D>& xbins,
               const std::string& path="", const std::string& title="")
-      : AnalysisObject(path, title),
+      : AnalysisObject("Profile1D", path, title),
         _axis(xbins)
     {  }
 

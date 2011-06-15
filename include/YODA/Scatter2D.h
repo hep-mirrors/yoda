@@ -17,7 +17,6 @@
 
 namespace YODA {
 
-
   /// A very generic data type which is just a collection of 2D data points with errors
   class Scatter2D : public AnalysisObject {
   public:
@@ -30,13 +29,13 @@ namespace YODA {
     //@{
 
     Scatter2D(const std::string& path="", const std::string& title="")
-      : AnalysisObject(path, title)
+      : AnalysisObject("Scatter2D", path, title)
     {  }
 
 
     Scatter2D(const Points& points,
               const std::string& path="", const std::string& title="")
-      : AnalysisObject(path, title),
+      : AnalysisObject("Scatter2D", path, title),
         _points(points)
     {  }
 
@@ -45,7 +44,7 @@ namespace YODA {
     /// Values with no errors
     Scatter2D(const std::vector<double>& x, const std::vector<double>& y,
               const std::string& path="", const std::string& title="")
-      : AnalysisObject(path, title)
+      : AnalysisObject("Scatter2D", path, title)
     {
       assert(x.size() == y.size());
       for (size_t i = 0; i < x.size(); ++i) {
@@ -57,7 +56,7 @@ namespace YODA {
     Scatter2D(const std::vector<double>& x, const std::vector<double>& y,
               const std::vector<double>& ex, const std::vector<double>& ey,
               const std::string& path="", const std::string& title="")
-      : AnalysisObject(path, title)
+      : AnalysisObject("Scatter2D", path, title)
     {
       assert(x.size() == y.size() && x.size() == ex.size() && x.size() == ey.size());
       for (size_t i = 0; i < x.size(); ++i) {
@@ -69,7 +68,7 @@ namespace YODA {
     Scatter2D(const std::vector<double>& x, const std::vector<double>& y,
               const std::vector<double>& ex, const std::vector<std::pair<double,double> >& ey,
               const std::string& path="", const std::string& title="")
-      : AnalysisObject(path, title)
+      : AnalysisObject("Scatter2D", path, title)
     {
       assert(x.size() == y.size() && x.size() == ex.size() && x.size() == ey.size());
       for (size_t i = 0; i < x.size(); ++i) {
@@ -81,7 +80,7 @@ namespace YODA {
     Scatter2D(const std::vector<double>& x, const std::vector<double>& y,
               const std::vector<std::pair<double,double> >& ex, const std::vector<double>& ey,
               const std::string& path="", const std::string& title="")
-      : AnalysisObject(path, title)
+      : AnalysisObject("Scatter2D", path, title)
     {
       assert(x.size() == y.size() && x.size() == ex.size() && x.size() == ey.size());
       for (size_t i = 0; i < x.size(); ++i) {
@@ -93,7 +92,7 @@ namespace YODA {
     Scatter2D(const std::vector<double>& x, const std::vector<double>& y,
               const std::vector<std::pair<double,double> >& ex, const std::vector<std::pair<double,double> >& ey,
               const std::string& path="", const std::string& title="")
-      : AnalysisObject(path, title)
+      : AnalysisObject("Scatter2D", path, title)
     {
       assert(x.size() == y.size() && x.size() == ex.size() && x.size() == ey.size());
       for (size_t i = 0; i < x.size(); ++i) {
@@ -108,7 +107,7 @@ namespace YODA {
               const std::vector<double>& eyminus,
               const std::vector<double>& eyplus,
               const std::string& path="", const std::string& title="")
-      : AnalysisObject(path, title)
+      : AnalysisObject("Scatter2D", path, title)
     {
       assert(x.size() == y.size() &&
              x.size() == exminus.size() && x.size() == explus.size() &&
@@ -129,9 +128,6 @@ namespace YODA {
 
     /// @name Persistency hooks
     //@{
-
-    /// Get name of the analysis object type, for persisting
-    std::string _aotype() const { return "Scatter2D"; }
 
     /// Set the state of the profile object, for unpersisting
     /// @todo Need to set annotations (do that on AO), all-histo Dbns, and dbns for every bin. Delegate!
@@ -238,6 +234,9 @@ namespace YODA {
   private:
 
     Points _points;
+
+    std::string _myaotype;
+
   };
 
 

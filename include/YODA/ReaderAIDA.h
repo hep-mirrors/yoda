@@ -23,13 +23,18 @@ namespace YODA {
     }
 
 
+    void read(std::istream& stream, std::vector<AnalysisObject*>& aos) {
+      _readDoc(stream, aos);
+    }
+
     // Include definitions of all read methods (all fulfilled by Reader::read(...))
     //#include "YODA/ReaderMethods.icc"
 
 
+
   protected:
 
-    void readDoc(std::istream& stream, vector<AnalysisObject*>& aos);
+    void _readDoc(std::istream& stream, vector<AnalysisObject*>& aos);
     //void readGenericAO(std::istream& stream);
     // virtual void readHisto(std::istream& stream, const Histo1D& h);
     // virtual void readProfile(std::istream& stream, const Profile1D& p);

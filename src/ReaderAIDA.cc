@@ -14,7 +14,7 @@ using namespace std;
 namespace YODA {
 
 
-  void ReaderAIDA::readDoc(std::istream& stream, vector<AnalysisObject*>& aos) {
+  void ReaderAIDA::_readDoc(std::istream& stream, vector<AnalysisObject*>& aos) {
     TiXmlDocument doc;
     stream >> doc;
     if (doc.Error()) {
@@ -27,15 +27,25 @@ namespace YODA {
     // Return value, to be populated
     vector<AnalysisObject*> rtn;
     try {
-      // Walk down tree to get to the <paper> element
+      // Walk down tree to get to the <dataPointSet> elements
       const TiXmlNode* aidaN = doc.FirstChild("aida");
       if (!aidaN) throw ReadError("Couldn't get <aida> root element");
       for (const TiXmlNode* dpsN = aidaN->FirstChild("dataPointSet"); dpsN; dpsN = dpsN->NextSibling()) {
         const TiXmlElement* dpsE = dpsN->ToElement();
-        const string plotname = dpsE->Attribute("name");
         const string plotpath = dpsE->Attribute("path");
+        const string plotname = dpsE->Attribute("name");
 
-        Scatter2D* dps = new Scatter2D();
+        // DPS to be stored
+        /// @todo Clarify the memory management resulting from this
+        Scatter2D* dps = new Scatter2D(plotpath + "/" + plotname);
+
+        // Read in annotations
+        for (const TiXmlNode* annN = dpsN->FirstChild("annotation"); annN; annN = annN->NextSibling()) {
+          for (const TiXmlNode* itN = annN->FirstChild("item"); itN; itN = itN->NextSibling()) {
+            dps->setAnnotation(itN->ToElement()->Attribute("key"), itN->ToElement()->Attribute("value"));
+          }
+        }
+
         for (const TiXmlNode* dpN = dpsN->FirstChild("dataPoint"); dpN; dpN = dpN->NextSibling()) {
           const TiXmlNode* xMeasN = dpN->FirstChild("measurement");
           const TiXmlNode* yMeasN = xMeasN->NextSibling();
@@ -65,9 +75,9 @@ namespace YODA {
             cerr << "Couldn't get <measurement> tag" << endl;
             /// @todo Throw an exception here?
           }
-          aos.push_back(dps);
-
         }
+        aos.push_back(dps);
+
       }
     } catch (std::exception& e) {
       cerr << e.what() << endl;

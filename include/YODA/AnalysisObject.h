@@ -18,16 +18,29 @@ namespace YODA {
 
   public:
 
+    /// Collection type for annotations, as a string-string map.
+    typedef std::map<std::string, std::string> Annotations;
+
+
     /// @name Creation and destruction
     //@{
 
     /// Default constructor
     AnalysisObject() { }
 
-    /// Constructor giving a path and optional title
-    AnalysisObject(const std::string& path, const std::string& title="") {
-      /// @todo Don't set annotations if value is an empty string?
-      setPath(title);
+    /// Constructor giving a type, a path and an optional title
+    AnalysisObject(const std::string& type, const std::string& path, const std::string& title="") {
+      setAnnotation("Type", type);
+      setPath(path);
+      setTitle(title);
+    }
+
+    /// Constructor giving a type, a path, another AO to copy annotation from, and an optional title
+    AnalysisObject(const std::string& type, const std::string& path,
+                   const AnalysisObject& ao, const std::string& title="") {
+      setAnnotations(ao.annotations());
+      setAnnotation("Type", type);
+      setPath(path);
       setTitle(title);
     }
 
@@ -44,9 +57,6 @@ namespace YODA {
 
     ///@name Annotations
     //@{
-
-    /// Collection type for annotations, as a string-string map.
-    typedef std::map<std::string,std::string> Annotations;
 
     /// @brief Add or set an annotation by name
     /// Note: Templated on arg type, but stored as a string.
@@ -139,6 +149,9 @@ namespace YODA {
 
     /// Set the AO path
     void setPath(const std::string& path) {
+      if (path.length() > 0 && path.find("/") != 0) {
+        throw AnnotationError("Histo paths must start with a slash (/) character.");
+      }
       setAnnotation("Path", path);
     }
 
@@ -153,7 +166,9 @@ namespace YODA {
     /// @todo Maybe make these private, and make Writer a friend of AO
 
     /// Get name of the analysis object type, for persistency
-    virtual std::string _aotype() const = 0;
+    virtual std::string _aotype() const {
+      return annotation("Type");
+    }
 
     //@}
 

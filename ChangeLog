@@ -1,3 +1,9 @@
+2011-06-15  Andy Buckley  <andy@insectnation.org>
+
+	* Making the AIDA reader work, including reading of annotations
+	and a few tweaks to the simple type persistency system. Test histo
+	1b updated.
+
 2011-06-12  Andy Buckley  <andy@insectnation.org>
 
 	* Removing Histo1D::area

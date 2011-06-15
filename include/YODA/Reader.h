@@ -28,17 +28,37 @@ namespace YODA {
     /// @name Reading multiple analysis objects,
     //@{
 
-    /// Read in a collection of objects @a objs from output stream @a stream.
-    void read(std::istream& stream, std::vector<AnalysisObject>& aos) {
-      read(stream, aos);
+    /// @brief Read in a collection of objects @a objs from output stream @a stream.
+    /// This version fills (actually, appends to) a supplied vector, avoiding copying,
+    /// and is hence CPU efficient.
+    virtual void read(std::istream& stream, std::vector<AnalysisObject*>& aos) = 0;
+
+    /// @brief Read in a collection of objects from output stream @a stream.
+    /// This version returns a vector by value, involving copying, and is hence less
+    /// CPU efficient than the alternative version where a vector is filled by reference.
+    std::vector<AnalysisObject*> read(std::istream& stream) {
+      std::vector<AnalysisObject*> rtn;
+      read(stream, rtn);
+      return rtn;
     }
 
-    /// Read in a collection of objects @a objs from file @a filename.
-    void read(const std::string& filename, std::vector<AnalysisObject>& aos) {
+    /// @brief Read in a collection of objects @a objs from file @a filename.
+    /// This version fills (actually, appends to) a supplied vector, avoiding copying,
+    /// and is hence CPU efficient.
+    void read(const std::string& filename, std::vector<AnalysisObject*>& aos) {
       std::ifstream instream;
       instream.open(filename.c_str());
       read(instream, aos);
       instream.close();
+    }
+
+    /// @brief Read in a collection of objects from output stream @a stream.
+    /// This version returns a vector by value, involving copying, and is hence less
+    /// CPU efficient than the alternative version where a vector is filled by reference.
+    std::vector<AnalysisObject*> read(const std::string& filename) {
+      std::vector<AnalysisObject*> rtn;
+      read(filename, rtn);
+      return rtn;
     }
 
     //@}
@@ -52,6 +72,7 @@ namespace YODA {
     // virtual void readScatter(std::istream& stream, const Scatter2D& p) = 0;
 
   };
+
 
 }
 

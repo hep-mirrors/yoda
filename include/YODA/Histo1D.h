@@ -28,7 +28,7 @@ namespace YODA {
     /// @todo Remove binning enum stuff
     Histo1D(size_t nbins, double lower, double upper,
             const std::string& path="", const std::string& title="")
-      : AnalysisObject(path, title),
+      : AnalysisObject("Histo1D", path, title),
         _axis(nbins, lower, upper)
     { }
 
@@ -37,7 +37,7 @@ namespace YODA {
     /// one being the upper bound of the last bin
     Histo1D(const std::vector<double>& binedges,
             const std::string& path="", const std::string& title="")
-      : AnalysisObject(path, title),
+      : AnalysisObject("Histo1D", path, title),
         _axis(binedges)
     { }
 
@@ -45,9 +45,31 @@ namespace YODA {
     /// @todo Allow any iterable of bins (use Boost::Range?)
     Histo1D(const std::vector<HistoBin1D>& bins,
             const std::string& path="", const std::string& title="")
-      : AnalysisObject(path, title),
+      : AnalysisObject("Histo1D", path, title),
         _axis(bins)
     { }
+
+
+    // /// Copy constructor with optional new path
+    // Histo1D(const Histo1D& h, const std::string& path="")
+    //   : AnalysisObject("Histo1D", (path.size() == 0) ? h.path() : path, h.title())
+    // { }
+
+    // /// Constructor from a Scatter2D's binning, with optional new path
+    // Histo1D(const Scatter2D& s, const std::string& path="")
+    //   : AnalysisObject("Histo1D", s, (path.size() == 0) ? s.path() : path, s.title())
+    // {
+    //   for (Scatter2D::Points::const_iterator p = s.points().begin(); s != s.points().end(); ++s) {
+    //     addBin();
+    //   }
+    // }
+
+    // /// Constructor from a Profile1D's binning, with optional new path
+    // Histo1D(const Profile1D& p, const std::string& path="")
+    //   : AnalysisObject("Histo1D", (path.size() == 0) ? p.path() : path, p.title())
+    // {
+
+    // }
 
     //@}
 

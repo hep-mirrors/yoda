@@ -3,26 +3,33 @@ YODA TODO list
 
 NOW
 
-* Histo1D::integral(bin1id, bin2id) (AB)
+* Axis1D and Histo/Profile1D::addBin(...) methods. (AB)
+  Needed for...
 
-* Test Scatters from AIDA DPS (AB)
-
-* Book histos and profiles: (HH)
+* Book histos and profiles: (AB)
   - from Scatter
   - from each other (via temp Scatter?)
-
-* New "flat" file format (HH)
-
-
-
-NEXT
 
 * Implement histo/histo -> scatter, profile/profile -> scatter and
   scatter/scatter -> scatter. Also multiplication? (AB)
 
-* Built-in caching on sorted_vector Axis (remove binHash and cachedBinEdges).
+* New "flat" file format (HH)
 
-* Provide for persistency from containers of pointers to AOs and Boost::any
+
+NEXT
+
+* Multiple errors on Scatter2D via a vector of Error2D. Combination rule enum arg (QUAD, LIN) on error() method
+
+* Persist whole-histo Dbn1D
+
+* Add a named Weights object, allowing named or vectorised fills? Autoconversion to/from double.
+
+* Rebinning:
+  merge of 2 adjacent bins
+  merges of n adjacent bins (via iterator ranges)
+  global rebinning by integer factor (on widths or on bin groups?)
+
+* Histo1D::integral(bin1id, bin2id) (AB)
 
 * Axis::scale -> scaleX, scaleY, scaleXY to Scatter2D.
 
@@ -30,9 +37,8 @@ NEXT
   Add bin-comparison and negative-weighted mean test(s)
   Test bin-by-index sorted behaviour on Histo and Profile
 
-* Arbitrary function transforms on Scatters
 
-* Scatter2D s2(h1d)?
+* Arbitrary function transforms on Scatters
 
 * Transform differential to integral histos... or allow representation/querying
   as such. How to do this if bin edges don't match?
@@ -43,16 +49,7 @@ AND AFTER THAT...
 
 * Scatter2D -> Scatter<N> again (?) with specialisations for 1D, 2D and 3D
 
-* Multiple errors on Scatter2D via a vector of Error2D. Combination rule enum arg (QUAD, LIN) on error() method
-
-* Persist whole-histo Dbn1D
-
 * Read back from flat format
-
-* Rebinning:
-  merge of 2 adjacent bins
-  merges of n adjacent bins (via iterator ranges)
-  global rebinning by integer factor (on widths or on bin groups?)
 
 * Explicitly return NaN for profile histo points with no weight? Or throw LowStatsError?
 
@@ -61,8 +58,6 @@ AND AFTER THAT...
 * Bin division with binomial correlation (Efficiency1D)
 
 * Write scripts to convert between data formats and to plot results.
-
-* Add a named Weights object, allowing named or vectorised fills? Autoconversion to/from double.
 
 
 

@@ -8,7 +8,7 @@ if WITH_DOXYGEN
 dox:
 	@echo "Running Doxygen..."
 	$(DOXYGEN) $(top_srcdir)/Doxyfile
-all-local: dox
+all-local: #dox
 	@true
 install-data-local:
 	$(install_sh_DATA) doxy/html/* $(DESTDIR)$(pkgdatadir)/doc/html
