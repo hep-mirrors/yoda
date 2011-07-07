@@ -81,6 +81,12 @@ namespace YODA {
 
   public:
 
+
+    /// Null constructor.
+    /// @todo Remove if we can.
+    Axis1D() { }
+
+
     /// Constructor with a list of bin edges
     /// @todo Accept a general iterable and remove this silly special-casing for std::vector
     Axis1D(const vector<double>& binedges) {
@@ -124,6 +130,10 @@ namespace YODA {
     }
 
 
+    // void addBin() {
+    // }
+
+
     Bins& bins() {
       return _bins;
     }
@@ -141,12 +151,10 @@ namespace YODA {
 
 
     double lowEdge() const {
-      /// @todo Check that this is still okay when bins are auto-sorted
       return _bins.front().lowEdge();
     }
 
     double highEdge() const {
-      /// @todo Check that this is still okay when bins are auto-sorted
       return _bins.back().highEdge();
     }
 
@@ -161,7 +169,6 @@ namespace YODA {
     const BIN& bin(size_t index) const {
       if (index >= numBins())
         throw RangeError("YODA::Histo: index out of range");
-      /// @todo Fix via "indexed set" of bins
       return _bins[index];
     }
 
@@ -169,7 +176,6 @@ namespace YODA {
     BIN& binByCoord(double x) {
       return bin(findBinIndex(x));
     }
-
 
     const BIN& binByCoord(double x) const {
       return bin(findBinIndex(x));
@@ -184,6 +190,7 @@ namespace YODA {
       return _dbn;
     }
 
+
     Dbn1D& underflow() {
       return _underflow;
     }
@@ -191,6 +198,7 @@ namespace YODA {
     const Dbn1D& underflow() const {
       return _underflow;
     }
+
 
     Dbn1D& overflow() {
       return _overflow;

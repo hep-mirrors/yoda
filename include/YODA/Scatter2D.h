@@ -9,13 +9,17 @@
 #include "YODA/AnalysisObject.h"
 #include "YODA/Point2D.h"
 #include "YODA/Utils/sortedvector.h"
-#include "YODA/Histo1D.h"
-#include "YODA/Profile1D.h"
 #include <vector>
 #include <set>
 #include <string>
+#include <utility>
 
 namespace YODA {
+
+
+  class Histo1D;
+  class Profile1D;
+
 
   /// A very generic data type which is just a collection of 2D data points with errors
   class Scatter2D : public AnalysisObject {
@@ -183,17 +187,17 @@ namespace YODA {
       return *this;
     }
 
-    Scatter2D& addPoint(double x, double y, pair<double,double> ex, double ey) {
+    Scatter2D& addPoint(double x, double y, std::pair<double,double> ex, double ey) {
       _points.insert(Point2D(x, y, ex, ey));
       return *this;
     }
 
-    Scatter2D& addPoint(double x, double y, double ex, pair<double,double> ey) {
+    Scatter2D& addPoint(double x, double y, double ex, std::pair<double,double> ey) {
       _points.insert(Point2D(x, y, ex, ey));
       return *this;
     }
 
-    Scatter2D& addPoint(double x, double y, pair<double,double> ex, pair<double,double> ey) {
+    Scatter2D& addPoint(double x, double y, std::pair<double,double> ex, std::pair<double,double> ey) {
       _points.insert(Point2D(x, y, ex, ey));
       return *this;
     }
@@ -265,41 +269,10 @@ namespace YODA {
   //@{
 
   /// Make a Scatter2D representation of a Histo1D
-  inline Scatter2D mkScatter(const Histo1D& h) {
-    Scatter2D rtn;
-    rtn.setAnnotations(h.annotations());
-    rtn.setAnnotation("Type", h._aotype());
-    foreach (const HistoBin1D& b, h.bins()) {
-      const double x = b.focus();
-      const double ex_m = b.focus() - b.lowEdge();
-      const double ex_p = b.highEdge() - b.focus();
-      const double y = b.height();
-      const double ey = b.heightError();
-      const Point2D pt(x, ex_m, ex_p, y, ey, ey);
-      rtn.addPoint(pt);
-    }
-    assert(h.numBins() == rtn.numPoints());
-    return rtn;
-  }
-
+  Scatter2D mkScatter(const Histo1D& h);
 
   /// Make a Scatter2D representation of a Profile1D
-  inline Scatter2D mkScatter(const Profile1D& p) {
-    Scatter2D rtn;
-    rtn.setAnnotations(p.annotations());
-    rtn.setAnnotation("Type", p._aotype());
-    foreach (const ProfileBin1D& b, p.bins()) {
-      const double x = b.focus();
-      const double ex_m = b.focus() - b.lowEdge();
-      const double ex_p = b.highEdge() - b.focus();
-      const double y = b.mean();
-      const double ey = b.stdErr();
-      const Point2D pt(x, ex_m, ex_p, y, ey, ey);
-      rtn.addPoint(pt);
-    }
-    assert(p.numBins() == rtn.numPoints());
-    return rtn;
-  }
+  Scatter2D mkScatter(const Profile1D& p);
 
   //@}
 

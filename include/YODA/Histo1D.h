@@ -8,6 +8,7 @@
 
 #include "YODA/AnalysisObject.h"
 #include "YODA/HistoBin1D.h"
+#include "YODA/Scatter2D.h"
 #include "YODA/Axis1D.h"
 #include "YODA/Exceptions.h"
 #include <vector>
@@ -21,6 +22,7 @@ namespace YODA {
   class Histo1D : public AnalysisObject {
 
   public:
+
     /// @name Constructors
     //@{
 
@@ -49,27 +51,14 @@ namespace YODA {
         _axis(bins)
     { }
 
+    /// Copy constructor with optional new path
+    Histo1D(const Histo1D& h, const std::string& path="");
 
-    // /// Copy constructor with optional new path
-    // Histo1D(const Histo1D& h, const std::string& path="")
-    //   : AnalysisObject("Histo1D", (path.size() == 0) ? h.path() : path, h.title())
-    // { }
+    /// Constructor from a Scatter2D's binning, with optional new path
+    Histo1D(const Scatter2D& s, const std::string& path="");
 
-    // /// Constructor from a Scatter2D's binning, with optional new path
-    // Histo1D(const Scatter2D& s, const std::string& path="")
-    //   : AnalysisObject("Histo1D", s, (path.size() == 0) ? s.path() : path, s.title())
-    // {
-    //   for (Scatter2D::Points::const_iterator p = s.points().begin(); s != s.points().end(); ++s) {
-    //     addBin();
-    //   }
-    // }
-
-    // /// Constructor from a Profile1D's binning, with optional new path
-    // Histo1D(const Profile1D& p, const std::string& path="")
-    //   : AnalysisObject("Histo1D", (path.size() == 0) ? p.path() : path, p.title())
-    // {
-
-    // }
+    /// Constructor from a Profile1D's binning, with optional new path
+    Histo1D(const Profile1D& p, const std::string& path="");
 
     //@}
 

@@ -1,3 +1,7 @@
+2011-07-07  Andy Buckley  <andy@insectnation.org>
+
+	* Add construction of a Histo1D from Scatter2D.
+
 2011-06-15  Andy Buckley  <andy@insectnation.org>
 
 	* Making the AIDA reader work, including reading of annotations

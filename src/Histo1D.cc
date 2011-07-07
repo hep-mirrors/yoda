@@ -4,6 +4,8 @@
 // Copyright (C) 2008-2011 The YODA collaboration (see AUTHORS for details)
 //
 #include "YODA/Histo1D.h"
+#include "YODA/Profile1D.h"
+#include "YODA/Scatter2D.h"
 
 #include <cmath>
 #include <iostream>
@@ -68,6 +70,35 @@ namespace YODA {
     }
     return sigma2/sumW();
   }
+
+
+  ////////////////////////////////////////
+
+
+  // /// Copy constructor with optional new path
+  // Histo1D::Histo1D(const Histo1D& h, const std::string& path)
+  //   : AnalysisObject("Histo1D", (path.size() == 0) ? h.path() : path, h, h.title())
+  // {
+  // }
+
+
+  /// Constructor from a Scatter2D's binning, with optional new path
+  Histo1D::Histo1D(const Scatter2D& s, const std::string& path)
+    : AnalysisObject("Histo1D", (path.size() == 0) ? s.path() : path, s, s.title())
+  {
+    std::vector<HistoBin1D> bins;
+    for (Scatter2D::Points::const_iterator p = s.points().begin(); p != s.points().end(); ++p) {
+      bins.push_back(HistoBin1D(p->xMin(), p->xMax()));
+    }
+    _axis = Axis1D<HistoBin1D>(bins);
+  }
+
+
+  // /// Constructor from a Profile1D's binning, with optional new path
+  // Histo1D::Histo1D(const Profile1D& p, const std::string& path)
+  //   : AnalysisObject("Histo1D", (path.size() == 0) ? p.path() : path, p, p.title())
+  // {
+  // }
 
 
 }
