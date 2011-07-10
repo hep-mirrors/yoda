@@ -18,10 +18,19 @@
 namespace YODA {
 
 
+  /// Convenience typedef
+  typedef Axis1D<HistoBin1D> Histo1DAxis;
+
+
   /// A  one-dimensional histogram.
   class Histo1D : public AnalysisObject {
 
   public:
+
+    /// Convenience typedefs
+    typedef Histo1DAxis Axis;
+    typedef Axis::Bins Bins;
+
 
     /// @name Constructors
     //@{
@@ -119,6 +128,7 @@ namespace YODA {
     }
 
     /// Access the bin vector
+    /// @todo Actually, it's a Histo
     std::vector<YODA::HistoBin1D>& bins() {
       return _axis.bins();
     }

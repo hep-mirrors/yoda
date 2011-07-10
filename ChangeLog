@@ -1,3 +1,8 @@
+2011-07-10  Andy Buckley  <andy@insectnation.org>
+
+	* Add construction of Histo1Ds from Profile1D and Histo1D, and
+	construction of Profile1Ds from those and Scatter2D.
+
 2011-07-07  Andy Buckley  <andy@insectnation.org>
 
 	* Add construction of a Histo1D from Scatter2D.

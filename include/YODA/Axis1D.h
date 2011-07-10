@@ -26,6 +26,8 @@ namespace YODA {
   class Axis1D {
   public:
 
+
+    typedef BIN Bin;
     typedef typename Utils::sortedvector<BIN> Bins;
 
 

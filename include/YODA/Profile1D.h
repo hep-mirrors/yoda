@@ -16,10 +16,23 @@
 
 namespace YODA {
 
+  // Forward declarations
+  class Histo1D;
+  class Scatter2D;
+
+
+  /// Convenience typedef
+  typedef Axis1D<ProfileBin1D> Profile1DAxis;
+
 
   /// A one-dimensional profile histogram.
   class Profile1D : public AnalysisObject {
   public:
+
+    /// Convenience typedefs
+    typedef Profile1DAxis Axis;
+    typedef Axis::Bins Bins;
+
 
     /// @name Constructors
     //@{
@@ -46,6 +59,16 @@ namespace YODA {
       : AnalysisObject("Profile1D", path, title),
         _axis(xbins)
     {  }
+
+
+    /// Copy constructor with optional new path
+    Profile1D(const Profile1D& p, const std::string& path="");
+
+    /// Constructor from a Scatter2D's binning, with optional new path
+    Profile1D(const Scatter2D& s, const std::string& path="");
+
+    /// Constructor from a Histo1D's binning, with optional new path
+    Profile1D(const Histo1D& h, const std::string& path="");
 
 
     //@}
