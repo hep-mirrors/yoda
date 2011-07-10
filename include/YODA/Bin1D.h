@@ -43,9 +43,11 @@ namespace YODA {
     //@{
     /// Lower limit of the bin (inclusive).
     double lowEdge() const;
+    double xMin() const { return lowEdge(); }
 
     /// Upper limit of the bin (exclusive).
     double highEdge() const;
+    double xMax() const { return highEdge(); }
 
     /// Get the {low,high} edges as an STL @c pair.
     std::pair<double,double> edges() const;

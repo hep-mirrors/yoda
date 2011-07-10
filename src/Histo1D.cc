@@ -75,11 +75,12 @@ namespace YODA {
   ////////////////////////////////////////
 
 
-  // /// Copy constructor with optional new path
-  // Histo1D::Histo1D(const Histo1D& h, const std::string& path)
-  //   : AnalysisObject("Histo1D", (path.size() == 0) ? h.path() : path, h, h.title())
-  // {
-  // }
+  /// Copy constructor with optional new path
+  Histo1D::Histo1D(const Histo1D& h, const std::string& path)
+    : AnalysisObject("Histo1D", (path.size() == 0) ? h.path() : path, h, h.title())
+  {
+    _axis = h._axis;
+  }
 
 
   /// Constructor from a Scatter2D's binning, with optional new path
@@ -94,11 +95,17 @@ namespace YODA {
   }
 
 
-  // /// Constructor from a Profile1D's binning, with optional new path
-  // Histo1D::Histo1D(const Profile1D& p, const std::string& path)
-  //   : AnalysisObject("Histo1D", (path.size() == 0) ? p.path() : path, p, p.title())
-  // {
-  // }
+  /// Constructor from a Profile1D's binning, with optional new path
+  Histo1D::Histo1D(const Profile1D& p, const std::string& path)
+    : AnalysisObject("Histo1D", (path.size() == 0) ? p.path() : path, p, p.title())
+  {
+    std::vector<HistoBin1D> bins;
+    for (std::vector<ProfileBin1D>::const_iterator b = p.bins().begin(); b != p.bins().end(); ++b) {
+      bins.push_back(HistoBin1D(b->xMin(), b->xMax()));
+    }
+    _axis = Axis1D<HistoBin1D>(bins);
+
+  }
 
 
 }
