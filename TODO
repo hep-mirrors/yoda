@@ -3,29 +3,30 @@ YODA TODO list
 
 NOW
 
-* Axis1D and Histo/Profile1D::addBin(...) methods. (AB)
-  Needed for...
-
-* Book histos and profiles: (AB)
-  - from Scatter
-  - from each other (via temp Scatter?)
-
 * Implement histo/histo -> scatter, profile/profile -> scatter and
   scatter/scatter -> scatter. Also multiplication? (AB)
+
+* Multiple errors on Scatter2D via a vector of Error2D. Combination rule enum
+  arg (QUAD, LIN) on error() method (DANIEL?)
 
 * New "flat" file format (HH)
 
 
 NEXT
 
-* Multiple errors on Scatter2D via a vector of Error2D. Combination rule enum arg (QUAD, LIN) on error() method
+* Add a named Weights object, allowing named or vectorised fills? Autoconversion
+  to/from double. Template on this, or use everywhere?
+
+
+* Implement _setstate for Histo1D and Profile1D.
+
+* Axis1D and Histo/Profile1D::addBin(...) methods. (AB)
+  Needed for...
 
 * Persist whole-histo Dbn1D
 
-* Add a named Weights object, allowing named or vectorised fills? Autoconversion to/from double.
-
 * Rebinning:
-  merge of 2 adjacent bins
+  merge of 2 adjacent bins -- no gaps allowed
   merges of n adjacent bins (via iterator ranges)
   global rebinning by integer factor (on widths or on bin groups?)
 
@@ -36,7 +37,6 @@ NEXT
 * Tests:
   Add bin-comparison and negative-weighted mean test(s)
   Test bin-by-index sorted behaviour on Histo and Profile
-
 
 * Arbitrary function transforms on Scatters
 
@@ -63,7 +63,8 @@ AND AFTER THAT...
 
 PERSISTENCY
 
-* Look into pickling of C++ interfaced classes. WriterS10n
+* Look into pickling of C++ interfaced classes. WriterS10n? MessagePack? The
+  latter looks awesome...
 
 * Store enough information for datafile merging to be well defined
   That means appropriate statistical combinations for each data type.
