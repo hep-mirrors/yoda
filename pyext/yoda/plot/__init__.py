@@ -85,6 +85,21 @@ class Canvas(PicElementContainer):
     # TODO: Specify the LaTeX preamble contents (programmatically) per-canvas
     # TODO: Global (module) object with default config
 
+    # TODO: Encapsulate all coord trfs in objects?
+    def _coords_x_abs_from_rel(self, xrel):
+        return self.xsize * xrel
+    def _coords_y_abs_from_rel(self, yrel):
+        return self.ysize * yrel
+    def _coords_xy_abs_from_rel(self, xrel, yrel):
+        return self.xsize * xrel, self.ysize * yrel
+
+    def _coords_x_rel_from_abs(self, xabs):
+        return xabs / self.xsize
+    def _coords_y_rel_from_abs(self, yabs):
+        return yabs / self.ysize
+    def _coords_xy_rel_from_abs(self, xabs, yabs):
+        return xabs / self.xsize, yabs / self.ysize
+
 
 class Plot(object):
     """A plot object with a title, annotations, etc. Does it need to exist or is
@@ -155,35 +170,31 @@ class LegoOrSurfaceGraph(Graph):
 
 
 
-def render():
+if __name__ == "__main__":
     c = Canvas(14, 10)
     c.add(Rect(0.1, 0.2, 0.6, 0.7), "box1")
+    c.box2 = Rect(0.1, 0.2, 0.6, 0.7)
     print c.box1
 
-    out = """\
-\\documentclass[11pt]{article}
-\\usepackage{amsmath,amssymb}
-\\usepackage[margin=0cm,paperwidth=15.2cm,paperheight=9.8cm]{geometry}
-\\usepackage{tikz}
-\\pagestyle{empty}
-\\usepackage[osf]{mathpazo}
-\\begin{document}
-\\thispagestyle{empty}
-\\begin{tikzpicture}
-"""
+    out  = "\\documentclass[11pt]{article}\n"
+    out += "\\usepackage{amsmath,amssymb}\n"
+    out += "\\usepackage[margin=0cm,paperwidth=%fcm,paperheight=%fcm]{geometry}\n" % (c.xsize, c.ysize)
+    out += "\\usepackage{tikz}\n"
+    out += "\\pagestyle{empty}\n"
+    out += "\\usepackage[osf]{mathpazo}\n"
+    out += "\\begin{document}\n"
+    out += "\\thispagestyle{empty}\n"
+    out += "\\begin{tikzpicture}\n"
     for obj in c:
         if isinstance(obj, Rect):
-            out += " \\draw (%f,%f) -- (%f,%f);\n" % (obj.x1, obj.y1, obj.x2, obj.y2)
-    # TODO: Local coordinate systems and conversions
+            x1, y1 = c._coords_xy_abs_from_rel(obj.x1, obj.y1)
+            x2, y2 = c._coords_xy_abs_from_rel(obj.x2, obj.y2)
+            out += " \\draw (%f,%f) -- (%f,%f);\n" % (x1, y1, x2, y2)
     #out += " \\rect (%f,%f) -- ;\n"
+    out += "\\end{tikzpicture}\n"
+    out += "\\end{document}\n"
 
-    out += """\
-\\end{tikzpicture}
-\\end{document}
-"""
     #print out
     import tex2pix
     r = tex2pix.Renderer(tex=out)
-    r.mk("test.png")
-
-render()
+    r.mk("test.pdf")
