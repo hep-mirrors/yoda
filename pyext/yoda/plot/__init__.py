@@ -190,7 +190,7 @@ if __name__ == "__main__":
             x1, y1 = c._coords_xy_abs_from_rel(obj.x1, obj.y1)
             x2, y2 = c._coords_xy_abs_from_rel(obj.x2, obj.y2)
             out += " \\draw (%f,%f) -- (%f,%f);\n" % (x1, y1, x2, y2)
-    #out += " \\rect (%f,%f) -- ;\n"
+            out += " \\draw (%f,%f) rectangle (%f,%f);\n" % (x1, y1, x2, y2)
     out += "\\end{tikzpicture}\n"
     out += "\\end{document}\n"
 
