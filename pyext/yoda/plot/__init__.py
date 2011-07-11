@@ -51,11 +51,18 @@ class PicElementContainer(dict):
     def __getattr__(self, name):
         return self[name]
 
+    def __setattr__(self, name, value):
+        if name in self.__dict__ or not isinstance(value, PicElement):
+            dict.__setattr__(self, name, value)
+        else:
+            self.add(value, name)
+
 
 class Shape(PicElement):
     """Base class for shape primitives."""
     # TODO: Stroke and fill properties (and more... corner radii, etc.?) specified here
-    pass
+    def __init__(self):
+        PicElement.__init__(self)
 
 
 class Rect(Shape):
@@ -63,6 +70,7 @@ class Rect(Shape):
     any of several anchor points and in several coordinate systems."""
 
     def __init__(self, x1, y1, x2, y2):
+        Shape.__init__(self)
         self.x1 = x1
         self.y1 = y1
         self.x2 = x2
@@ -173,8 +181,7 @@ class LegoOrSurfaceGraph(Graph):
 if __name__ == "__main__":
     c = Canvas(14, 10)
     c.add(Rect(0.1, 0.2, 0.6, 0.7), "box1")
-    c.box2 = Rect(0.1, 0.2, 0.6, 0.7)
-    print c.box1
+    c.box2 = Rect(0.5, 0.7, 0.8, 1.0)
 
     out  = "\\documentclass[11pt]{article}\n"
     out += "\\usepackage{amsmath,amssymb}\n"
