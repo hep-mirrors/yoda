@@ -78,7 +78,7 @@ namespace YODA {
     //@{
 
     /// Get name of the analysis object type, for persisting
-    std::string _aotype() const { return "Profile1D"; }
+    std::string type() const { return "Profile1D"; }
 
     /// Set the state of the profile object, for unpersisting
     /// @todo Need to set annotations (do that on AO), all-histo Dbns, and dbns for every bin. Delegate!

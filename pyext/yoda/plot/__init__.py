@@ -9,7 +9,7 @@ TODO:
  * Rendering backends: TikZ and pyglet
 """
 
-__version__ = "0.0.1"
+__version__ = "0.0.2"
 
 
 class StyleConfig(object):
@@ -57,6 +57,9 @@ class PicElementContainer(dict):
         else:
             self.add(value, name)
 
+    def __setitem__(self, name, value):
+        self.__setattr__(name, value):
+
 
 class Shape(PicElement):
     """Base class for shape primitives."""
@@ -90,10 +93,13 @@ class Canvas(PicElementContainer):
         self.xsize = xsize
         self.ysize = ysize
         self.current_zindex = 0
+
     # TODO: Specify the LaTeX preamble contents (programmatically) per-canvas
+
     # TODO: Global (module) object with default config
 
     # TODO: Encapsulate all coord trfs in objects?
+
     def _coords_x_abs_from_rel(self, xrel):
         return self.xsize * xrel
     def _coords_y_abs_from_rel(self, yrel):
@@ -109,10 +115,12 @@ class Canvas(PicElementContainer):
         return xabs / self.xsize, yabs / self.ysize
 
 
-class Plot(object):
-    """A plot object with a title, annotations, etc. Does it need to exist or is
-    this just a more natural name for Axes?"""
-    pass
+# class Plot(object):
+#     """A plot object with a title, annotations, etc. Does it need to exist or is
+#     this just a more natural name for Axes?"""
+#     # TODO So I guess this is an optional level to hold the title?
+#     pass
+
 
 class Axes(object):
     """I never liked this term in matplotlib... but it's probably the most

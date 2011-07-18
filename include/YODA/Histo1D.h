@@ -78,7 +78,7 @@ namespace YODA {
     //@{
 
     /// Get name of the analysis object type, for persisting
-    std::string _aotype() const { return "Histo1D"; }
+    std::string type() const { return "Histo1D"; }
 
     /// Set the state of the histo object, for unpersisting
     /// @todo Need to set annotations (do that on AO), all-histo Dbns, and dbns for every bin. Delegate!
@@ -240,6 +240,9 @@ namespace YODA {
     tmp -= second;
     return tmp;
   }
+
+  /// Divide two histograms
+  Scatter2D operator / (const Histo1D& first, const Histo1D& second);
 
   //@}
 
