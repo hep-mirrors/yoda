@@ -3,36 +3,43 @@ YODA TODO list
 
 NOW
 
-* Implement histo/histo -> scatter, profile/profile -> scatter and
+* Implement profile/profile -> scatter and
   scatter/scatter -> scatter. Also multiplication? (AB)
+
+* Histo2D and Profile2D (MICHAL)
 
 * Multiple errors on Scatter2D via a vector of Error2D. Combination rule enum
   arg (QUAD, LIN) on error() method (DANIEL?)
 
 * New "flat" file format (HH)
 
+* Extend Axis1D<BIN1> to Axis1D<BIN1, DBN> (HH)
+
 
 NEXT
+
+* Test that a y-binned Histo2D has the same per-y-column stats as an
+  equivalently x-binned Profile1D.
 
 * Add a named Weights object, allowing named or vectorised fills? Autoconversion
   to/from double. Template on this, or use everywhere?
 
+* Axis::scale -> scaleX, scaleY, scaleXY to Scatter2D.
 
-* Implement _setstate for Histo1D and Profile1D.
-
-* Axis1D and Histo/Profile1D::addBin(...) methods. (AB)
-  Needed for...
+* Histo1D::integral(bin1id, bin2id) (AB)
 
 * Persist whole-histo Dbn1D
+
+* Slicing and marginalising.
 
 * Rebinning:
   merge of 2 adjacent bins -- no gaps allowed
   merges of n adjacent bins (via iterator ranges)
   global rebinning by integer factor (on widths or on bin groups?)
 
-* Histo1D::integral(bin1id, bin2id) (AB)
+* Implement _setstate for Histo1D and Profile1D.
 
-* Axis::scale -> scaleX, scaleY, scaleXY to Scatter2D.
+* Error correlations?
 
 * Tests:
   Add bin-comparison and negative-weighted mean test(s)
