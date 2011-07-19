@@ -135,6 +135,26 @@ namespace YODA {
       return _axis.binByCoord(x);
     }
 
+    /// Access underflow (non-const version)
+    Dbn1D& underflow() {
+      return _axis.underflow();
+    }
+
+    /// Access underflow (const version)
+    const Dbn1D& underflow() const {
+      return _axis.underflow();
+    }
+
+    /// Access overflow (non-const version)
+    Dbn1D& overflow() {
+      return _axis.overflow();
+    }
+
+    /// Access overflow (const version)
+    const Dbn1D& overflow() const {
+      return _axis.overflow();
+    }
+
     //@}
 
 
