@@ -39,36 +39,6 @@ namespace YODA {
   }
 
 
-  double ProfileBin1D::mean() const {
-    return _ydbn.mean();
-  }
-
-
-  double ProfileBin1D::stdDev() const {
-    return _ydbn.stdDev();
-  }
-
-
-  double ProfileBin1D::variance() const {
-    return _ydbn.variance();
-  }
-
-
-  double ProfileBin1D::stdErr() const {
-    return _ydbn.stdErr();
-  }
-
-
-  double ProfileBin1D::sumWY() const {
-    return _ydbn.sumWX();
-  }
-
-
-  double ProfileBin1D::sumWY2() const {
-    return _ydbn.sumWX2();
-  }
-
-
   ProfileBin1D& ProfileBin1D::add(const ProfileBin1D& pb) {
     Bin1D::add(pb);
     _ydbn += pb._ydbn;
@@ -80,16 +50,6 @@ namespace YODA {
     Bin1D::subtract(pb);
     _ydbn -= pb._ydbn;
     return *this;
-  }
-
-
-  ProfileBin1D& ProfileBin1D::operator += (const ProfileBin1D& toAdd) {
-    return add(toAdd);
-  }
-
-
-  ProfileBin1D& ProfileBin1D::operator -= (const ProfileBin1D& toSubtract) {
-    return subtract(toSubtract);
   }
 
 

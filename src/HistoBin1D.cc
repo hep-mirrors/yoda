@@ -34,30 +34,6 @@ namespace YODA {
   }
 
 
-  double HistoBin1D::area() const
-  {
-    return sumW();
-  }
-
-
-  double HistoBin1D::height() const
-  {
-    return area() / width();
-  }
-
-
-  double HistoBin1D::areaError() const
-  {
-    return sqrt( sumW2() );
-  }
-
-
-  double HistoBin1D::heightError() const
-  {
-    return areaError() / width();
-  }
-
-
   HistoBin1D& HistoBin1D::add(const HistoBin1D& hb) {
     Bin1D::add(hb);
     return *this;
