@@ -16,11 +16,24 @@ namespace YODA {
     class sortedvector : public std::vector<T> {
     public:
 
+      /// @brief default constructor
+      sortedvector() {}
+
+      /// @brief conversion from std::vector
+      sortedvector(const std::vector<T> & vec) 
+	: std::vector<T>(vec) {
+	std::sort(this->begin(), this->end());
+      }
+
       /// @brief Insertion operator (push_back should not be used!)
       void insert(const T& val) {
-        this->push_back(val);
+        std::vector<T>::push_back(val);
         std::sort(this->begin(), this->end());
       }
+
+    private:
+      /// @brief hiding push_back from the base class
+      void push_back();
 
     };
 

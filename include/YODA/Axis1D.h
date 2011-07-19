@@ -59,7 +59,7 @@ namespace YODA {
     void _mkAxis(const vector<double>& binedges) {
       const size_t nbins = binedges.size() - 1;
       for (size_t i = 0; i < nbins; ++i) {
-        _bins.push_back( BIN(binedges.at(i), binedges.at(i+1)) );
+        _bins.insert( BIN(binedges.at(i), binedges.at(i+1)) );
       }
 
       /// @todo Remove
