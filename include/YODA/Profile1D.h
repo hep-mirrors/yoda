@@ -125,6 +125,16 @@ namespace YODA {
       return _axis.bins();
     }
 
+    /// Access a bin by index (non-const version)
+    ProfileBin1D& bin(size_t index) {
+      return _axis.bins()[index];
+    }
+
+    /// Access a bin by index (const version)
+    const ProfileBin1D& bin(size_t index) const {
+      return _axis.bins()[index];
+    }
+
     /// Access a bin by x-coordinate.
     ProfileBin1D& binByCoord(double x) {
       return _axis.binByCoord(x);
