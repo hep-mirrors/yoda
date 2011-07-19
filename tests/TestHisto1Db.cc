@@ -42,7 +42,8 @@ int main() {
   cout << hs2.size() << endl;
   assert(hs2.size() == 2);
   for (vector<AnalysisObject*>::const_iterator i = hs2.begin(); i != hs2.end(); ++i) {
-    cout << (*i)->_aotype() << endl;
+    cout << (*i)->type() << endl;
+    /// @todo This should work now... implement
     // if ((*i)->_aotype() == "Histo1D") {
 
     // }
