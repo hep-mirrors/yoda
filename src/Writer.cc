@@ -35,6 +35,8 @@ namespace YODA {
       writeHisto1D(stream, dynamic_cast<const Histo1D&>(ao));
     } else if (aotype == "Profile1D") {
       writeProfile1D(stream, dynamic_cast<const Profile1D&>(ao));
+    } else if (aotype == "Scatter2D") {
+      writeScatter2D(stream, dynamic_cast<const Scatter2D&>(ao));
     } else {
       ostringstream oss;
       oss << "Unrecognised analysis object type " << aotype << " in Writer::write";
