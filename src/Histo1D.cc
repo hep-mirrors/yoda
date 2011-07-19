@@ -121,11 +121,13 @@ namespace YODA {
       assert(fuzzyEquals(b1.focus(), b2.focus()));
       const double x = b1.focus();
       assert(fuzzyEquals(b1.xMin(), b2.xMin()));
-      const double exminus = x - b1.xMin();
       assert(fuzzyEquals(b1.xMax(), b2.xMax()));
+      const double exminus = x - b1.xMin();
       const double explus = b1.xMax() - x;
+      assert(exminus >= 0);
+      assert(explus >= 0);
       //
-      const double y = b1.sumW() / b2.sumW();
+      const double y = b1.height() / b2.height();
       const double ey = y * sqrt( sqr(b1.heightError()/b1.height()) + sqr(b2.heightError()/b2.height()) );
       tmp.addPoint(x, exminus, explus, y, ey, ey);
     }

@@ -1,3 +1,9 @@
+2011-07-19  Andy Buckley  <andy@insectnation.org>
+
+	* Add Profile1D and Scatter2D division operators.
+
+	* Add xMin/xMax synonyms to the Axis1D, cf. the bins.
+
 2011-07-18  Andy Buckley  <andy@insectnation.org>
 
 	* Add a first stab at a Histo1D/Histo1D division operator.

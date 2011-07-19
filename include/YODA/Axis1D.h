@@ -155,10 +155,13 @@ namespace YODA {
     double lowEdge() const {
       return _bins.front().lowEdge();
     }
+    double xMin() const { return lowEdge(); }
+
 
     double highEdge() const {
       return _bins.back().highEdge();
     }
+    double xMax() const { return highEdge(); }
 
 
     BIN& bin(size_t index) {

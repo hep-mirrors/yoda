@@ -81,4 +81,32 @@ namespace YODA {
   }
 
 
+  ////////////////////////////////////////
+
+
+  /// Divide two profile histograms
+  Scatter2D operator / (const Profile1D& numer, const Profile1D& denom) {
+    //assert(numer._axis == denom._axis);
+    Scatter2D tmp;
+    for (size_t i = 0; i < numer.numBins(); ++i) {
+      const ProfileBin1D& b1 = numer.bin(i);
+      const ProfileBin1D& b2 = denom.bin(i);
+      assert(fuzzyEquals(b1.focus(), b2.focus()));
+      const double x = b1.focus();
+      assert(fuzzyEquals(b1.xMin(), b2.xMin()));
+      assert(fuzzyEquals(b1.xMax(), b2.xMax()));
+      const double exminus = x - b1.xMin();
+      const double explus = b1.xMax() - x;
+      assert(exminus >= 0);
+      assert(explus >= 0);
+      //
+      const double y = b1.mean() / b2.mean();
+      const double ey = y * sqrt( sqr(b1.stdErr()/b1.mean()) + sqr(b2.stdErr()/b2.mean()) );
+      tmp.addPoint(x, exminus, explus, y, ey, ey);
+    }
+    assert(tmp.numPoints() == numer.numBins());
+    return tmp;
+  }
+
+
 }

@@ -43,4 +43,43 @@ namespace YODA {
   }
 
 
+  ////////////////////////////////////////
+
+
+  /// Subtract two scatters
+  inline Scatter2D operator + (const Scatter2D& first, const Scatter2D& second) {
+    /// @todo Implement
+    Scatter2D tmp;
+    return tmp;
+  }
+
+
+  /// Subtract two scatters
+  inline Scatter2D operator - (const Scatter2D& first, const Scatter2D& second) {
+    /// @todo Implement
+    Scatter2D tmp;
+    return tmp;
+  }
+
+
+  /// Divide two scatters
+  Scatter2D operator / (const Scatter2D& numer, const Scatter2D& denom) {
+    Scatter2D tmp;
+    for (size_t i = 0; i < numer.numPoints(); ++i) {
+      const Point2D& p1 = numer.point(i);
+      const Point2D& p2 = denom.point(i);
+      assert(fuzzyEquals(p1.xMin(), p2.xMin()));
+      assert(fuzzyEquals(p1.xMax(), p2.xMax()));
+      const double x = (p1.x() + p2.x())/2.0;
+      //
+      const double y = p1.y() / p2.y();
+      /// @todo Generally deal with +/- errors separately
+      const double ey = y * sqrt( sqr(p1.yErrAvg()/p1.y()) + sqr(p2.yErrAvg()/p2.y()) );
+      tmp.addPoint(x, p1.xErrMinus(), p1.xErrPlus(), y, ey, ey);
+    }
+    assert(tmp.numPoints() == numer.numPoints());
+    return tmp;
+  }
+
+
 }

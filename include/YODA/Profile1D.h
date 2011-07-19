@@ -232,6 +232,9 @@ namespace YODA {
     return tmp;
   }
 
+  /// Divide two profile histograms
+  Scatter2D operator / (const Profile1D& numer, const Profile1D& denom);
+
   //@}
 
 

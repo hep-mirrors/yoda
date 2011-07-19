@@ -262,7 +262,7 @@ namespace YODA {
   }
 
   /// Divide two histograms
-  Scatter2D operator / (const Histo1D& first, const Histo1D& second);
+  Scatter2D operator / (const Histo1D& numer, const Histo1D& denom);
 
   //@}
 
