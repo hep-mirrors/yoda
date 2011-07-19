@@ -47,11 +47,11 @@ namespace YODA {
     os << "# Mean: " << h.mean() << "\n";
     os << "# Area: " << h.integral() << "\n";
     os << "# xlow\t xhigh\t sumw\t sumw2\t sumwx\t sumwx2\t numEntries\n";
-    os << "Underflow\t";
+    os << "Underflow\tUnderflow\t";
     os << h.underflow().sumW()  << "\t" << h.underflow().sumW2()  << "\t";
     os << h.underflow().sumWX() << "\t" << h.underflow().sumWX2() << "\t";
     os << h.underflow().numEntries() << "\n";
-    os << "Overflow\t";
+    os << "Overflow\tOverflow\t";
     os << h.overflow().sumW()  << "\t" << h.overflow().sumW2()  << "\t";
     os << h.overflow().sumWX() << "\t" << h.overflow().sumWX2() << "\t";
     os << h.overflow().numEntries() << "\n";
@@ -75,12 +75,12 @@ namespace YODA {
     os << "# BEGIN YODA_PROFILE1D\n";
     _writeAnnotations(os, p);
     os << "# xlow\t xhigh\t sumw\t sumw2\t sumwx\t sumwx2\t sumwy\t sumwy2\t numEntries\n";
-    os << "Underflow\t";
+    os << "Underflow\tUnderflow\t";
     os << p.underflow().sumW()  << "\t" << p.underflow().sumW2()  << "\t";
     os << p.underflow().sumWX() << "\t" << p.underflow().sumWX2() << "\t";
     //os << p.underflow().sumWY() << "\t" << p.underflow().sumWY2() << "\t"; // FIXME: This needs Dbn2D in the axis
     os << p.underflow().numEntries() << "\n";
-    os << "Overflow\t";
+    os << "Overflow\tOverflow\t";
     os << p.overflow().sumW()  << "\t" << p.overflow().sumW2()  << "\t";
     os << p.overflow().sumWX() << "\t" << p.overflow().sumWX2() << "\t";
     //os << p.overflow().sumWY() << "\t" << p.overflow().sumWY2() << "\t"; // FIXME: This needs Dbn2D in the axis
