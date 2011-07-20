@@ -5,7 +5,8 @@ pkginclude_HEADERS = \
     Histo1D.h HistoBin1D.h  \
     Profile1D.h ProfileBin1D.h \
     Scatter2D.h Point2D.h \
-    Writer.h WriterAIDA.h WriterYODA.h
+    Writer.h WriterAIDA.h WriterYODA.h \
+    Reader.h ReaderAIDA.h ReaderYODA.h
 
 nobase_pkginclude_HEADERS = \
 	WriterMethods.icc \

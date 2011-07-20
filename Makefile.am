@@ -10,8 +10,8 @@ dox:
 	$(DOXYGEN) $(top_srcdir)/Doxyfile
 all-local: #dox
 	@true
-install-data-local:
-	$(install_sh_DATA) doxy/html/* $(DESTDIR)$(pkgdatadir)/doc/html
+#install-data-local:
+#	$(install_sh_DATA) doxy/html/* $(DESTDIR)$(pkgdatadir)/doc/html
 mostlyclean-local:
 	rm -rf $(top_builddir)/doxy
 uninstall-local:
