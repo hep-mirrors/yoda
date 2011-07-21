@@ -8,7 +8,6 @@
 
 #include "YODA/Bin1D.h"
 #include "YODA/Exceptions.h"
-#include <cmath>
 
 namespace YODA {
 
@@ -55,14 +54,10 @@ namespace YODA {
     //@{
     /// The area is the sum of weights in the bin, i.e. the
     /// width of the bin has no influence on this figure.
-    double area() const {
-      return sumW();
-    }
+    double area() const;
 
     /// The height is defined as area/width.
-    double height() const {
-      return area() / width();
-    }
+    double height() const;
     //@}
 
     /// @name Error info
@@ -70,19 +65,11 @@ namespace YODA {
 
     /// Error computed using binomial statistics on the sum of bin weights,
     /// i.e. err_area = sqrt{sum{weights}}
-    double areaErr() const {
-      return sqrt(sumW2());
-    }
-    /// @deprecated Synonym for areaErr -- the "Err" form is the de facto standard now in YODA
-    double areaError() const { return areaErr(); }
+    double areaError() const;
 
     /// As for the height vs. area, the height error includes a scaling factor
     /// of the bin width, i.e. err_height = sqrt{sum{weights}} / width.
-    double heightErr() const {
-      return areaError() / width();
-    }
-    /// @deprecated Synonym for heightErr -- the "Err" form is the de facto standard now in YODA
-    double heightError() const { return heightErr(); }
+    double heightError() const;
 
     //@}
 

@@ -59,21 +59,15 @@ namespace YODA {
     /// @name Bin content info
     //@{
 
-    double mean() const {
-      return _ydbn.mean();
-    }
+    /// Make the "y" explicit?
 
-    double stdDev() const {
-      return _ydbn.stdDev();
-    }
+    double mean() const;
 
-    double variance() const {
-      return _ydbn.variance();
-    }
+    double stdDev() const;
 
-    double stdErr() const {
-      return _ydbn.stdErr();
-    }
+    double variance() const;
+
+    double stdErr() const;
 
     //@}
 
@@ -81,14 +75,10 @@ namespace YODA {
   public:
 
     /// Add two bins (for use by Profile1D).
-    ProfileBin1D& operator += (const ProfileBin1D& toAdd) {
-      return add(toAdd);
-    }
+    ProfileBin1D& operator += (const ProfileBin1D&);
 
     /// Subtract two bins
-    ProfileBin1D& operator -= (const ProfileBin1D& toSubtract) {
-      return subtract(toSubtract);
-    }
+    ProfileBin1D& operator -= (const ProfileBin1D&);
 
 
   protected:
@@ -103,14 +93,10 @@ namespace YODA {
   public:
 
     /// The sum of y*weight
-    double sumWY() const {
-      return _ydbn.sumWX();
-    }
+    double sumWY() const;
 
     /// The sum of y^2 * weight
-    double sumWY2() const {
-      return _ydbn.sumWX2();
-    }
+    double sumWY2() const;
 
 
   private:
