@@ -6,7 +6,6 @@
 #include "YODA/HistoBin1D.h"
 
 #include <cassert>
-#include <cmath>
 using namespace std;
 
 namespace YODA {
