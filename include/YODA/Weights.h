@@ -15,11 +15,7 @@ namespace YODA {
 
 
   /// A named, vectorised generalisation of an event weight.
-  /// @todo Decide on the internal storage type: is there such a thing as a sorted map?
-  /// @todo Need all arithmetic operators, plus conversions to and scalings by doubles
-  /// @todo Accept general Boost.Ranges as constructor args
-  /// @todo Allow size changes? I think NO...
-  /// @todo Throw an exception if there is an attempt to combine two weights of different sizes.
+  /// @todo Accept general Boost.Ranges as constructor args... but start with literal arrays for convenience
   /// @todo Autogenerate numerical names if not given
   class Weights {
   public:
@@ -27,46 +23,81 @@ namespace YODA {
     /// @name Constructors
     //@{
 
-    // Weights() { }
-
-    Weights(const Weights& other) { }
+    Weights(const Weights& other)
+      : _values(other._values)
+    {  }
 
     /// Convenience auto-constructor from a single double, since that's the commonest use case.
-    Weights(double value) { }
+    Weights(double value) {
+      _values["0"] = value;
+    }
 
     /// Constructor from a vector of key/value pairs
-    Weights(const vector<std::pair<std::string, double> >& keys_values) { }
+    Weights(const std::vector<std::pair<std::string, double> >& keys_values) {
+      for (vector<std::pair<std::string, double> >::const_iterator i = keys_values.begin(); i != keys_values.end(); ++i) {
+        _values[i->first] = i->second;
+      }
+    }
 
     /// Constructor from vectors of keys and values
-    Weights(const vector<std::string>& keys, const vector<double>& values) { }
+    Weights(const std::vector<std::string>& keys, const vector<double>& values) {
+      if (keys.size() != values.size()) {
+        throw WeightError("Mismatch in lengths of keys and values vectors in Weights constructor");
+      }
+      for (size_t i = 0; i < keys.size(); ++i) {
+        _values[keys[i]] = values[i];
+      }
+    }
 
     /// Constructor from vectors of keys and a single value, defaulting to 0.0
-    Weights(const vector<std::string>& keys, double value=0.0) { }
-
-    /// Initialise a weights collection of length @a length, with default key names.
-    // Weights(size_t length, double value) { }
+    Weights(const std::vector<std::string>& keys, double value=0.0) {
+      for (vector<std::string>::const_iterator i = keys.begin(); i != keys.end(); ++i) {
+        _values[*i] = value;
+      }
+    }
 
     //@}
 
   public:
 
 
+    /// @todo Sorted iterators of pair<std::string, double>
+
     /// @name Accessors
     //@{
 
-    /// @todo Sorted iterators of pair<std::string, double>
+    typedef std::map<std::string, double>::iterator iterator;
+    typedef std::map<std::string, double>::const_iterator const_iterator;
+    iterator begin() { return _values.begin(); }
+    const_iterator begin() const { return _values.begin(); }
+    iterator end() { return _values.end(); }
+    const_iterator end() const { return _values.end(); }
+
 
     /// Number of weights entries
-    unsigned int size() { }
-
-    /// List of weight values, in the order of the sorted keys
-    vector<double> values() { }
+    unsigned int size() const {
+      return _values.size();
+    }
 
     /// Sorted list of weight keys
-    vector<std::string> keys() { }
+    std::vector<std::string> keys() const {
+      vector<string> rtn;
+      rtn.reserve(size());
+      for (const_iterator i = begin(); i != end(); ++i) {
+        rtn.push_back(i->first);
+      }
+      return rtn;
+    }
 
     /// List of weight values, in the order of the sorted keys
-    vector<double> values() { }
+    std::vector<double> values() const {
+      vector<double> rtn;
+      rtn.reserve(size());
+      for (const_iterator i = begin(); i != end(); ++i) {
+        rtn.push_back(i->second);
+      }
+      return rtn;
+    }
 
     //@}
 
@@ -74,26 +105,70 @@ namespace YODA {
     /// @name Arithmetic operators as members
     //@{
 
-    // /// Add another weights to this
-    // Weights& operator += (const Weights& toAdd) { }
+    /// Add another weights to this
+    Weights& operator += (const Weights& toAdd) {
+      if (keys() != toAdd.keys()) {
+        throw WeightError("Mismatch in args to Weights += operator");
+      }
+      for (size_t i = 0; i < size(); ++i) {
+        _values[keys[i]] += toAdd[keys[i]];
+      }
+      return *this;
+    }
 
-    // /// Subtract another weights from this
-    // Weights& operator -= (const Weights& toSubtract) { }
+    /// Subtract another weights from this
+    Weights& operator -= (const Weights& toSubtract) {
+      if (keys() != toSubtract.keys()) {
+        throw WeightError("Mismatch in args to Weights -= operator");
+      }
+      for (size_t i = 0; i < size(); ++i) {
+        _values[keys[i]] -= toSubtract[keys[i]];
+      }
+      return *this;
+    }
 
-    // /// Multiply by another weights
-    // Weights& operator *= (const Weights& toMultiplyBy) { }
+    /// Multiply by another weights
+    Weights& operator *= (const Weights& toMultiplyBy) {
+      if (keys() != toMultiplyBy.keys()) {
+        throw WeightError("Mismatch in args to Weights *= operator");
+      }
+      for (size_t i = 0; i < size(); ++i) {
+        _values[keys[i]] *= toMultiplyBy[keys[i]];
+      }
+      return *this;
+    }
 
-    // /// Divide by another weights
-    // Weights& operator /= (const Weights& toDivideBy) { }
+    /// Divide by another weights
+    Weights& operator /= (const Weights& toDivideBy) {
+      if (keys() != toDivideBy.keys()) {
+        throw WeightError("Mismatch in args to Weights /= operator");
+      }
+      for (size_t i = 0; i < size(); ++i) {
+        _values[keys[i]] /= toDivideBy[keys[i]];
+      }
+      return *this;
+    }
 
-    // /// Multiply by a double
-    // Weights& operator *= (const Weights& toMultiplyBy) { }
+    /// Multiply by a double
+    Weights& operator *= (double toMultiplyBy) {
+      for (size_t i = 0; i < size(); ++i) {
+        _values[keys[i]] *= toMultiplyBy;
+      }
+      return *this;
+    }
 
-    // /// Divide by a double
-    // Weights& operator /= (const Weights& toDivideBy) { }
+    /// Divide by a double
+    Weights& operator /= (double toDivideBy) {
+      for (size_t i = 0; i < size(); ++i) {
+        _values[keys[i]] /= toDivideBy;
+      }
+      return *this;
+    }
 
-    // /// Negate
-    // Weights& operator - () { }
+    /// Negate
+    Weights operator - () {
+      return *this * -1.0;
+    }
 
     //@}
 
@@ -101,56 +176,90 @@ namespace YODA {
     /// @name Comparison operators
     //@{
 
-    // /// Equals
-    // bool operator == (const Weights& other) { }
+    /// Equals
+    bool operator == (const Weights& other) const {
+      return this->_values == other._values;
+    }
 
-    // /// not equals
-    // bool operator == (const Weights& other) {
-    //   return !(*this == other);
-    // }
+    /// Not equals
+    bool operator == (const Weights& other) {
+      return !(*this == other);
+    }
 
     //@}
 
 
+    /// @todo Allow implicit casting to double, if single-entried? Or too dangerous and not useful enough?
+    // double operator (double) () {}
+
+
   private:
 
+    map<std::string, double> _values;
 
   };
 
 
-  // /// @name Combining weights: global operators
-  // //@{
+  /// @name Combining weights: global operators
+  //@{
 
-  // /// Add two weights
-  // inline inline Weights operator + (const Weights& first, const Weights& second) {
-  //   Weights tmp = first;
-  //   tmp += second;
-  //   return tmp;
-  // }
+  /// Add two weights
+  inline inline Weights operator + (const Weights& first, const Weights& second) {
+    Weights tmp = first;
+    tmp += second;
+    return tmp;
+  }
 
-  // /// Subtract two weights
-  // inline inline Weights operator - (const Weights& first, const Weights& second) {
-  //   Weights tmp = first;
-  //   tmp -= second;
-  //   return tmp;
-  // }
+  /// Subtract two weights
+  inline inline Weights operator - (const Weights& first, const Weights& second) {
+    Weights tmp = first;
+    tmp -= second;
+    return tmp;
+  }
 
-  // /// Multiply two weights
-  // inline Scatter2D operator / (const Weights& numer, const Weights& denom) {
-  //   Weights tmp = first;
-  //   tmp *= second;
-  //   return tmp;
-  // }
+  /// Multiply two weights
+  inline Scatter2D operator * (const Weights& numer, const Weights& denom) {
+    Weights tmp = first;
+    tmp *= second;
+    return tmp;
+  }
+
+  /// Divide two weights
+  inline Scatter2D operator / (const Weights& numer, const Weights& denom) {
+    Weights tmp = first;
+    tmp /= second;
+    return tmp;
+  }
 
 
-  // /// Divide two weights
-  // inline Scatter2D operator / (const Weights& numer, const Weights& denom) {
-  //   Weights tmp = first;
-  //   tmp /= second;
-  //   return tmp;
-  // }
+  /// Multiply by a double
+  inline Scatter2D operator * (double a, const Weights& w) {
+    Weights tmp = w;
+    tmp *= a;
+    return tmp;
+  }
 
-  // //@}
+  /// Multiply by a double
+  inline Scatter2D operator * (const Weights& w, double a) {
+    return a * w;
+  }
+
+  /// Divide by a double
+  inline Scatter2D operator / (const Weights& w, double a) {
+    Weights tmp = w;
+    tmp /= a;
+    return tmp;
+  }
+
+  /// Divide a double by a Weights
+  /// @todo Is this really needed?
+  inline Scatter2D operator / (double a, const Weights& w) {
+    Weights tmp(w.keys(), 1.0);
+    tmp /= w;
+    return tmp;
+  }
+
+  //@}
 
 
 }
