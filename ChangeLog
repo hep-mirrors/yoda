@@ -1,3 +1,9 @@
+2011-07-25  Andy Buckley  <andy@insectnation.org>
+
+	* Adding a Weights class, designed to seamlessly replace
+	double-type weights and weighted moments with a named and
+	vectorised form.
+
 2011-07-19  Andy Buckley  <andy@insectnation.org>
 
 	* Add Profile1D and Scatter2D division operators.

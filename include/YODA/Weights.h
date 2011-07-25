@@ -10,6 +10,7 @@
 #include <vector>
 #include <string>
 #include <map>
+#include <ostream>
 
 namespace YODA {
 
@@ -34,13 +35,13 @@ namespace YODA {
 
     /// Constructor from a vector of key/value pairs
     Weights(const std::vector<std::pair<std::string, double> >& keys_values) {
-      for (vector<std::pair<std::string, double> >::const_iterator i = keys_values.begin(); i != keys_values.end(); ++i) {
+      for (std::vector<std::pair<std::string, double> >::const_iterator i = keys_values.begin(); i != keys_values.end(); ++i) {
         _values[i->first] = i->second;
       }
     }
 
     /// Constructor from vectors of keys and values
-    Weights(const std::vector<std::string>& keys, const vector<double>& values) {
+    Weights(const std::vector<std::string>& keys, const std::vector<double>& values) {
       if (keys.size() != values.size()) {
         throw WeightError("Mismatch in lengths of keys and values vectors in Weights constructor");
       }
@@ -51,7 +52,7 @@ namespace YODA {
 
     /// Constructor from vectors of keys and a single value, defaulting to 0.0
     Weights(const std::vector<std::string>& keys, double value=0.0) {
-      for (vector<std::string>::const_iterator i = keys.begin(); i != keys.end(); ++i) {
+      for (std::vector<std::string>::const_iterator i = keys.begin(); i != keys.end(); ++i) {
         _values[*i] = value;
       }
     }
@@ -73,6 +74,32 @@ namespace YODA {
     iterator end() { return _values.end(); }
     const_iterator end() const { return _values.end(); }
 
+    double& operator [] (const std::string& key) {
+      if (_values.find(key) == _values.end()) {
+        throw WeightError("No weight found with supplied name");
+      }
+      return _values[key];
+    }
+    const double& operator [] (const std::string& key) const {
+      const_iterator rtn = _values.find(key);
+      if (rtn == _values.end()) {
+        throw WeightError("No weight found with supplied name");
+      }
+      return rtn->second;
+    }
+
+    double& operator [] (size_t index) {
+      if (index >= size()) {
+        throw WeightError("Requested weight index is larger than the weights collection");
+      }
+      return _values[keys()[index]];
+    }
+    const double& operator [] (size_t index) const {
+      if (index >= size()) {
+        throw WeightError("Requested weight index is larger than the weights collection");
+      }
+      return _values.find(keys()[index])->second;
+    }
 
     /// Number of weights entries
     unsigned int size() const {
@@ -81,7 +108,7 @@ namespace YODA {
 
     /// Sorted list of weight keys
     std::vector<std::string> keys() const {
-      vector<string> rtn;
+      std::vector<std::string> rtn;
       rtn.reserve(size());
       for (const_iterator i = begin(); i != end(); ++i) {
         rtn.push_back(i->first);
@@ -91,7 +118,7 @@ namespace YODA {
 
     /// List of weight values, in the order of the sorted keys
     std::vector<double> values() const {
-      vector<double> rtn;
+      std::vector<double> rtn;
       rtn.reserve(size());
       for (const_iterator i = begin(); i != end(); ++i) {
         rtn.push_back(i->second);
@@ -111,7 +138,7 @@ namespace YODA {
         throw WeightError("Mismatch in args to Weights += operator");
       }
       for (size_t i = 0; i < size(); ++i) {
-        _values[keys[i]] += toAdd[keys[i]];
+        _values[keys()[i]] += toAdd[keys()[i]];
       }
       return *this;
     }
@@ -122,7 +149,7 @@ namespace YODA {
         throw WeightError("Mismatch in args to Weights -= operator");
       }
       for (size_t i = 0; i < size(); ++i) {
-        _values[keys[i]] -= toSubtract[keys[i]];
+        _values[keys()[i]] -= toSubtract[keys()[i]];
       }
       return *this;
     }
@@ -133,7 +160,7 @@ namespace YODA {
         throw WeightError("Mismatch in args to Weights *= operator");
       }
       for (size_t i = 0; i < size(); ++i) {
-        _values[keys[i]] *= toMultiplyBy[keys[i]];
+        _values[keys()[i]] *= toMultiplyBy[keys()[i]];
       }
       return *this;
     }
@@ -144,7 +171,7 @@ namespace YODA {
         throw WeightError("Mismatch in args to Weights /= operator");
       }
       for (size_t i = 0; i < size(); ++i) {
-        _values[keys[i]] /= toDivideBy[keys[i]];
+        _values[keys()[i]] /= toDivideBy[keys()[i]];
       }
       return *this;
     }
@@ -152,7 +179,7 @@ namespace YODA {
     /// Multiply by a double
     Weights& operator *= (double toMultiplyBy) {
       for (size_t i = 0; i < size(); ++i) {
-        _values[keys[i]] *= toMultiplyBy;
+        _values[keys()[i]] *= toMultiplyBy;
       }
       return *this;
     }
@@ -160,14 +187,17 @@ namespace YODA {
     /// Divide by a double
     Weights& operator /= (double toDivideBy) {
       for (size_t i = 0; i < size(); ++i) {
-        _values[keys[i]] /= toDivideBy;
+        _values[keys()[i]] /= toDivideBy;
       }
       return *this;
     }
 
     /// Negate
-    Weights operator - () {
-      return *this * -1.0;
+    /// @todo Can/should this modify itself and return a reference?
+    Weights operator - () const {
+      Weights rtn = *this;
+      rtn *= -1;
+      return rtn;
     }
 
     //@}
@@ -195,7 +225,7 @@ namespace YODA {
 
   private:
 
-    map<std::string, double> _values;
+    std::map<std::string, double> _values;
 
   };
 
@@ -204,48 +234,48 @@ namespace YODA {
   //@{
 
   /// Add two weights
-  inline inline Weights operator + (const Weights& first, const Weights& second) {
+  inline Weights operator + (const Weights& first, const Weights& second) {
     Weights tmp = first;
     tmp += second;
     return tmp;
   }
 
   /// Subtract two weights
-  inline inline Weights operator - (const Weights& first, const Weights& second) {
+  inline Weights operator - (const Weights& first, const Weights& second) {
     Weights tmp = first;
     tmp -= second;
     return tmp;
   }
 
   /// Multiply two weights
-  inline Scatter2D operator * (const Weights& numer, const Weights& denom) {
+  inline Weights operator * (const Weights& first, const Weights& second) {
     Weights tmp = first;
     tmp *= second;
     return tmp;
   }
 
   /// Divide two weights
-  inline Scatter2D operator / (const Weights& numer, const Weights& denom) {
-    Weights tmp = first;
-    tmp /= second;
+  inline Weights operator / (const Weights& numer, const Weights& denom) {
+    Weights tmp = numer;
+    tmp /= denom;
     return tmp;
   }
 
 
   /// Multiply by a double
-  inline Scatter2D operator * (double a, const Weights& w) {
+  inline Weights operator * (double a, const Weights& w) {
     Weights tmp = w;
     tmp *= a;
     return tmp;
   }
 
   /// Multiply by a double
-  inline Scatter2D operator * (const Weights& w, double a) {
+  inline Weights operator * (const Weights& w, double a) {
     return a * w;
   }
 
   /// Divide by a double
-  inline Scatter2D operator / (const Weights& w, double a) {
+  inline Weights operator / (const Weights& w, double a) {
     Weights tmp = w;
     tmp /= a;
     return tmp;
@@ -253,13 +283,25 @@ namespace YODA {
 
   /// Divide a double by a Weights
   /// @todo Is this really needed?
-  inline Scatter2D operator / (double a, const Weights& w) {
+  inline Weights operator / (double a, const Weights& w) {
     Weights tmp(w.keys(), 1.0);
     tmp /= w;
     return tmp;
   }
 
   //@}
+
+
+  /// Standard text representaion
+  inline std::ostream& operator<<(std::ostream& out, const Weights& w) {
+    out << "{ ";
+    for (Weights::const_iterator i = w.begin(); i != w.end(); ++i) {
+      if (i != w.begin()) out << ", ";
+      out << i->first << ": " << i->second;
+    }
+    out << "}";
+    return out;
+  }
 
 
 }
