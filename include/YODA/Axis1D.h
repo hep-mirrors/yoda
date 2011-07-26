@@ -233,10 +233,24 @@ namespace YODA {
       }
     }
 
+    /// @brief Merge bins so that bin widths are roughly increased by a factor @a factor.
+    /// Note that rebinnings to this factor have to be approximate, since bins are discrete.
+    void rebin(int factor) {
+      assert(factor >= 1);
+      /// @todo Implement! Requires ability to change bin edges from outside...
+      throw std::runtime_error("Rebinning is not yet implemented! Pester me, please.");
+    }
+
+    /// Merge a bin range @a binindex1 to @a binindex2 into a single bin.
+    void mergeBins(size_t binindex1) {
+      assert(binindex1 >= binindex2);
+      /// @todo Implement! Requires ability to change bin edges from outside...
+      throw std::runtime_error("Rebinning is not yet implemented! Pester me, please.");
+    }
 
     /// Scale the axis coordinates (i.e. bin edges).
     void scaleX(double scalefactor) {
-      /// @todo Implement!
+      /// @todo Implement! Requires ability to change bin edges from outside...
       throw std::runtime_error("Axis coordinate transformations not yet implemented! Pester me, please.");
     }
 

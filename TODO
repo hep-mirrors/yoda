@@ -16,15 +16,16 @@ NOW
   under/overflows, then use Dbn1D for Histo1D and Dbn2D for Profile1D, then
   implement under-/overflow in Profile1D and write it out in WriterYODA. (AB &
   HH)
-  (Can this be made *really* neat by making ProfileBin == Bin1D<Dbn2D>, and
+  (Can this be made *really* neat by making ProfileBin1D == Bin1D<Dbn2D>, and
   passing the template parameter through from Axis1D<DBN>? I suspect so, but
   at the price of making the interface less intuitive and specialised to the
-  *semantic* aspects of a profile.)
+  *semantic* aspects of a profile. But perhaps ProfileBin1D would be better
+  if it contained a Dbn1D rather than two Dbn2Ds, since the over/underflow
+  will *be* Dbn2Ds.)
 
 * Rebinning:
-  merge of 2 adjacent bins -- no gaps allowed
-  merges of n adjacent bins (via iterator ranges)
-  global rebinning by integer factor (on widths or on bin groups?)
+  merges of n adjacent bins
+  global rebinning by integer factor (on widths or on bin groups?) (AB)
 
 * Counter type (mostly a UI/persistency wrapper on Dbn1D) (AB)
 
