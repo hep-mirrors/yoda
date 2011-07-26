@@ -234,14 +234,14 @@ namespace YODA {
     }
 
 
-    /// Scale the axis coordinates (i.e. bin edges)
-    /// @todo Base this on a general transformation of the axis coordinates via a supplied function (object)
-    void scale(double scalefactor) {
+    /// Scale the axis coordinates (i.e. bin edges).
+    void scaleX(double scalefactor) {
       /// @todo Implement!
       throw std::runtime_error("Axis coordinate transformations not yet implemented! Pester me, please.");
     }
 
 
+    /// Scale the weights, as if all fills so far had used weights which differed by the given factor.
     void scaleW(double scalefactor) {
       _dbn.scaleW(scalefactor);
       _underflow.scaleW(scalefactor);

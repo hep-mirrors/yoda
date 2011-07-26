@@ -9,6 +9,9 @@ NOW
 * Test that a y-binned Histo2D has the same per-y-column stats as an
   equivalently x-binned Profile1D. (MICHAL)
 
+* Axis1D::scaleX(d), Axis2D::scaleX/Y(d), Axis2D::scaleXY(d, d),
+  Scatter2D::scaleX/Y(d), Scatter2D::scaleXY(d, d). (MICHAL)
+
 * Template the Axis1D and use Dbn1D for Histo1D and Dbn2D for Profile1D, then
   implement under-/overflow in Profile1D and write it out in WriterYODA.  (HH)
 
@@ -20,8 +23,6 @@ NOW
   global rebinning by integer factor (on widths or on bin groups?)
 
 * Counter type (mostly a UI/persistency wrapper on Dbn1D) (AB)
-
-* Axis::scale -> scaleX, scaleY, scaleXY to Scatter2D. (AB)
 
 * Implement _setstate for Histo1D and Profile1D.
 
