@@ -12,10 +12,14 @@ NOW
 * Axis1D::scaleX(d), Axis2D::scaleX/Y(d), Axis2D::scaleXY(d, d),
   Scatter2D::scaleX/Y(d), Scatter2D::scaleXY(d, d). (MICHAL)
 
-* Template the Axis1D and use Dbn1D for Histo1D and Dbn2D for Profile1D, then
-  implement under-/overflow in Profile1D and write it out in WriterYODA.  (HH)
-
-* Histo1D::integral(bin1id, bin2id) (AB)
+* Template the Axis1D to also specify the dbn type to be used for
+  under/overflows, then use Dbn1D for Histo1D and Dbn2D for Profile1D, then
+  implement under-/overflow in Profile1D and write it out in WriterYODA. (AB &
+  HH)
+  (Can this be made *really* neat by making ProfileBin == Bin1D<Dbn2D>, and
+  passing the template parameter through from Axis1D<DBN>? I suspect so, but
+  at the price of making the interface less intuitive and specialised to the
+  *semantic* aspects of a profile.)
 
 * Rebinning:
   merge of 2 adjacent bins -- no gaps allowed

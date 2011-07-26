@@ -146,21 +146,25 @@ namespace YODA {
     }
 
     /// Access underflow (non-const version)
+    /// @todo Convert to be a Dbn2D
     Dbn1D& underflow() {
       return _axis.underflow();
     }
 
     /// Access underflow (const version)
+    /// @todo Convert to be a Dbn2D
     const Dbn1D& underflow() const {
       return _axis.underflow();
     }
 
     /// Access overflow (non-const version)
+    /// @todo Convert to be a Dbn2D
     Dbn1D& overflow() {
       return _axis.overflow();
     }
 
     /// Access overflow (const version)
+    /// @todo Convert to be a Dbn2D
     const Dbn1D& overflow() const {
       return _axis.overflow();
     }
@@ -172,6 +176,8 @@ namespace YODA {
 
     /// @name Whole histo data
     //@{
+
+    /// @todo Add integrals? Or are they too ambiguous to make a core function?
 
     /// Get sum of weights in histo.
     double sumW(bool includeoverflows=true) const;

@@ -191,6 +191,16 @@ namespace YODA {
       return sumW(includeoverflows);
     }
 
+    /// Get the integrated area of the histogram between bins @a binindex1 and @a binindex2.
+    double integral(size_t binindex1, size_t binindex2) const {
+      assert(binindex1 > binindex2);
+      double rtn = 0;
+      for (size_t i = binindex1; i < binindex2; ++i) {
+        rtn += bin(i).area();
+      }
+      return rtn;
+    }
+
     /// Get sum of weights in histo
     double sumW(bool includeoverflows=true) const;
 

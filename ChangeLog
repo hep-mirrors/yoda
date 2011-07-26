@@ -1,5 +1,8 @@
 2011-07-26  Andy Buckley  <andy@insectnation.org>
 
+	* Added a Histo1D::integral(index1, index2) method. Not sure how
+	or if to extend this to Profile1D.
+
 	* Implementing incomplete Scatter2D operator+ and operator-
 	functions.
 
