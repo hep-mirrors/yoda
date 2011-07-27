@@ -33,7 +33,7 @@ namespace YODA {
         // Also, there are no checks in place to test if this edge set is not crossing itself
         bool _validateEdge(vector<pair<pair<double,double>, pair<double,double> > > edges) {
             bool ret = true;
-            for(int i=0; i < edges.size(); i++) {
+            for(unsigned int i=0; i < edges.size(); i++) {
                 if(edges[i].first.first == edges[i].second.first) ret =  _findCutsY(edges[i]);
                 else if(edges[i].first.second == edges[i].second.second) ret =  _findCutsX(edges[i]);
                 else ret = false;
@@ -52,8 +52,8 @@ namespace YODA {
             edges.second.regenCache();
 
             //Now, checking if any of the edges is cutting any other:
-            for(int i=0; i < edges.first.size(); i++) {
-                for(int j = 0; j < edges.first[i].second.size(); j++) {
+            for(unsigned int i=0; i < edges.first.size(); i++) {
+                for(unsigned int j = 0; j < edges.first[i].second.size(); j++) {
                     size_t startX = edges.second._cache.lower_bound(approx(edges.first[i].second[j].second.first));
                     size_t endX = edges.second._cache.upper_bound(edges.first[i].second[j].second.second);
                     for(int p = startX; p < endX; p++) {
@@ -71,7 +71,7 @@ namespace YODA {
         }
 
         bool _findCutsY(pair<pair<double,double>, pair<double,double> > edge) {
-            for(int i=0; i < _binHashSparse.second.size(); i++) {
+            for(unsigned int i=0; i < _binHashSparse.second.size(); i++) {
                 /* An optimisation check that guarantees that we are not looking at edges that
                  * are surely out of our range of interest. The second condition is put in place
                  * to correct for possible rounding errors in double numbers.
@@ -83,7 +83,7 @@ namespace YODA {
                   (_binHashSparse.second[i].first > edge.first.second &&
                    _binHashSparse.second[i].first < edge.second.second) ||
                    fuzzyEquals(_binHashSparse.second[i].first, edge.second.second)) {
-                    for(int j=0; j < _binHashSparse.second[i].second.size(); j++) {
+                    for(unsigned int j=0; j < _binHashSparse.second[i].second.size(); j++) {
                         
                         //Same type of check as above.
                         if(_binHashSparse.second[i].second[j].second.first > edge.first.first &&
@@ -102,7 +102,7 @@ namespace YODA {
         }
 
         bool _findCutsX(pair<pair<double,double>, pair<double,double> > edge) {
-            for(int i=0; i < _binHashSparse.first.size(); i++) {
+            for(unsigned int i=0; i < _binHashSparse.first.size(); i++) {
                 //Sanity check, for more comments see above:
                 if(edge.second.first < _binHashSparse.first[i].first &&
                    !fuzzyEquals(edge.second.first, _binHashSparse.first[i].first)) break;
@@ -111,7 +111,7 @@ namespace YODA {
                   (_binHashSparse.first[i].first > edge.first.first &&
                    _binHashSparse.first[i].first < edge.second.first ) ||
                    fuzzyEquals(_binHashSparse.first[i].first, edge.second.first)) {
-                    for(int j=0; j < _binHashSparse.first[i].second.size(); j++) {
+                    for(unsigned int j=0; j < _binHashSparse.first[i].second.size(); j++) {
                         
                         if(_binHashSparse.first[i].second[j].second.first > edge.first.second &&
                            !fuzzyEquals(_binHashSparse.first[i].second[j].second.first, edge.first.second)) break;
@@ -136,11 +136,11 @@ namespace YODA {
         //Do not initiate a global sort when another edges were found on the same level
         // needs to be adjusted accordingly
         void _addEdge(vector<pair<pair<double,double>, pair<double,double> > > edges) {
-            for(int j=0; j < edges.size(); j++) {
+            for(unsigned int j=0; j < edges.size(); j++) {
                 pair<pair<double,double>, pair<double,double> > edge = edges[j];
                 if(edge.first.first == edge.second.first) {
                     bool found = false;
-                    for(int i=0; i < _binHashSparse.second.size(); i++) {
+                    for(unsigned int i=0; i < _binHashSparse.second.size(); i++) {
                     if(fuzzyEquals(_binHashSparse.second[i].first, edge.first.first)) {
                         _binHashSparse.second[i].second.push_back(
                             make_pair(_bins.size(),make_pair(edge.first.second, edge.second.second)));
@@ -157,7 +157,7 @@ namespace YODA {
 
                 else if(edge.first.second == edge.second.second) {
                     bool found = false;
-                    for(int i=0; i < _binHashSparse.first.size(); i++) {
+                    for(unsigned int i=0; i < _binHashSparse.first.size(); i++) {
                         if(fuzzyEquals(_binHashSparse.first[i].first, edge.first.second)) {
                             _binHashSparse.first[i].second.push_back(
                                 make_pair(_bins.size(),make_pair(edge.first.first, edge.second.first)));
@@ -175,11 +175,27 @@ namespace YODA {
             _bins.push_back(BIN(edges[0].first.first, edges[0].first.second, 
                                 edges[1].second.first, edges[1].second.second));
         }
+        
+        /* This funcion looks on the orientation of an edge and
+         * if it is incorrect, returns the correct orientation.
+         */
+        void fixOrientation(pair<pair<double,double>, pair<double,double> >& edge) {
+            if(edge.first.first == edge.second.first) {
+                if(edge.first.second > edge.second.second) {
+                    double temp = edge.second.second;
+                    edge.second.second = edge.first.second; 
+                    edge.first.second = temp;
+                }
+            }
+            else if(edge.first.first > edge.second.first) {
+                double temp = edge.first.first;
+                edge.first.first = edge.second.first; 
+                edge.second.first = temp;
+            }
+        }
 
-        // Note the orientation! The edge vectors must be oriented 'to the right' or 'upwards'
-        // for all procedures to work fine!!111!!!11
         void _mkAxis(const vector<pair<pair<double,double>,pair<double,double> > >& binedges) {
-            for(int i=0; i < binedges.size(); i++) {
+            for(unsigned int i=0; i < binedges.size(); i++) {
                 pair<pair<double,double>, pair<double,double> > edge1 = 
                     make_pair(binedges[i].first, 
                               make_pair(binedges[i].first.first, binedges[i].second.second));
@@ -192,7 +208,9 @@ namespace YODA {
                 pair<pair<double,double>, pair<double,double> > edge4 =
                     make_pair(binedges[i].first,
                               make_pair(binedges[i].second.first, binedges[i].first.second));
-                //TODO: Add a function that fixes orientation if it is wrong
+
+                fixOrientation(edge1); fixOrientation(edge2);
+                fixOrientation(edge3); fixOrientation(edge4);
 
                 vector<pair<pair<double,double>, pair<double,double> > > edges;
                 edges.push_back(edge1); edges.push_back(edge2); edges.push_back(edge3); edges.push_back(edge4);
@@ -214,7 +232,7 @@ namespace YODA {
             double lowEdgeX = _largeNum;
             double lowEdgeY = _largeNum;
 
-            for(int i=0; i < _bins.size(); i++) {
+            for(unsigned int i=0; i < _bins.size(); i++) {
                 if(_bins[i].xMin() < lowEdgeX) lowEdgeX = _bins[i].xMin();
                 if(_bins[i].xMax() > highEdgeX) highEdgeX = _bins[i].xMax();
                 if(_bins[i].yMin() < lowEdgeY) lowEdgeY = _bins[i].yMin();
@@ -256,7 +274,7 @@ namespace YODA {
          * computationaly expensive to be called after each one bin is added.
          */
         void addBin(const vector<pair<pair<double,double>, pair<double,double> > >& binedges) {
-            for(int i = 0; i < binedges.size(); i++){
+            for(unsigned int i = 0; i < binedges.size(); i++){
                 vector<pair<pair<double,double>, pair<double,double> > > temp;
                 
                 pair<pair<double,double>, pair<double,double> > edge1 = 
@@ -341,7 +359,8 @@ namespace YODA {
         }
 
         BIN& binByCoord(double x, double y) {
-            return bin(findBinIndex(x, y));
+            int ret = findBinIndex(x, y);
+            if(ret != -1) return bin(ret);
         }
 
         const BIN& binByCoord(double x, double y) const {
@@ -385,17 +404,16 @@ namespace YODA {
          * the same square it returns that if had found a bin. If no bin is 
          * found, ie. (coordX, coordY) is a point in empty space -1 is returned.
          */
-        //TODO: Make _binHashSparse.first/second.second a memeber of Utils::cachedvector
         int findBinIndex(double coordX, double coordY) const {
             size_t indexY = (*_binHashSparse.first._cache.lower_bound(approx(coordY))).second;
 
             if(indexY < _binHashSparse.first.size() - 1) {
-                for(int i=0; i < _binHashSparse.first[indexY].second.size(); i++){
+                for(unsigned int i=0; i < _binHashSparse.first[indexY].second.size(); i++){
                     if(_binHashSparse.first[indexY].second[i].second.first < coordX &&
                        _binHashSparse.first[indexY].second[i].second.second > coordX){
                         size_t indexX = (*_binHashSparse.second._cache.lower_bound(approx(coordX))).second;
                         if(indexX < _binHashSparse.second.size() - 1){
-                            for(int j=0; j < _binHashSparse.second[indexX].second.size(); j++) {
+                            for(unsigned int j=0; j < _binHashSparse.second[indexX].second.size(); j++) {
                                 if(_binHashSparse.second[indexX].second[j].second.first < indexY &&
                                    _binHashSparse.second[indexX].second[j].second.second > indexY &&
                                    (_binHashSparse.first[indexX].second[j].first ==
@@ -416,7 +434,7 @@ namespace YODA {
          */
         int search(vector<size_t> numbers) {
             size_t binNum = -1; size_t count = -1;
-            for(int i=0; i < numbers.size(); i++) {
+            for(unsigned int i=0; i < numbers.size(); i++) {
                 if(binNum != numbers[i]) {
                     count = 1;
                     binNum = numbers[i];
@@ -434,20 +452,20 @@ namespace YODA {
             for (size_t i=0; i<_bins.size(); i++) _bins[i].reset();
         }
 
-        //TODO: In-bin stats scalling (x/y Mean, Variance, stdDev...)
+        //TODO: Check if scaling is correct 
         void scale(double scaleX = 1.0, double scaleY = 1.0) {
             // Two loops are put on purpose, just to protect
             // against improper _binHashSparse
-            for(int i=0; i < _binHashSparse.first.size(); i++) {
+            for(unsigned int i=0; i < _binHashSparse.first.size(); i++) {
                 _binHashSparse.first[i].first *= scaleY;
-                for(int j=0; j < _binHashSparse.first[i].second.size(); j++){
+                for(unsigned int j=0; j < _binHashSparse.first[i].second.size(); j++){
                     _binHashSparse.first[i].second[j].second.first *=scaleX;
                     _binHashSparse.first[i].second[j].second.second *=scaleX;
                 }
             }
-            for(int i=0; i < _binHashSparse.second.size(); i++) {
+            for(unsigned int i=0; i < _binHashSparse.second.size(); i++) {
                 _binHashSparse.second[i].first *= scaleX;
-                for(int j=0; j < _binHashSparse.second[i].second.size(); j++){
+                for(unsigned int j=0; j < _binHashSparse.second[i].second.size(); j++){
                     _binHashSparse.second[i].second[j].second.first *=scaleY;
                     _binHashSparse.second[i].second[j].second.second *=scaleY;
                 }
@@ -455,12 +473,18 @@ namespace YODA {
 
             // Now, as we have the map rescaled, we need to update the bins
             // in their own structure in order to have high/low edges correct
-            for(int i=0; i < _bins.size(); i++){
+            for(unsigned int i=0; i < _bins.size(); i++){
                 _bins[i].highEdgeX() *= scaleX;
                 _bins[i].lowEdgeX() *= scaleX;
 
                 _bins[i].highEdgeY() *= scaleY;
                 _bins[i].lowEdgeY() *= scaleY;
+                
+                _bins[i].sumWX() *= scaleX;
+                _bins[i].sumWY() *= scaleY;
+                _bins[i].sumWXY() *= scaleX * scaleY;
+                _bins[i].sumWX2() *= scaleX * scaleX;
+                _bins[i].sumWY2() *= scaleY * scaleY;
             }
 
             //And making sure that we have correct boundaries set after rescaling
@@ -471,7 +495,7 @@ namespace YODA {
             _dbn.scaleW(scalefactor);
             _underflow.scaleW(scalefactor);
             _overflow.scaleW(scalefactor);
-            for (int i=0; i<_bins.size(); i++) _bins[i].scaleW(scalefactor);
+            for (unsigned int i=0; i<_bins.size(); i++) _bins[i].scaleW(scalefactor);
         }
        
        // Operators:
@@ -492,7 +516,7 @@ namespace YODA {
             if (*this != toAdd) {
                 throw LogicError("YODA::Histo1D: Cannot add axes with different binnings.");
             }
-            for (int i=0; i < bins().size(); i++) bins().at(i) += toAdd.bins().at(i);
+            for (unsigned int i=0; i < bins().size(); i++) bins().at(i) += toAdd.bins().at(i);
     
             _dbn += toAdd._dbn;
             _underflow += toAdd._underflow;
@@ -505,7 +529,7 @@ namespace YODA {
             if (*this != toSubstract) {
                 throw LogicError("YODA::Histo1D: Cannot add axes with different binnings.");
             }
-            for (int i=0; i < bins().size(); i++) bins().at(i) -= toSubstract.bins().at(i);
+            for (unsigned int i=0; i < bins().size(); i++) bins().at(i) -= toSubstract.bins().at(i);
             
             _dbn -= toSubstract._dbn;
             _underflow -= toSubstract._underflow;

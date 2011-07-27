@@ -76,10 +76,10 @@ namespace YODA {
               const std::string& path="", const std::string& title="")
       : AnalysisObject("Scatter3D", path, title)
     {
-      assert(x.size() == y.size() == z.size() &&
-             x.size() == exminus.size() && x.size() == explus.size() &&
-             y.size() == eyminus.size() && y.size() == eyplus.size() &&
-             z.size() == ezminus.size() && z.size() == ezplus.size());
+      assert((x.size() == y.size()) && (y.size() == z.size()) &&
+             (x.size() == exminus.size()) && (x.size() == explus.size()) &&
+             (y.size() == eyminus.size()) && (y.size() == eyplus.size()) &&
+             (z.size() == ezminus.size()) && (z.size() == ezplus.size()));
       for (size_t i = 0; i < x.size(); ++i) {
         addPoint(Point3D(x[i], exminus[i], explus[i], y[i], eyminus[i], eyplus[i], z[i], ezminus[i], ezplus[i]));
       }

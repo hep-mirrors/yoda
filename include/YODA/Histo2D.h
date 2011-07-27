@@ -154,6 +154,15 @@ namespace YODA {
       return _axis.binByCoord(x, y);
     }
 
+    //Return bin index accessor:
+    int findBinIndex(double coordX, double coordY) {
+      return _axis.findBinIndex(coordX, coordY);
+    }
+
+    const int findBinIndex(double coordX, double coordY) const {
+      return _axis.findBinIndex(coordX, coordY);
+    }
+
     //Over- and under- flows:
     const Dbn2D& underflow() const {
         return _axis.underflow();
