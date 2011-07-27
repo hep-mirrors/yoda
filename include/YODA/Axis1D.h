@@ -242,7 +242,7 @@ namespace YODA {
     }
 
     /// Merge a bin range @a binindex1 to @a binindex2 into a single bin.
-    void mergeBins(size_t binindex1) {
+    void mergeBins(size_t binindex1, size_t binindex2) {
       assert(binindex1 >= binindex2);
       /// @todo Implement! Requires ability to change bin edges from outside...
       throw std::runtime_error("Rebinning is not yet implemented! Pester me, please.");
