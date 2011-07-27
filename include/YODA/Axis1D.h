@@ -244,6 +244,8 @@ namespace YODA {
     /// Merge a bin range @a binindex1 to @a binindex2 into a single bin.
     void mergeBins(size_t binindex1, size_t binindex2) {
       assert(binindex1 >= binindex2);
+      if (binindex1 < 0 || binindex1 >= numBins()) throw RangeError("binindex1 is out of range");
+      if (binindex2 < 0 || binindex2 >= numBins()) throw RangeError("binindex2 is out of range");
       /// @todo Implement! Requires ability to change bin edges from outside...
       throw std::runtime_error("Rebinning is not yet implemented! Pester me, please.");
     }
