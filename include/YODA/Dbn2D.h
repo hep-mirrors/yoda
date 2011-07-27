@@ -12,6 +12,7 @@ namespace YODA {
         }
 
         void fill(double valX, double valY, double weight=1.0);
+        void fill(std::pair<double,double> val, double weight=1.0);
         void reset();
 
         void scaleW(double sf) {
@@ -24,11 +25,19 @@ namespace YODA {
             _sumWXY *= sf;
         }
 
-        double mean() const;
-        double variance() const;
-        double stdDev() const;
-        double stdErr() const;
-        unsigned long numEnteries() const;
+        double xMean() const;
+        double yMean() const;
+
+        double xVariance() const;
+        double yVariance() const;
+
+        double xStdDev() const;
+        double yStdDev() const;
+
+        double xStdErr() const;
+        double yStdErr() const;
+
+        unsigned long numEntries() const;
         double effNumEntries() const;
         double sumW() const;
         double sumW2() const;
