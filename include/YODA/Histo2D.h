@@ -178,7 +178,10 @@ namespace YODA {
         return _axis.overflow();
     }
     //@}
-
+    
+    unsigned int numBinsTotal() {
+        return _axis.numBinsTotal();
+    }
 
   public:
 

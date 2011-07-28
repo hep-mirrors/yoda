@@ -21,6 +21,7 @@ namespace YODA {
   void Histo2D::fill(double x, double y, double weight) {
     // Fill the normal bins
     int index = findBinIndex(x, y);
+    //cout << index << endl;
     if(index != -1) {
       HistoBin2D& b = bin(index);
       
