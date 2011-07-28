@@ -12,32 +12,18 @@ NOW
 * Axis1D::scaleX(d), Axis2D::scaleX/Y(d), Axis2D::scaleXY(d, d),
   Scatter2D::scaleX/Y(d), Scatter2D::scaleXY(d, d). (MICHAL)
 
-* Template the Axis1D to also specify the dbn type to be used for
-  under/overflows, then use Dbn1D for Histo1D and Dbn2D for Profile1D, then
-  implement under-/overflow in Profile1D and write it out in WriterYODA. (AB &
-  HH)
-  (Can this be made *really* neat by making ProfileBin1D == Bin1D<Dbn2D>, and
-  passing the template parameter through from Axis1D<DBN>? I suspect so, but
-  at the price of making the interface less intuitive and specialised to the
-  *semantic* aspects of a profile. But perhaps ProfileBin1D would be better
-  if it contained a Dbn1D rather than two Dbn2Ds, since the over/underflow
-  will *be* Dbn2Ds.)
+* Rebinning: merges of n adjacent bins and global rebinning by integer factor
+  (on widths or on bin groups?) (AB)
 
-* Rebinning:
-  merges of n adjacent bins
-  global rebinning by integer factor (on widths or on bin groups?) (AB)
-
-* Counter type (mostly a UI/persistency wrapper on Dbn1D) (AB)
-
-* Implement _setstate for Histo1D and Profile1D.
+* Implement _setstate for Histo1D and Profile1D. (AB)
 
 * Multiple errors on Scatter2D via a vector of Error2D. Combination rule enum
-  arg (QUAD, LIN) on error() method (DANIEL?)
+  arg (QUAD, LIN) on error() method (DANIEL)
 
 * New "flat" file format: adapt WriterYODA and fill ReaderYODA. (HH)
   Need to persist the whole-histo Dbn1D/Dbn2Ds, and over/underflows.
 
-* WriterFlat and ReaderFlat, for Scatter2D only. (HH)
+* WriterFlat and ReaderFlat, for Scatter2D representations only. (HH)
 
 
 
@@ -45,9 +31,16 @@ NEXT
 
 * Use Weights objects in Dbn1D / Dbn2D (AB)
 
-* Slicing and marginalising of 2D histos and profiles.
+* Add a Counter type (mostly a UI/persistency wrapper on Dbn1D) (AB)
+
+* Conversion functions to build Histo1D and Profile1D objects for slicings and
+  marginalisations along both X and Y directions of 2D histos. Throw an
+  exception if binnings are not complete grids. (MICHAL)
 
 * Profile2D & Dbn3D
+
+* Perhaps ProfileBin1D would be better if it contained a Dbn1D rather than two
+  Dbn2Ds, since the over/underflow now *are* Dbn2Ds...
 
 * Error correlations?
 
@@ -73,6 +66,7 @@ AND AFTER THAT...
 
 * Write scripts to convert between data formats and to plot results.
 
+* Template all classes on floating point type (default to double)
 
 
 PERSISTENCY
