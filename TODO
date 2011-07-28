@@ -4,10 +4,12 @@ YODA TODO list
 NOW
 
 
-* Histo2D & Dbn2D: add tests and Python interface mapping. (MICHAL)
+* Histo2D & Dbn2D: add Python interface mapping. (MICHAL)
 
 * Test that a y-binned Histo2D has the same per-y-column stats as an
-  equivalently x-binned Profile1D. (MICHAL)
+  equivalently x-binned Profile1D. Perhaps use this as an opportunity to
+  implement one of the the conversion functions mentioned in the NEXT
+  section... (MICHAL)
 
 * Axis1D::scaleX(d), Axis2D::scaleX/Y(d), Axis2D::scaleXY(d, d),
   Scatter2D::scaleX/Y(d), Scatter2D::scaleXY(d, d). (MICHAL)
