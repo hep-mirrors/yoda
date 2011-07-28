@@ -8,6 +8,7 @@
 
 #include "YODA/AnalysisObject.h"
 #include "YODA/HistoBin1D.h"
+#include "YODA/Dbn1D.h"
 #include "YODA/Scatter2D.h"
 #include "YODA/Axis1D.h"
 #include "YODA/Exceptions.h"
@@ -19,7 +20,7 @@ namespace YODA {
 
 
   /// Convenience typedef
-  typedef Axis1D<HistoBin1D> Histo1DAxis;
+  typedef Axis1D<HistoBin1D, Dbn1D> Histo1DAxis;
 
 
   /// A  one-dimensional histogram.
@@ -249,7 +250,7 @@ namespace YODA {
     //@{
 
     /// Definition of bin edges and contents
-    Axis1D<HistoBin1D> _axis;
+    Axis1D<HistoBin1D, Dbn1D> _axis;
 
     //@}
 

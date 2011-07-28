@@ -1,3 +1,13 @@
+2011-07-28  Andy Buckley  <andy@insectnation.org>
+
+	* Bumping version number to 0.4.0beta0 -- there have been
+	substantial changes recently and YODA is now in a state where it
+	should be interesting for outsiders to start playing with it.
+
+	* Templating the Axis1D on the distribution type to be used for
+	total and under/overflow statistics: Profile1D now has Dbn2D
+	objects handling its total and overflow statistics.
+
 2011-07-26  Andy Buckley  <andy@insectnation.org>
 
 	* Added a Histo1D::integral(index1, index2) method. Not sure how
