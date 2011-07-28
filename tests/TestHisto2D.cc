@@ -23,7 +23,7 @@ int main() {
     printStats(h);
     
     time_t start = time(NULL);
-    for (int i=0; i < 100000000; i++) h.fill(12.0123, 12.213, 1);
+    for (int i=0; i < 2000000; i++) h.fill(12.0123, 12.213, 1);
     cout << "Time taken: " << time(NULL) - start << endl;
 
     printStats(h);
