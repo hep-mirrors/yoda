@@ -13,6 +13,8 @@ NOW
 
 * Axis1D::scaleX(d), Axis2D::scaleX/Y(d), Axis2D::scaleXY(d, d),
   Scatter2D::scaleX/Y(d), Scatter2D::scaleXY(d, d). (MICHAL)
+  (done, also added scaling for Scatter3D. Scaling of errors is done in a 
+  veeery crude way)
 
 * Rebinning: merges of n adjacent bins and global rebinning by integer factor
   (on widths or on bin groups?) (AB)

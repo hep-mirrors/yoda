@@ -90,7 +90,16 @@ namespace YODA {
     void setZ(double z) { _z = z;}
     //@}
 
+    ///Scaling
+    void scale(double scaleX, double scaleY, double scaleZ) {
+        setX(x()*scaleX);
+        setY(y()*scaleY);
+        setZ(z()*scaleZ);
 
+        setXErr(xErrMinus()*scaleX, xErrPlus()*scaleX);
+        setYErr(yErrMinus()*scaleY, yErrPlus()*scaleY);
+        setZErr(zErrMinus()*scaleZ, zErrPlus()*scaleZ);
+    }
     /// @name x error accessors
     //@{
 
@@ -196,6 +205,57 @@ namespace YODA {
 
     //@}
 
+    /// @name z error accessors
+    //@{
+
+    /// Get z-error values
+    const std::pair<double,double>& zErrs() const {
+      return _ez;
+    }
+
+    /// Get negative z-error value
+    const double zErrMinus() const {
+      return _ez.first;
+    }
+
+    /// Get positive z-error value
+    const double zErrPlus() const {
+      return _ez.second;
+    }
+
+    /// Get average z-error value
+    double zErrAvg() const {
+      return (_ez.first + _ez.second)/2.0;
+    }
+
+    /// Set szmmetric z error
+    void setZErr(double ez) {
+      _ez.first = ez;
+      _ez.second = ez;
+    }
+
+    /// Set aszmmetric z error
+    void setZErr(std::pair<double,double> ez) {
+      _ez = ez;
+    }
+
+    /// Set aszmmetric z error
+    void setZErr(double ezminus, double ezplus) {
+      _ez.first = ezminus;
+      _ez.second = ezplus;
+    }
+
+    /// Get value minus negative z-error
+    const double zMin() const {
+      return _z - _ez.first;
+    }
+
+    /// Get value plus positive z-error
+    const double zMax() const {
+      return _z + _ez.second;
+    }
+
+    //@}
 
   protected:
 

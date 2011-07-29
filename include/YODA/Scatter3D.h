@@ -92,7 +92,11 @@ namespace YODA {
     void reset() {
       _points.clear();
     }
-
+    
+    /// Scale
+    void scale(double scaleX, double scaleY, double scaleZ) {
+        for(unsigned int i=0; i < _points.size(); i++) _points[i].scale(scaleX, scaleY, scaleZ);
+    }
 
     /// @name Persistency hooks
     //@{
