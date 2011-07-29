@@ -110,16 +110,6 @@ namespace YODA {
     _axis = h._axis;
   }
 
-  /// Constructor from a Scatter2D's binning, with optional new path
-  Histo2D::Histo2D(const Scatter3D& s, const std::string& path)
-    : AnalysisObject("Histo2D", (path.size() == 0) ? s.path() : path, s, s.title())
-  {
-    std::vector<HistoBin2D> bins;
-    for (Scatter2D::Points::const_iterator p = s.points().begin(); p != s.points().end(); ++p) {
-      bins.push_back(HistoBin2D(p->xMin(), p->xMax()));
-    }
-    _axis = Axis2D<HistoBin2D>(bins);
-  }
 */
   ///////////////////////////////////////
 

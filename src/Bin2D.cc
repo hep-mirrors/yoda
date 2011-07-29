@@ -10,7 +10,6 @@ using namespace std;
 namespace YODA {
     
     Bin2D::Bin2D(double lowedgeX, double lowedgeY, double highedgeX, double highedgeY) {
-        cout << lowedgeX << " " << lowedgeY << " " << highedgeX << " " << highedgeY << endl;
         assert(lowedgeX <= highedgeX && lowedgeY <= highedgeY);
 
         pair<pair<double,double>, pair<double,double> > edge1 =

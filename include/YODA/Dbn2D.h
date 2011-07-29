@@ -10,11 +10,14 @@ namespace YODA {
         Dbn2D() {
             reset();
         }
-
+        /// fill() requesting coordinates as two diferent numbers
         void fill(double valX, double valY, double weight=1.0);
+
+        /// fill() accepting coordinates as a pair
         void fill(std::pair<double,double> val, double weight=1.0);
         void reset();
 
+        /// Scaling the height of a bin
         void scaleW(double sf) {
             _sumW *= sf;
             _sumW2 *= sf*sf;
@@ -25,6 +28,7 @@ namespace YODA {
             _sumWXY *= sf;
         }
 
+        /// Scaling the dimensions of a distribution
         void scale(double scaleX, double scaleY) {
             _sumWX *= scaleX;
             _sumWX2 *= scaleX*scaleX;
@@ -33,6 +37,7 @@ namespace YODA {
             _sumWXY *= scaleX*scaleY;
         }
 
+        /// Some in-distribution variables. Should be self-evident.
         double xMean() const;
         double yMean() const;
 

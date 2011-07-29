@@ -96,7 +96,8 @@ namespace YODA {
     void scaleW(double scalefactor) {
       _axis.scaleW(scalefactor);
     }
-
+    
+    /// Scale the dimensions
     void scale(double scaleX = 1.0, double scaleY = 1.0) {
       _axis.scale(scaleX, scaleY);
     }
@@ -107,6 +108,7 @@ namespace YODA {
         _axis.addBin(coords);
     }
 
+    /// Adding bins which is not so eloquent
     void addBin(double lowX, double lowY, double highX, double highY)   {
         _axis.addBin(lowX, lowY, highX, highY);
     }
@@ -117,7 +119,7 @@ namespace YODA {
     /// @name Bin accessors
     //@{
 
-    /// Low edge of this histo's axis
+    /// Low edges of this histo's axis
     double lowEdgeX() const {
       return _axis.lowEdgeX();
     }
@@ -126,7 +128,7 @@ namespace YODA {
         return _axis.lowEdgeY();
     }
 
-    /// High edge of this histo's axis
+    /// High edges of this histo's axis
     double highEdgeX() const {
       return _axis.highEdgeX();
     }
@@ -166,35 +168,42 @@ namespace YODA {
       return _axis.binByCoord(x, y);
     }
 
-    //Return bin index accessor:
+    /// Return bin index (non-const version)
     int findBinIndex(double coordX, double coordY) {
       return _axis.findBinIndex(coordX, coordY);
     }
 
+    /// Return bin index (const version)
     const int findBinIndex(double coordX, double coordY) const {
       return _axis.findBinIndex(coordX, coordY);
     }
 
-    //Over- and under- flows:
+    /// Underflow (const version)
     const Dbn2D& underflow() const {
         return _axis.underflow();
     }
+    
+    /// Return underflow (non-const version)
     Dbn2D& underflow() {
         return _axis.underflow();
     }
 
+    /// Return overflow (const version)
     const Dbn2D& overflow() const {
         return _axis.overflow();
     }
+
+    /// Return overflow (non-const version)
     Dbn2D& overflow() {
         return _axis.overflow();
     }
-    //@}
-    
+   
+    /// Return a total number of bins in Histo
     unsigned int numBinsTotal() {
         return _axis.numBinsTotal();
     }
 
+    //@}
   public:
 
     /// @name Whole histo data
@@ -235,14 +244,13 @@ namespace YODA {
     /// @name Adding and subtracting histograms
     //@{
 
-    /// Add another histogram to this
+    /// Add another histogram to this one
     Histo2D& operator += (const Histo2D& toAdd) {
       _axis += toAdd._axis;
       return *this;
     }
-//* I need a definition of substraction for histograms first, 
-//* before implementing this one.
-    /// Subtract another histogram from this
+    
+    /// Subtract another histogram from this one
     Histo2D& operator -= (const Histo2D& toSubtract) {
       _axis -= toSubtract._axis;
       return *this;

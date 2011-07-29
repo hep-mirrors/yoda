@@ -7,6 +7,14 @@
 using namespace std;
 using namespace YODA;
 
+
+/// A stats printing function.
+/**
+ * This is a very, very unpolished version of a stats
+ * printing function. It prints some stats sometimest 
+ * looking at the full distribution and sometimes not.
+ * A better verion is not to high in priority list now.
+ */
 void printStats(Histo2D& h, bool full=false){
     cout << "-----------------------------" << endl;
     cout << "LowEdgeX = " << h.lowEdgeX() << " HighEdgeX = " << h.highEdgeX() << endl;
@@ -24,6 +32,7 @@ void printStats(Histo2D& h, bool full=false){
 
 int main() {
     
+    /// Creating a histogram and measuring the time it takes to do it.
     struct timeval startTime;
     struct timeval endTime;
     gettimeofday(&startTime, NULL);
@@ -35,7 +44,8 @@ int main() {
     cout << "Time to create 40K bins: " << tE - tS << "s" << endl;
     printStats(h);
     
-
+    
+    /// Trying to fill a bin.
     gettimeofday(&startTime, NULL);
     for (int i=0; i < 2000000; i++) {
         int out = h.fill(16.0123, 12.213, 10);
@@ -50,13 +60,14 @@ int main() {
     tE = (endTime.tv_sec*1000000 + endTime.tv_usec)/(double)1000000;
     cout << "Time taken to fill 2M bins: " << tE - tS << "s" << endl; 
     if((tE - tS) > 50.0) {
-        cout << "The performance is not sufficient. Probably broken caches?" << endl;
+        cout << "Performance is not sufficient. Probably broken caches?" << endl;
         return -1;
     }
 
     printStats(h, true);
     cout << h.numBinsTotal() << endl;   
     
+    /// Testing if fill() function does what it should
     unsigned int beforeAdd = h.numBinsTotal();
     cout << "Does a too high bin exist? " << h.fill(10000, 34234, 1) << endl;
     if(h.numBinsTotal() != beforeAdd) {
@@ -64,6 +75,11 @@ int main() {
         return -1;
     }
 
+    /// Checking if everything is still working as desired.
+    /** 
+     * It is actually a good thing to do, as at some earlier stages 
+     * in developement adding a broken bin destroyed the cache of edges.
+     */
     int originIndex = h.fill(0.0, 0.0, 1);
     cout << "And is the origin working in the right way? " << originIndex << endl;
     if(originIndex == -1) {
@@ -73,7 +89,7 @@ int main() {
 
     printStats(h, true);
     
-    //Now, adding a square that is in a non-overlapping location:
+    /// Now, adding a square that is in a non-overlapping location:
     beforeAdd = h.numBinsTotal();
     h.addBin(150, 150, 200, 200);
     cout << "Added proprely? " << h.fill(150.1, 150.1, 1) << " Size: " << h.numBinsTotal() << endl;
@@ -82,7 +98,7 @@ int main() {
         return -1;
     }
 
-    //And overlapping:
+    /// Checking if a broken bin triggers _dropEdge().
     beforeAdd = h.numBinsTotal();
     h.addBin(0.756, 0.213, 12.1234, 23);
     cout << "Size: " << h.numBinsTotal() << endl;
@@ -98,6 +114,7 @@ int main() {
         return -1;
     }
 
+    /// A check testing mostly _fixOrientation()
     cout << "Now, how about another quadrant? " << endl;
     beforeAdd = h.numBinsTotal();
     h.addBin(-12, -12, -1, -1);
@@ -108,12 +125,13 @@ int main() {
 
     fillTest = h.fill(-3, -3, 1);
     cout << "Trying to fill the newly created bin: " << fillTest << endl;
-    if(fillTest == -1) {
+    if(fillTest == -1 || fillTest != (int)h.numBinsTotal() - 1) {
         cout << "Could not fill the bin that should be filled" << endl;
         return -1;
     }
     
-    //TODO:Scaling verification
+
+    /// And a scaling test.
     printStats(h, true);
     cout << "Scaling: " << endl;
 
@@ -126,6 +144,13 @@ int main() {
     cout << "Time to scale: " << tE - tS << "s" << endl;
     printStats(h, true);
 
-    cout << "Was everything scaled as it should be? " << h.fill(110.000001, 110.0111010, 1) << endl;
+    fillTest = h.fill(180, 180, 1);
+    cout << "Was everything scaled as it should be? " << fillTest << endl;
+    if(fillTest == -1) {
+        cout << "Something went wrong while scaling." << endl;
+        return -1;
+    }
+
+
     return EXIT_SUCCESS;
 }
