@@ -247,6 +247,12 @@ namespace YODA {
         /// @name Constructors:
         //@{
         
+        /// Empty constructor:
+        Axis2D() {
+            vector<pair<pair<double,double>, pair<double,double> > > edges;
+            _mkAxis(edges);
+        }
+        
         ///Default constructor 
         Axis2D(const vector<pair<pair<double,double>, pair<double,double> > >& binedges) {
             _mkAxis(binedges);
@@ -407,7 +413,20 @@ namespace YODA {
         const Dbn2D& underflow() const {
             return _underflow;
         }
+
+        /// Get the binHash(non-const version)
+        std::pair<Utils::cachedvector<pair<double,std::vector<pair<size_t, pair<double,double> > > > >,
+                  Utils::cachedvector<pair<double,std::vector<pair<size_t, pair<double,double> > > > > > getHash() {
+            return _binHashSparse;
+        }
         
+        /// Get the binHash(const version)
+        const std::pair<Utils::cachedvector<pair<double,std::vector<pair<size_t, pair<double,double> > > > >,
+                  Utils::cachedvector<pair<double,std::vector<pair<size_t, pair<double,double> > > > > > getHash() const {
+            return _binHashSparse;
+        }
+
+
         /** This version of findBinIndex is searching for an edge on the left
          *  that is enclosing the point and then finds an edge on the bottom
          *  that does the same and if it finds two edges that are a part of 

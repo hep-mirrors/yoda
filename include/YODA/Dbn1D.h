@@ -49,6 +49,12 @@ namespace YODA {
       _sumWX2 *= sf2;
     }
 
+    /// Rescale the edges
+    void scaleX(double factor) {
+        _sumWX *= factor;
+        _sumWX2 *= factor*factor;
+    }
+
     //@}
 
 

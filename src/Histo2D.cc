@@ -101,8 +101,7 @@ namespace YODA {
   }
 
   ////////////////////////////////////////
-/*
-  TODO:
+
   /// Copy constructor with optional new path
   Histo2D::Histo2D(const Histo2D& h, const std::string& path)
     : AnalysisObject("Histo2D", (path.size() == 0) ? h.path() : path, h, h.title())
@@ -110,24 +109,26 @@ namespace YODA {
     _axis = h._axis;
   }
 
-*/
+
   ///////////////////////////////////////
 
-/* TODO!!
 
   /// Divide two histograms
   Scatter3D operator / (const Histo2D& numer, const Histo2D& denom) {
-    assert(numer._axis == denom._axis);
-    Scatter2D tmp;
-    for (size_t i = 0; i < numer.numBins(); ++i) {
+    assert(numer.getHash() == denom.getHash());
+    Scatter3D tmp;
+    for (size_t i = 0; i < numer.numBinsTotal(); ++i) {
       const HistoBin2D& b1 = numer.bin(i);
       const HistoBin2D& b2 = denom.bin(i);
-      assert(fuzzyEquals(b1.focus(), b2.focus()));
+      assert(fuzzyEquals(b1.focus().first, b2.focus().first));
+      assert(fuzzyEquals(b1.focus().second, b2.focus().second));
+      
       const double x = b1.focus().first;
+      const double y = b1.focus().second;
+
       assert(fuzzyEquals(b1.xMin(), b2.xMin()));
       assert(fuzzyEquals(b1.xMax(), b2.xMax()));
 
-      const double y = b1.focus().second;
       assert(fuzzyEquals(b1.yMin(), b2.yMin()));
       assert(fuzzyEquals(b1.yMax(), b2.yMax()));
 
@@ -135,20 +136,19 @@ namespace YODA {
       const double explus = b1.xMax() - x;
 
       const double eyminus = y - b1.yMin();
-      const double explus = b1.yMax() - y;
+      const double eyplus = b1.yMax() - y;
 
       assert(exminus >= 0);
       assert(explus >= 0);
       assert(eyminus >= 0);
-      assert(explus >= 0);
+      assert(eyplus >= 0);
       
       const double z = b1.height() / b2.height();
-      const double ez = z * sqrt( sqr(b1.heightError()/b1.height()) + sqr(b2.heightError()/b2.height()) );
+      const double ez = z * sqrt( sqr(b1.heightErr()/b1.height()) + sqr(b2.heightErr()/b2.height()) );
       tmp.addPoint(x, exminus, explus, y, eyminus, eyplus, z, ez, ez);
     }
-    assert(tmp.numPoints() == numer.numBins());
+    assert(tmp.numPoints() == numer.numBinsTotal());
     return tmp;
   }
 
-*/
 }

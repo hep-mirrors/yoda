@@ -151,6 +151,18 @@ int main() {
         return -1;
     }
 
+    /// Addition/Substraction:
+    Histo2D first(100, 0, 100, 100, 0, 100);
+    first.fill(1,1,1);
+    Histo2D second(100, 0, 100, 100, 0, 100);
+    second.fill(1,1,1);
 
+    Histo2D added(first+second);
+    Histo2D substracted(first-second);
+    //Histo2D divided(first / second);
+
+    printStats(added);
+    printStats(substracted);
+    //printStats(divided);
     return EXIT_SUCCESS;
 }

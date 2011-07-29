@@ -198,11 +198,26 @@ namespace YODA {
         return _axis.overflow();
     }
    
-    /// Return a total number of bins in Histo
+    /// Return a total number of bins in Histo(non-const version)
     unsigned int numBinsTotal() {
         return _axis.numBinsTotal();
     }
 
+    const unsigned int numBinsTotal() const {
+        return _axis.numBinsTotal();
+    }
+
+    /// Hash returner (non-const version)
+    std::pair<Utils::cachedvector<pair<double,std::vector<pair<size_t, pair<double,double> > > > >,
+              Utils::cachedvector<pair<double,std::vector<pair<size_t, pair<double,double> > > > > > getHash() {
+        return _axis.getHash();
+    }
+    
+    /// Hash returner (const version)
+    const std::pair<Utils::cachedvector<pair<double,std::vector<pair<size_t, pair<double,double> > > > >,
+                    Utils::cachedvector<pair<double,std::vector<pair<size_t, pair<double,double> > > > > > getHash() const {
+        return _axis.getHash();
+    }
     //@}
   public:
 
@@ -288,6 +303,8 @@ namespace YODA {
     tmp -= second;
     return tmp;
   }
+
+  //Scatter3D operator / (const Histo2D& numer, const Histo2D& denom);
 
   //@}
 

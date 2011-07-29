@@ -256,8 +256,12 @@ namespace YODA {
 
     /// Scale the axis coordinates (i.e. bin edges).
     void scaleX(double scalefactor) {
-      /// @todo Implement! Requires ability to change bin edges from outside...
-      throw std::runtime_error("Axis coordinate transformations not yet implemented! Pester me, please.");
+       _dbn.scaleX(scalefactor);
+       _underflow.scaleW(scalefactor);
+       _overflow.scaleW(scalefactor);
+       for(int i=0; i < _bins.size(); i++) _bins[i].scaleX(scalefactor);
+       for(int i=0; i < _cachedBinEdges.size(); i++) _cachedBinEdges[i] *= scalefactor;
+       _mkBinHash();
     }
 
 

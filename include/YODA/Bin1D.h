@@ -34,6 +34,14 @@ namespace YODA {
     /// Reset this bin
     virtual void reset();
 
+    /// Scale:
+    void scaleX(double factor) {
+        _edges.first *= factor;
+        _edges.second *= factor;
+
+        _xdbn.scaleX(factor);
+    }
+
     //@}
 
 
