@@ -49,6 +49,19 @@ namespace YODA {
     double Bin2D::highEdgeX() const {return _edges[1].second.first; }
     double Bin2D::highEdgeY() const {return _edges[1].second.second;}
 
+    void Bin2D::scale(double scaleX, double scaleY) {
+        for(unsigned int i=0; i < _edges.size(); i++) {  
+            _edges[i].first.first *= scaleX;
+            _edges[i].second.first *= scaleX;
+
+            _edges[i].first.second *= scaleY;
+            _edges[i].second.second *= scaleY;
+        }
+
+        _dbn.scale(scaleX, scaleY);
+    }
+
+
     double Bin2D::widthX() const {
         return _edges[1].second.first - _edges[0].first.first;
     }

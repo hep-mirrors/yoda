@@ -17,7 +17,8 @@ namespace YODA {
         Bin2D(std::vector<std::pair<std::pair<double, double>, std::pair<double, double> > > edges);
 
         virtual void reset();
-
+        
+        void scale(double scaleX, double scaleY);
         
         double lowEdgeX() const;
         double xMin() const { return lowEdgeX(); }

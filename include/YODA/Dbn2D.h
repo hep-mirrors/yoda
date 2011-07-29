@@ -25,6 +25,14 @@ namespace YODA {
             _sumWXY *= sf;
         }
 
+        void scale(double scaleX, double scaleY) {
+            _sumWX *= scaleX;
+            _sumWX2 *= scaleX*scaleX;
+            _sumWY *= scaleY;
+            _sumWY2 *= scaleY*scaleY;
+            _sumWXY *= scaleX*scaleY;
+        }
+
         double xMean() const;
         double yMean() const;
 

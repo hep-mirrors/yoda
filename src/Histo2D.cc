@@ -18,7 +18,7 @@ namespace YODA {
 
   //TODO: It should return/throw something if no bin exist.
   //So, what is the concept of under/over flow in 2D case?
-  void Histo2D::fill(double x, double y, double weight) {
+  int Histo2D::fill(double x, double y, double weight) {
     // Fill the normal bins
     int index = findBinIndex(x, y);
     //cout << index << endl;
@@ -27,11 +27,12 @@ namespace YODA {
       
       // Fill the underflow and overflow nicely
       _axis.totalDbn().fill(x, y, weight);
-      if (x < _axis.lowEdgeX()) { _axis.underflow().fill(x, y, weight); return; }
-      if (x >= _axis.highEdgeX()) { _axis.overflow().fill(x, y, weight); return; }
+      if (x < _axis.lowEdgeX()) { _axis.underflow().fill(x, y, weight); }
+      if (x >= _axis.highEdgeX()) { _axis.overflow().fill(x, y, weight); }
     
       b.fill(x, y, weight);
     }
+    return index;
   }
 
   double Histo2D::sumW(bool includeoverflows) const {

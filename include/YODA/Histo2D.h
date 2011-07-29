@@ -84,7 +84,7 @@ namespace YODA {
     //@{
 
     /// Fill histo by value and weight
-    void fill(double x, double y, double weight=1.0);
+    int fill(double x, double y, double weight=1.0);
 
     /// @brief Reset the histogram.
     /// Keep the binning but set all bin contents and related quantities to zero
@@ -97,9 +97,21 @@ namespace YODA {
       _axis.scaleW(scalefactor);
     }
 
+    void scale(double scaleX = 1.0, double scaleY = 1.0) {
+      _axis.scale(scaleX, scaleY);
+    }
+
+    
+    //Adding bins
+    void addBin(const vector<pair<pair<double,double>, pair<double,double> > > coords) {
+        _axis.addBin(coords);
+    }
+
+    void addBin(double lowX, double lowY, double highX, double highY)   {
+        _axis.addBin(lowX, lowY, highX, highY);
+    }
+
     //@}
-
-
   public:
 
     /// @name Bin accessors

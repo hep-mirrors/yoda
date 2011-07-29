@@ -13,6 +13,7 @@ namespace YODA {
   void Dbn2D::fill(double valX, double valY, double weight) {
     _numFills++;
     _sumW += weight;
+
     double w2 = weight*weight;
     if (weight < 0) w2 *= -1;
     _sumW2 += w2;

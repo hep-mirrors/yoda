@@ -31,7 +31,7 @@ namespace YODA {
         // Notice the fact that all the functions below make an error
         // of the size of fuzzyEquals tolerance!
         // Also, there are no checks in place to test if this edge set is not crossing itself
-        bool _validateEdge(vector<pair<pair<double,double>, pair<double,double> > > edges) {
+        bool _validateEdge(vector<pair<pair<double,double>, pair<double,double> > >& edges) {
             bool ret = true;
             for(unsigned int i=0; i < edges.size(); i++) {
                 if(fuzzyEquals(edges[i].first.first, edges[i].second.first)) ret =  _findCutsY(edges[i]);
@@ -70,29 +70,22 @@ namespace YODA {
             //TODO: Check inclusion
         }
 
-        bool _findCutsX(pair<pair<double,double>, pair<double,double> > edge) {
+        bool _findCutsX(pair<pair<double,double>, pair<double,double> >& edge) {
             for(unsigned int i=0; i < _binHashSparse.second.size(); i++) {
-                /* An optimisation check that guarantees that we are not looking at edges that
-                 * are surely out of our range of interest. The second condition is put in place
-                 * to correct for possible rounding errors in double numbers.
-                 */
-                if(edge.second.second < _binHashSparse.second[i].first &&
-                   !fuzzyEquals(_binHashSparse.second[i].first, edge.second.second)) break;
+                //Sanity check, for more comments see above:
+                if(edge.second.first < _binHashSparse.second[i].first &&
+                   !fuzzyEquals(edge.second.first, _binHashSparse.second[i].first)) break;
 
-                if(//fuzzyEquals(_binHashSparse.second[i].first, edge.first.second) ||
-                  (_binHashSparse.second[i].first > edge.first.second &&
-                   _binHashSparse.second[i].first < edge.second.second)) {
-                   //fuzzyEquals(_binHashSparse.second[i].first, edge.second.second)) {
+                if(fuzzyEquals(_binHashSparse.second[i].first, edge.first.first) ||
+                  (_binHashSparse.second[i].first > edge.first.first &&
+                   _binHashSparse.second[i].first < edge.second.first ) ||
+                   fuzzyEquals(_binHashSparse.second[i].first, edge.second.first)) {
+                    
                     for(unsigned int j=0; j < _binHashSparse.second[i].second.size(); j++) {
-                        
-                        //Same type of check as above.
-                        if(_binHashSparse.second[i].second[j].second.first > edge.first.first &&
-                            !fuzzyEquals(_binHashSparse.second[i].second[j].second.first, edge.first.first)) break;
-                            
-                        if(//fuzzyEquals(_binHashSparse.second[i].second[j].second.first, edge.first.first) ||
-                           (_binHashSparse.second[i].second[j].second.first < edge.first.first &&
-                            _binHashSparse.second[i].second[j].second.second > edge.first.first)){
-                          // fuzzyEquals(_binHashSparse.second[i].second[j].second.second, edge.first.first)) {
+                        if(_binHashSparse.second[i].second[j].second.first < edge.first.second &&
+                           _binHashSparse.second[i].second[j].second.second > edge.first.second &&
+                           !fuzzyEquals(_binHashSparse.second[i].second[j].second.first, edge.first.second) &&
+                           !fuzzyEquals(_binHashSparse.second[i].second[j].second.second, edge.first.second)) {
                             return false;
                         }
                     }
@@ -101,25 +94,22 @@ namespace YODA {
             return true;
         }
 
-        bool _findCutsY(pair<pair<double,double>, pair<double,double> > edge) {
+        bool _findCutsY(pair<pair<double,double>, pair<double,double> >& edge) {
             for(unsigned int i=0; i < _binHashSparse.first.size(); i++) {
                 //Sanity check, for more comments see above:
-                if(edge.second.first < _binHashSparse.first[i].first &&
-                   !fuzzyEquals(edge.second.first, _binHashSparse.first[i].first)) break;
+                if(edge.second.second < _binHashSparse.first[i].first &&
+                   !fuzzyEquals(edge.second.second, _binHashSparse.first[i].first)) break;
 
-                if(//fuzzyEquals(_binHashSparse.first[i].first, edge.first.first) ||
-                  (_binHashSparse.first[i].first > edge.first.first &&
-                   _binHashSparse.first[i].first < edge.second.first )){
-                  // fuzzyEquals(_binHashSparse.first[i].first, edge.second.first)) {
+                if(fuzzyEquals(_binHashSparse.first[i].first, edge.first.second) ||
+                  (_binHashSparse.first[i].first > edge.first.second &&
+                   _binHashSparse.first[i].first < edge.second.second ) ||
+                   fuzzyEquals(_binHashSparse.first[i].first, edge.second.second)) {
+                    
                     for(unsigned int j=0; j < _binHashSparse.first[i].second.size(); j++) {
-                        
-                        if(_binHashSparse.first[i].second[j].second.first > edge.first.second &&
-                           !fuzzyEquals(_binHashSparse.first[i].second[j].second.first, edge.first.second)) break;
-
-                        if(//fuzzyEquals(_binHashSparse.first[i].second[j].second.first, edge.first.second) ||
-                           (_binHashSparse.first[i].second[j].second.first < edge.first.second &&
-                            _binHashSparse.first[i].second[j].second.second > edge.first.second)){
-                          // fuzzyEquals(_binHashSparse.first[i].second[j].second.second, edge.first.second)) {
+                        if(_binHashSparse.first[i].second[j].second.first < edge.first.first &&
+                           _binHashSparse.first[i].second[j].second.second > edge.first.first &&
+                           !fuzzyEquals(_binHashSparse.first[i].second[j].second.first, edge.first.first) &&
+                           !fuzzyEquals(_binHashSparse.first[i].second[j].second.second, edge.first.first)) {
                             return false;
                         }
                     }
@@ -129,13 +119,13 @@ namespace YODA {
         }
         
         //TODO: Something a bit more elaborate??
-        void _dropEdge(vector<pair<pair<double,double>, pair<double,double> > > edges) {
+        void _dropEdge(vector<pair<pair<double,double>, pair<double,double> > >& edges) {
             std::cerr << "A set of edges was dropped. No additional information is implemented yet, so none can be given. Have a good day." << endl;
         }
 
         //Do not initiate a global sort when another edges were found on the same level
         // needs to be adjusted accordingly
-        void _addEdge(vector<pair<pair<double,double>, pair<double,double> > > edges) {
+        void _addEdge(vector<pair<pair<double,double>, pair<double,double> > >& edges) {
             for(unsigned int j=0; j < edges.size(); j++) {
                 pair<pair<double,double>, pair<double,double> > edge = edges[j];
                 if(edge.first.first == edge.second.first) {
@@ -172,7 +162,6 @@ namespace YODA {
                     }
                 }
             }
-          //  cout << "Edges to be added: " << edges[0].first.first << " " << edges[0].first.second << " " << edges[1].second.first << " " << edges[1].second.second << endl;
             _bins.push_back(BIN(edges));
         }
         
@@ -186,7 +175,6 @@ namespace YODA {
                     edge.second.second = edge.first.second; 
                     edge.first.second = temp;
                 }
-                //cout << edge.first.second << " " << edge.second.second << endl;
             }
             else if(edge.first.first > edge.second.first) {
                 double temp = edge.first.first;
@@ -196,7 +184,6 @@ namespace YODA {
         }
 
         void _mkAxis(const vector<pair<pair<double,double>,pair<double,double> > >& binedges) {
-            int kupa = 0;
             for(unsigned int i=0; i < binedges.size(); i++) {
                 pair<pair<double,double>, pair<double,double> > edge1 = 
                     make_pair(binedges[i].first, 
@@ -215,17 +202,17 @@ namespace YODA {
                 fixOrientation(edge3); fixOrientation(edge4);
 
                 vector<pair<pair<double,double>, pair<double,double> > > edges;
-                edges.push_back(edge1); edges.push_back(edge2); edges.push_back(edge3); edges.push_back(edge4);
+                edges.push_back(edge1); edges.push_back(edge2); 
+                edges.push_back(edge3); edges.push_back(edge4);
+
                 //TODO: the _dropEdge() part should be moved into _addEdge() function and indicate which edge 
                 //      is the conflicting one, not dropping the whole edgeset, as it is doing now. Same in addBins.
                 if(_validateEdge(edges))  _addEdge(edges);
-                else{ 
-                    _dropEdge(edges);
-                   kupa++;
-                }
+                else _dropEdge(edges);
+                
             }
             
-            cout << kupa << endl;
+            
             //Setting all the caches
             _binHashSparse.first.regenCache();
             _binHashSparse.second.regenCache();
@@ -265,15 +252,12 @@ namespace YODA {
             double coeffX = (upperX - lowerX)/(double)nbinsX;
             double coeffY = (upperY - lowerX)/(double)nbinsY;
 
-            cout << coeffX << " " << coeffY << endl;
             for(double i=lowerX; i < upperX; i+=coeffX) {
                 for(double j=lowerY; j < upperY; j+=coeffY) {
                     edges.push_back(make_pair(make_pair(i, j), 
                                               make_pair((double)(i+coeffX), (double)(j+coeffY))));
-                   // cout << "Krawedzie: " << edges.size() << " i: " << i << " j: " << j << endl;
                 }
             }
-            cout << edges.size() << "sadasda" <<endl;
             _mkAxis(edges);
         }
 
@@ -282,32 +266,15 @@ namespace YODA {
          * Please, try to include as many bins as possible in one call, as regenCache() is too
          * computationaly expensive to be called after each one bin is added.
          */
-        void addBin(const vector<pair<pair<double,double>, pair<double,double> > >& binedges) {
-            for(unsigned int i = 0; i < binedges.size(); i++){
-                vector<pair<pair<double,double>, pair<double,double> > > temp;
-                
-                pair<pair<double,double>, pair<double,double> > edge1 = 
-                    make_pair(binedges[i].first, 
-                              make_pair(binedges[i].first.first, binedges[i].second.second));
-                pair<pair<double,double>, pair<double,double> > edge2 =
-                    make_pair(make_pair(binedges[i].first.first, binedges[i].second.second),
-                              binedges[i].second);
-                pair<pair<double,double>, pair<double,double> > edge3 =
-                    make_pair(make_pair(binedges[i].second.first, binedges[i].first.second), 
-                              binedges[i].second);
-                pair<pair<double,double>, pair<double,double> > edge4 =
-                    make_pair(binedges[i].first,
-                              make_pair(binedges[i].second.first, binedges[i].first.second));
-                temp.push_back(edge1); temp.push_back(edge2); 
-                temp.push_back(edge3); temp.push_back(edge4);
-                if(_validateEdge(binedges)) _addEdge(binedges);
-                else _dropEdge(binedges);
-            }
+        void addBin(const vector<pair<pair<double,double>, pair<double,double> > >& vertexCoords) {
+            _mkAxis(vertexCoords);
+        }
 
-            //Setting all the caches
-            _binHashSparse.first.regenCache();
-            _binHashSparse.second.regenCache();
-            _regenDelimiters();
+        void addBin(double lowX, double lowY, double highX, double highY) {
+            vector<pair<pair<double,double>, pair<double,double> > > coords;
+            coords.push_back(make_pair(make_pair(lowX, lowY), make_pair(highX, highY)));
+            
+            addBin(coords);
         }
         
         //Some helper functions:
@@ -414,22 +381,22 @@ namespace YODA {
          * found, ie. (coordX, coordY) is a point in empty space -1 is returned.
          */
         int findBinIndex(double coordX, double coordY) const {
+            coordX += 0.0000000001; coordY += 0.00000000001;
+
             size_t indexY = (*_binHashSparse.first._cache.lower_bound(approx(coordY))).second;
-  //          cout << indexY << endl;
 
             if(indexY < _binHashSparse.first.size()) {
                 for(unsigned int i=0; i < _binHashSparse.first[indexY].second.size(); i++){
                     if(_binHashSparse.first[indexY].second[i].second.first < coordX &&
                        _binHashSparse.first[indexY].second[i].second.second > coordX){
                         size_t indexX = (*_binHashSparse.second._cache.lower_bound(approx(coordX))).second;
-//                        cout << indexX << endl;
                         if(indexX < _binHashSparse.second.size()){
                             for(unsigned int j=0; j < _binHashSparse.second[indexX].second.size(); j++) {
                                 if(_binHashSparse.second[indexX].second[j].second.first < coordY &&
                                    (_binHashSparse.second[indexX].second[j].second.second > coordY) &&
                                    (_binHashSparse.second[indexX].second[j].first ==
                                    _binHashSparse.first[indexY].second[i].first)) 
-                                    return _binHashSparse.first[indexX].second[j].second.first;
+                                    return _binHashSparse.second[indexX].second[j].first;
                             }
                         }
                     }
@@ -482,21 +449,15 @@ namespace YODA {
                 }
             }
 
+            _binHashSparse.first.regenCache();
+            _binHashSparse.second.regenCache();
+
             // Now, as we have the map rescaled, we need to update the bins
             // in their own structure in order to have high/low edges correct
-            for(unsigned int i=0; i < _bins.size(); i++){
-                _bins[i].highEdgeX() *= scaleX;
-                _bins[i].lowEdgeX() *= scaleX;
-
-                _bins[i].highEdgeY() *= scaleY;
-                _bins[i].lowEdgeY() *= scaleY;
-                
-                _bins[i].sumWX() *= scaleX;
-                _bins[i].sumWY() *= scaleY;
-                _bins[i].sumWXY() *= scaleX * scaleY;
-                _bins[i].sumWX2() *= scaleX * scaleX;
-                _bins[i].sumWY2() *= scaleY * scaleY;
-            }
+            for(unsigned int i=0; i < _bins.size(); i++) _bins[i].scale(scaleX, scaleY);
+            _dbn.scale(scaleX, scaleY);
+            _underflow.scale(scaleX, scaleY);
+            _overflow.scale(scaleX, scaleY);
 
             //And making sure that we have correct boundaries set after rescaling
             _regenDelimiters();
