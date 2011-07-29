@@ -22,6 +22,9 @@ namespace YODA {
     : Bin2D(edges)
   { }
 
+  HistoBin2D::HistoBin2D() 
+    : Bin2D()
+  { }
 
   void HistoBin2D::fill(double x, double y, double w) {
     _dbn.fill(x, w);

@@ -14,7 +14,9 @@ namespace YODA {
 
         /// Constructor accepting a set of all edges of a bin
         HistoBin2D(std::vector<std::pair<std::pair<double,double>, std::pair<double,double> > >& edges);
-
+        
+        //Default constructor
+        HistoBin2D();
 
         /// A fill() function accepting the coordinates as std::pair
         void fill(std::pair<double,double>, double weight=1.0);

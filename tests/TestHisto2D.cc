@@ -1,4 +1,5 @@
 #include "YODA/Histo2D.h"
+#include "YODA/Profile1D.h"
 #include <cmath>
 #include <iostream>
 #include <unistd.h>
@@ -164,5 +165,6 @@ int main() {
     printStats(added);
     printStats(substracted);
     //printStats(divided);
+
     return EXIT_SUCCESS;
 }

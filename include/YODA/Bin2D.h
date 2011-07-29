@@ -30,6 +30,8 @@ namespace YODA {
           */
         Bin2D(std::vector<std::pair<std::pair<double, double>, std::pair<double, double> > > edges);
 
+        Bin2D();
+
         /// Resetter of all Bin data
         virtual void reset();
         

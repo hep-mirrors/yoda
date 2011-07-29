@@ -38,6 +38,10 @@ namespace YODA {
         _edges.push_back(edges[2]); _edges.push_back(edges[3]);
     }
 
+    ///TODO: Get rid of this thing?
+    Bin2D::Bin2D() 
+    { }
+
     void Bin2D::reset() {
         _dbn.reset();
     }
