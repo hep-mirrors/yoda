@@ -76,6 +76,8 @@ int main() {
         return -1;
     }
 
+    h.isGriddy();
+
     /// Checking if everything is still working as desired.
     /** 
      * It is actually a good thing to do, as at some earlier stages 
@@ -131,7 +133,6 @@ int main() {
         return -1;
     }
     
-
     /// And a scaling test.
     printStats(h, true);
     cout << "Scaling: " << endl;
@@ -165,6 +166,6 @@ int main() {
     printStats(added);
     printStats(substracted);
     //printStats(divided);
-
+    
     return EXIT_SUCCESS;
 }

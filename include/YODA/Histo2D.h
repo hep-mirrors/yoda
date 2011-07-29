@@ -92,6 +92,11 @@ namespace YODA {
       _axis.reset();
     }
 
+    ///Check if is a grid:
+    void isGriddy() {
+        _axis.isGriddy();
+    }
+    
     /// Rescale as if all fill weights had been different by factor @a scalefactor.
     void scaleW(double scalefactor) {
       _axis.scaleW(scalefactor);

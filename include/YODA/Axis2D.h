@@ -297,6 +297,37 @@ namespace YODA {
         //@{
 
         /// Return a total number of bins in Histo
+
+        /// Checks if our bins form a grid. 
+        /** Uses a very neat property of _binCacheSparse, 
+          * namely that it will containg the same number of
+          * edges on inner sides and half the number on outer ones*/
+        void isGriddy() {
+            unsigned int sizeX = _binHashSparse.first[0].second.size();
+            for(unsigned int i=1; i < _binHashSparse.first.size(); i++) {
+                if(i==1 || i == _binHashSparse.first.size() - 1) {
+                    if(_binHashSparse.first[i].second.size() != sizeX/2) {
+                        throw GridError("Not a grid!");
+                    }
+                }
+                else if(_binHashSparse.first[i].second.size() != sizeX) {
+                    throw GridError("Not a grid!");
+                }
+            }
+
+            unsigned int sizeY = _binHashSparse.second[0].second.size();
+            for(unsigned int i=1; i < _binHashSparse.second.size(); i++) {
+                if(i!= _binHashSparse.second.size() - 1) {
+                    if(2*sizeY != _binHashSparse.second[i].second.size()) {
+                        throw GridError("Not a grid!");
+                    }
+                }
+                else if(_binHashSparse.second[i].second.size() != sizeY) throw GridError("Not a grid!");
+            }
+
+        }
+
+
         unsigned int numBinsTotal() const {
             return _bins.size();
         }
