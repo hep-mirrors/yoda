@@ -36,6 +36,16 @@ namespace YODA {
             _sumWY2 *= scaleY*scaleY;
             _sumWXY *= scaleX*scaleY;
         }
+        
+        /// Setters
+        void setW(double sumW)      { _sumW = sumW;}
+        void setW2(double sumW2)    { _sumW2 = sumW2;}
+        void setWX(double sumWX)    { _sumWX = sumWX;}
+        void setWY(double sumWY)    { _sumWY = sumWY;}
+        void setWX2(double sumWX2)  { _sumWX2 = sumWX2;}
+        void setWY2(double sumWY2)  { _sumWY2 = sumWY2;}
+        void setWXY(double sumWXY)  { _sumWXY = sumWXY;}
+        void setNumfills(unsigned long numFills) {_numFills = numFills;}
 
         /// Some in-distribution variables. Should be self-evident.
         double xMean() const;

@@ -21,7 +21,7 @@ void printStats(Histo2D& h, bool full=false){
     cout << "LowEdgeX = " << h.lowEdgeX() << " HighEdgeX = " << h.highEdgeX() << endl;
     cout << "LowEdgeY = " << h.lowEdgeY() << " HighEdgeY = " << h.highEdgeY() << endl;
 
-    cout << "Sum of weights is " << h.sumW(false) << ", squared: " << h.sumW2(false) << endl;
+    cout << "Sum of weights is " << h.sumW(true) << ", squared: " << h.sumW2(true) << endl;
 
     if(full) {
         cout << "Means: " << h.xMean(true) << " " << h.yMean(true) << endl;
@@ -49,7 +49,7 @@ int main() {
     /// Trying to fill a bin.
     gettimeofday(&startTime, NULL);
     for (int i=0; i < 2000000; i++) {
-        int out = h.fill(16.0123, 12.213, 10);
+        int out = h.fill(16.0123, 12.213, 2);
         if(out == -1) {
             cout << "I wasn't able to find the bin, something must be incorecct in search algorithm:" << endl;
             return -1;
@@ -166,6 +166,44 @@ int main() {
     printStats(added);
     printStats(substracted);
     //printStats(divided);
+
+    ///And now, test cuts:
+
+    cout << endl << endl << endl << "Testing cuts: " << endl;
+    Histo2D sampleHisto(50, 0, 100, 39, 0, 10);
+    sampleHisto.fill(0,0,123121);
+    cout << sampleHisto.sumW(false) << " " << sampleHisto.sumW2(false) << endl;
+    printStats(sampleHisto);
+    if(!fuzzyEquals(sampleHisto.sumW(false), (double)123121)) {
+        cout << "Something is wrong with weight filling!!" << endl;
+        return -1;
+    }
+    if(!fuzzyEquals(sampleHisto.sumW2(false), 1.51588e+10)) {
+        cout << "Something is wrong with weight squared!" << endl;
+        return -1;
+    }
+
+    Histo1D atY(sampleHisto.cutterX(0));
+    cout << atY.sumW(false) << " " <<atY.numBins() << endl;
+    if(!fuzzyEquals(atY.sumW(false), sampleHisto.sumW(false))){
+        cout << "Something is wrong with weights when cut parallell to X axis." << endl;
+        return -1;
+    }
+
+    Histo1D atX(sampleHisto.cutterY(0));
+    cout << atX.sumW(false) << " " << atX.numBins() << endl;
+    if(!fuzzyEquals(atX.sumW(false), sampleHisto.sumW(false))){
+        cout << "Something is wrong with weights when cut parallell to Y axis." << endl;
+        return -1;
+    }
+
+
+    Histo1D atX2(sampleHisto.cutterX(2));
+    cout << atX2.sumW(false) << " " << atX2.numBins() << endl;
+    if(!fuzzyEquals(atX2.sumW(false), 0)){
+        cout << "Probably the cuts are not done properly!" << endl;
+        return -1;
+    }
     
     return EXIT_SUCCESS;
 }

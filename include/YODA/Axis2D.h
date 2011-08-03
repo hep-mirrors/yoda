@@ -69,22 +69,38 @@ namespace YODA {
 
             //TODO: Check inclusion
         }
+
+        /// @name Binary search functions
+        //@{
+        /** I am exploiting the fact that we are operating on 
+          * a sorted vector all the time. Therefore employing 
+          * binary search to find the lower bound seems to be 
+          * a logical step.
+          */
+        size_t _binaryS(Utils::cachedvector<pair<double, vector<pair<size_t, pair<double,double> > > > >& toSearch, double value, size_t lower, size_t higher) {
+            if(lower == higher) return lower;
+            size_t where = (higher+lower)/2;
+            
+            if(value >= toSearch[where].first) {
+                if(where == toSearch.size() - 1) return where;
+                if(value <= toSearch[where+1].first) return where;
+                return _binaryS(toSearch, value, where, higher);
+            }
+            if(where == 0) return where;
+            if(value >= toSearch[where-1].first) return where;
+            return _binaryS(toSearch, value, lower, where);
+        }
+        //@}
         /// Function checking the cuts of horizontal segments
         /** It searches for edges s.t. they may cut the edge in question and
           * then checks if a cut indeed occurs.
           */
         bool _findCutsX(pair<pair<double,double>, pair<double,double> >& edge) {
-            for(unsigned int i=0; i < _binHashSparse.second.size(); i++) {
-                //Sanity check, for more comments see above:
-                if(edge.second.first < _binHashSparse.second[i].first &&
-                   !fuzzyEquals(edge.second.first, _binHashSparse.second[i].first)) break;
-
-                if(fuzzyEquals(_binHashSparse.second[i].first, edge.first.first) ||
-                  (_binHashSparse.second[i].first > edge.first.first &&
-                   _binHashSparse.second[i].first < edge.second.first ) ||
-                   fuzzyEquals(_binHashSparse.second[i].first, edge.second.first)) {
+            size_t i = _binaryS(_binHashSparse.second, edge.first.first, 0, _binHashSparse.second.size());
+            size_t end = _binaryS(_binHashSparse.second, edge.second.first, 0, _binHashSparse.second.size());
+            for(; i < end; i++) {
                     
-                    for(unsigned int j=0; j < _binHashSparse.second[i].second.size(); j++) {
+                    for(unsigned int j = 0; j < _binHashSparse.second[i].second.size(); j++) {
                         if(_binHashSparse.second[i].second[j].second.first < edge.first.second &&
                            _binHashSparse.second[i].second[j].second.second > edge.first.second &&
                            !fuzzyEquals(_binHashSparse.second[i].second[j].second.first, edge.first.second) &&
@@ -93,23 +109,16 @@ namespace YODA {
                         }
                     }
                 }
-            }
             return true;
         }
 
         /// Checking the cuts of vertical segments
         bool _findCutsY(pair<pair<double,double>, pair<double,double> >& edge) {
-            for(unsigned int i=0; i < _binHashSparse.first.size(); i++) {
-                
-                if(edge.second.second < _binHashSparse.first[i].first &&
-                   !fuzzyEquals(edge.second.second, _binHashSparse.first[i].first)) break;
-
-                if(fuzzyEquals(_binHashSparse.first[i].first, edge.first.second) ||
-                  (_binHashSparse.first[i].first > edge.first.second &&
-                   _binHashSparse.first[i].first < edge.second.second ) ||
-                   fuzzyEquals(_binHashSparse.first[i].first, edge.second.second)) {
+            size_t i = _binaryS(_binHashSparse.first, edge.first.second, 0, _binHashSparse.first.size());
+            size_t end = _binaryS(_binHashSparse.first, edge.second.second, 0, _binHashSparse.first.size());
+            for(; i < end; i++) {
                     
-                    for(unsigned int j=0; j < _binHashSparse.first[i].second.size(); j++) {
+                    for(unsigned int j = 0; j < _binHashSparse.first[i].second.size(); j++) {
                         if(_binHashSparse.first[i].second[j].second.first < edge.first.first &&
                            _binHashSparse.first[i].second[j].second.second > edge.first.first &&
                            !fuzzyEquals(_binHashSparse.first[i].second[j].second.first, edge.first.first) &&
@@ -118,7 +127,6 @@ namespace YODA {
                         }
                     }
                 }
-            }
             return true;
         }
         
@@ -133,11 +141,13 @@ namespace YODA {
                 pair<pair<double,double>, pair<double,double> > edge = edges[j];
                 if(edge.first.first == edge.second.first) {
                     bool found = false;
-                    for(unsigned int i=0; i < _binHashSparse.second.size(); i++) {
+                    size_t i = _binaryS(_binHashSparse.second, edge.first.first, 0, _binHashSparse.second.size())-1;
+                    if(i < 0) i = 0;
+                    size_t end = i+3;
+                    for(; i < _binHashSparse.second.size() && i < end ; i++) {
                     if(fuzzyEquals(_binHashSparse.second[i].first, edge.first.first)) {
                         _binHashSparse.second[i].second.push_back(
                             make_pair(_bins.size(),make_pair(edge.first.second, edge.second.second)));
-                        sort(_binHashSparse.second[i].second.begin(), _binHashSparse.second[i].second.end());
                         found = true;
                         }
                     }
@@ -145,16 +155,19 @@ namespace YODA {
                         vector<pair<size_t, pair<double,double> > > temp;
                         temp.push_back(make_pair(_bins.size(), make_pair(edge.first.second, edge.second.second)));
                         _binHashSparse.second.push_back(make_pair(edge.first.first,temp));
+                        sort(_binHashSparse.second.begin(), _binHashSparse.second.end());
                     }
                 }
 
                 else if(edge.first.second == edge.second.second) {
                     bool found = false;
-                    for(unsigned int i=0; i < _binHashSparse.first.size(); i++) {
+                    size_t i = _binaryS(_binHashSparse.first, edge.first.second, 0, _binHashSparse.first.size())-1;
+                    if(i < 0) i = 0;
+                    size_t end = i+3;
+                    for(; i < _binHashSparse.first.size() && i < end; i++) {
                         if(fuzzyEquals(_binHashSparse.first[i].first, edge.first.second)) {
                             _binHashSparse.first[i].second.push_back(
                                 make_pair(_bins.size(),make_pair(edge.first.first, edge.second.first)));
-                            sort(_binHashSparse.first[i].second.begin(), _binHashSparse.first[i].second.end());
                             found = true;
                         }
                     }
@@ -162,6 +175,7 @@ namespace YODA {
                         vector<pair<size_t, pair<double,double> > > temp;
                         temp.push_back(make_pair(_bins.size(), make_pair(edge.first.first, edge.second.first)));
                         _binHashSparse.first.push_back(make_pair(edge.second.second, temp));
+                        sort(_binHashSparse.first.begin(), _binHashSparse.first.end());
                     }
                 }
             }
@@ -302,29 +316,28 @@ namespace YODA {
         /** Uses a very neat property of _binCacheSparse, 
           * namely that it will containg the same number of
           * edges on inner sides and half the number on outer ones*/
-        void isGriddy() {
+        int isGriddy() {
             unsigned int sizeX = _binHashSparse.first[0].second.size();
             for(unsigned int i=1; i < _binHashSparse.first.size(); i++) {
-                if(i==1 || i == _binHashSparse.first.size() - 1) {
-                    if(_binHashSparse.first[i].second.size() != sizeX/2) {
-                        throw GridError("Not a grid!");
+                if(i == _binHashSparse.first.size() - 1) {
+                    if(_binHashSparse.first[i].second.size() != sizeX) {
+                        return -1;
                     }
                 }
-                else if(_binHashSparse.first[i].second.size() != sizeX) {
-                    throw GridError("Not a grid!");
+                else if(_binHashSparse.first[i].second.size() != 2*sizeX) {
+                    return -1;
                 }
             }
-
             unsigned int sizeY = _binHashSparse.second[0].second.size();
             for(unsigned int i=1; i < _binHashSparse.second.size(); i++) {
                 if(i!= _binHashSparse.second.size() - 1) {
                     if(2*sizeY != _binHashSparse.second[i].second.size()) {
-                        throw GridError("Not a grid!");
+                        return -1;
                     }
                 }
-                else if(_binHashSparse.second[i].second.size() != sizeY) throw GridError("Not a grid!");
+                else if(_binHashSparse.second[i].second.size() != sizeY) return -1;
             }
-
+            return 0;
         }
 
 
@@ -398,6 +411,7 @@ namespace YODA {
         BIN& binByCoord(double x, double y) {
             int ret = findBinIndex(x, y);
             if(ret != -1) return bin(ret);
+            else throw RangeError("No bin found!!");
         }
 
         /// Get a bin at given coordinates (const version)
@@ -470,7 +484,7 @@ namespace YODA {
             size_t indexY = (*_binHashSparse.first._cache.lower_bound(approx(coordY))).second;
 
             if(indexY < _binHashSparse.first.size()) {
-                for(unsigned int i=0; i < _binHashSparse.first[indexY].second.size(); i++){
+                for(unsigned int i = 0;  i < _binHashSparse.first[indexY].second.size(); i++){
                     if(_binHashSparse.first[indexY].second[i].second.first < coordX &&
                        _binHashSparse.first[indexY].second[i].second.second > coordX){
                         size_t indexX = (*_binHashSparse.second._cache.lower_bound(approx(coordX))).second;

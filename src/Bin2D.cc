@@ -1,4 +1,5 @@
 #include "YODA/Bin2D.h"
+#include "YODA/HistoBin1D.h"
 
 #include <cassert>
 #include <cmath>
@@ -63,7 +64,6 @@ namespace YODA {
 
         _dbn.scale(scaleX, scaleY);
     }
-
 
     double Bin2D::widthX() const {
         return _edges[1].second.first - _edges[0].first.first;
@@ -134,6 +134,41 @@ namespace YODA {
     }
     double Bin2D::sumWY2() const {
         return _dbn.sumWY2();
+    }
+
+    /// Dbn setters:
+    void Bin2D::setW(double sumW)      {_dbn.setW(sumW);}
+    void Bin2D::setW2(double sumW2)    {_dbn.setW2(sumW2);}
+    void Bin2D::setWX(double sumWX)    {_dbn.setWX(sumWX);}
+    void Bin2D::setWY(double sumWY)    {_dbn.setWY(sumWY);}
+    void Bin2D::setWX2(double sumWX2)  {_dbn.setWX2(sumWX2);}
+    void Bin2D::setWY2(double sumWY2)  {_dbn.setWY2(sumWY2);}
+    void Bin2D::setWXY(double sumWXY)  {_dbn.setWY2(sumWXY);}
+
+    /// Transformer transforming taking X as width
+    HistoBin1D Bin2D::transformX() {
+        HistoBin1D temp(lowEdgeX(), highEdgeX());
+        
+        temp.setW(sumW());
+        temp.setW2(sumW2());
+        temp.setWX(sumWX());
+        temp.setWX2(sumWX2());
+        temp.setNumFills(numEntries());
+
+        return temp;
+    }
+    
+    /// Transformer transforming taking Y as width
+    HistoBin1D Bin2D::transformY() {
+        HistoBin1D temp(lowEdgeY(), highEdgeY());
+        
+        temp.setW(sumW());
+        temp.setW2(sumW2());
+        temp.setWX(sumWY());
+        temp.setWX2(sumWY2());
+        temp.setNumFills(numEntries());
+
+        return temp;
     }
 
     Bin2D& Bin2D::add(const Bin2D& b) {

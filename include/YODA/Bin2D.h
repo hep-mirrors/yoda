@@ -3,6 +3,7 @@
 
 #include "YODA/Bin.h"
 #include "YODA/Dbn2D.h"
+#include "YODA/HistoBin1D.h"
 #include <string>
 #include <utility>
 #include <vector>
@@ -82,6 +83,24 @@ namespace YODA {
         double sumWXY() const;
         double sumWX2() const;
         double sumWY2() const;
+
+        /// Setters
+        void setW(double sumW);
+        void setW2(double sumW2);
+        void setWX(double sumWX);
+        void setWY(double sumWY);
+        void setWX2(double sumWX2);
+        void setWY2(double sumWY2);
+        void setWXY(double sumWXY);
+
+        ///@name Transformers
+        //@{
+
+        /// Transform, taking X coordinates as a bin width
+        HistoBin1D transformX();
+
+        /// Transform, taking Y coordinates as bin width
+        HistoBin1D transformY();
 
         /// Addition operators:
         Bin2D& operator += (const Bin2D&);

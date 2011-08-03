@@ -27,11 +27,11 @@ namespace YODA {
       
       // Fill the underflow and overflow nicely
       _axis.totalDbn().fill(x, y, weight);
-      if (x < _axis.lowEdgeX()) { _axis.underflow().fill(x, y, weight); }
-      if (x >= _axis.highEdgeX()) { _axis.overflow().fill(x, y, weight); }
     
       b.fill(x, y, weight);
     }
+    else if (x < _axis.lowEdgeX()) { _axis.underflow().fill(x, y, weight); }
+    else if (x >= _axis.highEdgeX()) { _axis.overflow().fill(x, y, weight); }
     return index;
   }
 

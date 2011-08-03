@@ -37,7 +37,6 @@ namespace YODA {
     return sumw;
   }
 
-
   double Histo1D::sumW2(bool includeoverflows) const {
     if (includeoverflows) return _axis.totalDbn().sumW2();
     double sumw2 = 0;

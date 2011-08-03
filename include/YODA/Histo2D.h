@@ -11,6 +11,7 @@
 #include "YODA/Scatter3D.h"
 #include "YODA/Axis2D.h"
 #include "YODA/Exceptions.h"
+#include "YODA/Histo1D.h"
 #include <vector>
 #include <string>
 #include <map>
@@ -93,8 +94,8 @@ namespace YODA {
     }
 
     ///Check if is a grid:
-    void isGriddy() {
-        _axis.isGriddy();
+    int isGriddy() {
+        return _axis.isGriddy();
     }
     
     /// Rescale as if all fill weights had been different by factor @a scalefactor.
@@ -230,6 +231,7 @@ namespace YODA {
     //@{
 
     /// Get the total area of the histogram
+    //TODO: This does not work!!
     double integral(bool includeoverflows=true) const {
       return sumW(includeoverflows);
     }
@@ -278,6 +280,37 @@ namespace YODA {
 
     //@}
 
+    ///Creates a Histo1D from Histo2D 
+    /** This function cuts Histo2D parallely to the X axis 
+      * at the specified Y coordinate:
+      */
+    Histo1D cutterX(double atY) {
+        if(atY < lowEdgeY() || atY > highEdgeY()) throw RangeError("Y is outside the grid");
+        HistoBin2D first = binByCoord(lowEdgeX(), atY);
+        vector<HistoBin1D> temp;
+        temp.push_back(first.transformX());
+
+        for(double i = first.xMax() + first.widthX()/2; i < highEdgeX(); i+=first.widthX()){
+            temp.push_back(binByCoord(i,atY).transformX());
+        }
+
+        Histo1D ret(temp);
+        return ret;
+    }
+    
+    Histo1D cutterY(double atX) {
+        if(atX < lowEdgeX() || atX > highEdgeX()) throw RangeError("X is outside the grid");
+        HistoBin2D first = binByCoord(lowEdgeX(), atX);
+        vector<HistoBin1D> temp;
+        temp.push_back(first.transformY());
+
+        for(double i = first.yMax() + first.widthY()/2; i < highEdgeY(); i+=first.widthY()){
+            temp.push_back(binByCoord(atX,i).transformY());
+        }
+
+        Histo1D ret(temp);
+        return ret;
+    }
 
   private:
 

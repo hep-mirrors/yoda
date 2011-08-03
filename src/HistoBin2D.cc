@@ -27,7 +27,7 @@ namespace YODA {
   { }
 
   void HistoBin2D::fill(double x, double y, double w) {
-    _dbn.fill(x, w);
+    _dbn.fill(x,y,w);
   }
 
   void HistoBin2D::fill(std::pair<double,double> coords, double weight) {

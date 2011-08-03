@@ -115,6 +115,13 @@ namespace YODA {
 
     //@}
 
+    /// Setters
+    void setW(double sumW);
+    void setW2(double sumW2);
+    void setWX(double sumWX);
+    void setWX2(double sumWX2);
+    void setNumFills(double numFills);
+
 
   public:
 
