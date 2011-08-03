@@ -39,8 +39,9 @@ NEXT
 * Add a Counter type (mostly a UI/persistency wrapper on Dbn1D) (AB)
 
 * Conversion functions to build Histo1D and Profile1D objects for slicings and
-  marginalisations along both X and Y directions of 2D histos. (Throw an
-  exception if binnings are not complete grids. - this part done) (MICHAL)
+  marginalisations along both X and Y directions of 2D histos. Throw an
+  exception if binnings are not complete grids. (MICHAL)
+  (done)
 
 * Profile2D & Dbn3D
 
