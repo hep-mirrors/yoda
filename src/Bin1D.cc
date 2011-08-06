@@ -25,6 +25,17 @@ namespace YODA {
     assert( _edges.second >= _edges.first );
   }
 
+  Bin1D::Bin1D(double lowedge, double highedge, unsigned long numFills,
+               double sumW, double sumW2, double sumWX, double sumWX2) 
+               :_edges( make_pair(lowedge, highedge) ) 
+  {
+    _xdbn._numFills =   numFills;
+    _xdbn._sumW =       sumW;
+    _xdbn._sumW2 =      sumW2;
+    _xdbn._sumWX =      sumWX;
+    _xdbn._sumWX2 =     sumWX2;
+  }
+
 
   void Bin1D::reset () {
     _xdbn.reset();
@@ -108,12 +119,6 @@ namespace YODA {
   double Bin1D::sumWX2() const {
     return _xdbn.sumWX2();
   }
-
-  void Bin1D::setW(double sumW)             {_xdbn.setW(sumW);}
-  void Bin1D::setW2(double sumW2)           {_xdbn.setW2(sumW2);}
-  void Bin1D::setWX(double sumWX)           {_xdbn.setWX(sumWX);}
-  void Bin1D::setWX2(double sumWX2)         {_xdbn.setWX2(sumWX2);}
-  void Bin1D::setNumFills(double numFills)  {_xdbn.setNumFills(numFills);}
 
   Bin1D& Bin1D::add(const Bin1D& b) {
     assert(_edges == b._edges);

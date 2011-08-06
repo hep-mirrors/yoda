@@ -8,6 +8,7 @@
 
 #include "YODA/AnalysisObject.h"
 #include "YODA/HistoBin2D.h"
+#include "YODA/HistoBin1D.h"
 #include "YODA/Scatter3D.h"
 #include "YODA/Axis2D.h"
 #include "YODA/Exceptions.h"
@@ -288,10 +289,13 @@ namespace YODA {
         if(atY < lowEdgeY() || atY > highEdgeY()) throw RangeError("Y is outside the grid");
         HistoBin2D first = binByCoord(lowEdgeX(), atY);
         vector<HistoBin1D> temp;
-        temp.push_back(first.transformX());
+        temp.push_back(HistoBin1D(first.lowEdgeX(), first.highEdgeX(), first.numEntries(),
+                       first.sumW(), first.sumW2(), first.sumWX(), first.sumWX2()));
 
         for(double i = first.xMax() + first.widthX()/2; i < highEdgeX(); i+=first.widthX()){
-            temp.push_back(binByCoord(i,atY).transformX());
+            HistoBin2D tempBin = binByCoord(i, atY);
+            temp.push_back(HistoBin1D(tempBin.lowEdgeX(), tempBin.highEdgeX(), tempBin.numEntries(),
+                           tempBin.sumW(), tempBin.sumW2(), tempBin.sumWX(), tempBin.sumWX2()));
         }
 
         Histo1D ret(temp);
@@ -302,10 +306,13 @@ namespace YODA {
         if(atX < lowEdgeX() || atX > highEdgeX()) throw RangeError("X is outside the grid");
         HistoBin2D first = binByCoord(lowEdgeX(), atX);
         vector<HistoBin1D> temp;
-        temp.push_back(first.transformY());
+        temp.push_back(HistoBin1D(first.lowEdgeY(), first.highEdgeY(), first.numEntries(),
+                                  first.sumW(), first.sumW2(), first.sumWX(), first.sumWX2()));
 
         for(double i = first.yMax() + first.widthY()/2; i < highEdgeY(); i+=first.widthY()){
-            temp.push_back(binByCoord(atX,i).transformY());
+            HistoBin2D tempBin = binByCoord(atX, i);
+            temp.push_back(HistoBin1D(tempBin.lowEdgeY(), tempBin.highEdgeY(), tempBin.numEntries(),
+                           tempBin.sumW(), tempBin.sumW2(), tempBin.sumWX(), tempBin.sumWX2()));
         }
 
         Histo1D ret(temp);

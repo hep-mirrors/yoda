@@ -20,6 +20,11 @@ namespace YODA {
     : Bin1D(edges)
   { }
 
+  HistoBin1D::HistoBin1D(double low, double high, unsigned long numFills, double sumW,
+                         double sumW2, double sumWX, double sumWX2)
+    : Bin1D(low, high, numFills, sumW, sumW2, sumWX, sumWX2)
+  { }
+
 
   void HistoBin1D::fill(double x, double w) {
     assert( _edges.first < _edges.second );

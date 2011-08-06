@@ -26,6 +26,10 @@ namespace YODA {
 
     Bin1D(std::pair<double,double> edges);
 
+    /// A constructor for cutting along a given axis:
+    Bin1D(double lowedge, double highedge, unsigned long numFills, 
+          double sumW, double sumW2, double sumWX, double sumWX2);
+
     //@}
 
 
@@ -112,13 +116,6 @@ namespace YODA {
     double sumWX2() const;
 
     //@}
-
-    /// Setters
-    void setW(double sumW);
-    void setW2(double sumW2);
-    void setWX(double sumWX);
-    void setWX2(double sumWX2);
-    void setNumFills(double numFills);
 
   public:
 

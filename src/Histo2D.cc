@@ -4,7 +4,7 @@
 // Copyright (C) 2008-2011 The YODA collaboration (see AUTHORS for details)
 //
 #include "YODA/Histo2D.h"
-#include "YODA/Scatter2D.h"
+#include "YODA/Scatter3D.h"
 
 #include <cmath>
 #include <iostream>
@@ -32,6 +32,7 @@ namespace YODA {
     }
     else if (x < _axis.lowEdgeX()) { _axis.underflow().fill(x, y, weight); }
     else if (x >= _axis.highEdgeX()) { _axis.overflow().fill(x, y, weight); }
+    else throw GridError("You are trying to fill an empty space on a grid!");
     return index;
   }
 

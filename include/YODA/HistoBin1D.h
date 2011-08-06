@@ -22,6 +22,8 @@ namespace YODA {
     //@{
     HistoBin1D(double lowedge, double highedge);
     HistoBin1D(std::pair<double,double> edges);
+    HistoBin1D(double lowedge, double highedge, unsigned long numFills,
+               double sumW, double sumW2, double sumWX, double sumWX2);
     //@}
 
 

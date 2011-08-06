@@ -21,13 +21,13 @@ namespace YODA {
   /// sampled distribution. It is used to provide this information in bins
   /// and for the "hidden" \f$ y \f$ distribution in profile histogram bins.
   class Dbn1D {
+  friend class Bin1D;
   public:
 
     /// Constructor.
     Dbn1D() {
       reset();
     }
-
 
     /// @name Modifiers
     //@{
@@ -114,14 +114,6 @@ namespace YODA {
     double sumWX2() const;
 
     //@}
-
-    /// Setters
-    void setW(double sumW);
-    void setW2(double sumW2);
-    void setWX(double sumWX);
-    void setWX2(double sumWX2);
-    void setNumFills(double numFills);
-
 
   public:
 
