@@ -9,8 +9,8 @@
 #include "YODA/AnalysisObject.h"
 #include "YODA/HistoBin2D.h"
 #include "YODA/HistoBin1D.h"
-#include "YODA/Scatter3D.h"
 #include "YODA/Axis2D.h"
+#include "YODA/Scatter3D.h"
 #include "YODA/Exceptions.h"
 #include "YODA/Histo1D.h"
 #include <vector>
@@ -60,8 +60,6 @@ namespace YODA {
     /// Copy constructor with optional new path
     Histo2D(const Histo2D& h, const std::string& path="");
 
-    /// Constructor from a Scatter3D's binning, with optional new path
-    Histo2D(const Scatter3D& s, const std::string& path="");
 
 
     //@}
@@ -177,12 +175,12 @@ namespace YODA {
 
     /// Return bin index (non-const version)
     int findBinIndex(double coordX, double coordY) {
-      return _axis.findBinIndex(coordX, coordY);
+      return _axis.getBinIndex(coordX, coordY);
     }
 
     /// Return bin index (const version)
     const int findBinIndex(double coordX, double coordY) const {
-      return _axis.findBinIndex(coordX, coordY);
+      return _axis.getBinIndex(coordX, coordY);
     }
 
     /// Underflow (const version)
@@ -260,6 +258,15 @@ namespace YODA {
     }
 
     //@}
+
+    /// @name Additional operators
+    //@{ 
+
+    /// @brief Check if any of the bins in histo is included in any other
+    /// @todo remove, placed here just for testing purposes
+    bool checkInclusion() {
+      return _axis.checkInclusion();
+    }
 
 
   public:

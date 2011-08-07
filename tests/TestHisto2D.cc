@@ -1,5 +1,4 @@
 #include "YODA/Histo2D.h"
-#include "YODA/Profile1D.h"
 #include <cmath>
 #include <iostream>
 #include <unistd.h>
@@ -44,6 +43,24 @@ int main() {
     double tE = (endTime.tv_sec*1000000 + endTime.tv_usec)/(double)1000000;
     cout << "Time to create 40K bins: " << tE - tS << "s" << endl;
     printStats(h);
+
+    /// Testing inclusion
+    gettimeofday(&startTime, NULL);
+    bool result = h.checkInclusion();
+    gettimeofday(&endTime, NULL);
+
+    tS = (startTime.tv_sec*1000000 + startTime.tv_usec)/(double)1000000;
+    tE = (endTime.tv_sec*1000000 + endTime.tv_usec)/(double)1000000;
+    cout << "Time to check inclusion on 40K bins is:" << tE - tS << "s" << endl;
+    if(result) {
+        cout << "Inclusion checking is not working properly!" << endl;
+        return -1;
+    }
+    cout << h.numBinsTotal() << endl;
+    h.addBin(0.1, 0.1, 0.2, 0.2);
+    h.addBin(110, 0, 200, 12.100);
+    h.addBin(16.0, 200, 17.0, 300);
+    cout << h.numBinsTotal() <<" " << h.checkInclusion() << endl;
     
     
     /// Trying to fill a bin.
@@ -51,7 +68,7 @@ int main() {
     for (int i=0; i < 2000000; i++) {
         int out = h.fill(16.0123, 12.213, 2);
         if(out == -1) {
-            cout << "I wasn't able to find the bin, something must be incorecct in search algorithm:" << endl;
+            cout << "I wasn't able to find the bin, something must be incorrect in the search algorithm." << endl;
             return -1;
         }
     }

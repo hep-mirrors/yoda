@@ -5,7 +5,7 @@ namespace YODA {
 
 
   /// Make a Scatter3D representation of a Histo2D
-  Scatter3D mkScatter(const Histo2D& h) {
+/*  Scatter3D mkScatter(const Histo2D& h) {
     Scatter3D rtn;
     rtn.setAnnotations(h.annotations());
     rtn.setAnnotation("Type", h.type());
@@ -26,7 +26,7 @@ namespace YODA {
     //assert(h.numBins() == rtn.numPoints());
     return rtn;
   }
-
+*/
   ////////////////////////////////////////
 
 

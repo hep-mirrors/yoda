@@ -9,6 +9,7 @@
 #include "YODA/AnalysisObject.h"
 #include "YODA/Point3D.h"
 #include "YODA/Utils/sortedvector.h"
+#include "YODA/Histo2D.h"
 #include <vector>
 #include <set>
 #include <string>
@@ -17,7 +18,6 @@
 namespace YODA {
 
 
-  class Histo3D;
 
 
   /// A very generic data type which is just a collection of 3D data points with errors
@@ -224,7 +224,7 @@ namespace YODA {
   //@{
 
   /// Make a Scatter3D representation of a Histo1D
-  Scatter3D mkScatter(const Histo3D& h);
+  //Scatter3D mkScatter(const Histo2D& h);
 
   //@}
 
