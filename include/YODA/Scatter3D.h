@@ -92,7 +92,7 @@ namespace YODA {
     void reset() {
       _points.clear();
     }
-    
+
     /// Scale
     void scale(double scaleX, double scaleY, double scaleZ) {
         for(unsigned int i=0; i < _points.size(); i++) _points[i].scale(scaleX, scaleY, scaleZ);
@@ -150,7 +150,7 @@ namespace YODA {
       return *this;
     }
 
-    Scatter3D& addPoint(double x, double y, double z, 
+    Scatter3D& addPoint(double x, double y, double z,
                         std::pair<double,double> ex, std::pair<double,double> ey, std::pair<double,double> ez) {
       _points.insert(Point3D(x, y, z, ex, ey, ez));
       return *this;
@@ -207,10 +207,9 @@ namespace YODA {
   }
 
 
-  inline Scatter3D combine(const std::vector< Scatter3D >& scatters) {
+  inline Scatter3D combine(const std::vector<Scatter3D>& scatters) {
     Scatter3D rtn;
-    for (std::vector<Scatter3D>::const_iterator s = scatters.begin();
-         s != scatters.end(); ++s) {
+    for (std::vector<Scatter3D>::const_iterator s = scatters.begin(); s != scatters.end(); ++s) {
       rtn.combineWith(*s);
     }
     return rtn;

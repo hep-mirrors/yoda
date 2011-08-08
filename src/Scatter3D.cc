@@ -31,7 +31,7 @@ namespace YODA {
 
 
   /// Subtract two scatters
-  inline Scatter3D operator + (const Scatter3D& first, const Scatter3D& second) {
+  Scatter3D operator + (const Scatter3D& first, const Scatter3D& second) {
     /// @todo Implement
     Scatter3D tmp;
     return tmp;
@@ -39,7 +39,7 @@ namespace YODA {
 
 
   /// Subtract two scatters
-  inline Scatter3D operator - (const Scatter3D& first, const Scatter3D& second) {
+  Scatter3D operator - (const Scatter3D& first, const Scatter3D& second) {
     /// @todo Implement
     Scatter3D tmp;
     return tmp;
@@ -52,7 +52,7 @@ namespace YODA {
     for (size_t i = 0; i < numer.numPoints(); ++i) {
       const Point3D& p1 = numer.point(i);
       const Point3D& p2 = denom.point(i);
-      
+
       assert(fuzzyEquals(p1.xMin(), p2.xMin()));
       assert(fuzzyEquals(p1.xMax(), p2.xMax()));
 
@@ -65,7 +65,7 @@ namespace YODA {
       const double z = p1.z() / p2.z();
       /// @todo Generally deal with +/- errors separately
       const double ez = z * sqrt( sqr(p1.yErrAvg()/p1.z()) + sqr(p2.yErrAvg()/p2.z()) );
-      tmp.addPoint(x, p1.xErrMinus(), p1.xErrPlus(), 
+      tmp.addPoint(x, p1.xErrMinus(), p1.xErrPlus(),
                    y, p1.yErrMinus(), p1.yErrPlus(), z, ez, ez);
     }
     assert(tmp.numPoints() == numer.numPoints());

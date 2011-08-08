@@ -214,7 +214,7 @@ namespace YODA {
       }
       return *this;
     }
-    
+
     /// Scaling
     void scale(double scaleX, double scaleY) {
         for(unsigned int i=0; i < _points.size(); i++) _points[i].scale(scaleX, scaleY);
@@ -289,10 +289,10 @@ namespace YODA {
   //@{
 
   /// Add two scatters
-  inline Scatter2D operator + (const Scatter2D& first, const Scatter2D& second);
+  Scatter2D operator + (const Scatter2D& first, const Scatter2D& second);
 
   /// Subtract two scatters
-  inline Scatter2D operator - (const Scatter2D& first, const Scatter2D& second);
+  Scatter2D operator - (const Scatter2D& first, const Scatter2D& second);
 
   /// Divide two scatters
   Scatter2D operator / (const Scatter2D& numer, const Scatter2D& denom);

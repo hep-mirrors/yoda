@@ -51,7 +51,7 @@ namespace YODA {
 
 
   /// Subtract two scatters
-  inline Scatter2D operator + (const Scatter2D& first, const Scatter2D& second) {
+  Scatter2D operator + (const Scatter2D& first, const Scatter2D& second) {
     Scatter2D tmp;
     for (size_t i = 0; i < first.numPoints(); ++i) {
       const Point2D& p1 = first.point(i);
@@ -71,7 +71,7 @@ namespace YODA {
 
 
   /// Subtract two scatters
-  inline Scatter2D operator - (const Scatter2D& first, const Scatter2D& second) {
+  Scatter2D operator - (const Scatter2D& first, const Scatter2D& second) {
     Scatter2D tmp;
     for (size_t i = 0; i < first.numPoints(); ++i) {
       const Point2D& p1 = first.point(i);

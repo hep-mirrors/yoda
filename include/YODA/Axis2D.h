@@ -807,9 +807,9 @@ namespace YODA {
                     _binHashSparse.first[i].second[j].second.second *=scaleX;
                 }
             }
-            for(unsigned int i=0; i < _binHashSparse.second.size(); i++) {
+            for (unsigned int i=0; i < _binHashSparse.second.size(); i++) {
                 _binHashSparse.second[i].first *= scaleX;
-                for(unsigned int j=0; j < _binHashSparse.second[i].second.size(); j++){
+                for (unsigned int j=0; j < _binHashSparse.second[i].second.size(); j++){
                     _binHashSparse.second[i].second[j].second.first *=scaleY;
                     _binHashSparse.second[i].second[j].second.second *=scaleY;
                 }
@@ -820,7 +820,7 @@ namespace YODA {
             _binHashSparse.second.regenCache();
 
             /// Now, as we have the map rescaled, we need to update the bins
-            for(unsigned int i=0; i < _bins.size(); i++) _bins[i].scale(scaleX, scaleY);
+            for (size_t i = 0; i < _bins.size(); ++i) _bins[i].scale(scaleX, scaleY);
             _dbn.scale(scaleX, scaleY);
             _underflow.scale(scaleX, scaleY);
             _overflow.scale(scaleX, scaleY);
@@ -829,13 +829,12 @@ namespace YODA {
             _regenDelimiters();
         }
 
-        /// Scales the heights of the bins
-        void scaleW(double scalefactor)
-        {
+        /// Scales the bin weights
+        void scaleW(double scalefactor) {
             _dbn.scaleW(scalefactor);
             _underflow.scaleW(scalefactor);
             _overflow.scaleW(scalefactor);
-            for (unsigned int i=0; i<_bins.size(); i++) _bins[i].scaleW(scalefactor);
+            for (size_t i=0; i<_bins.size(); i++) _bins[i].scaleW(scalefactor);
         }
        //@}
 
@@ -918,7 +917,7 @@ namespace YODA {
 
    };
 
-    /// Additon operator
+    /// Addition operator
     template <typename BIN>
     Axis2D<BIN> operator + (const Axis2D<BIN>& first, const Axis2D<BIN>& second)
     {
@@ -927,7 +926,7 @@ namespace YODA {
         return tmp;
     }
 
-    /// Substraciton operator
+    /// Subtraction operator
     template <typename BIN>
     Axis2D<BIN> operator - (const Axis2D<BIN>& first, const Axis2D<BIN>& second)
     {
