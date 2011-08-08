@@ -3,12 +3,8 @@ YODA TODO list
 
 NOW
 
-
 * Histo2D & Dbn2D: add Python interface mapping. (MICHAL)
   (done, compilation is fine, not tested yet, though)
-
-* Add Scatter3D operator+- declarations and test Python interface with make
-  check (ANDY)
 
 * Test that a y-binned Histo2D has the same per-y-column stats as an
   equivalently x-binned Profile1D. Perhaps use this as an opportunity to
@@ -18,18 +14,23 @@ NOW
 * Axis1D::scaleX(d), Axis2D::scaleX/Y(d), Axis2D::scaleXY(d, d),
   Scatter2D::scaleX/Y(d), Scatter2D::scaleXY(d, d). (MICHAL)
   (done, also added scaling for Scatter3D. Scaling of errors is done in a
-  veeery crude way)
+  veeery crude way. AB: Elaborate?)
+
+* Conversion functions to build Histo1D and Profile1D objects for slicings and
+  marginalisations along both X and Y directions of 2D histos. Throw an
+  exception if binnings are not complete grids. (MICHAL)
+  (done -- to be reviewed)
 
 * Rebinning: merges of n adjacent bins and global rebinning by integer factor
   (on widths or on bin groups?) (AB)
 
 * Implement _setstate for Histo1D and Profile1D. (AB)
 
-* Multiple errors on Scatter2D via a vector of Error2D. Combination rule enum
-  arg (QUAD, LIN) on error() method (DANIEL)
-
 * New "flat" file format: adapt WriterYODA and fill ReaderYODA. (HH)
   Need to persist the whole-histo Dbn1D/Dbn2Ds, and over/underflows.
+
+* Multiple errors on Scatter2D -- via a vector of Error2D? How to implement
+  flexible error combination?  (DANIEL)
 
 * WriterFlat and ReaderFlat, for Scatter2D representations only. (HH)
 
@@ -40,11 +41,6 @@ NEXT
 * Use Weights objects in Dbn1D / Dbn2D (AB)
 
 * Add a Counter type (mostly a UI/persistency wrapper on Dbn1D) (AB)
-
-* Conversion functions to build Histo1D and Profile1D objects for slicings and
-  marginalisations along both X and Y directions of 2D histos. Throw an
-  exception if binnings are not complete grids. (MICHAL)
-  (done)
 
 * Profile2D & Dbn3D
 
@@ -59,8 +55,9 @@ NEXT
 
 * Arbitrary function transforms on Scatters
 
-* Transform differential to integral histos... or allow representation/querying
-  as such. How to do this if bin edges don't match?
+* Transform differential to integral histos and vice versa. Bins have to be
+  contiguous?
+
 
 
 AND AFTER THAT...
