@@ -671,7 +671,7 @@ namespace YODA {
         BIN& bin(size_t index)
         {
           /// @todo WTF?! Don't just copy and paste exception warnings. This one is totally misleading: are there more?
-            if(index >= _bins.size()) throw RangeError("YODA::Histo2D: index out of range");
+            if(index >= _bins.size()) throw RangeError("Bin index out of range.");
             return _bins[index];
         }
 
@@ -679,7 +679,7 @@ namespace YODA {
         const BIN& bin(size_t index) const
         {
           /// @todo WTF?! Don't just copy and paste exception warnings. This one is totally misleading: are there more?
-            if(index >= _bins.size()) throw RangeError("YODA::Histo2D: index out of range");
+            if(index >= _bins.size()) throw RangeError("Bin index out of range.");
             return _bins[index];
         }
 
@@ -861,7 +861,6 @@ namespace YODA {
         Axis2D<BIN>& operator += (const Axis2D<BIN>& toAdd)
         {
             if (*this != toAdd) {
-              /// @todo WTF?! Don't just copy and paste exception warnings. This one is totally misleading: are there more?
                 throw LogicError("YODA::Histo1D: Cannot add axes with different binnings.");
             }
             for (unsigned int i=0; i < bins().size(); i++) bins().at(i) += toAdd.bins().at(i);
@@ -876,14 +875,13 @@ namespace YODA {
         Axis2D<BIN>& operator -= (const Axis2D<BIN>& toSubtract)
         {
             if (*this != toSubtract) {
-              /// @todo WTF?! Don't just copy and paste exception warnings. This one is totally misleading: are there more?
                 throw LogicError("YODA::Histo1D: Cannot add axes with different binnings.");
             }
-            for (unsigned int i=0; i < bins().size(); i++) bins().at(i) -= toSubstract.bins().at(i);
+            for (unsigned int i=0; i < bins().size(); i++) bins().at(i) -= toSubtract.bins().at(i);
 
-            _dbn -= toSubstract._dbn;
-            _underflow -= toSubstract._underflow;
-            _overflow -= toSubstract._overflow;
+            _dbn -= toSubtract._dbn;
+            _underflow -= toSubtract._underflow;
+            _overflow -= toSubtract._overflow;
             return *this;
         }
         //@}

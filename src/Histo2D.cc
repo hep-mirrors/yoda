@@ -116,7 +116,7 @@ namespace YODA {
 
   /// Divide two histograms
   Scatter3D operator / (const Histo2D& numer, const Histo2D& denom) {
-    assert(numer.getHash() == denom.getHash());
+    if(numer.getHash() != denom.getHash()) throw GridError("The two Histos are not the same!");
     Scatter3D tmp;
     for (size_t i = 0; i < numer.numBinsTotal(); ++i) {
       const HistoBin2D& b1 = numer.bin(i);
