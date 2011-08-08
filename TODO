@@ -7,6 +7,9 @@ NOW
 * Histo2D & Dbn2D: add Python interface mapping. (MICHAL)
   (done, compilation is fine, not tested yet, though)
 
+* Add Scatter3D operator+- declarations and test Python interface with make
+  check (ANDY)
+
 * Test that a y-binned Histo2D has the same per-y-column stats as an
   equivalently x-binned Profile1D. Perhaps use this as an opportunity to
   implement one of the the conversion functions mentioned in the NEXT
@@ -14,7 +17,7 @@ NOW
 
 * Axis1D::scaleX(d), Axis2D::scaleX/Y(d), Axis2D::scaleXY(d, d),
   Scatter2D::scaleX/Y(d), Scatter2D::scaleXY(d, d). (MICHAL)
-  (done, also added scaling for Scatter3D. Scaling of errors is done in a 
+  (done, also added scaling for Scatter3D. Scaling of errors is done in a
   veeery crude way)
 
 * Rebinning: merges of n adjacent bins and global rebinning by integer factor
