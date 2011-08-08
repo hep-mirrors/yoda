@@ -222,8 +222,31 @@ namespace YODA {
   /// @name Conversion functions from other data types
   //@{
 
-  /// Make a Scatter3D representation of a Histo1D
-  //Scatter3D mkScatter(const Histo2D& h);
+  /// Make a Scatter3D representation of a Histo2D
+  /// @todo Implement!
+  // Scatter3D mkScatter(const Histo2D& h);
+
+  /// Make a Scatter3D representation of a Profile2D
+  /// @todo Implement!
+  // Scatter3D mkScatter(const Profile2D& h);
+
+  //@}
+
+
+  /////////////////////////////////
+
+
+  /// @name Combining scatters: global operators, assuming aligned points
+  //@{
+
+  /// Add two scatters
+  Scatter3D operator + (const Scatter3D& first, const Scatter3D& second);
+
+  /// Subtract two scatters
+  Scatter3D operator - (const Scatter3D& first, const Scatter3D& second);
+
+  /// Divide two scatters
+  Scatter3D operator / (const Scatter3D& numer, const Scatter3D& denom);
 
   //@}
 
