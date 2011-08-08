@@ -21,4 +21,5 @@ TESTS = \
 	testhisto1Da testhisto1Db \
 	testprofile1Da \
     testhisto2D    \
-	testindexedset testsortedvector
+	testindexedset testsortedvector \
+	test-yoda-1.py test-yoda-2.py

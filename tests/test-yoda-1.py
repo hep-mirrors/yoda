@@ -2,13 +2,14 @@
 
 import random
 import unittest
-import YODA
+import yoda
 
 
 class TestSequenceFunctions(unittest.TestCase):
-    
+
     def setUp(self):
         self.seq = range(10)
+        print "PROPER TEST NEEDS TO BE IMPLEMENTED!"
 
     def testshuffle(self):
         # make sure the shuffled sequence does not lose any elements
