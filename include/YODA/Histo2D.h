@@ -259,16 +259,6 @@ namespace YODA {
 
     //@}
 
-    /// @name Additional operators
-    //@{ 
-
-    /// @brief Check if any of the bins in histo is included in any other
-    /// @todo remove, placed here just for testing purposes
-    bool checkInclusion() {
-      return _axis.checkInclusion();
-    }
-
-
   public:
 
     /// @name Adding and subtracting histograms

@@ -117,41 +117,6 @@ namespace YODA {
             return true;
         }
 
-        /// @brief Inclusion checker
-      /// @todo AB: I had this one pointed out to me. What is meant by "almost
-      /// always right"? Is it possible for this code to lead to wrong answers?
-      /// There is a *lot* of complexity in these private methods... is it all
-      /// definitely needed? Clarity first, speed second, please.
-        /** Be aware that it works according to principle:
-          * always fast, almost always right.
-          */
-        bool _checkInclusion(vector<Segment>& edges)
-        {
-            pair<Utils::cachedvector<EdgeCollection>, Utils::cachedvector<EdgeCollection> > binHash = _binHashSparse;
-
-            /// @todo NOT GOOD ENOUGH! DO IT RIGHT.
-            double smallNum = 0.00001;
-
-            if(edges.size() == 4) {
-                _addEdge(edges, binHash, false);
-                if (_findBinIndex(edges[1].second.first-smallNum, edges[1].second.second-smallNum, binHash) == -1) {
-                    cout << " true1 ";
-                    return true;
-                }
-            }
-
-            for(unsigned int i=0; i < _bins.size(); i++) {
-                int result = _findBinIndex(_bins[i].lowEdgeX(), _bins[i].highEdgeY()-smallNum, binHash);
-                if (result == -1 || (unsigned int)result != i){
-                    cout << " true2 " << i << " ";
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
-
         /// @brief A binary search function
         /** This is conceptually the same implementation as in STL
           * but because it returns the index of an element in a vector,
@@ -411,7 +376,6 @@ namespace YODA {
             _binHashSparse.first.regenCache();
             _binHashSparse.second.regenCache();
             _regenDelimiters();
-
         }
 
         /// @brief Plot extrema (re)generator.
@@ -442,43 +406,14 @@ namespace YODA {
             _highEdgeY = highEdgeY;
         }
 
-        /// @brief Bin index finder
-        /** This version of findBinIndex is searching for an edge on the left
-         *  that is enclosing the point and then finds an edge on the bottom
-         *  that does the same and if it finds two edges that are a part of
-         *  the same square it returns that it had found a bin. If no bin is
-         *  found, ie. (coordX, coordY) is a point in empty space -1 is returned.
-         */
-        int _findBinIndex(double coordX, double coordY, const pair<Utils::cachedvector<EdgeCollection>,
-                         Utils::cachedvector<EdgeCollection> >& binHash) const {
-            /** It is need to apply this trick not to have a coordinate
-              * pointing directly on the edge. Notice that this is lower that
-              * fuzzyEquals() tolerance.
-              */
-            coordX += 0.0000000001; coordY += 0.00000000001;
-            //cout << "YO";
-
-            size_t indexY = (*binHash.first._cache.lower_bound(approx(coordY))).second;
-
-            if(indexY < binHash.first.size()) {
-                for(unsigned int i = 0;  i < binHash.first[indexY].second.size(); i++){
-                    if(binHash.first[indexY].second[i].second.first < coordX &&
-                       binHash.first[indexY].second[i].second.second > coordX){
-                        size_t indexX = (*binHash.second._cache.lower_bound(approx(coordX))).second;
-                        if(indexX < binHash.second.size()){
-                            for(unsigned int j=0; j < binHash.second[indexX].second.size(); j++) {
-                                if(binHash.second[indexX].second[j].second.first < coordY &&
-                                   (binHash.second[indexX].second[j].second.second > coordY) &&
-                                   (binHash.second[indexX].second[j].first ==
-                                   binHash.first[indexY].second[i].first))
-                                    return binHash.second[indexX].second[j].first;
-                            }
-                        }
-                    }
-                }
+        int _findBinIndex(double coordX, double coordY) const {
+            for(size_t i=0; i < _bins.size(); i++) {
+                if(_bins[i].lowEdgeX() <= coordX && _bins[i].highEdgeX()  >= coordX && 
+                   _bins[i].lowEdgeY() <= coordY && _bins[i].highEdgeY() >= coordY) return i;
             }
             return -1;
         }
+
 
     public:
         /// @name Constructors:
@@ -591,16 +526,6 @@ namespace YODA {
             return 0;
         }
 
-        /// @brief Check if no bin is included in the other one
-        /** For a bit more detailed description, plese see
-          * _checkInclusion().
-          */
-        bool checkInclusion()
-        {
-            vector<Segment> temp;
-            return _checkInclusion(temp);
-        }
-
         /// Return a total number of bins in a Histo
         unsigned int numBinsTotal() const
         {
@@ -686,7 +611,7 @@ namespace YODA {
         /// Get a bin at given coordinates (non-const version)
         BIN& binByCoord(double x, double y)
         {
-            int ret = _findBinIndex(x, y, _binHashSparse);
+            int ret = _findBinIndex(x, y);
             if(ret != -1) return bin(ret);
             else throw RangeError("No bin found!!");
         }
@@ -694,7 +619,7 @@ namespace YODA {
         /// Get a bin at given coordinates (const version)
         const BIN& binByCoord(double x, double y) const
         {
-            int ret = _findBinIndex(x, y, _binHashSparse);
+            int ret = _findBinIndex(x, y);
             if(ret != -1) return bin(ret);
             else throw RangeError("No bin found!!");
         }
@@ -702,7 +627,7 @@ namespace YODA {
         /// Get a bin at given coordinates (non-const version)
         BIN& binByCoord(pair<double, double>& coords)
         {
-            int ret = _findBinIndex(coords.first, coords.second, _binHashSparse);
+            int ret = _findBinIndex(coords.first, coords.second);
             if(ret != -1) return bin(ret);
             else throw RangeError("No bin found!!");
         }
@@ -710,7 +635,7 @@ namespace YODA {
         /// Get a bin at given coordinates (const version)
         const BIN& binByCoord(pair<double, double>& coords) const
         {
-            int ret = _findBinIndex(coords.first, coords.second, _binHashSparse);
+            int ret = _findBinIndex(coords.first, coords.second);
             if(ret != -1) return bin(ret);
             else throw RangeError("No bin found!!");
         }
@@ -772,7 +697,7 @@ namespace YODA {
         /// @todo Why isn't *this* method const?
         int getBinIndex(double coordX, double coordY)
         {
-            return _findBinIndex(coordX, coordY, _binHashSparse);
+            return _findBinIndex(coordX, coordY);
         }
 
         /// Get bin index from external classes (const version)
@@ -780,7 +705,7 @@ namespace YODA {
         /// @todo This method is completely pointless: I think that method constancy has been misunderstood :(
         const int getBinIndex(double coordX, double coordY) const
         {
-            return _findBinIndex(coordX, coordY, _binHashSparse);
+            return _findBinIndex(coordX, coordY);
         }
 
         /// Resetts the axis statistics ('fill history')
@@ -915,6 +840,9 @@ namespace YODA {
         /// Low/High edges:
         double _highEdgeX, _highEdgeY, _lowEdgeX, _lowEdgeY;
 
+        ///Some additional hashes:
+        vector<Edge> _hashX; vector<Edge> _hashY;
+
    };
 
     /// Addition operator
@@ -935,6 +863,11 @@ namespace YODA {
         return tmp;
     }
 
+    typedef typename std::pair<size_t, std::pair<double,double> > Edge;
+    template <typename BIN>
+    Axis2D<BIN> operator < (Edge first, Edge second) {
+        return first.second.second < second.second.second;
+    }
 
 }
 
