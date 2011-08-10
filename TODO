@@ -3,8 +3,16 @@ YODA TODO list
 
 NOW
 
+* Make test environment use the pre-installation build (AB)
+
 * Histo2D & Dbn2D: add Python interface mapping. (MICHAL)
   (done, compilation is fine, not tested yet, though)
+
+* Remove getBinHash from Axis2D and use private bin hash member for equality
+  comparisons (MICHAL)
+
+* Implement hierarchy-cascading state-setting constructors for Histo1D and
+  Profile1D. (AB)
 
 * Test that a y-binned Histo2D has the same per-y-column stats as an
   equivalently x-binned Profile1D. Perhaps use this as an opportunity to
@@ -23,8 +31,6 @@ NOW
 
 * Rebinning: merges of n adjacent bins and global rebinning by integer factor
   (on widths or on bin groups?) (AB)
-
-* Implement _setstate for Histo1D and Profile1D. (AB)
 
 * New "flat" file format: adapt WriterYODA and fill ReaderYODA. (HH)
   Need to persist the whole-histo Dbn1D/Dbn2Ds, and over/underflows.
