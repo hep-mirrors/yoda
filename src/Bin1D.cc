@@ -19,21 +19,18 @@ namespace YODA {
   }
 
 
-  Bin1D::Bin1D(std::pair<double, double> edges)
+  Bin1D::Bin1D(const std::pair<double, double>& edges)
     : _edges( edges )
   {
     assert( _edges.second >= _edges.first );
   }
 
-  Bin1D::Bin1D(double lowedge, double highedge, unsigned long numFills,
-               double sumW, double sumW2, double sumWX, double sumWX2) 
-               :_edges( make_pair(lowedge, highedge) ) 
+
+  Bin1D::Bin1D(double lowedge, double highedge, const Dbn1D& dbnx)
+    : _edges( make_pair(lowedge, highedge) ),
+      _xdbn(dbnx)
   {
-    _xdbn._numFills =   numFills;
-    _xdbn._sumW =       sumW;
-    _xdbn._sumW2 =      sumW2;
-    _xdbn._sumWX =      sumWX;
-    _xdbn._sumWX2 =     sumWX2;
+    assert( _edges.second >= _edges.first );
   }
 
 

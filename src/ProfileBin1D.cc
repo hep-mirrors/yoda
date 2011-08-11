@@ -14,9 +14,16 @@ namespace YODA {
   { }
 
 
-  ProfileBin1D::ProfileBin1D(std::pair<double,double> edges)
+  ProfileBin1D::ProfileBin1D(const std::pair<double,double>& edges)
     : Bin1D(edges)
   { }
+
+
+  ProfileBin1D::ProfileBin1D(double lowedge, double highedge,
+                             const Dbn1D& dbnx, const Dbn1D& dbny)
+    : Bin1D(lowedge, highedge, dbnx),
+      _ydbn(dbny)
+  {  }
 
 
   void ProfileBin1D::fill(double x, double d, double w) {

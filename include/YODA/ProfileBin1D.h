@@ -28,7 +28,12 @@ namespace YODA {
     ProfileBin1D(double lowedge, double highedge);
 
     /// Constructor giving bin low and high edges as a pair.
-    ProfileBin1D(std::pair<double,double> edges);
+    ProfileBin1D(const std::pair<double,double>& edges);
+
+    /// @brief Init a profile bin with all the components of a fill history.
+    /// Mainly intended for internal persistency use.
+    ProfileBin1D(double lowedge, double highedge,
+                 const Dbn1D& dbnx, const Dbn1D& dbny);
 
     //@}
 

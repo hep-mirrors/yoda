@@ -21,13 +21,28 @@ namespace YODA {
   /// sampled distribution. It is used to provide this information in bins
   /// and for the "hidden" \f$ y \f$ distribution in profile histogram bins.
   class Dbn1D {
-  friend class Bin1D;
   public:
 
-    /// Constructor.
+    /// @name Constructors
+    //@{
+
+    /// Default constructor of a new distribution.
     Dbn1D() {
       reset();
     }
+
+    /// @brief Constructor to set a distribution with a pre-filled state.
+    /// Principally designed for internal persistency use.
+    Dbn1D(unsigned int numEntries, double sumW, double sumW2, double sumWX, double sumWX2) {
+      _numFills = numEntries;
+      _sumW = sumW;
+      _sumW2 = sumW2;
+      _sumWX = sumWX;
+      _sumWX2 = sumWX2;
+    }
+
+    //@}
+
 
     /// @name Modifiers
     //@{
@@ -49,10 +64,10 @@ namespace YODA {
       _sumWX2 *= sf2;
     }
 
-    /// Rescale the edges
+    /// Rescale x: needed if histo bin edges are rescaled.
     void scaleX(double factor) {
-        _sumWX *= factor;
-        _sumWX2 *= factor*factor;
+      _sumWX *= factor;
+      _sumWX2 *= factor*factor;
     }
 
     //@}

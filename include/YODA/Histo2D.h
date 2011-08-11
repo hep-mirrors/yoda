@@ -38,29 +38,26 @@ namespace YODA {
     //@{
 
     /// Constructor giving range and number of bins.
-    /// @todo Remove binning enum stuff
     Histo2D(size_t nbinsX, double lowerX, double upperX,
             size_t nbinsY, double lowerY, double upperY,
             const std::string& path="", const std::string& title="")
       : AnalysisObject("Histo2D", path, title),
-        _axis(nbinsX, lowerX, upperX,
-              nbinsY, lowerY, upperY)
+        _axis(nbinsX, lowerX, upperX, nbinsY, lowerY, upperY)
     { }
-    /* A default constructor. One needs to provide two points 
-     * (top-right and bottom-left) for each rectangular bin that 
-     * is created. It is assumed that the binedges vector is nonempty (why btw?).
-     */
-    Histo2D(const std::vector<std::pair<std::pair<double,double>, pair<double,double> > >& binedges, 
-            const std::string& path="", 
-            const std::string& title="") 
+
+    /// A default constructor. One needs to provide two points
+    /// (top-right and bottom-left) for each rectangular bin that
+    /// is created. It is assumed that the binedges vector is nonempty (why btw?).
+    /// @todo Drop the pairings -- it is more natural, less contrived, and cleaner in code as xlow/high and ylow/high
+    Histo2D(const std::vector<std::pair<std::pair<double,double>, pair<double,double> > >& binedges,
+            const std::string& path="",
+            const std::string& title="")
       : AnalysisObject("Histo2D", path, title),
       _axis(binedges)
     { }
 
     /// Copy constructor with optional new path
     Histo2D(const Histo2D& h, const std::string& path="");
-
-
 
     //@}
 
@@ -96,19 +93,19 @@ namespace YODA {
     int isGriddy() {
         return _axis.isGriddy();
     }
-    
+
     /// Rescale as if all fill weights had been different by factor @a scalefactor.
     void scaleW(double scalefactor) {
       _axis.scaleW(scalefactor);
     }
-    
+
     /// Scale the dimensions
     void scale(double scaleX = 1.0, double scaleY = 1.0) {
       _axis.scale(scaleX, scaleY);
     }
 
-    
-    //Adding bins
+
+    /// Adding bins
     void addBin(const vector<pair<pair<double,double>, pair<double,double> > > coords) {
         _axis.addBin(coords);
     }
@@ -119,6 +116,7 @@ namespace YODA {
     }
 
     //@}
+
   public:
 
     /// @name Bin accessors
@@ -187,7 +185,7 @@ namespace YODA {
     const Dbn2D& underflow() const {
         return _axis.underflow();
     }
-    
+
     /// Return underflow (non-const version)
     Dbn2D& underflow() {
         return _axis.underflow();
@@ -202,7 +200,7 @@ namespace YODA {
     Dbn2D& overflow() {
         return _axis.overflow();
     }
-   
+
     /// Return a total number of bins in Histo(non-const version)
     unsigned int numBinsTotal() {
         return _axis.numBinsTotal();
@@ -213,24 +211,27 @@ namespace YODA {
     }
 
     /// Hash returner (non-const version)
+    /// @todo This needs a typedef
     std::pair<Utils::cachedvector<pair<double,std::vector<pair<size_t, pair<double,double> > > > >,
               Utils::cachedvector<pair<double,std::vector<pair<size_t, pair<double,double> > > > > > getHash() {
         return _axis.getHash();
     }
-    
+
     /// Hash returner (const version)
+    /// @todo This needs a typedef
     const std::pair<Utils::cachedvector<pair<double,std::vector<pair<size_t, pair<double,double> > > > >,
                     Utils::cachedvector<pair<double,std::vector<pair<size_t, pair<double,double> > > > > > getHash() const {
         return _axis.getHash();
     }
     //@}
+
   public:
 
     /// @name Whole histo data
     //@{
 
-    /// Get the total area of the histogram
-    //TODO: This does not work!!
+    /// Get the total volume of the histogram
+    // @todo This does not work!! (AB: Explain what you mean!)
     double integral(bool includeoverflows=true) const {
       return sumW(includeoverflows);
     }
@@ -259,6 +260,7 @@ namespace YODA {
 
     //@}
 
+
   public:
 
     /// @name Adding and subtracting histograms
@@ -269,7 +271,7 @@ namespace YODA {
       _axis += toAdd._axis;
       return *this;
     }
-    
+
     /// Subtract another histogram from this one
     Histo2D& operator -= (const Histo2D& toSubtract) {
       _axis -= toSubtract._axis;
@@ -278,43 +280,56 @@ namespace YODA {
 
     //@}
 
-    ///Creates a Histo1D from Histo2D 
-    /** This function cuts Histo2D parallely to the X axis 
-      * at the specified Y coordinate:
-      */
+
+    /// @name Slicing operators
+    //@{
+
+    /// Create a Histo1D for the bin slice parallel to the x axis at the specified y coordinate
+    /// @todo It's not really *at* the specified y coord: it's for the corresponding bin row.
+    /// @todo Checking that there is such a thing as a continuous row?
+    /// @todo Change the name!
     Histo1D cutterX(double atY) {
-        if(atY < lowEdgeY() || atY > highEdgeY()) throw RangeError("Y is outside the grid");
-        HistoBin2D first = binByCoord(lowEdgeX(), atY);
-        vector<HistoBin1D> temp;
-        temp.push_back(HistoBin1D(first.lowEdgeX(), first.highEdgeX(), first.numEntries(),
-                       first.sumW(), first.sumW2(), first.sumWX(), first.sumWX2()));
-
-        for(double i = first.xMax() + first.widthX()/2; i < highEdgeX(); i+=first.widthX()){
-            HistoBin2D tempBin = binByCoord(i, atY);
-            temp.push_back(HistoBin1D(tempBin.lowEdgeX(), tempBin.highEdgeX(), tempBin.numEntries(),
-                           tempBin.sumW(), tempBin.sumW2(), tempBin.sumWX(), tempBin.sumWX2()));
-        }
-
-        Histo1D ret(temp);
-        return ret;
+      if (atY < lowEdgeY() || atY > highEdgeY()) throw RangeError("Y is outside the grid");
+      vector<HistoBin1D> tempBins;
+      /// @todo Make all Bin1D constructions happen in loop, to reduce code duplication
+      const HistoBin2D& first = binByCoord(lowEdgeX(), atY);
+      Dbn1D dbn(first.numEntries(), first.sumW(), first.sumW2(), first.sumWX(), first.sumWX2());
+      tempBins.push_back(HistoBin1D(first.lowEdgeX(), first.highEdgeX(), dbn));
+      for (double i = first.xMax() + first.widthX()/2; i < highEdgeX(); i += first.widthX()) {
+        const HistoBin2D& b2 = binByCoord(i, atY);
+        Dbn1D dbn2(b2.numEntries(), b2.sumW(), b2.sumW2(), b2.sumWX(), b2.sumWX2());
+        tempBins.push_back(HistoBin1D(b2.lowEdgeX(), b2.highEdgeX(), dbn2));
+      }
+      return Histo1D(tempBins);
     }
-    
+
+
+    /// Create a Histo1D for the bin slice parallel to the y axis at the specified x coordinate
+    /// @todo It's not really *at* the specified x coord: it's for the corresponding bin row.
+    /// @todo Checking that there is such a thing as a continuous row?
+    /// @todo Change the name!
     Histo1D cutterY(double atX) {
-        if(atX < lowEdgeX() || atX > highEdgeX()) throw RangeError("X is outside the grid");
-        HistoBin2D first = binByCoord(lowEdgeX(), atX);
-        vector<HistoBin1D> temp;
-        temp.push_back(HistoBin1D(first.lowEdgeY(), first.highEdgeY(), first.numEntries(),
-                                  first.sumW(), first.sumW2(), first.sumWX(), first.sumWX2()));
-
-        for(double i = first.yMax() + first.widthY()/2; i < highEdgeY(); i+=first.widthY()){
-            HistoBin2D tempBin = binByCoord(atX, i);
-            temp.push_back(HistoBin1D(tempBin.lowEdgeY(), tempBin.highEdgeY(), tempBin.numEntries(),
-                           tempBin.sumW(), tempBin.sumW2(), tempBin.sumWX(), tempBin.sumWX2()));
-        }
-
-        Histo1D ret(temp);
-        return ret;
+      if (atX < lowEdgeX() || atX > highEdgeX()) throw RangeError("X is outside the grid");
+      vector<HistoBin1D> tempBins;
+      /// @todo Make all Bin1D constructions happen in loop, to reduce code duplication
+      const HistoBin2D& first = binByCoord(atX, lowEdgeY());
+      Dbn1D dbn(first.numEntries(), first.sumW(), first.sumW2(), first.sumWX(), first.sumWX2());
+      tempBins.push_back(HistoBin1D(first.lowEdgeY(), first.highEdgeY(), dbn));
+      for (double i = first.yMax() + first.widthY()/2; i < highEdgeY(); i += first.widthY()) {
+        const HistoBin2D& b2 = binByCoord(atX, i);
+        Dbn1D dbn2(b2.numEntries(), b2.sumW(), b2.sumW2(), b2.sumWX(), b2.sumWX2());
+        tempBins.push_back(HistoBin1D(b2.lowEdgeY(), b2.highEdgeY(), dbn2));
+      }
+      return Histo1D(tempBins);
     }
+
+
+    /// @todo Create x-wise and y-wise conversions to Profile1D
+
+
+    //@}
+
+
 
   private:
 

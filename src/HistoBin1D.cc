@@ -16,13 +16,13 @@ namespace YODA {
   { }
 
 
-  HistoBin1D::HistoBin1D(std::pair<double, double> edges)
+  HistoBin1D::HistoBin1D(const std::pair<double, double>& edges)
     : Bin1D(edges)
   { }
 
-  HistoBin1D::HistoBin1D(double low, double high, unsigned long numFills, double sumW,
-                         double sumW2, double sumWX, double sumWX2)
-    : Bin1D(low, high, numFills, sumW, sumW2, sumWX, sumWX2)
+
+  HistoBin1D::HistoBin1D(double low, double high, const Dbn1D& dbn)
+    : Bin1D(low, high, dbn)
   { }
 
 

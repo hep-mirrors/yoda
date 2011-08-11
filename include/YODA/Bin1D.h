@@ -20,15 +20,18 @@ namespace YODA {
   class Bin1D : public Bin {
   public:
 
-    /// @name Constructors, giving bin low and high edges. 
+    /// @name Constructors, giving bin low and high edges.
     //@{
+
+    /// Init a new, empty bin with a pair of edges.
     Bin1D(double lowedge, double highedge);
 
-    Bin1D(std::pair<double,double> edges);
+    /// Init a new, empty bin with a pair of edges.
+    Bin1D(const std::pair<double,double>& edges);
 
-    /// A constructor for cutting along a given axis:
-    Bin1D(double lowedge, double highedge, unsigned long numFills, 
-          double sumW, double sumW2, double sumWX, double sumWX2);
+    /// @brief Init a bin with all the components of a fill history.
+    /// Mainly intended for internal persistency use.
+    Bin1D(double lowedge, double highedge, const Dbn1D& dbnx);
 
     //@}
 

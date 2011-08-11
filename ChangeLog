@@ -1,3 +1,12 @@
+2011-08-11  Andy Buckley  <andy@insectnation.org>
+
+	* Various typo fixes and comments relating to persistency
+	constructors, Histo2D slicing, etc.
+
+	* Changing the HistoBin1D state-setting constructors (aargh, these
+	should *not* have already existed) to take Dbn1D as an argument
+	rather than a long list of doubles.
+
 2011-08-01  Andy Buckley  <andy@insectnation.org>
 
 	* Adding tests to check that implicit construction of Weights
