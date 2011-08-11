@@ -16,8 +16,6 @@
 #include <cmath>
 #include <algorithm>
 
-using namespace std;
-
 namespace YODA {
 
 
@@ -46,42 +44,6 @@ namespace YODA {
     //@}
 
 
-  private:
-
-    /// @todo Remove
-    void _mkBinHash() {
-      for (size_t i = 0; i < numBins(); i++) {
-        // Insert upper bound mapped to bin ID
-        _binHash.insert(make_pair(_cachedBinEdges[i+1],i));
-      }
-    }
-
-
-    void _mkAxis(const vector<double>& binedges) {
-      const size_t nbins = binedges.size() - 1;
-      for (size_t i = 0; i < nbins; ++i) {
-        _bins.insert( BIN1D(binedges.at(i), binedges.at(i+1)) );
-      }
-
-      /// @todo Remove
-      _cachedBinEdges = binedges;
-      std::sort(_cachedBinEdges.begin(), _cachedBinEdges.end());
-      _mkBinHash();
-    }
-
-
-    void _mkAxis(const Bins& bins) {
-      _bins = bins;
-
-      /// @todo Remove
-      for (size_t i = 0; i < bins.size(); ++i) {
-        _cachedBinEdges.push_back(bins.at(i).lowEdge());
-      }
-      _cachedBinEdges.push_back(bins.back().highEdge());
-      _mkBinHash();
-    }
-
-
   public:
 
 
@@ -92,7 +54,7 @@ namespace YODA {
 
     /// Constructor with a list of bin edges
     /// @todo Accept a general iterable and remove this silly special-casing for std::vector
-    Axis1D(const vector<double>& binedges) {
+    Axis1D(const std::vector<double>& binedges) {
       assert(binedges.size() > 1);
       _mkAxis(binedges);
     }
@@ -106,18 +68,21 @@ namespace YODA {
 
 
     /// @todo Accept a general iterable and remove this silly special-casing for std::vector
-    Axis1D(const vector<BIN1D>& bins) {
+    Axis1D(const std::vector<BIN1D>& bins) {
       assert(!bins.empty());
       Bins sbins;
-      for (typename vector<BIN1D>::const_iterator b = bins.begin(); b != bins.end(); ++b) {
+      for (typename std::vector<BIN1D>::const_iterator b = bins.begin(); b != bins.end(); ++b) {
         sbins.insert(*b);
       }
       _mkAxis(sbins);
     }
 
 
-    /// @todo Accept a general iterable (and remove this internal detail special-casing?)
-    Axis1D(const Bins& bins) {
+    /// @brief State-setting constructor
+    /// Principally intended for internal persistency use.
+    Axis1D(const Bins& bins, const Dbn1D& dbn_tot, const Dbn1D& dbn_uflow, const Dbn1D& dbn_oflow)
+      : _dbn(dbn_tot), _underflow(dbn_uflow), _overflow(dbn_oflow)
+    {
       assert(!bins.empty());
       _mkAxis(bins);
     }
@@ -149,7 +114,7 @@ namespace YODA {
 
     std::pair<double,double> binEdges(size_t binId) const {
       assert(binId < numBins());
-      return make_pair(_cachedBinEdges[binId], _cachedBinEdges[binId+1]);
+      return std::make_pair(_cachedBinEdges[binId], _cachedBinEdges[binId+1]);
     }
 
 
@@ -321,6 +286,42 @@ namespace YODA {
 
   private:
 
+    /// @todo Remove
+    void _mkBinHash() {
+      for (size_t i = 0; i < numBins(); i++) {
+        // Insert upper bound mapped to bin ID
+        _binHash.insert(std::make_pair(_cachedBinEdges[i+1],i));
+      }
+    }
+
+
+    void _mkAxis(const std::vector<double>& binedges) {
+      const size_t nbins = binedges.size() - 1;
+      for (size_t i = 0; i < nbins; ++i) {
+        _bins.insert( BIN1D(binedges.at(i), binedges.at(i+1)) );
+      }
+
+      /// @todo Remove
+      _cachedBinEdges = binedges;
+      std::sort(_cachedBinEdges.begin(), _cachedBinEdges.end());
+      _mkBinHash();
+    }
+
+
+    void _mkAxis(const Bins& bins) {
+      _bins = bins;
+
+      /// @todo Remove
+      for (size_t i = 0; i < bins.size(); ++i) {
+        _cachedBinEdges.push_back(bins.at(i).lowEdge());
+      }
+      _cachedBinEdges.push_back(bins.back().highEdge());
+      _mkBinHash();
+    }
+
+
+  private:
+
 
     /// @todo Store bins in a more flexible (and sorted) way
     /// @todo Check non-overlap of bins
@@ -334,13 +335,13 @@ namespace YODA {
     /// The bins contained in this histogram
     Bins _bins;
 
+    /// A distribution counter for the whole histogram
+    DBN _dbn;
+
     /// A distribution counter for overflow fills
     DBN _underflow;
     /// A distribution counter for underlow fills
     DBN _overflow;
-
-    /// A distribution counter for the whole histogram
-    DBN _dbn;
 
     /// Bin edges: lower edges, except last entry,
     /// which is the high edge of the last bin

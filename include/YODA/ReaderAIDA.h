@@ -34,7 +34,7 @@ namespace YODA {
 
   protected:
 
-    void _readDoc(std::istream& stream, vector<AnalysisObject*>& aos);
+    void _readDoc(std::istream& stream, std::vector<AnalysisObject*>& aos);
     //void readGenericAO(std::istream& stream);
     // virtual void readHisto(std::istream& stream, const Histo1D& h);
     // virtual void readProfile(std::istream& stream, const Profile1D& p);

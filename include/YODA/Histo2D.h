@@ -284,43 +284,49 @@ namespace YODA {
     /// @name Slicing operators
     //@{
 
-    /// Create a Histo1D for the bin slice parallel to the x axis at the specified y coordinate
+    /// @brief Create a Histo1D for the bin slice parallel to the x axis at the specified y coordinate
+    /// Note that the created histogram will not have correctly filled underflow and overflow bins.
     /// @todo It's not really *at* the specified y coord: it's for the corresponding bin row.
-    /// @todo Checking that there is such a thing as a continuous row?
+    /// @todo Need to check that there is a continuous row for this y
     /// @todo Change the name!
-    Histo1D cutterX(double atY) {
+    Histo1D cutterX(double atY, const std::string& path="", const std::string& title="") {
       if (atY < lowEdgeY() || atY > highEdgeY()) throw RangeError("Y is outside the grid");
       vector<HistoBin1D> tempBins;
       /// @todo Make all Bin1D constructions happen in loop, to reduce code duplication
       const HistoBin2D& first = binByCoord(lowEdgeX(), atY);
-      Dbn1D dbn(first.numEntries(), first.sumW(), first.sumW2(), first.sumWX(), first.sumWX2());
+      const Dbn1D dbn(first.numEntries(), first.sumW(), first.sumW2(), first.sumWX(), first.sumWX2());
       tempBins.push_back(HistoBin1D(first.lowEdgeX(), first.highEdgeX(), dbn));
       for (double i = first.xMax() + first.widthX()/2; i < highEdgeX(); i += first.widthX()) {
         const HistoBin2D& b2 = binByCoord(i, atY);
-        Dbn1D dbn2(b2.numEntries(), b2.sumW(), b2.sumW2(), b2.sumWX(), b2.sumWX2());
+        const Dbn1D dbn2(b2.numEntries(), b2.sumW(), b2.sumW2(), b2.sumWX(), b2.sumWX2());
         tempBins.push_back(HistoBin1D(b2.lowEdgeX(), b2.highEdgeX(), dbn2));
       }
-      return Histo1D(tempBins);
+      /// @todo Think about the total, underflow and overflow distributions
+      /// @todo Create total dbn from input bins
+      return Histo1D(tempBins, Dbn1D(), Dbn1D(), Dbn1D(), path, title);
     }
 
 
     /// Create a Histo1D for the bin slice parallel to the y axis at the specified x coordinate
+    /// Note that the created histogram will not have correctly filled underflow and overflow bins.
     /// @todo It's not really *at* the specified x coord: it's for the corresponding bin row.
-    /// @todo Checking that there is such a thing as a continuous row?
+    /// @todo Need to check that there is a continuous column for this x
     /// @todo Change the name!
-    Histo1D cutterY(double atX) {
+    Histo1D cutterY(double atX, const std::string& path="", const std::string& title="") {
       if (atX < lowEdgeX() || atX > highEdgeX()) throw RangeError("X is outside the grid");
       vector<HistoBin1D> tempBins;
       /// @todo Make all Bin1D constructions happen in loop, to reduce code duplication
       const HistoBin2D& first = binByCoord(atX, lowEdgeY());
-      Dbn1D dbn(first.numEntries(), first.sumW(), first.sumW2(), first.sumWX(), first.sumWX2());
+      const Dbn1D dbn(first.numEntries(), first.sumW(), first.sumW2(), first.sumWX(), first.sumWX2());
       tempBins.push_back(HistoBin1D(first.lowEdgeY(), first.highEdgeY(), dbn));
       for (double i = first.yMax() + first.widthY()/2; i < highEdgeY(); i += first.widthY()) {
         const HistoBin2D& b2 = binByCoord(atX, i);
-        Dbn1D dbn2(b2.numEntries(), b2.sumW(), b2.sumW2(), b2.sumWX(), b2.sumWX2());
+        const Dbn1D dbn2(b2.numEntries(), b2.sumW(), b2.sumW2(), b2.sumWX(), b2.sumWX2());
         tempBins.push_back(HistoBin1D(b2.lowEdgeY(), b2.highEdgeY(), dbn2));
       }
-      return Histo1D(tempBins);
+      /// @todo Think about the total, underflow and overflow distributions
+      /// @todo Create total dbn from input bins
+      return Histo1D(tempBins, Dbn1D(), Dbn1D(), Dbn1D(), path, title);
     }
 
 

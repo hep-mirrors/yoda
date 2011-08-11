@@ -53,13 +53,13 @@ namespace YODA {
         _axis(binedges)
     { }
 
-    /// Constructor giving a vector of bins.
-    /// @todo Allow any iterable of bins (use Boost::Range?)
-    Histo1D(const std::vector<HistoBin1D>& bins,
-            const std::string& path="", const std::string& title="")
-      : AnalysisObject("Histo1D", path, title),
-        _axis(bins)
-    { }
+    // /// Constructor giving a vector of bins.
+    // /// @todo Allow any iterable of bins (use Boost::Range?)
+    // Histo1D(const std::vector<HistoBin1D>& bins,
+    //         const std::string& path="", const std::string& title="")
+    //   : AnalysisObject("Histo1D", path, title),
+    //     _axis(bins)
+    // { }
 
     /// Copy constructor with optional new path
     Histo1D(const Histo1D& h, const std::string& path="");
@@ -70,23 +70,19 @@ namespace YODA {
     /// Constructor from a Profile1D's binning, with optional new path
     Histo1D(const Profile1D& p, const std::string& path="");
 
+    /// @brief State-setting constructor.
+    /// Intended principally for internal persistency use.
+    Histo1D(const std::vector<HistoBin1D>& bins,
+            const Dbn1D& dbn_tot, const Dbn1D& dbn_uflow, const Dbn1D& dbn_oflow,
+            const std::string& path="", const std::string& title="")
+      : AnalysisObject("Histo1D", path, title),
+        _axis(bins, dbn_tot, dbn_uflow, dbn_oflow)
+    { }
+
     //@}
 
 
   public:
-
-    /// @name Persistency hooks
-    //@{
-
-    /// Get name of the analysis object type, for persisting
-    std::string type() const { return "Histo1D"; }
-
-    /// Set the state of the histo object, for unpersisting
-    /// @todo Need to set annotations (do that on AO), all-histo Dbns, and dbns for every bin. Delegate!
-    // void _setstate() = 0;
-
-    //@}
-
 
     /// @name Modifiers
     //@{
