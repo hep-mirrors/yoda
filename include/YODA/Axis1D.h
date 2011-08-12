@@ -30,18 +30,18 @@ namespace YODA {
     typedef typename Utils::sortedvector<BIN1D> Bins;
 
 
-    /// @name Helper functions to make bin edge vectors (see @file MathUtils.h)
-    //@{
+    // /// @name Helper functions to make bin edge vectors (see @file MathUtils.h)
+    // //@{
 
-    static inline std::vector<double> mkBinEdgesLin(double start, double end, size_t nbins) {
-      return linspace(start, end, nbins);
-    }
+    // static inline std::vector<double> mkBinEdgesLin(double start, double end, size_t nbins) {
+    //   return linspace(start, end, nbins);
+    // }
 
-    static inline std::vector<double> mkBinEdgesLog(double start, double end, size_t nbins) {
-      return logspace(start, end, nbins);
-    }
+    // static inline std::vector<double> mkBinEdgesLog(double start, double end, size_t nbins) {
+    //   return logspace(start, end, nbins);
+    // }
 
-    //@}
+    // //@}
 
 
   public:
@@ -80,7 +80,7 @@ namespace YODA {
 
     /// @brief State-setting constructor
     /// Principally intended for internal persistency use.
-    Axis1D(const Bins& bins, const Dbn1D& dbn_tot, const Dbn1D& dbn_uflow, const Dbn1D& dbn_oflow)
+    Axis1D(const Bins& bins, const DBN& dbn_tot, const DBN& dbn_uflow, const DBN& dbn_oflow)
       : _dbn(dbn_tot), _underflow(dbn_uflow), _overflow(dbn_oflow)
     {
       assert(!bins.empty());

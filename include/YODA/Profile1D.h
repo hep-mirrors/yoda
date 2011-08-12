@@ -52,15 +52,7 @@ namespace YODA {
               const std::string& path="", const std::string& title="")
       : AnalysisObject("Profile1D", path, title),
         _axis(xbinedges)
-    {  }
-
-    /// Constructor giving a vector of bins
-    Profile1D(const std::vector<ProfileBin1D>& xbins,
-              const std::string& path="", const std::string& title="")
-      : AnalysisObject("Profile1D", path, title),
-        _axis(xbins)
-    {  }
-
+    { }
 
     /// Copy constructor with optional new path
     Profile1D(const Profile1D& p, const std::string& path="");
@@ -71,6 +63,14 @@ namespace YODA {
     /// Constructor from a Histo1D's binning, with optional new path
     Profile1D(const Histo1D& h, const std::string& path="");
 
+    /// @brief State-setting constructor.
+    /// Intended principally for internal persistency use.
+    Profile1D(const std::vector<ProfileBin1D>& bins,
+              const Dbn2D& dbn_tot, const Dbn2D& dbn_uflow, const Dbn2D& dbn_oflow,
+              const std::string& path="", const std::string& title="")
+      : AnalysisObject("Profile1D", path, title),
+        _axis(bins, dbn_tot, dbn_uflow, dbn_oflow)
+    { }
 
     //@}
 

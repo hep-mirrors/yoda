@@ -1,3 +1,15 @@
+2011-08-12  Andy Buckley  <andy@insectnation.org>
+
+	* Adding proper Doxygen structures and full descriptive comments
+	to Dbn2D.
+
+	* Adding the persistency state-setting constructors for Profile1D
+	and Dbn2D.
+
+	* Inlining lots of methods on Dbn1D. Same should be done for
+	Dbn2D, but first it needs to be reimplemented in terms of two
+	Dbn1Ds + the cross-term.
+
 2011-08-11  Andy Buckley  <andy@insectnation.org>
 
 	* Various typo fixes and comments relating to persistency

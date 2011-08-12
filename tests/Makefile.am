@@ -18,7 +18,7 @@ testhisto2D_SOURCES = TestHisto2D.cc
 
 TESTS_ENVIRONMENT = \
   LD_LIBRARY_PATH=$(top_builddir)/src:$(top_builddir)/src/.libs:$(LD_LIBRARY_PATH) \
-  PYTHON_BUILD_DIR=$(top_builddir)/pyext/build \
+  PYTHONPATH=$(top_builddir)/pyext/build \
   PATH=$(top_builddir)/bin:$(PATH)
 
 TESTS = \

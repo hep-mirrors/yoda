@@ -21,9 +21,9 @@ namespace YODA {
     _sumWX2 += weight*valX*valX;
     _sumWY +=weight*valY;
     _sumWY2 += weight*valY*valY;
-    _sumWXY += weight*valX*valY;    
+    _sumWXY += weight*valX*valY;
   }
-  
+
   void Dbn2D::fill(std::pair<double,double> coords, double weight) {
     Dbn2D::fill(coords.first, coords.second, weight);
   }
@@ -68,7 +68,7 @@ namespace YODA {
   double Dbn2D::sumWX2() const {
     return _sumWX2;
   }
-  
+
   double Dbn2D::sumWY() const {
     return _sumWY;
   }
@@ -90,6 +90,9 @@ namespace YODA {
     return _sumWY/_sumW;
   }
 
+  /// @todo We should NOT be duplicating this code. An implementation of Dbn2D
+  /// in terms of 2 x Dbn1D + the cross-term would be much better. We should
+  /// DEFINITELY do that.
   double Dbn2D::xVariance() const {
     // Weighted variance defined as
     // sig2 = ( sum(wx**2) * sum(w) - sum(wx)**2 ) / ( sum(w)**2 - sum(w**2) )
@@ -110,7 +113,7 @@ namespace YODA {
     }
     return num/den;
   }
-  
+
   double Dbn2D::yVariance() const {
     if(effNumEntries() == 0.0) {
       throw LowStatsError("Requested width of a distribution with no net will weights");
@@ -126,14 +129,17 @@ namespace YODA {
     return num/den;
   }
 
+
   double Dbn2D::xStdDev() const {
     return std::sqrt(xVariance());
   }
-  
+
+
   double Dbn2D::yStdDev() const {
     return std::sqrt(yVariance());
   }
- 
+
+
   double Dbn2D::xStdErr() const {
     // Handle zero/negative sum weight
     if (effNumEntries() == 0) {
@@ -143,12 +149,14 @@ namespace YODA {
     return std::sqrt(xVariance() / effNumEntries());
   }
 
+
   double Dbn2D::yStdErr() const {
     if(effNumEntries() == 0) {
       throw LowStatsError("Requested std error of a distribution with no net fill weights");
     }
     return std::sqrt(xVariance() / effNumEntries());
   }
+
 
   Dbn2D& Dbn2D::add(const Dbn2D& d) {
     _numFills += d._numFills;
@@ -163,7 +171,7 @@ namespace YODA {
   }
 
 
-  Dbn2D& Dbn2D::substract(const Dbn2D& d) {
+  Dbn2D& Dbn2D::subtract(const Dbn2D& d) {
     _numFills += d._numFills; //< @todo Hmm, what's best?!?
     _sumW     -= d._sumW;
     _sumW2    -= d._sumW2;
@@ -182,7 +190,7 @@ namespace YODA {
 
 
   Dbn2D& Dbn2D::operator -= (const Dbn2D& d) {
-    return substract(d);
+    return subtract(d);
   }
 
 

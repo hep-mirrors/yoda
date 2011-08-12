@@ -7,6 +7,7 @@
 #define YODA_Dbn1D_h
 
 #include "YODA/Exceptions.h"
+#include <cmath>
 
 namespace YODA {
 
@@ -93,15 +94,20 @@ namespace YODA {
     //@{
 
     /// Weighted mean, \f$ \bar{x} \f$, of distribution.
-    double mean() const;
+    double mean() const {
+      // This is ok, even for negative sum(w)
+      return _sumWX/_sumW;
+    }
 
     /// Weighted variance, \f$ \sigma^2 \f$, of distribution.
     double variance() const;
 
     /// Weighted standard deviation, \f$ \sigma \f$, of distribution.
-    double stdDev() const;
+    double stdDev() const {
+      return std::sqrt(variance());
+    }
 
-    /// Weighted standard error, \f$ \sim \sigma/\sqrt{N-1} \f$, of distribution.
+    /// Weighted standard error on the mean, \f$ \sim \sigma/\sqrt{N-1} \f$, of distribution.
     double stdErr() const;
 
     //@}
@@ -111,32 +117,52 @@ namespace YODA {
     //@{
 
     /// Number of entries (number of times @c fill was called, ignoring weights)
-    unsigned long numEntries() const;
+    unsigned long numEntries() const {
+      return _numFills;
+    }
 
     /// Effective number of entries \f$ = (\sum w)^2 / \sum w^2 \f$
-    double effNumEntries() const;
+    double effNumEntries() const {
+      return _sumW*_sumW / _sumW2;
+    }
 
     /// The sum of weights
-    double sumW() const;
+    double sumW() const {
+      return _sumW;
+    }
 
     /// The sum of weights squared
-    double sumW2() const;
+    double sumW2() const {
+      return _sumW2;
+    }
 
     /// The sum of x*weight
-    double sumWX() const;
+    double sumWX() const {
+      return _sumWX;
+    }
 
     /// The sum of x^2 * weight
-    double sumWX2() const;
+    double sumWX2() const {
+      return _sumWX2;
+    }
 
     //@}
 
-  public:
+
+    /// @name Operators
+    //@{
 
     /// Add two dbns
-    Dbn1D& operator += (const Dbn1D&);
+    Dbn1D& operator += (const Dbn1D& d) {
+      return add(d);
+    }
 
     /// Subtract one dbn from another
-    Dbn1D& operator -= (const Dbn1D&);
+    Dbn1D& operator -= (const Dbn1D& d) {
+      return subtract(d);
+    }
+
+    //@}
 
 
   protected:
@@ -160,10 +186,18 @@ namespace YODA {
 
 
   /// Add two dbns
-  Dbn1D operator + (const Dbn1D& a, const Dbn1D& b);
+  inline Dbn1D operator + (const Dbn1D& a, const Dbn1D& b) {
+    Dbn1D rtn = a;
+    rtn += b;
+    return rtn;
+  }
 
   /// Subtract one dbn from another
-  Dbn1D operator - (const Dbn1D& a, const Dbn1D& b);
+  inline Dbn1D operator - (const Dbn1D& a, const Dbn1D& b) {
+    Dbn1D rtn = a;
+    rtn -= b;
+    return rtn;
+  }
 
 
 }

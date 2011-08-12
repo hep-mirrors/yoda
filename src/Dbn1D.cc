@@ -4,7 +4,6 @@
 // Copyright (C) 2008-2011 The YODA collaboration (see AUTHORS for details)
 //
 #include "YODA/Dbn1D.h"
-#include <cmath>
 #include <iostream>
 
 namespace YODA {
@@ -30,42 +29,6 @@ namespace YODA {
   }
 
 
-  unsigned long Dbn1D::numEntries() const {
-    return _numFills;
-  }
-
-
-  double Dbn1D::effNumEntries() const {
-    return _sumW*_sumW / _sumW2;
-  }
-
-
-  double Dbn1D::sumW() const {
-    return _sumW;
-  }
-
-
-  double Dbn1D::sumW2() const {
-    return _sumW2;
-  }
-
-
-  double Dbn1D::sumWX() const {
-    return _sumWX;
-  }
-
-
-  double Dbn1D::sumWX2() const {
-    return _sumWX2;
-  }
-
-
-  double Dbn1D::mean() const {
-    // This is ok, even for negative sum(w)
-    return _sumWX/_sumW;
-  }
-
-
   double Dbn1D::variance() const {
     // Weighted variance defined as
     // sig2 = ( sum(wx**2) * sum(w) - sum(wx)**2 ) / ( sum(w)**2 - sum(w**2) )
@@ -86,11 +49,6 @@ namespace YODA {
     }
     const double var = num/den;
     return var;
-  }
-
-
-  double Dbn1D::stdDev() const {
-    return std::sqrt(variance());
   }
 
 
@@ -121,30 +79,6 @@ namespace YODA {
     _sumWX    -= d._sumWX;
     _sumWX2   -= d._sumWX2;
     return *this;
-  }
-
-
-  Dbn1D& Dbn1D::operator += (const Dbn1D& d) {
-    return add(d);
-  }
-
-
-  Dbn1D& Dbn1D::operator -= (const Dbn1D& d) {
-    return subtract(d);
-  }
-
-
-  Dbn1D operator + (const Dbn1D& a, const Dbn1D& b) {
-    Dbn1D rtn = a;
-    rtn += b;
-    return rtn;
-  }
-
-
-  Dbn1D operator - (const Dbn1D& a, const Dbn1D& b) {
-    Dbn1D rtn = a;
-    rtn -= b;
-    return rtn;
   }
 
 
