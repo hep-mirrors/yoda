@@ -3,16 +3,17 @@ YODA TODO list
 
 NOW
 
-* Make test environment use the pre-installation build (AB)
-
 * Histo2D & Dbn2D: add Python interface mapping. (MICHAL)
   (done, compilation is fine, not tested yet, though)
 
 * Remove getBinHash from Axis2D and use private bin hash member for equality
   comparisons (MICHAL)
 
-* Implement hierarchy-cascading state-setting constructors for Histo1D and
-  Profile1D. (AB)
+* Implement hierarchy-cascading state-setting constructors for Profile1D and
+  Histo2D. (AB)
+
+* Use state-setting constructors for Histo and Profile persistency via the
+  Reader classes. (AB)
 
 * Test that a y-binned Histo2D has the same per-y-column stats as an
   equivalently x-binned Profile1D. Perhaps use this as an opportunity to
@@ -62,7 +63,7 @@ NEXT
 * Arbitrary function transforms on Scatters
 
 * Transform differential to integral histos and vice versa. Bins have to be
-  contiguous?
+  contiguous? (AB)
 
 
 
