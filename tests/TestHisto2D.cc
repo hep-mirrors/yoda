@@ -63,13 +63,13 @@ int main() {
 
     tS = (startTime.tv_sec*1000000 + startTime.tv_usec)/(double)1000000;
     tE = (endTime.tv_sec*1000000 + endTime.tv_usec)/(double)1000000;
-    cout << "Time taken to fill 200k bins: " << tE - tS << "s" << endl; 
+    cout << "Time taken to fill 2000 bins: " << tE - tS << "s" << endl; 
     if((tE - tS) > 50.0) {
         cout << "Performance is not sufficient. Probably broken caches?" << endl;
         return -1;
     }
 
-    printStats(h, true);
+    printStats(h, false);
     cout << h.numBinsTotal() << endl;   
     
     /// Testing if fill() function does what it should

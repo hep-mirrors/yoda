@@ -212,7 +212,7 @@ namespace YODA {
 
     /// Hash returner (non-const version)
     /// @todo This needs a typedef
-    std::pair<Utils::cachedvector<pair<double,std::vector<pair<size_t, pair<double,double> > > > >,
+   /* std::pair<Utils::cachedvector<pair<double,std::vector<pair<size_t, pair<double,double> > > > >,
               Utils::cachedvector<pair<double,std::vector<pair<size_t, pair<double,double> > > > > > getHash() {
         return _axis.getHash();
     }
@@ -222,7 +222,7 @@ namespace YODA {
     const std::pair<Utils::cachedvector<pair<double,std::vector<pair<size_t, pair<double,double> > > > >,
                     Utils::cachedvector<pair<double,std::vector<pair<size_t, pair<double,double> > > > > > getHash() const {
         return _axis.getHash();
-    }
+    }*/
     //@}
 
   public:
@@ -277,7 +277,15 @@ namespace YODA {
       _axis -= toSubtract._axis;
       return *this;
     }
+    
+    /*bool operator == (const Histo2D& other) {
+      return _axis == other._axis;
+    }
 
+    bool operator != (const Histo2D& other) {
+        return ! operator == (other);
+    }
+*/
     //@}
 
 
