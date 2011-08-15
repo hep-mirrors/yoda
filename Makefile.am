@@ -1,8 +1,8 @@
 ACLOCAL_AMFLAGS = -I m4
-SUBDIRS = src include tests pyext
-# data bin
+SUBDIRS = src include pyext tests
 
 ## Deal with the Doxygen stuff
+# TODO: Improve, without the Doxy performance penalty on every call of "make"
 if WITH_DOXYGEN
 .PHONY = dox
 dox:
