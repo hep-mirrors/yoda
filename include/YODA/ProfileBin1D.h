@@ -31,15 +31,22 @@ namespace YODA {
     //@{
 
     /// Constructor giving bin low and high edges.
-    ProfileBin1D(double lowedge, double highedge);
+    ProfileBin1D(double lowedge, double highedge)
+      : Bin1D(lowedge, highedge)
+    { }
 
     /// Constructor giving bin low and high edges as a pair.
-    ProfileBin1D(const std::pair<double,double>& edges);
+    ProfileBin1D(const std::pair<double,double>& edges)
+      : Bin1D(edges)
+    { }
 
     /// @brief Init a profile bin with all the components of a fill history.
     /// Mainly intended for internal persistency use.
     ProfileBin1D(double lowedge, double highedge,
-                 const Dbn1D& dbnx, const Dbn1D& dbny);
+                 const Dbn1D& dbnx, const Dbn1D& dbny)
+      : Bin1D(lowedge, highedge, dbnx),
+        _ydbn(dbny)
+    {  }
 
     //@}
 
@@ -47,14 +54,24 @@ namespace YODA {
     /// @name Modifiers
     //@{
 
-    /// Fill histo by value and weight.
-    void fill(double x, double d, double weight=1.0);
+    /// Fill histo by x and y values and weight.
+    void fill(double x, double d, double weight=1.0) {
+      assert( _edges.first < _edges.second );
+      assert( x >= _edges.first && x < _edges.second );
+      _xdbn.fill(x, weight);
+      _ydbn.fill(d, weight);
+    }
 
-    /// Fill histo with @a weight at bin midpoint.
-    void fillBin(double d, double weight=1.0);
+    /// Fill histo with @a weight and y-value @c d at x = bin midpoint.
+    void fillBin(double d, double weight=1.0) {
+      fill(midpoint(), d, weight);
+    }
 
     /// Reset the bin.
-    void reset();
+    void reset() {
+      Bin1D::reset();
+      _ydbn.reset();
+    }
 
     /// Rescale as if all fill weights had been different by factor @a scalefactor.
     void scaleW(double scalefactor) {
@@ -105,10 +122,18 @@ namespace YODA {
   protected:
 
     /// Add two bins (internal, explicitly named version)
-    ProfileBin1D& add(const ProfileBin1D&);
+    ProfileBin1D& add(const ProfileBin1D& pb) {
+      Bin1D::add(pb);
+      _ydbn += pb._ydbn;
+      return *this;
+    }
 
     /// Subtract one bin from another (internal, explicitly named version)
-    ProfileBin1D& subtract(const ProfileBin1D&);
+    ProfileBin1D& subtract(const ProfileBin1D& pb) {
+      Bin1D::subtract(pb);
+      _ydbn -= pb._ydbn;
+      return *this;
+    }
 
 
   public:
@@ -133,9 +158,18 @@ namespace YODA {
   };
 
 
-  ProfileBin1D operator + (const ProfileBin1D& a, const ProfileBin1D& b);
+  inline ProfileBin1D operator + (const ProfileBin1D& a, const ProfileBin1D& b) {
+    ProfileBin1D rtn(a);
+    rtn += a;
+    return rtn;
+  }
 
-  ProfileBin1D operator - (const ProfileBin1D& a, const ProfileBin1D& b);
+  inline ProfileBin1D operator - (const ProfileBin1D& a, const ProfileBin1D& b) {
+    ProfileBin1D rtn(a);
+    rtn -= a;
+    return rtn;
+  }
+
 
 }
 

@@ -25,7 +25,7 @@ NOW
 
 * Implement hierarchy-cascading state-setting constructor for Histo2D. (MICHAL)
 
-* Move micro-functions to be inline in the headers for HistoBin2D.cc, Bin1D.cc,
+* Move micro-functions to be inline in the header: still needed for Bin1D.cc,
   and probably some others. (AB)
 
 * Use state-setting constructors for Histo and Profile persistency via the
