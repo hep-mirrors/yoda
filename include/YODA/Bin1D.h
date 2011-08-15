@@ -14,7 +14,12 @@
 namespace YODA {
 
 
-  /// @brief Base class for bins in 1D normal and profile histograms.
+  /// @brief A generic 1D bin type
+  ///
+  /// This is a generic 1D bin type which supplies the accessors for the two "x"
+  /// and "y" axis directions in which it is defined. Bin1D is not intended to be
+  /// directly instantiated: it is inherited from to make specific histogram and
+  /// profile bin types as HistoBin1D and ProfileBin1D.
   /// The lower bin edge is inclusive. This base class provides no fill
   /// method, since the signatures for standard and profile histos differ.
   class Bin1D : public Bin {

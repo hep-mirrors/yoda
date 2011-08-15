@@ -6,63 +6,100 @@
 #include <cmath>
 
 namespace YODA {
-    class HistoBin2D : public Bin2D {
-    public:
-
-        /// Constructor accepting a set of extremal points of a bin
-        HistoBin2D(double lowEdgeX, double highEdgeX,
-                   double lowEdgeY, double highEdgeY);
-
-        /// Constructor accepting a set of all edges of a bin
-        HistoBin2D(std::vector<std::pair<std::pair<double,double>, std::pair<double,double> > >& edges);
-
-        /// A fill() function accepting the coordinates as std::pair
-        void fill(std::pair<double,double>, double weight=1.0);
-
-        /// A fill() function accepting coordinates as spearate numbers
-        void fill(double coordX, double coordY, double weight=1.0);
-
-        /// A function that fills this particular bin.
-        void fillBin(double weight=1.0);
-
-        /// A reset function
-        void reset() {
-            Bin2D::reset();
-        }
-
-        /// Rescalling the height of a bin
-        void scaleW(double scalefactor) {
-            _dbn.scaleW(scalefactor);
-        }
 
 
-        //TODO: Is it a volume? Looks like height.
-        /// The volume of a bin
-        double volume() const { return sumW(); }
+  /// @brief A Bin2D specialised for handling histogram-type information
+  ///
+  /// This is a 2D bin type, which supports all the operations defined for
+  /// a generic Bin2D object, but also supplies the specific member functions
+  /// for histogram-type data, as opposed to profile-type.
+  class HistoBin2D : public Bin2D {
+  public:
 
-        /// The height of a bin
-        double height() const { return volume()/(widthX()*widthY()); }
+    /// @name Constructors
+    //@{
 
-        /// Error on volume
-        double volumeErr() const{ return sqrt(sumW2()); }
+    /// Constructor accepting a set of extremal points of a bin
+    HistoBin2D(double lowEdgeX, double highEdgeX,
+               double lowEdgeY, double highEdgeY);
 
-        ///Error on height
-        double heightErr() const{ return volumeErr()/(widthX()*widthY());}
+    /// Constructor accepting a set of all edges of a bin
+    HistoBin2D(std::vector<std::pair<std::pair<double,double>, std::pair<double,double> > >& edges);
+
+    //@}
 
 
-        /// Addition operator
-        HistoBin2D& operator += (const HistoBin2D&);
+    /// @name Modifiers
+    //@{
 
-        /// Subtraction operator
-        HistoBin2D& operator -= (const HistoBin2D&);
+    /// A fill() function accepting the coordinates as std::pair
+    void fill(std::pair<double,double>, double weight=1.0);
 
-    protected:
-        HistoBin2D& add(const HistoBin2D&);
-        HistoBin2D& subtract(const HistoBin2D&);
-    };
+    /// A fill() function accepting coordinates as spearate numbers
+    void fill(double coordX, double coordY, double weight=1.0);
 
-    HistoBin2D operator + (const HistoBin2D& a, const HistoBin2D& b);
-    HistoBin2D operator - (const HistoBin2D& a, const HistoBin2D& b);
+    /// A function that fills this particular bin.
+    void fillBin(double weight=1.0);
+
+    /// A reset function
+    void reset() {
+      Bin2D::reset();
+    }
+
+    /// Rescaling the height of a bin
+    void scaleW(double scalefactor) {
+      _dbn.scaleW(scalefactor);
+    }
+
+    //@}
+
+
+    /// @name Accessors
+    //@{
+
+    /// The volume of a bin
+    double volume() const { return sumW(); }
+
+    /// Error on volume
+    double volumeErr() const{ return sqrt(sumW2()); }
+
+    /// The height of a bin
+    double height() const { return volume()/(widthX()*widthY()); }
+
+    /// Error on height
+    double heightErr() const{ return volumeErr()/(widthX()*widthY());}
+
+    //@}
+
+
+    /// @name Operators
+    //@{
+
+    /// Addition operator
+    HistoBin2D& operator += (const HistoBin2D&);
+
+    /// Subtraction operator
+    HistoBin2D& operator -= (const HistoBin2D&);
+
+    //@}
+
+
+  protected:
+
+    /// Named addition operator
+    HistoBin2D& add(const HistoBin2D&);
+
+    /// Named subtraction operator
+    HistoBin2D& subtract(const HistoBin2D&);
+
+  };
+
+
+  /// Bin addition operator
+  HistoBin2D operator + (const HistoBin2D& a, const HistoBin2D& b);
+
+  /// Bin subtraction operator
+  HistoBin2D operator - (const HistoBin2D& a, const HistoBin2D& b);
 
 }
 

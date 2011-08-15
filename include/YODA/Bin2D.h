@@ -12,6 +12,14 @@ using namespace std;
 namespace YODA {
 
 
+  /// @brief A generic 2D bin type
+  ///
+  /// This is a generic 2D bin type which supplies the accessors for the two "x"
+  /// and "y" axis directions in which it is defined. Bin2D is not intended to be
+  /// directly instantiated: it is inherited from to make specific histogram and
+  /// profile bin types as HistoBin2D and ProfileBin2D.
+  /// The lower bin edges in x and y are inclusive. This base class provides no fill
+  /// method, since the signatures for standard and profile histos differ.
   class Bin2D : public Bin {
   public:
 

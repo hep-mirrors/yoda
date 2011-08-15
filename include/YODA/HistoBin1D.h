@@ -13,7 +13,11 @@
 namespace YODA {
 
 
-  /// @brief A Bin in a 1D histogram
+  /// @brief A Bin1D specialised for handling histogram-type information
+  ///
+  /// This is a 1D bin type, which supports all the operations defined for
+  /// a generic Bin1D object, but also supplies the specific member functions
+  /// for histogram-type data, as opposed to profile-type.
   class HistoBin1D : public Bin1D {
 
   public:

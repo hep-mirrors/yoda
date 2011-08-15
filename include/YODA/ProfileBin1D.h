@@ -12,7 +12,13 @@
 namespace YODA {
 
 
-  /// A Bin in a 1D profile histogram.
+  /// @brief A Bin1D specialised for handling profile-type information
+  ///
+  /// This is a 1D bin type, which supports all the operations defined for
+  /// a generic Bin1D object, but also supplies the specific member functions
+  /// for profile-type data, as opposed to histogram-type. This means that
+  /// extra internal distribution statistics are stored for the extra
+  /// "y-direction" specified in the profile fill operation.
   class ProfileBin1D : public Bin1D {
 
     /// Profile1D is a friend to add/subtract bins
