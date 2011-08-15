@@ -53,7 +53,13 @@ namespace YODA {
     void fill(double val, double weight=1.0);
 
     /// Reset the internal counters.
-    void reset();
+    void reset() {
+      _numFills = 0;
+      _sumW = 0;
+      _sumW2 = 0;
+      _sumWX = 0;
+      _sumWX2 = 0;
+    }
 
     /// Rescale as if all fill weights had been different by factor @a scalefactor.
     void scaleW(double scalefactor) {

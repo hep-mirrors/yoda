@@ -11,7 +11,7 @@ using namespace YODA;
 /// A stats printing function.
 /**
  * This is a very, very unpolished version of a stats
- * printing function. It prints some stats sometimest 
+ * printing function. It prints some stats sometimest
  * looking at the full distribution and sometimes not.
  * A better verion is not to high in priority list now.
  */
@@ -31,7 +31,7 @@ void printStats(Histo2D& h, bool full=false){
 }
 
 int main() {
-    
+
     /// Creating a histogram and measuring the time it takes to do it.
     struct timeval startTime;
     struct timeval endTime;
@@ -48,8 +48,8 @@ int main() {
     h.addBin(0.1, 0.1, 0.2, 0.2);
     h.addBin(110, 0, 200, 12.100);
     h.addBin(16.0, 200, 17.0, 300);
-    
-    
+
+
     /// Trying to fill a bin.
     gettimeofday(&startTime, NULL);
     for (int i=0; i < 2000; i++) {
@@ -63,15 +63,15 @@ int main() {
 
     tS = (startTime.tv_sec*1000000 + startTime.tv_usec)/(double)1000000;
     tE = (endTime.tv_sec*1000000 + endTime.tv_usec)/(double)1000000;
-    cout << "Time taken to fill 2000 bins: " << tE - tS << "s" << endl; 
+    cout << "Time taken to fill 2000 bins: " << tE - tS << "s" << endl;
     if((tE - tS) > 50.0) {
         cout << "Performance is not sufficient. Probably broken caches?" << endl;
         return -1;
     }
 
     printStats(h, false);
-    cout << h.numBinsTotal() << endl;   
-    
+    cout << h.numBinsTotal() << endl;
+
     /// Testing if fill() function does what it should
     unsigned int beforeAdd = h.numBinsTotal();
     cout << "Does a too high bin exist? " << h.fill(10000, 34234, 1) << endl;
@@ -83,8 +83,8 @@ int main() {
     h.isGriddy();
 
     /// Checking if everything is still working as desired.
-    /** 
-     * It is actually a good thing to do, as at some earlier stages 
+    /**
+     * It is actually a good thing to do, as at some earlier stages
      * in developement adding a broken bin destroyed the cache of edges.
      */
     int originIndex = h.fill(0.0, 0.0, 1);
@@ -95,7 +95,7 @@ int main() {
     }
 
     printStats(h, true);
-    
+
     /// Now, adding a square that is in a non-overlapping location:
     beforeAdd = h.numBinsTotal();
     h.addBin(150, 150, 200, 200);
@@ -136,13 +136,13 @@ int main() {
         cout << "Could not fill the bin that should be filled" << endl;
         return -1;
     }
-    
+
     /// And a scaling test.
     printStats(h, true);
     cout << "Scaling: " << endl;
 
     gettimeofday(&startTime, NULL);
-    h.scale(2.0, 3.0);
+    h.scaleXY(2.0, 3.0);
     gettimeofday(&endTime, NULL);
     tS = (startTime.tv_sec*1000000 + startTime.tv_usec)/(double)1000000;
     tE = (endTime.tv_sec*1000000 + endTime.tv_usec)/(double)1000000;
@@ -157,18 +157,18 @@ int main() {
         return -1;
     }
 
-    /// Addition/Substraction:
+    /// Addition/Subtraction:
     Histo2D first(100, 0, 100, 100, 0, 100);
     first.fill(1,1,1);
     Histo2D second(100, 0, 100, 100, 0, 100);
     second.fill(1,1,1);
 
     Histo2D added(first+second);
-    Histo2D substracted(first-second);
+    Histo2D subtracted(first-second);
     //Histo2D divided(first / second);
 
     printStats(added);
-    printStats(substracted);
+    printStats(subtracted);
     //printStats(divided);
 
     ///And now, test cuts:
@@ -208,6 +208,6 @@ int main() {
         cout << "Probably the cuts are not done properly!" << endl;
         return -1;
     }
-    
+
     return EXIT_SUCCESS;
 }

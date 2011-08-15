@@ -8,15 +8,13 @@
 namespace YODA {
     class HistoBin2D : public Bin2D {
     public:
-        /// Constructor accepting a set of extremal points of a bin 
+
+        /// Constructor accepting a set of extremal points of a bin
         HistoBin2D(double lowEdgeX, double highEdgeX,
                    double lowEdgeY, double highEdgeY);
 
         /// Constructor accepting a set of all edges of a bin
         HistoBin2D(std::vector<std::pair<std::pair<double,double>, std::pair<double,double> > >& edges);
-        
-        //Default constructor
-        HistoBin2D();
 
         /// A fill() function accepting the coordinates as std::pair
         void fill(std::pair<double,double>, double weight=1.0);
@@ -37,7 +35,7 @@ namespace YODA {
             _dbn.scaleW(scalefactor);
         }
 
-        
+
         //TODO: Is it a volume? Looks like height.
         /// The volume of a bin
         double volume() const { return sumW(); }
@@ -51,16 +49,16 @@ namespace YODA {
         ///Error on height
         double heightErr() const{ return volumeErr()/(widthX()*widthY());}
 
-        
+
         /// Addition operator
         HistoBin2D& operator += (const HistoBin2D&);
 
-        /// Substracion operator
+        /// Subtraction operator
         HistoBin2D& operator -= (const HistoBin2D&);
 
     protected:
         HistoBin2D& add(const HistoBin2D&);
-        HistoBin2D& substract(const HistoBin2D&);
+        HistoBin2D& subtract(const HistoBin2D&);
     };
 
     HistoBin2D operator + (const HistoBin2D& a, const HistoBin2D& b);

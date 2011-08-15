@@ -16,6 +16,7 @@ testindexedset_SOURCES = TestIndexedSet.cc
 testsortedvector_SOURCES = TestSortedVector.cc
 testhisto2D_SOURCES = TestHisto2D.cc
 
+# TODO: Search paths are still not complete for the Python tests: need to add the lib.linux-i686-2.7 part to PYTHONPATH
 TESTS_ENVIRONMENT = \
   LD_LIBRARY_PATH=$(top_builddir)/src:$(top_builddir)/src/.libs:$(LD_LIBRARY_PATH) \
   PYTHONPATH=$(top_builddir)/pyext/build:$(PYTHONPATH) \

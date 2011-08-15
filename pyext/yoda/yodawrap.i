@@ -56,6 +56,9 @@ namespace YODA {
 %include "YODA/Histo1D.h"
 %template(HistoBin1Ds) std::vector<YODA::HistoBin1D>;
 
+%feature("ignore") std::vector<YODA::HistoBin2D>::vector(size_type size);
+%feature("ignore") std::vector<YODA::HistoBin2D>::resize(size_type size);
+%feature("ignore") std::vector<YODA::HistoBin2D>::pop();
 %include "YODA/HistoBin2D.h"
 %include "YODA/Histo2D.h"
 %template(HistoBin2Ds) std::vector<YODA::HistoBin2D>;

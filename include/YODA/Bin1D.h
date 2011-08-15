@@ -20,7 +20,7 @@ namespace YODA {
   class Bin1D : public Bin {
   public:
 
-    /// @name Constructors, giving bin low and high edges.
+    /// @name Constructors
     //@{
 
     /// Init a new, empty bin with a pair of edges.
@@ -36,18 +36,17 @@ namespace YODA {
     //@}
 
 
-    /// @name Miscellaneous
+    /// @name Modifiers
     //@{
 
     /// Reset this bin
     virtual void reset();
 
-    /// Scale:
+    /// Scale
     void scaleX(double factor) {
-        _edges.first *= factor;
-        _edges.second *= factor;
-
-        _xdbn.scaleX(factor);
+      _edges.first *= factor;
+      _edges.second *= factor;
+      _xdbn.scaleX(factor);
     }
 
     //@}
@@ -57,6 +56,7 @@ namespace YODA {
 
     /// @name X-axis info
     //@{
+
     /// Lower limit of the bin (inclusive).
     double lowEdge() const;
     double xMin() const { return lowEdge(); }
@@ -76,6 +76,7 @@ namespace YODA {
 
     /// Geometric centre of the bin, i.e. high+low/2.0
     double midpoint() const;
+
     //@}
 
 
@@ -95,6 +96,7 @@ namespace YODA {
 
     /// The standard error on the bin focus.
     double xStdError() const;
+
     //@}
 
 
@@ -119,6 +121,7 @@ namespace YODA {
     double sumWX2() const;
 
     //@}
+
 
   public:
 

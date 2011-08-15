@@ -13,19 +13,11 @@ namespace YODA {
     _numFills += 1;
     _sumW += weight;
     double w2 = weight*weight;
+    /// @todo Correct?
     if (weight < 0) w2 *= -1;
     _sumW2 += w2;
     _sumWX += weight*val;
     _sumWX2 += weight*val*val;
-  }
-
-
-  void Dbn1D::reset() {
-    _numFills = 0;
-    _sumW = 0;
-    _sumW2 = 0;
-    _sumWX = 0;
-    _sumWX2 = 0;
   }
 
 

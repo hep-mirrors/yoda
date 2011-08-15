@@ -1,3 +1,9 @@
+2011-08-15  Andy Buckley  <andy@insectnation.org>
+
+	* Converting Dbn2D to be composed of two Dbn1Ds and a
+	cross-term. Also tidying the interfaces of the 2D classes and the
+	scaleX/Y methods throughout, and adding Doxygen comments.
+
 2011-08-12  Andy Buckley  <andy@insectnation.org>
 
 	* Adding proper Doxygen structures and full descriptive comments

@@ -100,8 +100,8 @@ namespace YODA {
     }
 
     /// Scale the dimensions
-    void scale(double scaleX = 1.0, double scaleY = 1.0) {
-      _axis.scale(scaleX, scaleY);
+    void scaleXY(double scaleX = 1.0, double scaleY = 1.0) {
+      _axis.scaleXY(scaleX, scaleY);
     }
 
 
@@ -277,7 +277,7 @@ namespace YODA {
       _axis -= toSubtract._axis;
       return *this;
     }
-    
+
     /*bool operator == (const Histo2D& other) {
       return _axis == other._axis;
     }

@@ -8,7 +8,8 @@ NOW
   AB: is this done? Remove the TODO item when you're completely happy (and have
   checked that it's ok -- email the yoda@projects list and we'll take a look).
 
-* Reimplement Dbn2D in terms of two Dbn1Ds + the cross-term. (ANDY)
+* Move micro-functions to be inline in the headers for HistoBin2D.cc, Bin1D.cc,
+  and probably some others.
 
 * Remove getBinHash from Axis2D and use private bin hash member for equality
   comparisons (MICHAL)

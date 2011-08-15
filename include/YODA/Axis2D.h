@@ -91,14 +91,14 @@ namespace YODA {
             bool ret = true;
 
             /// Looping over all the edges provided
-            for(unsigned int i=0; i < edges.size(); i++) {
+            for (unsigned int i=0; i < edges.size(); ++i) {
                 /// If the X coordinate of the starting point is the same
                 /// as X coordinate of the ending one, checks if there are cuts
                 /// on this vertical segment.
-                if(fuzzyEquals(edges[i].first.first, edges[i].second.first)) ret =  _findCutsY(edges[i]);
+                if (fuzzyEquals(edges[i].first.first, edges[i].second.first)) ret =  _findCutsY(edges[i]);
 
                 /// Check if the segment is horizontal and is it cutting any bin that already exists
-                else if(fuzzyEquals(edges[i].first.second, edges[i].second.second)) ret =  _findCutsX(edges[i]);
+                else if (fuzzyEquals(edges[i].first.second, edges[i].second.second)) ret =  _findCutsX(edges[i]);
 
                 /// This is a check that discards the bin if it is not a rectangle
                 /// composed of vertical and horizontal segments.
@@ -106,7 +106,7 @@ namespace YODA {
 
                 /// If a cut was detected, say it. There is no point in checking other edges
                 /// in the set.
-                if(!ret) return false;
+                if (!ret) return false;
             }
             /// If no cuts were detected in any of the edges, tell the launching function about this
             return true;
@@ -383,10 +383,10 @@ namespace YODA {
         /// @brief BIn index finder
         /// Looks through all the bins to see which
         /// one contains the point of interest.
-        int _findBinIndex(double coordX, double coordY) const 
+        int _findBinIndex(double coordX, double coordY) const
         {
            for(size_t i=0; i < _bins.size(); i++) {
-               if(_bins[i].lowEdgeX() <= coordX && _bins[i].highEdgeX()  >= coordX && 
+               if(_bins[i].lowEdgeX() <= coordX && _bins[i].highEdgeX()  >= coordX &&
                _bins[i].lowEdgeY() <= coordY && _bins[i].highEdgeY() >= coordY) return i;
            }
         return -1;
@@ -677,13 +677,13 @@ namespace YODA {
         /// @brief Axis scaler
         /// Scales the axis with a given scale. If no scale is given, assumes
         /// identity transform.
-        void scale(double scaleX = 1.0, double scaleY = 1.0)
+        void scaleXY(double scaleX = 1.0, double scaleY = 1.0)
         {
             // Two loops are put on purpose, just to protect
             // against improper _binHashSparse
-            for(unsigned int i=0; i < _binHashSparse.first.size(); i++) {
+            for (unsigned int i=0; i < _binHashSparse.first.size(); i++) {
                 _binHashSparse.first[i].first *= scaleY;
-                for(unsigned int j=0; j < _binHashSparse.first[i].second.size(); j++){
+                for (unsigned int j=0; j < _binHashSparse.first[i].second.size(); j++){
                     _binHashSparse.first[i].second[j].second.first *=scaleX;
                     _binHashSparse.first[i].second[j].second.second *=scaleX;
                 }
@@ -701,14 +701,17 @@ namespace YODA {
             _binHashSparse.second.regenCache();
 
             /// Now, as we have the map rescaled, we need to update the bins
-            for (size_t i = 0; i < _bins.size(); ++i) _bins[i].scale(scaleX, scaleY);
-            _dbn.scale(scaleX, scaleY);
-            _underflow.scale(scaleX, scaleY);
-            _overflow.scale(scaleX, scaleY);
+            for (size_t i = 0; i < _bins.size(); ++i) {
+              _bins[i].scaleXY(scaleX, scaleY);
+            }
+            _dbn.scaleXY(scaleX, scaleY);
+            _underflow.scaleXY(scaleX, scaleY);
+            _overflow.scaleXY(scaleX, scaleY);
 
-            //And making sure that we have correct boundaries set after rescaling
+            // Making sure that we have correct boundaries set after rescaling
             _regenDelimiters();
         }
+
 
         /// Scales the bin weights
         void scaleW(double scalefactor) {
