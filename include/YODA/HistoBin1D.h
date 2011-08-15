@@ -9,6 +9,7 @@
 #include "YODA/Bin1D.h"
 #include "YODA/Exceptions.h"
 #include <cmath>
+#include <cassert>
 
 namespace YODA {
 
@@ -26,14 +27,21 @@ namespace YODA {
     //@{
 
     /// Init a new, empty bin with a pair of edges.
-    HistoBin1D(double lowedge, double highedge);
+    HistoBin1D(double lowedge, double highedge)
+      : Bin1D(lowedge, highedge)
+    { }
+
 
     /// Init a new, empty bin with a pair of edges.
-    HistoBin1D(const std::pair<double,double>& edges);
+    HistoBin1D(const std::pair<double,double>& edges)
+      : Bin1D(edges)
+    { }
 
     /// @brief Init a bin with all the components of a fill history.
     /// Mainly intended for internal persistency use.
-    HistoBin1D(double lowedge, double highedge, const Dbn1D& dbn);
+    HistoBin1D(double lowedge, double highedge, const Dbn1D& dbn)
+      : Bin1D(lowedge, highedge, dbn)
+    { }
 
     //@}
 
@@ -44,10 +52,16 @@ namespace YODA {
     //@{
 
     /// @brief Fill this bin with weight @a weight at position @a coord.
-    void fill(double coord, double weight=1.0);
+    void fill(double x, double weight=1.0) {
+      assert( _edges.first < _edges.second );
+      assert( x >= _edges.first && x < _edges.second );
+      _xdbn.fill(x, weight);
+    }
 
     /// @brief Fill this bin with weight @a weight.
-    void fillBin(double weight=1.0);
+    void fillBin(double weight=1.0) {
+      fill(midpoint(), weight);
+    }
 
     /// Reset this bin
     void reset() {
@@ -104,28 +118,46 @@ namespace YODA {
   public:
 
     /// Add two bins (for use by Histo1D).
-    HistoBin1D& operator += (const HistoBin1D&);
+    HistoBin1D& operator += (const HistoBin1D& toAdd) {
+      return add(toAdd);
+    }
 
     /// Subtract two bins
-    HistoBin1D& operator -= (const HistoBin1D&);
+    HistoBin1D& operator -= (const HistoBin1D& toSubtract) {
+      return subtract(toSubtract);
+    }
 
 
   protected:
 
     /// Add two bins (internal, explicitly named version)
-    HistoBin1D& add(const HistoBin1D&);
+    HistoBin1D& add(const HistoBin1D& hb) {
+      Bin1D::add(hb);
+      return *this;
+    }
 
     /// Subtract one bin from another (internal, explicitly named version)
-    HistoBin1D& subtract(const HistoBin1D&);
+    HistoBin1D& subtract(const HistoBin1D& hb) {
+      Bin1D::subtract(hb);
+      return *this;
+    }
 
   };
 
 
   /// Add two bins
-  HistoBin1D operator + (const HistoBin1D& a, const HistoBin1D& b);
+  inline HistoBin1D operator + (const HistoBin1D& a, const HistoBin1D& b) {
+    HistoBin1D rtn(a);
+    rtn += a;
+    return rtn;
+  }
 
   /// Subtract two bins
-  HistoBin1D operator - (const HistoBin1D& a, const HistoBin1D& b);
+  inline HistoBin1D operator - (const HistoBin1D& a, const HistoBin1D& b) {
+    HistoBin1D rtn(a);
+    rtn -= a;
+    return rtn;
+  }
 
 
 }

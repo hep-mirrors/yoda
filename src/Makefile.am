@@ -5,15 +5,14 @@ lib_LTLIBRARIES = libYODA.la
 libYODA_la_SOURCES = \
     Dbn1D.cc \
     Bin1D.cc \
+    ProfileBin1D.cc \
     Bin2D.cc \
     HistoBin2D.cc \
-    Histo2D.cc \
-    Scatter3D.cc\
-    HistoBin1D.cc \
     Histo1D.cc \
-    ProfileBin1D.cc \
+    Histo2D.cc \
     Profile1D.cc \
     Scatter2D.cc \
+    Scatter3D.cc\
     Writer.cc \
     WriterAIDA.cc \
     WriterYODA.cc \

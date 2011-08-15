@@ -11,7 +11,7 @@ using namespace std;
 namespace YODA {
 
 
-  //TODO: Implement a unified instantiation scheme
+  // @todo Implement a unified instantiation scheme
   HistoBin2D::HistoBin2D(double lowEdgeX, double highEdgeX,
                          double lowEdgeY, double highEdgeY)
     : Bin2D(lowEdgeX, lowEdgeY, highEdgeX, highEdgeY)
