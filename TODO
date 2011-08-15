@@ -3,6 +3,9 @@ YODA TODO list
 
 NOW
 
+* Check if the weight2 treatment in Dbn1D is really correct: we're currently
+  multiplying it by sign(w). Hmm. (AB)
+
 * Histo2D & Dbn2D: add Python interface mapping. (MICHAL) (done, compilation is
   fine, not tested yet, though)
   AB: is this done? Remove the TODO item when you're completely happy (and have
@@ -32,11 +35,25 @@ NOW
   Need to persist the whole-histo Dbn1D/Dbn2Ds, and over/underflows.
 
 
+
 NEXT
+
+* Tests:
+  Add bin-comparison and negative-weighted mean test(s)
+  Test bin-by-index sorted behaviour on Histo and Profile
 
 * Use Weights objects in Dbn1D / Dbn2D (AB)
 
 * Add a Counter type (mostly a UI/persistency wrapper on Dbn1D) (AB)
+
+* Transform differential to integral histos and vice versa. Bins have to be
+  contiguous? (AB)
+
+* Multiple errors on Scatter2D -- via a vector of Error2D? How to implement
+  flexible error combination? Error correlations? (DANIEL)
+
+* Perhaps ProfileBin1D would be better if it contained a Dbn1D rather than two
+  Dbn2Ds, since the over/underflow now *are* Dbn2Ds... (AB)
 
 * Test that a y-binned Histo2D has the same per-y-column stats as an
   equivalently x-binned Profile1D. Perhaps use this as an opportunity to
@@ -48,24 +65,9 @@ NEXT
 
 * Profile2D & Dbn3D
 
-* Multiple errors on Scatter2D -- via a vector of Error2D? How to implement
-  flexible error combination?  (DANIEL)
-
 * WriterFlat and ReaderFlat, for Scatter2D representations only. (HH)
 
-* Perhaps ProfileBin1D would be better if it contained a Dbn1D rather than two
-  Dbn2Ds, since the over/underflow now *are* Dbn2Ds...
-
-* Error correlations?
-
-* Tests:
-  Add bin-comparison and negative-weighted mean test(s)
-  Test bin-by-index sorted behaviour on Histo and Profile
-
 * Arbitrary function transforms on Scatters
-
-* Transform differential to integral histos and vice versa. Bins have to be
-  contiguous? (AB)
 
 
 
