@@ -1,6 +1,6 @@
 2011-08-15  Andy Buckley  <andy@insectnation.org>
 
-	* Inlining all functions in HistoBin1D.
+	* Inlining all functions in HistoBin1D and HistoBin2D.
 
 	* Converting Dbn2D to be composed of two Dbn1Ds and a
 	cross-term. Also tidying the interfaces of the 2D classes and the

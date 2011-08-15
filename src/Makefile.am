@@ -7,7 +7,6 @@ libYODA_la_SOURCES = \
     Bin1D.cc \
     ProfileBin1D.cc \
     Bin2D.cc \
-    HistoBin2D.cc \
     Histo1D.cc \
     Histo2D.cc \
     Profile1D.cc \

@@ -21,10 +21,14 @@ namespace YODA {
 
     /// Constructor accepting a set of extremal points of a bin
     HistoBin2D(double lowEdgeX, double highEdgeX,
-               double lowEdgeY, double highEdgeY);
+               double lowEdgeY, double highEdgeY)
+      : Bin2D(lowEdgeX, lowEdgeY, highEdgeX, highEdgeY)
+    { }
 
     /// Constructor accepting a set of all edges of a bin
-    HistoBin2D(std::vector<std::pair<std::pair<double,double>, std::pair<double,double> > >& edges);
+    HistoBin2D(std::vector<std::pair<std::pair<double,double>, std::pair<double,double> > >& edges)
+      : Bin2D(edges)
+    { }
 
     //@}
 
@@ -32,14 +36,20 @@ namespace YODA {
     /// @name Modifiers
     //@{
 
-    /// A fill() function accepting the coordinates as std::pair
-    void fill(std::pair<double,double>, double weight=1.0);
-
     /// A fill() function accepting coordinates as spearate numbers
-    void fill(double coordX, double coordY, double weight=1.0);
+    void fill(double coordX, double coordY, double weight=1.0) {
+      _dbn.fill(coordX, coordY, weight);
+    }
+
+    /// A fill() function accepting the coordinates as std::pair
+    void fill(std::pair<double,double> coords, double weight=1.0) {
+      _dbn.fill(coords.first, coords.second, weight);
+    }
 
     /// A function that fills this particular bin.
-    void fillBin(double weight=1.0);
+    void fillBin(double weight=1.0) {
+      _dbn.fill(midpoint(), weight);
+    }
 
     /// A reset function
     void reset() {
@@ -58,16 +68,24 @@ namespace YODA {
     //@{
 
     /// The volume of a bin
-    double volume() const { return sumW(); }
+    double volume() const {
+      return sumW();
+    }
 
     /// Error on volume
-    double volumeErr() const{ return sqrt(sumW2()); }
+    double volumeErr() const {
+      return sqrt(sumW2());
+    }
 
     /// The height of a bin
-    double height() const { return volume()/(widthX()*widthY()); }
+    double height() const {
+      return volume()/(widthX()*widthY());
+    }
 
     /// Error on height
-    double heightErr() const{ return volumeErr()/(widthX()*widthY());}
+    double heightErr() const {
+      return volumeErr()/(widthX()*widthY());
+    }
 
     //@}
 
@@ -76,10 +94,14 @@ namespace YODA {
     //@{
 
     /// Addition operator
-    HistoBin2D& operator += (const HistoBin2D&);
+    HistoBin2D& operator += (const HistoBin2D& toAdd) {
+      return add(toAdd);
+    }
 
     /// Subtraction operator
-    HistoBin2D& operator -= (const HistoBin2D&);
+    HistoBin2D& operator -= (const HistoBin2D& toSubtract) {
+      return subtract(toSubtract);
+    }
 
     //@}
 
@@ -87,19 +109,34 @@ namespace YODA {
   protected:
 
     /// Named addition operator
-    HistoBin2D& add(const HistoBin2D&);
+    HistoBin2D& add(const HistoBin2D& hb) {
+      Bin2D::subtract(hb);
+      return *this;
+    }
 
     /// Named subtraction operator
-    HistoBin2D& subtract(const HistoBin2D&);
+    HistoBin2D& subtract(const HistoBin2D& hb) {
+      Bin2D::subtract(hb);
+      return *this;
+    }
 
   };
 
 
   /// Bin addition operator
-  HistoBin2D operator + (const HistoBin2D& a, const HistoBin2D& b);
+  inline HistoBin2D operator + (const HistoBin2D& a, const HistoBin2D& b) {
+    HistoBin2D rtn(a);
+    rtn += a;
+    return rtn;
+  }
 
   /// Bin subtraction operator
-  HistoBin2D operator - (const HistoBin2D& a, const HistoBin2D& b);
+  inline HistoBin2D operator - (const HistoBin2D& a, const HistoBin2D& b) {
+    HistoBin2D rtn(a);
+    rtn -= a;
+    return rtn;
+  }
+
 
 }
 
