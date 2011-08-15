@@ -10,6 +10,7 @@
 #include "YODA/Dbn1D.h"
 #include <string>
 #include <utility>
+#include <cassert>
 
 namespace YODA {
 
@@ -29,14 +30,29 @@ namespace YODA {
     //@{
 
     /// Init a new, empty bin with a pair of edges.
-    Bin1D(double lowedge, double highedge);
+    Bin1D(double lowedge, double highedge)
+      : _edges( std::make_pair(lowedge, highedge) )
+    {
+      assert( _edges.second > _edges.first );
+    }
+
 
     /// Init a new, empty bin with a pair of edges.
-    Bin1D(const std::pair<double,double>& edges);
+    Bin1D(const std::pair<double,double>& edges)
+      : _edges( edges )
+    {
+      assert( _edges.second >= _edges.first );
+    }
+
 
     /// @brief Init a bin with all the components of a fill history.
     /// Mainly intended for internal persistency use.
-    Bin1D(double lowedge, double highedge, const Dbn1D& dbnx);
+    Bin1D(double lowedge, double highedge, const Dbn1D& dbnx)
+      : _edges( std::make_pair(lowedge, highedge) ),
+        _xdbn(dbnx)
+    {
+      assert( _edges.second >= _edges.first );
+    }
 
     //@}
 
@@ -45,7 +61,9 @@ namespace YODA {
     //@{
 
     /// Reset this bin
-    virtual void reset();
+    virtual void reset() {
+      _xdbn.reset();
+    }
 
     /// Scale
     void scaleX(double factor) {
@@ -63,24 +81,46 @@ namespace YODA {
     //@{
 
     /// Lower limit of the bin (inclusive).
-    double lowEdge() const;
-    double xMin() const { return lowEdge(); }
+    double lowEdge() const {
+      return _edges.first;
+    }
+    /// Synonym for lowEdge
+    double xMin() const {
+      return lowEdge();
+    }
 
     /// Upper limit of the bin (exclusive).
-    double highEdge() const;
-    double xMax() const { return highEdge(); }
+    double highEdge() const {
+      return _edges.second;
+    }
+    /// Synonym for highEdge
+    double xMax() const {
+      return highEdge();
+    }
 
     /// Get the {low,high} edges as an STL @c pair.
-    std::pair<double,double> edges() const;
+    std::pair<double,double> edges() const {
+      return _edges;
+    }
 
     /// Separation of low and high edges, i.e. high-low.
-    double width() const;
+    double width() const {
+      return _edges.second - _edges.first;
+    }
 
     /// The mean position in the bin, or the midpoint if that is not available.
-    double focus() const;
+    double focus() const {
+      if (_xdbn.sumW() != 0) {
+        return xMean();
+      } else {
+        return midpoint();
+      }
+    }
 
     /// Geometric centre of the bin, i.e. high+low/2.0
-    double midpoint() const;
+    double midpoint() const {
+      return ( _edges.second + _edges.first ) / 2;
+    }
 
     //@}
 
@@ -91,16 +131,24 @@ namespace YODA {
     //@{
 
     /// Mean value of x-values in the bin.
-    double xMean() const;
+    double xMean() const {
+      return _xdbn.mean();
+    }
 
     /// The variance of x-values in the bin.
-    double xVariance() const;
+    double xVariance() const {
+      return _xdbn.variance();
+    }
 
     /// The standard deviation (spread) of x-values in the bin.
-    double xStdDev() const;
+    double xStdDev() const {
+      return _xdbn.stdDev();
+    }
 
     /// The standard error on the bin focus.
-    double xStdError() const;
+    double xStdError() const {
+      return _xdbn.stdErr();
+    }
 
     //@}
 
@@ -111,19 +159,29 @@ namespace YODA {
     //@{
 
     /// The number of entries
-    unsigned long numEntries() const;
+    unsigned long numEntries() const {
+      return _xdbn.numEntries();
+    }
 
     /// The sum of weights
-    double sumW() const;
+    double sumW() const {
+      return _xdbn.sumW();
+    }
 
     /// The sum of weights squared
-    double sumW2() const;
+    double sumW2() const {
+      return _xdbn.sumW2();
+    }
 
     /// The sum of x*weight
-    double sumWX() const;
+    double sumWX() const {
+      return _xdbn.sumWX();
+    }
 
     /// The sum of x^2 * weight
-    double sumWX2() const;
+    double sumWX2() const {
+      return _xdbn.sumWX2();
+    }
 
     //@}
 
@@ -135,10 +193,15 @@ namespace YODA {
     //@{
 
     /// Add two bins
-    Bin1D& operator += (const Bin1D&);
+    Bin1D& operator += (const Bin1D& b) {
+      return add(b);
+    }
 
     /// Subtract one bin from another
-    Bin1D& operator -= (const Bin1D&);
+    Bin1D& operator -= (const Bin1D& b) {
+      return subtract(b);
+    }
+
     //@}
 
 
@@ -148,10 +211,19 @@ namespace YODA {
     //@{
 
     /// Add two bins (internal, explicitly named version)
-    Bin1D& add(const Bin1D&);
+    Bin1D& add(const Bin1D& b) {
+      assert(_edges == b._edges);
+      _xdbn += b._xdbn;
+      return *this;
+    }
 
     /// Subtract one bin from another (internal, explicitly named version)
-    Bin1D& subtract(const Bin1D&);
+    Bin1D& subtract(const Bin1D& b) {
+      assert(_edges == b._edges);
+      _xdbn -= b._xdbn;
+      return *this;
+    }
+
     //@}
 
 
@@ -167,10 +239,19 @@ namespace YODA {
 
 
   /// Add two bins
-  Bin1D operator + (const Bin1D& a, const Bin1D& b);
+  inline Bin1D operator + (const Bin1D& a, const Bin1D& b) {
+    Bin1D rtn = a;
+    rtn += b;
+    return rtn;
+  }
+
 
   /// Subtract one bin from another
-  Bin1D operator - (const Bin1D& a, const Bin1D& b);
+  inline Bin1D operator - (const Bin1D& a, const Bin1D& b) {
+    Bin1D rtn = a;
+    rtn -= b;
+    return rtn;
+  }
 
 
   /// Bin1Ds are compared for axis sorting by lower edge position

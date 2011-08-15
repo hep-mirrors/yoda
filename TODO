@@ -25,8 +25,10 @@ NOW
 
 * Implement hierarchy-cascading state-setting constructor for Histo2D. (MICHAL)
 
-* Move micro-functions to be inline in the header: still needed for Bin1D.cc,
-  and probably some others. (AB)
+* Review implementation of Bin2D with storage of very redundant information --
+  why are we storing the points at the end of each edge separately, when this
+  means that we are storing each bin-defining x and y low/high value 4 times?
+  (MICHAL)
 
 * Use state-setting constructors for Histo and Profile persistency via the
   Reader classes. (HH)

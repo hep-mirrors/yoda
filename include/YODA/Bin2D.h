@@ -224,7 +224,11 @@ namespace YODA {
 
   protected:
 
+
+    /// @todo Explain! And then replace it with something sane -- this is really wasteful.
     std::vector<std::pair<std::pair<double,double>,std::pair<double,double> > > _edges;
+
+    /// Distribution of fills in this bin.
     Dbn2D _dbn;
 
   };
