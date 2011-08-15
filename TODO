@@ -8,34 +8,28 @@ NOW
   AB: is this done? Remove the TODO item when you're completely happy (and have
   checked that it's ok -- email the yoda@projects list and we'll take a look).
 
-* Move micro-functions to be inline in the headers for HistoBin2D.cc, Bin1D.cc,
-  and probably some others.
-
-* Remove getBinHash from Axis2D and use private bin hash member for equality
-  comparisons (MICHAL)
-  AB: Is this done?
-
-* Implement hierarchy-cascading state-setting constructor for Histo2D. (MICHAL)
-
-* Use state-setting constructors for Histo and Profile persistency via the
-  Reader classes. (HH)
-
-* Test that a y-binned Histo2D has the same per-y-column stats as an
-  equivalently x-binned Profile1D. Perhaps use this as an opportunity to
-  implement one of the the conversion functions mentioned in the NEXT
-  section... (MICHAL)
-
 * Conversion functions to build Histo1D and Profile1D objects for slicings and
   marginalisations along both X and Y directions of 2D histos. Throw an
   exception if binnings are not complete grids. (MICHAL)
   (done -- to be reviewed)
 
+* Remove getBinHash from Axis2D and use private bin hash member for equality
+  comparisons (MICHAL)
+  AB: Is this done?
+
 * Rebinning: merges of n adjacent bins and global rebinning by integer factor
   (on widths or on bin groups?) (AB for 1D, MICHAL for 2D)
 
+* Implement hierarchy-cascading state-setting constructor for Histo2D. (MICHAL)
+
+* Move micro-functions to be inline in the headers for HistoBin2D.cc, Bin1D.cc,
+  and probably some others. (AB)
+
+* Use state-setting constructors for Histo and Profile persistency via the
+  Reader classes. (HH)
+
 * New "flat" file format: adapt WriterYODA and fill ReaderYODA. (HH)
   Need to persist the whole-histo Dbn1D/Dbn2Ds, and over/underflows.
-
 
 
 NEXT
@@ -43,6 +37,14 @@ NEXT
 * Use Weights objects in Dbn1D / Dbn2D (AB)
 
 * Add a Counter type (mostly a UI/persistency wrapper on Dbn1D) (AB)
+
+* Test that a y-binned Histo2D has the same per-y-column stats as an
+  equivalently x-binned Profile1D. Perhaps use this as an opportunity to
+  implement one of the the conversion functions mentioned in the NEXT
+  section...
+  AB: Actually, doing this really properly requires a whole set of "outflow"
+  bins. Let's postpone the exact equality check until this is done, although
+  "partial" profile and 1D histo slicing can be done before then.
 
 * Profile2D & Dbn3D
 
