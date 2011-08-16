@@ -10,7 +10,6 @@
 #include "YODA/HistoBin2D.h"
 #include "YODA/HistoBin1D.h"
 #include "YODA/Axis2D.h"
-#include "YODA/Scatter3D.h"
 #include "YODA/Exceptions.h"
 #include "YODA/Histo1D.h"
 #include <vector>
@@ -19,6 +18,8 @@
 
 namespace YODA {
 
+  // Forward declaration
+  class Scatter3D;
 
   /// Convenience typedef
   typedef Axis2D<HistoBin2D> Histo2DAxis;
@@ -114,7 +115,11 @@ namespace YODA {
     void addBin(double lowX, double lowY, double highX, double highY)   {
         _axis.addBin(lowX, lowY, highX, highY);
     }
-
+    
+    /// Merge the bins
+    void mergeBins(size_t from, size_t to) {
+      _axis.mergeBins(from, to);
+    }
     //@}
 
   public:
@@ -210,19 +215,6 @@ namespace YODA {
         return _axis.numBinsTotal();
     }
 
-    /// Hash returner (non-const version)
-    /// @todo This needs a typedef
-   /* std::pair<Utils::cachedvector<pair<double,std::vector<pair<size_t, pair<double,double> > > > >,
-              Utils::cachedvector<pair<double,std::vector<pair<size_t, pair<double,double> > > > > > getHash() {
-        return _axis.getHash();
-    }
-
-    /// Hash returner (const version)
-    /// @todo This needs a typedef
-    const std::pair<Utils::cachedvector<pair<double,std::vector<pair<size_t, pair<double,double> > > > >,
-                    Utils::cachedvector<pair<double,std::vector<pair<size_t, pair<double,double> > > > > > getHash() const {
-        return _axis.getHash();
-    }*/
     //@}
 
   public:
@@ -278,14 +270,14 @@ namespace YODA {
       return *this;
     }
 
-    /*bool operator == (const Histo2D& other) {
+    bool operator == (const Histo2D& other) const {
       return _axis == other._axis;
     }
 
-    bool operator != (const Histo2D& other) {
+    bool operator != (const Histo2D& other) const {
         return ! operator == (other);
     }
-*/
+
     //@}
 
 
@@ -300,18 +292,22 @@ namespace YODA {
     Histo1D cutterX(double atY, const std::string& path="", const std::string& title="") {
       if (atY < lowEdgeY() || atY > highEdgeY()) throw RangeError("Y is outside the grid");
       vector<HistoBin1D> tempBins;
+      
       /// @todo Make all Bin1D constructions happen in loop, to reduce code duplication
       const HistoBin2D& first = binByCoord(lowEdgeX(), atY);
       const Dbn1D dbn(first.numEntries(), first.sumW(), first.sumW2(), first.sumWX(), first.sumWX2());
       tempBins.push_back(HistoBin1D(first.lowEdgeX(), first.highEdgeX(), dbn));
+
       for (double i = first.xMax() + first.widthX()/2; i < highEdgeX(); i += first.widthX()) {
         const HistoBin2D& b2 = binByCoord(i, atY);
         const Dbn1D dbn2(b2.numEntries(), b2.sumW(), b2.sumW2(), b2.sumWX(), b2.sumWX2());
         tempBins.push_back(HistoBin1D(b2.lowEdgeX(), b2.highEdgeX(), dbn2));
       }
+
       /// @todo Think about the total, underflow and overflow distributions
       /// @todo Create total dbn from input bins
       return Histo1D(tempBins, Dbn1D(), Dbn1D(), Dbn1D(), path, title);
+
     }
 
 
@@ -323,15 +319,18 @@ namespace YODA {
     Histo1D cutterY(double atX, const std::string& path="", const std::string& title="") {
       if (atX < lowEdgeX() || atX > highEdgeX()) throw RangeError("X is outside the grid");
       vector<HistoBin1D> tempBins;
+      
       /// @todo Make all Bin1D constructions happen in loop, to reduce code duplication
       const HistoBin2D& first = binByCoord(atX, lowEdgeY());
       const Dbn1D dbn(first.numEntries(), first.sumW(), first.sumW2(), first.sumWX(), first.sumWX2());
       tempBins.push_back(HistoBin1D(first.lowEdgeY(), first.highEdgeY(), dbn));
+
       for (double i = first.yMax() + first.widthY()/2; i < highEdgeY(); i += first.widthY()) {
         const HistoBin2D& b2 = binByCoord(atX, i);
         const Dbn1D dbn2(b2.numEntries(), b2.sumW(), b2.sumW2(), b2.sumWX(), b2.sumWX2());
         tempBins.push_back(HistoBin1D(b2.lowEdgeY(), b2.highEdgeY(), dbn2));
       }
+
       /// @todo Think about the total, underflow and overflow distributions
       /// @todo Create total dbn from input bins
       return Histo1D(tempBins, Dbn1D(), Dbn1D(), Dbn1D(), path, title);
@@ -375,7 +374,7 @@ namespace YODA {
     return tmp;
   }
 
-  //Scatter3D operator / (const Histo2D& numer, const Histo2D& denom);
+  Scatter3D operator / (const Histo2D& numer, const Histo2D& denom);
 
   //@}
 

@@ -84,7 +84,8 @@ namespace YODA {
         addPoint(Point3D(x[i], exminus[i], explus[i], y[i], eyminus[i], eyplus[i], z[i], ezminus[i], ezplus[i]));
       }
     }
-
+    /// Copy constructor
+    Scatter3D(const Scatter3D&, const std::string& path="");
     //@}
 
 

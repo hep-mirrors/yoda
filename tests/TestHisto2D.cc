@@ -1,4 +1,5 @@
 #include "YODA/Histo2D.h"
+#include "YODA/Scatter3D.h"
 #include <cmath>
 #include <iostream>
 #include <unistd.h>
@@ -38,11 +39,14 @@ int main() {
     gettimeofday(&startTime, NULL);
     Histo2D h(200, 0, 100, 200, 0, 100);
     gettimeofday(&endTime, NULL);
+    cout << h.binByCoord(1,1).isReal << endl;
 
     double tS = (startTime.tv_sec*1000000 + startTime.tv_usec)/(double)1000000;
     double tE = (endTime.tv_sec*1000000 + endTime.tv_usec)/(double)1000000;
     cout << "Time to create 40K bins: " << tE - tS << "s" << endl;
     printStats(h);
+
+    h.mergeBins(1, 100);
 
     cout << h.numBinsTotal() << endl;
     h.addBin(0.1, 0.1, 0.2, 0.2);
@@ -160,16 +164,17 @@ int main() {
     /// Addition/Subtraction:
     Histo2D first(100, 0, 100, 100, 0, 100);
     first.fill(1,1,1);
+    first.fill(23,1,1);
     Histo2D second(100, 0, 100, 100, 0, 100);
     second.fill(1,1,1);
 
     Histo2D added(first+second);
     Histo2D subtracted(first-second);
-    //Histo2D divided(first / second);
+    Scatter3D divided(first/second);
 
     printStats(added);
     printStats(subtracted);
-    //printStats(divided);
+
 
     ///And now, test cuts:
 

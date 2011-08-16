@@ -16,10 +16,6 @@ NOW
   exception if binnings are not complete grids. (MICHAL)
   (done -- to be reviewed)
 
-* Remove getBinHash from Axis2D and use private bin hash member for equality
-  comparisons (MICHAL)
-  AB: Is this done?
-
 * Rebinning: merges of n adjacent bins and global rebinning by integer factor
   (on widths or on bin groups?) (AB for 1D, MICHAL for 2D)
 

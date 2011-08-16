@@ -117,8 +117,11 @@ namespace YODA {
     for (size_t i = 0; i < numer.numBins(); ++i) {
       const HistoBin1D& b1 = numer.bin(i);
       const HistoBin1D& b2 = denom.bin(i);
-      assert(fuzzyEquals(b1.focus(), b2.focus()));
-      const double x = b1.focus();
+      const HistoBin1D& bL = b1 + b2;
+
+      assert(fuzzyEquals(b1.midpoint(), b2.midpoint()));
+
+      const double x = bL.focus();
       assert(fuzzyEquals(b1.xMin(), b2.xMin()));
       assert(fuzzyEquals(b1.xMax(), b2.xMax()));
       const double exminus = x - b1.xMin();

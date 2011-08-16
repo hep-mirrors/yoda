@@ -29,6 +29,12 @@ namespace YODA {
 */
   ////////////////////////////////////////
 
+  /// A copy constructor:
+  Scatter3D::Scatter3D(const Scatter3D& s, const std::string& path) 
+    : AnalysisObject("Scatter3D", (path.size() == 0) ? s.path() : path, s, s.title()) 
+  {  
+    _points = s._points;
+  }
 
   /// Subtract two scatters
   Scatter3D operator + (const Scatter3D& first, const Scatter3D& second) {

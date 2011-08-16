@@ -6,12 +6,12 @@
 #include <string>
 #include <utility>
 #include <vector>
+#include <iostream>
 #include <cassert>
 using namespace std;
 
 namespace YODA {
-
-
+  
   /// @brief A generic 2D bin type
   ///
   /// This is a generic 2D bin type which supplies the accessors for the two "x"
@@ -22,6 +22,10 @@ namespace YODA {
   /// method, since the signatures for standard and profile histos differ.
   class Bin2D : public Bin {
   public:
+
+    /// Convinience typedefs
+    typedef typename std::pair<double, double> Point;
+    typedef typename std::pair<Point, Point> Segment;
 
     /// @name Constructors
     //@{
@@ -37,13 +41,15 @@ namespace YODA {
     /// Bin slightly faster (this claim is very weakly true).  It is not
     /// suggested to use it if it is just needed to add few bins to an already
     /// created Histo2D.
-    Bin2D(std::vector<std::pair<std::pair<double, double>, std::pair<double, double> > > edges);
+    Bin2D(std::vector<Segment> edges);
 
     //@}
 
 
     /// @name Modifiers
     //@{
+
+    const vector<Segment> edges() const { return _edges;}
 
     /// Reset all bin data
     virtual void reset() {
@@ -70,9 +76,15 @@ namespace YODA {
     double lowEdgeY() const {
       return _edges[0].first.second;
     }
+
     /// Synonym for lowEdgeY()
     double yMin() const { return lowEdgeY(); }
 
+    /// A variable that specifies if the bin should be plotted
+    bool isReal;
+
+    ///@name Transformers
+    //@{
     /// Get the high x edge of the bin.
     double highEdgeX() const {
       return _edges[1].second.first;
@@ -87,33 +99,28 @@ namespace YODA {
     /// Synonym for highEdgeY()
     double yMax() const { return highEdgeY(); }
 
-    /// Width of the bin in x
-    double widthX() const {
-      return _edges[1].second.first - _edges[0].first.first;
-    }
-
     /// Width of the bin in y
     double widthY() const {
       return _edges[0].second.second - _edges[0].first.second;
     }
 
-    /// Find the geometric midpoint of the bin
-    std::pair<double, double> midpoint() const {
-      return make_pair(_edges[1].second.first-_edges[0].first.first,
-                       _edges[0].second.second-_edges[0].first.second);
+    /// Width of the bin in x
+    double widthX() const {
+      return _edges[1].second.first - _edges[0].first.first;
     }
-
-    /// Find the weighted mean point of the bin, or the midpoint if unfilled
-    std::pair<double, double> focus() const {
-      if (_dbn.sumW() != 0) return make_pair(xMean(), yMean());
-      return midpoint();
-    }
-
     //@}
-
 
     /// @name Distribution statistics
     //@{
+
+    /// Find the geometric midpoint of the bin
+    Point midpoint() const; 
+
+    /// Find the weighted mean point of the bin, or the midpoint if unfilled
+    Point focus() const {
+      if (_dbn.sumW() != 0) return make_pair(xMean(), yMean());
+      return midpoint();
+    }
 
     /// Mean x value
     double xMean() const {
@@ -206,33 +213,24 @@ namespace YODA {
 
     //@}
 
-
   protected:
 
-    Bin2D& add(const Bin2D& b) {
-      assert(_edges == b._edges);
-      _dbn += b._dbn;
-      return *this;
-    }
+    Bin2D& add(const Bin2D& b); 
 
-    Bin2D& subtract(const Bin2D& b) {
-      assert(_edges == b._edges);
-      _dbn -= b._dbn;
-      return *this;
-    }
+    Bin2D& subtract(const Bin2D& b);
 
-
-  protected:
-
-
-    /// @todo Explain! And then replace it with something sane -- this is really wasteful.
-    std::vector<std::pair<std::pair<double,double>,std::pair<double,double> > > _edges;
-
-    /// Distribution of fills in this bin.
+    std::vector<Segment> _edges;
     Dbn2D _dbn;
+        
+    /// Boundaries setter
+    void _setBounds(double xMin, double yMin, double xMax, double yMax) {
+      _edges[0] = make_pair(make_pair(xMin, yMin), make_pair(xMin, yMax));
+      _edges[1] = make_pair(make_pair(xMin, yMax), make_pair(xMax, yMax));
+      _edges[2] = make_pair(make_pair(xMax, yMin), make_pair(xMax, yMax));
+      _edges[3] = make_pair(make_pair(xMin, yMin), make_pair(xMax, yMin));
+    }
 
   };
-
 
   inline Bin2D operator + (const Bin2D& a, const Bin2D& b) {
     Bin2D rtn = a;
