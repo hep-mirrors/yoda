@@ -114,7 +114,7 @@ namespace YODA {
 
     /// Width of the bin in x
     double widthX() const {
-      return _edges.second.first - _edges.first.first;
+      return xMax() - xMin();
     }
     //@}
 

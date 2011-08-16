@@ -60,6 +60,13 @@ namespace YODA {
     /// Copy constructor with optional new path
     Histo2D(const Histo2D& h, const std::string& path="");
 
+    /// @brief Bin constructor
+    /// A constructor that accepts a vector of bins and produces a meaningful Histo2D out of those
+    Histo2D(const std::vector<HistoBin2D> bins, const std::string& path="", const std::string& title="")
+      : AnalysisObject("Histo2D", path, title), _axis(bins)
+    { }
+      
+
     //@}
 
 

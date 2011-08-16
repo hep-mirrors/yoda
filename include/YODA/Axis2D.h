@@ -87,6 +87,17 @@ namespace YODA {
             }
             _mkAxis(binLimits);
         }
+
+        /// @brief A bin constructor
+        /// Creates an Axis2D from existing bins
+        Axis2D(Bins bins) 
+        {
+          vector<Segment> binLimits;
+          for(size_t i=0; i < bins.size(); ++i) binLimits.push_back(make_pair(make_pair(bins[i].xMin(), bins[i].yMin()), 
+                                                                           make_pair(bins[i].xMax(), bins[i].yMax())));
+          _mkAxis(binLimits);
+          for(size_t i=0; i < _bins.size(); ++i) _bins[i] = bins[i];
+        }
         //@}
 
         /// @name Addition operators:

@@ -14,7 +14,7 @@ NOW
 * Rebinning: merges of n adjacent bins and global rebinning by integer factor
   (on widths or on bin groups?) (AB for 1D, MICHAL for 2D (done))
 
-* Implement hierarchy-cascading state-setting constructor for Histo2D. (MICHAL)
+* Implement hierarchy-cascading state-setting constructor for Histo2D.(done) (MICHAL)
 
 * Use state-setting constructors for Histo and Profile persistency via the
   Reader classes. (HH)
