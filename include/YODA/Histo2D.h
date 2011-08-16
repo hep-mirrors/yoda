@@ -290,6 +290,8 @@ namespace YODA {
     /// @todo Need to check that there is a continuous row for this y
     /// @todo Change the name!
     Histo1D cutterX(double atY, const std::string& path="", const std::string& title="") {
+      if(!_axis.isGriddy()) throw GridError("I cannot cut a Histo2D that is not a grid!");
+
       if (atY < lowEdgeY() || atY > highEdgeY()) throw RangeError("Y is outside the grid");
       vector<HistoBin1D> tempBins;
       
@@ -298,12 +300,11 @@ namespace YODA {
       const Dbn1D dbn(first.numEntries(), first.sumW(), first.sumW2(), first.sumWX(), first.sumWX2());
       tempBins.push_back(HistoBin1D(first.lowEdgeX(), first.highEdgeX(), dbn));
 
-      for (double i = first.xMax() + first.widthX()/2; i < highEdgeX(); i += first.widthX()) {
+      for (double i = first.midpoint().first + first.widthX(); i < highEdgeX(); i += first.widthX()) {
         const HistoBin2D& b2 = binByCoord(i, atY);
         const Dbn1D dbn2(b2.numEntries(), b2.sumW(), b2.sumW2(), b2.sumWX(), b2.sumWX2());
         tempBins.push_back(HistoBin1D(b2.lowEdgeX(), b2.highEdgeX(), dbn2));
       }
-
       /// @todo Think about the total, underflow and overflow distributions
       /// @todo Create total dbn from input bins
       return Histo1D(tempBins, Dbn1D(), Dbn1D(), Dbn1D(), path, title);
@@ -317,6 +318,8 @@ namespace YODA {
     /// @todo Need to check that there is a continuous column for this x
     /// @todo Change the name!
     Histo1D cutterY(double atX, const std::string& path="", const std::string& title="") {
+      if(!_axis.isGriddy()) throw GridError("I cannot cut a Histo2D that is not a grid!");
+
       if (atX < lowEdgeX() || atX > highEdgeX()) throw RangeError("X is outside the grid");
       vector<HistoBin1D> tempBins;
       
@@ -325,7 +328,7 @@ namespace YODA {
       const Dbn1D dbn(first.numEntries(), first.sumW(), first.sumW2(), first.sumWX(), first.sumWX2());
       tempBins.push_back(HistoBin1D(first.lowEdgeY(), first.highEdgeY(), dbn));
 
-      for (double i = first.yMax() + first.widthY()/2; i < highEdgeY(); i += first.widthY()) {
+      for (double i = first.midpoint().second + first.widthY(); i < highEdgeY(); i += first.widthY()) {
         const HistoBin2D& b2 = binByCoord(atX, i);
         const Dbn1D dbn2(b2.numEntries(), b2.sumW(), b2.sumW2(), b2.sumWX(), b2.sumWX2());
         tempBins.push_back(HistoBin1D(b2.lowEdgeY(), b2.highEdgeY(), dbn2));

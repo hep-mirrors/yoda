@@ -8,6 +8,7 @@
 #include "YODA/Utils/cachedvector.h"
 #include "YODA/Utils/MathUtils.h"
 #include "YODA/Dbn2D.h"
+
 #include <string>
 #include <cassert>
 #include <cmath>
@@ -143,8 +144,6 @@ namespace YODA {
               {
                 temp += bin(_binHashSparse.first[y].second[x].first);
                 bin(_binHashSparse.first[y].second[x].first).isReal = false;
-
-                /// @todo The bin that was just added must be changed to virtual!
               }
             }
           }
@@ -162,7 +161,7 @@ namespace YODA {
         /// inner subcaches and half of this amount in the outer (grid boundary)
         /// subcaches. This makes isGriddy() a very, very fast function.
         /// @todo Is the name appropriate?
-        int isGriddy() const
+        bool isGriddy() const
         {
 
             /// Check if the number of edges parallel to X axis
@@ -171,11 +170,11 @@ namespace YODA {
             for(unsigned int i=1; i < _binHashSparse.first.size(); i++) {
                 if(i == _binHashSparse.first.size() - 1) {
                     if(_binHashSparse.first[i].second.size() != sizeX) {
-                        return -1;
+                        return false;
                     }
                 }
                 else if(_binHashSparse.first[i].second.size() != 2*sizeX) {
-                    return -1;
+                    return false;
                 }
             }
 
@@ -184,14 +183,14 @@ namespace YODA {
             for(unsigned int i=1; i < _binHashSparse.second.size(); i++) {
                 if(i!= _binHashSparse.second.size() - 1) {
                     if(2*sizeY != _binHashSparse.second[i].second.size()) {
-                        return -1;
+                        return false;
                     }
                 }
                 else if(_binHashSparse.second[i].second.size() != sizeY) return -1;
             }
 
             /// If everything is proper, announce it.
-            return 0;
+            return true;
         }
 
         /// Return a total number of bins in a Histo
@@ -755,21 +754,22 @@ namespace YODA {
                 if(_bins[i].yMin() < lowEdgeY) lowEdgeY = _bins[i].yMin();
                 if(_bins[i].yMax() > highEdgeY) highEdgeY = _bins[i].yMax();
             }
-
+            
+            cout << "LowX: " << lowEdgeX << " LowY: " << lowEdgeY << " HighX: " << highEdgeX << " HighY: " << highEdgeY << endl;
             _lowEdgeX = lowEdgeX;
             _highEdgeX = highEdgeX;
             _lowEdgeY = lowEdgeY;
             _highEdgeY = highEdgeY;
         }
 
-        /// @brief BIn index finder
+        /// @brief Bin index finder
         /// Looks through all the bins to see which
         /// one contains the point of interest.
         int _findBinIndex(double coordX, double coordY) const 
         {
            for(size_t i=0; i < _bins.size(); i++) {
-               if(_bins[i].lowEdgeX() <= coordX && _bins[i].highEdgeX()  >= coordX && 
-               _bins[i].lowEdgeY() <= coordY && _bins[i].highEdgeY() >= coordY &&
+               if(_bins[i].xMin() <= coordX && _bins[i].xMax()  >= coordX && 
+               _bins[i].yMin() <= coordY && _bins[i].yMax() >= coordY &&
                _bins[i].isReal) return i;
            }
         return -1;

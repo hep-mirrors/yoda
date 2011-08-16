@@ -46,7 +46,6 @@ int main() {
     cout << "Time to create 40K bins: " << tE - tS << "s" << endl;
     printStats(h);
 
-    h.mergeBins(1, 100);
 
     cout << h.numBinsTotal() << endl;
     h.addBin(0.1, 0.1, 0.2, 0.2);
@@ -162,16 +161,20 @@ int main() {
     }
 
     /// Addition/Subtraction:
-    Histo2D first(100, 0, 100, 100, 0, 100);
+    cout << "Creating histos to be added/substracted/divided:" << endl;
+
+    Histo2D first(10, 0, 100, 10, 0, 100);
     first.fill(1,1,1);
     first.fill(23,1,1);
-    Histo2D second(100, 0, 100, 100, 0, 100);
+    Histo2D second(10, 0, 100, 10, 0, 100);
     second.fill(1,1,1);
 
+    cout << "Adding/Substracting/Dividing" << endl;
     Histo2D added(first+second);
     Histo2D subtracted(first-second);
     Scatter3D divided(first/second);
 
+    cout << "Done!" << endl;
     printStats(added);
     printStats(subtracted);
 
@@ -188,12 +191,12 @@ int main() {
         return -1;
     }
     if(!fuzzyEquals(sampleHisto.sumW2(false), 1.51588e+10)) {
-        cout << "Something is wrong with weight squared!" << endl;
+        cout << "Something is wrong with weight squared! It is: " << sampleHisto.sumW2(false)<< endl;
         return -1;
     }
 
     Histo1D atY(sampleHisto.cutterX(0));
-    cout << atY.sumW(false) << " " <<atY.numBins() << endl;
+    cout << atY.sumW(false) << " " <<sampleHisto.sumW(false) << endl;
     if(!fuzzyEquals(atY.sumW(false), sampleHisto.sumW(false))){
         cout << "Something is wrong with weights when cut parallell to X axis." << endl;
         return -1;
@@ -213,6 +216,15 @@ int main() {
         cout << "Probably the cuts are not done properly!" << endl;
         return -1;
     }
+
+    cout << "Testing bin merger:" << endl;
+    gettimeofday(&startTime, NULL);
+    h.mergeBins(0, 20000);
+    gettimeofday(&endTime, NULL);
+    tS = (startTime.tv_sec*1000000 + startTime.tv_usec)/(double)1000000;
+    tE = (endTime.tv_sec*1000000 + endTime.tv_usec)/(double)1000000;
+    
+    cout << "Time to merge 20k bins: " << tE - tS << "s" << endl;
 
     return EXIT_SUCCESS;
 }

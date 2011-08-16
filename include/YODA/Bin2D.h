@@ -49,7 +49,15 @@ namespace YODA {
     /// @name Modifiers
     //@{
 
-    const vector<Segment> edges() const { return _edges;}
+    const vector<Segment> edges() const { 
+      vector<Segment> ret;
+      ret.push_back(make_pair(make_pair(xMin(), yMin()), make_pair(xMin(), yMax())));
+      ret.push_back(make_pair(make_pair(xMin(), yMax()), make_pair(xMax(), yMax())));
+      ret.push_back(make_pair(make_pair(xMax(), yMin()), make_pair(xMax(), yMax())));
+      ret.push_back(make_pair(make_pair(xMin(), yMin()), make_pair(xMax(), yMin())));
+
+      return ret;
+    }
 
     /// Reset all bin data
     virtual void reset() {
@@ -67,14 +75,14 @@ namespace YODA {
 
     /// Get the low x edge of the bin.
     double lowEdgeX() const {
-      return _edges[0].first.first;
+      return _edges.first.first;
     }
     /// Synonym for lowEdgeX()
     double xMin() const { return lowEdgeX(); }
 
     /// Get the low y edge of the bin.
     double lowEdgeY() const {
-      return _edges[0].first.second;
+      return _edges.first.second;
     }
 
     /// Synonym for lowEdgeY()
@@ -87,26 +95,26 @@ namespace YODA {
     //@{
     /// Get the high x edge of the bin.
     double highEdgeX() const {
-      return _edges[1].second.first;
+      return _edges.second.first;
     }
     /// Synonym for highEdgeX()
     double xMax() const { return highEdgeX(); }
 
     /// Get the high y edge of the bin.
     double highEdgeY() const {
-      return _edges[1].second.second;
+      return _edges.second.second;
     }
     /// Synonym for highEdgeY()
     double yMax() const { return highEdgeY(); }
 
     /// Width of the bin in y
     double widthY() const {
-      return _edges[0].second.second - _edges[0].first.second;
+      return yMax() - yMin();
     }
 
     /// Width of the bin in x
     double widthX() const {
-      return _edges[1].second.first - _edges[0].first.first;
+      return _edges.second.first - _edges.first.first;
     }
     //@}
 
@@ -219,15 +227,15 @@ namespace YODA {
 
     Bin2D& subtract(const Bin2D& b);
 
-    std::vector<Segment> _edges;
+    Segment _edges;
     Dbn2D _dbn;
         
     /// Boundaries setter
     void _setBounds(double xMin, double yMin, double xMax, double yMax) {
-      _edges[0] = make_pair(make_pair(xMin, yMin), make_pair(xMin, yMax));
-      _edges[1] = make_pair(make_pair(xMin, yMax), make_pair(xMax, yMax));
-      _edges[2] = make_pair(make_pair(xMax, yMin), make_pair(xMax, yMax));
-      _edges[3] = make_pair(make_pair(xMin, yMin), make_pair(xMax, yMin));
+      _edges.first.first = xMin;
+      _edges.first.second = yMin;
+      _edges.second.first = xMax;
+      _edges.second.second = yMax;
     }
 
   };
