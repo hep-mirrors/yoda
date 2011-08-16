@@ -32,20 +32,24 @@ namespace YODA {
     /// @name Constructors
     //@{
 
+    /// Empty constructor
     Scatter2D(const std::string& path="", const std::string& title="")
       : AnalysisObject("Scatter2D", path, title)
     {  }
 
 
+    /// Constructor from a set of points
     Scatter2D(const Points& points,
               const std::string& path="", const std::string& title="")
       : AnalysisObject("Scatter2D", path, title),
         _points(points)
     {  }
 
+
     /// @todo Add constructor from generic container/Range
 
-    /// Values with no errors
+
+    /// Constructor from a vector of values with no errors
     Scatter2D(const std::vector<double>& x, const std::vector<double>& y,
               const std::string& path="", const std::string& title="")
       : AnalysisObject("Scatter2D", path, title)
@@ -56,7 +60,8 @@ namespace YODA {
       }
     }
 
-    /// Values with symmetric errors on x and y
+
+    /// Constructor from vectors of values with symmetric errors on x and y
     Scatter2D(const std::vector<double>& x, const std::vector<double>& y,
               const std::vector<double>& ex, const std::vector<double>& ey,
               const std::string& path="", const std::string& title="")
@@ -68,7 +73,8 @@ namespace YODA {
       }
     }
 
-    /// Values with symmetric errors on x and asymmetric errors on y
+
+    /// Constructor from values with symmetric errors on x and asymmetric errors on y
     Scatter2D(const std::vector<double>& x, const std::vector<double>& y,
               const std::vector<double>& ex, const std::vector<std::pair<double,double> >& ey,
               const std::string& path="", const std::string& title="")
@@ -80,7 +86,8 @@ namespace YODA {
       }
     }
 
-    /// Values with asymmetric errors on x and symmetric errors on y
+
+    /// Constructor from values with asymmetric errors on x and symmetric errors on y
     Scatter2D(const std::vector<double>& x, const std::vector<double>& y,
               const std::vector<std::pair<double,double> >& ex, const std::vector<double>& ey,
               const std::string& path="", const std::string& title="")
@@ -92,7 +99,8 @@ namespace YODA {
       }
     }
 
-    /// Values with asymmetric errors on both x and y
+
+    /// Constructor from values with asymmetric errors on both x and y
     Scatter2D(const std::vector<double>& x, const std::vector<double>& y,
               const std::vector<std::pair<double,double> >& ex, const std::vector<std::pair<double,double> >& ey,
               const std::string& path="", const std::string& title="")
@@ -104,7 +112,8 @@ namespace YODA {
       }
     }
 
-    /// Values with completely explicit asymmetric errors
+
+    /// Constructor from values with completely explicit asymmetric errors
     Scatter2D(const std::vector<double>& x, const std::vector<double>& y,
               const std::vector<double>& exminus,
               const std::vector<double>& explus,
@@ -121,46 +130,56 @@ namespace YODA {
       }
     }
 
+
+    /// @todo Add copy constructor
+
     //@}
 
+
+    /// @name Modifiers
+    //@{
 
     /// Clear all points
     void reset() {
       _points.clear();
     }
 
-
-    /// @name Persistency hooks
-    //@{
-
-    /// Set the state of the profile object, for unpersisting
-    /// @todo Need to set annotations (do that on AO), all-histo Dbns, and dbns for every bin. Delegate!
-    // void _setstate() = 0;
+    /// Scaling
+    void scale(double scaleX, double scaleY) {
+      for (size_t i = 0; i < _points.size(); ++i) {
+        _points[i].scale(scaleX, scaleY);
+      }
+    }
 
     //@}
 
 
     ///////////////////////////////////////////////////
 
+
     /// @name Point accessors
     //@{
 
+    /// Number of points in the scatter
     size_t numPoints() const {
       return _points.size();
     }
 
 
+    /// Get the collection of points
     const Points& points() const {
       return _points;
     }
 
 
+    /// Get a reference to the point with index @a index
     Point2D& point(size_t index) {
       assert(index < numPoints());
       return _points.at(index);
     }
 
 
+    /// Get the point with index @a index (const version)
     const Point2D& point(size_t index) const {
       assert(index < numPoints());
       return _points.at(index);
@@ -169,45 +188,53 @@ namespace YODA {
     //@}
 
 
-    /// @name Point adders
+    /// @name Point inserters
     //@{
 
+    /// Insert a new point
     Scatter2D& addPoint(const Point2D& pt) {
       _points.insert(pt);
       return *this;
     }
 
+    /// Insert a new point, defined as the x/y value pair
     Scatter2D& addPoint(double x, double y) {
       _points.insert(Point2D(x, y));
       return *this;
     }
 
+    /// Insert a new point, defined as the x/y value pair and symmetric errors
     Scatter2D& addPoint(double x, double y, double ex, double ey) {
       _points.insert(Point2D(x, y, ex, ey));
       return *this;
     }
 
+    /// Insert a new point, defined as the x/y value pair and mixed errors
     Scatter2D& addPoint(double x, double y, std::pair<double,double> ex, double ey) {
       _points.insert(Point2D(x, y, ex, ey));
       return *this;
     }
 
+    /// Insert a new point, defined as the x/y value pair and mixed errors
     Scatter2D& addPoint(double x, double y, double ex, std::pair<double,double> ey) {
       _points.insert(Point2D(x, y, ex, ey));
       return *this;
     }
 
+    /// Insert a new point, defined as the x/y value pair and asymmetric errors
     Scatter2D& addPoint(double x, double y, std::pair<double,double> ex, std::pair<double,double> ey) {
       _points.insert(Point2D(x, y, ex, ey));
       return *this;
     }
 
+    /// Insert a new point, defined as the x/y value pair and asymmetric errors
     Scatter2D& addPoint(double x, double exminus, double explus,
                         double y, double eyminus, double eyplus) {
       _points.insert(Point2D(x, exminus, explus, y, eyminus, eyplus));
       return *this;
     }
 
+    /// Insert a collection of new points
     Scatter2D& addPoints(Points pts) {
       foreach (const Point2D& pt, pts) {
         addPoint(pt);
@@ -215,20 +242,17 @@ namespace YODA {
       return *this;
     }
 
-    /// Scaling
-    void scale(double scaleX, double scaleY) {
-        for(unsigned int i=0; i < _points.size(); i++) _points[i].scale(scaleX, scaleY);
-    }
-
     //@}
 
+
+    /// @name Combining sets of scatter points
+    //@{
 
     /// @todo Better name?
     Scatter2D& combineWith(const Scatter2D& other) {
       addPoints(other.points());
       return *this;
     }
-
 
     /// @todo Better name?
     /// @todo Convert to accept a Range or generic
@@ -238,6 +262,8 @@ namespace YODA {
       }
       return *this;
     }
+
+    //@}
 
 
   private:
@@ -249,6 +275,8 @@ namespace YODA {
   };
 
 
+  /// @name Combining scatters by merging sets of points
+  //@{
 
   inline Scatter2D combine(const Scatter2D& a, const Scatter2D& b) {
     Scatter2D rtn = a;
@@ -265,6 +293,8 @@ namespace YODA {
     }
     return rtn;
   }
+
+  //@}
 
 
   //////////////////////////////////

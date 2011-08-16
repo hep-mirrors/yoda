@@ -30,6 +30,9 @@ namespace YODA {
       : Bin2D(edges)
     { }
 
+
+    /// @todo Add copy constructor
+
     //@}
 
 

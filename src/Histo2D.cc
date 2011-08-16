@@ -13,29 +13,28 @@ using namespace std;
 namespace YODA {
 
 
-  typedef vector<HistoBin2D> Bins;
+  // typedef vector<HistoBin2D> Bins;
 
 
-  /// @brief Fill function
-  /// It relies on Axis2D for searching procedures and
-  /// complies loudly if no bin was found.
   int Histo2D::fill(double x, double y, double weight) {
-    /// Fill the normal bins
+    // Fill the normal bins
     int index = findBinIndex(x, y);
-    if(index != -1) {
+    if (index != -1) {
       HistoBin2D& b = bin(index);
-      
-      /// Fill the underflow and overflow nicely
+
+      // Fill the total and outflow distributions
       _axis.totalDbn().fill(x, y, weight);
-    
+      /// @todo Fill the underflow and overflow nicely
+
       b.fill(x, y, weight);
     }
 
-    else if (x < _axis.lowEdgeX()) { _axis.underflow().fill(x, y, weight); }
-    else if (x >= _axis.highEdgeX()) { _axis.overflow().fill(x, y, weight); }
+    // else if (x < _axis.lowEdgeX()) { _axis.underflow().fill(x, y, weight); }
+    // else if (x >= _axis.highEdgeX()) { _axis.overflow().fill(x, y, weight); }
     else throw GridError("You are trying to fill an empty space on a grid!");
     return index;
   }
+
 
   double Histo2D::sumW(bool includeoverflows) const {
     if (includeoverflows) return _axis.totalDbn().sumW();
@@ -61,20 +60,21 @@ namespace YODA {
     if (includeoverflows) return _axis.totalDbn().xMean();
     double sumwx = 0;
     double sumw  = 0;
-    for (size_t i = 0; i < bins().size(); i++) {
-      sumwx += bins().at(i).sumWX();
-      sumw  += bins().at(i).sumW();
+    foreach (const Bin2D& b, bins()) {
+      sumwx += b.sumWX();
+      sumw  += b.sumW();
     }
     return sumwx/sumw;
   }
+
 
   double Histo2D::yMean(bool includeoverflows) const {
     if (includeoverflows) return _axis.totalDbn().yMean();
     double sumwy = 0;
     double sumw = 0;
-    for (size_t i = 0; i < bins().size(); i++) {
-        sumwy += bins().at(i).sumWY();
-        sumw  += bins().at(i).sumW();
+    foreach (const Bin2D& b, bins()) {
+        sumwy += b.sumWY();
+        sumw  += b.sumW();
     }
     return sumwy/sumw;
   }
@@ -91,6 +91,7 @@ namespace YODA {
     return sigma2/sumW();
   }
 
+
   double Histo2D::yVariance(bool includeoverflows) const {
     if (includeoverflows) return _axis.totalDbn().yVariance();
     double sigma2 = 0;
@@ -102,21 +103,7 @@ namespace YODA {
     return sigma2/sumW();
   }
 
-  ////////////////////////////////////////
 
-  /// Copy constructor with optional new path
-  Histo2D::Histo2D(const Histo2D& h, const std::string& path)
-    : AnalysisObject("Histo2D", (path.size() == 0) ? h.path() : path, h, h.title())
-  {
-    _axis = h._axis;
-  }
-
-
-  ///////////////////////////////////////
-
-
-  /// @brief Divide two histograms
-  /// This uses the midpoint instead of the focus
   Scatter3D operator / (const Histo2D& numer, const Histo2D& denom) {
     if(numer != denom) throw GridError("The two Histos are not the same!");
     Scatter3D tmp;
@@ -126,7 +113,7 @@ namespace YODA {
       const HistoBin2D& bL = b1 + b2;
       assert(fuzzyEquals(b1.midpoint().first, b2.midpoint().first));
       assert(fuzzyEquals(b1.midpoint().second, b2.midpoint().second));
-      
+
       const double x = bL.focus().first;
       const double y = bL.focus().second;
 
@@ -136,7 +123,7 @@ namespace YODA {
       const double eyminus = y - b1.yMin();
       const double eyplus = bL.yMax() - y;
       //cout << b1.xMin() << " " << b1.xMax() << " " << b1.yMin() << " " << b1.yMax() << " EMinus: " << exminus << " " << eyminus << " Focus: " << x << " " << y << endl;
-      
+
       const double z = b1.height() / b2.height();
       const double ez = z * sqrt( sqr(b1.heightErr()/b1.height()) + sqr(b2.heightErr()/b2.height()) );
       tmp.addPoint(x, exminus, explus, y, eyminus, eyplus, z, ez, ez);
@@ -144,5 +131,6 @@ namespace YODA {
     assert(tmp.numPoints() == numer.numBinsTotal());
     return tmp;
   }
+
 
 }

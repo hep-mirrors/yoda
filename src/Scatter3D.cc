@@ -4,37 +4,29 @@
 namespace YODA {
 
 
-  /// Make a Scatter3D representation of a Histo2D
-/*  Scatter3D mkScatter(const Histo2D& h) {
-    Scatter3D rtn;
-    rtn.setAnnotations(h.annotations());
-    rtn.setAnnotation("Type", h.type());
-    foreach (const HistoBin2D& b, h.bins()) {
-      const double x = b.focus().first;
-      const double ex_m = b.focus().first - b.lowEdgeX();
-      const double ex_p = b.highEdgeX() - b.focus().first;
+  // /// Make a Scatter3D representation of a Histo2D
+  // Scatter3D mkScatter(const Histo2D& h) {
+  //   Scatter3D rtn;
+  //   rtn.setAnnotations(h.annotations());
+  //   rtn.setAnnotation("Type", h.type());
+  //   foreach (const HistoBin2D& b, h.bins()) {
+  //     const double x = b.focus().first;
+  //     const double ex_m = b.focus().first - b.lowEdgeX();
+  //     const double ex_p = b.highEdgeX() - b.focus().first;
 
-      const double y = b.focus().second;
-      const double ey_m = b.focus().second - b.lowEdgeY();
-      const double ey_p = b.highEdgeY() - b.focus().second;
+  //     const double y = b.focus().second;
+  //     const double ey_m = b.focus().second - b.lowEdgeY();
+  //     const double ey_p = b.highEdgeY() - b.focus().second;
 
-      const double z = b.height();
-      const double ez = b.heightErr();
-      const Point3D pt(x, ex_m, ex_p, y, ey_m, ey_p, z, ez, ez);
-      rtn.addPoint(pt);
-    }
-    //assert(h.numBins() == rtn.numPoints());
-    return rtn;
-  }
-*/
-  ////////////////////////////////////////
+  //     const double z = b.height();
+  //     const double ez = b.heightErr();
+  //     const Point3D pt(x, ex_m, ex_p, y, ey_m, ey_p, z, ez, ez);
+  //     rtn.addPoint(pt);
+  //   }
+  //   //assert(h.numBins() == rtn.numPoints());
+  //   return rtn;
+  // }
 
-  /// A copy constructor:
-  Scatter3D::Scatter3D(const Scatter3D& s, const std::string& path) 
-    : AnalysisObject("Scatter3D", (path.size() == 0) ? s.path() : path, s, s.title()) 
-  {  
-    _points = s._points;
-  }
 
   /// Subtract two scatters
   Scatter3D operator + (const Scatter3D& first, const Scatter3D& second) {

@@ -18,6 +18,7 @@
 
 namespace YODA {
 
+
   // Forward declaration
   class Scatter3D;
 
@@ -57,49 +58,51 @@ namespace YODA {
       _axis(binedges)
     { }
 
-    /// Copy constructor with optional new path
-    Histo2D(const Histo2D& h, const std::string& path="");
 
-    /// @brief Bin constructor
-    /// A constructor that accepts a vector of bins and produces a meaningful Histo2D out of those
-    Histo2D(const std::vector<HistoBin2D> bins, const std::string& path="", const std::string& title="")
+    /// Copy constructor with optional new path
+    Histo2D(const Histo2D& h, const std::string& path="")
+      : AnalysisObject("Histo2D", (path.size() == 0) ? h.path() : path, h, h.title())
+    {
+      _axis = h._axis;
+    }
+
+
+    /// @todo Add binning constructors from Scatter3D (and Profile2D when it exists)
+
+
+    /// @brief State-setting constructor
+    /// Mainly intended for internal persistency use.
+    Histo2D(const std::vector<HistoBin2D> bins,
+
+            const std::string& path="", const std::string& title="")
       : AnalysisObject("Histo2D", path, title), _axis(bins)
     { }
-      
 
     //@}
 
 
   public:
 
-    /// @name Persistency hooks
-    //@{
-
-    /// Get name of the analysis object type, for persisting
-    std::string _aotype() const { return "Histo2D"; }
-
-    /// Set the state of the histo object, for unpersisting
-    /// @todo Need to set annotations (do that on AO), all-histo Dbns, and dbns for every bin. Delegate!
-    // void _setstate() = 0;
-
-    //@}
-
 
     /// @name Modifiers
     //@{
 
-    /// Fill histo by value and weight
+    /// @brief Fill histo by value and weight
+    ///
+    /// It relies on Axis2D for searching procedures and complains loudly if no
+    /// bin was found.
     int fill(double x, double y, double weight=1.0);
 
     /// @brief Reset the histogram.
     /// Keep the binning but set all bin contents and related quantities to zero
-    virtual void reset() {
+    void reset() {
       _axis.reset();
     }
 
-    ///Check if is a grid:
+    /// Check if this binning is a grid
+    /// @todo Really expose this on the public API?
     int isGriddy() {
-        return _axis.isGriddy();
+      return _axis.isGriddy();
     }
 
     /// Rescale as if all fill weights had been different by factor @a scalefactor.
@@ -122,32 +125,36 @@ namespace YODA {
     void addBin(double lowX, double lowY, double highX, double highY)   {
         _axis.addBin(lowX, lowY, highX, highY);
     }
-    
+
     /// Merge the bins
     void mergeBins(size_t from, size_t to) {
       _axis.mergeBins(from, to);
     }
+
     //@}
+
 
   public:
 
     /// @name Bin accessors
     //@{
 
-    /// Low edges of this histo's axis
+    /// Low x edge of this histo's axis
     double lowEdgeX() const {
       return _axis.lowEdgeX();
     }
 
+    /// Low y edge of this histo's axis
     double lowEdgeY() const {
         return _axis.lowEdgeY();
     }
 
-    /// High edges of this histo's axis
+    /// High x edge of this histo's axis
     double highEdgeX() const {
       return _axis.highEdgeX();
     }
 
+    /// High y edge of this histo's axis
     double highEdgeY() const {
         return _axis.highEdgeY();
     }
@@ -193,25 +200,25 @@ namespace YODA {
       return _axis.getBinIndex(coordX, coordY);
     }
 
-    /// Underflow (const version)
-    const Dbn2D& underflow() const {
-        return _axis.underflow();
-    }
+    // /// Underflow (const version)
+    // const Dbn2D& underflow() const {
+    //     return _axis.underflow();
+    // }
 
-    /// Return underflow (non-const version)
-    Dbn2D& underflow() {
-        return _axis.underflow();
-    }
+    // /// Return underflow (non-const version)
+    // Dbn2D& underflow() {
+    //     return _axis.underflow();
+    // }
 
-    /// Return overflow (const version)
-    const Dbn2D& overflow() const {
-        return _axis.overflow();
-    }
+    // /// Return overflow (const version)
+    // const Dbn2D& overflow() const {
+    //     return _axis.overflow();
+    // }
 
-    /// Return overflow (non-const version)
-    Dbn2D& overflow() {
-        return _axis.overflow();
-    }
+    // /// Return overflow (non-const version)
+    // Dbn2D& overflow() {
+    //     return _axis.overflow();
+    // }
 
     /// Return a total number of bins in Histo(non-const version)
     unsigned int numBinsTotal() {
@@ -224,6 +231,7 @@ namespace YODA {
 
     //@}
 
+
   public:
 
     /// @name Whole histo data
@@ -235,24 +243,30 @@ namespace YODA {
       return sumW(includeoverflows);
     }
 
-    /// Get sum of weights in histo
+    /// Get the sum of weights in histo
     double sumW(bool includeoverflows=true) const;
 
-    /// Get sum of squared weights in histo
+    /// Get the sum of squared weights in histo
     double sumW2(bool includeoverflows=true) const;
 
-    /// Get the mean
+    /// Get the mean x
     double xMean(bool includeoverflows=true) const;
+
+    /// Get the mean y
     double yMean(bool includeoverflows=true) const;
 
-    /// Get the variance
+    /// Get the variance in x
     double xVariance(bool includeoverflows=true) const;
+
+    /// Get the variance in y
     double yVariance(bool includeoverflows=true) const;
 
-    /// Get the standard deviation
+    /// Get the standard deviation in x
     double xStdDev(bool includeoverflows=true) const {
       return std::sqrt(xVariance(includeoverflows));
     }
+
+    /// Get the standard deviation in y
     double yStdDev(bool includeoverflows=true) const {
       return std::sqrt(yVariance(includeoverflows));
     }
@@ -292,16 +306,17 @@ namespace YODA {
     //@{
 
     /// @brief Create a Histo1D for the bin slice parallel to the x axis at the specified y coordinate
+    ///
     /// Note that the created histogram will not have correctly filled underflow and overflow bins.
     /// @todo It's not really *at* the specified y coord: it's for the corresponding bin row.
     /// @todo Need to check that there is a continuous row for this y
     /// @todo Change the name!
     Histo1D cutterX(double atY, const std::string& path="", const std::string& title="") {
-      if(!_axis.isGriddy()) throw GridError("I cannot cut a Histo2D that is not a grid!");
+      if (!_axis.isGriddy()) throw GridError("I cannot cut a Histo2D that is not a grid!");
 
       if (atY < lowEdgeY() || atY > highEdgeY()) throw RangeError("Y is outside the grid");
       vector<HistoBin1D> tempBins;
-      
+
       /// @todo Make all Bin1D constructions happen in loop, to reduce code duplication
       const HistoBin2D& first = binByCoord(lowEdgeX(), atY);
       const Dbn1D dbn(first.numEntries(), first.sumW(), first.sumW2(), first.sumWX(), first.sumWX2());
@@ -319,17 +334,18 @@ namespace YODA {
     }
 
 
-    /// Create a Histo1D for the bin slice parallel to the y axis at the specified x coordinate
+    /// @brief Create a Histo1D for the bin slice parallel to the y axis at the specified x coordinate
+    ///
     /// Note that the created histogram will not have correctly filled underflow and overflow bins.
     /// @todo It's not really *at* the specified x coord: it's for the corresponding bin row.
     /// @todo Need to check that there is a continuous column for this x
     /// @todo Change the name!
     Histo1D cutterY(double atX, const std::string& path="", const std::string& title="") {
-      if(!_axis.isGriddy()) throw GridError("I cannot cut a Histo2D that is not a grid!");
+      if (!_axis.isGriddy()) throw GridError("I cannot cut a Histo2D that is not a grid!");
 
       if (atX < lowEdgeX() || atX > highEdgeX()) throw RangeError("X is outside the grid");
       vector<HistoBin1D> tempBins;
-      
+
       /// @todo Make all Bin1D constructions happen in loop, to reduce code duplication
       const HistoBin2D& first = binByCoord(atX, lowEdgeY());
       const Dbn1D dbn(first.numEntries(), first.sumW(), first.sumW2(), first.sumWX(), first.sumWX2());
@@ -347,7 +363,7 @@ namespace YODA {
     }
 
 
-    /// @todo Create x-wise and y-wise conversions to Profile1D
+    /// @todo Create x-wise and y-wise conversions to Profile1D -- ignore outflows for now, but mark as such
 
 
     //@}
@@ -384,6 +400,12 @@ namespace YODA {
     return tmp;
   }
 
+  /// @todo Multiply histograms?
+
+  /// @brief Divide two histograms
+  ///
+  /// This uses the midpoint instead of the focus
+  /// @todo Set the output to be the focus of the new distribution
   Scatter3D operator / (const Histo2D& numer, const Histo2D& denom);
 
   //@}

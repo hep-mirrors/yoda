@@ -42,6 +42,9 @@ namespace YODA {
       _sumWX2 = sumWX2;
     }
 
+
+    /// @todo Add copy constructor
+
     //@}
 
 

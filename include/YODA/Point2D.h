@@ -27,7 +27,7 @@ namespace YODA {
     Point2D() {  }
 
 
-    /// Values with optional symmetric errors
+    /// Constructor from values with optional symmetric errors
     Point2D(double x, double y, double ex=0.0, double ey=0.0)
       : _x(x), _y(y)
     {
@@ -36,7 +36,7 @@ namespace YODA {
     }
 
 
-    /// Values with explicit asymmetric errors
+    /// Constructor from values with explicit asymmetric errors
     Point2D(double x, double y,
             double exminus,
             double explus,
@@ -49,7 +49,7 @@ namespace YODA {
     }
 
 
-    /// Values with symmetric errors on x and asymmetric errors on y
+    /// Constructor from values with symmetric errors on x and asymmetric errors on y
     Point2D(double x, double y, double ex, const std::pair<double,double>& ey)
       : _x(x), _y(y), _ey(ey)
     {
@@ -57,7 +57,7 @@ namespace YODA {
     }
 
 
-    /// Values with asymmetric errors on x and symmetric errors on y
+    /// Constructor from values with asymmetric errors on x and symmetric errors on y
     Point2D(double x, double y, const std::pair<double,double>& ex, double ey)
       : _x(x), _y(y), _ex(ex)
     {
@@ -65,11 +65,13 @@ namespace YODA {
     }
 
 
-    /// Values with asymmetric errors on both x and y
+    /// Constructor from values with asymmetric errors on both x and y
     Point2D(double x, double y, const std::pair<double,double>& ex, const std::pair<double,double>& ey)
       : _x(x), _y(y), _ex(ex), _ey(ey)
-    {
-    }
+    {  }
+
+
+    /// @todo Add copy constructor
 
     //@}
 
@@ -92,15 +94,17 @@ namespace YODA {
     void setY(double y) { _y = y; }
 
     //@}
-    
+
+
     /// Scaling
     void scale(double scaleX, double scaleY) {
         setX(x()*scaleX);
         setY(y()*scaleY);
-     
+
         setXErr(xErrMinus()*scaleX, xErrPlus()*scaleX);
         setYErr(yErrMinus()*scaleY, yErrPlus()*scaleY);
     }
+
 
     /// @name x error accessors
     //@{

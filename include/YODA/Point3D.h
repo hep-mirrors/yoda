@@ -27,7 +27,7 @@ namespace YODA {
     Point3D() {  }
 
 
-    /// Values with optional symmetric errors
+    /// Constructor from values with optional symmetric errors
     Point3D(double x, double y, double z, double ex=0.0, double ey=0.0, double ez=0.0)
       : _x(x), _y(y), _z(z)
     {
@@ -37,7 +37,7 @@ namespace YODA {
     }
 
 
-    /// Values with explicit asymmetric errors
+    /// Constructor from values with explicit asymmetric errors
     Point3D(double x, double y, double z,
             double exminus,
             double explus,
@@ -51,10 +51,10 @@ namespace YODA {
       _ey = std::make_pair(eyminus, eyplus);
       _ez = std::make_pair(ezminus, ezplus);
     }
-    
-    /// Assymetric Errors given as vectors:
-    Point3D(const double& x, 
-            const double& y, 
+
+    /// Constructor from asymmetric errors given as vectors
+    Point3D(const double& x,
+            const double& y,
             const double& z,
             const std::pair<double,double>& ex,
             const std::pair<double,double>& ey,
@@ -62,6 +62,8 @@ namespace YODA {
         Point3D(x, y, z, ex.first, ex.second, ey.first, ey.second, ez.first, ez.second);
         }
 
+
+    /// @todo Add copy constructor
 
     //@}
 
@@ -281,7 +283,7 @@ namespace YODA {
   /// Equality operator
   inline bool operator==(const  Point3D& a, const YODA::Point3D& b) {
     const bool same_val =  fuzzyEquals(a.x(), b.x()) && fuzzyEquals(a.y(), b.y());
-    const bool same_eminus =  fuzzyEquals(a.xErrMinus(), b.xErrMinus()) && 
+    const bool same_eminus =  fuzzyEquals(a.xErrMinus(), b.xErrMinus()) &&
                               fuzzyEquals(a.yErrMinus(), b.yErrMinus());
     const bool same_eplus =  fuzzyEquals(a.xErrPlus(), b.xErrPlus()) &&
                              fuzzyEquals(a.yErrPlus(), b.yErrPlus());

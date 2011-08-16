@@ -48,6 +48,8 @@ namespace YODA {
         _ydbn(dbny)
     {  }
 
+    /// @todo Add copy constructor
+
     //@}
 
 

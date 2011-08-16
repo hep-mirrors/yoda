@@ -14,6 +14,7 @@ namespace YODA {
     /// @name Constructors
     //@{
 
+    /// Default constructor
     Dbn2D() {
       reset();
     }
@@ -27,6 +28,9 @@ namespace YODA {
         _dbnY(numEntries, sumW, sumW2, sumWY, sumWY2),
         _sumWXY(sumWXY)
     {  }
+
+
+    /// @todo Add copy constructor
 
     //@}
 

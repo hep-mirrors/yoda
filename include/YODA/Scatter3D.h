@@ -14,10 +14,9 @@
 #include <set>
 #include <string>
 #include <utility>
+#include <cassert>
 
 namespace YODA {
-
-
 
 
   /// A very generic data type which is just a collection of 3D data points with errors
@@ -31,11 +30,13 @@ namespace YODA {
     /// @name Constructors
     //@{
 
+    /// Empty constructor
     Scatter3D(const std::string& path="", const std::string& title="")
       : AnalysisObject("Scatter3D", path, title)
     {  }
 
 
+    /// Constructor from a set of points
     Scatter3D(const Points& points,
               const std::string& path="", const std::string& title="")
       : AnalysisObject("Scatter3D", path, title),
@@ -43,7 +44,7 @@ namespace YODA {
     {  }
 
 
-    /// Values with asymmetric errors on both x and y
+    /// Constructor from vectors of values with asymmetric errors on both x and y
     Scatter3D(const std::vector<double>& x, const std::vector<double>& y, const std::vector<double>& z,
               const std::vector<std::pair<double,double> >& ex, const std::vector<std::pair<double,double> >& ey, const std::vector<std::pair<double,double> >& ez,
               const std::string& path="", const std::string& title="")
@@ -55,7 +56,8 @@ namespace YODA {
       }
     }
 
-    /// Values with no errors:
+
+    /// Constructor from vectors of values with no errors
     Scatter3D(const std::vector<double>& x, const std::vector<double>& y, const std::vector<double>& z,
               const std::string& path="", const std::string& title="") {
         std::vector<std::pair<double,double> > null;
@@ -65,7 +67,7 @@ namespace YODA {
         Scatter3D(x, y, z, null, null, null, path, title);
     }
 
-    /// Values with completely explicit asymmetric errors
+    /// Constructor from vectors of values with completely explicit asymmetric errors
     Scatter3D(const std::vector<double>& x, const std::vector<double>& y, const std::vector<double> z,
               const std::vector<double>& exminus,
               const std::vector<double>& explus,
@@ -84,10 +86,20 @@ namespace YODA {
         addPoint(Point3D(x[i], exminus[i], explus[i], y[i], eyminus[i], eyplus[i], z[i], ezminus[i], ezplus[i]));
       }
     }
+
+
     /// Copy constructor
-    Scatter3D(const Scatter3D&, const std::string& path="");
+    Scatter3D(const Scatter3D& s, const std::string& path="")
+      : AnalysisObject("Scatter3D", (path.size() == 0) ? s.path() : path, s, s.title())
+    {
+      _points = s._points;
+    }
+
     //@}
 
+
+    /// @name Modifiers
+    //@{
 
     /// Clear all points
     void reset() {
@@ -96,20 +108,13 @@ namespace YODA {
 
     /// Scale
     void scale(double scaleX, double scaleY, double scaleZ) {
-        for(unsigned int i=0; i < _points.size(); i++) _points[i].scale(scaleX, scaleY, scaleZ);
+      for (size_t i = 0; i < _points.size(); ++i) {
+        _points[i].scale(scaleX, scaleY, scaleZ);
+      }
     }
-
-    /// @name Persistency hooks
-    //@{
-
-    /// Set the state of the profile object, for unpersisting
-    /// @todo Need to set annotations (do that on AO), all-histo Dbns, and dbns for every bin. Delegate!
-    // void _setstate() = 0;
 
     //@}
 
-
-    ///////////////////////////////////////////////////
 
     /// @name Point accessors
     //@{
@@ -138,7 +143,7 @@ namespace YODA {
     //@}
 
 
-    /// @name Point adders
+    /// @name Point inserters
     //@{
 
     Scatter3D& addPoint(const Point3D& pt) {
@@ -201,6 +206,9 @@ namespace YODA {
 
 
 
+  /// @name Combining scatters by merging sets of points
+  //@{
+
   inline Scatter3D combine(const Scatter3D& a, const Scatter3D& b) {
     Scatter3D rtn = a;
     rtn.combineWith(b);
@@ -216,6 +224,8 @@ namespace YODA {
     return rtn;
   }
 
+  //@}
+
 
   //////////////////////////////////
 
@@ -225,7 +235,10 @@ namespace YODA {
 
   /// Make a Scatter3D representation of a Histo2D
   /// @todo Implement!
-  // Scatter3D mkScatter(const Histo2D& h);
+  inline Scatter3D mkScatter(const Histo2D& h) {
+    assert(0 && "Not implemented!");
+    return Scatter3D();
+  }
 
   /// Make a Scatter3D representation of a Profile2D
   /// @todo Implement!

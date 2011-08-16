@@ -14,7 +14,7 @@ using namespace std;
 namespace YODA {
 
 
-  typedef vector<HistoBin1D> Bins;
+  // typedef vector<HistoBin1D> Bins;
 
 
   void Histo1D::fill(double x, double weight) {

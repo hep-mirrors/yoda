@@ -37,11 +37,15 @@ namespace YODA {
       : Bin1D(edges)
     { }
 
+
     /// @brief Init a bin with all the components of a fill history.
     /// Mainly intended for internal persistency use.
     HistoBin1D(double lowedge, double highedge, const Dbn1D& dbn)
       : Bin1D(lowedge, highedge, dbn)
     { }
+
+
+    /// @todo Add copy constructor
 
     //@}
 

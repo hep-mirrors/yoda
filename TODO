@@ -6,13 +6,17 @@ NOW
 * Check if the weight2 treatment in Dbn1D is really correct: we're currently
   multiplying it by sign(w). Hmm. (AB)
 
+* Rebinning: merges of n adjacent bins and global rebinning by integer factor
+  (on widths or on bin groups?) (AB for 1D, MICHAL for 2D (done))
+
+* Add copy constructors for Dbn1D/2D, Scatter2D, Histo/ProfileBin1D, Point2D/3D, HistoBin2D.
+  Rule of three: also need explicit assignment operator= for all classes
+  with copy constructors?
+
 * Conversion functions to build Histo1D and Profile1D objects for slicings and
   marginalisations along both X and Y directions of 2D histos. Throw an
   exception if binnings are not complete grids. (MICHAL)
   (done -- to be reviewed)
-
-* Rebinning: merges of n adjacent bins and global rebinning by integer factor
-  (on widths or on bin groups?) (AB for 1D, MICHAL for 2D (done))
 
 * Implement hierarchy-cascading state-setting constructor for Histo2D.(done) (MICHAL)
 
