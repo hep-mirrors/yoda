@@ -15,11 +15,8 @@
 #include <algorithm>
 #include <limits>
 
+/// @todo Remove this: don't use namespace std in API headers since it pollutes users' namespace.
 using namespace std;
-
-/// Big and small number for low/high search:
-const double LARGENUM = numeric_limits<double>::max();
-const double SMALLNUM = numeric_limits<double>::min();
 
 namespace YODA {
 
@@ -748,10 +745,10 @@ namespace YODA {
     /// function regenerates them. It should be run after any change is made to
     /// bin layout.
     void _regenDelimiters() {
-      double highEdgeX = SMALLNUM;
-      double highEdgeY = SMALLNUM;
-      double lowEdgeX = LARGENUM;
-      double lowEdgeY = LARGENUM;
+      double highEdgeX = numeric_limits<double>::min();
+      double highEdgeY = numeric_limits<double>::min();
+      double lowEdgeX = numeric_limits<double>::max();
+      double lowEdgeY = numeric_limits<double>::max();
 
       // Scroll through the bins and set the delimiters.
       for (size_t i = 0; i < _bins.size(); ++i) {
