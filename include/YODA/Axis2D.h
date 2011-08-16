@@ -25,6 +25,7 @@ namespace YODA {
 
 
   /// @brief 2D bin container and provider
+  ///
   /// This class handles almost all boiler-plate operations
   /// on 2D bins (like creating axis, adding, searching, testing).
   template <typename BIN>

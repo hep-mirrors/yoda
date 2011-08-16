@@ -14,8 +14,9 @@ namespace YODA {
 
 
   /// @brief Generic unspecialised YODA runtime error.
-  /// NB. We don't use "Error" because that's a useful stats
-  /// word to have available!
+  ///
+  /// NB. We don't use "Error" because that's a useful stats word to have
+  /// available!
   class Exception : public std::runtime_error {
   public:
     Exception(const std::string& what) : std::runtime_error(what) {}
@@ -43,6 +44,7 @@ namespace YODA {
 
 
   /// @brief Errors relating to event/bin weights
+  ///
   /// Arises in computing statistical quantities because e.g. the bin
   /// weight is zero or negative.
   class WeightError : public Exception {

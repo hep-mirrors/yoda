@@ -12,15 +12,17 @@
 namespace YODA {
 
 
-  /// @brief A 1D distribution This class is used internally by YODA to
-  /// centralise the calculation of statistics of unbounded, unbinned sampled
-  /// distributions. Each distribution fill contributes a weight, \f$ w \f$, and
-  /// a value, \f$ x \f$. By storing the total number of fills (ignoring
-  /// weights), \f$ \sum w \f$, \f$ \sum w^2 \f$, \f$ \sum wx \f$,
-  /// and \f$ \sum wx^2 \f$, the Dbn1D can calculate the mean and spread
-  /// (\f$ \sigma^2 \f$, \f$ \sigma \f$ and \f$ \hat{\sigma} \f$) of the
-  /// sampled distribution. It is used to provide this information in bins
-  /// and for the "hidden" \f$ y \f$ distribution in profile histogram bins.
+  /// @brief A 1D distribution
+  ///
+  /// This class is used internally by YODA to centralise the calculation of
+  /// statistics of unbounded, unbinned sampled distributions. Each distribution
+  /// fill contributes a weight, \f$ w \f$, and a value, \f$ x \f$. By storing
+  /// the total number of fills (ignoring weights), \f$ \sum w \f$, \f$ \sum w^2
+  /// \f$, \f$ \sum wx \f$, and \f$ \sum wx^2 \f$, the Dbn1D can calculate the
+  /// mean and spread (\f$ \sigma^2 \f$, \f$ \sigma \f$ and \f$ \hat{\sigma}
+  /// \f$) of the sampled distribution. It is used to provide this information
+  /// in bins and for the "hidden" \f$ y \f$ distribution in profile histogram
+  /// bins.
   class Dbn1D {
   public:
 

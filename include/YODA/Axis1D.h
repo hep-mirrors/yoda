@@ -20,6 +20,7 @@ namespace YODA {
 
 
   /// @brief A 1D templated container of ordered bins
+  ///
   /// This class is separately templated on the bin and distribution types.
   template <typename BIN1D, typename DBN>
   class Axis1D {

@@ -13,6 +13,7 @@ namespace YODA {
 
 
   /// @brief Base class for bins in 1D and 2D histograms.
+  ///
   /// This base class only provides very basic functionality for fill
   /// weight statistics access, as 1D/2D and basic/profile histos have
   /// quite difference implementations.

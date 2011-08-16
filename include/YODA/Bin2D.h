@@ -11,7 +11,7 @@
 using namespace std;
 
 namespace YODA {
-  
+
   /// @brief A generic 2D bin type
   ///
   /// This is a generic 2D bin type which supplies the accessors for the two "x"
@@ -23,7 +23,7 @@ namespace YODA {
   class Bin2D : public Bin {
   public:
 
-    /// Convinience typedefs
+    /// Convenience typedefs
     typedef typename std::pair<double, double> Point;
     typedef typename std::pair<Point, Point> Segment;
 
@@ -41,7 +41,7 @@ namespace YODA {
     /// Bin slightly faster (this claim is very weakly true).  It is not
     /// suggested to use it if it is just needed to add few bins to an already
     /// created Histo2D.
-    Bin2D(std::vector<Segment> edges);
+    Bin2D(const std::vector<Segment>& edges);
 
     //@}
 
@@ -49,13 +49,12 @@ namespace YODA {
     /// @name Modifiers
     //@{
 
-    const vector<Segment> edges() const { 
+    const vector<Segment> edges() const {
       vector<Segment> ret;
       ret.push_back(make_pair(make_pair(xMin(), yMin()), make_pair(xMin(), yMax())));
       ret.push_back(make_pair(make_pair(xMin(), yMax()), make_pair(xMax(), yMax())));
       ret.push_back(make_pair(make_pair(xMax(), yMin()), make_pair(xMax(), yMax())));
       ret.push_back(make_pair(make_pair(xMin(), yMin()), make_pair(xMax(), yMin())));
-
       return ret;
     }
 
@@ -84,15 +83,9 @@ namespace YODA {
     double lowEdgeY() const {
       return _edges.first.second;
     }
-
     /// Synonym for lowEdgeY()
     double yMin() const { return lowEdgeY(); }
 
-    /// A variable that specifies if the bin should be plotted
-    bool isReal;
-
-    ///@name Transformers
-    //@{
     /// Get the high x edge of the bin.
     double highEdgeX() const {
       return _edges.second.first;
@@ -118,11 +111,12 @@ namespace YODA {
     }
     //@}
 
+
     /// @name Distribution statistics
     //@{
 
     /// Find the geometric midpoint of the bin
-    Point midpoint() const; 
+    Point midpoint() const;
 
     /// Find the weighted mean point of the bin, or the midpoint if unfilled
     Point focus() const {
@@ -221,15 +215,9 @@ namespace YODA {
 
     //@}
 
+
   protected:
 
-    Bin2D& add(const Bin2D& b); 
-
-    Bin2D& subtract(const Bin2D& b);
-
-    Segment _edges;
-    Dbn2D _dbn;
-        
     /// Boundaries setter
     void _setBounds(double xMin, double yMin, double xMax, double yMax) {
       _edges.first.first = xMin;
@@ -238,7 +226,30 @@ namespace YODA {
       _edges.second.second = yMax;
     }
 
+
+  protected:
+
+    Bin2D& add(const Bin2D& b);
+
+    Bin2D& subtract(const Bin2D& b);
+
+    Segment _edges;
+    Dbn2D _dbn;
+
+
+  public:
+
+    /// A variable that specifies if the bin should be plotted
+    ///
+    /// @todo Access to this variable needs to be restricted -- the existence of
+    /// this should not be known to the average user.
+    bool isReal;
+
   };
+
+
+  /// @name Operators
+  //@{
 
   inline Bin2D operator + (const Bin2D& a, const Bin2D& b) {
     Bin2D rtn = a;
@@ -251,6 +262,8 @@ namespace YODA {
     rtn -= a;
     return rtn;
   }
+
+  //@}
 
 
 }
