@@ -12,9 +12,8 @@
 #include "YODA/Axis2D.h"
 #include "YODA/Exceptions.h"
 #include "YODA/Histo1D.h"
+
 #include <vector>
-#include <string>
-#include <map>
 
 namespace YODA {
 

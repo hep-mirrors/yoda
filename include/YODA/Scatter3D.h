@@ -10,9 +10,7 @@
 #include "YODA/Point3D.h"
 #include "YODA/Utils/sortedvector.h"
 #include "YODA/Histo2D.h"
-#include <vector>
-#include <set>
-#include <string>
+
 #include <utility>
 #include <cassert>
 

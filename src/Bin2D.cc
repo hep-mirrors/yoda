@@ -6,8 +6,6 @@
 #include <cmath>
 #include <utility>
 #include <vector>
-#include <iostream>
-using namespace std;
 
 namespace YODA {
   typedef typename std::pair<double, double> Point;

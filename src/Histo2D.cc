@@ -7,8 +7,6 @@
 #include "YODA/Scatter3D.h"
 
 #include <cmath>
-#include <iostream>
-using namespace std;
 
 namespace YODA {
 
@@ -115,7 +113,6 @@ namespace YODA {
 
       const double eyminus = y - b1.yMin();
       const double eyplus = bL.yMax() - y;
-      //cout << b1.xMin() << " " << b1.xMax() << " " << b1.yMin() << " " << b1.yMax() << " EMinus: " << exminus << " " << eyminus << " Focus: " << x << " " << y << endl;
 
       const double z = b1.height() / b2.height();
       const double ez = z * sqrt( sqr(b1.heightErr()/b1.height()) + sqr(b2.heightErr()/b2.height()) );

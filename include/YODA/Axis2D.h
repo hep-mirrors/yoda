@@ -8,15 +8,8 @@
 #include "YODA/Utils/MathUtils.h"
 #include "YODA/Dbn2D.h"
 
-#include <string>
-#include <cassert>
-#include <cmath>
 #include <algorithm>
 #include <limits>
-#include <sys/time.h>
-
-/// @todo Remove this: don't use namespace std in API headers since it pollutes users' namespace.
-using namespace std;
 
 namespace YODA {
 
@@ -815,7 +808,6 @@ namespace YODA {
         if (_bins[i].yMax() > highEdgeY) highEdgeY = _bins[i].yMax();
       }
 
-      // cout << "LowX: " << lowEdgeX << " LowY: " << lowEdgeY << " HighX: " << highEdgeX << " HighY: " << highEdgeY << endl;
       _lowEdgeX = lowEdgeX;
       _highEdgeX = highEdgeX;
       _lowEdgeY = lowEdgeY;
