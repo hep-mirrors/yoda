@@ -58,9 +58,13 @@ namespace YODA {
             const double& z,
             const std::pair<double,double>& ex,
             const std::pair<double,double>& ey,
-            const std::pair<double,double>& ez) {
-        Point3D(x, y, z, ex.first, ex.second, ey.first, ey.second, ez.first, ez.second);
-        }
+            const std::pair<double,double>& ez)
+      : _x(x), _y(y), _z(z)
+    {
+        _ex = ex;
+        _ey = ey;
+        _ez = ez;
+    }
 
 
     /// @todo Add copy constructor
