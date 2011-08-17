@@ -9,7 +9,6 @@
 #include "YODA/AnalysisObject.h"
 #include "YODA/Exceptions.h"
 #include "YODA/Bin.h"
-#include "YODA/Utils/sortedvector.h"
 #include "YODA/Utils/MathUtils.h"
 #include <string>
 #include <cassert>
@@ -28,7 +27,7 @@ namespace YODA {
 
 
     typedef BIN1D Bin;
-    typedef typename Utils::sortedvector<BIN1D> Bins;
+    typedef typename std::vector<BIN1D> Bins;
 
 
     // /// @name Helper functions to make bin edge vectors (see @file MathUtils.h)
@@ -73,7 +72,7 @@ namespace YODA {
       assert(!bins.empty());
       Bins sbins;
       for (typename std::vector<BIN1D>::const_iterator b = bins.begin(); b != bins.end(); ++b) {
-        sbins.insert(*b);
+        sbins.push_back(*b);
       }
       _mkAxis(sbins);
     }
@@ -299,8 +298,9 @@ namespace YODA {
     void _mkAxis(const std::vector<double>& binedges) {
       const size_t nbins = binedges.size() - 1;
       for (size_t i = 0; i < nbins; ++i) {
-        _bins.insert( BIN1D(binedges.at(i), binedges.at(i+1)) );
+        _bins.push_back( BIN1D(binedges.at(i), binedges.at(i+1)) );
       }
+      std::sort(_bins.begin(), _bins.end());
 
       /// @todo Remove
       _cachedBinEdges = binedges;
@@ -311,6 +311,7 @@ namespace YODA {
 
     void _mkAxis(const Bins& bins) {
       _bins = bins;
+      std::sort(_bins.begin(), _bins.end());
 
       /// @todo Remove
       for (size_t i = 0; i < bins.size(); ++i) {

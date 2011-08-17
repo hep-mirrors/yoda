@@ -74,7 +74,7 @@ namespace YODA {
   {
     Bins bins;
     for (Histo1D::Bins::const_iterator b = h.bins().begin(); b != h.bins().end(); ++b) {
-      bins.insert(ProfileBin1D(b->xMin(), b->xMax()));
+      bins.push_back(ProfileBin1D(b->xMin(), b->xMax()));
     }
     _axis = Profile1DAxis(bins);
 
