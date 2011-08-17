@@ -339,32 +339,6 @@ namespace YODA {
       return _dbn;
     }
 
-
-    // /// Get the overflow distribution (non-const version)
-    // Dbn2D& overflow()
-    // {
-    //   return _overflow;
-    // }
-
-    // /// Get the overflow distribution (const version)
-    // const Dbn2D& overflow() const
-    // {
-    //   return _overflow;
-    // }
-
-    // /// Get the underflow distribution (non-const version)
-    // Dbn2D& underflow()
-    // {
-    //   return _underflow;
-    // }
-
-    // /// Get the underflow distribution (const version)
-    // const Dbn2D& underflow() const
-    // {
-    //   return _underflow;
-    // }
-
-
     /// Get bin index from external classes
     int getBinIndex(double coordX, double coordY) const
     {
@@ -375,8 +349,6 @@ namespace YODA {
     void reset()
     {
       _dbn.reset();
-      // _underflow.reset();
-      // _overflow.reset();
       for (size_t i = 0; i < _bins.size(); ++i) {
         _bins[i].reset();
       }
@@ -412,9 +384,13 @@ namespace YODA {
       for (size_t i = 0; i < _bins.size(); ++i) {
         _bins[i].scaleXY(scaleX, scaleY);
       }
+      
       _dbn.scaleXY(scaleX, scaleY);
-      // _underflow.scaleXY(scaleX, scaleY);
-      // _overflow.scaleXY(scaleX, scaleY);
+      for(size_t i = 0; i < _outflows.size(); ++i) {
+        for(size_t j =0; j < _outflows[i].size(); ++j) {
+          _outflows[i][j].scaleXY(scaleX, scaleY);
+        }
+      }
 
       // Making sure that we have correct boundaries set after rescaling
       _regenDelimiters();
@@ -424,8 +400,12 @@ namespace YODA {
     /// Scales the bin weights
     void scaleW(double scalefactor) {
       _dbn.scaleW(scalefactor);
-      // _underflow.scaleW(scalefactor);
-      // _overflow.scaleW(scalefactor);
+      for(size_t i = 0; i < _outflows.size(); ++i) {
+        for(size_t j = 0; j < _outflows[i].size(); ++j) {
+          _outflows[i][j].scaleW(scalefactor);
+        }
+      }
+
       for (size_t i = 0; i < _bins.size(); ++i) {
         _bins[i].scaleW(scalefactor);
       }
@@ -457,8 +437,6 @@ namespace YODA {
         bins().at(i) += toAdd.bins().at(i);
       }
       _dbn += toAdd._dbn;
-      // _underflow += toAdd._underflow;
-      // _overflow += toAdd._overflow;
       return *this;
     }
 
@@ -475,8 +453,6 @@ namespace YODA {
         bins().at(i) -= toSubtract.bins().at(i);
       }
       _dbn -= toSubtract._dbn;
-      // _underflow -= toSubtract._underflow;
-      // _overflow -= toSubtract._overflow;
       return *this;
     }
 
@@ -841,9 +817,6 @@ namespace YODA {
     Bins _bins;
 
     /// Underflow distribution
-    // /// @todo Need many (binned?) outflows instead. This can't work at the moment.
-    // Dbn2D _underflow;
-    // Dbn2D _overflow;
     vector<vector<Dbn2D> > _outflows;
 
     /// The total distribution
