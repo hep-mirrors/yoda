@@ -238,8 +238,26 @@ namespace YODA {
   /// Make a Scatter3D representation of a Histo2D
   /// @todo Implement!
   inline Scatter3D mkScatter(const Histo2D& h) {
-    throw Exception("Not Implemented!");
-    return Scatter3D();
+    Scatter3D ret;
+    for(size_t i = 0; i < h.numBinsTotal(); ++i) {
+      const HistoBin2D& bin = h.bin(i);
+
+      const double x = bin.focus().first;
+      const double y = bin.focus().second;
+
+      const double exminus = x - bin.xMin();
+      const double explus = bin.xMax() - x;
+
+      const double eyminus = y - bin.yMin();
+      const double eyplus = bin.yMax() - y;
+
+      const double z = bin.height();
+      const double ez = bin.heightErr();
+
+      ret.addPoint(x, exminus, explus, y, eyminus, eyplus, z, ez, ez);
+    }
+    
+    return ret;
   }
 
   /// Make a Scatter3D representation of a Profile2D
