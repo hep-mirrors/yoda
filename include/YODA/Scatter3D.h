@@ -12,7 +12,6 @@
 #include "YODA/Histo2D.h"
 
 #include <utility>
-#include <cassert>
 
 namespace YODA {
 
@@ -48,7 +47,10 @@ namespace YODA {
               const std::string& path="", const std::string& title="")
       : AnalysisObject("Scatter3D", path, title)
     {
-      assert(x.size() == y.size() && x.size() == ex.size() && x.size() == ey.size());
+      if(x.size() != y.size() || y.size() != z.size() || 
+         x.size() != ex.size() || y.size() != ey.size() || z.size() != ez.size())
+        throw RangeError("There are either different amounts of points on x/y/z vectors or not every of these vectors has properly defined error vectors!");
+
       for (size_t i = 0; i < x.size(); ++i) {
         addPoint(Point3D(x[i], y[i], z[i], ex[i], ey[i], ez[i]));
       }
@@ -76,10 +78,12 @@ namespace YODA {
               const std::string& path="", const std::string& title="")
       : AnalysisObject("Scatter3D", path, title)
     {
-      assert((x.size() == y.size()) && (y.size() == z.size()) &&
-             (x.size() == exminus.size()) && (x.size() == explus.size()) &&
-             (y.size() == eyminus.size()) && (y.size() == eyplus.size()) &&
-             (z.size() == ezminus.size()) && (z.size() == ezplus.size()));
+      if(x.size() != y.size() || y.size() != z.size() ||
+         x.size() != exminus.size() || x.size() != explus.size() ||
+         y.size() != eyminus.size() || y.size() != eyplus.size() ||
+         z.size() != ezminus.size() || z.size() != ezplus.size()) 
+        throw RangeError("There are either different amounts of points on x/y/z vectors or not every of these vectors has properly defined error vectors!");
+
       for (size_t i = 0; i < x.size(); ++i) {
         addPoint(Point3D(x[i], exminus[i], explus[i], y[i], eyminus[i], eyplus[i], z[i], ezminus[i], ezplus[i]));
       }
@@ -128,13 +132,13 @@ namespace YODA {
 
 
     Point3D& point(size_t index) {
-      assert(index < numPoints());
+      if(index >= numPoints()) throw RangeError("There is no point with such index!");
       return _points.at(index);
     }
 
 
     const Point3D& point(size_t index) const {
-      assert(index < numPoints());
+      if(index >= numPoints()) throw RangeError("There is no point with such index!");
       return _points.at(index);
     }
 
@@ -234,7 +238,7 @@ namespace YODA {
   /// Make a Scatter3D representation of a Histo2D
   /// @todo Implement!
   inline Scatter3D mkScatter(const Histo2D& h) {
-    assert(0 && "Not implemented!");
+    throw Exception("Not Implemented!");
     return Scatter3D();
   }
 
