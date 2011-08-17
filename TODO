@@ -14,7 +14,7 @@ NOW
 
 * Remove the "using namespace std" from the Bin2D.h and Axis2D.h headers: you
   should avoid publicly using namespaces in API headers since it pollutes the
-  global namespace for any users of the API. (MICHAL)
+  global namespace for any users of the API. (done) (MICHAL)
 
 * Completely hide the Bin2D::isReal from public view: this is absolutely an
   internal implementation detail and should not be public in any way. I'm also
@@ -42,6 +42,7 @@ NOW
   MK: done
   AB: You still need to add state-setting for the total dbn and the outflows: at
   the moment this only sets the state on the Bin2Ds.
+  MK: Done
 
 * Use state-setting constructors for Histo and Profile persistency via the
   Reader classes. (HH)

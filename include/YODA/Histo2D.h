@@ -100,12 +100,6 @@ namespace YODA {
       _axis.reset();
     }
 
-    /// Check if this binning is a grid
-    /// @todo Avoid exposing this on the public API
-    bool isGriddy() {
-      return _axis.isGriddy();
-    }
-
     /// Rescale as if all fill weights had been different by factor @a scalefactor.
     void scaleW(double scalefactor) {
       _axis.scaleW(scalefactor);
@@ -115,7 +109,6 @@ namespace YODA {
     void scaleXY(double scaleX = 1.0, double scaleY = 1.0) {
       _axis.scaleXY(scaleX, scaleY);
     }
-
 
     /// Adding bins
     void addBin(const vector<pair<pair<double,double>, pair<double,double> > > coords) {
@@ -313,7 +306,7 @@ namespace YODA {
     /// @todo Need to check that there is a continuous row for this y
     /// @todo Change the name!
     Histo1D cutterX(double atY, const std::string& path="", const std::string& title="") {
-      if (!_axis.isGriddy()) throw GridError("I cannot cut a Histo2D that is not a grid!");
+      if (!_axis.isGrid()) throw GridError("I cannot cut a Histo2D that is not a grid!");
 
       if (atY < lowEdgeY() || atY > highEdgeY()) throw RangeError("Y is outside the grid");
       vector<HistoBin1D> tempBins;
@@ -342,7 +335,7 @@ namespace YODA {
     /// @todo Need to check that there is a continuous column for this x
     /// @todo Change the name!
     Histo1D cutterY(double atX, const std::string& path="", const std::string& title="") {
-      if (!_axis.isGriddy()) throw GridError("I cannot cut a Histo2D that is not a grid!");
+      if (!_axis.isGrid()) throw GridError("I cannot cut a Histo2D that is not a grid!");
 
       if (atX < lowEdgeX() || atX > highEdgeX()) throw RangeError("X is outside the grid");
       vector<HistoBin1D> tempBins;

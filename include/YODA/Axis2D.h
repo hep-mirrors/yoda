@@ -61,7 +61,7 @@ namespace YODA {
     /// Constructor provided with a vector of bin delimiters
     Axis2D(const vector<Segment>& binLimits) {
       _mkAxis(binLimits);
-      if(isGriddy()) _setOutflows();
+      if(_isGrid()) _setOutflows();
     }
 
 
@@ -96,7 +96,7 @@ namespace YODA {
         _bins[i] = bins[i];
       }
       _regenDelimiters();
-      if(isGriddy()) _setOutflows();
+      if(_isGrid()) _setOutflows();
       _outflows = outflows;
 
       _dbn = totalDbn;
@@ -133,6 +133,13 @@ namespace YODA {
 
     /// @name Helper functions
     //@{
+    
+    /// @brief Check if Axis represents a grid
+    /// For more information, please refer to the documentation
+    /// of _isGrid().
+    const bool isGrid() const {
+      return _isGrid();
+    }
 
     /// Outflow filler
     void fillOutflows(double x, double y, double weight) {
@@ -198,47 +205,6 @@ namespace YODA {
       _binHashSparse.first.regenCache();
       _binHashSparse.second.regenCache();
       _regenDelimiters();
-    }
-
-
-    /// @brief Checks if our bins form a grid.
-    /// This function uses a neat property of _binHashSparse.
-    /// If it is containing a set of edges forming a grid without
-    /// gaps in the middle it will have the same number of edges in the
-    /// inner subcaches and half of this amount in the outer (grid boundary)
-    /// subcaches. This makes isGriddy() a very, very fast function.
-    /// @todo Is the name appropriate? Should it be private?
-    bool isGriddy() const {
-
-      /// Check if the number of edges parallel to X axis
-      /// is proper in every subcache.
-      size_t sizeX = _binHashSparse.first[0].second.size();
-      for (size_t i = 1; i < _binHashSparse.first.size(); ++i) {
-        if (i == _binHashSparse.first.size() - 1) {
-          if (_binHashSparse.first[i].second.size() != sizeX) {
-            return false;
-          }
-        }
-        else if (_binHashSparse.first[i].second.size() != 2*sizeX) {
-          return false;
-        }
-      }
-
-      /// Do the same for edges parallel to Y axis.
-      size_t sizeY = _binHashSparse.second[0].second.size();
-      for (size_t i=1; i < _binHashSparse.second.size(); ++i) {
-        if (i != _binHashSparse.second.size() - 1) {
-          if (2*sizeY != _binHashSparse.second[i].second.size()) {
-            return false;
-          }
-        }
-        else if (_binHashSparse.second[i].second.size() != sizeY) {
-          return -1;
-        }
-      }
-
-      /// If everything is proper, announce it.
-      return true;
     }
 
 
@@ -461,6 +427,8 @@ namespace YODA {
 
   private:
 
+    /// @brief Outflows pre-setter
+    /// Sets the correct number of bins in each of the outflows.
     void _setOutflows() {
       _outflows.resize(8);
       
@@ -474,6 +442,48 @@ namespace YODA {
       _outflows[7].resize(_binHashSparse.first.size());
 
     }
+    
+    /// @brief Checks if our bins form a grid.
+    /// This function uses a neat property of _binHashSparse.
+    /// If it is containing a set of edges forming a grid without
+    /// gaps in the middle it will have the same number of edges in the
+    /// inner subcaches and half of this amount in the outer (grid boundary)
+    /// subcaches. This makes _isGrid() a very, very fast function.
+    /// @todo Is the name appropriate? Should it be private?
+    bool _isGrid() const {
+
+      /// Check if the number of edges parallel to X axis
+      /// is proper in every subcache.
+      size_t sizeX = _binHashSparse.first[0].second.size();
+      for (size_t i = 1; i < _binHashSparse.first.size(); ++i) {
+        if (i == _binHashSparse.first.size() - 1) {
+          if (_binHashSparse.first[i].second.size() != sizeX) {
+            return false;
+          }
+        }
+        else if (_binHashSparse.first[i].second.size() != 2*sizeX) {
+          return false;
+        }
+      }
+
+      /// Do the same for edges parallel to Y axis.
+      size_t sizeY = _binHashSparse.second[0].second.size();
+      for (size_t i=1; i < _binHashSparse.second.size(); ++i) {
+        if (i != _binHashSparse.second.size() - 1) {
+          if (2*sizeY != _binHashSparse.second[i].second.size()) {
+            return false;
+          }
+        }
+        else if (_binHashSparse.second[i].second.size() != sizeY) {
+          return -1;
+        }
+      }
+
+      /// If everything is proper, announce it.
+      return true;
+    }
+
+
 
 
     /// @brief Segment validator function

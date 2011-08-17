@@ -84,7 +84,6 @@ int main() {
         return -1;
     }
 
-    h.isGriddy();
 
     /// Checking if everything is still working as desired.
     /**
