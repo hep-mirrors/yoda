@@ -21,7 +21,7 @@ namespace YODA {
   public:
 
     /// Type of the native Point3D collection
-    typedef Utils::sortedvector<Point3D> Points;
+    typedef std::vector<Point3D> Points;
 
 
     /// @name Constructors
@@ -149,25 +149,25 @@ namespace YODA {
     //@{
 
     Scatter3D& addPoint(const Point3D& pt) {
-      _points.insert(pt);
+      _points.push_back(pt);
       return *this;
     }
 
     Scatter3D& addPoint(double x, double y, double z) {
-      _points.insert(Point3D(x, y, z));
+      _points.push_back(Point3D(x, y, z));
       return *this;
     }
 
     Scatter3D& addPoint(double x, double y, double z,
                         std::pair<double,double> ex, std::pair<double,double> ey, std::pair<double,double> ez) {
-      _points.insert(Point3D(x, y, z, ex, ey, ez));
+      _points.push_back(Point3D(x, y, z, ex, ey, ez));
       return *this;
     }
 
     Scatter3D& addPoint(double x, double exminus, double explus,
                         double y, double eyminus, double eyplus,
                         double z, double ezminus, double ezplus) {
-      _points.insert(Point3D(x, exminus, explus, y, eyminus, eyplus, z, ezminus, ezplus));
+      _points.push_back(Point3D(x, exminus, explus, y, eyminus, eyplus, z, ezminus, ezplus));
       return *this;
     }
 
