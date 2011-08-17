@@ -9,6 +9,7 @@
 #include "YODA/AnalysisObject.h"
 #include "YODA/HistoBin2D.h"
 #include "YODA/HistoBin1D.h"
+#include "YODA/Dbn2D.h"
 #include "YODA/Axis2D.h"
 #include "YODA/Exceptions.h"
 #include "YODA/Histo1D.h"
@@ -71,10 +72,11 @@ namespace YODA {
 
     /// @brief State-setting constructor
     /// Mainly intended for internal persistency use.
-    /// @todo Need to add state-setting for the total dbn and the outflows
-    Histo2D(const std::vector<HistoBin2D> bins,
+    Histo2D(const std::vector<HistoBin2D>& bins, 
+            const std::vector<std::vector<Dbn2D> >& outflows,
+            const Dbn2D& totalDbn,
             const std::string& path="", const std::string& title="")
-      : AnalysisObject("Histo2D", path, title), _axis(bins)
+      : AnalysisObject("Histo2D", path, title), _axis(bins, outflows, totalDbn)
     { }
 
     //@}

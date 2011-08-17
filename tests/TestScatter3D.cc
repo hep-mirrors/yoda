@@ -69,13 +69,12 @@ int main() {
     return -1;
   }
 
-  cout << "Testing resetting: ";
+  cout << "Testing resetting: " << endl;
   s4.reset();
   if(s4.numPoints() != 0) {
     cout << "Resetting didn't work as it should!" << endl;
     return -1;
   }
-  cout << "\033[1;31m" << "Fine" << "\033[0m\n";
   cout << "-----------------------------------" << endl;
   return EXIT_SUCCESS;
 }

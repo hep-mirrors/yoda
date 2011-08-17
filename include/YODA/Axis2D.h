@@ -82,7 +82,10 @@ namespace YODA {
 
     /// @brief A bin constructor
     /// Creates an Axis2D from existing bins
-    Axis2D(Bins bins) {
+    Axis2D(const Bins& bins, 
+           const std::vector<std::vector<Dbn2D> >& outflows,
+           const Dbn2D& totalDbn) 
+    {
       vector<Segment> binLimits;
       for (size_t i = 0; i < bins.size(); ++i) {
         binLimits.push_back(make_pair(make_pair(bins[i].xMin(), bins[i].yMin()),
@@ -94,6 +97,9 @@ namespace YODA {
       }
       _regenDelimiters();
       if(isGriddy()) _setOutflows();
+      _outflows = outflows;
+
+      _dbn = totalDbn;
     }
 
     //@}
