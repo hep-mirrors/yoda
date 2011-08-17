@@ -82,9 +82,9 @@ namespace YODA {
 
     /// @brief A bin constructor
     /// Creates an Axis2D from existing bins
-    Axis2D(const Bins& bins, 
+    Axis2D(const Bins& bins,
            const std::vector<std::vector<Dbn2D> >& outflows,
-           const Dbn2D& totalDbn) 
+           const Dbn2D& totalDbn)
     {
       vector<Segment> binLimits;
       for (size_t i = 0; i < bins.size(); ++i) {
@@ -119,7 +119,7 @@ namespace YODA {
       _mkAxis(binLimits);
       _outflows.resize(0);
     }
-        
+
     /// @brief Bin addition operator
     /// This operator is supplied with whe extreamal coordinates of just
     /// one bin. It then launches the standard bin addition procedure.
@@ -133,7 +133,7 @@ namespace YODA {
 
     /// @name Helper functions
     //@{
-    
+
     /// @brief Check if Axis represents a grid
     /// For more information, please refer to the documentation
     /// of _isGrid().
@@ -144,13 +144,13 @@ namespace YODA {
     /// Outflow filler
     void fillOutflows(double x, double y, double weight) {
       if(x < _lowEdgeX && y > _highEdgeY) _outflows[0][0].fill(x, y, weight);
-      else if(x > _lowEdgeX && x < _highEdgeX && y > _highEdgeY) 
+      else if(x > _lowEdgeX && x < _highEdgeX && y > _highEdgeY)
       {
         size_t element = _binaryS(_binHashSparse.second, x, 0, _binHashSparse.second.size());
         _outflows[1][element].fill(x, y, weight);
       }
       else if(x > _highEdgeX && y > _highEdgeY) _outflows[2][0].fill(x, y, weight);
-      else if(x > _highEdgeX && y > _lowEdgeY && y < _highEdgeY) 
+      else if(x > _highEdgeX && y > _lowEdgeY && y < _highEdgeY)
       {
         size_t element = _binaryS(_binHashSparse.first, y, 0, _binHashSparse.first.size());
         _outflows[3][element].fill(x, y, weight);
@@ -162,12 +162,12 @@ namespace YODA {
         _outflows[5][element].fill(x, y, weight);
       }
       else if(x < _lowEdgeX && y < _lowEdgeY) _outflows[6][0].fill(x, y, weight);
-      else if(x < _lowEdgeX && y > _lowEdgeY && y < _highEdgeY) 
+      else if(x < _lowEdgeX && y > _lowEdgeY && y < _highEdgeY)
       {
         size_t element = _binaryS(_binHashSparse.first, y, 0, _binHashSparse.first.size());
         _outflows[7][element].fill(x, y, weight);
       }
-        
+
     }
 
 
@@ -247,7 +247,7 @@ namespace YODA {
     const Bins& bins() const {
       return _bins;
     }
-    
+
     /// Get the outflows (non-const version)
     vector<vector<Dbn2D> >& outflows() {
       return _outflows;
@@ -350,7 +350,7 @@ namespace YODA {
       for (size_t i = 0; i < _bins.size(); ++i) {
         _bins[i].scaleXY(scaleX, scaleY);
       }
-      
+
       _dbn.scaleXY(scaleX, scaleY);
       for(size_t i = 0; i < _outflows.size(); ++i) {
         for(size_t j =0; j < _outflows[i].size(); ++j) {
@@ -431,7 +431,7 @@ namespace YODA {
     /// Sets the correct number of bins in each of the outflows.
     void _setOutflows() {
       _outflows.resize(8);
-      
+
       _outflows[0].resize(1);
       _outflows[1].resize(_binHashSparse.second.size());
       _outflows[2].resize(1);
@@ -442,7 +442,7 @@ namespace YODA {
       _outflows[7].resize(_binHashSparse.first.size());
 
     }
-    
+
     /// @brief Checks if our bins form a grid.
     /// This function uses a neat property of _binHashSparse.
     /// If it is containing a set of edges forming a grid without
@@ -810,12 +810,11 @@ namespace YODA {
     ///
     /// Looks through all the bins to see which one contains the point of
     /// interest.
-    int _findBinIndex(double coordX, double coordY) const
-    {
-      for (size_t i=0; i < _bins.size(); ++i) {
-        if(_bins[i].xMin() <= coordX && _bins[i].xMax()  >= coordX &&
-           _bins[i].yMin() <= coordY && _bins[i].yMax() >= coordY &&
-           !_bins[i].isGhost()) return i;
+    int _findBinIndex(double coordX, double coordY) const {
+      for (size_t i = 0; i < _bins.size(); ++i) {
+        if (_bins[i].xMin() <= coordX && _bins[i].xMax() >= coordX &&
+            _bins[i].yMin() <= coordY && _bins[i].yMax() >= coordY &&
+            !_bins[i].isGhost()) return i;
       }
       return -1;
     }
