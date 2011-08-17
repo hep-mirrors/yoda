@@ -8,7 +8,6 @@
 
 #include "YODA/AnalysisObject.h"
 #include "YODA/Point3D.h"
-#include "YODA/Utils/sortedvector.h"
 #include "YODA/Histo2D.h"
 
 #include <utility>
@@ -38,7 +37,9 @@ namespace YODA {
               const std::string& path="", const std::string& title="")
       : AnalysisObject("Scatter3D", path, title),
         _points(points)
-    {  }
+    {  
+      std::sort(_points.begin(), _points.end());
+    }
 
 
     /// Constructor from vectors of values with asymmetric errors on both x and y
@@ -54,6 +55,7 @@ namespace YODA {
       for (size_t i = 0; i < x.size(); ++i) {
         addPoint(Point3D(x[i], y[i], z[i], ex[i], ey[i], ez[i]));
       }
+      std::sort(_points.begin(), _points.end());
     }
 
 
@@ -87,6 +89,8 @@ namespace YODA {
       for (size_t i = 0; i < x.size(); ++i) {
         addPoint(Point3D(x[i], exminus[i], explus[i], y[i], eyminus[i], eyplus[i], z[i], ezminus[i], ezplus[i]));
       }
+
+      std::sort(_points.begin(), _points.end());
     }
 
 
@@ -161,6 +165,7 @@ namespace YODA {
     Scatter3D& addPoint(double x, double y, double z,
                         std::pair<double,double> ex, std::pair<double,double> ey, std::pair<double,double> ez) {
       _points.push_back(Point3D(x, y, z, ex, ey, ez));
+
       return *this;
     }
 
@@ -168,6 +173,7 @@ namespace YODA {
                         double y, double eyminus, double eyplus,
                         double z, double ezminus, double ezplus) {
       _points.push_back(Point3D(x, exminus, explus, y, eyminus, eyplus, z, ezminus, ezplus));
+
       return *this;
     }
 
@@ -175,6 +181,8 @@ namespace YODA {
       foreach (const Point3D& pt, pts) {
         addPoint(pt);
       }
+      std::sort(_points.begin(), _points.end());
+
       return *this;
     }
 
@@ -197,6 +205,15 @@ namespace YODA {
       return *this;
     }
 
+
+  /// Equality operator
+  bool operator == (const Scatter3D& other) {
+    return _points == other._points;
+  }
+
+  bool operator != (const Scatter3D& other) {
+    return ! operator == (other);
+  }
 
   private:
 

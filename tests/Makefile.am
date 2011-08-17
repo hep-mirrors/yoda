@@ -4,6 +4,7 @@ check_PROGRAMS = \
 	testprofile1Da \
   testhisto2D  \
   testpoint3D  \
+  testscatter3D\
 	testindexedset testsortedvector
 
 AM_CPPFLAGS = -I$(top_srcdir)/include
@@ -17,6 +18,7 @@ testindexedset_SOURCES = TestIndexedSet.cc
 testsortedvector_SOURCES = TestSortedVector.cc
 testhisto2D_SOURCES = TestHisto2D.cc
 testpoint3D_SOURCES = TestPoint3D.cc
+testscatter3D_SOURCES = TestScatter3D.cc
 
 # TODO: Search paths are still not complete for the Python tests: need to add the lib.linux-i686-2.7 part to PYTHONPATH
 TESTS_ENVIRONMENT = \
@@ -30,5 +32,6 @@ TESTS = \
 	testprofile1Da \
   testhisto2D    \
   testpoint3D    \
+  testscatter3D  \
 	testindexedset testsortedvector \
 	test-yoda-1.py test-yoda-2.py
