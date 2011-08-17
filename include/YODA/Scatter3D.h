@@ -236,9 +236,10 @@ namespace YODA {
   //@{
 
   /// Make a Scatter3D representation of a Histo2D
-  /// @todo Implement!
   inline Scatter3D mkScatter(const Histo2D& h) {
     Scatter3D ret;
+    ret.setAnnotations(h.annotations());
+    ret.setAnnotation("Type", h.type());
     for(size_t i = 0; i < h.numBinsTotal(); ++i) {
       const HistoBin2D& bin = h.bin(i);
 
