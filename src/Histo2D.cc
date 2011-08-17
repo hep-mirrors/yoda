@@ -17,21 +17,14 @@ namespace YODA {
 
 
   int Histo2D::fill(double x, double y, double weight) {
-    // Fill the normal bins
-    int index = findBinIndex(x, y);
-    if (index != -1) {
-      HistoBin2D& b = bin(index);
+    _axis.totalDbn().fill(x, y, weight);
 
-      // Fill the total and outflow distributions
-      _axis.totalDbn().fill(x, y, weight);
-      /// @todo Fill the underflow and overflow nicely
-
-      b.fill(x, y, weight);
+    int index = _axis.getBinIndex(x, y);
+    if(index != -1) {
+      HistoBin2D& bin = _axis.bin(index);
+      bin.fill(x, y, weight);
     }
-
-    // else if (x < _axis.lowEdgeX()) { _axis.underflow().fill(x, y, weight); }
-    // else if (x >= _axis.highEdgeX()) { _axis.overflow().fill(x, y, weight); }
-    else throw GridError("You are trying to fill an empty space on a grid!");
+    else if(_axis.outflows().size() == 8) _axis.fillOutflows(x, y, weight);
     return index;
   }
 

@@ -4,7 +4,6 @@
 // Copyright (C) 2008-2011 The YODA collaboration (see AUTHORS for details)
 //
 #include "YODA/Dbn1D.h"
-#include <iostream>
 
 namespace YODA {
 

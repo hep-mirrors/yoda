@@ -6,7 +6,6 @@
 #include <string>
 #include <utility>
 #include <vector>
-#include <iostream>
 #include <cassert>
 
 /// @todo Remove this: don't use namespace std in API headers since it pollutes users' namespace.

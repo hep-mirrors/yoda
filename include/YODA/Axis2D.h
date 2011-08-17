@@ -4,7 +4,6 @@
 #include "YODA/AnalysisObject.h"
 #include "YODA/Exceptions.h"
 #include "YODA/Bin.h"
-#include "YODA/Utils/sortedvector.h"
 #include "YODA/Utils/cachedvector.h"
 #include "YODA/Utils/MathUtils.h"
 #include "YODA/Dbn2D.h"
@@ -14,6 +13,7 @@
 #include <cmath>
 #include <algorithm>
 #include <limits>
+#include <sys/time.h>
 
 /// @todo Remove this: don't use namespace std in API headers since it pollutes users' namespace.
 using namespace std;
@@ -68,6 +68,7 @@ namespace YODA {
     /// Constructor provided with a vector of bin delimiters
     Axis2D(const vector<Segment>& binLimits) {
       _mkAxis(binLimits);
+      if(isGriddy()) _setOutflows();
     }
 
 
@@ -82,6 +83,7 @@ namespace YODA {
         }
       }
       _mkAxis(binLimits);
+      _setOutflows();
     }
 
 
@@ -97,6 +99,8 @@ namespace YODA {
       for (size_t i = 0; i < _bins.size(); ++i) {
         _bins[i] = bins[i];
       }
+      _regenDelimiters();
+      if(isGriddy()) _setOutflows();
     }
 
     //@}
@@ -114,8 +118,9 @@ namespace YODA {
     /// for merging for '+' operator (codewise it should be the same thing).
     void addBin(const vector<Segment>& binLimits) {
       _mkAxis(binLimits);
+      _outflows.resize(0);
     }
-
+        
     /// @brief Bin addition operator
     /// This operator is supplied with whe extreamal coordinates of just
     /// one bin. It then launches the standard bin addition procedure.
@@ -127,9 +132,38 @@ namespace YODA {
 
     //@}
 
-
     /// @name Helper functions
     //@{
+
+    /// Outflow filler
+    void fillOutflows(double x, double y, double weight) {
+      if(x < _lowEdgeX && y > _highEdgeY) _outflows[0][0].fill(x, y, weight);
+      else if(x > _lowEdgeX && x < _highEdgeX && y > _highEdgeY) 
+      {
+        size_t element = _binaryS(_binHashSparse.second, x, 0, _binHashSparse.second.size());
+        _outflows[1][element].fill(x, y, weight);
+      }
+      else if(x > _highEdgeX && y > _highEdgeY) _outflows[2][0].fill(x, y, weight);
+      else if(x > _highEdgeX && y > _lowEdgeY && y < _highEdgeY) 
+      {
+        size_t element = _binaryS(_binHashSparse.first, y, 0, _binHashSparse.first.size());
+        _outflows[3][element].fill(x, y, weight);
+      }
+      else if(x > _highEdgeX && y < _lowEdgeY) _outflows[4][0].fill(x, y, weight);
+      else if(x > _lowEdgeX && x < _highEdgeX && y < _lowEdgeY)
+      {
+        size_t element = _binaryS(_binHashSparse.second, x, 0, _binHashSparse.second.size());
+        _outflows[5][element].fill(x, y, weight);
+      }
+      else if(x < _lowEdgeX && y < _lowEdgeY) _outflows[6][0].fill(x, y, weight);
+      else if(x < _lowEdgeX && y > _lowEdgeY && y < _highEdgeY) 
+      {
+        size_t element = _binaryS(_binHashSparse.first, y, 0, _binHashSparse.first.size());
+        _outflows[7][element].fill(x, y, weight);
+      }
+        
+    }
+
 
     /// @brief Bin merging
     /// Try to merge a certain amount of bins
@@ -248,7 +282,15 @@ namespace YODA {
     const Bins& bins() const {
       return _bins;
     }
-
+    
+    /// Get the outflows (non-const version)
+    vector<vector<Dbn2D> >& outflows() {
+      return _outflows;
+    }
+    /// Get the outflows (const version)
+    const vector<vector<Dbn2D> >& outflows() const {
+      return _outflows;
+    }
 
     /// Get the bin with a given index (non-const version)
     BIN& bin(size_t index) {
@@ -443,6 +485,21 @@ namespace YODA {
 
 
   private:
+
+    void _setOutflows() {
+      _outflows.resize(8);
+      
+      _outflows[0].resize(1);
+      _outflows[1].resize(_binHashSparse.second.size());
+      _outflows[2].resize(1);
+      _outflows[3].resize(_binHashSparse.first.size());
+      _outflows[4].resize(1);
+      _outflows[5].resize(_binHashSparse.second.size());
+      _outflows[6].resize(1);
+      _outflows[7].resize(_binHashSparse.first.size());
+
+    }
+
 
     /// @brief Segment validator function
     ///
@@ -789,6 +846,7 @@ namespace YODA {
     // /// @todo Need many (binned?) outflows instead. This can't work at the moment.
     // Dbn2D _underflow;
     // Dbn2D _overflow;
+    vector<vector<Dbn2D> > _outflows;
 
     /// The total distribution
     Dbn2D _dbn;

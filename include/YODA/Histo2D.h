@@ -101,7 +101,7 @@ namespace YODA {
 
     /// Check if this binning is a grid
     /// @todo Really expose this on the public API?
-    int isGriddy() {
+    bool isGriddy() {
       return _axis.isGriddy();
     }
 

@@ -3,7 +3,9 @@
 
 #include "YODA/Bin2D.h"
 #include "YODA/Exceptions.h"
+
 #include <cmath>
+#include <sys/time.h>
 
 namespace YODA {
 
@@ -40,8 +42,8 @@ namespace YODA {
     //@{
 
     /// A fill() function accepting coordinates as spearate numbers
-    void fill(double coordX, double coordY, double weight=1.0) {
-      _dbn.fill(coordX, coordY, weight);
+    void fill(double X, double Y, double weight=1.0) {
+        _dbn.fill(X, Y, weight); 
     }
 
     /// A fill() function accepting the coordinates as std::pair

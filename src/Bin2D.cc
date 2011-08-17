@@ -10,6 +10,8 @@
 using namespace std;
 
 namespace YODA {
+  typedef typename std::pair<double, double> Point;
+  typedef typename std::pair<Point, Point> Segment;
 
 
   Bin2D::Bin2D(double lowedgeX, double lowedgeY, double highedgeX, double highedgeY) {
@@ -25,18 +27,17 @@ namespace YODA {
   }
 
 
-  // Bin2D::Bin2D(std::vector<std::pair<std::pair<double,double>,
-  //              std::pair<double,double> > > edges) {
-  //   if (edges.size() != 4) {
-  //     throw RangeError("The edge vector does not define a full rectangle!");
-  //   }
-  //   _edges.first.first = edges[0].first.first;
-  //   _edges.first.second = edges[0].first.second;
-  //   _edges.second.first = edges[1].second.first;
-  //   _edges.second.second = edges[1].second.second;
+   Bin2D::Bin2D(const std::vector<Segment>& edges) {
+     if (edges.size() != 4) {
+       throw RangeError("The edge vector does not define a full rectangle!");
+     }
+     _edges.first.first = edges[0].first.first;
+     _edges.first.second = edges[0].first.second;
+     _edges.second.first = edges[1].second.first;
+     _edges.second.second = edges[1].second.second;
 
-  //   isReal = true;
-  // }
+     isReal = true;
+   }
 
 
   void Bin2D::scaleXY(double scaleX, double scaleY) {

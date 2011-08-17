@@ -47,12 +47,6 @@ int main() {
     printStats(h);
 
 
-    cout << h.numBinsTotal() << endl;
-    h.addBin(0.1, 0.1, 0.2, 0.2);
-    h.addBin(110, 0, 200, 12.100);
-    h.addBin(16.0, 200, 17.0, 300);
-
-
     /// Trying to fill a bin.
     gettimeofday(&startTime, NULL);
     for (int i=0; i < 2000; i++) {
@@ -71,6 +65,12 @@ int main() {
         cout << "Performance is not sufficient. Probably broken caches?" << endl;
         return -1;
     }
+    cout << h.numBinsTotal() << endl;
+    h.addBin(0.1, 0.1, 0.2, 0.2);
+    h.addBin(110, 0, 200, 12.100);
+    h.addBin(16.0, 200, 17.0, 300);
+
+
 
     printStats(h, false);
     cout << h.numBinsTotal() << endl;
