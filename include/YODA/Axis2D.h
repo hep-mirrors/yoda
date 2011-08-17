@@ -177,7 +177,7 @@ namespace YODA {
       HistoBin2D& start = bin(from);
       HistoBin2D& end = bin(to);
       HistoBin2D temp = start;
-      start.isReal = false;
+      start.isGhost() = true;
 
       if (start.midpoint().first > end.midpoint().first ||
           start.midpoint().second > end.midpoint().second)
@@ -192,10 +192,10 @@ namespace YODA {
                fuzzyEquals(_binHashSparse.first[y].second[x].second.first, start.xMin())) &&
               (_binHashSparse.first[y].second[x].second.second < end.xMax() ||
                fuzzyEquals(_binHashSparse.first[y].second[x].second.second, end.xMax())) &&
-              bin(_binHashSparse.first[y].second[x].first).isReal)
+              bin(!_binHashSparse.first[y].second[x].first).isGhost())
             {
               temp += bin(_binHashSparse.first[y].second[x].first);
-              bin(_binHashSparse.first[y].second[x].first).isReal = false;
+              bin(_binHashSparse.first[y].second[x].first).isGhost() = true;
             }
         }
       }
@@ -815,7 +815,7 @@ namespace YODA {
       for (size_t i=0; i < _bins.size(); ++i) {
         if(_bins[i].xMin() <= coordX && _bins[i].xMax()  >= coordX &&
            _bins[i].yMin() <= coordY && _bins[i].yMax() >= coordY &&
-           _bins[i].isReal) return i;
+           !_bins[i].isGhost()) return i;
       }
       return -1;
     }

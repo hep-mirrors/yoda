@@ -21,7 +21,7 @@ namespace YODA {
     _edges.second.first = highedgeX;
     _edges.second.second = highedgeY;
 
-    isReal = true;
+    isGhost() = false;
   }
 
 
@@ -34,7 +34,7 @@ namespace YODA {
      _edges.second.first = edges[1].second.first;
      _edges.second.second = edges[1].second.second;
 
-     isReal = true;
+     isGhost() = false;
    }
 
 

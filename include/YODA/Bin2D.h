@@ -215,7 +215,21 @@ namespace YODA {
     }
 
     //@}
+    
+    /// @name _isGhost accessor
+    //@{
 
+    /// non-const version
+    bool& isGhost() {
+      return _isGhost;
+    }
+
+    /// const version
+    const bool isGhost() const {
+      return _isGhost;
+    }
+
+    //@}
 
   protected:
 
@@ -238,13 +252,10 @@ namespace YODA {
     Dbn2D _dbn;
 
 
-  public:
+  protected:
 
     /// A variable that specifies if the bin should be plotted
-    ///
-    /// @todo Access to this variable needs to be restricted -- the existence of
-    /// this should not be known to the average user.
-    bool isReal;
+    bool _isGhost;
 
   };
 

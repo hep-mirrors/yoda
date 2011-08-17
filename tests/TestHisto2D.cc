@@ -40,7 +40,7 @@ int main() {
     gettimeofday(&startTime, NULL);
     Histo2D h(200, 0, 100, 200, 0, 100);
     gettimeofday(&endTime, NULL);
-    cout << h.binByCoord(1,1).isReal << endl;
+    cout << h.binByCoord(1,1).isGhost() << endl;
 
     double tS = (startTime.tv_sec*1000000 + startTime.tv_usec)/(double)1000000;
     double tE = (endTime.tv_sec*1000000 + endTime.tv_usec)/(double)1000000;
