@@ -71,8 +71,8 @@ namespace YODA {
 
     /// @brief State-setting constructor
     /// Mainly intended for internal persistency use.
+    /// @todo Need to add state-setting for the total dbn and the outflows
     Histo2D(const std::vector<HistoBin2D> bins,
-
             const std::string& path="", const std::string& title="")
       : AnalysisObject("Histo2D", path, title), _axis(bins)
     { }
@@ -99,7 +99,7 @@ namespace YODA {
     }
 
     /// Check if this binning is a grid
-    /// @todo Really expose this on the public API?
+    /// @todo Avoid exposing this on the public API
     bool isGriddy() {
       return _axis.isGriddy();
     }

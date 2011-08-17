@@ -46,9 +46,10 @@ namespace YODA {
     return (fabs(val) < tolerance);
   }
 
-  /// Compare an integral-type number to zero. Since there is no
-  /// risk of floating point error, this function just exists in
-  /// case @c isZero is accidentally used on an integer type, to avoid
+  /// Compare an integral-type number to zero.
+  ///
+  /// Since there is no risk of floating point error, this function just exists
+  /// in case @c isZero is accidentally used on an integer type, to avoid
   /// implicit type conversion. The @a tolerance parameter is ignored.
   inline bool isZero(long val, double UNUSED(tolerance)=1E-8) {
     return val == 0;
@@ -56,15 +57,19 @@ namespace YODA {
 
 
   /// @brief Compare two floating point numbers for equality with a degree of fuzziness
-  /// The @a tolerance parameter is fractional.
+  ///
+  /// The @a tolerance parameter is fractional, based on absolute values of the args.
   inline bool fuzzyEquals(double a, double b, double tolerance=1E-5) {
-    const double absavg = fabs(a + b)/2.0;
-    const double absdiff = fabs(a - b);
-    const bool rtn = (absavg == 0.0 && absdiff == 0.0) || absdiff < tolerance*absavg;
-    return rtn;
+   const double absavg = (fabs(a) + fabs(b))/2.0;
+   const double absdiff = fabs(a - b);
+   const bool rtn = (isZero(a) && isZero(b)) || absdiff < tolerance*absavg;
+   // cout << a << " == " << b << "? " << rtn << endl;
+   return rtn;
   }
 
+
   /// @brief Compare two integral-type numbers for equality with a degree of fuzziness.
+  ///
   /// Since there is no risk of floating point error with integral types,
   /// this function just exists in case @c fuzzyEquals is accidentally
   /// used on an integer type, to avoid implicit type conversion. The @a
@@ -76,12 +81,14 @@ namespace YODA {
 
 
   /// @brief Compare two floating point numbers for >= with a degree of fuzziness
+  ///
   /// The @a tolerance parameter on the equality test is as for @c fuzzyEquals.
   inline bool fuzzyGtrEquals(double a, double b, double tolerance=1E-5) {
     return a > b || fuzzyEquals(a, b, tolerance);
   }
 
   /// @brief Compare two integral-type numbers for >= with a degree of fuzziness.
+  ///
   /// Since there is no risk of floating point error with integral types,
   /// this function just exists in case @c fuzzyGtrEquals is accidentally
   /// used on an integer type, to avoid implicit type conversion. The @a
@@ -93,12 +100,14 @@ namespace YODA {
 
 
   /// @brief Compare two floating point numbers for <= with a degree of fuzziness
+  ///
   /// The @a tolerance parameter on the equality test is as for @c fuzzyEquals.
   inline bool fuzzyLessEquals(double a, double b, double tolerance=1E-5) {
     return a < b || fuzzyEquals(a, b, tolerance);
   }
 
   /// @brief Compare two integral-type numbers for <= with a degree of fuzziness.
+  ///
   /// Since there is no risk of floating point error with integral types,
   /// this function just exists in case @c fuzzyLessEquals is accidentally
   /// used on an integer type, to avoid implicit type conversion. The @a
@@ -121,13 +130,15 @@ namespace YODA {
   /// @name Ranges and intervals
   //@{
 
-  /// Represents whether an interval is open (non-inclusive) or closed
-  /// (inclusive). For example, the interval \f$ [0, \pi) \f$ is closed (an inclusive
+  /// Represents whether an interval is open (non-inclusive) or closed (inclusive).
+  ///
+  /// For example, the interval \f$ [0, \pi) \f$ is closed (an inclusive
   /// boundary) at 0, and open (a non-inclusive boundary) at \f$ \pi \f$.
   enum RangeBoundary { OPEN=0, SOFT=0, CLOSED=1, HARD=1 };
 
 
   /// @brief Determine if @a value is in the range @a low to @a high, for floating point numbers
+  ///
   /// Interval boundary types are defined by @a lowbound and @a highbound.
   /// @todo Optimise to one-line at compile time?
   template<typename NUM>
@@ -153,6 +164,7 @@ namespace YODA {
 
 
   /// @brief Determine if @a value is in the range @a low to @a high, for integer types
+  ///
   /// Interval boundary types are defined by @a lowbound and @a highbound.
   /// @todo Optimise to one-line at compile time?
   inline bool inRange(int value, int low, int high,
@@ -257,6 +269,7 @@ namespace YODA {
 
 
   /// @brief Return the bin index of the given value, @a val, given a vector of bin edges
+  ///
   /// NB. The @a binedges vector must be sorted
   template <typename NUM>
   inline int index_between(const NUM& val, const std::vector<NUM>& binedges) {
