@@ -372,14 +372,43 @@ namespace YODA {
     /// Looks through all the bins to see which one contains the point of
     /// interest.
     const int getBinIndex(double coordX, double coordY) const {
-      for (size_t i = 0; i < _bins.size(); ++i) {
-        if (_bins[i].first.xMin() <= coordX && _bins[i].first.xMax() >= coordX &&
-            _bins[i].first.yMin() <= coordY && _bins[i].first.yMax() >= coordY &&
-            _bins[i].second) return i;
-      }
-      return -1;
-    }
+      /// In case we are just operating on a regular grid
+      if(_isGrid()) {  
+        coordX += 0.00000000001; coordY += 0.00000000001;
+             size_t indexY = (*_binHashSparse.first._cache.lower_bound(approx(coordY))).second;
+ 
+             if(indexY < _binHashSparse.first.size()) {
+                 for(unsigned int i = 0;  i < _binHashSparse.first[indexY].second.size(); i++){
+                     if(_binHashSparse.first[indexY].second[i].second.first < coordX &&
+                        _binHashSparse.first[indexY].second[i].second.second > coordX){
+                         size_t indexX = (*_binHashSparse.second._cache.lower_bound(approx(coordX))).second;
+                         if(indexX < _binHashSparse.second.size()){
+                             for(unsigned int j=0; j < _binHashSparse.second[indexX].second.size(); j++) {
+                                 if(_binHashSparse.second[indexX].second[j].second.first < coordY &&
+                                    (_binHashSparse.second[indexX].second[j].second.second > coordY) &&
+                                    (_binHashSparse.second[indexX].second[j].first ==
+                                    _binHashSparse.first[indexY].second[i].first))
+                                     return _binHashSparse.second[indexX].second[j].first;
+                             }
+                         }
+                     }
+                 }
+             }
+             return -1;
 
+      
+      }
+
+      /// In case we have something more complicated
+      else {
+        for (size_t i = 0; i < _bins.size(); ++i) {
+          if (_bins[i].first.xMin() <= coordX && _bins[i].first.xMax() >= coordX &&
+              _bins[i].first.yMin() <= coordY && _bins[i].first.yMax() >= coordY &&
+              _bins[i].second) return i;
+        }
+        return -1;
+      }
+    }
     //@}
 
 
