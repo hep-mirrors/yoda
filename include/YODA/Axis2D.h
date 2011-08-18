@@ -195,44 +195,43 @@ namespace YODA {
 
 
     /// Get the total number of bins
-    size_t numBinsTotal() const {
+    const size_t numBinsTotal() const {
       return _bins.size();
     }
     
     /// Get the number of bins along X axis
-    size_t numBinsX() const {
+    const size_t numBinsX() const {
       return _binHashSparse.second.size()/2;
     }
 
     /// Get the number of bins along Y axis
-    size_t numBinsY() const {
+    const size_t numBinsY() const {
       return _binHashSparse.first.size()/2;
     }
 
 
     /// Get the value of the lowest x-edge on the axis
-    double lowEdgeX() const {
+    const double lowEdgeX() const {
       return _lowEdgeX;
     }
 
 
     /// Get the value of the highest x-edge on the axis
-    double highEdgeX() const {
+    const double highEdgeX() const {
       return _highEdgeX;
     }
 
 
     /// Get the value of the lowest y-edge on the axis
-    double lowEdgeY() const {
+    const double lowEdgeY() const {
       return _lowEdgeY;
     }
 
 
     /// Get the value of the highest y-edge on the axis
-    double highEdgeY() const {
+    const double highEdgeY() const {
       return _highEdgeY;
     }
-
 
     /// Get the bins (non-const version)
     Bins& bins() {
@@ -244,10 +243,6 @@ namespace YODA {
       return _bins;
     }
 
-    /// Get the outflows (non-const version)
-    vector<vector<Dbn2D> >& outflows() {
-      return _outflows;
-    }
     /// Get the outflows (const version)
     const vector<vector<Dbn2D> >& outflows() const {
       return _outflows;

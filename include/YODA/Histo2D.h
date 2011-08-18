@@ -194,26 +194,6 @@ namespace YODA {
       return _axis.getBinIndex(coordX, coordY);
     }
 
-    // /// Underflow (const version)
-    // const Dbn2D& underflow() const {
-    //     return _axis.underflow();
-    // }
-
-    // /// Return underflow (non-const version)
-    // Dbn2D& underflow() {
-    //     return _axis.underflow();
-    // }
-
-    // /// Return overflow (const version)
-    // const Dbn2D& overflow() const {
-    //     return _axis.overflow();
-    // }
-
-    // /// Return overflow (non-const version)
-    // Dbn2D& overflow() {
-    //     return _axis.overflow();
-    // }
-
     /// Return a total number of bins in Histo(non-const version)
     size_t numBinsTotal() {
       return _axis.numBinsTotal();
@@ -223,21 +203,11 @@ namespace YODA {
       return _axis.numBinsTotal();
     }
 
-    /// Return number of bins along X axis (non-const version)
-    size_t numBinsX() {
-      return _axis.numBinsX();
-    }
-
     /// Return number of bins along X axis (const version)
     const size_t numBinsX() const {
       return _axis.numBinsX();
     }
 
-    /// Return the number of bins along Y axis (non-const version)
-    size_t numBinsY() {
-      return _axis.numBinsY();
-    }
-    
     /// Return the number of bins along Y axis (const version)
     const size_t numBinsY() const{
       return _axis.numBinsY();
