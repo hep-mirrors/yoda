@@ -201,6 +201,18 @@ namespace YODA {
       _dbnX = _dbnY;
       _dbnY = temp;
     }
+
+    /// Transform into a Dbn1D parallel to X axis (dropping Y term)
+    Dbn1D transformX() {
+      Dbn1D ret(_dbnX);
+      return ret;
+    }
+
+    /// Transform into a Dbn1D parallel to Y axis (dropping X term)
+    Dbn1D transformY() {
+      Dbn1D ret(_dbnY);
+      return ret;
+    }
     //@}
 
 

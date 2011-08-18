@@ -293,7 +293,6 @@ namespace YODA {
     ///
     /// Note that the created histogram will not have correctly filled underflow and overflow bins.
     /// @todo It's not really *at* the specified y coord: it's for the corresponding bin row.
-    /// @todo Need to check that there is a continuous row for this y
     /// @todo Change the name!
     Histo1D cutterX(double atY, const std::string& path="", const std::string& title="") {
       if (!_axis._isGrid) throw GridError("I cannot cut a Histo2D that is not a grid!");
@@ -306,9 +305,18 @@ namespace YODA {
         const Dbn1D dbn2(b2.numEntries(), b2.sumW(), b2.sumW2(), b2.sumWX(), b2.sumWX2());
         tempBins.push_back(HistoBin1D(b2.lowEdgeX(), b2.highEdgeX(), dbn2));
       }
-      /// @todo Think about the total, underflow and overflow distributions
-      /// @todo Create total dbn from input bins
-      return Histo1D(tempBins, Dbn1D(), Dbn1D(), Dbn1D(), path, title);
+
+      /// Setting under/over flows
+      vector<vector<Dbn2D> >& outflows = _axis._outflows;
+      Dbn2D underflow;
+      underflow += outflows[0][0]; underflow += outflows[6][0];
+      for(size_t i=0; i < outflows[7].size(); ++i) underflow += outflows[7][i];
+
+      Dbn2D overflow;
+      overflow += outflows[2][0]; overflow += outflows[4][0];
+      for(size_t i=0; i < outflows[3].size(); ++i) overflow += outflows[3][i];
+      
+      return Histo1D(tempBins, _axis.totalDbn().transformX(), underflow.transformX(), overflow.transformX(), path, title);
 
     }
 
@@ -317,7 +325,6 @@ namespace YODA {
     ///
     /// Note that the created histogram will not have correctly filled underflow and overflow bins.
     /// @todo It's not really *at* the specified x coord: it's for the corresponding bin row.
-    /// @todo Need to check that there is a continuous column for this x
     /// @todo Change the name!
     Histo1D cutterY(double atX, const std::string& path="", const std::string& title="") {
       if (!_axis._isGrid) throw GridError("I cannot cut a Histo2D that is not a grid!");
@@ -331,9 +338,24 @@ namespace YODA {
         tempBins.push_back(HistoBin1D(b2.lowEdgeY(), b2.highEdgeY(), dbn2));
       }
 
-      /// @todo Think about the total, underflow and overflow distributions
-      /// @todo Create total dbn from input bins
-      return Histo1D(tempBins, Dbn1D(), Dbn1D(), Dbn1D(), path, title);
+      /// Setting under/over flows
+      vector<vector<Dbn2D> >& outflows = _axis._outflows;
+      Dbn2D underflow;
+      underflow += outflows[0][0]; underflow += outflows[2][0];
+      for(size_t i=0; i < outflows[1].size(); ++i) underflow += outflows[1][i];
+
+      Dbn2D overflow;
+      overflow += outflows[6][0]; overflow += outflows[4][0];
+      for(size_t i=0; i < outflows[5].size(); ++i) overflow += outflows[5][i];
+
+      Dbn2D total = _axis.totalDbn();
+      
+      /// Making sure that we rotate our distributions, as we are cutting paralell to Y axis now
+      total.flipXY();
+      underflow.flipXY();
+      overflow.flipXY();
+      
+      return Histo1D(tempBins, total.transformX(), underflow.transformX(), overflow.transformX(), path, title);
     }
 
 
