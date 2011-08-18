@@ -296,7 +296,7 @@ namespace YODA {
     /// @todo Need to check that there is a continuous row for this y
     /// @todo Change the name!
     Histo1D cutterX(double atY, const std::string& path="", const std::string& title="") {
-      if (!_axis._isGrid()) throw GridError("I cannot cut a Histo2D that is not a grid!");
+      if (!_axis._isGrid) throw GridError("I cannot cut a Histo2D that is not a grid!");
 
       if (atY < lowEdgeY() || atY > highEdgeY()) throw RangeError("Y is outside the grid");
       vector<HistoBin1D> tempBins;
@@ -325,7 +325,7 @@ namespace YODA {
     /// @todo Need to check that there is a continuous column for this x
     /// @todo Change the name!
     Histo1D cutterY(double atX, const std::string& path="", const std::string& title="") {
-      if (!_axis._isGrid()) throw GridError("I cannot cut a Histo2D that is not a grid!");
+      if (!_axis._isGrid) throw GridError("I cannot cut a Histo2D that is not a grid!");
 
       if (atX < lowEdgeX() || atX > highEdgeX()) throw RangeError("X is outside the grid");
       vector<HistoBin1D> tempBins;
@@ -349,7 +349,7 @@ namespace YODA {
 
     /// @brief X-wise Profile1D creator from Histo2D
     Profile1D mkProfileX() {
-      if (!_axis._isGrid()) throw GridError("Profile1D cannot be made from a histogram that is not a grid!");
+      if (!_axis._isGrid) throw GridError("Profile1D cannot be made from a histogram that is not a grid!");
 
       vector<ProfileBin1D> prof;
       for(int i = lowEdgeX() + _axis.bin(0).midpoint().first; i < highEdgeX(); i+= _axis.bin(0).widthX()) {
@@ -385,7 +385,7 @@ namespace YODA {
 
     /// @brief Y-wise Profile1D creator from Histo2D
     Profile1D mkProfileY() {
-      if (!_axis._isGrid()) throw GridError("Profile1D cannot be made from a histogram that is not a grid!");
+      if (!_axis._isGrid) throw GridError("Profile1D cannot be made from a histogram that is not a grid!");
 
       vector<ProfileBin1D> prof;
       for(int i = lowEdgeY() + _axis.bin(0).midpoint().second; i < highEdgeY(); i+= _axis.bin(0).widthY()) {

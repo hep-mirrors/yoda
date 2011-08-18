@@ -76,7 +76,7 @@ namespace YODA {
     /// Constructor provided with a vector of bin delimiters
     Axis2D(const vector<Segment>& binLimits) {
       _mkAxis(binLimits);
-      if(_isGrid()) _setOutflows();
+      if(_isGrid) _setOutflows();
     }
 
 
@@ -115,7 +115,7 @@ namespace YODA {
         _bins[i] = bins[i];
       }
       _regenDelimiters();
-      if(_isGrid()) _setOutflows();
+      if(_isGrid) _setOutflows();
       _outflows = outflows;
 
       _dbn = totalDbn;
@@ -373,7 +373,7 @@ namespace YODA {
     /// interest.
     const int getBinIndex(double coordX, double coordY) const {
       /// In case we are just operating on a regular grid
-      if(_isGrid()) {  
+      if(_isGrid) {  
         coordX += 0.00000000001; coordY += 0.00000000001;
              size_t indexY = (*_binHashSparse.first._cache.lower_bound(approx(coordY))).second;
  
@@ -579,7 +579,7 @@ namespace YODA {
     /// inner subcaches and half of this amount in the outer (grid boundary)
     /// subcaches. This makes _isGrid() a very, very fast function.
     /// @todo This is far too big to be inline: move it to the .cc
-    bool _isGrid() const {
+    void _genGridCache() {
 
       /// Check if the number of edges parallel to X axis
       /// is proper in every subcache.
@@ -587,11 +587,11 @@ namespace YODA {
       for (size_t i = 1; i < _binHashSparse.first.size(); ++i) {
         if (i == _binHashSparse.first.size() - 1) {
           if (_binHashSparse.first[i].second.size() != sizeX) {
-            return false;
+            _isGrid = false;
           }
         }
         else if (_binHashSparse.first[i].second.size() != 2*sizeX) {
-          return false;
+          _isGrid = false;
         }
       }
 
@@ -600,16 +600,16 @@ namespace YODA {
       for (size_t i=1; i < _binHashSparse.second.size(); ++i) {
         if (i != _binHashSparse.second.size() - 1) {
           if (2*sizeY != _binHashSparse.second[i].second.size()) {
-            return false;
+            _isGrid = false;
           }
         }
         else if (_binHashSparse.second[i].second.size() != sizeY) {
-          return -1;
+          _isGrid = false;
         }
       }
 
       /// If everything is proper, announce it.
-      return true;
+      _isGrid = true;
     }
 
 
@@ -915,6 +915,7 @@ namespace YODA {
       _binHashSparse.first.regenCache();
       _binHashSparse.second.regenCache();
       _regenDelimiters();
+      _genGridCache();
     }
 
 
@@ -975,6 +976,9 @@ namespace YODA {
 
     /// Low/high edges
     double _highEdgeX, _highEdgeY, _lowEdgeX, _lowEdgeY;
+
+    /// Is it a grid?
+    bool _isGrid;
 
   };
 
