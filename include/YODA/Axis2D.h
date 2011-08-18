@@ -48,6 +48,13 @@ namespace YODA {
 
     // A few helpful typedefs
     typedef BIN Bin;
+    /// The following vector holds in itself an information 
+    /// about a Bin and a state in which it is. If the state is
+    /// set to be false the bin will not be displayed and in effect
+    /// will be treated as nonexistent. The most common situation when 
+    /// such a funcionality is needed is when merging a bin. For detailed
+    /// description about what happens in such case, please refer to the
+    /// mergeBins() function ~100 lines below this point.
     typedef typename std::vector<std::pair<Bin, bool> > Bins;
 
 
