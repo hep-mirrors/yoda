@@ -194,6 +194,13 @@ namespace YODA {
       return subtract(d);
     }
 
+    /// @brief Interchange X and Y subdistributions
+    /// Mostly used for operations on total distribution of an Axis
+    void flipXY() {
+      Dbn1D temp(_dbnX);
+      _dbnX = _dbnY;
+      _dbnY = temp;
+    }
     //@}
 
 

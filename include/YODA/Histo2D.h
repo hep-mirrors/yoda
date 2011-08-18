@@ -414,12 +414,11 @@ namespace YODA {
       }
 
       /// Setting a flipped total distribution
-      Dbn2D& td = _axis.totalDbn();
-      Dbn2D flipped(td.numEntries(), td.sumW(), td.sumW2(), td.sumWY(), 
-                    td.sumWY2(), td.sumWX(), td.sumWX2(), td.sumWXY());
+      Dbn2D td = _axis.totalDbn();
+      td.flipXY();
 
       /// And constructing a profile 1D from all this data
-      Profile1D ret(prof, flipped, underflow, overflow);
+      Profile1D ret(prof, td, underflow, overflow);
       return ret;
 
     }
