@@ -67,7 +67,16 @@ namespace YODA {
     }
 
 
-    /// @todo Add copy constructor
+    /// @brief A copy constructor
+    Point3D(const Point3D& p) {
+      _x = p._x;
+      _y = p._y;
+      _z = p._z;
+
+      _ex = p._ex;
+      _ey = p._ey;
+      _ez = p._ez;
+    }
 
     //@}
 

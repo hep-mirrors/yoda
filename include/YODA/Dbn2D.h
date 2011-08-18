@@ -30,8 +30,14 @@ namespace YODA {
     {  }
 
 
-    /// @todo Add copy constructor
-
+    /// @brief Copy constructor
+    /// Sets all the parameters using the ones provided from
+    /// an existing Dbn2D.
+    Dbn2D(const Dbn2D& toCopy) {
+      _dbnX = toCopy._dbnX;
+      _dbnY = toCopy._dbnY;
+      _sumWXY = toCopy._sumWXY;
+    }
     //@}
 
 

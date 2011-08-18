@@ -153,8 +153,7 @@ namespace YODA {
         return _axis.highEdgeY();
     }
 
-    /// Access the bin vector
-    /// @todo Actually, it's a Histo
+    /// Access the bin vector (non-const version)
     std::vector<YODA::HistoBin2D>& bins() {
       return _axis.bins();
     }
@@ -203,12 +202,12 @@ namespace YODA {
       return _axis.numBinsTotal();
     }
 
-    /// Return number of bins along X axis (const version)
+    /// Return number of bins along X axis
     const size_t numBinsX() const {
       return _axis.numBinsX();
     }
 
-    /// Return the number of bins along Y axis (const version)
+    /// Return the number of bins along Y axis
     const size_t numBinsY() const{
       return _axis.numBinsY();
     }

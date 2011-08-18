@@ -44,6 +44,9 @@ namespace YODA {
     /// created Histo2D.
     Bin2D(const std::vector<Segment>& edges);
 
+    /// A copy constructor
+    Bin2D(const Bin2D& b);
+
     //@}
 
 
