@@ -28,6 +28,10 @@ NOW
 * Similarly, is there any reason to expose the isGriddy function publicly on
   Axis2D and Histo2D? Can't it just be a private _isGrid()? (MICHAL)
   MK: Done
+  AB: Ah, some confusion here. I see that it's now disappeared from the Histo2D interface,
+    but since the Axis objects are for internal use only, I don't think there is a
+    reason for the is-grid? method to be private on Axis2D -- this is the only reason
+    for Histo2D to have to be a friend of Axis2D, right?
 
 * Add copy constructors for Dbn1D/2D, Scatter2D, Histo/ProfileBin1D, Point2D/3D, HistoBin2D.
   Rule of three: also need explicit assignment operator= for all classes
