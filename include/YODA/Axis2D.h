@@ -21,6 +21,9 @@ namespace YODA {
   template <typename BIN>
   class Axis2D {
   public:
+    
+    /// Enabling Histo2D to check if its axis is a grid
+    friend class Histo2D;
 
     // A few helpful typedefs
     typedef BIN Bin;
@@ -134,13 +137,6 @@ namespace YODA {
     /// @name Helper functions
     //@{
 
-    /// @brief Check if Axis represents a grid
-    /// For more information, please refer to the documentation
-    /// of _isGrid().
-    const bool isGrid() const {
-      return _isGrid();
-    }
-
     /// Outflow filler
     void fillOutflows(double x, double y, double weight) {
       if(x < _lowEdgeX && y > _highEdgeY) _outflows[0][0].fill(x, y, weight);
@@ -209,8 +205,18 @@ namespace YODA {
 
 
     /// Get the total number of bins
-    unsigned int numBinsTotal() const {
+    size_t numBinsTotal() const {
       return _bins.size();
+    }
+    
+    /// Get the number of bins along X axis
+    size_t numBinsX() const {
+      return _binHashSparse.second.size()/2;
+    }
+
+    /// Get the number of bins along Y axis
+    size_t numBinsY() const {
+      return _binHashSparse.first.size()/2;
     }
 
 

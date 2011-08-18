@@ -215,12 +215,32 @@ namespace YODA {
     // }
 
     /// Return a total number of bins in Histo(non-const version)
-    unsigned int numBinsTotal() {
-        return _axis.numBinsTotal();
+    size_t numBinsTotal() {
+      return _axis.numBinsTotal();
     }
 
-    const unsigned int numBinsTotal() const {
-        return _axis.numBinsTotal();
+    const size_t numBinsTotal() const {
+      return _axis.numBinsTotal();
+    }
+
+    /// Return number of bins along X axis (non-const version)
+    size_t numBinsX() {
+      return _axis.numBinsX();
+    }
+
+    /// Return number of bins along X axis (const version)
+    const size_t numBinsX() const {
+      return _axis.numBinsX();
+    }
+
+    /// Return the number of bins along Y axis (non-const version)
+    size_t numBinsY() {
+      return _axis.numBinsY();
+    }
+    
+    /// Return the number of bins along Y axis (const version)
+    const size_t numBinsY() const{
+      return _axis.numBinsY();
     }
 
     //@}
@@ -306,7 +326,7 @@ namespace YODA {
     /// @todo Need to check that there is a continuous row for this y
     /// @todo Change the name!
     Histo1D cutterX(double atY, const std::string& path="", const std::string& title="") {
-      if (!_axis.isGrid()) throw GridError("I cannot cut a Histo2D that is not a grid!");
+      if (!_axis._isGrid()) throw GridError("I cannot cut a Histo2D that is not a grid!");
 
       if (atY < lowEdgeY() || atY > highEdgeY()) throw RangeError("Y is outside the grid");
       vector<HistoBin1D> tempBins;
@@ -335,7 +355,7 @@ namespace YODA {
     /// @todo Need to check that there is a continuous column for this x
     /// @todo Change the name!
     Histo1D cutterY(double atX, const std::string& path="", const std::string& title="") {
-      if (!_axis.isGrid()) throw GridError("I cannot cut a Histo2D that is not a grid!");
+      if (!_axis._isGrid()) throw GridError("I cannot cut a Histo2D that is not a grid!");
 
       if (atX < lowEdgeX() || atX > highEdgeX()) throw RangeError("X is outside the grid");
       vector<HistoBin1D> tempBins;
@@ -358,7 +378,14 @@ namespace YODA {
 
 
     /// @todo Create x-wise and y-wise conversions to Profile1D -- ignore outflows for now, but mark as such
-
+    /*Profile1D mkProfileX() {
+      throw Exception("To implement!"); 
+      if(!_axis._isGrid()) throw GridError("Profile1D cannot be made from a histogram that is not a grid!");
+      
+      //Profile1D ret;
+      return Profile1D();
+    }
+*/
 
     //@}
 
