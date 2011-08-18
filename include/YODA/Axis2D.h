@@ -137,35 +137,25 @@ namespace YODA {
     /// @name Helper functions
     //@{
 
-    /// Outflow filler
-    void fillOutflows(double x, double y, double weight) {
-      if(x < _lowEdgeX && y > _highEdgeY) _outflows[0][0].fill(x, y, weight);
-      else if(x > _lowEdgeX && x < _highEdgeX && y > _highEdgeY)
-      {
-        size_t element = _binaryS(_binHashSparse.second, x, 0, _binHashSparse.second.size());
-        _outflows[1][element].fill(x, y, weight);
-      }
-      else if(x > _highEdgeX && y > _highEdgeY) _outflows[2][0].fill(x, y, weight);
-      else if(x > _highEdgeX && y > _lowEdgeY && y < _highEdgeY)
-      {
-        size_t element = _binaryS(_binHashSparse.first, y, 0, _binHashSparse.first.size());
-        _outflows[3][element].fill(x, y, weight);
-      }
-      else if(x > _highEdgeX && y < _lowEdgeY) _outflows[4][0].fill(x, y, weight);
-      else if(x > _lowEdgeX && x < _highEdgeX && y < _lowEdgeY)
-      {
-        size_t element = _binaryS(_binHashSparse.second, x, 0, _binHashSparse.second.size());
-        _outflows[5][element].fill(x, y, weight);
-      }
-      else if(x < _lowEdgeX && y < _lowEdgeY) _outflows[6][0].fill(x, y, weight);
-      else if(x < _lowEdgeX && y > _lowEdgeY && y < _highEdgeY)
-      {
-        size_t element = _binaryS(_binHashSparse.first, y, 0, _binHashSparse.first.size());
-        _outflows[7][element].fill(x, y, weight);
-      }
+    /// @brief Fill operator
+    /// Called when it is wanted to fill a certain position on an Axis
+    int fill(double x, double y, double weight) 
+    {
+      /// Filling the total distribution
+      _dbn.fill(x, y, weight); 
 
+      /// Filling a bin if the coordinates point to one.
+      int index = getBinIndex(x, y);
+      if(index != -1) _bins[index].fill(x, y, weight);
+      
+      /// If coordinates point outside any of the bins and 
+      /// and the outflows were properly set (i.e. we are dealing 
+      /// with a grid), fill a proper outflow.
+      else if(_outflows.size() == 8) _fillOutflows(x, y, weight);
+
+      /// Return an information regarding what was filled.
+      return index;
     }
-
 
     /// @brief Bin merging
     /// Try to merge a certain amount of bins
@@ -278,14 +268,14 @@ namespace YODA {
 
     /// Get a bin at given coordinates (non-const version)
     BIN& binByCoord(double x, double y) {
-      const int ret = _findBinIndex(x, y);
+      const int ret = getBinIndex(x, y);
       if (ret != -1) return bin(ret);
       else throw RangeError("No bin found!!");
     }
 
     /// Get a bin at given coordinates (const version)
     const BIN& binByCoord(double x, double y) const {
-      const int ret = _findBinIndex(x, y);
+      const int ret = getBinIndex(x, y);
       if (ret != -1) return bin(ret);
       else throw RangeError("No bin found!!");
     }
@@ -311,11 +301,19 @@ namespace YODA {
       return _dbn;
     }
 
-    /// Get bin index from external classes
-    int getBinIndex(double coordX, double coordY) const
-    {
-      return _findBinIndex(coordX, coordY);
+    /// @brief Bin index finder
+    ///
+    /// Looks through all the bins to see which one contains the point of
+    /// interest.
+    const int getBinIndex(double coordX, double coordY) const {
+      for (size_t i = 0; i < _bins.size(); ++i) {
+        if (_bins[i].xMin() <= coordX && _bins[i].xMax() >= coordX &&
+            _bins[i].yMin() <= coordY && _bins[i].yMax() >= coordY &&
+            !_bins[i].isGhost()) return i;
+      }
+      return -1;
     }
+
 
     /// Reset the axis statistics
     void reset()
@@ -446,6 +444,35 @@ namespace YODA {
       _outflows[5].resize(_binHashSparse.second.size());
       _outflows[6].resize(1);
       _outflows[7].resize(_binHashSparse.first.size());
+
+    }
+    
+    /// Outflow filler
+    void _fillOutflows(double x, double y, double weight) {
+      if(x < _lowEdgeX && y > _highEdgeY) _outflows[0][0].fill(x, y, weight);
+      else if(x > _lowEdgeX && x < _highEdgeX && y > _highEdgeY)
+      {
+        size_t element = _binaryS(_binHashSparse.second, x, 0, _binHashSparse.second.size());
+        _outflows[1][element].fill(x, y, weight);
+      }
+      else if(x > _highEdgeX && y > _highEdgeY) _outflows[2][0].fill(x, y, weight);
+      else if(x > _highEdgeX && y > _lowEdgeY && y < _highEdgeY)
+      {
+        size_t element = _binaryS(_binHashSparse.first, y, 0, _binHashSparse.first.size());
+        _outflows[3][element].fill(x, y, weight);
+      }
+      else if(x > _highEdgeX && y < _lowEdgeY) _outflows[4][0].fill(x, y, weight);
+      else if(x > _lowEdgeX && x < _highEdgeX && y < _lowEdgeY)
+      {
+        size_t element = _binaryS(_binHashSparse.second, x, 0, _binHashSparse.second.size());
+        _outflows[5][element].fill(x, y, weight);
+      }
+      else if(x < _lowEdgeX && y < _lowEdgeY) _outflows[6][0].fill(x, y, weight);
+      else if(x < _lowEdgeX && y > _lowEdgeY && y < _highEdgeY)
+      {
+        size_t element = _binaryS(_binHashSparse.first, y, 0, _binHashSparse.first.size());
+        _outflows[7][element].fill(x, y, weight);
+      }
 
     }
 
@@ -811,20 +838,6 @@ namespace YODA {
       _lowEdgeY = lowEdgeY;
       _highEdgeY = highEdgeY;
     }
-
-    /// @brief Bin index finder
-    ///
-    /// Looks through all the bins to see which one contains the point of
-    /// interest.
-    int _findBinIndex(double coordX, double coordY) const {
-      for (size_t i = 0; i < _bins.size(); ++i) {
-        if (_bins[i].xMin() <= coordX && _bins[i].xMax() >= coordX &&
-            _bins[i].yMin() <= coordY && _bins[i].yMax() >= coordY &&
-            !_bins[i].isGhost()) return i;
-      }
-      return -1;
-    }
-
 
   private:
 

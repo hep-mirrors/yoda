@@ -15,15 +15,7 @@ namespace YODA {
 
 
   int Histo2D::fill(double x, double y, double weight) {
-    _axis.totalDbn().fill(x, y, weight);
-
-    int index = _axis.getBinIndex(x, y);
-    if(index != -1) {
-      HistoBin2D& bin = _axis.bin(index);
-      bin.fill(x, y, weight);
-    }
-    else if(_axis.outflows().size() == 8) _axis.fillOutflows(x, y, weight);
-    return index;
+    return _axis.fill(x, y, weight);
   }
 
 
