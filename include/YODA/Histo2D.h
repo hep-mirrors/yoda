@@ -11,6 +11,7 @@
 #include "YODA/HistoBin1D.h"
 #include "YODA/Dbn2D.h"
 #include "YODA/Axis2D.h"
+#include "YODA/Profile1D.h"
 #include "YODA/Exceptions.h"
 #include "YODA/Histo1D.h"
 
@@ -347,14 +348,41 @@ namespace YODA {
 
 
     /// @todo Create x-wise and y-wise conversions to Profile1D -- ignore outflows for now, but mark as such
-    /*Profile1D mkProfileX() {
-      throw Exception("To implement!");
+    Profile1D mkProfileX() {
       if (!_axis._isGrid()) throw GridError("Profile1D cannot be made from a histogram that is not a grid!");
 
-      //Profile1D ret;
-      return Profile1D();
+      vector<ProfileBin1D> prof;
+      for(int i = lowEdgeX() + _axis.bin(0).midpoint().first; i < highEdgeX(); i+= _axis.bin(0).widthX()) {
+        HistoBin2D& bin(_axis.binByCoord(i, lowEdgeY()));
+        HistoBin2D composite(bin.xMin(), bin.xMax(), bin.yMin(), bin.yMax()) ;
+        for(int j = lowEdgeY() + _axis.bin(0).midpoint().second; j < highEdgeY(); j += _axis.bin(0).widthY()) {
+          composite += _axis.binByCoord(i, j);
+        }
+      prof.push_back(composite.transformX());
+      }   
+
+      vector<vector<Dbn2D> >& outflows = _axis.outflows();
+      
+      /// Properly setting an underflow
+      Dbn2D underflow;
+      underflow += outflows[0][0]; underflow += outflows[6][0];
+      for(size_t i = 0; i < outflows[7].size(); ++i) {
+        underflow += outflows[7][i];
+      }
+
+      /// Setting an overflow
+      Dbn2D overflow;
+      overflow += outflows[2][0]; overflow += outflows[4][0];
+      for(size_t i = 0; i < outflows[3].size(); ++i) {
+        overflow += outflows[3][i];
+      }
+
+      /// And construct a profile 1D from all this data
+      Profile1D ret(prof, _axis.totalDbn(), underflow, overflow);
+      return ret;
+
     }
-*/
+
 
     //@}
 

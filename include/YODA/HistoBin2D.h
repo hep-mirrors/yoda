@@ -2,6 +2,8 @@
 #define YODA_HistoBin2D_h
 
 #include "YODA/Bin2D.h"
+#include "YODA/Dbn1D.h"
+#include "YODA/ProfileBin1D.h"
 #include "YODA/Exceptions.h"
 
 #include <cmath>
@@ -91,6 +93,29 @@ namespace YODA {
     double heightErr() const {
       return volumeErr()/(widthX()*widthY());
     }
+
+    //@}
+
+    /// @name Transformers
+    //@{
+
+    /// @brief Transformer taking X as a primary axis of ProfileBin1D
+    ProfileBin1D transformX() {
+      Dbn1D dbny(_dbn.numEntries(), _dbn.sumW(), _dbn.sumW2(), _dbn.sumWY(), _dbn.sumWY2());
+      Dbn1D dbnx(_dbn.numEntries(), _dbn.sumW(), _dbn.sumW2(), _dbn.sumWX(), _dbn.sumWX2());
+      ProfileBin1D ret(xMin(), xMax(), dbnx, dbny);
+
+      return ret;
+    }
+
+    ProfileBin1D transformY() {
+      Dbn1D dbny(_dbn.numEntries(), _dbn.sumW(), _dbn.sumW2(), _dbn.sumWY(), _dbn.sumWY2());
+      Dbn1D dbnx(_dbn.numEntries(), _dbn.sumW(), _dbn.sumW2(), _dbn.sumWX(), _dbn.sumWX2());
+      ProfileBin1D ret(yMin(), yMax(), dbny, dbnx);
+
+      return ret;
+    }
+
 
     //@}
 

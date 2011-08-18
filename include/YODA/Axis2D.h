@@ -125,8 +125,10 @@ namespace YODA {
     /// It should be noted that there is nothing special about
     /// the initiation stage of Axis2D, and the edges can be added
     /// online if they meet all the requirements of non-degeneracy.
-    /// No merging is supported, and I don't think it should before the support
-    /// for merging for '+' operator (codewise it should be the same thing).
+    ///
+    /// Be aware that adding a Bin to an existing axis created by one of
+    /// constructors wipes out all the outflows since a concept of them is
+    /// no longer meaningful!
     void addBin(const vector<Segment>& binLimits) {
       _mkAxis(binLimits);
       _outflows.resize(0);
@@ -272,7 +274,7 @@ namespace YODA {
       return _bins;
     }
 
-    /// Get the outflows (const version)
+    /// Get the outflows (non-const version)
     vector<vector<Dbn2D> >& outflows() {
       return _outflows;
     }
@@ -317,7 +319,7 @@ namespace YODA {
     }
 
     /// Get a bin at given coordinates (const version)
-    const BIN& binByCoord(pair<double, double>& coords) const {
+    BIN& binByCoord(pair<double, double>& coords) const {
       return binByCoord(coords.first, coords.second);
     }
 
@@ -701,19 +703,6 @@ namespace YODA {
       return true;
     }
 
-
-    /// @brief Function executed when a set of edges is dropped.
-    ///
-    /// It does not have any information about which edge in the set
-    /// had failed the check. If this is needed such additional information
-    /// can be readily implemented.
-    void _dropEdge(vector<Segment>& edges) {
-      /// @todo WTF?! Finish what you start! Does this actually need to exist?
-      assert(0 && "Unimplemented :(");
-      std::cerr << "A set of edges was dropped." << endl;
-    }
-
-
     /// @brief Bin adder
     ///
     /// It contains all the commands that need to executed
@@ -859,7 +848,6 @@ namespace YODA {
 
         // And check if a bin is a proper one, if it is, add it.
         if (_validateEdge(edges))  _addEdge(edges, _binHashSparse);
-        else _dropEdge(edges);
       }
 
       // Setting all the caches
