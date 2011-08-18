@@ -163,8 +163,6 @@ namespace YODA {
     /// @name Persistency hooks
     //@{
 
-    /// @todo Maybe make these private, and make Writer a friend of AO
-
     /// Get name of the analysis object type, for persistency
     virtual std::string type() const {
       return annotation("Type");
