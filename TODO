@@ -26,7 +26,7 @@ NOW
   MK: Done
 
 * Similarly, is there any reason to expose the isGriddy function publicly on
-  Axis2D and Histo1D? Can't it just be a private _isGrid()? (MICHAL)
+  Axis2D and Histo2D? Can't it just be a private _isGrid()? (MICHAL)
   MK: Done
 
 * Add copy constructors for Dbn1D/2D, Scatter2D, Histo/ProfileBin1D, Point2D/3D, HistoBin2D.

@@ -72,7 +72,7 @@ namespace YODA {
 
     /// @brief State-setting constructor
     /// Mainly intended for internal persistency use.
-    Histo2D(const std::vector<HistoBin2D>& bins, 
+    Histo2D(const std::vector<HistoBin2D>& bins,
             const std::vector<std::vector<Dbn2D> >& outflows,
             const Dbn2D& totalDbn,
             const std::string& path="", const std::string& title="")
@@ -348,9 +348,9 @@ namespace YODA {
 
     /// @todo Create x-wise and y-wise conversions to Profile1D -- ignore outflows for now, but mark as such
     /*Profile1D mkProfileX() {
-      throw Exception("To implement!"); 
-      if(!_axis._isGrid()) throw GridError("Profile1D cannot be made from a histogram that is not a grid!");
-      
+      throw Exception("To implement!");
+      if (!_axis._isGrid()) throw GridError("Profile1D cannot be made from a histogram that is not a grid!");
+
       //Profile1D ret;
       return Profile1D();
     }

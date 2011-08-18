@@ -18,16 +18,14 @@ namespace YODA {
   ///
   /// This class handles almost all boiler-plate operations
   /// on 2D bins (like creating axis, adding, searching, testing).
+  ///
+  /// @todo This needs an extra DBN template argument, cf. Axis1D
   template <typename BIN>
   class Axis2D {
-  public:
-    
-    /// Enabling Histo2D to check if its axis is a grid
-    friend class Histo2D;
 
-    // A few helpful typedefs
-    typedef BIN Bin;
-    typedef typename std::vector<BIN> Bins;
+    /// Enabling Histo2D to check if its axis is a grid
+    /// @todo This should not be necessary
+    friend class Histo2D;
 
     /// When edge is added to the collection it must
     /// obey the following format. size_t specifies the bin this
@@ -44,6 +42,13 @@ namespace YODA {
 
     /// Segment, having a beginning and end.
     typedef typename std::pair<Point, Point> Segment;
+
+
+  public:
+
+    // A few helpful typedefs
+    typedef BIN Bin;
+    typedef typename std::vector<BIN> Bins;
 
 
   public:
@@ -69,6 +74,8 @@ namespace YODA {
 
 
     /// Most standard constructor, should be self-explanatory
+    /// @todo Never say "should be self-explanatory": explain it, even if it seems obvious
+    /// @todo This is too large/complex to be inline: move to the .cc
     Axis2D(size_t nbinsX, double lowerX, double upperX, size_t nbinsY, double lowerY, double upperY) {
       vector<Segment> binLimits;
       double coeffX = (upperX - lowerX)/(double)nbinsX;
@@ -84,7 +91,9 @@ namespace YODA {
 
 
     /// @brief A bin constructor
+    ///
     /// Creates an Axis2D from existing bins
+    /// @todo This is too large to be inline: move to the .cc
     Axis2D(const Bins& bins,
            const std::vector<std::vector<Dbn2D> >& outflows,
            const Dbn2D& totalDbn)
@@ -107,7 +116,7 @@ namespace YODA {
 
     //@}
 
-    /// @name Addition operators:
+    /// @name Bin insertion operators
     //@{
 
     /// @brief Bin addition operator
@@ -134,22 +143,22 @@ namespace YODA {
 
     //@}
 
-    /// @name Helper functions
+
+    /// @name Modifiers
     //@{
 
     /// @brief Fill operator
     /// Called when it is wanted to fill a certain position on an Axis
-    int fill(double x, double y, double weight) 
-    {
+    int fill(double x, double y, double weight) {
       /// Filling the total distribution
-      _dbn.fill(x, y, weight); 
+      _dbn.fill(x, y, weight);
 
       /// Filling a bin if the coordinates point to one.
       int index = getBinIndex(x, y);
       if(index != -1) _bins[index].fill(x, y, weight);
-      
-      /// If coordinates point outside any of the bins and 
-      /// and the outflows were properly set (i.e. we are dealing 
+
+      /// If coordinates point outside any of the bins and
+      /// and the outflows were properly set (i.e. we are dealing
       /// with a grid), fill a proper outflow.
       else if(_outflows.size() == 8) _fillOutflows(x, y, weight);
 
@@ -157,12 +166,15 @@ namespace YODA {
       return index;
     }
 
+
     /// @brief Bin merging
     /// Try to merge a certain amount of bins
+    /// @todo This is far too big to be inline: move it to the .cc
     void mergeBins(size_t from, size_t to) {
       HistoBin2D& start = bin(from);
       HistoBin2D& end = bin(to);
       HistoBin2D temp = start;
+      /// @todo Yuck!
       start.isGhost() = true;
 
       if (start.midpoint().first > end.midpoint().first ||
@@ -181,6 +193,9 @@ namespace YODA {
               bin(!_binHashSparse.first[y].second[x].first).isGhost())
             {
               temp += bin(_binHashSparse.first[y].second[x].first);
+              /// @todo This sort of setting via a reference is quite confusing -- since Axis2D is a friend,
+              /// just use the _isGhost member. Or, better IMO, do all the "ghost" bookkeeping purely on
+              /// the axis and avoid storing an axis implementation feature on *all* the bins.
               bin(_binHashSparse.first[y].second[x].first).isGhost() = true;
             }
         }
@@ -194,11 +209,27 @@ namespace YODA {
     }
 
 
+    /// Reset the axis statistics
+    void reset()
+    {
+      _dbn.reset();
+      for (size_t i = 0; i < _bins.size(); ++i) {
+        _bins[i].reset();
+      }
+    }
+
+    //@}
+
+
+    /// @name Accessors
+    //@{
+
     /// Get the total number of bins
+    /// @todo Can't this just be numBins?
     const size_t numBinsTotal() const {
       return _bins.size();
     }
-    
+
     /// Get the number of bins along X axis
     const size_t numBinsX() const {
       return _binHashSparse.second.size()/2;
@@ -215,23 +246,21 @@ namespace YODA {
       return _lowEdgeX;
     }
 
-
     /// Get the value of the highest x-edge on the axis
     const double highEdgeX() const {
       return _highEdgeX;
     }
-
 
     /// Get the value of the lowest y-edge on the axis
     const double lowEdgeY() const {
       return _lowEdgeY;
     }
 
-
     /// Get the value of the highest y-edge on the axis
     const double highEdgeY() const {
       return _highEdgeY;
     }
+
 
     /// Get the bins (non-const version)
     Bins& bins() {
@@ -244,9 +273,15 @@ namespace YODA {
     }
 
     /// Get the outflows (const version)
+    vector<vector<Dbn2D> >& outflows() {
+      return _outflows;
+    }
+
+    /// Get the outflows (const version)
     const vector<vector<Dbn2D> >& outflows() const {
       return _outflows;
     }
+
 
     /// Get the bin with a given index (non-const version)
     BIN& bin(size_t index) {
@@ -275,6 +310,7 @@ namespace YODA {
       else throw RangeError("No bin found!!");
     }
 
+
     /// Get a bin at given coordinates (non-const version)
     BIN& binByCoord(pair<double, double>& coords) {
       return binByCoord(coords.first, coords.second);
@@ -286,15 +322,16 @@ namespace YODA {
     }
 
 
-    /// Get a total distribution (non-const version)
+    /// Get the total distribution (non-const version)
     Dbn2D& totalDbn() {
       return _dbn;
     }
 
-    /// Get a total distribution (const version)
+    /// Get the total distribution (const version)
     const Dbn2D& totalDbn() const {
       return _dbn;
     }
+
 
     /// @brief Bin index finder
     ///
@@ -309,21 +346,18 @@ namespace YODA {
       return -1;
     }
 
-
-    /// Reset the axis statistics
-    void reset()
-    {
-      _dbn.reset();
-      for (size_t i = 0; i < _bins.size(); ++i) {
-        _bins[i].reset();
-      }
-    }
+    //@}
 
 
-    /// @brief Axis scaler
-    /// Scales the axis with a given scale. If no scale is given, assumes
-    /// identity transform.
-    void scaleXY(double scaleX = 1.0, double scaleY = 1.0) {
+    /// @name Scaling operations
+    //@{
+
+    /// @brief Rescale the axes
+    ///
+    /// Scales the axis with a given scale.
+    /// @todo This is far too big to be inline: move it to the .cc
+    /// @todo Add a specific check for a scaling of 1.0, to avoid doing work when no scaling is wanted.
+    void scaleXY(double scaleX, double scaleY) {
       // Two loops are put on purpose, just to protect
       // against improper _binHashSparse
       for (size_t i = 0; i < _binHashSparse.first.size(); ++i) {
@@ -363,6 +397,7 @@ namespace YODA {
 
 
     /// Scales the bin weights
+    /// @todo This is, I think, a bit too big to be inline: move it to the .cc
     void scaleW(double scalefactor) {
       _dbn.scaleW(scalefactor);
       for(size_t i = 0; i < _outflows.size(); ++i) {
@@ -370,11 +405,12 @@ namespace YODA {
           _outflows[i][j].scaleW(scalefactor);
         }
       }
-
+      /// @todo Use foreach for situations like this
       for (size_t i = 0; i < _bins.size(); ++i) {
         _bins[i].scaleW(scalefactor);
       }
     }
+
     //@}
 
 
@@ -441,8 +477,9 @@ namespace YODA {
       _outflows[7].resize(_binHashSparse.first.size());
 
     }
-    
+
     /// Outflow filler
+    /// @todo This is far too big to be inline: move it to the .cc
     void _fillOutflows(double x, double y, double weight) {
       if(x < _lowEdgeX && y > _highEdgeY) _outflows[0][0].fill(x, y, weight);
       else if(x > _lowEdgeX && x < _highEdgeX && y > _highEdgeY)
@@ -472,12 +509,13 @@ namespace YODA {
     }
 
     /// @brief Checks if our bins form a grid.
+    ///
     /// This function uses a neat property of _binHashSparse.
     /// If it is containing a set of edges forming a grid without
     /// gaps in the middle it will have the same number of edges in the
     /// inner subcaches and half of this amount in the outer (grid boundary)
     /// subcaches. This makes _isGrid() a very, very fast function.
-    /// @todo Is the name appropriate? Should it be private?
+    /// @todo This is far too big to be inline: move it to the .cc
     bool _isGrid() const {
 
       /// Check if the number of edges parallel to X axis
@@ -528,6 +566,8 @@ namespace YODA {
     /// to be needed, as edges are not generated by a user.
     ///
     /// This is also a perfect place to parallelize, if required.
+    ///
+    /// @todo This is far too big to be inline: move it to the .cc
     bool _validateEdge(vector<Segment>& edges) {
       /// Setting the return variable. True means that no cuts were detected.
       bool ret = true;
@@ -566,6 +606,9 @@ namespace YODA {
     /// but because it returns the index of an element in a vector,
     /// it is easier to use in our case than the STL implementation
     /// that returns a pointer at the element.
+    ///
+    /// @todo This is far too big to be inline: move it to the .cc
+    /// @todo Does this actually have to be a member function? Isn't it just a function?
     size_t _binaryS(Utils::cachedvector<EdgeCollection>& toSearch,
                     double value, size_t lower, size_t higher) {
       // Just a check if such degenerate situation happens
@@ -602,6 +645,9 @@ namespace YODA {
     /// that edges can cut one another only on right angles
     /// to the highest extent. The inner workings are explained
     /// in the comments placed in the function body.
+    ///
+    /// @todo Explain what "cuts" are -- this is not obvious
+    /// @todo This is far too big to be inline: move it to the .cc
     bool _findCutsX(Segment& edge) {
       // Look up the limits of search in the _binHashSparse
       // structure. We are not interested in the vertical edges
@@ -632,6 +678,13 @@ namespace YODA {
     /// @brief Function that finds cuts of vertical edges
     ///
     /// For a detailed description, see the documentation for _findCutsX().
+    ///
+    /// @todo Explain what "cuts" are -- this is not obvious
+    ///
+    /// @todo This is far too big to be inline: move it to the .cc
+    ///
+    /// @todo Can the code for "cut" finding be abstracted to work in both
+    /// directions, to avoid writing (and maintaining) it twice?
     bool _findCutsY(Segment& edge) {
       size_t i = _binaryS(_binHashSparse.first, edge.first.second, 0, _binHashSparse.first.size());
       size_t end = _binaryS(_binHashSparse.first, edge.second.second, 0, _binHashSparse.first.size());
@@ -655,6 +708,8 @@ namespace YODA {
     /// had failed the check. If this is needed such additional information
     /// can be readily implemented.
     void _dropEdge(vector<Segment>& edges) {
+      /// @todo WTF?! Finish what you start! Does this actually need to exist?
+      assert(0 && "Unimplemented :(");
       std::cerr << "A set of edges was dropped." << endl;
     }
 
@@ -665,6 +720,8 @@ namespace YODA {
     /// to properly add a bin. Specifially edges are added to
     /// the edge cache (_binHashSparse) and a bin is created from
     /// those edges.
+    ///
+    /// @todo This is far too large to be inline: move to the .cc
     void _addEdge(vector<Segment> edges, pair<Utils::cachedvector<EdgeCollection>,
                   Utils::cachedvector<EdgeCollection> >& binHash, bool addBin = true) {
       // Check if there was no mistake made when adding segments to a vector.
@@ -745,6 +802,8 @@ namespace YODA {
     /// Check if the orientation of an edge is proper
     /// for the rest of the algorithm to work on, and if it is not
     /// fix it.
+    ///
+    /// @todo This is arguably too large to be inline: move to the .cc?
     void _fixOrientation(Segment& edge) {
       if (fuzzyEquals(edge.first.first, edge.second.first)) {
         if (edge.first.second > edge.second.second) {
@@ -769,6 +828,8 @@ namespace YODA {
     ///
     /// It accepts two extremal points of a rectangle (top-right and
     /// bottom-left) as input.
+    ///
+    /// @todo This is far too large to be inline: move to the .cc
     void _mkAxis(const vector<Segment>& binLimits) {
 
       // For each of the rectangles
@@ -814,6 +875,8 @@ namespace YODA {
     /// time we need the limits of the plot, there are caches set up. This
     /// function regenerates them. It should be run after any change is made to
     /// bin layout.
+    ///
+    /// @todo This is too large to be inline: move to the .cc
     void _regenDelimiters() {
       double highEdgeX = numeric_limits<double>::min();
       double highEdgeY = numeric_limits<double>::min();
@@ -834,18 +897,24 @@ namespace YODA {
       _highEdgeY = highEdgeY;
     }
 
+
   private:
 
     /// Bins contained in this histogram
     Bins _bins;
 
-    /// Underflow distribution
+    /// Overflow distributions
+    ///
+    /// @todo Explain how the vector structure works!
     vector<vector<Dbn2D> > _outflows;
 
     /// The total distribution
+    ///
+    /// @todo This needs to be a templated DBN type
     Dbn2D _dbn;
 
     /// @brief Bin hash structure
+    ///
     /// First in pair is holding the horizontal edges indexed by first.first
     /// which is an y coordinate. The last pair specifies x coordinates (begin, end) of
     /// the horizontal edge.
