@@ -6,24 +6,12 @@ NOW
 * Check if the weight2 treatment in Dbn1D is really correct: we're currently
   multiplying it by sign(w). Hmm. (AB)
 
-* Rebinning: merges of n adjacent bins
-  (on widths or on bin groups?) (AB for 1D)
-  MK for 2D: done
+* Rebinning: merges of n adjacent bins (AB for 1D)
 
 * Rebinning: global rebinning by integer factor(s) (AB for 1D, MICHAL for 2D)
-
-* Remove the "using namespace std" from the Bin2D.h and Axis2D.h headers: you
-  should avoid publicly using namespaces in API headers since it pollutes the
-  global namespace for any users of the API. (done) (MICHAL)
-
-* Completely hide the Bin2D::isReal from public view: this is absolutely an
-  internal implementation detail and should not be public in any way. I'm also
-  not the only person to think that real/imaginary are *very* confusing terms
-  for this, given that they have a very different and more familiar meaning to
-  all of us: can better names be chosen? "Ghost bins" with an _isGhost()
-  internal should be enough. Hopefully there's no need to invent a term for
-  non-ghost bins, since that is just covered by !_isGhost()... (MICHAL)
-  MK: Done
+  Different rebinning factors for X and Y in 2D? Let's implement for 1D first,
+  to define the conventions for handling the fact that this usually won't be
+  exactly possible.
 
 * Similarly, is there any reason to expose the isGriddy function publicly on
   Axis2D and Histo2D? Can't it just be a private _isGrid()? (MICHAL)
@@ -43,12 +31,6 @@ NOW
   MK: done -- to be reviewed.
   AB: Profile1D slices still needed. If outflows now work on Histo2D, they
   should be included in these slicings.
-
-* Implement hierarchy-cascading state-setting constructor for Histo2D. (MICHAL)
-  MK: done
-  AB: You still need to add state-setting for the total dbn and the outflows: at
-  the moment this only sets the state on the Bin2Ds.
-  MK: Done
 
 * Use state-setting constructors for Histo and Profile persistency via the
   Reader classes. (HH)
