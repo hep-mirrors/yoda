@@ -44,8 +44,8 @@ namespace YODA {
     //@{
 
     /// A fill() function accepting coordinates as spearate numbers
-    void fill(double X, double Y, double weight=1.0) {
-        _dbn.fill(X, Y, weight);
+    void fill(double x, double y, double weight=1.0) {
+        _dbn.fill(x, y, weight);
     }
 
     /// A fill() function accepting the coordinates as std::pair
@@ -100,7 +100,8 @@ namespace YODA {
     /// @name Transformers
     //@{
 
-    /// @brief Transformer taking X as a primary axis of ProfileBin1D
+    /// @brief Transformer taking x as the primary axis of ProfileBin1D
+    /// @todo Need to think about the name, and clarify what "primary axis" means
     ProfileBin1D transformX() {
       Dbn1D dbny(_dbn.numEntries(), _dbn.sumW(), _dbn.sumW2(), _dbn.sumWY(), _dbn.sumWY2());
       Dbn1D dbnx(_dbn.numEntries(), _dbn.sumW(), _dbn.sumW2(), _dbn.sumWX(), _dbn.sumWX2());
@@ -109,6 +110,8 @@ namespace YODA {
       return ret;
     }
 
+    /// @brief Transformer taking y as the primary axis of ProfileBin1D
+    /// @todo Need to think about the name, and clarify what "primary axis" means
     ProfileBin1D transformY() {
       Dbn1D dbny(_dbn.numEntries(), _dbn.sumW(), _dbn.sumW2(), _dbn.sumWY(), _dbn.sumWY2());
       Dbn1D dbnx(_dbn.numEntries(), _dbn.sumW(), _dbn.sumW2(), _dbn.sumWX(), _dbn.sumWX2());

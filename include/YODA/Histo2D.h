@@ -295,7 +295,7 @@ namespace YODA {
     /// @todo It's not really *at* the specified y coord: it's for the corresponding bin row.
     /// @todo Change the name!
     Histo1D cutterX(double atY, const std::string& path="", const std::string& title="") {
-      if (!_axis.isGrid) throw GridError("I cannot cut a Histo2D that is not a grid!");
+      if (!_axis.isGrid()) throw GridError("Attempt to cut a Histo2D that is not a grid!");
 
       if (atY < lowEdgeY() || atY > highEdgeY()) throw RangeError("Y is outside the grid");
       vector<HistoBin1D> tempBins;
@@ -315,7 +315,7 @@ namespace YODA {
       Dbn2D overflow;
       overflow += outflows[2][0]; overflow += outflows[4][0];
       for(size_t i=0; i < outflows[3].size(); ++i) overflow += outflows[3][i];
-      
+
       return Histo1D(tempBins, _axis.totalDbn().transformX(), underflow.transformX(), overflow.transformX(), path, title);
 
     }
@@ -327,7 +327,7 @@ namespace YODA {
     /// @todo It's not really *at* the specified x coord: it's for the corresponding bin row.
     /// @todo Change the name!
     Histo1D cutterY(double atX, const std::string& path="", const std::string& title="") {
-      if (!_axis.isGrid) throw GridError("I cannot cut a Histo2D that is not a grid!");
+      if (!_axis.isGrid()) throw GridError("Attempt to cut a Histo2D that is not a grid!");
 
       if (atX < lowEdgeX() || atX > highEdgeX()) throw RangeError("X is outside the grid");
       vector<HistoBin1D> tempBins;
@@ -349,19 +349,19 @@ namespace YODA {
       for(size_t i=0; i < outflows[5].size(); ++i) overflow += outflows[5][i];
 
       Dbn2D total = _axis.totalDbn();
-      
+
       /// Making sure that we rotate our distributions, as we are cutting paralell to Y axis now
       total.flipXY();
       underflow.flipXY();
       overflow.flipXY();
-      
+
       return Histo1D(tempBins, total.transformX(), underflow.transformX(), overflow.transformX(), path, title);
     }
 
 
     /// @brief X-wise Profile1D creator from Histo2D
     Profile1D mkProfileX() {
-      if (!_axis.isGrid) throw GridError("Profile1D cannot be made from a histogram that is not a grid!");
+      if (!_axis.isGrid()) throw GridError("Profile1D cannot be made from a histogram that is not a grid!");
 
       vector<ProfileBin1D> prof;
       for(int i = lowEdgeX() + _axis.bin(0).midpoint().first; i < highEdgeX(); i+= _axis.bin(0).widthX()) {
@@ -371,10 +371,10 @@ namespace YODA {
           composite += _axis.binByCoord(i, j);
         }
       prof.push_back(composite.transformX());
-      }   
+      }
 
       vector<vector<Dbn2D> >& outflows = _axis.outflows();
-      
+
       /// Properly setting an underflow
       Dbn2D underflow;
       underflow += outflows[0][0]; underflow += outflows[6][0];
@@ -397,7 +397,7 @@ namespace YODA {
 
     /// @brief Y-wise Profile1D creator from Histo2D
     Profile1D mkProfileY() {
-      if (!_axis.isGrid) throw GridError("Profile1D cannot be made from a histogram that is not a grid!");
+      if (!_axis.isGrid()) throw GridError("Profile1D cannot be made from a histogram that is not a grid!");
 
       vector<ProfileBin1D> prof;
       for(int i = lowEdgeY() + _axis.bin(0).midpoint().second; i < highEdgeY(); i+= _axis.bin(0).widthY()) {
@@ -407,10 +407,10 @@ namespace YODA {
           composite += _axis.binByCoord(i, j);
         }
       prof.push_back(composite.transformY());
-      }   
+      }
 
       vector<vector<Dbn2D> >& outflows = _axis.outflows();
-      
+
       /// Properly setting an underflow
       Dbn2D underflow;
       underflow += outflows[0][0]; underflow += outflows[2][0];

@@ -23,9 +23,13 @@ namespace YODA {
   template <typename BIN, typename DBN>
   class Axis2D {
 
-    /// When edge is added to the collection it must
-    /// obey the following format. size_t specifies the bin this
-    /// edge is a member of, a pair contains a beginning and end of the edge.
+    /// @name Internal typedefs
+    /// @todo Note that none of these depend on the class template args
+    //@{
+
+    /// When an edge is added to the collection it must obey the following
+    /// format: the size_t specifies the bin this edge is a member of, and the
+    /// pair of doubles contains the beginning and end of the edge.
     typedef typename std::pair<size_t, std::pair<double,double> > Edge;
 
     /// A type being a basic substructure of _binHashSparse. It contains a indicator
@@ -33,28 +37,37 @@ namespace YODA {
     /// coordinate.
     typedef typename std::pair<double, std::vector<Edge> > EdgeCollection;
 
-    /// A simple point in 2D @todo Should Point2D be used?
+    /// A simple point in 2D
+    ///
+    /// @todo Should Point2D be used?
     typedef typename std::pair<double, double> Point;
 
     /// Segment, having a beginning and end.
     typedef typename std::pair<Point, Point> Segment;
+
+    //@}
 
 
   public:
 
     // A few helpful typedefs
     typedef BIN Bin;
-    /// The following vector holds in itself an information 
-    /// about a Bin and a state in which it is. If the state is
-    /// set to be false the bin will not be displayed and in effect
-    /// will be treated as nonexistent. The most common situation when 
-    /// such a funcionality is needed is when merging a bin. For detailed
-    /// description about what happens in such case, please refer to the
-    /// mergeBins() function ~100 lines below this point.
+
+    /// @brief The internal bin container type
+    ///
+    /// The following vector holds in itself an information about a Bin and a
+    /// state in which it is. If the state is set to be false the bin will not
+    /// be displayed and in effect will be treated as non-existent. The most
+    /// common situation when such a functionality is needed is when merging a
+    /// bin. For detailed description about what happens in such case, please
+    /// refer to the mergeBins() function.
+    ///
+    /// @todo Hmm, it is very intrusive to have this on the public interface...
+    /// I think we need to review this design. It really complicates the concept
+    /// that is just meant to be a collection of bins. This also propagates
+    /// right through to the user interface, via the pass-through typedef on Histo2D.
     typedef typename std::vector<std::pair<Bin, bool> > Bins;
 
-    /// Is it a grid?
-    bool isGrid;
 
   public:
 
@@ -62,6 +75,7 @@ namespace YODA {
     //@{
 
     /// @brief Empty constructor
+    ///
     /// Only added because it is required by SWIG.
     /// It doesn't make much sense to use it.
     /// @todo Really "required"? Eliminate the requirement in the SWIG mapping.
@@ -74,11 +88,12 @@ namespace YODA {
     /// Constructor provided with a vector of bin delimiters
     Axis2D(const vector<Segment>& binLimits) {
       _mkAxis(binLimits);
-      if(isGrid) _setOutflows();
+      if (isGrid()) _setOutflows();
     }
 
 
     /// Most standard constructor, should be self-explanatory
+    ///
     /// @todo Never say "should be self-explanatory": explain it, even if it seems obvious
     /// @todo This is too large/complex to be inline: move to the .cc
     Axis2D(size_t nbinsX, double lowerX, double upperX, size_t nbinsY, double lowerY, double upperY) {
@@ -86,7 +101,7 @@ namespace YODA {
       double coeffX = (upperX - lowerX)/(double)nbinsX;
       double coeffY = (upperY - lowerX)/(double)nbinsY;
       for (double i = lowerX; i < upperX; i += coeffX) {
-        for(double j = lowerY; j < upperY; j += coeffY) {
+        for (double j = lowerY; j < upperY; j += coeffY) {
           binLimits.push_back(make_pair(make_pair(i, j), make_pair((double)(i+coeffX), (double)(j+coeffY))));
         }
       }
@@ -113,18 +128,17 @@ namespace YODA {
         _bins[i] = bins[i];
       }
       _regenDelimiters();
-      if(isGrid) _setOutflows();
+      if (isGrid()) _setOutflows();
       _outflows = outflows;
 
       _dbn = totalDbn;
     }
 
-    /// A constructor with specified X and Y axis bin limits.
+    /// A constructor with specified x and y axis bin limits.
     Axis2D(const std::vector<double>& xedges, const std::vector<double>& yedges) {
       vector<Segment> binLimits;
-      
-      for(int i = 0; i < yedges.size() - 1; ++i) {
-        for(int j = 0; j < xedges.size() - 1; ++j) {
+      for (int i = 0; i < yedges.size() - 1; ++i) {
+        for (int j = 0; j < xedges.size() - 1; ++j) {
           binLimits.push_back(make_pair(make_pair(xedges[j], yedges[i]),
                                         make_pair(xedges[j+1], yedges[i+1])));
         }
@@ -144,30 +158,32 @@ namespace YODA {
       _binHashSparse.second.regenCache();
       _regenDelimiters();
     }
-    
+
     //@}
+
 
     /// @name Bin insertion operators
     //@{
 
     /// @brief Bin addition operator
-    /// This operator is provided a vector of limiting
-    /// points in the format required by _mkAxis().
-    /// It should be noted that there is nothing special about
-    /// the initiation stage of Axis2D, and the edges can be added
-    /// online if they meet all the requirements of non-degeneracy.
+    ///
+    /// This operator is provided a vector of limiting points in the format
+    /// required by _mkAxis().  It should be noted that there is nothing special
+    /// about the initiation stage of Axis2D, and the edges can be added online
+    /// if they meet all the requirements of non-degeneracy.
     ///
     /// Be aware that adding a Bin to an existing axis created by one of
-    /// constructors wipes out all the outflows since a concept of them is
-    /// no longer meaningful!
+    /// constructors wipes out all the outflows since a concept of them is no
+    /// longer meaningful!
     void addBin(const vector<Segment>& binLimits) {
       _mkAxis(binLimits);
       _outflows.resize(0);
     }
 
     /// @brief Bin addition operator
-    /// This operator is supplied with whe extreamal coordinates of just
-    /// one bin. It then launches the standard bin addition procedure.
+    ///
+    /// This operator is supplied with the extremal coordinates of just a new
+    /// bin, which is then constructed and added as usual.
     void addBin(double lowX, double lowY, double highX, double highY) {
       vector<Segment> coords;
       coords.push_back(make_pair(make_pair(lowX, lowY), make_pair(highX, highY)));
@@ -181,28 +197,28 @@ namespace YODA {
     //@{
 
     /// @brief Fill operator
+    ///
     /// Called when it is wanted to fill a certain position on an Axis
     int fill(double x, double y, double weight) {
-      /// Filling the total distribution
+      // Filling the total distribution
       _dbn.fill(x, y, weight);
 
-      /// Filling a bin if the coordinates point to one.
+      // Filling a bin if the coordinates point to one.
       int index = getBinIndex(x, y);
-      if(index != -1) _bins[index].first.fill(x, y, weight);
+      if (index != -1) _bins[index].first.fill(x, y, weight);
 
-      /// If coordinates point outside any of the bins and
-      /// and the outflows were properly set (i.e. we are dealing
-      /// with a grid), fill a proper outflow.
-      else if(_outflows.size() == 8) _fillOutflows(x, y, weight);
+      // If coordinates point outside any of the bins and and the outflows were
+      // properly set (i.e. we are dealing with a grid), fill a proper outflow.
+      else if (_outflows.size() == 8) _fillOutflows(x, y, weight);
 
-      /// Return an information regarding what was filled.
+      // Return an information regarding what was filled.
       return index;
     }
 
 
-    /// @brief Bin merging
-    /// Try to merge a certain amount of bins
-    /// @todo This is far too big to be inline: move it to the .cc
+    /// Merge a given range of bins, given the bin IDs
+    ///
+    /// @todo This is far too big to be inline: move it to the bottom of this file, or perhaps to a .cc
     void mergeBins(size_t from, size_t to) {
       HistoBin2D& start = bin(from);
       HistoBin2D& end = bin(to);
@@ -239,6 +255,9 @@ namespace YODA {
       _binHashSparse.second.regenCache();
       _regenDelimiters();
     }
+
+
+    /// @todo Add: Merge a given range of bins, given the bin x,y coordinates.
 
 
     /// Reset the axis statistics
@@ -370,43 +389,48 @@ namespace YODA {
     /// Looks through all the bins to see which one contains the point of
     /// interest.
     const int getBinIndex(double coordX, double coordY) const {
-      /// In case we are just operating on a regular grid
-      if(isGrid) {  
-        coordX += 0.00000000001; coordY += 0.00000000001;
-             size_t indexY = (*_binHashSparse.first._cache.lower_bound(approx(coordY))).second;
- 
-             if(indexY < _binHashSparse.first.size()) {
-                 for(unsigned int i = 0;  i < _binHashSparse.first[indexY].second.size(); i++){
-                     if(_binHashSparse.first[indexY].second[i].second.first < coordX &&
-                        _binHashSparse.first[indexY].second[i].second.second > coordX){
-                         size_t indexX = (*_binHashSparse.second._cache.lower_bound(approx(coordX))).second;
-                         if(indexX < _binHashSparse.second.size()){
-                             for(unsigned int j=0; j < _binHashSparse.second[indexX].second.size(); j++) {
-                                 if(_binHashSparse.second[indexX].second[j].second.first < coordY &&
-                                    (_binHashSparse.second[indexX].second[j].second.second > coordY) &&
-                                    (_binHashSparse.second[indexX].second[j].first ==
-                                    _binHashSparse.first[indexY].second[i].first))
-                                     return _binHashSparse.second[indexX].second[j].first;
-                             }
-                         }
-                     }
-                 }
-             }
-             return -1;
+      // In case we are just operating on a regular grid
+      if (isGrid()) {
+        /// @todo WTF?! This is bad. No magic numbers! Why would these be unreasonably small offsets?
+        coordX += 0.00000000001;
+        coordY += 0.00000000001;
+        size_t indexY = (*_binHashSparse.first._cache.lower_bound(approx(coordY))).second;
 
-      
-      }
-
-      /// In case we have something more complicated
-      else {
-        for (size_t i = 0; i < _bins.size(); ++i) {
-          if (_bins[i].first.xMin() <= coordX && _bins[i].first.xMax() >= coordX &&
-              _bins[i].first.yMin() <= coordY && _bins[i].first.yMax() >= coordY &&
-              _bins[i].second) return i;
+        if (indexY < _binHashSparse.first.size()) {
+          for (unsigned int i = 0;  i < _binHashSparse.first[indexY].second.size(); i++){
+            if (_binHashSparse.first[indexY].second[i].second.first < coordX &&
+                _binHashSparse.first[indexY].second[i].second.second > coordX){
+              size_t indexX = (*_binHashSparse.second._cache.lower_bound(approx(coordX))).second;
+              if (indexX < _binHashSparse.second.size()){
+                for (unsigned int j=0; j < _binHashSparse.second[indexX].second.size(); j++) {
+                  if (_binHashSparse.second[indexX].second[j].second.first < coordY &&
+                      (_binHashSparse.second[indexX].second[j].second.second > coordY) &&
+                      (_binHashSparse.second[indexX].second[j].first ==
+                       _binHashSparse.first[indexY].second[i].first))
+                    return _binHashSparse.second[indexX].second[j].first;
+                }
+              }
+            }
+          }
         }
         return -1;
       }
+
+      // In case we have something more complicated
+      for (size_t i = 0; i < _bins.size(); ++i) {
+        if (_bins[i].first.xMin() <= coordX && _bins[i].first.xMax() >= coordX &&
+            _bins[i].first.yMin() <= coordY && _bins[i].first.yMax() >= coordY &&
+            _bins[i].second) return i;
+      }
+      return -1;
     }
+
+
+    /// Check if the axis has a grid structure or not
+    bool isGrid() const {
+      return _isGrid;
+    }
+
     //@}
 
 
@@ -416,7 +440,7 @@ namespace YODA {
     /// @brief Rescale the axes
     ///
     /// Scales the axis with a given scale.
-    /// @todo This is far too big to be inline: move it to the .cc
+    /// @todo This is far too big to be inline: move it to the bottom of this file, or perhaps to a .cc
     /// @todo Add a specific check for a scaling of 1.0, to avoid doing work when no scaling is wanted.
     void scaleXY(double scaleX, double scaleY) {
       // Two loops are put on purpose, just to protect
@@ -446,8 +470,8 @@ namespace YODA {
       }
 
       _dbn.scaleXY(scaleX, scaleY);
-      for(size_t i = 0; i < _outflows.size(); ++i) {
-        for(size_t j =0; j < _outflows[i].size(); ++j) {
+      for (size_t i = 0; i < _outflows.size(); ++i) {
+        for (size_t j =0; j < _outflows[i].size(); ++j) {
           _outflows[i][j].scaleXY(scaleX, scaleY);
         }
       }
@@ -458,11 +482,11 @@ namespace YODA {
 
 
     /// Scales the bin weights
-    /// @todo This is, I think, a bit too big to be inline: move it to the .cc
+    /// @todo This is, I think, a bit too big to be inline: move it to the bottom of this file, or perhaps to a .cc
     void scaleW(double scalefactor) {
       _dbn.scaleW(scalefactor);
-      for(size_t i = 0; i < _outflows.size(); ++i) {
-        for(size_t j = 0; j < _outflows[i].size(); ++j) {
+      for (size_t i = 0; i < _outflows.size(); ++i) {
+        for (size_t j = 0; j < _outflows[i].size(); ++j) {
           _outflows[i][j].scaleW(scalefactor);
         }
       }
@@ -481,13 +505,13 @@ namespace YODA {
     /// Equality operator
     /// @todo TEST!!11!
     bool operator == (const Axis2D& other) const {
-      if(isGrid) {
-        for(size_t i = 0; i < _bins.size(); ++i) {
+      if (isGrid()) {
+        for (size_t i = 0; i < _bins.size(); ++i) {
           /// Omit ghost bins while checking
-          if(!_bins[i].second) continue;
-          int index=other.getBinIndex(_bins[i].first.midpoint().first, _bins[i].first.midpoint().second);
-          if(index != -1){
-            if(other.bin(index) != _bins[i].first) return false;
+          if (!_bins[i].second) continue;
+          int index = other.getBinIndex(_bins[i].first.midpoint().first, _bins[i].first.midpoint().second);
+          if (index != -1){
+            if (other.bin(index) != _bins[i].first) return false;
           }
           else return false;
         }
@@ -496,10 +520,12 @@ namespace YODA {
       else return _binHashSparse == other._binHashSparse;
     }
 
+
     /// Non-equality operator
     bool operator != (const Axis2D& other) const {
       return ! operator == (other);
     }
+
 
     /// @brief Addition operator
     /// At this stage it is only possible to add histograms with the same binnings.
@@ -552,29 +578,30 @@ namespace YODA {
 
     }
 
+
     /// Outflow filler
-    /// @todo This is far too big to be inline: move it to the .cc
+    /// @todo This is far too big to be inline: move it to the bottom of this file, or perhaps to a .cc
     void _fillOutflows(double x, double y, double weight) {
-      if(x < _lowEdgeX && y > _highEdgeY) _outflows[0][0].fill(x, y, weight);
-      else if(x > _lowEdgeX && x < _highEdgeX && y > _highEdgeY)
+      if (x < _lowEdgeX && y > _highEdgeY) _outflows[0][0].fill(x, y, weight);
+      else if (x > _lowEdgeX && x < _highEdgeX && y > _highEdgeY)
       {
         size_t element = _binaryS(_binHashSparse.second, x, 0, _binHashSparse.second.size());
         _outflows[1][element].fill(x, y, weight);
       }
-      else if(x > _highEdgeX && y > _highEdgeY) _outflows[2][0].fill(x, y, weight);
-      else if(x > _highEdgeX && y > _lowEdgeY && y < _highEdgeY)
+      else if (x > _highEdgeX && y > _highEdgeY) _outflows[2][0].fill(x, y, weight);
+      else if (x > _highEdgeX && y > _lowEdgeY && y < _highEdgeY)
       {
         size_t element = _binaryS(_binHashSparse.first, y, 0, _binHashSparse.first.size());
         _outflows[3][element].fill(x, y, weight);
       }
-      else if(x > _highEdgeX && y < _lowEdgeY) _outflows[4][0].fill(x, y, weight);
-      else if(x > _lowEdgeX && x < _highEdgeX && y < _lowEdgeY)
+      else if (x > _highEdgeX && y < _lowEdgeY) _outflows[4][0].fill(x, y, weight);
+      else if (x > _lowEdgeX && x < _highEdgeX && y < _lowEdgeY)
       {
         size_t element = _binaryS(_binHashSparse.second, x, 0, _binHashSparse.second.size());
         _outflows[5][element].fill(x, y, weight);
       }
-      else if(x < _lowEdgeX && y < _lowEdgeY) _outflows[6][0].fill(x, y, weight);
-      else if(x < _lowEdgeX && y > _lowEdgeY && y < _highEdgeY)
+      else if (x < _lowEdgeX && y < _lowEdgeY) _outflows[6][0].fill(x, y, weight);
+      else if (x < _lowEdgeX && y > _lowEdgeY && y < _highEdgeY)
       {
         size_t element = _binaryS(_binHashSparse.first, y, 0, _binHashSparse.first.size());
         _outflows[7][element].fill(x, y, weight);
@@ -584,46 +611,44 @@ namespace YODA {
 
     /// @brief Checks if our bins form a grid.
     ///
-    /// This function uses a neat property of _binHashSparse.
-    /// If it is containing a set of edges forming a grid without
-    /// gaps in the middle it will have the same number of edges in the
-    /// inner subcaches and half of this amount in the outer (grid boundary)
-    /// subcaches. This makes isGrid() a very, very fast function.
-    /// @todo This is far too big to be inline: move it to the .cc
+    /// This function uses a neat property of _binHashSparse.  If it is
+    /// containing a set of edges forming a grid without gaps in the middle it
+    /// will have the same number of edges in the inner subcaches and half of
+    /// this amount in the outer (grid boundary) subcaches. This makes isGrid()
+    /// a very, very fast function.
+    ///
+    /// @todo This is far too big to be inline: move it to the bottom of this file, or perhaps to a .cc
     void _genGridCache() {
-
-      /// Check if the number of edges parallel to X axis
-      /// is proper in every subcache.
+      // Check if the number of edges parallel to the x axis is proper in every
+      // subcache.
       size_t sizeX = _binHashSparse.first[0].second.size();
       for (size_t i = 1; i < _binHashSparse.first.size(); ++i) {
         if (i == _binHashSparse.first.size() - 1) {
           if (_binHashSparse.first[i].second.size() != sizeX) {
-            isGrid = false;
+            _isGrid = false;
           }
         }
         else if (_binHashSparse.first[i].second.size() != 2*sizeX) {
-          isGrid = false;
+          _isGrid = false;
         }
       }
 
-      /// Do the same for edges parallel to Y axis.
+      // Do the same for edges parallel to the y axis.
       size_t sizeY = _binHashSparse.second[0].second.size();
       for (size_t i=1; i < _binHashSparse.second.size(); ++i) {
         if (i != _binHashSparse.second.size() - 1) {
           if (2*sizeY != _binHashSparse.second[i].second.size()) {
-            isGrid = false;
+            _isGrid = false;
           }
         }
         else if (_binHashSparse.second[i].second.size() != sizeY) {
-          isGrid = false;
+          _isGrid = false;
         }
       }
 
-      /// If everything is proper, announce it.
-      isGrid = true;
+      // If everything is proper, announce it.
+      _isGrid = true;
     }
-
-
 
 
     /// @brief Segment validator function
@@ -641,35 +666,37 @@ namespace YODA {
     ///
     /// This is also a perfect place to parallelize, if required.
     ///
-    /// @todo This is far too big to be inline: move it to the .cc
+    /// @todo This is far too big to be inline: move it to the bottom of this file, or perhaps to a .cc
+    ///
+    /// @todo Is this really a method? Can't it just be a function?
     bool _validateEdge(vector<Segment>& edges) {
-      /// Setting the return variable. True means that no cuts were detected.
+      // Setting the return variable. True means that no cuts were detected.
       bool ret = true;
 
-      /// Looping over all the edges provided
+      // Looping over all the edges provided
       for (size_t i = 0; i < edges.size(); ++i) {
-        /// If the X coordinate of the starting point is the same
-        /// as X coordinate of the ending one, checks if there are cuts
-        /// on this vertical segment.
+        // If the X coordinate of the starting point is the same
+        // as X coordinate of the ending one, checks if there are cuts
+        // on this vertical segment.
         if (fuzzyEquals(edges[i].first.first, edges[i].second.first)) {
           ret = _findCutsY(edges[i]);
         }
 
         /// Check if the segment is horizontal and is it cutting any bin that already exists
-        else if(fuzzyEquals(edges[i].first.second, edges[i].second.second)) {
+        else if (fuzzyEquals(edges[i].first.second, edges[i].second.second)) {
           ret =  _findCutsX(edges[i]);
         }
 
-        /// This is a check that discards the bin if it is not a rectangle
-        /// composed of vertical and horizontal segments.
+        // This is a check that discards the bin if it is not a rectangle
+        // composed of vertical and horizontal segments.
         else {
           ret = false;
         }
 
-        /// If a cut was detected, return false immediately.
+        // If a cut was detected, return false immediately.
         if (!ret) return false;
       }
-      /// If no cuts were detected in any of the edges, tell the launching function about this
+      // If no cuts were detected in any of the edges, tell the launching function about this
       return true;
     }
 
@@ -681,7 +708,7 @@ namespace YODA {
     /// it is easier to use in our case than the STL implementation
     /// that returns a pointer at the element.
     ///
-    /// @todo This is far too big to be inline: move it to the .cc
+    /// @todo This is far too big to be inline: move it to the bottom of this file, or perhaps to a .cc
     /// @todo Does this actually have to be a member function? Isn't it just a function?
     size_t _binaryS(Utils::cachedvector<EdgeCollection>& toSearch,
                     double value, size_t lower, size_t higher) {
@@ -704,7 +731,7 @@ namespace YODA {
       // Check if the value is somewhere in-between an element at the position
       // in question and an element at a lower position. If so, return an index
       // to the current positon.
-      if(value >= toSearch[where-1].first) return where;
+      if (value >= toSearch[where-1].first) return where;
 
       // If none of the above occurs, the value must be smaller that the element
       // at the current position. In such case, launch the search on half of the
@@ -721,7 +748,7 @@ namespace YODA {
     /// in the comments placed in the function body.
     ///
     /// @todo Explain what "cuts" are -- this is not obvious
-    /// @todo This is far too big to be inline: move it to the .cc
+    /// @todo This is far too big to be inline: move it to the bottom of this file, or perhaps to a .cc
     bool _findCutsX(Segment& edge) {
       // Look up the limits of search in the _binHashSparse
       // structure. We are not interested in the vertical edges
@@ -744,7 +771,7 @@ namespace YODA {
           }
         }
       }
-      /// If none of the existing edges is cutting this edge, announce it
+      // If none of the existing edges is cutting this edge, announce it
       return true;
     }
 
@@ -755,7 +782,7 @@ namespace YODA {
     ///
     /// @todo Explain what "cuts" are -- this is not obvious
     ///
-    /// @todo This is far too big to be inline: move it to the .cc
+    /// @todo This is far too big to be inline: move it to the bottom of this file, or perhaps to a .cc
     ///
     /// @todo Can the code for "cut" finding be abstracted to work in both
     /// directions, to avoid writing (and maintaining) it twice?
@@ -775,12 +802,12 @@ namespace YODA {
       return true;
     }
 
-    /// @brief Bin adder
+
+    /// @brief Bin inserter
     ///
-    /// It contains all the commands that need to executed
-    /// to properly add a bin. Specifially edges are added to
-    /// the edge cache (_binHashSparse) and a bin is created from
-    /// those edges.
+    /// It contains all the commands that need to executed to properly add a
+    /// bin. Specifically edges are added to the edge cache (_binHashSparse) and
+    /// a bin is created from those edges.
     ///
     /// @todo This is far too large to be inline: move to the .cc
     void _addEdge(vector<Segment> edges, pair<Utils::cachedvector<EdgeCollection>,
@@ -987,6 +1014,9 @@ namespace YODA {
 
     /// Low/high edges
     double _highEdgeX, _highEdgeY, _lowEdgeX, _lowEdgeY;
+
+    /// Flag to mark if this histogram has a grid structure or not
+    bool _isGrid;
 
   };
 
