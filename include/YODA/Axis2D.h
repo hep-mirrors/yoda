@@ -90,7 +90,7 @@ namespace YODA {
     }
 
 
-    /// @brief A bin constructor
+    /// @brief A constructor accepting a list of bins and all the outflows
     ///
     /// Creates an Axis2D from existing bins
     /// @todo This is too large to be inline: move to the .cc
@@ -113,6 +113,19 @@ namespace YODA {
 
       _dbn = totalDbn;
     }
+
+    /// A copy constructor
+    Axis2D(const Axis2D& a) {
+      _bins = a._bins;
+      _dbn = a._dbn;
+      _outflows = a._outflows;
+
+      _binHashSparse.first.regenCache();
+      _binHashSparse.second.regenCache();
+      _regenDelimiters();
+    }
+
+
 
     //@}
 
