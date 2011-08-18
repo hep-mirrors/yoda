@@ -31,7 +31,9 @@ NOW
   exception if binnings are not complete grids. (MICHAL)
   MK: done -- to be reviewed.
   AB: Profile1D slices still needed. If outflows now work on Histo2D, they
-  should be included in these slicings.
+      should be included in these slicings.
+  MK: Profile1D done. Outflows done. Needs a check if the outflows for Histo1D are
+      done in the right way.
 
 * Use state-setting constructors for Histo and Profile persistency via the
   Reader classes. (HH)
