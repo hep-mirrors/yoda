@@ -24,7 +24,7 @@ namespace YODA {
   class Scatter3D;
 
   /// Convenience typedef
-  typedef Axis2D<HistoBin2D> Histo2DAxis;
+  typedef Axis2D<HistoBin2D, Dbn2D> Histo2DAxis;
 
 
   /// A  one-dimensional histogram.
@@ -445,7 +445,7 @@ namespace YODA {
     //@{
 
     /// Definition of bin edges and contents
-    Axis2D<HistoBin2D> _axis;
+    Axis2D<HistoBin2D, Dbn2D> _axis;
 
     //@}
 

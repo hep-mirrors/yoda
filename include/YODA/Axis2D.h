@@ -20,7 +20,7 @@ namespace YODA {
   /// on 2D bins (like creating axis, adding, searching, testing).
   ///
   /// @todo This needs an extra DBN template argument, cf. Axis1D
-  template <typename BIN>
+  template <typename BIN, typename DBN>
   class Axis2D {
 
     /// When edge is added to the collection it must
@@ -100,8 +100,8 @@ namespace YODA {
     /// Creates an Axis2D from existing bins
     /// @todo This is too large to be inline: move to the .cc
     Axis2D(const Bins& bins,
-           const std::vector<std::vector<Dbn2D> >& outflows,
-           const Dbn2D& totalDbn)
+           const std::vector<std::vector<DBN> >& outflows,
+           const DBN& totalDbn)
     {
       vector<Segment> binLimits;
       for (size_t i = 0; i < bins.size(); ++i) {
@@ -305,12 +305,12 @@ namespace YODA {
     }
 
     /// Get the outflows (non-const version)
-    vector<vector<Dbn2D> >& outflows() {
+    vector<vector<DBN> >& outflows() {
       return _outflows;
     }
 
     /// Get the outflows (const version)
-    const vector<vector<Dbn2D> >& outflows() const {
+    const vector<vector<DBN> >& outflows() const {
       return _outflows;
     }
 
@@ -355,12 +355,12 @@ namespace YODA {
 
 
     /// Get the total distribution (non-const version)
-    Dbn2D& totalDbn() {
+    DBN& totalDbn() {
       return _dbn;
     }
 
     /// Get the total distribution (const version)
-    const Dbn2D& totalDbn() const {
+    const DBN& totalDbn() const {
       return _dbn;
     }
 
@@ -504,7 +504,7 @@ namespace YODA {
     /// @brief Addition operator
     /// At this stage it is only possible to add histograms with the same binnings.
     /// @todo Compatible but not equal binning to come soon.
-    Axis2D<BIN>& operator += (const Axis2D<BIN>& toAdd) {
+    Axis2D<BIN, DBN>& operator += (const Axis2D<BIN, DBN>& toAdd) {
       if (*this != toAdd) {
         throw LogicError("YODA::Histo1D: Cannot add axes with different binnings.");
       }
@@ -520,7 +520,7 @@ namespace YODA {
     ///
     /// At this stage it is only possible to subtract histograms with the same binnings.
     /// @todo Compatible but not equal binning to come soon.
-    Axis2D<BIN>& operator -= (const Axis2D<BIN>& toSubtract) {
+    Axis2D<BIN, DBN>& operator -= (const Axis2D<BIN, DBN>& toSubtract) {
       if (*this != toSubtract) {
         throw LogicError("YODA::Histo1D: Cannot add axes with different binnings.");
       }
@@ -967,12 +967,12 @@ namespace YODA {
     /// Overflow distributions
     ///
     /// @todo Explain how the vector structure works!
-    vector<vector<Dbn2D> > _outflows;
+    vector<vector<DBN> > _outflows;
 
     /// The total distribution
     ///
     /// @todo This needs to be a templated DBN type
-    Dbn2D _dbn;
+    DBN _dbn;
 
     /// @brief Bin hash structure
     ///
@@ -995,19 +995,19 @@ namespace YODA {
   //@{
 
   /// Addition operator
-  template <typename BIN>
-  inline Axis2D<BIN> operator + (const Axis2D<BIN>& first, const Axis2D<BIN>& second) {
-    Axis2D<BIN> tmp = first;
+  template <typename BIN, typename DBN>
+  inline Axis2D<BIN, DBN> operator + (const Axis2D<BIN, DBN>& first, const Axis2D<BIN, DBN>& second) {
+    Axis2D<BIN, DBN> tmp = first;
     tmp += second;
     return tmp;
   }
 
 
   /// Subtraction operator
-  template <typename BIN>
-  inline Axis2D<BIN> operator - (const Axis2D<BIN>& first, const Axis2D<BIN>& second)
+  template <typename BIN, typename DBN>
+  inline Axis2D<BIN, DBN> operator - (const Axis2D<BIN, DBN>& first, const Axis2D<BIN, DBN>& second)
   {
-    Axis2D<BIN> tmp = first;
+    Axis2D<BIN, DBN> tmp = first;
     tmp -= second;
     return tmp;
   }
