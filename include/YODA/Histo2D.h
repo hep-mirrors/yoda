@@ -73,7 +73,7 @@ namespace YODA {
 
     /// @brief State-setting constructor
     /// Mainly intended for internal persistency use.
-    Histo2D(const std::vector<HistoBin2D>& bins,
+    Histo2D(const std::vector<std::pair<HistoBin2D, bool> >& bins,
             const std::vector<std::vector<Dbn2D> >& outflows,
             const Dbn2D& totalDbn,
             const std::string& path="", const std::string& title="")
@@ -155,23 +155,23 @@ namespace YODA {
     }
 
     /// Access the bin vector (non-const version)
-    std::vector<YODA::HistoBin2D>& bins() {
+    std::vector<std::pair<YODA::HistoBin2D, bool> >& bins() {
       return _axis.bins();
     }
 
     /// Access the bin vector (const version)
-    const std::vector<YODA::HistoBin2D>& bins() const {
+    const std::vector<std::pair<YODA::HistoBin2D, bool > >& bins() const {
       return _axis.bins();
     }
 
     /// Access a bin by index (non-const version)
     HistoBin2D& bin(size_t index) {
-      return _axis.bins()[index];
+      return _axis.bin(index);
     }
 
     /// Access a bin by index (const version)
     const HistoBin2D& bin(size_t index) const {
-      return _axis.bins()[index];
+      return _axis.bin(index);
     }
 
     /// Access a bin by coordinate (non-const version)
@@ -461,8 +461,8 @@ namespace YODA {
 
   /// @brief Divide two histograms
   ///
-  /// This uses the midpoint instead of the focus
-  /// @todo Set the output to be the focus of the new distribution
+  /// Keep in mind that for the following to work, two Histos must
+  /// be _exactly_ the same, including the ghost bins.
   Scatter3D operator / (const Histo2D& numer, const Histo2D& denom);
 
   //@}

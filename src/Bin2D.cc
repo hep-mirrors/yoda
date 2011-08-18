@@ -20,8 +20,6 @@ namespace YODA {
     _edges.first.second = lowedgeY;
     _edges.second.first = highedgeX;
     _edges.second.second = highedgeY;
-
-    isGhost() = false;
   }
 
 
@@ -33,14 +31,11 @@ namespace YODA {
     _edges.first.second = edges[0].first.second;
     _edges.second.first = edges[1].second.first;
     _edges.second.second = edges[1].second.second;
-
-    isGhost() = false;
   }
 
   Bin2D::Bin2D(const Bin2D& b) {
     _edges =  b._edges;
     _dbn =    b._dbn;
-    _isGhost =b._isGhost;
   }
 
   void Bin2D::scaleXY(double scaleX, double scaleY) {

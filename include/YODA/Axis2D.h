@@ -48,7 +48,7 @@ namespace YODA {
 
     // A few helpful typedefs
     typedef BIN Bin;
-    typedef typename std::vector<BIN> Bins;
+    typedef typename std::vector<std::pair<Bin, bool> > Bins;
 
 
   public:
@@ -100,8 +100,8 @@ namespace YODA {
     {
       vector<Segment> binLimits;
       for (size_t i = 0; i < bins.size(); ++i) {
-        binLimits.push_back(make_pair(make_pair(bins[i].xMin(), bins[i].yMin()),
-                                      make_pair(bins[i].xMax(), bins[i].yMax())));
+        binLimits.push_back(make_pair(make_pair(bins[i].first.xMin(), bins[i].first.yMin()),
+                                      make_pair(bins[i].first.xMax(), bins[i].first.yMax())));
       }
       _mkAxis(binLimits);
       for (size_t i = 0; i < _bins.size(); ++i) {
@@ -114,7 +114,7 @@ namespace YODA {
       _dbn = totalDbn;
     }
 
-    /// A constructor with specified X and Y axis ticks.
+    /// A constructor with specified X and Y axis bin limits.
     Axis2D(const std::vector<double>& xedges, const std::vector<double>& yedges) {
       vector<Segment> binLimits;
       
@@ -183,7 +183,7 @@ namespace YODA {
 
       /// Filling a bin if the coordinates point to one.
       int index = getBinIndex(x, y);
-      if(index != -1) _bins[index].fill(x, y, weight);
+      if(index != -1) _bins[index].first.fill(x, y, weight);
 
       /// If coordinates point outside any of the bins and
       /// and the outflows were properly set (i.e. we are dealing
@@ -202,8 +202,7 @@ namespace YODA {
       HistoBin2D& start = bin(from);
       HistoBin2D& end = bin(to);
       HistoBin2D temp = start;
-      /// @todo Yuck!
-      start.isGhost() = true;
+      _bins[from].second = false;
 
       if (start.midpoint().first > end.midpoint().first ||
           start.midpoint().second > end.midpoint().second)
@@ -218,18 +217,18 @@ namespace YODA {
                fuzzyEquals(_binHashSparse.first[y].second[x].second.first, start.xMin())) &&
               (_binHashSparse.first[y].second[x].second.second < end.xMax() ||
                fuzzyEquals(_binHashSparse.first[y].second[x].second.second, end.xMax())) &&
-              bin(!_binHashSparse.first[y].second[x].first).isGhost())
+              _bins[_binHashSparse.first[y].second[x].first].second)
             {
               temp += bin(_binHashSparse.first[y].second[x].first);
               /// @todo This sort of setting via a reference is quite confusing -- since Axis2D is a friend,
               /// just use the _isGhost member. Or, better IMO, do all the "ghost" bookkeeping purely on
               /// the axis and avoid storing an axis implementation feature on *all* the bins.
-              bin(_binHashSparse.first[y].second[x].first).isGhost() = true;
+              _bins[_binHashSparse.first[y].second[x].first].second = false;
             }
         }
       }
       _addEdge(temp.edges(), _binHashSparse, false);
-      _bins.push_back(temp);
+      _bins.push_back(make_pair(temp, true));
 
       _binHashSparse.first.regenCache();
       _binHashSparse.second.regenCache();
@@ -242,7 +241,7 @@ namespace YODA {
     {
       _dbn.reset();
       for (size_t i = 0; i < _bins.size(); ++i) {
-        _bins[i].reset();
+        _bins[i].first.reset();
       }
     }
 
@@ -314,13 +313,13 @@ namespace YODA {
     /// Get the bin with a given index (non-const version)
     BIN& bin(size_t index) {
       if (index >= _bins.size()) throw RangeError("Bin index out of range.");
-      return _bins[index];
+      return _bins[index].first;
     }
 
     /// Get the bin with a given index (const version)
     const BIN& bin(size_t index) const {
       if (index >= _bins.size()) throw RangeError("Bin index out of range.");
-      return _bins[index];
+      return _bins[index].first;
     }
 
 
@@ -367,9 +366,9 @@ namespace YODA {
     /// interest.
     const int getBinIndex(double coordX, double coordY) const {
       for (size_t i = 0; i < _bins.size(); ++i) {
-        if (_bins[i].xMin() <= coordX && _bins[i].xMax() >= coordX &&
-            _bins[i].yMin() <= coordY && _bins[i].yMax() >= coordY &&
-            !_bins[i].isGhost()) return i;
+        if (_bins[i].first.xMin() <= coordX && _bins[i].first.xMax() >= coordX &&
+            _bins[i].first.yMin() <= coordY && _bins[i].first.yMax() >= coordY &&
+            _bins[i].second) return i;
       }
       return -1;
     }
@@ -409,7 +408,7 @@ namespace YODA {
 
       /// Now, as we have the map rescaled, we need to update the bins
       for (size_t i = 0; i < _bins.size(); ++i) {
-        _bins[i].scaleXY(scaleX, scaleY);
+        _bins[i].first.scaleXY(scaleX, scaleY);
       }
 
       _dbn.scaleXY(scaleX, scaleY);
@@ -435,7 +434,7 @@ namespace YODA {
       }
       /// @todo Use foreach for situations like this
       for (size_t i = 0; i < _bins.size(); ++i) {
-        _bins[i].scaleW(scalefactor);
+        _bins[i].first.scaleW(scalefactor);
       }
     }
 
@@ -463,7 +462,7 @@ namespace YODA {
         throw LogicError("YODA::Histo1D: Cannot add axes with different binnings.");
       }
       for (size_t i = 0; i < bins().size(); ++i) {
-        bins().at(i) += toAdd.bins().at(i);
+        bin(i) += toAdd.bin(i);
       }
       _dbn += toAdd._dbn;
       return *this;
@@ -479,7 +478,7 @@ namespace YODA {
         throw LogicError("YODA::Histo1D: Cannot add axes with different binnings.");
       }
       for (size_t i = 0; i < bins().size(); ++i) {
-        bins().at(i) -= toSubtract.bins().at(i);
+        bin(i) -= toSubtract.bin(i);
       }
       _dbn -= toSubtract._dbn;
       return *this;
@@ -808,7 +807,7 @@ namespace YODA {
       }
 
       // Now, create a bin with the edges provided
-      if (addBin) _bins.push_back(BIN(edges));
+      if (addBin) _bins.push_back(make_pair(BIN(edges), true));
     }
 
 
@@ -899,10 +898,10 @@ namespace YODA {
 
       // Scroll through the bins and set the delimiters.
       for (size_t i = 0; i < _bins.size(); ++i) {
-        if (_bins[i].xMin() < lowEdgeX) lowEdgeX = _bins[i].xMin();
-        if (_bins[i].xMax() > highEdgeX) highEdgeX = _bins[i].xMax();
-        if (_bins[i].yMin() < lowEdgeY) lowEdgeY = _bins[i].yMin();
-        if (_bins[i].yMax() > highEdgeY) highEdgeY = _bins[i].yMax();
+        if (_bins[i].first.xMin() < lowEdgeX) lowEdgeX = _bins[i].first.xMin();
+        if (_bins[i].first.xMax() > highEdgeX) highEdgeX = _bins[i].first.xMax();
+        if (_bins[i].first.yMin() < lowEdgeY) lowEdgeY = _bins[i].first.yMin();
+        if (_bins[i].first.yMax() > highEdgeY) highEdgeY = _bins[i].first.yMax();
       }
 
       _lowEdgeX = lowEdgeX;

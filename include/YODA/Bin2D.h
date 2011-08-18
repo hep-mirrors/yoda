@@ -218,31 +218,7 @@ namespace YODA {
     }
 
     //@}
-
-    /// @name _isGhost accessor
-    /// @todo Improve Doxygen description -- it needs to actually explain what this *means*
-    /// @todo IMO this would be better implemented as a bookkeeping device on Axis2D, storing
-    /// a list of bin IDs to not write out -- it's ~purely a persistency trick, right? At the
-    /// moment we're storing an extra bool on every bin for a feature which will not appear in
-    /// > 99% of cases.
-    //@{
-
-    /// non-const version
-    ///
-    /// @todo Improve Doxygen description (including Capitalising like proper text!)
-    /// @todo What is the point of this method?
-    bool& isGhost() {
-      return _isGhost;
-    }
-
-    /// const version
-    /// @todo Improve Doxygen description (including Capitalising like proper text!)
-    const bool isGhost() const {
-      return _isGhost;
-    }
-
-    //@}
-
+  
   protected:
 
     /// Boundaries setter
@@ -262,12 +238,6 @@ namespace YODA {
 
     Segment _edges;
     Dbn2D _dbn;
-
-
-  protected:
-
-    /// A variable that specifies if the bin should be plotted
-    bool _isGhost;
 
   };
 

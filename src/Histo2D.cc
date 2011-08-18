@@ -22,9 +22,7 @@ namespace YODA {
   double Histo2D::sumW(bool includeoverflows) const {
     if (includeoverflows) return _axis.totalDbn().sumW();
     double sumw = 0;
-    foreach (const Bin& b, bins()) {
-      sumw += b.sumW();
-    }
+    for(size_t i = 0; i < bins().size(); ++i) sumw += bin(i).sumW();
     return sumw;
   }
 
@@ -32,9 +30,7 @@ namespace YODA {
   double Histo2D::sumW2(bool includeoverflows) const {
     if (includeoverflows) return _axis.totalDbn().sumW2();
     double sumw2 = 0;
-    foreach (const Bin& b, bins()) {
-      sumw2 += b.sumW2();
-    }
+    for(size_t i = 0; i < bins().size(); ++i) sumw2+= bin(i).sumW2();
     return sumw2;
   }
 
@@ -43,9 +39,9 @@ namespace YODA {
     if (includeoverflows) return _axis.totalDbn().xMean();
     double sumwx = 0;
     double sumw  = 0;
-    foreach (const Bin2D& b, bins()) {
-      sumwx += b.sumWX();
-      sumw  += b.sumW();
+    for(size_t i = 0; i < bins().size(); ++i) {
+      sumwx += bin(i).sumW2();
+      sumw  += bin(i).sumW();
     }
     return sumwx/sumw;
   }
@@ -55,9 +51,9 @@ namespace YODA {
     if (includeoverflows) return _axis.totalDbn().yMean();
     double sumwy = 0;
     double sumw = 0;
-    foreach (const Bin2D& b, bins()) {
-        sumwy += b.sumWY();
-        sumw  += b.sumW();
+    for(size_t i = 0; i < bins().size(); ++i) {
+      sumwy += bin(i).sumWY();
+      sumw  += bin(i).sumW();
     }
     return sumwy/sumw;
   }
@@ -67,9 +63,9 @@ namespace YODA {
     if (includeoverflows) return _axis.totalDbn().xVariance();
     double sigma2 = 0;
     const double xMean = this->xMean();
-    foreach (const Bin2D& b, bins()) {
-      const double diff = b.focus().first - xMean;
-      sigma2 += diff * diff * b.sumW();
+    for(size_t i = 0; i < bins().size(); ++i) {
+      const double diff = bin(i).focus().first - xMean;
+      sigma2 += diff * diff * bin(i).sumW();
     }
     return sigma2/sumW();
   }
@@ -79,9 +75,9 @@ namespace YODA {
     if (includeoverflows) return _axis.totalDbn().yVariance();
     double sigma2 = 0;
     const double yMean = this->yMean();
-    foreach (const Bin2D& b, bins()) {
-      const double diff = b.focus().first - yMean;
-      sigma2 += diff * diff * b.sumW();
+    for(size_t i = 0; i < bins().size(); ++i) {
+      const double diff = bin(i).focus().first - yMean;
+      sigma2 += diff * diff * bin(i).sumW();
     }
     return sigma2/sumW();
   }
