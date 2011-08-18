@@ -82,7 +82,9 @@ namespace YODA {
     return sigma2/sumW();
   }
 
-
+  
+  /// @todo Check how finding the correct bins works in the case of 
+  /// a sparse representation, and if it is decent, code it in here.
   Scatter3D operator / (const Histo2D& numer, const Histo2D& denom) {
     if(numer != denom) throw GridError("The two Histos are not the same!");
     Scatter3D tmp;

@@ -25,6 +25,7 @@ NOW
 * Add copy constructors for Dbn1D/2D, Scatter2D, Histo/ProfileBin1D, Point2D/3D, HistoBin2D.
   Rule of three: also need explicit assignment operator= for all classes
   with copy constructors? (ANDY and MICHAL for respectively authored classes)
+  MK: All 2/3D classes should be done.
 
 * Conversion functions to build Histo1D and Profile1D objects for slicings and
   marginalisations along both X and Y directions of 2D histos. Throw an
