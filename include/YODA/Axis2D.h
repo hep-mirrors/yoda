@@ -479,8 +479,21 @@ namespace YODA {
     //@{
 
     /// Equality operator
+    /// @todo TEST!!11!
     bool operator == (const Axis2D& other) const {
-      return _binHashSparse == other._binHashSparse;
+      if(isGrid) {
+        for(size_t i = 0; i < _bins.size(); ++i) {
+          /// Omit ghost bins while checking
+          if(!_bins[i].second) continue;
+          int index=other.getBinIndex(_bins[i].first.midpoint().first, _bins[i].first.midpoint().second);
+          if(index != -1){
+            if(other.bin(index) != _bins[i].first) return false;
+          }
+          else return false;
+        }
+        return true;
+      }
+      else return _binHashSparse == other._binHashSparse;
     }
 
     /// Non-equality operator

@@ -123,6 +123,16 @@ namespace YODA {
     /// @name Operators
     //@{
 
+    /// Equality operator that checks if the location
+    /// of the two bins is the same
+    bool operator == (const HistoBin2D& other) const {
+      return _edges == other._edges;
+    }
+
+    bool operator != (const HistoBin2D& other) const {
+      return ! operator == (other);
+    }
+
     /// Addition operator
     HistoBin2D& operator += (const HistoBin2D& toAdd) {
       return add(toAdd);
