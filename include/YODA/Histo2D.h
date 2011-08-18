@@ -301,12 +301,7 @@ namespace YODA {
       if (atY < lowEdgeY() || atY > highEdgeY()) throw RangeError("Y is outside the grid");
       vector<HistoBin1D> tempBins;
 
-      /// @todo Make all Bin1D constructions happen in loop, to reduce code duplication
-      const HistoBin2D& first = binByCoord(lowEdgeX(), atY);
-      const Dbn1D dbn(first.numEntries(), first.sumW(), first.sumW2(), first.sumWX(), first.sumWX2());
-      tempBins.push_back(HistoBin1D(first.lowEdgeX(), first.highEdgeX(), dbn));
-
-      for (double i = first.midpoint().first + first.widthX(); i < highEdgeX(); i += first.widthX()) {
+      for (double i = binByCoord(lowEdgeX(), atY).midpoint().first; i < highEdgeX(); i += binByCoord(lowEdgeX(), atY).widthX()) {
         const HistoBin2D& b2 = binByCoord(i, atY);
         const Dbn1D dbn2(b2.numEntries(), b2.sumW(), b2.sumW2(), b2.sumWX(), b2.sumWX2());
         tempBins.push_back(HistoBin1D(b2.lowEdgeX(), b2.highEdgeX(), dbn2));
@@ -330,12 +325,7 @@ namespace YODA {
       if (atX < lowEdgeX() || atX > highEdgeX()) throw RangeError("X is outside the grid");
       vector<HistoBin1D> tempBins;
 
-      /// @todo Make all Bin1D constructions happen in loop, to reduce code duplication
-      const HistoBin2D& first = binByCoord(atX, lowEdgeY());
-      const Dbn1D dbn(first.numEntries(), first.sumW(), first.sumW2(), first.sumWX(), first.sumWX2());
-      tempBins.push_back(HistoBin1D(first.lowEdgeY(), first.highEdgeY(), dbn));
-
-      for (double i = first.midpoint().second + first.widthY(); i < highEdgeY(); i += first.widthY()) {
+      for (double i = binByCoord(atX, lowEdgeY()).midpoint().second; i < highEdgeY(); i += binByCoord(atX, lowEdgeY()).widthY()) {
         const HistoBin2D& b2 = binByCoord(atX, i);
         const Dbn1D dbn2(b2.numEntries(), b2.sumW(), b2.sumW2(), b2.sumWX(), b2.sumWX2());
         tempBins.push_back(HistoBin1D(b2.lowEdgeY(), b2.highEdgeY(), dbn2));
