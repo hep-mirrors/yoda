@@ -45,7 +45,7 @@ namespace YODA {
 
     /// A fill() function accepting coordinates as spearate numbers
     void fill(double X, double Y, double weight=1.0) {
-        _dbn.fill(X, Y, weight); 
+        _dbn.fill(X, Y, weight);
     }
 
     /// A fill() function accepting the coordinates as std::pair
@@ -96,6 +96,7 @@ namespace YODA {
 
     //@}
 
+
     /// @name Transformers
     //@{
 
@@ -115,7 +116,6 @@ namespace YODA {
 
       return ret;
     }
-
 
     //@}
 
