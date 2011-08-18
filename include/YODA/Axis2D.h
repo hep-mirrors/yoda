@@ -216,7 +216,7 @@ namespace YODA {
     }
 
 
-    /// Merge a given range of bins, given the bin IDs
+    /// Merge a range of bins, given the bin IDs of points at the lower-left and upper-right.
     ///
     /// @todo This is far too big to be inline: move it to the bottom of this file, or perhaps to a .cc
     void mergeBins(size_t from, size_t to) {
@@ -225,15 +225,18 @@ namespace YODA {
       HistoBin2D temp = start;
       _bins[from].second = false;
 
-      if (start.midpoint().first > end.midpoint().first ||
-          start.midpoint().second > end.midpoint().second)
-        throw GridError("The start/end bins are wrongly defined.");
+      // Sanity-check input indices
+      if (start.midpoint().first > end.midpoint().first) {
+        throw RangeError("The start bin has a greater x value than the end bin.");
+      }
+      if (start.midpoint().second > end.midpoint().second) {
+        throw RangeError("The start bin has a greater y value than the end bin.");
+      }
 
-      /// @todo Tidy!
+      /// @todo Explain! This is *totally* incomprehensible.
       for (size_t y = (*_binHashSparse.first._cache.lower_bound(start.yMin())).second;
            y <= (*_binHashSparse.first._cache.lower_bound(end.yMin())).second; ++y) {
         for (size_t x = 0; x < _binHashSparse.first[y].second.size(); ++x) {
-          /// @todo Tidy!
           if ((_binHashSparse.first[y].second[x].second.first > start.xMin() ||
                fuzzyEquals(_binHashSparse.first[y].second[x].second.first, start.xMin())) &&
               (_binHashSparse.first[y].second[x].second.second < end.xMax() ||
@@ -241,15 +244,14 @@ namespace YODA {
               _bins[_binHashSparse.first[y].second[x].first].second)
             {
               temp += bin(_binHashSparse.first[y].second[x].first);
-              /// @todo This sort of setting via a reference is quite confusing -- since Axis2D is a friend,
-              /// just use the _isGhost member. Or, better IMO, do all the "ghost" bookkeeping purely on
-              /// the axis and avoid storing an axis implementation feature on *all* the bins.
               _bins[_binHashSparse.first[y].second[x].first].second = false;
             }
         }
       }
       _addEdge(temp.edges(), _binHashSparse, false);
       _bins.push_back(make_pair(temp, true));
+
+      /// @todo Where do the old bins get dropped?
 
       _binHashSparse.first.regenCache();
       _binHashSparse.second.regenCache();
@@ -261,9 +263,9 @@ namespace YODA {
 
 
     /// Reset the axis statistics
-    void reset()
-    {
+    void reset() {
       _dbn.reset();
+      /// @todo Sort out the Bins definition, then use foreach
       for (size_t i = 0; i < _bins.size(); ++i) {
         _bins[i].first.reset();
       }

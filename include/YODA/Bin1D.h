@@ -212,14 +212,18 @@ namespace YODA {
 
     /// Add two bins (internal, explicitly named version)
     Bin1D& add(const Bin1D& b) {
-      assert(_edges == b._edges);
+      if (_edges != b._edges) {
+        throw LogicError("Attempted to add two bins with different edges");
+      }
       _xdbn += b._xdbn;
       return *this;
     }
 
     /// Subtract one bin from another (internal, explicitly named version)
     Bin1D& subtract(const Bin1D& b) {
-      assert(_edges == b._edges);
+      if (_edges != b._edges) {
+        throw LogicError("Attempted to add two bins with different edges");
+      }
       _xdbn -= b._xdbn;
       return *this;
     }

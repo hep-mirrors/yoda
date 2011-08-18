@@ -93,6 +93,7 @@ namespace YODA {
 
   public:
 
+    /// Get the number of bins on the axis
     unsigned int numBins() const {
       return _bins.size();
     }
@@ -181,8 +182,7 @@ namespace YODA {
 
 
     size_t findBinIndex(double coord) const {
-      /// @todo Improve!
-      if (coord < _cachedBinEdges[0] || coord >= _cachedBinEdges[numBins()]) {
+      if (!inRange(coord, _cachedBinEdges[0], _cachedBinEdges[numBins()])) {
         throw RangeError("Coordinate is outside the valid range: you should request the underlow or overflow");
       }
       size_t i = _binHash.upper_bound(coord)->second;
@@ -190,12 +190,13 @@ namespace YODA {
     }
 
 
+    /// Reset this axis' distributions to an unfilled state
     void reset() {
       _dbn.reset();
       _underflow.reset();
       _overflow.reset();
-      for (typename Bins::iterator b = _bins.begin(); b != _bins.end(); ++b) {
-        b->reset();
+      foreach (Bin& b, bins()) {
+        b.reset();
       }
     }
 
@@ -211,9 +212,15 @@ namespace YODA {
 
     /// Merge a bin range @a binindex1 to @a binindex2 into a single bin.
     void mergeBins(size_t binindex1, size_t binindex2) {
-      assert(binindex1 >= binindex2);
+      if (binindex1 > binindex2) throw RangeError("binindex1 is greater than binindex2");
       if (binindex1 < 0 || binindex1 >= numBins()) throw RangeError("binindex1 is out of range");
       if (binindex2 < 0 || binindex2 >= numBins()) throw RangeError("binindex2 is out of range");
+
+      for (size_t i = binindex1; i <= binindex2; ++i) {
+        /// @todo
+      }
+      //DBN
+      BIN1D newbin(bin(binindex1).xMin(), bin(binindex1).xMax());
       /// @todo Implement! Requires ability to change bin edges from outside...
       throw std::runtime_error("Rebinning is not yet implemented! Pester me, please.");
     }
@@ -224,8 +231,8 @@ namespace YODA {
        _dbn.scaleX(scalefactor);
        _underflow.scaleW(scalefactor);
        _overflow.scaleW(scalefactor);
-       for(int i=0; i < _bins.size(); i++) _bins[i].scaleX(scalefactor);
-       for(int i=0; i < _cachedBinEdges.size(); i++) _cachedBinEdges[i] *= scalefactor;
+       for (int i = 0; i < _bins.size(); ++i) _bins[i].scaleX(scalefactor);
+       for (int i = 0; i < _cachedBinEdges.size(); ++i) _cachedBinEdges[i] *= scalefactor;
        _mkBinHash();
     }
 
@@ -288,6 +295,7 @@ namespace YODA {
 
     /// @todo Remove
     void _mkBinHash() {
+      /// @todo Reset cached edges and the hash map
       for (size_t i = 0; i < numBins(); i++) {
         // Insert upper bound mapped to bin ID
         _binHash.insert(std::make_pair(_cachedBinEdges[i+1],i));
@@ -325,12 +333,6 @@ namespace YODA {
   private:
 
 
-    /// @todo Store bins in a more flexible (and sorted) way
-    /// @todo Check non-overlap of bins
-    /// @todo Bin access by index
-    /// @todo Overall y-dbn for profiles?
-
-
     /// @name Bin data
     //@{
 
@@ -342,15 +344,15 @@ namespace YODA {
 
     /// A distribution counter for overflow fills
     DBN _underflow;
-    /// A distribution counter for underlow fills
+    /// A distribution counter for underflow fills
     DBN _overflow;
 
-    /// Bin edges: lower edges, except last entry,
-    /// which is the high edge of the last bin
+    /// Bin edges (nbins + 1) cached for speed
     std::vector<double> _cachedBinEdges;
 
     /// Map for fast bin lookup
     std::map<double,size_t> _binHash;
+
     //@}
 
   };
