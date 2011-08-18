@@ -20,11 +20,6 @@ namespace YODA {
   /// extra internal distribution statistics are stored for the extra
   /// "y-direction" specified in the profile fill operation.
   class ProfileBin1D : public Bin1D {
-
-    /// Profile1D is a friend to add/subtract bins
-    friend class Profile1D;
-
-
   public:
 
     /// @name Constructors

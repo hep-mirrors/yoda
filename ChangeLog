@@ -1,3 +1,10 @@
+2011-08-18  Andy Buckley  <andy@insectnation.org>
+
+	* Removing the Profile1D -> ProfileBin1D friendship. This is very
+	heartening -- the fewer friend declarations we need, the more
+	indication that the class structure is not pathological! (Or that
+	we've just made everything public... but we haven't)
+
 2011-08-15  Andy Buckley  <andy@insectnation.org>
 
 	* Inlining all functions in HistoBin1D, ProfileBin1D, and
