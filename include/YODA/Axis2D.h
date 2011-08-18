@@ -114,6 +114,21 @@ namespace YODA {
       _dbn = totalDbn;
     }
 
+    /// A constructor with specified X and Y axis ticks.
+    Axis2D(const std::vector<double>& xedges, const std::vector<double>& yedges) {
+      vector<Segment> binLimits;
+      
+      for(int i = 0; i < yedges.size() - 1; ++i) {
+        for(int j = 0; j < xedges.size() - 1; ++j) {
+          binLimits.push_back(make_pair(make_pair(xedges[j], yedges[i]),
+                                        make_pair(xedges[j+1], yedges[i+1])));
+        }
+      }
+      _mkAxis(binLimits);
+      _setOutflows();
+    }
+
+
     /// A copy constructor
     Axis2D(const Axis2D& a) {
       _bins = a._bins;
@@ -124,9 +139,7 @@ namespace YODA {
       _binHashSparse.second.regenCache();
       _regenDelimiters();
     }
-
-
-
+    
     //@}
 
     /// @name Bin insertion operators
