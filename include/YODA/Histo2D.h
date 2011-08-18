@@ -347,7 +347,7 @@ namespace YODA {
     }
 
 
-    /// @todo Create x-wise and y-wise conversions to Profile1D -- ignore outflows for now, but mark as such
+    /// @brief X-wise Profile1D creator from Histo2D
     Profile1D mkProfileX() {
       if (!_axis._isGrid()) throw GridError("Profile1D cannot be made from a histogram that is not a grid!");
 
@@ -377,12 +377,52 @@ namespace YODA {
         overflow += outflows[3][i];
       }
 
-      /// And construct a profile 1D from all this data
+      /// And constructing a profile 1D from all this data
       Profile1D ret(prof, _axis.totalDbn(), underflow, overflow);
       return ret;
 
     }
 
+    /// @brief Y-wise Profile1D creator from Histo2D
+    Profile1D mkProfileY() {
+      if (!_axis._isGrid()) throw GridError("Profile1D cannot be made from a histogram that is not a grid!");
+
+      vector<ProfileBin1D> prof;
+      for(int i = lowEdgeY() + _axis.bin(0).midpoint().second; i < highEdgeY(); i+= _axis.bin(0).widthY()) {
+        HistoBin2D& bin(_axis.binByCoord(i, lowEdgeY()));
+        HistoBin2D composite(bin.xMin(), bin.xMax(), bin.yMin(), bin.yMax()) ;
+        for(int j = lowEdgeX() + _axis.bin(0).midpoint().first; j < highEdgeX(); j += _axis.bin(0).widthX()) {
+          composite += _axis.binByCoord(i, j);
+        }
+      prof.push_back(composite.transformY());
+      }   
+
+      vector<vector<Dbn2D> >& outflows = _axis.outflows();
+      
+      /// Properly setting an underflow
+      Dbn2D underflow;
+      underflow += outflows[0][0]; underflow += outflows[2][0];
+      for(size_t i = 0; i < outflows[1].size(); ++i) {
+        underflow += outflows[1][i];
+      }
+
+      /// Setting an overflow
+      Dbn2D overflow;
+      overflow += outflows[6][0]; overflow += outflows[4][0];
+      for(size_t i = 0; i < outflows[5].size(); ++i) {
+        overflow += outflows[5][i];
+      }
+
+      /// Setting a flipped total distribution
+      Dbn2D& td = _axis.totalDbn();
+      Dbn2D flipped(td.numEntries(), td.sumW(), td.sumW2(), td.sumWY(), 
+                    td.sumWY2(), td.sumWX(), td.sumWX2(), td.sumWXY());
+
+      /// And constructing a profile 1D from all this data
+      Profile1D ret(prof, flipped, underflow, overflow);
+      return ret;
+
+    }
 
     //@}
 
