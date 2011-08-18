@@ -23,10 +23,6 @@ namespace YODA {
   template <typename BIN>
   class Axis2D {
 
-    /// Enabling Histo2D to check if its axis is a grid
-    /// @todo This should not be necessary
-    friend class Histo2D;
-
     /// When edge is added to the collection it must
     /// obey the following format. size_t specifies the bin this
     /// edge is a member of, a pair contains a beginning and end of the edge.
@@ -57,6 +53,8 @@ namespace YODA {
     /// mergeBins() function ~100 lines below this point.
     typedef typename std::vector<std::pair<Bin, bool> > Bins;
 
+    /// Is it a grid?
+    bool isGrid;
 
   public:
 
@@ -76,7 +74,7 @@ namespace YODA {
     /// Constructor provided with a vector of bin delimiters
     Axis2D(const vector<Segment>& binLimits) {
       _mkAxis(binLimits);
-      if(_isGrid) _setOutflows();
+      if(isGrid) _setOutflows();
     }
 
 
@@ -115,7 +113,7 @@ namespace YODA {
         _bins[i] = bins[i];
       }
       _regenDelimiters();
-      if(_isGrid) _setOutflows();
+      if(isGrid) _setOutflows();
       _outflows = outflows;
 
       _dbn = totalDbn;
@@ -373,7 +371,7 @@ namespace YODA {
     /// interest.
     const int getBinIndex(double coordX, double coordY) const {
       /// In case we are just operating on a regular grid
-      if(_isGrid) {  
+      if(isGrid) {  
         coordX += 0.00000000001; coordY += 0.00000000001;
              size_t indexY = (*_binHashSparse.first._cache.lower_bound(approx(coordY))).second;
  
@@ -577,7 +575,7 @@ namespace YODA {
     /// If it is containing a set of edges forming a grid without
     /// gaps in the middle it will have the same number of edges in the
     /// inner subcaches and half of this amount in the outer (grid boundary)
-    /// subcaches. This makes _isGrid() a very, very fast function.
+    /// subcaches. This makes isGrid() a very, very fast function.
     /// @todo This is far too big to be inline: move it to the .cc
     void _genGridCache() {
 
@@ -587,11 +585,11 @@ namespace YODA {
       for (size_t i = 1; i < _binHashSparse.first.size(); ++i) {
         if (i == _binHashSparse.first.size() - 1) {
           if (_binHashSparse.first[i].second.size() != sizeX) {
-            _isGrid = false;
+            isGrid = false;
           }
         }
         else if (_binHashSparse.first[i].second.size() != 2*sizeX) {
-          _isGrid = false;
+          isGrid = false;
         }
       }
 
@@ -600,16 +598,16 @@ namespace YODA {
       for (size_t i=1; i < _binHashSparse.second.size(); ++i) {
         if (i != _binHashSparse.second.size() - 1) {
           if (2*sizeY != _binHashSparse.second[i].second.size()) {
-            _isGrid = false;
+            isGrid = false;
           }
         }
         else if (_binHashSparse.second[i].second.size() != sizeY) {
-          _isGrid = false;
+          isGrid = false;
         }
       }
 
       /// If everything is proper, announce it.
-      _isGrid = true;
+      isGrid = true;
     }
 
 
@@ -976,9 +974,6 @@ namespace YODA {
 
     /// Low/high edges
     double _highEdgeX, _highEdgeY, _lowEdgeX, _lowEdgeY;
-
-    /// Is it a grid?
-    bool _isGrid;
 
   };
 
