@@ -157,23 +157,6 @@ int main() {
         return -1;
     }
 
-    // Addition/Subtraction:
-    cout << "Creating histos to be added/subtracted/divided:" << endl;
-
-    Histo2D first(10, 0, 100, 10, 0, 100);
-    first.fill(1,1,1);
-    first.fill(23,1,1);
-    Histo2D second(10, 0, 100, 10, 0, 100);
-    second.fill(1,1,1);
-
-    cout << "Adding/Subtracting/Dividing" << endl;
-    Histo2D added(first+second);
-    Histo2D subtracted(first-second);
-    Scatter3D divided(first/second);
-
-    cout << "Done!" << endl;
-    printStats(added);
-    printStats(subtracted);
 
 
     // And now, test cuts:
@@ -222,5 +205,6 @@ int main() {
 
     cout << "Time to merge 20k bins: " << tE - tS << "s" << endl;
 
+    cout << "-----------------------------" << endl;
     return EXIT_SUCCESS;
 }

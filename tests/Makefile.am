@@ -3,6 +3,7 @@ check_PROGRAMS = \
 	testhisto1Da testhisto1Db \
 	testprofile1Da \
   testhisto2D  \
+  testhisto2Da  \
   testpoint3D  \
   testscatter3D\
 	testindexedset testsortedvector
@@ -17,6 +18,7 @@ testprofile1Da_SOURCES = TestProfile1Da.cc
 testindexedset_SOURCES = TestIndexedSet.cc
 testsortedvector_SOURCES = TestSortedVector.cc
 testhisto2D_SOURCES = TestHisto2D.cc
+testhisto2Da_SOURCES = TestHisto2Da.cc
 testpoint3D_SOURCES = TestPoint3D.cc
 testscatter3D_SOURCES = TestScatter3D.cc
 
@@ -31,6 +33,7 @@ TESTS = \
 	testhisto1Da testhisto1Db \
 	testprofile1Da \
   testhisto2D    \
+  testhisto2Da    \
   testpoint3D    \
   testscatter3D  \
 	testindexedset testsortedvector \

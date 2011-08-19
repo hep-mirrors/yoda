@@ -64,7 +64,11 @@ namespace YODA {
     Histo2D(const Histo2D& h, const std::string& path="")
       : AnalysisObject("Histo2D", (path.size() == 0) ? h.path() : path, h, h.title())
     {
+      cout << " blah" << endl << endl << endl;
+     cout << "dasdasd"; 
+      cout << "in" << endl;
       _axis = h._axis;
+      cout << "out" << endl;
     }
 
 
