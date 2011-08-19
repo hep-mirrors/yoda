@@ -394,6 +394,9 @@ namespace YODA {
       // In case we are just operating on a regular grid
       if (isGrid()) {
         /// @todo WTF?! This is bad. No magic numbers! Why would these be unreasonably small offsets?
+        /// These are for the case when user requests a coordinate which is exactly (by the meaning of equals)
+        /// on the edge. Without those the algorithm will crash. 
+        /// I am pretty sure they are fine, as they are well below fuzzyEquals() tolerance.
         coordX += 0.00000000001;
         coordY += 0.00000000001;
         size_t indexY = (*_binHashSparse.first._cache.lower_bound(approx(coordY))).second;
@@ -427,6 +430,29 @@ namespace YODA {
       return -1;
     }
 
+    /// Fast column number searcher
+    const size_t getBinColumn(size_t index) const {
+
+      /// Check if assumptions are reasonable
+      if(!_isGrid) throw GridError("This operation can only be performed when an array is a grid!");
+      if(index >= _bins.size()) throw RangeError("Index is bigger than the size of bins vector!");
+
+      /// Find the column nuber
+      size_t ret  = (*_binHashSparse.first._cache.lower_bound(approx(bin(index).yMin()))).second;     
+      return ret;
+}
+    
+    /// Fast row number searcher
+    const size_t getBinRow(size_t index) const {
+
+      /// Check if assumptions are reasonable
+      if(!_isGrid) throw GridError("This operation can only be performed when an array is a grid!");
+      if(index >= _bins.size()) throw RangeError("Index is bigger than the size of bins vector!");
+
+      /// Find the column nuber
+      size_t ret  = (*_binHashSparse.second._cache.lower_bound(approx(bin(index).xMin()))).second;     
+      return ret;
+}
 
     /// Check if the axis has a grid structure or not
     bool isGrid() const {

@@ -307,14 +307,11 @@ namespace YODA {
       }
 
       /// Setting under/over flows
-      vector<vector<Dbn2D> >& outflows = _axis.outflows();
       Dbn2D underflow;
-      underflow += outflows[0][0]; underflow += outflows[6][0];
-      for(size_t i=0; i < outflows[7].size(); ++i) underflow += outflows[7][i];
+      underflow += _axis.outflows()[7][_axis.getBinRow(_axis.getBinIndex(lowEdgeX(), atY))];
 
       Dbn2D overflow;
-      overflow += outflows[2][0]; overflow += outflows[4][0];
-      for(size_t i=0; i < outflows[3].size(); ++i) overflow += outflows[3][i];
+      overflow += _axis.outflows()[3][_axis.getBinRow(_axis.getBinIndex(lowEdgeX(), atY))];
 
       return Histo1D(tempBins, _axis.totalDbn().transformX(), underflow.transformX(), overflow.transformX(), path, title);
 
@@ -339,15 +336,11 @@ namespace YODA {
       }
 
       /// Setting under/over flows
-      vector<vector<Dbn2D> >& outflows = _axis.outflows();
       Dbn2D underflow;
-      underflow += outflows[0][0]; underflow += outflows[2][0];
-      for(size_t i=0; i < outflows[1].size(); ++i) underflow += outflows[1][i];
+      underflow += _axis.outflows()[1][_axis.getBinColumn(_axis.getBinIndex(atX, lowEdgeY()))];
 
       Dbn2D overflow;
-      overflow += outflows[6][0]; overflow += outflows[4][0];
-      for(size_t i=0; i < outflows[5].size(); ++i) overflow += outflows[5][i];
-
+      overflow += _axis.outflows()[5][_axis.getBinColumn(_axis.getBinIndex(atX, lowEdgeY()))];
       Dbn2D total = _axis.totalDbn();
 
       /// Making sure that we rotate our distributions, as we are cutting paralell to Y axis now
