@@ -300,7 +300,7 @@ namespace YODA {
       if (atY < lowEdgeY() || atY > highEdgeY()) throw RangeError("Y is outside the grid");
       vector<HistoBin1D> tempBins;
 
-      for (double i = binByCoord(lowEdgeX(), atY).midpoint().first; i < highEdgeX(); i += binByCoord(lowEdgeX(), atY).widthX()) {
+      for (double i = binByCoord(lowEdgeX(), atY).xMin(); i < highEdgeX(); i += binByCoord(i, atY).widthX()) {
         const HistoBin2D& b2 = binByCoord(i, atY);
         const Dbn1D dbn2(b2.numEntries(), b2.sumW(), b2.sumW2(), b2.sumWX(), b2.sumWX2());
         tempBins.push_back(HistoBin1D(b2.lowEdgeX(), b2.highEdgeX(), dbn2));
@@ -332,7 +332,7 @@ namespace YODA {
       if (atX < lowEdgeX() || atX > highEdgeX()) throw RangeError("X is outside the grid");
       vector<HistoBin1D> tempBins;
 
-      for (double i = binByCoord(atX, lowEdgeY()).midpoint().second; i < highEdgeY(); i += binByCoord(atX, lowEdgeY()).widthY()) {
+      for (double i = binByCoord(atX, lowEdgeY()).yMin(); i < highEdgeY(); i += binByCoord(atX, i).widthY()) {
         const HistoBin2D& b2 = binByCoord(atX, i);
         const Dbn1D dbn2(b2.numEntries(), b2.sumW(), b2.sumW2(), b2.sumWX(), b2.sumWX2());
         tempBins.push_back(HistoBin1D(b2.lowEdgeY(), b2.highEdgeY(), dbn2));
