@@ -6,6 +6,17 @@ NOW
 * Check if the weight2 treatment in Dbn1D is really correct: we're currently
   multiplying it by sign(w). Hmm. (AB)
 
+* Rethink 1D bin inheritance: template Bin1D on dbn type and inherit from
+  Bin1D<Dbn1D> and Bin1D<Dbn2D> for histo and profile bins respectively? (AB)
+
+* Rework Axis1D to operate as Axis2D does (MICHAL)
+  AB: I'l try to get the Bin1D reworking done before it impacts on this.
+
+* Explicitly return NaN for profile histo points with no weight? Or throw
+  LowStatsError? (all -- discuss)
+
+* Bin division: add quadratic / binomial error treatment enum option (AB)
+
 * Rebinning: merges of n adjacent bins (AB for 1D)
 
 * Rebinning: global rebinning by integer factor(s) (AB for 1D, MICHAL for 2D)
@@ -13,13 +24,15 @@ NOW
   to define the conventions for handling the fact that this usually won't be
   exactly possible.
 
-* Rethink 1D bin inheritance: template Bin1D on dbn type and inherit from
-  Bin1D<Dbn1D> and Bin1D<Dbn2D> for histo and profile bins respectively? (AB)
-
 * Add copy constructors for Dbn1D/2D, Scatter2D, Histo/ProfileBin1D, Point2D/3D, HistoBin2D.
   Rule of three: also need explicit assignment operator= for all classes
   with copy constructors? (ANDY and MICHAL for respectively authored classes)
   MK: All 2/3D classes should be done.
+
+* Test that a y-binned Histo2D has the same per-y-column stats as an
+  equivalently x-binned Profile1D. Perhaps use this as an opportunity to
+  implement one of the the conversion functions mentioned in the NEXT
+  section... (MICHAL)
 
 * Conversion functions to build Histo1D and Profile1D objects for slicings and
   marginalisations along both X and Y directions of 2D histos. Throw an
@@ -54,17 +67,6 @@ NEXT
 * Multiple errors on Scatter2D -- via a vector of Error2D? How to implement
   flexible error combination? Error correlations? (DANIEL)
 
-* Perhaps ProfileBin1D would be better if it contained a Dbn1D rather than two
-  Dbn2Ds, since the over/underflow now *are* Dbn2Ds... (AB)
-
-* Test that a y-binned Histo2D has the same per-y-column stats as an
-  equivalently x-binned Profile1D. Perhaps use this as an opportunity to
-  implement one of the the conversion functions mentioned in the NEXT
-  section...
-  AB: Actually, doing this really properly requires a whole set of "outflow"
-  bins. Let's postpone the exact equality check until this is done, although
-  "partial" profile and 1D histo slicing can be done before then.
-
 * Profile2D & Dbn3D
 
 * WriterFlat and ReaderFlat, for Scatter2D representations only. (HH)
@@ -77,11 +79,7 @@ AND AFTER THAT...
 
 * Scatter2D -> Scatter<N> again (?) with specialisations for 1D, 2D and 3D
 
-* Explicitly return NaN for profile histo points with no weight? Or throw LowStatsError?
-
 * Terminal histos via WriterTerminal
-
-* Bin division with binomial correlation (Efficiency1D)
 
 * Write scripts to convert between data formats and to plot results.
 
