@@ -201,7 +201,7 @@ namespace YODA {
 
     /// Add a bin, providing its low and high edge
     void addBin(double& from, double& to) {
-      vector<double> binedges;
+      std::vector<double> binedges;
       binedges.push_back(from); binedges.push_back(to);
 
       _mkAxis(binedges);
@@ -216,7 +216,7 @@ namespace YODA {
     /// Add a set of bins specifying start/end of each 
     void addBin(std::vector<std::pair<double,double> > edges) {
       for(size_t i = 0; i < edges.size(); ++i){
-        vector<double> temp;
+        std::vector<double> temp;
         temp.push_back(edges[i].first);
         temp.push_back(edges[i].second);
 
