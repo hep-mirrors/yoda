@@ -8,6 +8,7 @@
 
 #include "YODA/AnalysisObject.h"
 #include "YODA/ProfileBin1D.h"
+#include "YODA/Scatter2D.h"
 #include "YODA/Dbn2D.h"
 #include "YODA/Axis1D.h"
 #include "YODA/Exceptions.h"
@@ -16,6 +17,7 @@
 #include <map>
 
 namespace YODA {
+
 
   // Forward declarations
   class Histo1D;
@@ -237,12 +239,16 @@ namespace YODA {
   /// @name Combining profile histos: global operators
   //@{
 
+  /// @todo More named operators.
+
+
   /// Add two profile histograms
   inline Profile1D operator + (const Profile1D& first, const Profile1D& second) {
     Profile1D tmp = first;
     tmp += second;
     return tmp;
   }
+
 
   /// Subtract two profile histograms
   inline Profile1D operator - (const Profile1D& first, const Profile1D& second) {
@@ -251,8 +257,15 @@ namespace YODA {
     return tmp;
   }
 
+
   /// Divide two profile histograms
-  Scatter2D operator / (const Profile1D& numer, const Profile1D& denom);
+  Scatter2D divide(const Profile1D& numer, const Profile1D& denom);
+
+
+  /// Divide two profile histograms
+  inline Scatter2D operator / (const Profile1D& numer, const Profile1D& denom) {
+    return divide(numer, denom);
+  }
 
   //@}
 

@@ -114,7 +114,7 @@ namespace YODA {
   ///
   /// @todo Add QUAD, BINOMIAL enum for error treatment
   /// @todo Add named operator
-  Scatter2D operator / (const Histo1D& numer, const Histo1D& denom) {
+  Scatter2D divide(const Histo1D& numer, const Histo1D& denom) {
     //assert(numer._axis == denom._axis);
     Scatter2D tmp;
     for (size_t i = 0; i < numer.numBins(); ++i) {

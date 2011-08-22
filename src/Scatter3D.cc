@@ -1,27 +1,32 @@
 #include "YODA/Scatter3D.h"
 #include "YODA/Histo2D.h"
+#include "YODA/Exceptions.h"
 
 namespace YODA {
 
 
-  /// Subtract two scatters
+  // Add two scatters
+  /// @todo Implementation in a named add() function
   Scatter3D operator + (const Scatter3D& first, const Scatter3D& second) {
     /// @todo Implement
+    throw Exception("Implement me!");
     Scatter3D tmp;
     return tmp;
   }
 
 
-  /// Subtract two scatters
+  // Subtract two scatters
+  /// @todo Implementation in a named subtract() function
   Scatter3D operator - (const Scatter3D& first, const Scatter3D& second) {
     /// @todo Implement
+    throw Exception("Implement me!");
     Scatter3D tmp;
     return tmp;
   }
 
 
   /// Divide two scatters
-  Scatter3D operator / (const Scatter3D& numer, const Scatter3D& denom) {
+  Scatter3D divide(const Scatter3D& numer, const Scatter3D& denom) {
     Scatter3D tmp;
     for (size_t i = 0; i < numer.numPoints(); ++i) {
       const Point3D& p1 = numer.point(i);

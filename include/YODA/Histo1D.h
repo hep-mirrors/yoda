@@ -263,12 +263,16 @@ namespace YODA {
   /// @name Combining histos: global operators
   //@{
 
+  /// @todo More named operators.
+
+
   /// Add two histograms
   inline Histo1D operator + (const Histo1D& first, const Histo1D& second) {
     Histo1D tmp = first;
     tmp += second;
     return tmp;
   }
+
 
   /// Subtract two histograms
   inline Histo1D operator - (const Histo1D& first, const Histo1D& second) {
@@ -277,8 +281,15 @@ namespace YODA {
     return tmp;
   }
 
+
   /// Divide two histograms
-  Scatter2D operator / (const Histo1D& numer, const Histo1D& denom);
+  Scatter2D divide(const Histo1D& numer, const Histo1D& denom);
+
+
+  /// Divide two histograms
+  inline Scatter2D operator / (const Histo1D& numer, const Histo1D& denom) {
+    return divide(numer, denom);
+  }
 
   //@}
 

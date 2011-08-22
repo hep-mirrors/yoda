@@ -299,7 +299,12 @@ namespace YODA {
   Scatter3D operator - (const Scatter3D& first, const Scatter3D& second);
 
   /// Divide two scatters
-  Scatter3D operator / (const Scatter3D& numer, const Scatter3D& denom);
+  Scatter3D divide(const Scatter3D& numer, const Scatter3D& denom);
+
+  /// Divide two scatters
+  inline Scatter3D operator / (const Scatter3D& numer, const Scatter3D& denom) {
+    return divide(numer, denom);
+  }
 
   //@}
 

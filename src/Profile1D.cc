@@ -85,7 +85,7 @@ namespace YODA {
 
 
   /// Divide two profile histograms
-  Scatter2D operator / (const Profile1D& numer, const Profile1D& denom) {
+  Scatter2D divide(const Profile1D& numer, const Profile1D& denom) {
     //assert(numer._axis == denom._axis);
     Scatter2D tmp;
     for (size_t i = 0; i < numer.numBins(); ++i) {

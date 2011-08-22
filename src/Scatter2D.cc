@@ -50,7 +50,8 @@ namespace YODA {
   ///   C++ way to do it better, since functors for value and error combination are *so* heavy.
 
 
-  /// Subtract two scatters
+  // Add two scatters
+  /// @todo Implementation in a named add() function
   Scatter2D operator + (const Scatter2D& first, const Scatter2D& second) {
     Scatter2D tmp;
     for (size_t i = 0; i < first.numPoints(); ++i) {
@@ -70,7 +71,8 @@ namespace YODA {
   }
 
 
-  /// Subtract two scatters
+  // Subtract two scatters
+  /// @todo Implementation in a named subtract() function
   Scatter2D operator - (const Scatter2D& first, const Scatter2D& second) {
     Scatter2D tmp;
     for (size_t i = 0; i < first.numPoints(); ++i) {
@@ -90,8 +92,8 @@ namespace YODA {
   }
 
 
-  /// Divide two scatters
-  Scatter2D operator / (const Scatter2D& numer, const Scatter2D& denom) {
+  // Divide two scatters
+  Scatter2D divide(const Scatter2D& numer, const Scatter2D& denom) {
     Scatter2D tmp;
     for (size_t i = 0; i < numer.numPoints(); ++i) {
       const Point2D& p1 = numer.point(i);
