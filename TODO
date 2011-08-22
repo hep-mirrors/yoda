@@ -7,6 +7,8 @@ NOW
 
 * Rebinning in 1D: merges of n adjacent bins (AB)
 
+* Add copy assignment to Point/Scatter3D and Dbn1D/2D.
+
 * Add bin removal to Axis2D: should allow removal of the "ghost" mechanism and
   hence clean up the Axis2D::Bins type. Clean and comment the caching
   mechanism. (MICHAL)

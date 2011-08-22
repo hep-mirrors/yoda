@@ -45,6 +45,7 @@ namespace YODA {
 
 // Bin base classes and contained distributions
 %include "YODA/Bin.h"
+%feature("ignore") YODA::Bin1D::operator=;
 %include "YODA/Bin1D.h"
 %include "YODA/Bin2D.h"
 %include "YODA/Dbn1D.h"
@@ -53,6 +54,8 @@ namespace YODA {
 
 // Histos
 %template(Bin1DDbn1D) YODA::Bin1D<YODA::Dbn1D>;
+%feature("ignore") YODA::HistoBin1D::operator=;
+%feature("ignore") YODA::Histo1D::operator=;
 %include "YODA/HistoBin1D.h"
 %include "YODA/Histo1D.h"
 // %feature("ignore") std::vector<YODA::HistoBin1D>::vector(size_type size);
@@ -65,6 +68,8 @@ namespace YODA {
 %feature("ignore") YODA::HistoBin2D::transformY;
 %feature("ignore") YODA::Histo2D::mkProfileX;
 %feature("ignore") YODA::Histo2D::mkProfileY;
+%feature("ignore") YODA::HistoBin2D::operator=;
+%feature("ignore") YODA::Histo2D::operator=;
 %include "YODA/HistoBin2D.h"
 %include "YODA/Histo2D.h"
 // %feature("ignore") std::vector<YODA::HistoBin2D>::vector(size_type size);
@@ -74,6 +79,8 @@ namespace YODA {
 
 // Profile histos
 %template(Bin1DDbn2D) YODA::Bin1D<YODA::Dbn2D>;
+%feature("ignore") YODA::ProfileBin1D::operator=;
+%feature("ignore") YODA::Profile1D::operator=;
 %include "YODA/ProfileBin1D.h"
 %include "YODA/Profile1D.h"
 // %feature("ignore") std::vector<YODA::ProfileBin1D>::vector(size_type size);
@@ -90,6 +97,8 @@ namespace YODA {
 %ignore operator <=(const YODA::Point2D&, const YODA::Point2D&);
 %ignore operator >(const YODA::Point2D&, const YODA::Point2D&);
 %ignore operator >=(const YODA::Point2D&, const YODA::Point2D&);
+%feature("ignore") YODA::Point2D::operator=;
+%feature("ignore") YODA::Scatter2D::operator=;
 %include "YODA/Point2D.h"
 %include "YODA/Scatter2D.h"
 
@@ -99,6 +108,9 @@ namespace YODA {
 %ignore operator <=(const YODA::Point3D&, const YODA::Point3D&);
 %ignore operator >(const YODA::Point3D&, const YODA::Point3D&);
 %ignore operator >=(const YODA::Point3D&, const YODA::Point3D&);
+/// @todo Uncomment when these methods exist
+// %feature("ignore") YODA::Point3D::operator=;
+// %feature("ignore") YODA::Scatter3D::operator=;
 %include "YODA/Point3D.h"
 %include "YODA/Scatter3D.h"
 
