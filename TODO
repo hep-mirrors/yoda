@@ -23,6 +23,7 @@ NOW
   equivalently x-binned Profile1D. Perhaps use this as an opportunity to
   implement one of the the conversion functions mentioned in the NEXT
   section... (MICHAL)
+  MK: Conversion function implemented, no tests yet, though.
 
 * Conversion functions to build Histo1D and Profile1D objects for slicings and
   marginalisations along both X and Y directions of 2D histos. Throw an
@@ -32,6 +33,7 @@ NOW
       should be included in these slicings.
   MK: Profile1D done. Outflows done. Needs a check if the outflows for Histo1D are
       done in the right way.
+  MK: Corrected the outflows to be appropriate.
 
 * New "flat" file format: adapt WriterYODA and fill ReaderYODA. (HH)
   Need to persist the whole-histo Dbn1D/Dbn2Ds, and over/underflows.

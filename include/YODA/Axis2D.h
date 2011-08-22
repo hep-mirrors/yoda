@@ -449,7 +449,7 @@ namespace YODA {
       if(!_isGrid) throw GridError("This operation can only be performed when an array is a grid!");
       if(index >= _bins.size()) throw RangeError("Index is bigger than the size of bins vector!");
 
-      /// Find the column nuber
+      /// Find the row nuber
       size_t ret  = (*_binHashSparse.second._cache.lower_bound(approx(bin(index).xMin()))).second;     
       return ret;
 }
@@ -459,6 +459,39 @@ namespace YODA {
       return _isGrid;
     }
 
+    /// @brief Bin eraser
+    /// Removes a bin at a position. Additionally, modifies bin cache to
+    /// make it represent the new bin set.
+    void eraseBin(size_t index) {
+      /// Check the correctness of assumptions
+      if(index >= _bins.size()) throw RangeError("Index is bigger than the size of bins vector!");
+
+      _bins.erase(_bins.begin() + index);
+      /// Check if delimiter if recomputed after every for run.
+      for(size_t i = 0; i < _binHashSparse.first.size(); ++i) {
+        for(size_t j = 0; j < _binHashSparse.first[i].second.size(); ++j) {
+          if(_binHashSparse.first[i].second[j].first == index) {
+            _binHashSparse.first[i].second.erase(_binHashSparse.first[i].second.begin() + j);
+            j--;
+          }
+          else if(_binHashSparse.first[i].second[j].first > index) {
+            _binHashSparse.first[i].second[j].first--;
+          }
+        }
+      }
+      
+      for(size_t i = 0; i < _binHashSparse.second.size(); ++i) {
+        for(size_t j = 0; j < _binHashSparse.second[i].second.size(); ++j) {
+          if(_binHashSparse.second[i].second[j].first == index) {
+            _binHashSparse.second[i].second.erase(_binHashSparse.second[i].second.begin() + j);
+            j--;
+          }
+          else if(_binHashSparse.second[i].second[j].first > index) {
+            _binHashSparse.second[i].second[j].first--;
+          }
+        }
+      }
+    }
     //@}
 
 

@@ -64,11 +64,10 @@ namespace YODA {
     Histo2D(const Histo2D& h, const std::string& path="")
       : AnalysisObject("Histo2D", (path.size() == 0) ? h.path() : path, h, h.title())
     {
-      cout << " blah" << endl << endl << endl;
-     cout << "dasdasd"; 
-      cout << "in" << endl;
+      cout << "lsadlksdjflksdhkjf" << endl;
+      if(_axis.outflows().size() == h._axis.outflows().size()) cout << "equals" << endl;
+      else cout << "non" << endl;
       _axis = h._axis;
-      cout << "out" << endl;
     }
 
 
@@ -128,6 +127,10 @@ namespace YODA {
     /// Merge the bins
     void mergeBins(size_t from, size_t to) {
       _axis.mergeBins(from, to);
+    }
+
+    void eraseBin(size_t index) {
+      _axis.eraseBin(index);
     }
 
     //@}
