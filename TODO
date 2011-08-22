@@ -7,8 +7,8 @@ NOW
 
 * Rebinning: merges of n adjacent bins (AB for 1D)
 
-* Add copy constructors and assignment operators for Dbn1D/2D, Scatter2D,
-  Histo/ProfileBin1D, Point2D. (AB)
+* Add copy constructors and assignment operators for Histo/Profile1D & Scatter2D
+  (AB)
 
 * Rework Axis1D to operate as Axis2D does (MICHAL)
 

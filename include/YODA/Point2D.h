@@ -71,7 +71,20 @@ namespace YODA {
     {  }
 
 
-    /// @todo Add copy constructor
+    /// Copy constructor
+    Point2D(const Point2D& p)
+      : _x(p._x), _y(p._y), _ex(p._ex), _ey(p._ey)
+    {  }
+
+
+    /// Copy assignment
+    Point2D& operator = (const Point2D& p) {
+      _x = p._x;
+      _y = p._y;
+      _ex = p._ex;
+      _ey = p._ey;
+      return *this;
+    }
 
     //@}
 
