@@ -3,9 +3,6 @@ YODA TODO list
 
 NOW
 
-* Check if the weight2 treatment in Dbn1D is really correct: we're currently
-  multiplying it by sign(w). Hmm. (AB)
-
 * Bin division: add quadratic / binomial error treatment enum option (AB)
 
 * Rebinning: merges of n adjacent bins (AB for 1D)
