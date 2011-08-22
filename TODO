@@ -5,15 +5,19 @@ NOW
 
 * Bin division: add quadratic / binomial error treatment enum option (AB)
 
-* Rebinning: merges of n adjacent bins (AB for 1D)
+* Rebinning in 1D: merges of n adjacent bins (AB)
 
-* Rework Axis1D to operate as Axis2D does (MICHAL)
+* Add bin removal to Axis2D: should allow removal of the "ghost" mechanism and
+  hence clean up the Axis2D::Bins type. Clean and comment the caching
+  mechanism. (MICHAL)
+
+* Rework Axis1D to operate as Axis2D does. (MICHAL)
 
 * Template Bin2D and HistoBin2D on DBN type (Dbn2D/3D) cf. Bin1D<DBN>
 
 * Rebinning: global rebinning by integer factor(s) (AB for 1D, MICHAL for 2D)
   Different rebinning factors for X and Y in 2D. Implement for 1D first,
-  to define the conventions.
+  to define the conventions. (AB)
 
 * Test that a y-binned Histo2D has the same per-y-column stats as an
   equivalently x-binned Profile1D. Perhaps use this as an opportunity to
