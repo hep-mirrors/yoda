@@ -354,7 +354,18 @@ namespace YODA {
       size_t index2 = _binaryS(to, 0, _binHashSparse.size());
       return !(index1 == index2);
     }
+    
+    /// Check if there are any gaps in the Axis
+    bool _isGapless(size_t from, size_t to) {
+      size_t start =  _binaryS(_bins[from].xMin(), 0, _binHashSparse.size());
+      size_t end =    _binaryS(_bins[to].xMin(), 0, _binHashSparse.size());
+      for(size_t i = start; i < end; i++) { 
+        if(!fuzzyEquals(_binHashSparse[i].first, _binHashSparse[i+1].first) &&
+           _binHashSparse[i].second != _binHashSparse[i+1].second) return false;
+      }
 
+      return true;
+    }
   private:
     /// @name Data structures
     //@{
