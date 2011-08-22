@@ -7,8 +7,6 @@
 #include "YODA/Utils/MathUtils.h"
 
 #include <string>
-#include <iostream>
-using namespace std;
 
 namespace YODA {
   /// @brief 1D bin container
