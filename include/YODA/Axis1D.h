@@ -1,8 +1,3 @@
-// -*- C++ -*-
-//
-// This file is part of YODA -- Yet more Objects for Data Analysis
-// Copyright (C) 2008-2011 The YODA collaboration (see AUTHORS for details)
-//
 #ifndef YODA_Axis1D_h
 #define YODA_Axis1D_h
 
@@ -10,149 +5,94 @@
 #include "YODA/Exceptions.h"
 #include "YODA/Bin.h"
 #include "YODA/Utils/MathUtils.h"
+
 #include <string>
-#include <cassert>
-#include <cmath>
-#include <algorithm>
+#include <iostream>
+using namespace std;
 
 namespace YODA {
-
-
-  /// @brief A 1D templated container of ordered bins
-  ///
-  /// This class is separately templated on the bin and distribution types.
   template <typename BIN1D, typename DBN>
   class Axis1D {
-  public:
+    public:
+      typedef BIN1D Bin;
+      typedef typename std::vector<BIN1D> Bins;
+      typedef typename std::pair<double, size_t> Edge;
 
+    /// @name Constructors
+    //@{
 
-    typedef BIN1D Bin;
-    typedef typename std::vector<BIN1D> Bins;
-
-
-    // /// @name Helper functions to make bin edge vectors (see @file MathUtils.h)
-    // //@{
-
-    // static inline std::vector<double> mkBinEdgesLin(double start, double end, size_t nbins) {
-    //   return linspace(start, end, nbins);
-    // }
-
-    // static inline std::vector<double> mkBinEdgesLog(double start, double end, size_t nbins) {
-    //   return logspace(start, end, nbins);
-    // }
-
-    // //@}
-
-
-  public:
-
-
-    /// Null constructor.
-    /// @todo Remove if we can.
+    /// Empty constructor
     Axis1D() { }
 
-
     /// Constructor with a list of bin edges
-    /// @todo Accept a general iterable and remove this silly special-casing for std::vector
     Axis1D(const std::vector<double>& binedges) {
-      assert(binedges.size() > 1);
       _mkAxis(binedges);
     }
 
-
-    /// Constructor with histogram limits, number of bins, and a bin distribution enum
+    /// Constructor with histogram limits, number of bins and a bin distribution enum
     Axis1D(size_t nbins, double lower, double upper) {
-      std::cout << lower << " " << upper << std::endl;
       _mkAxis(linspace(lower, upper, nbins));
     }
 
-
-    /// @todo Accept a general iterable and remove this silly special-casing for std::vector
     Axis1D(const std::vector<BIN1D>& bins) {
-      assert(!bins.empty());
-      Bins sbins;
-      for (typename std::vector<BIN1D>::const_iterator b = bins.begin(); b != bins.end(); ++b) {
-        sbins.push_back(*b);
-      }
-      _mkAxis(sbins);
-    }
-
-
-    /// @brief State-setting constructor
-    /// Principally intended for internal persistency use.
-    Axis1D(const Bins& bins, const DBN& dbn_tot, const DBN& dbn_uflow, const DBN& dbn_oflow)
-      : _dbn(dbn_tot), _underflow(dbn_uflow), _overflow(dbn_oflow)
-    {
-      assert(!bins.empty());
       _mkAxis(bins);
     }
 
-
-    /////////////////////
-
-
-  public:
-
+    /// State-setting constructor
+    Axis1D(const Bins& bins, const DBN& dbn_tot, const DBN& dbn_uflow, const DBN& dbn_oflow)
+      : _dbn(dbn_tot), _underflow(dbn_uflow), _overflow(dbn_oflow)
+    {
+      _mkAxis(bins);
+    }
+    //@}
+    
+    /// @name Statistics accessor functions
+    //@{
     /// Get the number of bins on the axis
-    unsigned int numBins() const {
+    size_t numBins() const {
       return _bins.size();
     }
 
-
-    // void addBin() {
-    // }
-
-
+    /// Return the array of bins (non-const)
     Bins& bins() {
       return _bins;
     }
-
 
     const Bins& bins() const {
       return _bins;
     }
 
-
-    std::pair<double,double> binEdges(size_t binId) const {
-      assert(binId < numBins());
-      return std::make_pair(_cachedBinEdges[binId], _cachedBinEdges[binId+1]);
-    }
-
-
     double lowEdge() const {
-      return _bins.front().lowEdge();
+      return _binHashSparse.front().first;
     }
-    double xMin() const { return lowEdge(); }
-
+    double xMin() const { return lowEdge();}
 
     double highEdge() const {
-      return _bins.back().highEdge();
+      return _binHashSparse.back().first;
     }
-    double xMax() const { return highEdge(); }
+    double xMax() const { return highEdge();}
 
-
-    BIN1D& bin(size_t index) {
-      if (index >= numBins())
-        throw RangeError("YODA::Histo: index out of range");
+    BIN1D& bin (size_t index) {
+      if(index >= numBins()) throw RangeError("YODA::Histo1D: index out of range!");
       return _bins[index];
     }
-
-
-    const BIN1D& bin(size_t index) const {
-      if (index >= numBins())
-        throw RangeError("YODA::Histo: index out of range");
+    
+    const BIN1D& bin (size_t index) const {
+      if(index >= numBins()) throw RangeError("YODA::Histo1D: index out of range!");
       return _bins[index];
     }
-
-
+    
     BIN1D& binByCoord(double x) {
-      return bin(findBinIndex(x));
+      int index = getBinIndex(x);
+      if(index == -1) throw RangeError("There is no bin at the specified x");
+      return bin(index);
     }
 
     const BIN1D& binByCoord(double x) const {
-      return bin(findBinIndex(x));
+      int index = getBinIndex(x);
+      if(index == -1) throw RangeError("There is no bin at the specified x");
+      return bin(index);
     }
-
 
     DBN& totalDbn() {
       return _dbn;
@@ -162,7 +102,6 @@ namespace YODA {
       return _dbn;
     }
 
-
     DBN& underflow() {
       return _underflow;
     }
@@ -171,7 +110,6 @@ namespace YODA {
       return _underflow;
     }
 
-
     DBN& overflow() {
       return _overflow;
     }
@@ -179,185 +117,160 @@ namespace YODA {
     const DBN& overflow() const {
       return _overflow;
     }
+    //@}
 
+    int getBinIndex(double coord) const {
+      coord += 0.00000000001; 
+      
+      size_t index = _binaryS(coord, 0, _binHashSparse.size());
 
-    size_t findBinIndex(double coord) const {
-      if (!inRange(coord, _cachedBinEdges[0], _cachedBinEdges[numBins()])) {
-        throw RangeError("Coordinate is outside the valid range: you should request the underlow or overflow");
+      if(index == _binHashSparse.size() - 1) return -1;
+
+      if(_binHashSparse[index].second == _binHashSparse[index+1].second ||
+         _binHashSparse[index].second == _binHashSparse[index-1].second) {
+        return _binHashSparse[index].second;
       }
-      size_t i = _binHash.upper_bound(coord)->second;
-      return i;
+      return -1;
     }
 
-
-    /// Reset this axis' distributions to an unfilled state
     void reset() {
       _dbn.reset();
       _underflow.reset();
       _overflow.reset();
-      foreach (Bin& b, bins()) {
-        b.reset();
-      }
+      for(size_t i = 0; i < _bins.size(); ++i) _bins[i].reset();
     }
 
-
-    /// @brief Merge bins so that bin widths are roughly increased by a factor @a factor.
-    /// Note that rebinnings to this factor have to be approximate, since bins are discrete.
     void rebin(int factor) {
-      assert(factor >= 1);
-      /// @todo Implement! Requires ability to change bin edges from outside...
-      throw std::runtime_error("Rebinning is not yet implemented! Pester me, please.");
+      throw std::runtime_error("Implement!");
     }
-
-
-    /// Merge a bin range @a binindex1 to @a binindex2 into a single bin.
-    void mergeBins(size_t binindex1, size_t binindex2) {
-      if (binindex1 > binindex2) throw RangeError("binindex1 is greater than binindex2");
-      if (binindex1 < 0 || binindex1 >= numBins()) throw RangeError("binindex1 is out of range");
-      if (binindex2 < 0 || binindex2 >= numBins()) throw RangeError("binindex2 is out of range");
-
-      for (size_t i = binindex1; i <= binindex2; ++i) {
-        /// @todo
-      }
-      //DBN
-      BIN1D newbin(bin(binindex1).xMin(), bin(binindex1).xMax());
-      /// @todo Implement! Requires ability to change bin edges from outside...
-      throw std::runtime_error("Rebinning is not yet implemented! Pester me, please.");
+    
+    void mergeBins(size_t from, size_t to) {
+      /// Correctness checking
+      if(from < 0 || from >= numBins()) throw ("First index is out of range!");
+      if(to < 0 || to >= numBins()) throw ("Second index is out of range!");
+      if(_bins[from].xMin() > _bins[to].xMin()) throw RangeError("The starting bin is greater than ending bin!");
+      throw std::runtime_error("Implement!");  
+      //@todo Implement!
     }
-
-
-    /// Scale the axis coordinates (i.e. bin edges).
+    
     void scaleX(double scalefactor) {
-       _dbn.scaleX(scalefactor);
-       _underflow.scaleW(scalefactor);
-       _overflow.scaleW(scalefactor);
-       for (int i = 0; i < _bins.size(); ++i) _bins[i].scaleX(scalefactor);
-       for (int i = 0; i < _cachedBinEdges.size(); ++i) _cachedBinEdges[i] *= scalefactor;
-       _mkBinHash();
+      _dbn.scaleX(scalefactor);
+      _underflow.scaleX(scalefactor);
+      _overflow.scaleW(scalefactor);
+      for(size_t i = 0; i < _bins.size(); ++i) _bins[i].scaleX(scalefactor);
+
+      _mkBinHash();
     }
-
-
-    /// Scale the weights, as if all fills so far had used weights which differed by the given factor.
+    
     void scaleW(double scalefactor) {
       _dbn.scaleW(scalefactor);
       _underflow.scaleW(scalefactor);
       _overflow.scaleW(scalefactor);
-      for (typename Bins::iterator b = _bins.begin(); b != _bins.end(); ++b) {
-        b->scaleW(scalefactor);
-      }
+      for(size_t i = 0; i < _bins.size(); ++i) _bins[i].scaleW(scalefactor);
     }
-
-
+  
   public:
-
     bool operator == (const Axis1D& other) const {
-      /// @todo Need/want to compare bin hash?
-      return
-        _cachedBinEdges == other._cachedBinEdges &&
-        _binHash == other._binHash;
+      return _binHashSparse == other._binHashSparse;
     }
-
 
     bool operator != (const Axis1D& other) const {
       return ! operator == (other);
     }
 
-
     Axis1D<BIN1D,DBN>& operator += (const Axis1D<BIN1D,DBN>& toAdd) {
-      if (*this != toAdd) {
-        throw LogicError("YODA::Histo1D: Cannot add axes with different binnings.");
+      if(*this != toAdd) throw LogicError("YODA::Histo1D: Cannot add axes with differen binnings.");
+      
+      for(size_t i = 0; i < _bins.size(); ++i) {
+        _bins[i] += toAdd.bins().at(i);
       }
-      for (size_t i = 0; i < bins().size(); ++i) {
-        bins().at(i) += toAdd.bins().at(i);
-      }
+
       _dbn += toAdd._dbn;
       _underflow += toAdd._underflow;
-      _overflow  += toAdd._overflow;
+      _overflow += toAdd._overflow;
       return *this;
     }
 
-
     Axis1D<BIN1D,DBN>& operator -= (const Axis1D<BIN1D,DBN>& toSubtract) {
-      if (*this != toSubtract) {
-        throw LogicError("YODA::Histo1D: Cannot subtract axes with different binnings.");
+      if(*this != toSubtract) throw LogicError("YODA::Histo1D: Cannot add axes with differen binnings.");
+      
+      for(size_t i = 0; i < _bins.size(); ++i) {
+        _bins[i] -= toSubtract.bins().at(i);
       }
-      for (size_t i = 0; i < bins().size(); ++i) {
-        bins().at(i) += toSubtract.bins().at(i);
-      }
-      _dbn -= toSubtract._dbn;
-      _underflow -= toSubtract._underflow;
-      _overflow  -= toSubtract._overflow;
+
+      _dbn += toSubtract._dbn;
+      _underflow += toSubtract._underflow;
+      _overflow += toSubtract._overflow;
       return *this;
     }
 
 
   private:
-
-    /// @todo Remove
-    void _mkBinHash() {
-      /// @todo Reset cached edges and the hash map
-      for (size_t i = 0; i < numBins(); i++) {
-        // Insert upper bound mapped to bin ID
-        _binHash.insert(std::make_pair(_cachedBinEdges[i+1],i));
-      }
-    }
-
-
     void _mkAxis(const std::vector<double>& binedges) {
-      const size_t nbins = binedges.size() - 1;
-      for (size_t i = 0; i < nbins; ++i) {
-        _bins.push_back( BIN1D(binedges.at(i), binedges.at(i+1)) );
+      for(size_t i = 0; i < binedges.size() - 1; ++i) {
+        if(!_findCuts(binedges[i], binedges[i+1])) {
+          _bins.push_back(BIN1D(binedges[i], binedges[i+1]));
+        }
       }
-      std::sort(_bins.begin(), _bins.end());
 
-      /// @todo Remove
-      _cachedBinEdges = binedges;
-      std::sort(_cachedBinEdges.begin(), _cachedBinEdges.end());
       _mkBinHash();
     }
-
 
     void _mkAxis(const Bins& bins) {
       _bins = bins;
-      std::sort(_bins.begin(), _bins.end());
-
-      /// @todo Remove
-      for (size_t i = 0; i < bins.size(); ++i) {
-        _cachedBinEdges.push_back(bins.at(i).lowEdge());
-      }
-      _cachedBinEdges.push_back(bins.back().highEdge());
       _mkBinHash();
     }
 
+    void _mkBinHash() {
+      _binHashSparse.clear();
+
+      for(size_t i = 0; i < _bins.size(); ++i) {
+        _binHashSparse.push_back(std::make_pair(_bins[i].xMin(), i));
+        _binHashSparse.push_back(std::make_pair(_bins[i].xMax(), i));
+      }
+
+      std::sort(_binHashSparse.begin(), _binHashSparse.end());
+    }
+
+    size_t _binaryS(double value, size_t lower, size_t higher) const {
+      if(lower == higher) return lower;
+      size_t where = (higher+lower)/2;
+
+      if(value >= _binHashSparse[where].first) {
+        if(where == _binHashSparse.size() - 1) return where;
+        if(value <= _binHashSparse[where+1].first) return where;
+        return _binaryS(value, where, higher);
+      }
+
+      if (where == 0) return where;
+      if (value >= _binHashSparse[where-1].first) return where;
+      return _binaryS(value, lower, where);
+    }
+
+    bool _findCuts(const double& from, const double& to) const {
+      size_t index1 = _binaryS(from, 0, _binHashSparse.size());
+      size_t index2 = _binaryS(to, 0, _binHashSparse.size());
+      return !(index1 == index2);
+    }
 
   private:
-
-
-    /// @name Bin data
+    /// @name Data structures
     //@{
-
-    /// The bins contained in this histogram
+    
+    /// Bins vector
     Bins _bins;
 
-    /// A distribution counter for the whole histogram
+    /// Total distribution
     DBN _dbn;
 
-    /// A distribution counter for overflow fills
-    DBN _underflow;
-    /// A distribution counter for underflow fills
-    DBN _overflow;
+    /// Under- and over- flows
+    DBN _underflow; DBN _overflow;
 
-    /// Bin edges (nbins + 1) cached for speed
-    std::vector<double> _cachedBinEdges;
-
-    /// Map for fast bin lookup
-    std::map<double,size_t> _binHash;
+    /// Cached bin edges
+    std::vector<Edge> _binHashSparse;
 
     //@}
-
   };
-
-
 
   template <typename BIN1D, typename DBN>
   Axis1D<BIN1D,DBN> operator + (const Axis1D<BIN1D,DBN>& first, const Axis1D<BIN1D,DBN>& second) {
@@ -365,8 +278,7 @@ namespace YODA {
     tmp += second;
     return tmp;
   }
-
-
+  
   template <typename BIN1D, typename DBN>
   Axis1D<BIN1D,DBN> operator - (const Axis1D<BIN1D,DBN>& first, const Axis1D<BIN1D,DBN>& second) {
     Axis1D<BIN1D,DBN> tmp = first;
@@ -374,8 +286,7 @@ namespace YODA {
     return tmp;
   }
 
-
-
 }
 
 #endif
+
