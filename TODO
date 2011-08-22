@@ -4,6 +4,7 @@ YODA TODO list
 NOW
 
 * Bin division: add quadratic / binomial error treatment enum option (AB)
+  AB: done... needs to be checked. Add a test that y +- 1sigma in [0, 1]
 
 * Rebinning in 1D: merges of n adjacent bins (AB)
 

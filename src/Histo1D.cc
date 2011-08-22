@@ -110,31 +110,49 @@ namespace YODA {
   ////////////////////////////////////////
 
 
-  /// Divide two histograms
-  ///
-  /// @todo Add QUAD, BINOMIAL enum for error treatment
-  /// @todo Add named operator
-  Scatter2D divide(const Histo1D& numer, const Histo1D& denom) {
-    //assert(numer._axis == denom._axis);
+  // Divide two histograms
+  Scatter2D divide(const Histo1D& numer, const Histo1D& denom,
+                   ErrorCombination erropt) {
+    //if (!numer._axis.compatible(denom._axis)) ...
+
     Scatter2D tmp;
     for (size_t i = 0; i < numer.numBins(); ++i) {
       const HistoBin1D& b1 = numer.bin(i);
       const HistoBin1D& b2 = denom.bin(i);
-      const HistoBin1D& bL = b1 + b2;
+      const HistoBin1D bL = b1 + b2;
 
-      assert(fuzzyEquals(b1.midpoint(), b2.midpoint()));
+      /// @todo Can't we do this check with a method on Axis1D?
+      if (!fuzzyEquals(b1.midpoint(), b2.midpoint())) {
+        throw BinningError("Axis binnings are not equivalent");
+      }
 
       const double x = bL.focus();
+      /// @todo Use exceptions instead, since this is a user-inducible error
       assert(fuzzyEquals(b1.xMin(), b2.xMin()));
       assert(fuzzyEquals(b1.xMax(), b2.xMax()));
       const double exminus = x - b1.xMin();
       const double explus = b1.xMax() - x;
+      /// @todo Use exceptions instead, since this is a user-inducible error
       assert(exminus >= 0);
       assert(explus >= 0);
       //
       const double y = b1.height() / b2.height();
-      const double ey = y * sqrt( sqr(b1.heightErr()/b1.height()) + sqr(b2.heightErr()/b2.height()) );
+      double ey = -1;
+
+      switch (erropt) {
+      case QUAD:
+        ey = y * sqrt( sqr(b1.heightErr()/b1.height()) + sqr(b2.heightErr()/b2.height()) );
+        break;
+      case BINOMIAL:
+        /// @todo Check that this is correct
+        /// @todo I think this is only valid if the fills of b1 are a subset of the fills of b2. Throw an
+        /// error if Neff(b1) > Neff(b2)
+        ey = std::sqrt( b1.effNumEntries() * (1- b1.effNumEntries()/b2.effNumEntries()) )/b2.effNumEntries();
+        break;
+      }
+
       tmp.addPoint(x, exminus, explus, y, ey, ey);
+
     }
     assert(tmp.numPoints() == numer.numBins());
     return tmp;

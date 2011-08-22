@@ -187,6 +187,11 @@ namespace YODA {
       return _dbn.numEntries();
     }
 
+    /// The number of entries
+    unsigned long effNumEntries() const {
+      return _dbn.effNumEntries();
+    }
+
     /// The sum of weights
     double sumW() const {
       return _dbn.sumW();
