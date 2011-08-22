@@ -239,22 +239,31 @@ namespace YODA {
   /// @name Combining profile histos: global operators
   //@{
 
-  /// @todo More named operators.
-
-
   /// Add two profile histograms
-  inline Profile1D operator + (const Profile1D& first, const Profile1D& second) {
+  inline Profile1D add(const Profile1D& first, const Profile1D& second) {
     Profile1D tmp = first;
     tmp += second;
     return tmp;
   }
 
 
+  /// Add two profile histograms
+  inline Profile1D operator + (const Profile1D& first, const Profile1D& second) {
+    return add(first, second);
+  }
+
+
   /// Subtract two profile histograms
-  inline Profile1D operator - (const Profile1D& first, const Profile1D& second) {
+  inline Profile1D subtract(const Profile1D& first, const Profile1D& second) {
     Profile1D tmp = first;
     tmp -= second;
     return tmp;
+  }
+
+
+  /// Subtract two profile histograms
+  inline Profile1D operator - (const Profile1D& first, const Profile1D& second) {
+    return subtract(first, second);
   }
 
 

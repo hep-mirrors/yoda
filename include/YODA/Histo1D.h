@@ -263,22 +263,31 @@ namespace YODA {
   /// @name Combining histos: global operators
   //@{
 
-  /// @todo More named operators.
-
-
   /// Add two histograms
-  inline Histo1D operator + (const Histo1D& first, const Histo1D& second) {
+  inline Histo1D add(const Histo1D& first, const Histo1D& second) {
     Histo1D tmp = first;
     tmp += second;
     return tmp;
   }
 
 
+  /// Add two histograms
+  inline Histo1D operator + (const Histo1D& first, const Histo1D& second) {
+    return add(first, second);
+  }
+
+
   /// Subtract two histograms
-  inline Histo1D operator - (const Histo1D& first, const Histo1D& second) {
+  inline Histo1D subtract(const Histo1D& first, const Histo1D& second) {
     Histo1D tmp = first;
     tmp -= second;
     return tmp;
+  }
+
+
+  /// Subtract two histograms
+  inline Histo1D operator - (const Histo1D& first, const Histo1D& second) {
+    return subtract(first, second);
   }
 
 
