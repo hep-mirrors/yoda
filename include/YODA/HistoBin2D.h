@@ -103,20 +103,15 @@ namespace YODA {
     /// @brief Transformer taking x as the primary axis of ProfileBin1D
     /// @todo Need to think about the name, and clarify what "primary axis" means
     ProfileBin1D transformX() {
-      Dbn1D dbny(_dbn.numEntries(), _dbn.sumW(), _dbn.sumW2(), _dbn.sumWY(), _dbn.sumWY2());
-      Dbn1D dbnx(_dbn.numEntries(), _dbn.sumW(), _dbn.sumW2(), _dbn.sumWX(), _dbn.sumWX2());
-      ProfileBin1D ret(xMin(), xMax(), dbnx, dbny);
-
+      ProfileBin1D ret(xMin(), xMax(), Dbn2D(_dbn));
       return ret;
     }
 
     /// @brief Transformer taking y as the primary axis of ProfileBin1D
     /// @todo Need to think about the name, and clarify what "primary axis" means
     ProfileBin1D transformY() {
-      Dbn1D dbny(_dbn.numEntries(), _dbn.sumW(), _dbn.sumW2(), _dbn.sumWY(), _dbn.sumWY2());
-      Dbn1D dbnx(_dbn.numEntries(), _dbn.sumW(), _dbn.sumW2(), _dbn.sumWX(), _dbn.sumWX2());
-      ProfileBin1D ret(yMin(), yMax(), dbny, dbnx);
-
+      Dbn2D dbn = _dbn; dbn.flipXY();
+      ProfileBin1D ret(yMin(), yMax(), Dbn2D(dbn));
       return ret;
     }
 

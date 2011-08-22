@@ -19,7 +19,7 @@ namespace YODA {
   /// This is a 1D bin type, which supports all the operations defined for
   /// a generic Bin1D object, but also supplies the specific member functions
   /// for histogram-type data, as opposed to profile-type.
-  class HistoBin1D : public Bin1D {
+  class HistoBin1D : public Bin1D<Dbn1D> {
 
   public:
 
@@ -39,13 +39,24 @@ namespace YODA {
 
 
     /// @brief Init a bin with all the components of a fill history.
+    ///
     /// Mainly intended for internal persistency use.
-    HistoBin1D(double lowedge, double highedge, const Dbn1D& dbn)
-      : Bin1D(lowedge, highedge, dbn)
+    HistoBin1D(double lowedge, double highedge, const Dbn1D& dbnx)
+      : Bin1D(lowedge, highedge, dbnx)
     { }
 
 
-    /// @todo Add copy constructor
+    /// Copy constructor
+    HistoBin1D(const HistoBin1D& hb)
+      : Bin1D(hb)
+    { }
+
+
+    /// Copy assignment
+    HistoBin1D& operator = (const HistoBin1D& hb) {
+      Bin1D::operator=(hb);
+      return *this;
+    }
 
     //@}
 
@@ -59,22 +70,12 @@ namespace YODA {
     void fill(double x, double weight=1.0) {
       assert( _edges.first < _edges.second );
       assert( x >= _edges.first && x < _edges.second );
-      _xdbn.fill(x, weight);
+      _dbn.fill(x, weight);
     }
 
     /// @brief Fill this bin with weight @a weight.
     void fillBin(double weight=1.0) {
       fill(midpoint(), weight);
-    }
-
-    /// Reset this bin
-    void reset() {
-      Bin1D::reset();
-    }
-
-    /// Rescale as if all fill weights had been different by factor @a scalefactor.
-    void scaleW(double scalefactor) {
-      _xdbn.scaleW(scalefactor);
     }
 
     //@}
@@ -84,6 +85,7 @@ namespace YODA {
 
     /// @name Bin content info
     //@{
+
     /// The area is the sum of weights in the bin, i.e. the
     /// width of the bin has no influence on this figure.
     double area() const {
@@ -94,6 +96,7 @@ namespace YODA {
     double height() const {
       return area() / width();
     }
+
     //@}
 
 
@@ -105,16 +108,12 @@ namespace YODA {
     double areaErr() const {
       return sqrt(sumW2());
     }
-    /// @deprecated Synonym for areaErr -- the "Err" form is the de facto standard now in YODA
-    double areaError() const { return areaErr(); }
 
     /// As for the height vs. area, the height error includes a scaling factor
     /// of the bin width, i.e. err_height = sqrt{sum{weights}} / width.
     double heightErr() const {
-      return areaError() / width();
+      return areaErr() / width();
     }
-    /// @deprecated Synonym for heightErr -- the "Err" form is the de facto standard now in YODA
-    double heightError() const { return heightErr(); }
 
     //@}
 
@@ -136,13 +135,13 @@ namespace YODA {
 
     /// Add two bins (internal, explicitly named version)
     HistoBin1D& add(const HistoBin1D& hb) {
-      Bin1D::add(hb);
+      Bin1D<Dbn1D>::add(hb);
       return *this;
     }
 
     /// Subtract one bin from another (internal, explicitly named version)
     HistoBin1D& subtract(const HistoBin1D& hb) {
-      Bin1D::subtract(hb);
+      Bin1D<Dbn1D>::subtract(hb);
       return *this;
     }
 

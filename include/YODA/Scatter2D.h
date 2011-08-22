@@ -26,6 +26,7 @@ namespace YODA {
   public:
 
     /// Type of the native Point2D collection
+    typedef Point2D Point;
     typedef Utils::sortedvector<Point2D> Points;
 
 

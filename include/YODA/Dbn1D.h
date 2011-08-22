@@ -109,17 +109,27 @@ namespace YODA {
       // This is ok, even for negative sum(w)
       return _sumWX/_sumW;
     }
+    /// Synonym for interface compatibility with Dbn2D
+    double xMean() const { return mean(); }
+
 
     /// Weighted variance, \f$ \sigma^2 \f$, of distribution.
     double variance() const;
+    /// Synonym for interface compatibility with Dbn2D
+    double xVariance() const { return variance(); }
+
 
     /// Weighted standard deviation, \f$ \sigma \f$, of distribution.
     double stdDev() const {
       return std::sqrt(variance());
     }
+    /// Synonym for interface compatibility with Dbn2D
+    double xStdDev() const { return stdDev(); }
 
     /// Weighted standard error on the mean, \f$ \sim \sigma/\sqrt{N-1} \f$, of distribution.
     double stdErr() const;
+    /// Synonym for interface compatibility with Dbn2D
+    double xStdErr() const { return stdErr(); }
 
     //@}
 

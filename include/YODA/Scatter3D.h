@@ -19,7 +19,8 @@ namespace YODA {
   class Scatter3D : public AnalysisObject {
   public:
 
-    /// Type of the native Point3D collection
+    /// Types of the native Point3D collection
+    typedef Point3D Point;
     typedef std::vector<Point3D> Points;
 
 
@@ -37,7 +38,7 @@ namespace YODA {
               const std::string& path="", const std::string& title="")
       : AnalysisObject("Scatter3D", path, title),
         _points(points)
-    {  
+    {
       std::sort(_points.begin(), _points.end());
     }
 
@@ -48,7 +49,7 @@ namespace YODA {
               const std::string& path="", const std::string& title="")
       : AnalysisObject("Scatter3D", path, title)
     {
-      if(x.size() != y.size() || y.size() != z.size() || 
+      if(x.size() != y.size() || y.size() != z.size() ||
          x.size() != ex.size() || y.size() != ey.size() || z.size() != ez.size())
         throw RangeError("There are either different amounts of points on x/y/z vectors or not every of these vectors has properly defined error vectors!");
 
@@ -83,7 +84,7 @@ namespace YODA {
       if(x.size() != y.size() || y.size() != z.size() ||
          x.size() != exminus.size() || x.size() != explus.size() ||
          y.size() != eyminus.size() || y.size() != eyplus.size() ||
-         z.size() != ezminus.size() || z.size() != ezplus.size()) 
+         z.size() != ezminus.size() || z.size() != ezplus.size())
         throw RangeError("There are either different amounts of points on x/y/z vectors or not every of these vectors has properly defined error vectors!");
 
       for (size_t i = 0; i < x.size(); ++i) {
@@ -274,7 +275,7 @@ namespace YODA {
 
       ret.addPoint(x, exminus, explus, y, eyminus, eyplus, z, ez, ez);
     }
-    
+
     return ret;
   }
 

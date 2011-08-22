@@ -1,3 +1,9 @@
+2011-08-22  Andy Buckley  <andy@insectnation.org>
+
+	* Reworking the Bin1D inheritance and composition design so that
+	all bin types store a single distribution object -- a Dbn1D for
+	histo bins and a Dbn2D for profile bins.
+
 2011-08-18  Andy Buckley  <andy@insectnation.org>
 
 	* Removing the Profile1D -> ProfileBin1D friendship. This is very

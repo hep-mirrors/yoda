@@ -63,7 +63,7 @@ namespace YODA {
     if (includeoverflows) return _axis.totalDbn().variance();
     double sigma2 = 0;
     const double mean = this->mean();
-    foreach (const Bin1D& b, bins()) {
+    foreach (const HistoBin1D& b, bins()) {
       const double diff = b.focus() - mean;
       sigma2 += diff * diff * b.sumW();
     }
@@ -87,8 +87,8 @@ namespace YODA {
     : AnalysisObject("Histo1D", (path.size() == 0) ? s.path() : path, s, s.title())
   {
     std::vector<HistoBin1D> bins;
-    for (Scatter2D::Points::const_iterator p = s.points().begin(); p != s.points().end(); ++p) {
-      bins.push_back(HistoBin1D(p->xMin(), p->xMax()));
+    foreach (const Scatter2D::Point& p, s.points()) {
+      bins.push_back(HistoBin1D(p.xMin(), p.xMax()));
     }
     _axis = Histo1DAxis(bins);
   }
@@ -99,8 +99,8 @@ namespace YODA {
     : AnalysisObject("Histo1D", (path.size() == 0) ? p.path() : path, p, p.title())
   {
     std::vector<HistoBin1D> bins;
-    for (std::vector<ProfileBin1D>::const_iterator b = p.bins().begin(); b != p.bins().end(); ++b) {
-      bins.push_back(HistoBin1D(b->xMin(), b->xMax()));
+    foreach (const ProfileBin1D& b, p.bins()) {
+      bins.push_back(HistoBin1D(b.xMin(), b.xMax()));
     }
     _axis = Histo1DAxis(bins);
 
@@ -111,6 +111,9 @@ namespace YODA {
 
 
   /// Divide two histograms
+  ///
+  /// @todo Add QUAD, BINOMIAL enum for error treatment
+  /// @todo Add named operator
   Scatter2D operator / (const Histo1D& numer, const Histo1D& denom) {
     //assert(numer._axis == denom._axis);
     Scatter2D tmp;
@@ -130,7 +133,7 @@ namespace YODA {
       assert(explus >= 0);
       //
       const double y = b1.height() / b2.height();
-      const double ey = y * sqrt( sqr(b1.heightError()/b1.height()) + sqr(b2.heightError()/b2.height()) );
+      const double ey = y * sqrt( sqr(b1.heightErr()/b1.height()) + sqr(b2.heightErr()/b2.height()) );
       tmp.addPoint(x, exminus, explus, y, ey, ey);
     }
     assert(tmp.numPoints() == numer.numBins());

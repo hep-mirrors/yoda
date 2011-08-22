@@ -20,7 +20,8 @@ namespace YODA {
     }
 
 
-    /// @brief Constructor to set a distribution with a pre-filled state.
+    /// Constructor to set a distribution with a pre-filled state.
+    ///
     /// Principally designed for internal persistency use.
     Dbn2D(unsigned int numEntries, double sumW, double sumW2,
           double sumWX, double sumWX2, double sumWY, double sumWY2, double sumWXY)
@@ -30,14 +31,15 @@ namespace YODA {
     {  }
 
 
-    /// @brief Copy constructor
-    /// Sets all the parameters using the ones provided from
-    /// an existing Dbn2D.
+    /// Copy constructor
+    ///
+    /// Sets all the parameters using the ones provided from an existing Dbn2D.
     Dbn2D(const Dbn2D& toCopy) {
       _dbnX = toCopy._dbnX;
       _dbnY = toCopy._dbnY;
       _sumWXY = toCopy._sumWXY;
     }
+
     //@}
 
 
@@ -74,11 +76,24 @@ namespace YODA {
     }
 
 
+    /// Rescale x: needed if x histo bin edges are rescaled.
+    void scaleX(double xscale) {
+      _dbnX.scaleX(xscale);
+      _sumWXY *= xscale;
+    }
+
+
+    /// Rescale y: needed if y histo bin edges are rescaled.
+    void scaleY(double yscale) {
+      _dbnY.scaleX(yscale);
+      _sumWXY *= yscale;
+    }
+
+
     /// Rescale x and y: needed if histo bin edges are rescaled.
-    void scaleXY(double scaleX, double scaleY) {
-      _dbnX.scaleX(scaleX);
-      _dbnY.scaleX(scaleY);
-      _sumWXY *= scaleX*scaleY;
+    void scaleXY(double xscale, double yscale) {
+      scaleX(xscale);
+      scaleY(yscale);
     }
 
     //@}
@@ -203,12 +218,14 @@ namespace YODA {
     }
 
     /// Transform into a Dbn1D parallel to X axis (dropping Y term)
+    /// @todo Rename
     Dbn1D transformX() {
       Dbn1D ret(_dbnX);
       return ret;
     }
 
     /// Transform into a Dbn1D parallel to Y axis (dropping X term)
+    /// @todo Rename
     Dbn1D transformY() {
       Dbn1D ret(_dbnY);
       return ret;

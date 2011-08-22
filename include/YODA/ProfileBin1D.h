@@ -7,6 +7,7 @@
 #define YODA_ProfileBin1D_h
 
 #include "YODA/Bin1D.h"
+#include "YODA/Dbn2D.h"
 #include "YODA/Exceptions.h"
 
 namespace YODA {
@@ -19,7 +20,7 @@ namespace YODA {
   /// for profile-type data, as opposed to histogram-type. This means that
   /// extra internal distribution statistics are stored for the extra
   /// "y-direction" specified in the profile fill operation.
-  class ProfileBin1D : public Bin1D {
+  class ProfileBin1D : public Bin1D<Dbn2D> {
   public:
 
     /// @name Constructors
@@ -30,20 +31,32 @@ namespace YODA {
       : Bin1D(lowedge, highedge)
     { }
 
+
     /// Constructor giving bin low and high edges as a pair.
     ProfileBin1D(const std::pair<double,double>& edges)
       : Bin1D(edges)
     { }
 
+
     /// @brief Init a profile bin with all the components of a fill history.
+    ///
     /// Mainly intended for internal persistency use.
-    ProfileBin1D(double lowedge, double highedge,
-                 const Dbn1D& dbnx, const Dbn1D& dbny)
-      : Bin1D(lowedge, highedge, dbnx),
-        _ydbn(dbny)
+    ProfileBin1D(double lowedge, double highedge, const Dbn2D& dbnxy)
+      : Bin1D(lowedge, highedge, dbnxy)
     {  }
 
-    /// @todo Add copy constructor
+
+    /// Copy constructor
+    ProfileBin1D(const ProfileBin1D& pb)
+      : Bin1D(pb)
+    { }
+
+
+    /// Copy assignment
+    ProfileBin1D& operator = (const ProfileBin1D& pb) {
+      Bin1D::operator=(pb);
+      return *this;
+    }
 
     //@}
 
@@ -52,28 +65,15 @@ namespace YODA {
     //@{
 
     /// Fill histo by x and y values and weight.
-    void fill(double x, double d, double weight=1.0) {
+    void fill(double x, double y, double weight=1.0) {
       assert( _edges.first < _edges.second );
       assert( x >= _edges.first && x < _edges.second );
-      _xdbn.fill(x, weight);
-      _ydbn.fill(d, weight);
+      _dbn.fill(x, y, weight);
     }
 
-    /// Fill histo with @a weight and y-value @c d at x = bin midpoint.
-    void fillBin(double d, double weight=1.0) {
-      fill(midpoint(), d, weight);
-    }
-
-    /// Reset the bin.
-    void reset() {
-      Bin1D::reset();
-      _ydbn.reset();
-    }
-
-    /// Rescale as if all fill weights had been different by factor @a scalefactor.
-    void scaleW(double scalefactor) {
-      _xdbn.scaleW(scalefactor);
-      _ydbn.scaleW(scalefactor);
+    /// Fill histo with @a weight and y-value @c y at x = bin midpoint.
+    void fillBin(double y, double weight=1.0) {
+      fill(midpoint(), y, weight);
     }
 
     //@}
@@ -85,20 +85,38 @@ namespace YODA {
     //@{
 
     double mean() const {
-      return _ydbn.mean();
+      return _dbn.yMean();
     }
 
     double stdDev() const {
-      return _ydbn.stdDev();
+      return _dbn.yStdDev();
     }
 
     double variance() const {
-      return _ydbn.variance();
+      return _dbn.yVariance();
     }
 
     double stdErr() const {
-      return _ydbn.stdErr();
+      return _dbn.yStdErr();
     }
+
+    //@}
+
+
+    /// @name Raw y distribution statistics
+    //@{
+
+    /// The sum of y*weight
+    double sumWY() const {
+      return _dbn.sumWX();
+    }
+
+    /// The sum of y^2 * weight
+    double sumWY2() const {
+      return _dbn.sumWX2();
+    }
+
+    /// @todo Expose sumXY just for persistency?
 
     //@}
 
@@ -120,37 +138,15 @@ namespace YODA {
 
     /// Add two bins (internal, explicitly named version)
     ProfileBin1D& add(const ProfileBin1D& pb) {
-      Bin1D::add(pb);
-      _ydbn += pb._ydbn;
+      Bin1D<Dbn2D>::add(pb);
       return *this;
     }
 
     /// Subtract one bin from another (internal, explicitly named version)
     ProfileBin1D& subtract(const ProfileBin1D& pb) {
-      Bin1D::subtract(pb);
-      _ydbn -= pb._ydbn;
+      Bin1D<Dbn2D>::subtract(pb);
       return *this;
     }
-
-
-  public:
-
-    /// The sum of y*weight
-    double sumWY() const {
-      return _ydbn.sumWX();
-    }
-
-    /// The sum of y^2 * weight
-    double sumWY2() const {
-      return _ydbn.sumWX2();
-    }
-
-
-  private:
-
-    // Distribution of weighted data values
-    Dbn1D _ydbn;
-
 
   };
 

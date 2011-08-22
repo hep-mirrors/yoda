@@ -15,7 +15,7 @@ namespace YODA {
       const double ex_m = b.focus() - b.lowEdge();
       const double ex_p = b.highEdge() - b.focus();
       const double y = b.height();
-      const double ey = b.heightError();
+      const double ey = b.heightErr();
       const Point2D pt(x, ex_m, ex_p, y, ey, ey);
       rtn.addPoint(pt);
     }
