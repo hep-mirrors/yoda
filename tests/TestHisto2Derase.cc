@@ -29,6 +29,13 @@ int main() {
     return -1;
   }
 
+  index = h.fill(1,0,1);
+  cout << index << endl;
+  if(index == -1) {
+    cout << "Something went very wrong during removal!" << endl;
+    return -1;
+  }
+
   
   /// Now, some timing
   struct timeval startTime;

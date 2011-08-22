@@ -66,7 +66,7 @@ namespace YODA {
     /// I think we need to review this design. It really complicates the concept
     /// that is just meant to be a collection of bins. This also propagates
     /// right through to the user interface, via the pass-through typedef on Histo2D.
-    typedef typename std::vector<std::pair<Bin, bool> > Bins;
+    typedef typename std::vector<Bin> Bins;
 
 
   public:
@@ -120,8 +120,8 @@ namespace YODA {
     {
       vector<Segment> binLimits;
       for (size_t i = 0; i < bins.size(); ++i) {
-        binLimits.push_back(make_pair(make_pair(bins[i].first.xMin(), bins[i].first.yMin()),
-                                      make_pair(bins[i].first.xMax(), bins[i].first.yMax())));
+        binLimits.push_back(make_pair(make_pair(bins[i].xMin(), bins[i].yMin()),
+                                      make_pair(bins[i].xMax(), bins[i].yMax())));
       }
       _mkAxis(binLimits);
       for (size_t i = 0; i < _bins.size(); ++i) {
@@ -205,7 +205,7 @@ namespace YODA {
 
       // Filling a bin if the coordinates point to one.
       int index = getBinIndex(x, y);
-      if (index != -1) _bins[index].first.fill(x, y, weight);
+      if (index != -1) _bins[index].fill(x, y, weight);
 
       // If coordinates point outside any of the bins and and the outflows were
       // properly set (i.e. we are dealing with a grid), fill a proper outflow.
@@ -223,7 +223,7 @@ namespace YODA {
       HistoBin2D& start = bin(from);
       HistoBin2D& end = bin(to);
       HistoBin2D temp = start;
-      _bins[from].second = false;
+      eraseBin(from);
 
       // Sanity-check input indices
       if (start.midpoint().first > end.midpoint().first) {
@@ -233,6 +233,7 @@ namespace YODA {
         throw RangeError("The start bin has a greater y value than the end bin.");
       }
 
+      vector<size_t> toRemove;
       /// @todo Explain! This is *totally* incomprehensible.
       for (size_t y = (*_binHashSparse.first._cache.lower_bound(start.yMin())).second;
            y <= (*_binHashSparse.first._cache.lower_bound(end.yMin())).second; ++y) {
@@ -240,16 +241,18 @@ namespace YODA {
           if ((_binHashSparse.first[y].second[x].second.first > start.xMin() ||
                fuzzyEquals(_binHashSparse.first[y].second[x].second.first, start.xMin())) &&
               (_binHashSparse.first[y].second[x].second.second < end.xMax() ||
-               fuzzyEquals(_binHashSparse.first[y].second[x].second.second, end.xMax())) &&
-              _bins[_binHashSparse.first[y].second[x].first].second)
+               fuzzyEquals(_binHashSparse.first[y].second[x].second.second, end.xMax()))) 
             {
               temp += bin(_binHashSparse.first[y].second[x].first);
-              _bins[_binHashSparse.first[y].second[x].first].second = false;
+              toRemove.push_back(_binHashSparse.first[y].second[x].first);
             }
         }
       }
+      /// Now, drop the bins to be dropped
+      for(size_t i = 0; i < toRemove.size(); ++i) eraseBin(toRemove[i]);
+
       _addEdge(temp.edges(), _binHashSparse, false);
-      _bins.push_back(make_pair(temp, true));
+      _bins.push_back(temp);
 
       /// @todo Where do the old bins get dropped?
 
@@ -267,7 +270,7 @@ namespace YODA {
       _dbn.reset();
       /// @todo Sort out the Bins definition, then use foreach
       for (size_t i = 0; i < _bins.size(); ++i) {
-        _bins[i].first.reset();
+        _bins[i].reset();
       }
     }
 
@@ -339,13 +342,13 @@ namespace YODA {
     /// Get the bin with a given index (non-const version)
     BIN& bin(size_t index) {
       if (index >= _bins.size()) throw RangeError("Bin index out of range.");
-      return _bins[index].first;
+      return _bins[index];
     }
 
     /// Get the bin with a given index (const version)
     const BIN& bin(size_t index) const {
       if (index >= _bins.size()) throw RangeError("Bin index out of range.");
-      return _bins[index].first;
+      return _bins[index];
     }
 
 
@@ -423,9 +426,9 @@ namespace YODA {
 
       // In case we have something more complicated
       for (size_t i = 0; i < _bins.size(); ++i) {
-        if (_bins[i].first.xMin() <= coordX && _bins[i].first.xMax() >= coordX &&
-            _bins[i].first.yMin() <= coordY && _bins[i].first.yMax() >= coordY &&
-            _bins[i].second) return i;
+        if (_bins[i].xMin() <= coordX && _bins[i].xMax() >= coordX &&
+            _bins[i].yMin() <= coordY && _bins[i].yMax() >= coordY) 
+             return i;
       }
       return -1;
     }
@@ -491,6 +494,9 @@ namespace YODA {
           }
         }
       }
+
+      /// Check if any of the bounds changed
+      _regenDelimiters();
     }
     //@}
 
@@ -527,7 +533,7 @@ namespace YODA {
 
       /// Now, as we have the map rescaled, we need to update the bins
       for (size_t i = 0; i < _bins.size(); ++i) {
-        _bins[i].first.scaleXY(scaleX, scaleY);
+        _bins[i].scaleXY(scaleX, scaleY);
       }
 
       _dbn.scaleXY(scaleX, scaleY);
@@ -553,7 +559,7 @@ namespace YODA {
       }
       /// @todo Use foreach for situations like this
       for (size_t i = 0; i < _bins.size(); ++i) {
-        _bins[i].first.scaleW(scalefactor);
+        _bins[i].scaleW(scalefactor);
       }
     }
 
@@ -568,11 +574,9 @@ namespace YODA {
     bool operator == (const Axis2D& other) const {
       if (isGrid()) {
         for (size_t i = 0; i < _bins.size(); ++i) {
-          /// Omit ghost bins while checking
-          if (!_bins[i].second) continue;
-          int index = other.getBinIndex(_bins[i].first.midpoint().first, _bins[i].first.midpoint().second);
+          int index = other.getBinIndex(_bins[i].midpoint().first, _bins[i].midpoint().second);
           if (index != -1){
-            if (other.bin(index) != _bins[i].first) return false;
+            if (other.bin(index) != _bins[i]) return false;
           }
           else return false;
         }
@@ -942,7 +946,7 @@ namespace YODA {
       }
 
       // Now, create a bin with the edges provided
-      if (addBin) _bins.push_back(make_pair(BIN(edges), true));
+      if (addBin) _bins.push_back(BIN(edges));
     }
 
 
@@ -1008,7 +1012,7 @@ namespace YODA {
 
         // And check if a bin is a proper one, if it is, add it.
         if (_validateEdge(edges))  _addEdge(edges, _binHashSparse);
-      }
+      } 
 
       // Setting all the caches
       _binHashSparse.first.regenCache();
@@ -1016,7 +1020,6 @@ namespace YODA {
       _regenDelimiters();
       _genGridCache();
     }
-
 
     /// @brief Plot extrema (re)generator.
     ///
@@ -1034,10 +1037,10 @@ namespace YODA {
 
       // Scroll through the bins and set the delimiters.
       for (size_t i = 0; i < _bins.size(); ++i) {
-        if (_bins[i].first.xMin() < lowEdgeX) lowEdgeX = _bins[i].first.xMin();
-        if (_bins[i].first.xMax() > highEdgeX) highEdgeX = _bins[i].first.xMax();
-        if (_bins[i].first.yMin() < lowEdgeY) lowEdgeY = _bins[i].first.yMin();
-        if (_bins[i].first.yMax() > highEdgeY) highEdgeY = _bins[i].first.yMax();
+        if (_bins[i].xMin() < lowEdgeX) lowEdgeX = _bins[i].xMin();
+        if (_bins[i].xMax() > highEdgeX) highEdgeX = _bins[i].xMax();
+        if (_bins[i].yMin() < lowEdgeY) lowEdgeY = _bins[i].yMin();
+        if (_bins[i].yMax() > highEdgeY) highEdgeY = _bins[i].yMax();
       }
 
       _lowEdgeX = lowEdgeX;
@@ -1056,8 +1059,6 @@ namespace YODA {
     ///
     /// @todo Explain how the vector structure works!
     vector<vector<DBN> > _outflows;
-
-    /// The total distribution
     ///
     /// @todo This needs to be a templated DBN type
     DBN _dbn;

@@ -76,7 +76,7 @@ namespace YODA {
 
     /// @brief State-setting constructor
     /// Mainly intended for internal persistency use.
-    Histo2D(const std::vector<std::pair<HistoBin2D, bool> >& bins,
+    Histo2D(const std::vector<HistoBin2D>& bins,
             const std::vector<std::vector<Dbn2D> >& outflows,
             const Dbn2D& totalDbn,
             const std::string& path="", const std::string& title="")
@@ -162,12 +162,12 @@ namespace YODA {
     }
 
     /// Access the bin vector (non-const version)
-    std::vector<std::pair<YODA::HistoBin2D, bool> >& bins() {
+    std::vector<YODA::HistoBin2D>& bins() {
       return _axis.bins();
     }
 
     /// Access the bin vector (const version)
-    const std::vector<std::pair<YODA::HistoBin2D, bool > >& bins() const {
+    const std::vector<YODA::HistoBin2D>& bins() const {
       return _axis.bins();
     }
 
