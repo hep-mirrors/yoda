@@ -7,13 +7,14 @@
 #define YODA_Histo2D_h
 
 #include "YODA/AnalysisObject.h"
+#include "YODA/Profile1D.h"
+#include "YODA/Histo1D.h"
+#include "YODA/Scatter3D.h"
 #include "YODA/HistoBin2D.h"
 #include "YODA/HistoBin1D.h"
 #include "YODA/Dbn2D.h"
 #include "YODA/Axis2D.h"
-#include "YODA/Profile1D.h"
 #include "YODA/Exceptions.h"
-#include "YODA/Histo1D.h"
 
 #include <vector>
 
@@ -64,8 +65,9 @@ namespace YODA {
     Histo2D(const Histo2D& h, const std::string& path="")
       : AnalysisObject("Histo2D", (path.size() == 0) ? h.path() : path, h, h.title())
     {
+      /// @todo Clean... avoid committing this sort of thing if possible!
       cout << "lsadlksdjflksdhkjf" << endl;
-      if(_axis.outflows().size() == h._axis.outflows().size()) cout << "equals" << endl;
+      if (_axis.outflows().size() == h._axis.outflows().size()) cout << "equals" << endl;
       else cout << "non" << endl;
       _axis = h._axis;
     }
@@ -309,14 +311,14 @@ namespace YODA {
     /// Note that the created histogram will not have correctly filled underflow and overflow bins.
     /// @todo It's not really *at* the specified x coord: it's for the corresponding bin row.
     /// @todo Change the name!
-    Histo1D cutterY(double atX, const std::string& path="", const std::string& title=""); 
+    Histo1D cutterY(double atX, const std::string& path="", const std::string& title="");
 
 
     /// @brief X-wise Profile1D creator from Histo2D
     Profile1D mkProfileX();
 
     /// @brief Y-wise Profile1D creator from Histo2D
-    Profile1D mkProfileY(); 
+    Profile1D mkProfileY();
     //@}
 
 
@@ -338,26 +340,47 @@ namespace YODA {
   //@{
 
   /// Add two histograms
-  inline Histo2D operator + (const Histo2D& first, const Histo2D& second) {
+  inline Histo2D add(const Histo2D& first, const Histo2D& second) {
     Histo2D tmp = first;
     tmp += second;
     return tmp;
   }
 
+
+  /// Add two histograms
+  inline Histo2D operator + (const Histo2D& first, const Histo2D& second) {
+    return add(first, second);
+  }
+
+
   /// Subtract two histograms
-  inline Histo2D operator - (const Histo2D& first, const Histo2D& second) {
+  inline Histo2D subtract(const Histo2D& first, const Histo2D& second) {
     Histo2D tmp = first;
     tmp -= second;
     return tmp;
   }
 
+
+  /// Subtract two histograms
+  inline Histo2D operator - (const Histo2D& first, const Histo2D& second) {
+    return subtract(first, second);
+  }
+
+
   /// @todo Multiply histograms?
+
 
   /// @brief Divide two histograms
   ///
   /// Keep in mind that for the following to work, two Histos must
   /// be _exactly_ the same, including the ghost bins.
-  Scatter3D operator / (const Histo2D& numer, const Histo2D& denom);
+  Scatter3D divide(const Histo2D& numer, const Histo2D& denom);
+
+
+  /// Divide two histograms, with an uncorrelated error treatment
+  inline Scatter3D operator / (const Histo2D& numer, const Histo2D& denom) {
+    return divide(numer, denom);
+  }
 
   //@}
 

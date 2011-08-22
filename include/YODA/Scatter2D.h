@@ -17,6 +17,7 @@
 namespace YODA {
 
 
+  // Forward declarations
   class Histo1D;
   class Profile1D;
 
@@ -284,6 +285,7 @@ namespace YODA {
 
     Points _points;
 
+    /// @todo Needed? Isn't this now stored on AnalysisObject?
     std::string _myaotype;
 
   };

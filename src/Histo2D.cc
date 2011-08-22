@@ -119,7 +119,7 @@ namespace YODA {
         tempBins.push_back(HistoBin1D(b2.lowEdgeY(), b2.highEdgeY(), dbn2));
       }
 
-      /// Setting under/over flows
+      // Setting under/over flows
       Dbn2D underflow;
       underflow += _axis.outflows()[1][_axis.getBinColumn(_axis.getBinIndex(atX, lowEdgeY()))];
 
@@ -127,13 +127,14 @@ namespace YODA {
       overflow += _axis.outflows()[5][_axis.getBinColumn(_axis.getBinIndex(atX, lowEdgeY()))];
       Dbn2D total = _axis.totalDbn();
 
-      /// Making sure that we rotate our distributions, as we are cutting paralell to Y axis now
+      // Making sure that we rotate our distributions, as we are cutting parallel to Y axis now
       total.flipXY();
       underflow.flipXY();
       overflow.flipXY();
 
       return Histo1D(tempBins, total.transformX(), underflow.transformX(), overflow.transformX(), path, title);
     }
+
 
     Profile1D Histo2D::mkProfileX() {
       if (!_axis.isGrid()) throw GridError("Profile1D cannot be made from a histogram that is not a grid!");
@@ -206,13 +207,13 @@ namespace YODA {
       /// And constructing a profile 1D from all this data
       Profile1D ret(prof, td, underflow, overflow);
       return ret;
-
     }
-  
-  /// @todo Check how finding the correct bins works in the case of 
+
+
+  /// @todo Check how finding the correct bins works in the case of
   /// a sparse representation, and if it is decent, code it in here.
-  Scatter3D operator / (const Histo2D& numer, const Histo2D& denom) {
-    if(numer != denom) throw GridError("The two Histos are not the same!");
+  Scatter3D divide(const Histo2D& numer, const Histo2D& denom) {
+    if (numer != denom) throw GridError("The two histos are not equivalently binned!");
     Scatter3D tmp;
     for (size_t i = 0; i < numer.numBinsTotal(); ++i) {
       const HistoBin2D& b1 = numer.bin(i);

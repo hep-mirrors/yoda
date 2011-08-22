@@ -8,11 +8,13 @@
 
 #include "YODA/AnalysisObject.h"
 #include "YODA/Point3D.h"
-#include "YODA/Histo2D.h"
-
 #include <utility>
 
 namespace YODA {
+
+
+  // Forward declarations
+  class Histo2D;
 
 
   /// A very generic data type which is just a collection of 3D data points with errors
@@ -207,19 +209,22 @@ namespace YODA {
     }
 
 
-  /// Equality operator
-  bool operator == (const Scatter3D& other) {
-    return _points == other._points;
-  }
+    /// Equality operator
+    bool operator == (const Scatter3D& other) {
+      return _points == other._points;
+    }
 
-  bool operator != (const Scatter3D& other) {
-    return ! operator == (other);
-  }
+    /// Non-equality operator
+    bool operator != (const Scatter3D& other) {
+      return ! operator == (other);
+    }
+
 
   private:
 
     Points _points;
 
+    /// @todo Needed? Isn't this now stored on AnalysisObject?
     std::string _myaotype;
 
   };
@@ -254,30 +259,7 @@ namespace YODA {
   //@{
 
   /// Make a Scatter3D representation of a Histo2D
-  inline Scatter3D mkScatter(const Histo2D& h) {
-    Scatter3D ret;
-    ret.setAnnotations(h.annotations());
-    ret.setAnnotation("Type", h.type());
-    for(size_t i = 0; i < h.numBinsTotal(); ++i) {
-      const HistoBin2D& bin = h.bin(i);
-
-      const double x = bin.focus().first;
-      const double y = bin.focus().second;
-
-      const double exminus = x - bin.xMin();
-      const double explus = bin.xMax() - x;
-
-      const double eyminus = y - bin.yMin();
-      const double eyplus = bin.yMax() - y;
-
-      const double z = bin.height();
-      const double ez = bin.heightErr();
-
-      ret.addPoint(x, exminus, explus, y, eyminus, eyplus, z, ez, ez);
-    }
-
-    return ret;
-  }
+  Scatter3D mkScatter(const Histo2D& h);
 
   /// Make a Scatter3D representation of a Profile2D
   /// @todo Implement!

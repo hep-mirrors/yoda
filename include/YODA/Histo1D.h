@@ -295,7 +295,7 @@ namespace YODA {
   Scatter2D divide(const Histo1D& numer, const Histo1D& denom);
 
 
-  /// Divide two histograms
+  /// Divide two histograms, with an uncorrelated error treatment
   inline Scatter2D operator / (const Histo1D& numer, const Histo1D& denom) {
     return divide(numer, denom);
   }
