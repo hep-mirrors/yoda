@@ -18,8 +18,6 @@ namespace YODA {
   ///
   /// This class handles almost all boiler-plate operations
   /// on 2D bins (like creating axis, adding, searching, testing).
-  ///
-  /// @todo This needs an extra DBN template argument, cf. Axis1D
   template <typename BIN, typename DBN>
   class Axis2D {
 

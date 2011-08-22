@@ -182,11 +182,18 @@ namespace YODA {
       return _axis.overflow();
     }
 
+    /// Add a new bin specifying its lower and upper bound 
     void addBin(double from, double to) {
       _axis.addBin(from, to);
     }
 
-    void addBin(vector<double> edges) {
+    /// Add a new bin specifying a vector of edges
+    void addBin(std::vector<double> edges) {
+      _axis.addBin(edges);
+    }
+  
+    /// Add new bins specifying a beginning and end of each of them
+    void addBin(std::vector<std::pair<double,double> > edges) {
       _axis.addBin(edges);
     }
 

@@ -11,11 +11,22 @@
 using namespace std;
 
 namespace YODA {
+  /// @brief 1D bin container
+  /// This class handles most of the low-level operations on the bins
+  /// arranged in 1D line. 
   template <typename BIN1D, typename DBN>
   class Axis1D {
     public:
+
+      /// Convinience typedefs
       typedef BIN1D Bin;
+
+      /// A vector containing 1D bins. It is not used for searching,
+      /// only for bins storage.
       typedef typename std::vector<BIN1D> Bins;
+
+      /// A standard edge container. First number defines location
+      /// of the edge, the second one a bin nuber the edge is a member of.
       typedef typename std::pair<double, size_t> Edge;
 
     /// @name Constructors
@@ -24,7 +35,7 @@ namespace YODA {
     /// Empty constructor
     Axis1D() { }
 
-    /// Constructor with a list of bin edges
+    /// Constructor accepting a list of bin edges
     Axis1D(const std::vector<double>& binedges) {
       _mkAxis(binedges);
     }
@@ -34,6 +45,10 @@ namespace YODA {
       _mkAxis(linspace(lower, upper, nbins));
     }
 
+    /// @brief Constructor accepting a vector of bins.
+    /// Note that not only dimensions of these bins will be set,
+    /// all the contents of the bins will be copied across, including 
+    /// the statistics
     Axis1D(const std::vector<BIN1D>& bins) {
       _mkAxis(bins);
     }
@@ -53,67 +68,82 @@ namespace YODA {
       return _bins.size();
     }
 
-    /// Return the array of bins (non-const)
+    /// Return a vector of bins (non-const)
     Bins& bins() {
       return _bins;
     }
-
+    
+    /// Return a vector of bins (const)
     const Bins& bins() const {
       return _bins;
     }
 
+    /// Return inf of the Axis
     double lowEdge() const {
       return _binHashSparse.front().first;
     }
+    /// A alias for lowEdge()
     double xMin() const { return lowEdge();}
 
+    /// Return sup of the Axis
     double highEdge() const {
       return _binHashSparse.back().first;
     }
+    /// Alias for highEdge()
     double xMax() const { return highEdge();}
 
+    /// Return a bin at a given index (non-const)
     BIN1D& bin (size_t index) {
       if(index >= numBins()) throw RangeError("YODA::Histo1D: index out of range!");
       return _bins[index];
     }
     
+    /// Return a bin at a given index (const)
     const BIN1D& bin (size_t index) const {
       if(index >= numBins()) throw RangeError("YODA::Histo1D: index out of range!");
       return _bins[index];
     }
-    
+   
+    /// Return a bin at a given coordinate (non-const)
     BIN1D& binByCoord(double x) {
       int index = getBinIndex(x);
       if(index == -1) throw RangeError("There is no bin at the specified x");
       return bin(index);
     }
 
+    /// Return a bin at a given coordinate (const)
     const BIN1D& binByCoord(double x) const {
       int index = getBinIndex(x);
       if(index == -1) throw RangeError("There is no bin at the specified x");
       return bin(index);
     }
-
+    
+    /// Return the total distribution (non-const)
     DBN& totalDbn() {
       return _dbn;
     }
 
+    /// Return the total distribution (const)
     const DBN& totalDbn() const {
       return _dbn;
     }
 
+    /// Return underflow (non-const)
     DBN& underflow() {
       return _underflow;
     }
 
+    /// Return underflow (const)
     const DBN& underflow() const {
       return _underflow;
     }
 
+    /// Return overflow (non-const)
     DBN& overflow() {
       return _overflow;
     }
 
+    /// Return overflow (const)
     const DBN& overflow() const {
       return _overflow;
     }
@@ -121,20 +151,36 @@ namespace YODA {
 
     /// @name Modifiers and helpers
     //@{
+    /// Returns an index of a bin at a given coord, -1 if no bin.
     int getBinIndex(double coord) const {
+      /// This is NOT a magic number, it is merely a 'trick' to yield a
+      /// correct answer in the case of coord pointing exactly on an edge.
+      /// This will never change the answer, since it is *much* smaller than
+      /// the fuzzyEquals() tolerance!
       coord += 0.00000000001; 
       
+      /// Search for an edge
       size_t index = _binaryS(coord, 0, _binHashSparse.size());
 
+      /// If lower bound is a last edge, it means that we are 'above' the 
+      /// axis and no bin canbe found in such case. Therefore, announce it.
       if(index == _binHashSparse.size() - 1) return -1;
 
+      /// If on the left to the point in consideration there is an edge that is
+      /// a member of the same bin as the one on the right, it means that our point 
+      /// is inside a bin. In such case, announce it providing the index of the
+      /// bin in question.
       if(_binHashSparse[index].second == _binHashSparse[index+1].second)
       {
         return _binHashSparse[index].second;
       }
+
+      /// If we are inside an axis, but not inside a bin, it means that we must
+      /// be trying to fill an empty space. 
       return -1;
     }
 
+    /// Reset all the statistics on the Axis
     void reset() {
       _dbn.reset();
       _underflow.reset();
@@ -155,6 +201,7 @@ namespace YODA {
       //@todo Implement!
     }
 
+    /// Add a bin, providing its low and high edge
     void addBin(double& from, double& to) {
       vector<double> binedges;
       binedges.push_back(from); binedges.push_back(to);
@@ -162,10 +209,18 @@ namespace YODA {
       _mkAxis(binedges);
     }
 
-    void addBin(vector<double>& binedges) {
+    /// Add a set of bins to an axis, providing their boundaries
+    /// Notice that no empty space will be created.
+    void addBin(std::vector<double>& binedges) {
       _mkAxis(binedges);
     }
+
+    /// Add a set of bins specifying start/end of each 
+    void addBin(std::vector<std::pair<double,double> > edges) {
+      for(size_t i = 0; i < edges.size();++i) _mkAxis(edges[i]);
+    }
     
+    /// Scale the size of an axis by a factor
     void scaleX(double scalefactor) {
       _dbn.scaleX(scalefactor);
       _underflow.scaleX(scalefactor);
@@ -175,6 +230,7 @@ namespace YODA {
       _mkBinHash();
     }
     
+    /// Scale the amount of fills by a factor
     void scaleW(double scalefactor) {
       _dbn.scaleW(scalefactor);
       _underflow.scaleW(scalefactor);
@@ -186,14 +242,17 @@ namespace YODA {
     /// @name Operators
     //@{
 
+    /// Check if two of the Axis have the same binning
     bool operator == (const Axis1D& other) const {
       return _binHashSparse == other._binHashSparse;
     }
 
+    /// Check if the binning of two of the Axis is different
     bool operator != (const Axis1D& other) const {
       return ! operator == (other);
     }
 
+    /// Add two Axis together
     Axis1D<BIN1D,DBN>& operator += (const Axis1D<BIN1D,DBN>& toAdd) {
       if(*this != toAdd) throw LogicError("YODA::Histo1D: Cannot add axes with differen binnings.");
       
@@ -207,6 +266,7 @@ namespace YODA {
       return *this;
     }
 
+    /// Substract two Axis
     Axis1D<BIN1D,DBN>& operator -= (const Axis1D<BIN1D,DBN>& toSubtract) {
       if(*this != toSubtract) throw LogicError("YODA::Histo1D: Cannot add axes with differen binnings.");
       
@@ -223,32 +283,45 @@ namespace YODA {
     //@}
 
   private:
+    /// Makes an axis out of a vector of edges
     void _mkAxis(const std::vector<double>& binedges) {
       for(size_t i = 0; i < binedges.size() - 1; ++i) {
+        /// If the bin that is to be added doesn't conflict with an 
+        /// existing axis
         if(!_findCuts(binedges[i], binedges[i+1])) {
+          /// Add this bin to the bin vector
           _bins.push_back(BIN1D(binedges[i], binedges[i+1]));
         }
       }
-
+      
+      /// Regenerate the Bin hash
       _mkBinHash();
     }
 
+    /// Makes an axis from a vector of bins
     void _mkAxis(const Bins& bins) {
       _bins = bins;
       _mkBinHash();
     }
-
+    
+    /// Regenerate the bin hash
     void _mkBinHash() {
+      /// Remove the old cache, if it exists
       _binHashSparse.clear();
 
+      /// For each of the bins, add the low and high edge to the cache
       for(size_t i = 0; i < _bins.size(); ++i) {
         _binHashSparse.push_back(std::make_pair(_bins[i].xMin(), i));
         _binHashSparse.push_back(std::make_pair(_bins[i].xMax(), i));
       }
 
+      /// Sort the cache to be nondecreasing to enable 
+      /// fast searches
       std::sort(_binHashSparse.begin(), _binHashSparse.end());
     }
 
+    /// Binary search algorithm. For an in-depth explanation
+    /// please see the documentation of an analogous one in Axis2D
     size_t _binaryS(double value, size_t lower, size_t higher) const {
       if(lower == higher) return lower;
       size_t where = (higher+lower)/2;
@@ -263,6 +336,8 @@ namespace YODA {
       return _binaryS(value, lower, where);
     }
 
+    /// Check if a hypothetical bin to be added, starting at from and 
+    /// ending at to will partially overlap any of the existing bins.
     bool _findCuts(const double& from, const double& to) const {
       size_t index1 = _binaryS(from, 0, _binHashSparse.size());
       size_t index2 = _binaryS(to, 0, _binHashSparse.size());
@@ -288,6 +363,7 @@ namespace YODA {
     //@}
   };
 
+  /// Add the statistics on two axis.
   template <typename BIN1D, typename DBN>
   Axis1D<BIN1D,DBN> operator + (const Axis1D<BIN1D,DBN>& first, const Axis1D<BIN1D,DBN>& second) {
     Axis1D<BIN1D,DBN> tmp = first;
@@ -295,6 +371,7 @@ namespace YODA {
     return tmp;
   }
   
+  /// Subtract the statistics on two axis.
   template <typename BIN1D, typename DBN>
   Axis1D<BIN1D,DBN> operator - (const Axis1D<BIN1D,DBN>& first, const Axis1D<BIN1D,DBN>& second) {
     Axis1D<BIN1D,DBN> tmp = first;
