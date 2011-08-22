@@ -119,6 +119,8 @@ namespace YODA {
     }
     //@}
 
+    /// @name Modifiers and helpers
+    //@{
     int getBinIndex(double coord) const {
       coord += 0.00000000001; 
       
@@ -126,8 +128,8 @@ namespace YODA {
 
       if(index == _binHashSparse.size() - 1) return -1;
 
-      if(_binHashSparse[index].second == _binHashSparse[index+1].second ||
-         _binHashSparse[index].second == _binHashSparse[index-1].second) {
+      if(_binHashSparse[index].second == _binHashSparse[index+1].second)
+      {
         return _binHashSparse[index].second;
       }
       return -1;
@@ -152,6 +154,17 @@ namespace YODA {
       throw std::runtime_error("Implement!");  
       //@todo Implement!
     }
+
+    void addBin(double& from, double& to) {
+      vector<double> binedges;
+      binedges.push_back(from); binedges.push_back(to);
+
+      _mkAxis(binedges);
+    }
+
+    void addBin(vector<double>& binedges) {
+      _mkAxis(binedges);
+    }
     
     void scaleX(double scalefactor) {
       _dbn.scaleX(scalefactor);
@@ -168,8 +181,11 @@ namespace YODA {
       _overflow.scaleW(scalefactor);
       for(size_t i = 0; i < _bins.size(); ++i) _bins[i].scaleW(scalefactor);
     }
-  
-  public:
+    //@}
+
+    /// @name Operators
+    //@{
+
     bool operator == (const Axis1D& other) const {
       return _binHashSparse == other._binHashSparse;
     }
@@ -203,7 +219,8 @@ namespace YODA {
       _overflow += toSubtract._overflow;
       return *this;
     }
-
+    
+    //@}
 
   private:
     void _mkAxis(const std::vector<double>& binedges) {
@@ -243,7 +260,6 @@ namespace YODA {
       }
 
       if (where == 0) return where;
-      if (value >= _binHashSparse[where-1].first) return where;
       return _binaryS(value, lower, where);
     }
 

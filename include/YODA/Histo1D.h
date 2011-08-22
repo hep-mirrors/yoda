@@ -182,6 +182,14 @@ namespace YODA {
       return _axis.overflow();
     }
 
+    void addBin(double from, double to) {
+      _axis.addBin(from, to);
+    }
+
+    void addBin(vector<double> edges) {
+      _axis.addBin(edges);
+    }
+
     //@}
 
 
