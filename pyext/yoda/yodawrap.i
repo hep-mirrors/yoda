@@ -43,13 +43,16 @@ namespace YODA {
 }
 
 
-// Bins
+// Bin base classes and contained distributions
 %include "YODA/Bin.h"
 %include "YODA/Bin1D.h"
 %include "YODA/Bin2D.h"
+%include "YODA/Dbn1D.h"
+%include "YODA/Dbn2D.h"
 
 
 // Histos
+%template(Bin1DDbn1D) YODA::Bin1D<YODA::Dbn1D>;
 %include "YODA/HistoBin1D.h"
 %include "YODA/Histo1D.h"
 // %feature("ignore") std::vector<YODA::HistoBin1D>::vector(size_type size);
@@ -70,6 +73,7 @@ namespace YODA {
 // %template(HistoBin2Ds) std::vector<YODA::HistoBin2D>;
 
 // Profile histos
+%template(Bin1DDbn2D) YODA::Bin1D<YODA::Dbn2D>;
 %include "YODA/ProfileBin1D.h"
 %include "YODA/Profile1D.h"
 // %feature("ignore") std::vector<YODA::ProfileBin1D>::vector(size_type size);
