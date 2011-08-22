@@ -217,7 +217,20 @@ namespace YODA {
 
     /// Add a set of bins specifying start/end of each 
     void addBin(std::vector<std::pair<double,double> > edges) {
-      for(size_t i = 0; i < edges.size();++i) _mkAxis(edges[i]);
+      for(size_t i = 0; i < edges.size(); ++i){
+        vector<double> temp;
+        temp.push_back(edges[i].first);
+        temp.push_back(edges[i].second);
+
+        _mkAxis(temp);
+      }
+    }
+
+    /// Remove a bin
+    void eraseBin(size_t index) {
+      if(index >= _bins.size()) throw RangeError("Index out of range!");
+      _bins.erase(_bins.begin() + index);
+      _mkBinHash();
     }
     
     /// Scale the size of an axis by a factor

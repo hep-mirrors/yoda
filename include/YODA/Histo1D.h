@@ -197,6 +197,11 @@ namespace YODA {
       _axis.addBin(edges);
     }
 
+    /// Remove a bin
+    void eraseBin(size_t index) {
+      _axis.eraseBin(index);
+    }
+
     //@}
 
 
