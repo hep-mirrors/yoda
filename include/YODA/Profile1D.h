@@ -45,25 +45,32 @@ namespace YODA {
         _axis(nxbins, xlower, xupper)
     { }
 
+
     /// Constructor giving explicit bin edges
-    /// For n bins, binedges.size() == n+1, the last
-    /// one being the upper bound of the last bin
+    ///
+    /// For n bins, binedges.size() == n+1, the last one being the upper bound
+    /// of the last bin
     Profile1D(const std::vector<double>& xbinedges,
               const std::string& path="", const std::string& title="")
       : AnalysisObject("Profile1D", path, title),
         _axis(xbinedges)
     { }
 
+
     /// Copy constructor with optional new path
     Profile1D(const Profile1D& p, const std::string& path="");
+
 
     /// Constructor from a Scatter2D's binning, with optional new path
     Profile1D(const Scatter2D& s, const std::string& path="");
 
+
     /// Constructor from a Histo1D's binning, with optional new path
     Profile1D(const Histo1D& h, const std::string& path="");
 
+
     /// @brief State-setting constructor.
+    ///
     /// Intended principally for internal persistency use.
     Profile1D(const std::vector<ProfileBin1D>& bins,
               const Dbn2D& dbn_tot, const Dbn2D& dbn_uflow, const Dbn2D& dbn_oflow,
@@ -71,6 +78,15 @@ namespace YODA {
       : AnalysisObject("Profile1D", path, title),
         _axis(bins, dbn_tot, dbn_uflow, dbn_oflow)
     { }
+
+
+    /// Assignment operator
+    Profile1D& operator = (const Profile1D& p1) {
+      setPath(p1.path());
+      setTitle(p1.title());
+      _axis = p1._axis;
+      return *this;
+    }
 
     //@}
 

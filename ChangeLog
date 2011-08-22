@@ -1,5 +1,8 @@
 2011-08-22  Andy Buckley  <andy@insectnation.org>
 
+	* Adding copy constructors and assignment operators to Histo1D,
+	Profile1D, and Scatter2D, and their respective bins/points.
+
 	* Remove use of sign(weight) in filling sum(w2) -- I think this
 	was an historical attempt based on a scaling axiom which turned
 	out to be inappropriate.

@@ -37,40 +37,38 @@ namespace YODA {
     //@{
 
     /// Constructor giving range and number of bins.
-    /// @todo Remove binning enum stuff
     Histo1D(size_t nbins, double lower, double upper,
             const std::string& path="", const std::string& title="")
       : AnalysisObject("Histo1D", path, title),
         _axis(nbins, lower, upper)
     { }
 
+
     /// @brief Constructor giving explicit bin edges.
-    /// For n bins, binedges.size() == n+1, the last
-    /// one being the upper bound of the last bin
+    ///
+    /// For n bins, binedges.size() == n+1, the last one being the upper bound
+    /// of the last bin
     Histo1D(const std::vector<double>& binedges,
             const std::string& path="", const std::string& title="")
       : AnalysisObject("Histo1D", path, title),
         _axis(binedges)
     { }
 
-    // /// Constructor giving a vector of bins.
-    // /// @todo Allow any iterable of bins (use Boost::Range?)
-    // Histo1D(const std::vector<HistoBin1D>& bins,
-    //         const std::string& path="", const std::string& title="")
-    //   : AnalysisObject("Histo1D", path, title),
-    //     _axis(bins)
-    // { }
 
     /// Copy constructor with optional new path
     Histo1D(const Histo1D& h, const std::string& path="");
 
+
     /// Constructor from a Scatter2D's binning, with optional new path
     Histo1D(const Scatter2D& s, const std::string& path="");
+
 
     /// Constructor from a Profile1D's binning, with optional new path
     Histo1D(const Profile1D& p, const std::string& path="");
 
-    /// @brief State-setting constructor.
+
+    /// @brief State-setting constructor
+    ///
     /// Intended principally for internal persistency use.
     Histo1D(const std::vector<HistoBin1D>& bins,
             const Dbn1D& dbn_tot, const Dbn1D& dbn_uflow, const Dbn1D& dbn_oflow,
@@ -78,6 +76,15 @@ namespace YODA {
       : AnalysisObject("Histo1D", path, title),
         _axis(bins, dbn_tot, dbn_uflow, dbn_oflow)
     { }
+
+
+    /// Assignment operator
+    Histo1D& operator = (const Histo1D& h1) {
+      setPath(h1.path());
+      setTitle(h1.title());
+      _axis = h1._axis;
+      return *this;
+    }
 
     //@}
 

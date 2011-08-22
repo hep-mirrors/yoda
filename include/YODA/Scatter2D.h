@@ -132,7 +132,20 @@ namespace YODA {
     }
 
 
-    /// @todo Add copy constructor
+    /// Copy constructor with optional new path
+    Scatter2D(const Scatter2D& s2, const std::string& path="")
+      : AnalysisObject("Scatter2D", (path.size() == 0) ? s2.path() : path, s2, s2.title()),
+        _points(s2._points)
+    {  }
+
+
+    /// Assignment operator
+    Scatter2D& operator = (const Scatter2D& s2) {
+      setPath(s2.path());
+      setTitle(s2.title());
+      _points = s2._points;
+      return *this;
+    }
 
     //@}
 
