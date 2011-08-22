@@ -293,13 +293,28 @@ namespace YODA {
   //@{
 
   /// Add two scatters
-  Scatter3D operator + (const Scatter3D& first, const Scatter3D& second);
+  Scatter3D add(const Scatter3D& first, const Scatter3D& second);
+
+
+  /// Add two scatters
+  inline Scatter3D operator + (const Scatter3D& first, const Scatter3D& second) {
+    return add(first, second);
+  }
+
 
   /// Subtract two scatters
-  Scatter3D operator - (const Scatter3D& first, const Scatter3D& second);
+  Scatter3D subtract(const Scatter3D& first, const Scatter3D& second);
+
+
+  /// Subtract two scatters
+  inline Scatter3D operator - (const Scatter3D& first, const Scatter3D& second) {
+    return subtract(first, second);
+  }
+
 
   /// Divide two scatters
   Scatter3D divide(const Scatter3D& numer, const Scatter3D& denom);
+
 
   /// Divide two scatters
   inline Scatter3D operator / (const Scatter3D& numer, const Scatter3D& denom) {

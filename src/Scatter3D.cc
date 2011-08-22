@@ -6,8 +6,7 @@ namespace YODA {
 
 
   // Add two scatters
-  /// @todo Implementation in a named add() function
-  Scatter3D operator + (const Scatter3D& first, const Scatter3D& second) {
+  Scatter3D add(const Scatter3D& first, const Scatter3D& second) {
     /// @todo Implement
     throw Exception("Implement me!");
     Scatter3D tmp;
@@ -16,8 +15,7 @@ namespace YODA {
 
 
   // Subtract two scatters
-  /// @todo Implementation in a named subtract() function
-  Scatter3D operator - (const Scatter3D& first, const Scatter3D& second) {
+  Scatter3D subtract(const Scatter3D& first, const Scatter3D& second) {
     /// @todo Implement
     throw Exception("Implement me!");
     Scatter3D tmp;

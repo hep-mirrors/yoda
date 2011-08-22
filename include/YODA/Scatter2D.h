@@ -332,15 +332,24 @@ namespace YODA {
   /// @name Combining scatters: global operators, assuming aligned points
   //@{
 
-  /// @todo More named operators
+  /// Add two scatters
+  Scatter2D add(const Scatter2D& first, const Scatter2D& second);
 
 
   /// Add two scatters
-  Scatter2D operator + (const Scatter2D& first, const Scatter2D& second);
+  inline Scatter2D operator + (const Scatter2D& first, const Scatter2D& second) {
+    return add(first, second);
+  }
 
 
   /// Subtract two scatters
-  Scatter2D operator - (const Scatter2D& first, const Scatter2D& second);
+  Scatter2D subtract(const Scatter2D& first, const Scatter2D& second);
+
+
+  /// Subtract two scatters
+  inline Scatter2D operator - (const Scatter2D& first, const Scatter2D& second) {
+    return subtract(first, second);
+  }
 
 
   /// Divide two scatters
