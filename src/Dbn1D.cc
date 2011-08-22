@@ -4,6 +4,7 @@
 // Copyright (C) 2008-2011 The YODA collaboration (see AUTHORS for details)
 //
 #include "YODA/Dbn1D.h"
+#include "YODA/Utils/MathUtils.h"
 
 namespace YODA {
 
@@ -11,12 +12,19 @@ namespace YODA {
   void Dbn1D::fill(double val, double weight) {
     _numFills += 1;
     _sumW += weight;
-    double w2 = weight*weight;
-    /// @todo Correct?
-    if (weight < 0) w2 *= -1;
-    _sumW2 += w2;
+    //const double w2 = sign(weight) * weight*weight;
+    _sumW2 += weight*weight;
     _sumWX += weight*val;
     _sumWX2 += weight*val*val;
+  }
+
+
+  double Dbn1D::mean() const {
+    if (isZero(effNumEntries(), 0.0)) {
+      throw LowStatsError("Requested mean of a distribution with no net fill weights");
+    }
+    // This is ok, even for negative sum(w)
+    return _sumWX/_sumW;
   }
 
 
@@ -24,9 +32,9 @@ namespace YODA {
     // Weighted variance defined as
     // sig2 = ( sum(wx**2) * sum(w) - sum(wx)**2 ) / ( sum(w)**2 - sum(w**2) )
     // see http://en.wikipedia.org/wiki/Weighted_mean
-    if (effNumEntries() == 0.0) {
+    if (isZero(effNumEntries(), 0.0)) {
       throw LowStatsError("Requested width of a distribution with no net fill weights");
-    } else if (effNumEntries() <= 1.0) {
+    } else if (fuzzyLessEquals(effNumEntries(), 1.0)) {
       throw LowStatsError("Requested width of a distribution with only one effective entry");
     }
     const double num = _sumWX2*_sumW - _sumWX*_sumWX;
@@ -64,7 +72,7 @@ namespace YODA {
 
 
   Dbn1D& Dbn1D::subtract(const Dbn1D& d) {
-    _numFills += d._numFills; //< @todo Hmm, what's best?!?
+    _numFills += d._numFills; //< @todo Hmm, add or subtract?!?
     _sumW     -= d._sumW;
     _sumW2    -= d._sumW2;
     _sumWX    -= d._sumWX;

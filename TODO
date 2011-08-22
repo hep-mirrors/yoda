@@ -15,8 +15,7 @@ NOW
 
 * Rework Axis1D to operate as Axis2D does (MICHAL)
 
-* Throw LowStatsError for errors and profile histo points with no fills -- any
-  explicit action needed? (AB)
+* Template Bin2D and HistoBin2D on DBN type (Dbn2D/3D) cf. Bin1D<DBN>
 
 * Rebinning: global rebinning by integer factor(s) (AB for 1D, MICHAL for 2D)
   Different rebinning factors for X and Y in 2D. Implement for 1D first,

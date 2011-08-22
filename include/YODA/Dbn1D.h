@@ -34,7 +34,9 @@ namespace YODA {
       reset();
     }
 
+
     /// @brief Constructor to set a distribution with a pre-filled state.
+    ///
     /// Principally designed for internal persistency use.
     Dbn1D(unsigned int numEntries, double sumW, double sumW2, double sumWX, double sumWX2) {
       _numFills = numEntries;
@@ -57,6 +59,7 @@ namespace YODA {
     /// @todo Be careful about negative weights.
     void fill(double val, double weight=1.0);
 
+
     /// Reset the internal counters.
     void reset() {
       _numFills = 0;
@@ -65,6 +68,7 @@ namespace YODA {
       _sumWX = 0;
       _sumWX2 = 0;
     }
+
 
     /// Rescale as if all fill weights had been different by factor @a scalefactor.
     void scaleW(double scalefactor) {
@@ -75,6 +79,7 @@ namespace YODA {
       _sumWX *= sf;
       _sumWX2 *= sf2;
     }
+
 
     /// Rescale x: needed if histo bin edges are rescaled.
     void scaleX(double factor) {
@@ -105,10 +110,7 @@ namespace YODA {
     //@{
 
     /// Weighted mean, \f$ \bar{x} \f$, of distribution.
-    double mean() const {
-      // This is ok, even for negative sum(w)
-      return _sumWX/_sumW;
-    }
+    double mean() const;
     /// Synonym for interface compatibility with Dbn2D
     double xMean() const { return mean(); }
 
@@ -125,6 +127,7 @@ namespace YODA {
     }
     /// Synonym for interface compatibility with Dbn2D
     double xStdDev() const { return stdDev(); }
+
 
     /// Weighted standard error on the mean, \f$ \sim \sigma/\sqrt{N-1} \f$, of distribution.
     double stdErr() const;
