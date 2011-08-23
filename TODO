@@ -23,6 +23,8 @@ NOW
 
 * Review and SWIG-map Histo2D -> Histo/Profile1D conversion functions. (AB)
 
+* Add Histo2D binning constructors from Scatter3D and Profile2D.
+
 * New "flat" file format: adapt WriterYODA and fill ReaderYODA. (HH)
   Need to persist the whole-histo Dbn1D/Dbn2Ds, and over/underflows.
   Use state-setting constructors for Histo and Profile persistency via the
