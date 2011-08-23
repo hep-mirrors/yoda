@@ -204,6 +204,7 @@ namespace YODA {
 
 
     /// Merge together the bin range with indices from @a from to @a to, inclusive
+    /// Merge a series of bins, between the bins identified by indexes from and to
     void mergeBins(size_t from, size_t to) {
       // Correctness checking
       if (from < 0 || from >= numBins()) throw ("First index is out of range!");
