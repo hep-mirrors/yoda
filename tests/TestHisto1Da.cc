@@ -1,7 +1,7 @@
 #include "YODA/Histo1D.h"
+#include "Formatting.h"
 #include <cmath>
 #include <iostream>
-#include <unistd.h>
 
 using namespace std;
 using namespace YODA;
@@ -29,10 +29,7 @@ int main() {
   cout << "Histo:" << endl;
   for (vector<HistoBin1D>::const_iterator b = h.bins().begin(); b != h.bins().end(); ++b) {
     const int numElements = static_cast<int>(round(20 * b->height()/maxHeight));
-    cout << string().insert(0, numElements, '=') << "  ";
-    cout << (isatty(1) ? "\033[0;37m" : "")
-         << b->height()
-         << (isatty(1) ? "\033[0m" : "") << endl;
+    MSG(string().insert(0, numElements, '=') << "  " << RED(b->height()));
   }
 
   return EXIT_SUCCESS;
