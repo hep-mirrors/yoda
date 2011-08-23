@@ -1,6 +1,8 @@
 ACLOCAL_AMFLAGS = -I m4
 SUBDIRS = src include pyext tests
 
+EXTRA_FILES = main.dox
+
 ## Deal with the Doxygen stuff
 # TODO: Improve, without the Doxy performance penalty on every call of "make"
 if WITH_DOXYGEN

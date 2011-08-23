@@ -1,0 +1,86 @@
+/// @mainpage
+///
+/// YODA is a package for creation and analysis of statistical data, written in
+/// C++ and usable from C++ and Python code. The development and developers of
+/// YODA have emerged from the sub-field of Monte Carlo event generator
+/// validation and tuning in high-energy physics (HEP), but very intentionally
+/// there is nothing in YODA which is specific to that application!
+///
+/// HEP researchers may reasonably ask why we would develop another data
+/// analysis package when the ROOT (http://cern.ch/root/) package is so well
+/// established in our field and there are also some less well-known
+/// alternatives like AIDA. Well, here are a few comments along those lines,
+/// along the way illustrating the design principles of YODA:
+///
+/// - ROOT is a very large and monolithic package, containing many, many
+///   features other than basic data analysis types. For our applications it was
+///   not desirable to introduce such a huge dependency just to get some
+///   histogramming functionality. <b>YODA design aim #1: be small and
+///   to-the-point, i.e. do <i>one</i> job really well.</b>
+///
+/// - ROOT and AIDA do not support sparse binning, i.e. gaps between histogram
+///   bins in either 1D or 2D histograms. This feature is required in general,
+///   and in particular had long been a problem for the Rivet and Professor
+///   systems which used an AIDA implementation for several years and required
+///   post-processing scripts to strip out the spurious bins. The only neat
+///   solution was to write our own histogram classes -- along the way making it
+///   fast despite the very general implementation. <b>YODA design aim #2: support
+///   general requirements of data objects.</b>
+///
+/// - ROOT is infamously difficult to use as a library: it likes to take over
+///   the command line parsing, manage object memory with hidden state (leading
+///   to crashes or memory leaks), etc. We didn't want to either have to deal
+///   with those problems ourselves, nor to pass them on to YODA. AIDA is also
+///   far from blameless from a programming usability point of view, having
+///   apparently been designed based on an overenthusiastic reading of a design
+///   patterns book without considering whether using factory objects for
+///   everything, or its insistence on a broken filesystem path metaphor, would
+///   have an impact on users. <b>YODA design aim #3: make the nicest, sanest,
+///   programming interface for data analysis that we possibly can.</b>
+///
+/// - In ROOT in particular, histograms as statistical data objects and
+///   histograms as graphical data representations are conflated concepts. It's
+///   hence impossible to declare some data as constant (for safety) without
+///   then being unable to change its plotting style. We don't like that. We
+///   also want to avoid common mistakes such as confusing the height of a
+///   histogram bin (in representation terms) with its statistical content --
+///   YODA is designed to make the meaning of bin contents very clear and
+///   unambiguous.  <b>YODA design aim #4: separate data handling from
+///   presentation.</b> The current implementation is dominated by the
+///   statistical data handling and numerical correctness -- existing systems
+///   like the Rivet make-plots script are relied upon for publication-quality
+///   plotting.
+///
+/// - Event generators of various kinds do not always produce simulated events
+///   with a physical distribution: the events themselves may be weighted for
+///   technical or efficiency reasons. They may also produce negative weights,
+///   or a whole collection of weights with different meanings for each event:
+///   these aspects of statistical analysis are not well-served by existing
+///   systems. <b>YODA design aim #5: handle weights in the best possible way,
+///   including negative weights and weight vectors.</b>
+///
+/// - Like ROOT and AIDA, the emphasis of YODA is on reproducible, programmatic
+///   data analysis. Plots should not normally require manual intervention: if
+///   made via a script or program, it is possible to reproduce plots after a
+///   long delay or when the original author has moved on... that's good for
+///   science. Unlike ROOT, we don't think that C++ is a sane scripting
+///   language. <b>YODA design aim #6: enable pleasant, clear programmatic
+///   analysis and plotting from C++ programs or Python scripts.</b>
+///
+/// - For aggregated data such as histograms, it is not essential to have a very
+///   disk-efficient persistency format. In fact, it's more important that the
+///   data be readily legible and editable. XML does not count. This leads to
+///   <b>YODA design aim #7: the principle persistency format for YODA is a
+///   compact ASCII text format.</b> Scripts are provided for easy visualisation of
+///   this format and conversion of it to other common formats, including ROOT
+///   files. An API is provided for persistency extension, and support will be
+///   provided on demand for standard efficient binary formats such as MsgPack
+///   and HDF5.
+///
+/// - Finally, high-statistics analysis requires the ability to split analyses
+///   into many small runs which are executed in parallel. <b>YODA design aim
+///   #8: store all the information required for complete and exact
+///   reconstruction of up to second-order statistical moments of complete runs
+///   from merging of constituent equivalent or distinct sub-runs. Store
+///   sufficient data that normal post-processing operations such as scaling or
+///   division may be operated <i>after</i> a run-merging phase.</b>
