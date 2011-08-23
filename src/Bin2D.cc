@@ -50,7 +50,7 @@ namespace YODA {
 
 
   std::pair<double,double> Bin2D::midpoint() const {
-    return make_pair((double)(xMax() - xMin())/2 + xMin(), (double)(yMax() - yMin())/2 + yMin());
+    return std::make_pair((double)(xMax() - xMin())/2 + xMin(), (double)(yMax() - yMin())/2 + yMin());
   }
 
 

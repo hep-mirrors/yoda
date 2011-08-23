@@ -53,7 +53,7 @@ namespace YODA {
     /// (top-right and bottom-left) for each rectangular bin that
     /// is created. It is assumed that the binedges vector is nonempty (why btw?).
     /// @todo Drop the pairings -- it is more natural, less contrived, and cleaner in code as xlow/high and ylow/high
-    Histo2D(const std::vector<std::pair<std::pair<double,double>, pair<double,double> > >& binedges,
+    Histo2D(const std::vector<std::pair<std::pair<double,double>, std::pair<double,double> > >& binedges,
             const std::string& path="",
             const std::string& title="")
       : AnalysisObject("Histo2D", path, title),
@@ -66,9 +66,9 @@ namespace YODA {
       : AnalysisObject("Histo2D", (path.size() == 0) ? h.path() : path, h, h.title())
     {
       /// @todo Clean... avoid committing this sort of thing if possible!
-      cout << "lsadlksdjflksdhkjf" << endl;
-      if (_axis.outflows().size() == h._axis.outflows().size()) cout << "equals" << endl;
-      else cout << "non" << endl;
+      std::cout << "lsadlksdjflksdhkjf" << std::endl;
+      if (_axis.outflows().size() == h._axis.outflows().size()) std::cout << "equals" << std::endl;
+      else std::cout << "non" << std::endl;
       _axis = h._axis;
     }
 
@@ -117,7 +117,7 @@ namespace YODA {
     }
 
     /// Adding bins
-    void addBin(const vector<pair<pair<double,double>, pair<double,double> > > coords) {
+    void addBin(const std::vector<std::pair<std::pair<double,double>, std::pair<double,double> > > coords) {
         _axis.addBin(coords);
     }
 

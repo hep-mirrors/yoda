@@ -8,10 +8,8 @@
 #include <vector>
 #include <cassert>
 
-/// @todo Remove this: don't use namespace std in API headers since it pollutes users' namespace.
-using namespace std;
-
 namespace YODA {
+
 
   /// @brief A generic 2D bin type
   ///
@@ -53,12 +51,12 @@ namespace YODA {
     /// @name Modifiers
     //@{
 
-    const vector<Segment> edges() const {
-      vector<Segment> ret;
-      ret.push_back(make_pair(make_pair(xMin(), yMin()), make_pair(xMin(), yMax())));
-      ret.push_back(make_pair(make_pair(xMin(), yMax()), make_pair(xMax(), yMax())));
-      ret.push_back(make_pair(make_pair(xMax(), yMin()), make_pair(xMax(), yMax())));
-      ret.push_back(make_pair(make_pair(xMin(), yMin()), make_pair(xMax(), yMin())));
+    const std::vector<Segment> edges() const {
+      std::vector<Segment> ret;
+      ret.push_back(std::make_pair(std::make_pair(xMin(), yMin()), std::make_pair(xMin(), yMax())));
+      ret.push_back(std::make_pair(std::make_pair(xMin(), yMax()), std::make_pair(xMax(), yMax())));
+      ret.push_back(std::make_pair(std::make_pair(xMax(), yMin()), std::make_pair(xMax(), yMax())));
+      ret.push_back(std::make_pair(std::make_pair(xMin(), yMin()), std::make_pair(xMax(), yMin())));
       return ret;
     }
 
@@ -124,7 +122,7 @@ namespace YODA {
 
     /// Find the weighted mean point of the bin, or the midpoint if unfilled
     Point focus() const {
-      if (_dbn.sumW() != 0) return make_pair(xMean(), yMean());
+      if (_dbn.sumW() != 0) return std::make_pair(xMean(), yMean());
       return midpoint();
     }
 
@@ -218,7 +216,7 @@ namespace YODA {
     }
 
     //@}
-  
+
   protected:
 
     /// Boundaries setter

@@ -5,13 +5,10 @@
 //
 #include "YODA/Histo2D.h"
 #include "YODA/Scatter3D.h"
-
 #include <cmath>
+using namespace std;
 
 namespace YODA {
-
-
-  // typedef vector<HistoBin2D> Bins;
 
 
   int Histo2D::fill(double x, double y, double weight) {

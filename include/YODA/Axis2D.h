@@ -78,13 +78,13 @@ namespace YODA {
     /// It doesn't make much sense to use it.
     /// @todo Really "required"? Eliminate the requirement in the SWIG mapping.
     Axis2D() {
-      vector<Segment> edges;
+      std::vector<Segment> edges;
       _mkAxis(edges);
     }
 
 
     /// Constructor provided with a vector of bin delimiters
-    Axis2D(const vector<Segment>& binLimits) {
+    Axis2D(const std::vector<Segment>& binLimits) {
       _mkAxis(binLimits);
       if (isGrid()) _setOutflows();
     }
@@ -95,12 +95,13 @@ namespace YODA {
     /// @todo Never say "should be self-explanatory": explain it, even if it seems obvious
     /// @todo This is too large/complex to be inline: move to the .cc
     Axis2D(size_t nbinsX, double lowerX, double upperX, size_t nbinsY, double lowerY, double upperY) {
-      vector<Segment> binLimits;
+      std::vector<Segment> binLimits;
       double coeffX = (upperX - lowerX)/(double)nbinsX;
       double coeffY = (upperY - lowerX)/(double)nbinsY;
       for (double i = lowerX; i < upperX; i += coeffX) {
         for (double j = lowerY; j < upperY; j += coeffY) {
-          binLimits.push_back(make_pair(make_pair(i, j), make_pair((double)(i+coeffX), (double)(j+coeffY))));
+          binLimits.push_back(std::make_pair(std::make_pair(i, j),
+                                             std::make_pair((double)(i+coeffX), (double)(j+coeffY))));
         }
       }
       _mkAxis(binLimits);
@@ -116,10 +117,10 @@ namespace YODA {
            const std::vector<std::vector<DBN> >& outflows,
            const DBN& totalDbn)
     {
-      vector<Segment> binLimits;
+      std::vector<Segment> binLimits;
       for (size_t i = 0; i < bins.size(); ++i) {
-        binLimits.push_back(make_pair(make_pair(bins[i].xMin(), bins[i].yMin()),
-                                      make_pair(bins[i].xMax(), bins[i].yMax())));
+        binLimits.push_back(std::make_pair(std::make_pair(bins[i].xMin(), bins[i].yMin()),
+                                           std::make_pair(bins[i].xMax(), bins[i].yMax())));
       }
       _mkAxis(binLimits);
       for (size_t i = 0; i < _bins.size(); ++i) {
@@ -134,11 +135,11 @@ namespace YODA {
 
     /// A constructor with specified x and y axis bin limits.
     Axis2D(const std::vector<double>& xedges, const std::vector<double>& yedges) {
-      vector<Segment> binLimits;
+      std::vector<Segment> binLimits;
       for (int i = 0; i < yedges.size() - 1; ++i) {
         for (int j = 0; j < xedges.size() - 1; ++j) {
-          binLimits.push_back(make_pair(make_pair(xedges[j], yedges[i]),
-                                        make_pair(xedges[j+1], yedges[i+1])));
+          binLimits.push_back(std::make_pair(std::make_pair(xedges[j], yedges[i]),
+                                             std::make_pair(xedges[j+1], yedges[i+1])));
         }
       }
       _mkAxis(binLimits);
@@ -173,7 +174,7 @@ namespace YODA {
     /// Be aware that adding a Bin to an existing axis created by one of
     /// constructors wipes out all the outflows since a concept of them is no
     /// longer meaningful!
-    void addBin(const vector<Segment>& binLimits) {
+    void addBin(const std::vector<Segment>& binLimits) {
       _mkAxis(binLimits);
       _outflows.resize(0);
     }
@@ -183,8 +184,9 @@ namespace YODA {
     /// This operator is supplied with the extremal coordinates of just a new
     /// bin, which is then constructed and added as usual.
     void addBin(double lowX, double lowY, double highX, double highY) {
-      vector<Segment> coords;
-      coords.push_back(make_pair(make_pair(lowX, lowY), make_pair(highX, highY)));
+      std::vector<Segment> coords;
+      coords.push_back(std::make_pair(std::make_pair(lowX, lowY),
+                                      std::make_pair(highX, highY)));
       addBin(coords);
     }
 
@@ -231,7 +233,7 @@ namespace YODA {
         throw RangeError("The start bin has a greater y value than the end bin.");
       }
 
-      vector<size_t> toRemove;
+      std::vector<size_t> toRemove;
       /// @todo Explain! This is *totally* incomprehensible.
       for (size_t y = (*_binHashSparse.first._cache.lower_bound(start.yMin())).second;
            y <= (*_binHashSparse.first._cache.lower_bound(end.yMin())).second; ++y) {
@@ -326,13 +328,16 @@ namespace YODA {
       return _bins;
     }
 
+
     /// Get the outflows (non-const version)
-    vector<vector<DBN> >& outflows() {
+    /// @todo Explain the index structure
+    std::vector<std::vector<DBN> >& outflows() {
       return _outflows;
     }
 
     /// Get the outflows (const version)
-    const vector<vector<DBN> >& outflows() const {
+    /// @todo Explain the index structure
+    const std::vector<std::vector<DBN> >& outflows() const {
       return _outflows;
     }
 
@@ -366,12 +371,12 @@ namespace YODA {
 
 
     /// Get a bin at given coordinates (non-const version)
-    BIN2D& binByCoord(pair<double, double>& coords) {
+    BIN2D& binByCoord(std::pair<double, double>& coords) {
       return binByCoord(coords.first, coords.second);
     }
 
     /// Get a bin at given coordinates (const version)
-    BIN2D& binByCoord(pair<double, double>& coords) const {
+    BIN2D& binByCoord(std::pair<double, double>& coords) const {
       return binByCoord(coords.first, coords.second);
     }
 
@@ -431,69 +436,72 @@ namespace YODA {
       return -1;
     }
 
+
     /// Fast column number searcher
     const size_t getBinColumn(size_t index) const {
+      // Check if assumptions are reasonable
+      if (!_isGrid) throw GridError("This operation can only be performed when an array is a grid!");
+      if (index >= _bins.size()) throw RangeError("Index is bigger than the size of bins vector!");
 
-      /// Check if assumptions are reasonable
-      if(!_isGrid) throw GridError("This operation can only be performed when an array is a grid!");
-      if(index >= _bins.size()) throw RangeError("Index is bigger than the size of bins vector!");
-
-      /// Find the column nuber
+      // Find the column number
       size_t ret  = (*_binHashSparse.first._cache.lower_bound(approx(bin(index).yMin()))).second;
       return ret;
-}
+    }
+
 
     /// Fast row number searcher
     const size_t getBinRow(size_t index) const {
+      // Check if assumptions are reasonable
+      if (!_isGrid) throw GridError("This operation can only be performed when an array is a grid!");
+      if (index >= _bins.size()) throw RangeError("Index is bigger than the size of bins vector!");
 
-      /// Check if assumptions are reasonable
-      if(!_isGrid) throw GridError("This operation can only be performed when an array is a grid!");
-      if(index >= _bins.size()) throw RangeError("Index is bigger than the size of bins vector!");
-
-      /// Find the row nuber
+      // Find the row number
       size_t ret  = (*_binHashSparse.second._cache.lower_bound(approx(bin(index).xMin()))).second;
       return ret;
-}
+    }
+
 
     /// Check if the axis has a grid structure or not
     bool isGrid() const {
       return _isGrid;
     }
 
+
     /// @brief Bin eraser
+    ///
     /// Removes a bin at a position. Additionally, modifies bin cache to
     /// make it represent the new bin set.
     void eraseBin(size_t index) {
-      /// Check the correctness of assumptions
-      if(index >= _bins.size()) throw RangeError("Index is bigger than the size of bins vector!");
+      // Check the correctness of assumptions
+      if (index >= _bins.size()) throw RangeError("Index is bigger than the size of bins vector!");
 
       _bins.erase(_bins.begin() + index);
-      /// Check if delimiter if recomputed after every for run.
-      for(size_t i = 0; i < _binHashSparse.first.size(); ++i) {
-        for(size_t j = 0; j < _binHashSparse.first[i].second.size(); ++j) {
-          if(_binHashSparse.first[i].second[j].first == index) {
+      // Check if delimiter if recomputed after every for run.
+      for (size_t i = 0; i < _binHashSparse.first.size(); ++i) {
+        for (size_t j = 0; j < _binHashSparse.first[i].second.size(); ++j) {
+          if (_binHashSparse.first[i].second[j].first == index) {
             _binHashSparse.first[i].second.erase(_binHashSparse.first[i].second.begin() + j);
             j--;
           }
-          else if(_binHashSparse.first[i].second[j].first > index) {
+          else if (_binHashSparse.first[i].second[j].first > index) {
             _binHashSparse.first[i].second[j].first--;
           }
         }
       }
 
-      for(size_t i = 0; i < _binHashSparse.second.size(); ++i) {
-        for(size_t j = 0; j < _binHashSparse.second[i].second.size(); ++j) {
-          if(_binHashSparse.second[i].second[j].first == index) {
+      for (size_t i = 0; i < _binHashSparse.second.size(); ++i) {
+        for (size_t j = 0; j < _binHashSparse.second[i].second.size(); ++j) {
+          if (_binHashSparse.second[i].second[j].first == index) {
             _binHashSparse.second[i].second.erase(_binHashSparse.second[i].second.begin() + j);
             j--;
           }
-          else if(_binHashSparse.second[i].second[j].first > index) {
+          else if (_binHashSparse.second[i].second[j].first > index) {
             _binHashSparse.second[i].second[j].first--;
           }
         }
       }
 
-      /// Check if any of the bounds changed
+      // Check if any of the bounds changed
       _regenDelimiters();
     }
     //@}
@@ -732,7 +740,7 @@ namespace YODA {
     /// @todo This is far too big to be inline: move it to the bottom of this file, or perhaps to a .cc
     ///
     /// @todo Is this really a method? Can't it just be a function?
-    bool _validateEdge(vector<Segment>& edges) {
+    bool _validateEdge(std::vector<Segment>& edges) {
       // Setting the return variable. True means that no cuts were detected.
       bool ret = true;
 
@@ -873,7 +881,7 @@ namespace YODA {
     /// a bin is created from those edges.
     ///
     /// @todo This is far too large to be inline: move to the .cc
-    void _addEdge(vector<Segment> edges, pair<Utils::cachedvector<EdgeCollection>,
+    void _addEdge(std::vector<Segment> edges, std::pair<Utils::cachedvector<EdgeCollection>,
                   Utils::cachedvector<EdgeCollection> >& binHash, bool addBin = true) {
       // Check if there was no mistake made when adding segments to a vector.
       if (edges.size() != 4) throw Exception("The segments supplied don't describe a full bin!");
@@ -906,7 +914,8 @@ namespace YODA {
           for (; i < binHash.second.size() && i < end ; ++i) {
             /// If this is the case, do what is needed to be done.
             if (fuzzyEquals(binHash.second[i].first, edge.first.first)) {
-              binHash.second[i].second.push_back(make_pair(_bins.size(),make_pair(edge.first.second, edge.second.second)));
+              binHash.second[i].second.push_back(std::make_pair(_bins.size(),
+                                                                std::make_pair(edge.first.second, edge.second.second)));
               found = true;
               break;
             }
@@ -915,9 +924,9 @@ namespace YODA {
           // If no edge with the same X coordinate exist, create
           // a new subhash at the X coordinate of a segment.
           if (!found) {
-            vector<Edge> temp;
-            temp.push_back(make_pair(_bins.size(), make_pair(edge.first.second, edge.second.second)));
-            binHash.second.push_back(make_pair(edge.first.first,temp));
+            std::vector<Edge> temp;
+            temp.push_back(std::make_pair(_bins.size(), std::make_pair(edge.first.second, edge.second.second)));
+            binHash.second.push_back(std::make_pair(edge.first.first, temp));
             sort(binHash.second.begin(), binHash.second.end());
           }
         }
@@ -930,14 +939,15 @@ namespace YODA {
           size_t end = i+3;
           for (; i < binHash.first.size() && i < end; ++i) {
             if (fuzzyEquals(binHash.first[i].first, edge.first.second)) {
-              binHash.first[i].second.push_back(make_pair(_bins.size(),make_pair(edge.first.first, edge.second.first)));
+              binHash.first[i].second.push_back(std::make_pair(_bins.size(),
+                                                               std::make_pair(edge.first.first, edge.second.first)));
               found = true;
             }
           }
           if (!found) {
-            vector<Edge> temp;
-            temp.push_back(make_pair(_bins.size(), make_pair(edge.first.first, edge.second.first)));
-            binHash.first.push_back(make_pair(edge.second.second, temp));
+            std::vector<Edge> temp;
+            temp.push_back(std::make_pair(_bins.size(), std::make_pair(edge.first.first, edge.second.first)));
+            binHash.first.push_back(std::make_pair(edge.second.second, temp));
             sort(binHash.first.begin(), binHash.first.end());
           }
         }
@@ -981,30 +991,30 @@ namespace YODA {
     /// bottom-left) as input.
     ///
     /// @todo This is far too large to be inline: move to the .cc
-    void _mkAxis(const vector<Segment>& binLimits) {
+    void _mkAxis(const std::vector<Segment>& binLimits) {
 
       // For each of the rectangles
       for (size_t i = 0; i < binLimits.size(); ++i) {
         // Produce the segments that a rectangle is composed of
         Segment edge1 =
-          make_pair(binLimits[i].first,
-                    make_pair(binLimits[i].first.first, binLimits[i].second.second));
+          std::make_pair(binLimits[i].first,
+                         std::make_pair(binLimits[i].first.first, binLimits[i].second.second));
         Segment edge2 =
-          make_pair(make_pair(binLimits[i].first.first, binLimits[i].second.second),
-                    binLimits[i].second);
+          std::make_pair(std::make_pair(binLimits[i].first.first, binLimits[i].second.second),
+                         binLimits[i].second);
         Segment edge3 =
-          make_pair(make_pair(binLimits[i].second.first, binLimits[i].first.second),
-                    binLimits[i].second);
+          std::make_pair(std::make_pair(binLimits[i].second.first, binLimits[i].first.second),
+                         binLimits[i].second);
         Segment edge4 =
-          make_pair(binLimits[i].first,
-                    make_pair(binLimits[i].second.first, binLimits[i].first.second));
+          std::make_pair(binLimits[i].first,
+                         std::make_pair(binLimits[i].second.first, binLimits[i].first.second));
 
         // Check if they are made properly
         _fixOrientation(edge1); _fixOrientation(edge2);
         _fixOrientation(edge3); _fixOrientation(edge4);
 
         // Add all the segments to a vector
-        vector<Segment> edges;
+        std::vector<Segment> edges;
         edges.push_back(edge1); edges.push_back(edge2);
         edges.push_back(edge3); edges.push_back(edge4);
 
@@ -1028,10 +1038,10 @@ namespace YODA {
     ///
     /// @todo This is too large to be inline: move to the .cc
     void _regenDelimiters() {
-      double highEdgeX = numeric_limits<double>::min();
-      double highEdgeY = numeric_limits<double>::min();
-      double lowEdgeX = numeric_limits<double>::max();
-      double lowEdgeY = numeric_limits<double>::max();
+      double highEdgeX = std::numeric_limits<double>::min();
+      double highEdgeY = std::numeric_limits<double>::min();
+      double lowEdgeX = std::numeric_limits<double>::max();
+      double lowEdgeY = std::numeric_limits<double>::max();
 
       // Scroll through the bins and set the delimiters.
       for (size_t i = 0; i < _bins.size(); ++i) {
@@ -1056,8 +1066,9 @@ namespace YODA {
     /// Overflow distributions
     ///
     /// @todo Explain how the vector structure works!
-    vector<vector<DBN> > _outflows;
-    ///
+    std::vector<std::vector<DBN> > _outflows;
+
+    /// Total distribution
     /// @todo This needs to be a templated DBN type
     DBN _dbn;
 
