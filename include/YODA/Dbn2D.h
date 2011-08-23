@@ -238,6 +238,7 @@ namespace YODA {
     /// Add two dbns (internal, explicitly named version)
     Dbn2D& add(const Dbn2D& d) {
       _dbnX += d._dbnX;
+      _dbnY += d._dbnY;
       _sumWXY += d._sumWXY;
       return *this;
     }
@@ -245,6 +246,7 @@ namespace YODA {
     /// Subtract one dbn from another (internal, explicitly named version)
     Dbn2D& subtract(const Dbn2D& d) {
       _dbnX -= d._dbnX;
+      _dbnY -= d._dbnY;
       _sumWXY -= d._sumWXY;
       return *this;
     }
