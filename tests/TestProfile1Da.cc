@@ -1,4 +1,5 @@
 #include "YODA/Profile1D.h"
+#include "YODA/Utils/Formatting.h"
 #include <cmath>
 #include <iostream>
 #include <unistd.h>
@@ -16,9 +17,13 @@ int main() {
     h.fill(x, y, 2);
   }
 
-  const vector<ProfileBin1D>& bins = h.bins();
-  for (vector<ProfileBin1D>::const_iterator b = bins.begin(); b != bins.end(); ++b) {
-    cout << b->mean() << ", " << b->stdDev() << ", " << b->stdErr() << endl;
+  for (int i = 0; i < 4; ++i) {
+    if (i > 0) h.rebin(2);
+    MSG("Profile (rebinning #" << i << ", num bins = " << h.numBins() << ")");
+    foreach (const ProfileBin1D& b, h.bins()) {
+      MSG(b.xMin() << "-" << b.xMax() << ": "
+          << RED(b.mean()) << ", " << BLUE(b.stdDev()) << ", " << RED(b.stdErr()));
+    }
   }
 
   return EXIT_SUCCESS;

@@ -6,9 +6,6 @@ NOW
 * Bin division: add quadratic / binomial error treatment enum option (AB)
   AB: done... needs to be checked. Add a test that y +- 1 sigma in [0, 1]
 
-* Rebinning in 1D: merges of n adjacent bins (AB)
-  AB: Done on Axis1D... add interface to Histo1D and Profile1D.
-
 * Add copy assignment to Point/Scatter3D and Dbn1D/2D.
 
 * Add bin removal to Axis2D: should allow removal of the "ghost" mechanism and

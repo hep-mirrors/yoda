@@ -15,6 +15,7 @@ pkginclude_HEADERS = \
 nobase_pkginclude_HEADERS = \
 	WriterMethods.icc \
 	Utils/MathUtils.h \
+	Utils/Formatting.h \
 	Utils/sortedvector.h \
     Utils/cachedvector.h \
 	Utils/nvector.h \

@@ -9,6 +9,7 @@
 #include "YODA/Bin.h"
 #include "YODA/Dbn1D.h"
 #include <string>
+#include <iostream>
 #include <utility>
 #include <cassert>
 
@@ -245,7 +246,9 @@ namespace YODA {
       } else {
         throw LogicError("Attempted to merge two non-adjacent bins");
       }
+      // std::cout << "a " << _dbn.sumW() << std::endl;
       _dbn += b._dbn;
+      // std::cout << "b " << _dbn.sumW() << std::endl;
       return *this;
     }
 

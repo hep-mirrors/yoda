@@ -112,15 +112,30 @@ namespace YODA {
     /// Fill histo by value and weight
     void fill(double x, double y, double weight=1.0);
 
+
     /// @brief Reset the histogram
+    ///
     /// Keep the binning but set all bin contents and related quantities to zero
     void reset() {
       _axis.reset();
     }
 
+
     /// Rescale as if all fill weights had been different by factor @a scalefactor.
     void scaleW(double scalefactor) {
       _axis.scaleW(scalefactor);
+    }
+
+
+    /// Merge together the bin range with indices from @a from to @a to, inclusive
+    void mergeBins(size_t from, size_t to) {
+      _axis.mergeBins(from, to);
+    }
+
+
+    /// Merge every group of n bins, starting from the LHS
+    void rebin(int n) {
+      _axis.rebin(n);
     }
 
     //@}
@@ -134,6 +149,7 @@ namespace YODA {
       return bins().size();
     }
 
+
     /// Access the bin vector
     std::vector<YODA::ProfileBin1D>& bins() {
       return _axis.bins();
@@ -143,6 +159,7 @@ namespace YODA {
     const std::vector<YODA::ProfileBin1D>& bins() const {
       return _axis.bins();
     }
+
 
     /// Access a bin by index (non-const version)
     ProfileBin1D& bin(size_t index) {
@@ -154,6 +171,7 @@ namespace YODA {
       return _axis.bins()[index];
     }
 
+
     /// Access a bin by x-coordinate.
     ProfileBin1D& binByCoord(double x) {
       return _axis.binByCoord(x);
@@ -164,6 +182,7 @@ namespace YODA {
       return _axis.binByCoord(x);
     }
 
+
     /// Access underflow (non-const version)
     Dbn2D& underflow() {
       return _axis.underflow();
@@ -173,6 +192,7 @@ namespace YODA {
     const Dbn2D& underflow() const {
       return _axis.underflow();
     }
+
 
     /// Access overflow (non-const version)
     Dbn2D& overflow() {

@@ -203,17 +203,6 @@ namespace YODA {
     }
 
 
-    /// Merge every group of n bins, starting from the LHS
-    void rebin(int n) {
-      int m = 0;
-      while (m < _bins.size()) {
-        size_t end = (m + n - 1 < _bins.size()) ? m + n -1 : _bins.size() - 1;
-        mergeBins(m, end);
-        m += 1;
-      }
-    }
-
-
     /// Merge together the bin range with indices from @a from to @a to, inclusive
     void mergeBins(size_t from, size_t to) {
       // Correctness checking
@@ -221,10 +210,24 @@ namespace YODA {
       if (to < 0 || to >= numBins()) throw ("Second index is out of range!");
       if (_bins[from].xMin() > _bins[to].xMin()) throw RangeError("The starting bin is greater than ending bin!");
       BIN1D& b = _bins[from];
+      // std::cout << "a " << b.focus() << std::endl;
       for (size_t i = from+1; i <= to; ++i) {
         b.merge(_bins[i]);
       }
+      // std::cout << "b " << b.focus() << std::endl;
       eraseBins(from+1, to);
+    }
+
+
+    /// Merge every group of n bins, starting from the LHS
+    void rebin(int n) {
+      size_t m = 0;
+      while (m < _bins.size()) {
+        const size_t end = (m + n - 1 < _bins.size()) ? m + n -1 : _bins.size() - 1;
+        //std::cout << m << ", " << end << ", " << _bins.size() << std::endl;
+        if (end > m) mergeBins(m, end);
+        m += 1;
+      }
     }
 
 

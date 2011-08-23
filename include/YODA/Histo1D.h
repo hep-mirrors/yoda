@@ -97,15 +97,30 @@ namespace YODA {
     /// Fill histo by value and weight
     void fill(double x, double weight=1.0);
 
+
     /// @brief Reset the histogram.
+    ///
     /// Keep the binning but set all bin contents and related quantities to zero
     virtual void reset() {
       _axis.reset();
     }
 
+
     /// Rescale as if all fill weights had been different by factor @a scalefactor.
     void scaleW(double scalefactor) {
       _axis.scaleW(scalefactor);
+    }
+
+
+    /// Merge together the bin range with indices from @a from to @a to, inclusive
+    void mergeBins(size_t from, size_t to) {
+      _axis.mergeBins(from, to);
+    }
+
+
+    /// Merge every group of n bins, starting from the LHS
+    void rebin(int n) {
+      _axis.rebin(n);
     }
 
     //@}
