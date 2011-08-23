@@ -13,6 +13,10 @@ NOW
 
 * Fix failing Histo2D test and remove cout printout from Histo2D.h (MK)
 
+* Improve tests Makefile setup to work out the path to the Python build dir. (AB)
+
+* Make the first Python test actually test something in YODA! (AB)
+
 * Test that a y-binned Histo2D has the same per-y-column stats as an
   equivalently x-binned Profile1D. Perhaps use this as an opportunity to
   implement one of the the conversion functions mentioned in the NEXT
