@@ -233,10 +233,22 @@ namespace YODA {
     //@}
 
 
-  protected:
-
     /// @name Named operators
     //@{
+
+    /// Merge two adjacent bins
+    Bin1D<DBN>& merge(const Bin1D<DBN>& b) {
+      if (fuzzyEquals(_edges.second, b._edges.first)) {
+        _edges.second = b._edges.second;
+      } else if (fuzzyEquals(_edges.second, b._edges.first)) {
+        _edges.first = b._edges.first;
+      } else {
+        throw LogicError("Attempted to merge two non-adjacent bins");
+      }
+      _dbn += b._dbn;
+      return *this;
+    }
+
 
     /// Add two bins (internal, explicitly named version)
     ///
@@ -249,6 +261,7 @@ namespace YODA {
       _dbn += b._dbn;
       return *this;
     }
+
 
     /// Subtract one bin from another (internal, explicitly named version)
     ///

@@ -132,7 +132,6 @@ namespace YODA {
     }
 
     /// Access the bin vector
-    /// @todo Actually, it's a Histo
     std::vector<YODA::HistoBin1D>& bins() {
       return _axis.bins();
     }
@@ -182,7 +181,7 @@ namespace YODA {
       return _axis.overflow();
     }
 
-    /// Add a new bin specifying its lower and upper bound 
+    /// Add a new bin specifying its lower and upper bound
     void addBin(double from, double to) {
       _axis.addBin(from, to);
     }
@@ -191,7 +190,7 @@ namespace YODA {
     void addBin(std::vector<double> edges) {
       _axis.addBin(edges);
     }
-  
+
     /// Add new bins specifying a beginning and end of each of them
     void addBin(std::vector<std::pair<double,double> > edges) {
       _axis.addBin(edges);

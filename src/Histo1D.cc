@@ -144,10 +144,11 @@ namespace YODA {
         ey = y * sqrt( sqr(b1.heightErr()/b1.height()) + sqr(b2.heightErr()/b2.height()) );
         break;
       case BINOMIAL:
-        /// @todo Check that this is correct
+        /// @todo Check that this is correct -- isn't it a problem that this varies if the same scale
+        /// factor is applied to the weights on bins 1 and 2?
         /// @todo I think this is only valid if the fills of b1 are a subset of the fills of b2. Throw an
         /// error if Neff(b1) > Neff(b2)
-        ey = std::sqrt( b1.effNumEntries() * (1- b1.effNumEntries()/b2.effNumEntries()) )/b2.effNumEntries();
+        ey = sqrt( b1.effNumEntries() * (1 - b1.effNumEntries()/b2.effNumEntries()) ) / b2.effNumEntries();
         break;
       }
 

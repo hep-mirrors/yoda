@@ -1,3 +1,7 @@
+2011-08-23  Andy Buckley  <andy@insectnation.org>
+
+	* Adding first implementation of 1D bin merging to Axis1D.
+
 2011-08-22  Andy Buckley  <andy@insectnation.org>
 
 	* Adding copy constructors and assignment operators to Histo1D,
