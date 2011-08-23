@@ -3,66 +3,50 @@ YODA TODO list
 
 NOW
 
-* Bin division: add quadratic / binomial error treatment enum option (AB)
-  AB: done... needs to be checked. Add a test that y +- 1 sigma in [0, 1]
+* Add copy assignment to Point/Scatter3D and Dbn1D/2D. (AB)
 
-* Add copy assignment to Point/Scatter3D and Dbn1D/2D.
-
-* Add bin removal to Axis2D: should allow removal of the "ghost" mechanism and
-  hence clean up the Axis2D::Bins type. Clean and comment the caching
-  mechanism. (MICHAL)
-
-* Rework Axis1D to operate as Axis2D does. (MICHAL)
-
-* Template Bin2D and HistoBin2D on DBN type (Dbn2D/3D) cf. Bin1D<DBN>
-
-* Rebinning: global rebinning by integer factor(s) (AB for 1D, MICHAL for 2D)
-  Different rebinning factors for X and Y in 2D. Implement for 1D first,
-  to define the conventions. (AB)
+* Rebinning: global rebinning of Axis2D -> Histo2D by integer factor(s) --
+  different factors in x and y directions. (MK)
 
 * Test that a y-binned Histo2D has the same per-y-column stats as an
   equivalently x-binned Profile1D. Perhaps use this as an opportunity to
   implement one of the the conversion functions mentioned in the NEXT
-  section... (MICHAL)
+  section... (MK)
   MK: Conversion function implemented, no tests yet, though.
 
-* Conversion functions to build Histo1D and Profile1D objects for slicings and
-  marginalisations along both X and Y directions of 2D histos. Throw an
-  exception if binnings are not complete grids. (MICHAL)
-  MK: done -- to be reviewed.
-  AB: Profile1D slices still needed. If outflows now work on Histo2D, they
-      should be included in these slicings.
-  MK: Profile1D done. Outflows done. Needs a check if the outflows for Histo1D are
-      done in the right way.
-  MK: Corrected the outflows to be appropriate.
+* Test bin-comparison and negative-weighted mean calculations.
+
+* Review and SWIG-map Histo2D -> Histo/Profile1D conversion functions. (AB)
 
 * New "flat" file format: adapt WriterYODA and fill ReaderYODA. (HH)
   Need to persist the whole-histo Dbn1D/Dbn2Ds, and over/underflows.
   Use state-setting constructors for Histo and Profile persistency via the
   Reader classes.
 
+* Bin division: add quadratic / binomial error treatment enum option (AB)
+  AB: done... needs to be checked. Add a test that y +- 1 sigma in [0, 1]
+
+* Template Bin2D and HistoBin2D on DBN type (Dbn2D/3D) cf. Bin1D<DBN> (MK)
+
+* Profile2D, using Dbn3D (AB/MK)
+
+* Transform 1D differential to integral histos and vice versa. Bins have to be
+  contiguous. (AB)
+
+
 
 NEXT
-
-* Tests:
-  Add bin-comparison and negative-weighted mean test(s)
-  Test bin-by-index sorted behaviour on Histo and Profile
 
 * Use Weights objects in Dbn1D / Dbn2D (AB)
 
 * Add a Counter type (mostly a UI/persistency wrapper on Dbn1D) (AB)
 
-* Transform differential to integral histos and vice versa. Bins have to be
-  contiguous? (AB)
-
 * Multiple errors on Scatter2D -- via a vector of Error2D? How to implement
   flexible error combination? Error correlations? (DANIEL)
 
-* Profile2D & Dbn3D
-
 * WriterFlat and ReaderFlat, for Scatter2D representations only. (HH)
 
-* Arbitrary function transforms on Scatters
+* Arbitrary function transforms on Scatters (AB)
 
 
 
