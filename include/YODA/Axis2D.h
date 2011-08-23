@@ -18,7 +18,7 @@ namespace YODA {
   ///
   /// This class handles almost all boiler-plate operations
   /// on 2D bins (like creating axis, adding, searching, testing).
-  template <typename BIN, typename DBN>
+  template <typename BIN2D, typename DBN>
   class Axis2D {
 
     /// @name Internal typedefs
@@ -49,7 +49,7 @@ namespace YODA {
   public:
 
     // A few helpful typedefs
-    typedef BIN Bin;
+    typedef BIN2D Bin;
 
     /// @brief The internal bin container type
     ///
@@ -239,7 +239,7 @@ namespace YODA {
           if ((_binHashSparse.first[y].second[x].second.first > start.xMin() ||
                fuzzyEquals(_binHashSparse.first[y].second[x].second.first, start.xMin())) &&
               (_binHashSparse.first[y].second[x].second.second < end.xMax() ||
-               fuzzyEquals(_binHashSparse.first[y].second[x].second.second, end.xMax()))) 
+               fuzzyEquals(_binHashSparse.first[y].second[x].second.second, end.xMax())))
             {
               temp += bin(_binHashSparse.first[y].second[x].first);
               toRemove.push_back(_binHashSparse.first[y].second[x].first);
@@ -338,27 +338,27 @@ namespace YODA {
 
 
     /// Get the bin with a given index (non-const version)
-    BIN& bin(size_t index) {
+    BIN2D& bin(size_t index) {
       if (index >= _bins.size()) throw RangeError("Bin index out of range.");
       return _bins[index];
     }
 
     /// Get the bin with a given index (const version)
-    const BIN& bin(size_t index) const {
+    const BIN2D& bin(size_t index) const {
       if (index >= _bins.size()) throw RangeError("Bin index out of range.");
       return _bins[index];
     }
 
 
     /// Get a bin at given coordinates (non-const version)
-    BIN& binByCoord(double x, double y) {
+    BIN2D& binByCoord(double x, double y) {
       const int ret = getBinIndex(x, y);
       if (ret != -1) return bin(ret);
       else throw RangeError("No bin found!!");
     }
 
     /// Get a bin at given coordinates (const version)
-    const BIN& binByCoord(double x, double y) const {
+    const BIN2D& binByCoord(double x, double y) const {
       const int ret = getBinIndex(x, y);
       if (ret != -1) return bin(ret);
       else throw RangeError("No bin found!!");
@@ -366,12 +366,12 @@ namespace YODA {
 
 
     /// Get a bin at given coordinates (non-const version)
-    BIN& binByCoord(pair<double, double>& coords) {
+    BIN2D& binByCoord(pair<double, double>& coords) {
       return binByCoord(coords.first, coords.second);
     }
 
     /// Get a bin at given coordinates (const version)
-    BIN& binByCoord(pair<double, double>& coords) const {
+    BIN2D& binByCoord(pair<double, double>& coords) const {
       return binByCoord(coords.first, coords.second);
     }
 
@@ -396,7 +396,7 @@ namespace YODA {
       if (isGrid()) {
         /// @todo WTF?! This is bad. No magic numbers! Why would these be unreasonably small offsets?
         /// These are for the case when user requests a coordinate which is exactly (by the meaning of equals)
-        /// on the edge. Without those the algorithm will crash. 
+        /// on the edge. Without those the algorithm will crash.
         /// I am pretty sure they are fine, as they are well below fuzzyEquals() tolerance.
         coordX += 0.00000000001;
         coordY += 0.00000000001;
@@ -425,7 +425,7 @@ namespace YODA {
       // In case we have something more complicated
       for (size_t i = 0; i < _bins.size(); ++i) {
         if (_bins[i].xMin() <= coordX && _bins[i].xMax() >= coordX &&
-            _bins[i].yMin() <= coordY && _bins[i].yMax() >= coordY) 
+            _bins[i].yMin() <= coordY && _bins[i].yMax() >= coordY)
              return i;
       }
       return -1;
@@ -439,10 +439,10 @@ namespace YODA {
       if(index >= _bins.size()) throw RangeError("Index is bigger than the size of bins vector!");
 
       /// Find the column nuber
-      size_t ret  = (*_binHashSparse.first._cache.lower_bound(approx(bin(index).yMin()))).second;     
+      size_t ret  = (*_binHashSparse.first._cache.lower_bound(approx(bin(index).yMin()))).second;
       return ret;
 }
-    
+
     /// Fast row number searcher
     const size_t getBinRow(size_t index) const {
 
@@ -451,7 +451,7 @@ namespace YODA {
       if(index >= _bins.size()) throw RangeError("Index is bigger than the size of bins vector!");
 
       /// Find the row nuber
-      size_t ret  = (*_binHashSparse.second._cache.lower_bound(approx(bin(index).xMin()))).second;     
+      size_t ret  = (*_binHashSparse.second._cache.lower_bound(approx(bin(index).xMin()))).second;
       return ret;
 }
 
@@ -480,7 +480,7 @@ namespace YODA {
           }
         }
       }
-      
+
       for(size_t i = 0; i < _binHashSparse.second.size(); ++i) {
         for(size_t j = 0; j < _binHashSparse.second[i].second.size(); ++j) {
           if(_binHashSparse.second[i].second[j].first == index) {
@@ -593,7 +593,7 @@ namespace YODA {
     /// @brief Addition operator
     /// At this stage it is only possible to add histograms with the same binnings.
     /// @todo Compatible but not equal binning to come soon.
-    Axis2D<BIN, DBN>& operator += (const Axis2D<BIN, DBN>& toAdd) {
+    Axis2D<BIN2D, DBN>& operator += (const Axis2D<BIN2D, DBN>& toAdd) {
       if (*this != toAdd) {
         throw LogicError("YODA::Histo1D: Cannot add axes with different binnings.");
       }
@@ -609,7 +609,7 @@ namespace YODA {
     ///
     /// At this stage it is only possible to subtract histograms with the same binnings.
     /// @todo Compatible but not equal binning to come soon.
-    Axis2D<BIN, DBN>& operator -= (const Axis2D<BIN, DBN>& toSubtract) {
+    Axis2D<BIN2D, DBN>& operator -= (const Axis2D<BIN2D, DBN>& toSubtract) {
       if (*this != toSubtract) {
         throw LogicError("YODA::Histo1D: Cannot add axes with different binnings.");
       }
@@ -944,7 +944,7 @@ namespace YODA {
       }
 
       // Now, create a bin with the edges provided
-      if (addBin) _bins.push_back(BIN(edges));
+      if (addBin) _bins.push_back(BIN2D(edges));
     }
 
 
@@ -1010,7 +1010,7 @@ namespace YODA {
 
         // And check if a bin is a proper one, if it is, add it.
         if (_validateEdge(edges))  _addEdge(edges, _binHashSparse);
-      } 
+      }
 
       // Setting all the caches
       _binHashSparse.first.regenCache();
@@ -1085,19 +1085,18 @@ namespace YODA {
   //@{
 
   /// Addition operator
-  template <typename BIN, typename DBN>
-  inline Axis2D<BIN, DBN> operator + (const Axis2D<BIN, DBN>& first, const Axis2D<BIN, DBN>& second) {
-    Axis2D<BIN, DBN> tmp = first;
+  template <typename BIN2D, typename DBN>
+  inline Axis2D<BIN2D, DBN> operator + (const Axis2D<BIN2D, DBN>& first, const Axis2D<BIN2D, DBN>& second) {
+    Axis2D<BIN2D, DBN> tmp = first;
     tmp += second;
     return tmp;
   }
 
 
   /// Subtraction operator
-  template <typename BIN, typename DBN>
-  inline Axis2D<BIN, DBN> operator - (const Axis2D<BIN, DBN>& first, const Axis2D<BIN, DBN>& second)
-  {
-    Axis2D<BIN, DBN> tmp = first;
+  template <typename BIN2D, typename DBN>
+  inline Axis2D<BIN2D, DBN> operator - (const Axis2D<BIN2D, DBN>& first, const Axis2D<BIN2D, DBN>& second) {
+    Axis2D<BIN2D, DBN> tmp = first;
     tmp -= second;
     return tmp;
   }
