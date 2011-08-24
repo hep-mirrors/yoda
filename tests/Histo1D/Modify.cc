@@ -46,5 +46,16 @@ int main() {
   cout << "PASS" << endl;
 
 
+  cout << "Checking if it is possible to add a bin: ";
+  h.addBin(0,11);
+  cout << "PASS" << endl;
+ 
+  cout << "Checking if it was added properly:       ";
+  if(!fuzzyEquals(h.binByCoord(1).xMin(), 0) || !fuzzyEquals(h.binByCoord(1).xMax(),11)){
+    cout << "FAIL" << endl;
+    return -1;
+  }
+  cout << "PASS" << endl;
+
   return EXIT_SUCCESS;
 }

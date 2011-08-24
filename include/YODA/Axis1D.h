@@ -184,8 +184,10 @@ namespace YODA {
       // a member of the same bin as the one on the right, it means that our point
       // is inside a bin. In such case, announce it providing the index of the
       // bin in question.
-      if (_binHashSparse[index].second == _binHashSparse[index+1].second) {
-        return _binHashSparse[index].second;
+      for(size_t i = index+1; _binHashSparse[i].first == _binHashSparse[index+1].first; ++i){
+        if(_binHashSparse[index].second == _binHashSparse[i].second) {
+          return _binHashSparse[index].second;
+        }
       }
 
       // If we are inside an axis, but not inside a bin, it means that we must
@@ -210,12 +212,12 @@ namespace YODA {
       if (from < 0 || from >= numBins()) throw ("First index is out of range!");
       if (to < 0 || to >= numBins()) throw ("Second index is out of range!");
       if (_bins[from].xMin() > _bins[to].xMin()) throw RangeError("The starting bin is greater than ending bin!");
+      if (!_isGapless(from, to)) throw ("Bins with an empty space between them cannot be merged!");
+
       BIN1D& b = _bins[from];
-      // std::cout << "a " << b.focus() << std::endl;
       for (size_t i = from+1; i <= to; ++i) {
         b.merge(_bins[i]);
       }
-      // std::cout << "b " << b.focus() << std::endl;
       eraseBins(from+1, to);
     }
 
@@ -225,7 +227,6 @@ namespace YODA {
       size_t m = 0;
       while (m < _bins.size()) {
         const size_t end = (m + n - 1 < _bins.size()) ? m + n -1 : _bins.size() - 1;
-        //std::cout << m << ", " << end << ", " << _bins.size() << std::endl;
         if (end > m) mergeBins(m, end);
         m += 1;
       }
