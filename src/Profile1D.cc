@@ -22,6 +22,8 @@ namespace YODA {
     /// @todo Fill the underflow and overflow nicely
     ProfileBin1D& b = binByCoord(x);
     b.fill(x, y, weight);
+
+    _axis.totalDbn().fill(x, y, weight);
   }
 
 
