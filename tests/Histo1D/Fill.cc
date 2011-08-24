@@ -9,7 +9,7 @@ int main() {
   Histo1D h(100, 0, 100);
   
   cout << "Trying to fill the sample histogram:     ";
-  h.fill(0.5,2);
+  h.fill(0,2);
   cout << "PASS" << endl;
   
   cout << "Checking sumW:                           ";
@@ -27,22 +27,29 @@ int main() {
   cout << "PASS" << endl;
   
 
-  h.fill(10, 1);
+  h.fill(10, 2);
 
   cout << "Checking mean:                           ";
-  if(!fuzzyEquals(3.66667, h.mean(false))) {
+  if(!fuzzyEquals(5, h.mean(false))) {
     cout << "FAIL" << endl;
     return -1;
   }
   cout << "PASS" << endl;
 
   cout << "Checking variance:                       ";
-  if(!fuzzyEquals(20.0556, h.variance(false))){
+  if(!fuzzyEquals(25, h.variance(false))){
     cout << "FAIL" << endl;
     return -1;
   }
   cout << "PASS" << endl;
   
+  cout << "Checking standard deviation:             ";
+  if(!fuzzyEquals(5, h.stdDev(false))){
+    cout << "FAIL" << endl;
+    return -1;
+  }
+  cout << "PASS" << endl;
+
   cout << "Trying to fill the underflow:            ";
   h.fill(-10,1);
   cout << "PASS" << endl;
