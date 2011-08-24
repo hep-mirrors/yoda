@@ -57,5 +57,13 @@ int main() {
   }
   cout << "PASS" << endl;
 
+  cout << "Checking the reset fuction:              ";
+  h.reset();
+  if(!(h.mean() != h.mean())|| !(h.mean(false) != h.mean(false))) {
+    cout << "FAIL" << endl;
+    return -1;
+  }
+  cout << "PASS" << endl;
+
   return EXIT_SUCCESS;
 }
