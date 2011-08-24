@@ -250,7 +250,7 @@ namespace YODA {
 
 
     /// Add a set of bins specifying start/end of each
-    void addBin(const std::vector<std::pair<double,double> > edges) {
+    void addBin(const std::vector<std::pair<double,double> >& edges) {
       for (size_t i = 0; i < edges.size(); ++i) {
         std::vector<double> temp;
         temp.push_back(edges[i].first);
