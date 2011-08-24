@@ -8,7 +8,7 @@ check_PROGRAMS = \
   testpoint3D  \
   testscatter3D\
   testindexedset testsortedvector\
-  testhisto1Dconstructor \
+  testhisto1Dcreate \
   testhisto1Dfill\
   testhisto1Dmodify
 
@@ -26,7 +26,7 @@ testhisto2Da_SOURCES = TestHisto2Da.cc
 testhisto2De_SOURCES = TestHisto2Derase.cc
 testpoint3D_SOURCES = TestPoint3D.cc
 testscatter3D_SOURCES = TestScatter3D.cc
-testhisto1Dconstructor_SOURCES = Histo1D/Constructors.cc
+testhisto1Dcreate_SOURCES = Histo1D/Create.cc
 testhisto1Dfill_SOURCES = Histo1D/Fill.cc
 testhisto1Dmodify_SOURCES = Histo1D/Modify.cc
 
@@ -46,7 +46,7 @@ TESTS = \
   testpoint3D    \
   testscatter3D  \
   testindexedset testsortedvector \
-  testhisto1Dconstructor \
+  testhisto1Dcreate \
   testhisto1Dfill \
   testhisto1Dmodify \
   test-yoda-1.py test-yoda-2.py
