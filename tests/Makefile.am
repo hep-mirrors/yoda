@@ -8,7 +8,8 @@ check_PROGRAMS = \
   testpoint3D  \
   testscatter3D\
   testindexedset testsortedvector\
-  testhisto1Dconstructor
+  testhisto1Dconstructor \
+  testhisto1Dfill
 
 AM_CPPFLAGS = -I$(top_srcdir)/include
 AM_LDFLAGS = -L$(top_builddir)/src -lYODA
@@ -25,6 +26,7 @@ testhisto2De_SOURCES = TestHisto2Derase.cc
 testpoint3D_SOURCES = TestPoint3D.cc
 testscatter3D_SOURCES = TestScatter3D.cc
 testhisto1Dconstructor_SOURCES = Histo1D/Constructors.cc
+testhisto1Dfill_SOURCES = Histo1D/Fill.cc
 
 # TODO: Search paths are still not complete for the Python tests: need to add the lib.linux-i686-2.7 part to PYTHONPATH
 TESTS_ENVIRONMENT = \
@@ -43,4 +45,5 @@ TESTS = \
   testscatter3D  \
   testindexedset testsortedvector \
   testhisto1Dconstructor \
+  testhisto1Dfill \
   test-yoda-1.py test-yoda-2.py
