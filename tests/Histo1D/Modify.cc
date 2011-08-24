@@ -25,6 +25,26 @@ int main() {
   }
   cout << "PASS" << endl;
 
+  
+  
+  cout << "Checking if bin removal works:           ";
+  h.eraseBin(0);
+  cout << "PASS" << endl;
+  
+  cout << "Was the bin number updated properly?     ";
+  if(h.numBins() != 89) {
+    cout << "FAIL" << endl;
+    return -1;
+  }
+  cout << "PASS" << endl;
+
+  cout << "Was the right bin removed?               ";
+  if(fuzzyEquals(h.bin(0).xMin(), 0) && fuzzyEquals(h.bin(0).xMax(), 11)){
+    cout << "FAIL" << endl;
+    return -1;
+  }
+  cout << "PASS" << endl;
+
 
   return EXIT_SUCCESS;
 }
