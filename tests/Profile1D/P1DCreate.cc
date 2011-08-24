@@ -27,7 +27,20 @@ int main() {
     return -1;
   }
   cout << "PASS" << endl;
-
+  
+  cout << "Preliminary testing of = operator        ";
+  Profile1D p3(edges);
+  p3 = p2;
+  
+  if(p3.sumW() != 0 || p3.sumW2() != 0 || p3.sumW(false) != 0 || p3.sumW2(false) != 0){
+    cout << "FAIL" << endl;
+    return -1;
+  }
+  if(p3.numBins() != 100){
+    cout << "FAIL" << endl;
+    return -1;
+  }
+  cout << "PASS" << endl;
 
   return EXIT_SUCCESS;
 }
