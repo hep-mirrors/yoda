@@ -43,5 +43,25 @@ int main() {
   }
   cout << "PASS" << endl;
   
+  cout << "Trying to fill the underflow:            ";
+  h.fill(-10,1);
+  cout << "PASS" << endl;
+  cout << "Checking if stats were set correctly:    ";
+  if(!fuzzyEquals(h.underflow().mean(), -10)) {
+    cout << "FAIL" << endl;
+    return -1;
+  }
+  cout << "PASS" << endl;
+
+  cout << "Trying to fill the overflow:             ";
+  h.fill(110,1);
+  cout << "PASS" << endl;
+  cout << "Checking if stats were set correctly:    ";
+  if(!fuzzyEquals(h.overflow().mean(), 110)) {
+    cout << "FAIL" << endl;
+    return -1;
+  }
+  cout << "PASS" << endl;
+
   return EXIT_SUCCESS;
 }
