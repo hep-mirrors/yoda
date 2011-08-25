@@ -28,6 +28,7 @@ NOW
   implement one of the the conversion functions mentioned in the NEXT
   section... (MK)
   MK: Conversion function implemented, no tests yet, though.
+  MK: Tested, test included in the test suite.
 
 * Test bin-comparison and negative-weighted mean calculations.
 
