@@ -200,13 +200,13 @@ namespace YODA {
       return _axis.getBinIndex(coordX, coordY);
     }
 
-    /// Return a total number of bins in Histo(non-const version)
-    size_t numBinsTotal() {
-      return _axis.numBinsTotal();
+    /// @todo Deprecated, remove
+    const size_t numBinsTotal() const {
+      return _axis.numBins();
     }
 
-    const size_t numBinsTotal() const {
-      return _axis.numBinsTotal();
+    const size_t numBins() const {
+      return _axis.numBins();
     }
 
     /// Return number of bins along X axis

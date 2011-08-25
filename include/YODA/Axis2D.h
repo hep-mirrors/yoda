@@ -18,11 +18,12 @@ namespace YODA {
   ///
   /// This class handles almost all boiler-plate operations
   /// on 2D bins (like creating axis, adding, searching, testing).
+  /// Note that the class template arguments change its internal
+  /// workings.
   template <typename BIN2D, typename DBN>
   class Axis2D {
 
     /// @name Internal typedefs
-    /// @todo Note that none of these depend on the class template args
     //@{
 
     /// When an edge is added to the collection it must obey the following
@@ -36,8 +37,6 @@ namespace YODA {
     typedef typename std::pair<double, std::vector<Edge> > EdgeCollection;
 
     /// A simple point in 2D
-    ///
-    /// @todo Should Point2D be used?
     typedef typename std::pair<double, double> Point;
 
     /// Segment, having a beginning and end.
@@ -59,11 +58,6 @@ namespace YODA {
     /// common situation when such a functionality is needed is when merging a
     /// bin. For detailed description about what happens in such case, please
     /// refer to the mergeBins() function.
-    ///
-    /// @todo Hmm, it is very intrusive to have this on the public interface...
-    /// I think we need to review this design. It really complicates the concept
-    /// that is just meant to be a collection of bins. This also propagates
-    /// right through to the user interface, via the pass-through typedef on Histo2D.
     typedef typename std::vector<Bin> Bins;
 
 
@@ -90,10 +84,8 @@ namespace YODA {
     }
 
 
-    /// Most standard constructor, should be self-explanatory
-    ///
-    /// @todo Never say "should be self-explanatory": explain it, even if it seems obvious
-    /// @todo This is too large/complex to be inline: move to the .cc
+    /// Most standard constructor accepting X/Y ranges and number of bins
+    /// on each of the axis. Both Axis are divided linearly.
     Axis2D(size_t nbinsX, double lowerX, double upperX, size_t nbinsY, double lowerY, double upperY) {
       std::vector<Segment> binLimits;
       double coeffX = (upperX - lowerX)/(double)nbinsX;
@@ -112,7 +104,6 @@ namespace YODA {
     /// @brief A constructor accepting a list of bins and all the outflows
     ///
     /// Creates an Axis2D from existing bins
-    /// @todo This is too large to be inline: move to the .cc
     Axis2D(const Bins& bins,
            const std::vector<std::vector<DBN> >& outflows,
            const DBN& totalDbn)
@@ -215,8 +206,6 @@ namespace YODA {
 
 
     /// Merge a range of bins, given the bin IDs of points at the lower-left and upper-right.
-    ///
-    /// @todo This is far too big to be inline: move it to the bottom of this file, or perhaps to a .cc
     void mergeBins(size_t from, size_t to) {
       HistoBin2D& start = bin(from);
       HistoBin2D& end = bin(to);
@@ -252,15 +241,14 @@ namespace YODA {
       _addEdge(temp.edges(), _binHashSparse, false);
       _bins.push_back(temp);
 
-      /// @todo Where do the old bins get dropped?
-
       _binHashSparse.first.regenCache();
       _binHashSparse.second.regenCache();
     }
 
-
-    /// @todo Add: Merge a given range of bins, given the bin x,y coordinates.
-
+    /// Merge a range of bins giving start and end coordinates
+    void mergeBins(double startX, double startY, double endX, double endY){
+      mergeBins(binByCoord(startX, startY), binByCoord(endX, endY));
+    }
 
     /// Reset the axis statistics
     void reset() {
@@ -279,7 +267,7 @@ namespace YODA {
 
     /// Get the total number of bins
     /// @todo Can't this just be numBins?
-    const size_t numBinsTotal() const {
+    const size_t numBins() const {
       return _bins.size();
     }
 
@@ -396,10 +384,6 @@ namespace YODA {
     const int getBinIndex(double coordX, double coordY) const {
       // In case we are just operating on a regular grid
       if (isGrid()) {
-        /// @todo WTF?! This is bad. No magic numbers! Why would these be unreasonably small offsets?
-        /// These are for the case when user requests a coordinate which is exactly (by the meaning of equals)
-        /// on the edge. Without those the algorithm will crash.
-        /// I am pretty sure they are fine, as they are well below fuzzyEquals() tolerance.
         coordX += 0.00000000001;
         coordY += 0.00000000001;
         size_t indexY = (*_binHashSparse.first._cache.lower_bound(approx(coordY))).second;
@@ -507,7 +491,6 @@ namespace YODA {
     /// @brief Rescale the axes
     ///
     /// Scales the axis with a given scale.
-    /// @todo This is far too big to be inline: move it to the bottom of this file, or perhaps to a .cc
     /// @todo Add a specific check for a scaling of 1.0, to avoid doing work when no scaling is wanted.
     void scaleXY(double scaleX, double scaleY) {
       // Two loops are put on purpose, just to protect
@@ -546,7 +529,6 @@ namespace YODA {
 
 
     /// Scales the bin weights
-    /// @todo This is, I think, a bit too big to be inline: move it to the bottom of this file, or perhaps to a .cc
     void scaleW(double scalefactor) {
       _dbn.scaleW(scalefactor);
       for (size_t i = 0; i < _outflows.size(); ++i) {
@@ -642,7 +624,6 @@ namespace YODA {
 
 
     /// Outflow filler
-    /// @todo This is far too big to be inline: move it to the bottom of this file, or perhaps to a .cc
     void _fillOutflows(double x, double y, double weight) {
       if (x < _lowEdgeX && y > _highEdgeY) _outflows[0][0].fill(x, y, weight);
       else if (x > _lowEdgeX && x < _highEdgeX && y > _highEdgeY)
@@ -678,8 +659,6 @@ namespace YODA {
     /// will have the same number of edges in the inner subcaches and half of
     /// this amount in the outer (grid boundary) subcaches. This makes isGrid()
     /// a very, very fast function.
-    ///
-    /// @todo This is far too big to be inline: move it to the bottom of this file, or perhaps to a .cc
     void _genGridCache() {
       // Check if the number of edges parallel to the x axis is proper in every
       // subcache.
@@ -727,10 +706,6 @@ namespace YODA {
     /// to be needed, as edges are not generated by a user.
     ///
     /// This is also a perfect place to parallelize, if required.
-    ///
-    /// @todo This is far too big to be inline: move it to the bottom of this file, or perhaps to a .cc
-    ///
-    /// @todo Is this really a method? Can't it just be a function?
     bool _validateEdge(std::vector<Segment>& edges) {
       // Setting the return variable. True means that no cuts were detected.
       bool ret = true;
@@ -810,7 +785,6 @@ namespace YODA {
     /// in the comments placed in the function body.
     ///
     /// @todo Explain what "cuts" are -- this is not obvious
-    /// @todo This is far too big to be inline: move it to the bottom of this file, or perhaps to a .cc
     bool _findCutsX(Segment& edge) {
       // Look up the limits of search in the _binHashSparse
       // structure. We are not interested in the vertical edges
@@ -843,9 +817,6 @@ namespace YODA {
     /// For a detailed description, see the documentation for _findCutsX().
     ///
     /// @todo Explain what "cuts" are -- this is not obvious
-    ///
-    /// @todo This is far too big to be inline: move it to the bottom of this file, or perhaps to a .cc
-    ///
     /// @todo Can the code for "cut" finding be abstracted to work in both
     /// directions, to avoid writing (and maintaining) it twice?
     bool _findCutsY(Segment& edge) {
@@ -870,8 +841,6 @@ namespace YODA {
     /// It contains all the commands that need to executed to properly add a
     /// bin. Specifically edges are added to the edge cache (_binHashSparse) and
     /// a bin is created from those edges.
-    ///
-    /// @todo This is far too large to be inline: move to the .cc
     void _addEdge(std::vector<Segment> edges, std::pair<Utils::cachedvector<EdgeCollection>,
                   Utils::cachedvector<EdgeCollection> >& binHash, bool addBin = true) {
       // Check if there was no mistake made when adding segments to a vector.
@@ -954,8 +923,6 @@ namespace YODA {
     /// Check if the orientation of an edge is proper
     /// for the rest of the algorithm to work on, and if it is not
     /// fix it.
-    ///
-    /// @todo This is arguably too large to be inline: move to the .cc?
     void _fixOrientation(Segment& edge) {
       if (fuzzyEquals(edge.first.first, edge.second.first)) {
         if (edge.first.second > edge.second.second) {
@@ -980,8 +947,6 @@ namespace YODA {
     ///
     /// It accepts two extremal points of a rectangle (top-right and
     /// bottom-left) as input.
-    ///
-    /// @todo This is far too large to be inline: move to the .cc
     void _mkAxis(const std::vector<Segment>& binLimits) {
 
       // For each of the rectangles

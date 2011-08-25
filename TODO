@@ -11,6 +11,9 @@ NOW
 * Comment, clean, and explain the Axis caching mechanisms and the very complex
   functions that manipulate them. (MK)
 
+* Unify the API, especially the order of X/Y parameters in various 
+  constructors! (MK)
+
 * Fix failing Histo2D test and remove cout printout from Histo2D.h (MK)
   MK: Cout removed.
 
