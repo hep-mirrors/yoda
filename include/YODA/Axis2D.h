@@ -276,6 +276,15 @@ namespace YODA {
       mergeBins(binByCoord(startX, startY), binByCoord(endX, endY));
     }
 
+    /// Rebin by an interger factor
+    void rebin(size_t factorX, size_t factorY) {
+      if(!isGrid) throw GridError("Rebinning by a factor can only act on full grids!");
+      size_t binsInColumn = _binHashSparse.first.size() -  1;
+      size_t binsInRow    = _binHashSparse.second.size() - 1;
+      
+      throw ("IMPLEMENT!");
+    }
+
     /// Reset the axis statistics
     void reset() {
       _dbn.reset();
