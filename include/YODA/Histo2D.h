@@ -66,10 +66,6 @@ namespace YODA {
     Histo2D(const Histo2D& h, const std::string& path="")
       : AnalysisObject("Histo2D", (path.size() == 0) ? h.path() : path, h, h.title())
     {
-      /// @todo Clean... avoid committing this sort of thing if possible!
-      std::cout << "lsadlksdjflksdhkjf" << std::endl;
-      if (_axis.outflows().size() == h._axis.outflows().size()) std::cout << "equals" << std::endl;
-      else std::cout << "non" << std::endl;
       _axis = h._axis;
     }
 

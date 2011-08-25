@@ -214,7 +214,7 @@ namespace YODA {
     Scatter3D tmp;
     for (size_t i = 0; i < numer.numBinsTotal(); ++i) {
       const HistoBin2D& b1 = numer.bin(i);
-      const HistoBin2D& b2 = denom.bin(i);
+      const HistoBin2D& b2 = denom.binByCoord(b1.midpoint().first, b1.midpoint().second);
       const HistoBin2D& bL = b1 + b2;
       assert(fuzzyEquals(b1.midpoint().first, b2.midpoint().first));
       assert(fuzzyEquals(b1.midpoint().second, b2.midpoint().second));

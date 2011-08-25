@@ -12,6 +12,7 @@ NOW
   functions that manipulate them. (MK)
 
 * Fix failing Histo2D test and remove cout printout from Histo2D.h (MK)
+  MK: Cout removed.
 
 * Improve tests Makefile setup to work out the path to the Python build dir. (AB)
 
