@@ -407,7 +407,9 @@ namespace YODA {
 
     /// Check if a hypothetical bin to be added, starting at from and
     /// ending at to will partially overlap any of the existing bins.
-    bool _findCuts(const double& from, const double& to) const {
+    bool _findCuts(double from, double to) const {
+      from += 0.00000001;
+      to   -= 0.00000001;
       size_t index1 = _binaryS(from, 0, _binHashSparse.size());
       size_t index2 = _binaryS(to, 0, _binHashSparse.size());
       return !(index1 == index2);

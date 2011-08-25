@@ -243,9 +243,9 @@ namespace YODA {
     }
 
     /// Insert a new point, defined as the x/y value pair and asymmetric errors
-    Scatter2D& addPoint(double x, double exminus, double explus,
-                        double y, double eyminus, double eyplus) {
-      _points.insert(Point2D(x, exminus, explus, y, eyminus, eyplus));
+    Scatter2D& addPoint(double x, double y, double exminus, double explus,
+                        double eyminus, double eyplus) {
+      _points.insert(Point2D(x, y, exminus, explus, eyminus, eyplus));
       return *this;
     }
 

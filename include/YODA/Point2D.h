@@ -45,7 +45,7 @@ namespace YODA {
       : _x(x), _y(y)
     {
       _ex = std::make_pair(exminus, explus);
-      _ey = std::make_pair(eyplus, eyplus);
+      _ey = std::make_pair(eyminus, eyplus);
     }
 
 
