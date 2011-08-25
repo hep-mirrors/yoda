@@ -144,20 +144,36 @@ namespace YODA {
     double lowEdgeX() const {
       return _axis.lowEdgeX();
     }
+    /// Alias for lowEdgeX()
+    double xMin() const {
+      return lowEdgeX();
+    }
 
     /// Low y edge of this histo's axis
     double lowEdgeY() const {
         return _axis.lowEdgeY();
+    }
+    /// Alias for lowEdgeY()
+    double yMin() const {
+      return lowEdgeY();
     }
 
     /// High x edge of this histo's axis
     double highEdgeX() const {
       return _axis.highEdgeX();
     }
+    /// Alias for highEdgeX()
+    double xMax() const {
+      return highEdgeX();
+    }
 
     /// High y edge of this histo's axis
     double highEdgeY() const {
         return _axis.highEdgeY();
+    }
+    /// Alias for highEdgeY()
+    double yMax() const {
+      return highEdgeY();
     }
 
     /// Access the bin vector (non-const version)

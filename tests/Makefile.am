@@ -2,8 +2,6 @@ check_PROGRAMS = \
   testweights	\
   testhisto1Da testhisto1Db \
   testprofile1Da \
-  testhisto2D  \
-  testhisto2Da  \
   testhisto2De \
   testpoint3D  \
   testscatter3D\
@@ -31,8 +29,6 @@ testhisto1Db_SOURCES = TestHisto1Db.cc
 testprofile1Da_SOURCES = TestProfile1Da.cc
 testindexedset_SOURCES = TestIndexedSet.cc
 testsortedvector_SOURCES = TestSortedVector.cc
-testhisto2D_SOURCES = TestHisto2D.cc
-testhisto2Da_SOURCES = TestHisto2Da.cc
 testhisto2De_SOURCES = TestHisto2Derase.cc
 testpoint3D_SOURCES = TestPoint3D.cc
 testscatter3D_SOURCES = TestScatter3D.cc
@@ -61,8 +57,6 @@ TESTS = \
   testweights \
   testhisto1Da testhisto1Db \
   testprofile1Da \
-  testhisto2D    \
-  testhisto2Da    \
   testhisto2De \
   testpoint3D    \
   testscatter3D  \

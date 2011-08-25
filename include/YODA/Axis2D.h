@@ -126,6 +126,7 @@ namespace YODA {
     /// A constructor with specified x and y axis bin limits.
     Axis2D(const std::vector<double>& xedges, const std::vector<double>& yedges) {
       std::vector<Segment> binLimits;
+      /// Generate bin limits
       for (int i = 0; i < yedges.size() - 1; ++i) {
         for (int j = 0; j < xedges.size() - 1; ++j) {
           binLimits.push_back(std::make_pair(std::make_pair(xedges[j], yedges[i]),
@@ -526,18 +527,18 @@ namespace YODA {
     void scaleXY(double scaleX, double scaleY) {
       // Two loops are put on purpose, just to protect
       // against improper _binHashSparse
-      foreach(EdgeCollection ec, _binHashSparse.first) {
-        ec.first *= scaleY;
-        foreach(Edge edge, ec.second) {
-          edge.second.first *= scaleX;
-          edge.second.second *= scaleX;
+      for(size_t i = 0; i < _binHashSparse.first.size(); ++i){
+        _binHashSparse.first[i].first *= scaleY;
+        for(size_t j = 0; j < _binHashSparse.first[i].second.size(); ++j){
+          _binHashSparse.first[i].second[j].second.first  *= scaleX;
+          _binHashSparse.first[i].second[j].second.second *= scaleX;
         }
       }
-      foreach(EdgeCollection ec, _binHashSparse.second) {
-        ec.first *= scaleX;
-        foreach(Edge edge, ec.second) {
-          edge.second.first *= scaleY;
-          edge.second.second *= scaleY;
+      for(size_t i = 0; i < _binHashSparse.second.size(); ++i){
+        _binHashSparse.second[i].first *= scaleX;
+        for(size_t j = 0; j < _binHashSparse.second[i].second.size(); ++j){
+          _binHashSparse.second[i].second[j].second.first  *= scaleY;
+          _binHashSparse.second[i].second[j].second.second *= scaleY;
         }
       }
 
