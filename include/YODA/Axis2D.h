@@ -126,7 +126,6 @@ namespace YODA {
       for (size_t i = 0; i < _bins.size(); ++i) {
         _bins[i] = bins[i];
       }
-      _regenDelimiters();
       if (isGrid()) _setOutflows();
       _outflows = outflows;
 
@@ -155,7 +154,6 @@ namespace YODA {
 
       _binHashSparse.first.regenCache();
       _binHashSparse.second.regenCache();
-      _regenDelimiters();
     }
 
     //@}
@@ -258,7 +256,6 @@ namespace YODA {
 
       _binHashSparse.first.regenCache();
       _binHashSparse.second.regenCache();
-      _regenDelimiters();
     }
 
 
@@ -299,22 +296,22 @@ namespace YODA {
 
     /// Get the value of the lowest x-edge on the axis
     const double lowEdgeX() const {
-      return _lowEdgeX;
+      return _binHashSparse.second.front().first;
     }
 
     /// Get the value of the highest x-edge on the axis
     const double highEdgeX() const {
-      return _highEdgeX;
+      return _binHashSparse.second.back().first;
     }
 
     /// Get the value of the lowest y-edge on the axis
     const double lowEdgeY() const {
-      return _lowEdgeY;
+      return _binHashSparse.first.front().first;
     }
 
     /// Get the value of the highest y-edge on the axis
     const double highEdgeY() const {
-      return _highEdgeY;
+      return _binHashSparse.first.back().first;
     }
 
 
@@ -500,9 +497,6 @@ namespace YODA {
           }
         }
       }
-
-      // Check if any of the bounds changed
-      _regenDelimiters();
     }
     //@}
 
@@ -548,9 +542,6 @@ namespace YODA {
           _outflows[i][j].scaleXY(scaleX, scaleY);
         }
       }
-
-      // Making sure that we have correct boundaries set after rescaling
-      _regenDelimiters();
     }
 
 
@@ -1025,36 +1016,7 @@ namespace YODA {
       // Setting all the caches
       _binHashSparse.first.regenCache();
       _binHashSparse.second.regenCache();
-      _regenDelimiters();
       _genGridCache();
-    }
-
-    /// @brief Plot extrema (re)generator.
-    ///
-    /// Since scrolling through every bin is an expensive operation to do every
-    /// time we need the limits of the plot, there are caches set up. This
-    /// function regenerates them. It should be run after any change is made to
-    /// bin layout.
-    ///
-    /// @todo This is too large to be inline: move to the .cc
-    void _regenDelimiters() {
-      double highEdgeX = std::numeric_limits<double>::min();
-      double highEdgeY = std::numeric_limits<double>::min();
-      double lowEdgeX = std::numeric_limits<double>::max();
-      double lowEdgeY = std::numeric_limits<double>::max();
-
-      // Scroll through the bins and set the delimiters.
-      for (size_t i = 0; i < _bins.size(); ++i) {
-        if (_bins[i].xMin() < lowEdgeX) lowEdgeX = _bins[i].xMin();
-        if (_bins[i].xMax() > highEdgeX) highEdgeX = _bins[i].xMax();
-        if (_bins[i].yMin() < lowEdgeY) lowEdgeY = _bins[i].yMin();
-        if (_bins[i].yMax() > highEdgeY) highEdgeY = _bins[i].yMax();
-      }
-
-      _lowEdgeX = lowEdgeX;
-      _highEdgeX = highEdgeX;
-      _lowEdgeY = lowEdgeY;
-      _highEdgeY = highEdgeY;
     }
 
 
