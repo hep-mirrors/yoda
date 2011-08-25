@@ -109,9 +109,9 @@ namespace YODA {
            const DBN& totalDbn)
     {
       std::vector<Segment> binLimits;
-      for (size_t i = 0; i < bins.size(); ++i) {
-        binLimits.push_back(std::make_pair(std::make_pair(bins[i].xMin(), bins[i].yMin()),
-                                           std::make_pair(bins[i].xMax(), bins[i].yMax())));
+      foreach(Bin bin, bins) {
+        binLimits.push_back(std::make_pair(std::make_pair(bin.xMin(), bin.yMin()),
+                                           std::make_pair(bin.xMax(), bin.yMax())));
       }
       _mkAxis(binLimits);
       for (size_t i = 0; i < _bins.size(); ++i) {
@@ -257,7 +257,7 @@ namespace YODA {
       /// down, otherwise we will end up removing other bins that we intend to
       std::sort(toRemove.begin(), toRemove.end());
       std::reverse(toRemove.begin(), toRemove.end());
-      for(size_t i = 0; i < toRemove.size(); ++i) eraseBin(toRemove[i]);
+      foreach(size_t remove, toRemove) eraseBin(remove);
 
       /// Add edges of our merged bin to _binHashSparse and don't create a default 
       /// empty bin.
@@ -279,9 +279,8 @@ namespace YODA {
     /// Reset the axis statistics
     void reset() {
       _dbn.reset();
-      /// @todo Sort out the Bins definition, then use foreach
-      for (size_t i = 0; i < _bins.size(); ++i) {
-        _bins[i].reset();
+      foreach(Bin bin, _bins){
+        bin.reset();
       }
     }
 
@@ -541,8 +540,8 @@ namespace YODA {
       _binHashSparse.second.regenCache();
 
       /// Now, as we have the map rescaled, we need to update the bins
-      for (size_t i = 0; i < _bins.size(); ++i) {
-        _bins[i].scaleXY(scaleX, scaleY);
+      foreach(Bin bin, _bins) {
+        bin.scaleXY(scaleX, scaleY);
       }
 
       _dbn.scaleXY(scaleX, scaleY);
@@ -562,9 +561,8 @@ namespace YODA {
           _outflows[i][j].scaleW(scalefactor);
         }
       }
-      /// @todo Use foreach for situations like this
-      for (size_t i = 0; i < _bins.size(); ++i) {
-        _bins[i].scaleW(scalefactor);
+      foreach(Bin bin, _bins) {
+        bin.scaleW(scalefactor);
       }
     }
 
@@ -575,7 +573,6 @@ namespace YODA {
     //@{
 
     /// Equality operator
-    /// @todo TEST!!11!
     bool operator == (const Axis2D& other) const {
       if (isGrid()) {
         for (size_t i = 0; i < _bins.size(); ++i) {
@@ -650,6 +647,8 @@ namespace YODA {
 
 
     /// Outflow filler
+    /// The function checks which outflow the coordinates are in 
+    /// and fills the right one.
     void _fillOutflows(double x, double y, double weight) {
       if (x < _lowEdgeX && y > _highEdgeY) _outflows[0][0].fill(x, y, weight);
       else if (x > _lowEdgeX && x < _highEdgeX && y > _highEdgeY)
@@ -737,17 +736,17 @@ namespace YODA {
       bool ret = true;
 
       // Looping over all the edges provided
-      for (size_t i = 0; i < edges.size(); ++i) {
+      foreach(Segment edge, edges) {
         // If the X coordinate of the starting point is the same
         // as X coordinate of the ending one, checks if there are cuts
         // on this vertical segment.
-        if (fuzzyEquals(edges[i].first.first, edges[i].second.first)) {
-          ret = _findCutsY(edges[i]);
+        if (fuzzyEquals(edge.first.first, edge.second.first)) {
+          ret = _findCutsY(edge);
         }
 
         /// Check if the segment is horizontal and is it cutting any bin that already exists
-        else if (fuzzyEquals(edges[i].first.second, edges[i].second.second)) {
-          ret =  _findCutsX(edges[i]);
+        else if (fuzzyEquals(edge.first.second, edge.second.second)) {
+          ret =  _findCutsX(edge);
         }
 
         // This is a check that discards the bin if it is not a rectangle
@@ -875,10 +874,7 @@ namespace YODA {
       // This is the part in charge of adding each of the segments
       // to the edge cache. Segments are assumed to be validated
       // beforehand.
-      for (size_t j = 0; j < edges.size(); ++j) {
-        // Association made for convinience.
-        Segment edge = edges[j];
-
+      foreach(Segment edge, edges) {
         // Do the following if the edge is vertical.
         // Those two cases need to be distinguished
         // because of the way in which edge cache is structured.
@@ -976,20 +972,20 @@ namespace YODA {
     void _mkAxis(const std::vector<Segment>& binLimits) {
 
       // For each of the rectangles
-      for (size_t i = 0; i < binLimits.size(); ++i) {
+      foreach(Segment binLimit, binLimits) {
         // Produce the segments that a rectangle is composed of
         Segment edge1 =
-          std::make_pair(binLimits[i].first,
-                         std::make_pair(binLimits[i].first.first, binLimits[i].second.second));
+          std::make_pair(binLimit.first,
+                         std::make_pair(binLimit.first.first, binLimit.second.second));
         Segment edge2 =
-          std::make_pair(std::make_pair(binLimits[i].first.first, binLimits[i].second.second),
-                         binLimits[i].second);
+          std::make_pair(std::make_pair(binLimit.first.first, binLimit.second.second),
+                         binLimit.second);
         Segment edge3 =
-          std::make_pair(std::make_pair(binLimits[i].second.first, binLimits[i].first.second),
-                         binLimits[i].second);
+          std::make_pair(std::make_pair(binLimit.second.first, binLimit.first.second),
+                         binLimit.second);
         Segment edge4 =
-          std::make_pair(binLimits[i].first,
-                         std::make_pair(binLimits[i].second.first, binLimits[i].first.second));
+          std::make_pair(binLimit.first,
+                         std::make_pair(binLimit.second.first, binLimit.first.second));
 
         // Check if they are made properly
         _fixOrientation(edge1); _fixOrientation(edge2);
@@ -1016,13 +1012,14 @@ namespace YODA {
     /// Bins contained in this histogram
     Bins _bins;
 
-    /// Overflow distributions
-    ///
-    /// @todo Explain how the vector structure works!
+    /// Outflow distributions
+    /// It contains eight subvectors, each being 1/8 of an outflow
+    /// and numbered clockwise from top left corner. The 'corner' outflows
+    /// contain just one DBN each. The ones between them contain as many DBNs
+    /// as the number of columns/rows in the respective part of the grid.
     std::vector<std::vector<DBN> > _outflows;
 
     /// Total distribution
-    /// @todo This needs to be a templated DBN type
     DBN _dbn;
 
     /// @brief Bin hash structure
