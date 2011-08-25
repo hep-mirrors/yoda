@@ -1,9 +1,11 @@
 #include "YODA/Histo2D.h"
+#include "YODA/Profile1D.h"
 #include "YODA/Scatter3D.h"
 
 #include <cmath>
 #include <iostream>
 #include <unistd.h>
+#include <cstdlib>
 #include <sys/time.h>
 
 using namespace std;
@@ -154,6 +156,30 @@ int main() {
     tS = (startTime.tv_sec*1000000 + startTime.tv_usec)/(double)1000000;
     tE = (endTime.tv_sec*1000000 + endTime.tv_usec)/(double)1000000;
     cout << "PASS (" << tE - tS << ")" << endl;
+    
+    cout << "Testing if histo2D transforms to Profile:";
+    Histo2D test1(100, 0, 100, 100, 0, 100);
+    Profile1D test2(100, 0, 100);
+
+    test1.fill(1,1,1);
+    test2.fill(1,1,1);
+    if(test2 != test1.mkProfileX()){
+      cout << "FAIL" << endl;
+      return -1;
+    }
+    cout << "PASS" << endl;
+    cout << "A more elaborate test:                   ";
+    for(size_t i = 0; i < 100000; ++i){
+      size_t x = rand()%100;
+      size_t y = rand()%100;
+      test1.fill(x,y,1);
+      test2.fill(x,y,2);
+    }
+    if(test2 != test1.mkProfileX()){
+      cout << "FAIL" << endl;
+      return -1;
+    }
+    cout << "PASS" << endl;
 
     return EXIT_SUCCESS;
 }

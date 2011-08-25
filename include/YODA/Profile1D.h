@@ -254,6 +254,13 @@ namespace YODA {
       return *this;
     }
 
+    inline bool operator == (const Profile1D& other){
+      return _axis == other._axis;
+    }
+
+    inline bool operator != (const Profile1D& other){
+      return ! operator == (other);
+    }
     //@}
 
 
@@ -272,6 +279,7 @@ namespace YODA {
 
   /// @name Combining profile histos: global operators
   //@{
+
 
   /// Add two profile histograms
   inline Profile1D add(const Profile1D& first, const Profile1D& second) {
