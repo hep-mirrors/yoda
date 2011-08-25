@@ -18,10 +18,8 @@ check_PROGRAMS = \
   testhisto2Dfill\
   testhisto2Dmodify\
   testscatter2Dcreate\
-  testscatter2Dfill\
   testscatter2Dmodify\
   testscatter3Dcreate\
-  testscatter3Dfill\
   testscatter3Dmodify
 
 AM_CPPFLAGS = -I$(top_srcdir)/include
@@ -48,10 +46,8 @@ testhisto2Dcreate_SOURCES = Histo2D/H2DCreate.cc
 testhisto2Dfill_SOURCES = Histo2D/H2DFill.cc
 testhisto2Dmodify_SOURCES = Histo2D/H2DModify.cc
 testscatter2Dcreate_SOURCES = Scatter2D/S2DCreate.cc
-testscatter2Dfill_SOURCES = Scatter2D/S2DFill.cc
 testscatter2Dmodify_SOURCES = Scatter2D/S2DModify.cc
 testscatter3Dcreate_SOURCES = Scatter3D/S3DCreate.cc
-testscatter3Dfill_SOURCES = Scatter3D/S3DFill.cc
 testscatter3Dmodify_SOURCES = Scatter3D/S3DModify.cc
 
 
@@ -81,9 +77,7 @@ TESTS = \
   testhisto2Dfill\
   testhisto2Dmodify\
   testscatter2Dcreate\
-  testscatter2Dfill\
   testscatter2Dmodify\
   testscatter3Dcreate\
-  testscatter3Dfill\
   testscatter3Dmodify\
   test-yoda-1.py test-yoda-2.py
