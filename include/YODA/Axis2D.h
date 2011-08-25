@@ -114,7 +114,7 @@ namespace YODA {
                                            std::make_pair(bin.xMax(), bin.yMax())));
       }
       _mkAxis(binLimits);
-      for (size_t i = 0; i < _bins.size(); ++i) {
+      for(size_t i = 0; i < _bins.size(); ++i) {
         _bins[i] = bins[i];
       }
       if (isGrid()) _setOutflows();
@@ -414,17 +414,14 @@ namespace YODA {
         size_t indexY = (*_binHashSparse.first._cache.lower_bound(approx(coordY))).second;
 
         if (indexY < _binHashSparse.first.size()) {
-          for (unsigned int i = 0;  i < _binHashSparse.first[indexY].second.size(); i++){
-            if (_binHashSparse.first[indexY].second[i].second.first < coordX &&
-                _binHashSparse.first[indexY].second[i].second.second > coordX){
+          foreach(Edge edgeY, _binHashSparse.first[indexY].second) {
+            if (edgeY.second.first < coordX && edgeY.second.second > coordX){
               size_t indexX = (*_binHashSparse.second._cache.lower_bound(approx(coordX))).second;
               if (indexX < _binHashSparse.second.size()){
-                for (unsigned int j=0; j < _binHashSparse.second[indexX].second.size(); j++) {
-                  if (_binHashSparse.second[indexX].second[j].second.first < coordY &&
-                      (_binHashSparse.second[indexX].second[j].second.second > coordY) &&
-                      (_binHashSparse.second[indexX].second[j].first ==
-                       _binHashSparse.first[indexY].second[i].first))
-                    return _binHashSparse.second[indexX].second[j].first;
+                foreach(Edge edgeX, _binHashSparse.second[indexX].second) {
+                  if (edgeX.second.first < coordY && edgeX.second.second > coordY &&
+                      (edgeX.first == edgeY.first))
+                    return edgeX.first;
                 }
               }
             }
@@ -520,18 +517,18 @@ namespace YODA {
     void scaleXY(double scaleX, double scaleY) {
       // Two loops are put on purpose, just to protect
       // against improper _binHashSparse
-      for (size_t i = 0; i < _binHashSparse.first.size(); ++i) {
-        _binHashSparse.first[i].first *= scaleY;
-        for (size_t j = 0; j < _binHashSparse.first[i].second.size(); ++j) {
-          _binHashSparse.first[i].second[j].second.first *= scaleX;
-          _binHashSparse.first[i].second[j].second.second *= scaleX;
+      foreach(EdgeCollection ec, _binHashSparse.first) {
+        ec.first *= scaleY;
+        foreach(Edge edge, ec.second) {
+          edge.second.first *= scaleX;
+          edge.second.second *= scaleX;
         }
       }
-      for (size_t i = 0; i < _binHashSparse.second.size(); ++i) {
-        _binHashSparse.second[i].first *= scaleX;
-        for (size_t j = 0; j < _binHashSparse.second[i].second.size(); ++j){
-          _binHashSparse.second[i].second[j].second.first *= scaleY;
-          _binHashSparse.second[i].second[j].second.second *= scaleY;
+      foreach(EdgeCollection ec, _binHashSparse.second) {
+        ec.first *= scaleX;
+        foreach(Edge edge, ec.second) {
+          edge.second.first *= scaleY;
+          edge.second.second *= scaleY;
         }
       }
 
@@ -575,10 +572,10 @@ namespace YODA {
     /// Equality operator
     bool operator == (const Axis2D& other) const {
       if (isGrid()) {
-        for (size_t i = 0; i < _bins.size(); ++i) {
-          int index = other.getBinIndex(_bins[i].midpoint().first, _bins[i].midpoint().second);
+        foreach(Bin bin, _bins) {
+          int index = other.getBinIndex(bin.midpoint().first, bin.midpoint().second);
           if (index != -1){
-            if (other.bin(index) != _bins[i]) return false;
+            if (other.bin(index) != bin) return false;
           }
           else return false;
         }
@@ -701,7 +698,7 @@ namespace YODA {
 
       // Do the same for edges parallel to the y axis.
       size_t sizeY = _binHashSparse.second[0].second.size();
-      for (size_t i=1; i < _binHashSparse.second.size(); ++i) {
+      for (size_t i = 1; i < _binHashSparse.second.size(); ++i) {
         if (i != _binHashSparse.second.size() - 1) {
           if (2*sizeY != _binHashSparse.second[i].second.size()) {
             _isGrid = false;
