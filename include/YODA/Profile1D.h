@@ -35,6 +35,7 @@ namespace YODA {
     /// Convenience typedefs
     typedef Profile1DAxis Axis;
     typedef Axis::Bins Bins;
+    typedef ProfileBin1D Bin;
 
 
     /// @name Constructors
@@ -137,7 +138,7 @@ namespace YODA {
     void rebin(int n) {
       _axis.rebin(n);
     }
-    
+
     /// Bin addition operator
     void addBin(size_t& from, size_t& to) {
       _axis.addBin(from, to);

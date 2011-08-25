@@ -36,6 +36,7 @@ namespace YODA {
     /// Convenience typedefs
     typedef Histo2DAxis Axis;
     typedef Axis::Bins Bins;
+    typedef HistoBin2D Bin;
 
 
     /// @name Constructors

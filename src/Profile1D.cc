@@ -15,29 +15,25 @@ using namespace std;
 namespace YODA {
 
 
-  typedef vector<ProfileBin1D> Bins;
-
-
   void Profile1D::fill(double x, double y, double weight) {
-    
-    /// Filling under/over flows
-    if(x < _axis.xMin()) _axis.underflow().fill(x, y, weight);
-    else if(x >= _axis.xMax()) _axis.overflow().fill(x, y, weight);
-    else {
+    // Filling under/over flows
+    if (x < _axis.xMin()) {
+      _axis.underflow().fill(x, y, weight);
+    } else if (x >= _axis.xMax()) {
+      _axis.overflow().fill(x, y, weight);
+    } else {
       ProfileBin1D& b = binByCoord(x);
       b.fill(x, y, weight);
     }
-
     _axis.totalDbn().fill(x, y, weight);
-
   }
 
 
   double Profile1D::sumW(bool includeoverflows) const {
     if (includeoverflows) return _axis.totalDbn().sumW();
     double sumw = 0;
-    for (Bins::const_iterator b = bins().begin(); b != bins().end(); ++b) {
-      sumw += b->sumW();
+    foreach (const ProfileBin1D& b, bins()) {
+      sumw += b.sumW();
     }
     return sumw;
   }
@@ -46,8 +42,8 @@ namespace YODA {
   double Profile1D::sumW2(bool includeoverflows) const {
     if (includeoverflows) return _axis.totalDbn().sumW2();
     double sumw2 = 0;
-    for (Bins::const_iterator b = bins().begin(); b != bins().end(); ++b) {
-      sumw2 += b->sumW2();
+    foreach (const ProfileBin1D& b, bins()) {
+      sumw2 += b.sumW2();
     }
     return sumw2;
   }
@@ -69,8 +65,8 @@ namespace YODA {
     : AnalysisObject("Profile1D", (path.size() == 0) ? s.path() : path, s, s.title())
   {
     std::vector<ProfileBin1D> bins;
-    for (Scatter2D::Points::const_iterator p = s.points().begin(); p != s.points().end(); ++p) {
-      bins.push_back(ProfileBin1D(p->xMin(), p->xMax()));
+    foreach (const Scatter2D::Point& p, s.points()) {
+      bins.push_back(ProfileBin1D(p.xMin(), p.xMax()));
     }
     _axis = Profile1DAxis(bins);
   }
@@ -81,8 +77,8 @@ namespace YODA {
     : AnalysisObject("Profile1D", (path.size() == 0) ? h.path() : path, h, h.title())
   {
     Bins bins;
-    for (Histo1D::Bins::const_iterator b = h.bins().begin(); b != h.bins().end(); ++b) {
-      bins.push_back(ProfileBin1D(b->xMin(), b->xMax()));
+    foreach (const Histo1D::Bin& b, h.bins()) {
+      bins.push_back(ProfileBin1D(b.xMin(), b.xMax()));
     }
     _axis = Profile1DAxis(bins);
 
