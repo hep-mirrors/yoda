@@ -207,12 +207,17 @@ namespace YODA {
 
     /// Merge a range of bins, given the bin IDs of points at the lower-left and upper-right.
     void mergeBins(size_t from, size_t to) {
+      /// Acquire the starting/ending bins
       HistoBin2D& start = bin(from);
       HistoBin2D& end = bin(to);
+      
+      /// Set the bin to be added as a starting bin
+      /// and then remove the unneeded starting bin from 
+      /// the list of bins.
       HistoBin2D temp = start;
       eraseBin(from);
 
-      // Sanity-check input indices
+      // Sanity-check of input indices
       if (start.midpoint().first > end.midpoint().first) {
         throw RangeError("The start bin has a greater x value than the end bin.");
       }
@@ -220,27 +225,48 @@ namespace YODA {
         throw RangeError("The start bin has a greater y value than the end bin.");
       }
 
+      /// Create a vector that will contain indexes of bins that
+      /// will be removed after merging them with our 'main' bin.
       std::vector<size_t> toRemove;
-      /// @todo Explain! This is *totally* incomprehensible.
+      
+      /// Look for lower/upper limit of the merge function operation.
+      /// i.e.: search for index of lowEdgeY of starting bin in _binHashSparse
+      /// and lowEdgeY of ending bin. This way we don't have to scroll through all
+      /// the bins to check which ones we have to add.
       for (size_t y = (*_binHashSparse.first._cache.lower_bound(start.yMin())).second;
            y <= (*_binHashSparse.first._cache.lower_bound(end.yMin())).second; ++y) {
+        /// For all the bins that are in the bounds specified in previous for
         for (size_t x = 0; x < _binHashSparse.first[y].second.size(); ++x) {
-          if ((_binHashSparse.first[y].second[x].second.first > start.xMin() ||
+          /// If the bin lies in a rectangle produced by starting and ending bins
+          /// (ie. the one spanned by lower-left point of starting bin and top-right
+          /// point of ending bin) and was not merged already:
+          if (((_binHashSparse.first[y].second[x].second.first > start.xMin() ||
                fuzzyEquals(_binHashSparse.first[y].second[x].second.first, start.xMin())) &&
               (_binHashSparse.first[y].second[x].second.second < end.xMax() ||
-               fuzzyEquals(_binHashSparse.first[y].second[x].second.second, end.xMax())))
+               fuzzyEquals(_binHashSparse.first[y].second[x].second.second, end.xMax())))&&
+               std::find(toRemove.begin(), toRemove.end(), _binHashSparse.first[y].second[x].first) != toRemove.end())
             {
+              /// Merge it with the temp bin and mark it as ready for removal
               temp += bin(_binHashSparse.first[y].second[x].first);
               toRemove.push_back(_binHashSparse.first[y].second[x].first);
             }
         }
       }
       /// Now, drop the bins to be dropped
+      /// Keeping in mind that the bins must be removed from the highest index
+      /// down, otherwise we will end up removing other bins that we intend to
+      std::sort(toRemove.begin(), toRemove.end());
+      std::reverse(toRemove.begin(), toRemove.end());
       for(size_t i = 0; i < toRemove.size(); ++i) eraseBin(toRemove[i]);
 
+      /// Add edges of our merged bin to _binHashSparse and don't create a default 
+      /// empty bin.
       _addEdge(temp.edges(), _binHashSparse, false);
+      
+      /// Add the actual merged bin to the Axis.
       _bins.push_back(temp);
 
+      /// And regenerate the caches on _binHashSparse
       _binHashSparse.first.regenCache();
       _binHashSparse.second.regenCache();
     }
