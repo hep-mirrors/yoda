@@ -212,9 +212,9 @@ namespace YODA {
       /// Acquire the starting/ending bins
       HistoBin2D& start = bin(from);
       HistoBin2D& end = bin(to);
-      
+
       /// Set the bin to be added as a starting bin
-      /// and then remove the unneeded starting bin from 
+      /// and then remove the unneeded starting bin from
       /// the list of bins.
       HistoBin2D temp = start;
       eraseBin(from);
@@ -230,7 +230,7 @@ namespace YODA {
       /// Create a vector that will contain indexes of bins that
       /// will be removed after merging them with our 'main' bin.
       std::vector<size_t> toRemove;
-      
+
       /// Look for lower/upper limit of the merge function operation.
       /// i.e.: search for index of lowEdgeY of starting bin in _binHashSparse
       /// and lowEdgeY of ending bin. This way we don't have to scroll through all
@@ -261,10 +261,10 @@ namespace YODA {
       std::reverse(toRemove.begin(), toRemove.end());
       foreach(size_t remove, toRemove) eraseBin(remove);
 
-      /// Add edges of our merged bin to _binHashSparse and don't create a default 
+      /// Add edges of our merged bin to _binHashSparse and don't create a default
       /// empty bin.
       _addEdge(temp.edges(), _binHashSparse, false);
-      
+
       /// Add the actual merged bin to the Axis.
       _bins.push_back(temp);
 
@@ -274,23 +274,23 @@ namespace YODA {
     }
 
     /// Merge a range of bins giving start and end coordinates
-    void mergeBins(double startX, double startY, double endX, double endY){
+    void mergeBins(double startX, double startY, double endX, double endY) {
       mergeBins(binByCoord(startX, startY), binByCoord(endX, endY));
     }
 
     /// Rebin by an interger factor
     void rebin(size_t factorX, size_t factorY) {
-      if(!isGrid) throw GridError("Rebinning by a factor can only act on full grids!");
+      if (!isGrid) throw GridError("Rebinning by a factor can only act on full grids!");
       size_t binsInColumn = _binHashSparse.first.size() -  1;
       size_t binsInRow    = _binHashSparse.second.size() - 1;
-      
+
       throw ("IMPLEMENT!");
     }
 
     /// Reset the axis statistics
     void reset() {
       _dbn.reset();
-      foreach(Bin bin, _bins){
+      foreach(Bin bin, _bins) {
         bin.reset();
       }
     }
@@ -420,16 +420,17 @@ namespace YODA {
     const int getBinIndex(double coordX, double coordY) const {
       // In case we are just operating on a regular grid
       if (isGrid()) {
+        /// @todo You can't do this... what if the typical scale of coord is 10e-10? This has to go.
         coordX += 0.00000000001;
         coordY += 0.00000000001;
         size_t indexY = (*_binHashSparse.first._cache.lower_bound(approx(coordY))).second;
 
         if (indexY < _binHashSparse.first.size()) {
           foreach(Edge edgeY, _binHashSparse.first[indexY].second) {
-            if (edgeY.second.first < coordX && edgeY.second.second > coordX){
+            if (edgeY.second.first < coordX && edgeY.second.second > coordX) {
               size_t indexX = (*_binHashSparse.second._cache.lower_bound(approx(coordX))).second;
-              if (indexX < _binHashSparse.second.size()){
-                foreach(Edge edgeX, _binHashSparse.second[indexX].second) {
+              if (indexX < _binHashSparse.second.size()) {
+                foreach (Edge edgeX, _binHashSparse.second[indexX].second) {
                   if (edgeX.second.first < coordY && edgeX.second.second > coordY &&
                       (edgeX.first == edgeY.first))
                     return edgeX.first;
@@ -528,9 +529,9 @@ namespace YODA {
     void scaleXY(double scaleX, double scaleY) {
       // Two loops are put on purpose, just to protect
       // against improper _binHashSparse
-      for(size_t i = 0; i < _binHashSparse.first.size(); ++i){
+      for(size_t i = 0; i < _binHashSparse.first.size(); ++i) {
         _binHashSparse.first[i].first *= scaleY;
-        for(size_t j = 0; j < _binHashSparse.first[i].second.size(); ++j){
+        for(size_t j = 0; j < _binHashSparse.first[i].second.size(); ++j) {
           _binHashSparse.first[i].second[j].second.first  *= scaleX;
           _binHashSparse.first[i].second[j].second.second *= scaleX;
         }
@@ -655,7 +656,7 @@ namespace YODA {
 
 
     /// Outflow filler
-    /// The function checks which outflow the coordinates are in 
+    /// The function checks which outflow the coordinates are in
     /// and fills the right one.
     void _fillOutflows(double x, double y, double weight) {
       if (x < _lowEdgeX && y > _highEdgeY) _outflows[0][0].fill(x, y, weight);

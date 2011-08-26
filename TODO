@@ -8,16 +8,16 @@ NOW
 * Rebinning: global rebinning of Axis2D -> Histo2D by integer factor(s) --
   different factors in x and y directions. (MK)
   MK: What if factor%(number of bins in X/Y direction) != 0?
+  AB: Merge the last n < factor bins: see Axis1D.
 
 * Comment, clean, and explain the Axis caching mechanisms and the very complex
   functions that manipulate them. (MK)
   MK: Done?
 
-* Unify the API, especially the order of X/Y parameters in various 
+* Unify the API, especially the order of X/Y parameters in various
   constructors! (MK)
 
-* Fix failing Histo2D test and remove cout printout from Histo2D.h (MK)
-  MK: Cout removed.
+* Fix failing Histo2D test (MK)
 
 * Improve tests Makefile setup to work out the path to the Python build dir. (AB)
 
@@ -43,6 +43,8 @@ NOW
 
 * Bin division: add quadratic / binomial error treatment enum option (AB)
   AB: done... needs to be checked. Add a test that y +- 1 sigma in [0, 1]
+
+* Add Scatter/Point1D (AB)
 
 * Template Bin2D and HistoBin2D on DBN type (Dbn2D/3D) cf. Bin1D<DBN> (MK)
 

@@ -171,6 +171,7 @@ namespace YODA {
       // correct answer in the case of coord pointing exactly on an edge.
       // This will never change the answer, since it is *much* smaller than
       // the fuzzyEquals() tolerance!
+      /// @todo No it isn't: the fuzzyEquals tolerance is relative. You don't know that the typical scale of coord isn't 10e-10. This has to go.
       coord += 0.00000000001;
 
       // Search for an edge
@@ -184,8 +185,8 @@ namespace YODA {
       // a member of the same bin as the one on the right, it means that our point
       // is inside a bin. In such case, announce it providing the index of the
       // bin in question.
-      for(size_t i = index+1; _binHashSparse[i].first == _binHashSparse[index+1].first; ++i){
-        if(_binHashSparse[index].second == _binHashSparse[i].second) {
+      for (size_t i = index+1; _binHashSparse[i].first == _binHashSparse[index+1].first; ++i){
+        if (_binHashSparse[index].second == _binHashSparse[i].second) {
           return _binHashSparse[index].second;
         }
       }
