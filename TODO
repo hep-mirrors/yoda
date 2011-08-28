@@ -10,6 +10,8 @@ NOW
   MK: What if factor%(number of bins in X/Y direction) != 0?
   AB: Merge the last n < factor bins: see Axis1D.
 
+* Fix failing Histo2D test (MK)
+
 * Comment, clean, and explain the Axis caching mechanisms and the very complex
   functions that manipulate them. (MK)
   MK: Done?

@@ -115,7 +115,7 @@ namespace YODA {
                                            std::make_pair(bin.xMax(), bin.yMax())));
       }
       _mkAxis(binLimits);
-      for(size_t i = 0; i < _bins.size(); ++i) {
+      for (size_t i = 0; i < _bins.size(); ++i) {
         _bins[i] = bins[i];
       }
       if (isGrid()) _setOutflows();
@@ -529,16 +529,16 @@ namespace YODA {
     void scaleXY(double scaleX, double scaleY) {
       // Two loops are put on purpose, just to protect
       // against improper _binHashSparse
-      for(size_t i = 0; i < _binHashSparse.first.size(); ++i) {
+      for (size_t i = 0; i < _binHashSparse.first.size(); ++i) {
         _binHashSparse.first[i].first *= scaleY;
-        for(size_t j = 0; j < _binHashSparse.first[i].second.size(); ++j) {
+        for (size_t j = 0; j < _binHashSparse.first[i].second.size(); ++j) {
           _binHashSparse.first[i].second[j].second.first  *= scaleX;
           _binHashSparse.first[i].second[j].second.second *= scaleX;
         }
       }
-      for(size_t i = 0; i < _binHashSparse.second.size(); ++i){
+      for (size_t i = 0; i < _binHashSparse.second.size(); ++i) {
         _binHashSparse.second[i].first *= scaleX;
-        for(size_t j = 0; j < _binHashSparse.second[i].second.size(); ++j){
+        for (size_t j = 0; j < _binHashSparse.second[i].second.size(); ++j) {
           _binHashSparse.second[i].second[j].second.first  *= scaleY;
           _binHashSparse.second[i].second[j].second.second *= scaleY;
         }
@@ -586,7 +586,7 @@ namespace YODA {
       if (isGrid()) {
         foreach(Bin bin, _bins) {
           int index = other.getBinIndex(bin.midpoint().first, bin.midpoint().second);
-          if (index != -1){
+          if (index != -1) {
             if (other.bin(index) != bin) return false;
           }
           else return false;

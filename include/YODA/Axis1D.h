@@ -105,27 +105,27 @@ namespace YODA {
 
     /// Return a bin at a given index (non-const)
     BIN1D& bin (size_t index) {
-      if(index >= numBins()) throw RangeError("YODA::Histo1D: index out of range!");
+      if (index >= numBins()) throw RangeError("YODA::Histo1D: index out of range!");
       return _bins[index];
     }
 
     /// Return a bin at a given index (const)
     const BIN1D& bin (size_t index) const {
-      if(index >= numBins()) throw RangeError("YODA::Histo1D: index out of range!");
+      if (index >= numBins()) throw RangeError("YODA::Histo1D: index out of range!");
       return _bins[index];
     }
 
     /// Return a bin at a given coordinate (non-const)
     BIN1D& binByCoord(double x) {
       int index = getBinIndex(x);
-      if(index == -1) throw RangeError("There is no bin at the specified x");
+      if (index == -1) throw RangeError("There is no bin at the specified x");
       return bin(index);
     }
 
     /// Return a bin at a given coordinate (const)
     const BIN1D& binByCoord(double x) const {
       int index = getBinIndex(x);
-      if(index == -1) throw RangeError("There is no bin at the specified x");
+      if (index == -1) throw RangeError("There is no bin at the specified x");
       return bin(index);
     }
 
@@ -185,7 +185,7 @@ namespace YODA {
       // a member of the same bin as the one on the right, it means that our point
       // is inside a bin. In such case, announce it providing the index of the
       // bin in question.
-      for (size_t i = index+1; _binHashSparse[i].first == _binHashSparse[index+1].first; ++i){
+      for (size_t i = index+1; _binHashSparse[i].first == _binHashSparse[index+1].first; ++i) {
         if (_binHashSparse[index].second == _binHashSparse[i].second) {
           return _binHashSparse[index].second;
         }
@@ -294,7 +294,7 @@ namespace YODA {
       _dbn.scaleW(scalefactor);
       _underflow.scaleW(scalefactor);
       _overflow.scaleW(scalefactor);
-      for(size_t i = 0; i < _bins.size(); ++i) _bins[i].scaleW(scalefactor);
+      for (size_t i = 0; i < _bins.size(); ++i) _bins[i].scaleW(scalefactor);
     }
 
     //@}
@@ -315,7 +315,7 @@ namespace YODA {
     }
 
 
-    /// Add two Axis together
+    /// Add two axes together
     Axis1D<BIN1D,DBN>& operator += (const Axis1D<BIN1D,DBN>& toAdd) {
       if (*this != toAdd) throw LogicError("YODA::Histo1D: Cannot add axes with differen binnings.");
 
@@ -330,7 +330,7 @@ namespace YODA {
     }
 
 
-    /// Subtract two Axis
+    /// Subtract two axes
     Axis1D<BIN1D,DBN>& operator -= (const Axis1D<BIN1D,DBN>& toSubtract) {
       if (*this != toSubtract) throw LogicError("YODA::Histo1D: Cannot add axes with differen binnings.");
 
@@ -397,7 +397,7 @@ namespace YODA {
 
       if (value >= _binHashSparse[where].first) {
         if (where == _binHashSparse.size() - 1) return where;
-        if(value <= _binHashSparse[where+1].first) return where;
+        if (value <= _binHashSparse[where+1].first) return where;
         return _binaryS(value, where, higher);
       }
 
@@ -409,6 +409,7 @@ namespace YODA {
     /// Check if a hypothetical bin to be added, starting at from and
     /// ending at to will partially overlap any of the existing bins.
     bool _findCuts(double from, double to) const {
+      /// @todo You don't know that the typical scale of coord isn't 10e-10. This has to go.
       from += 0.00000001;
       to   -= 0.00000001;
       size_t index1 = _binaryS(from, 0, _binHashSparse.size());
@@ -421,8 +422,8 @@ namespace YODA {
     bool _isGapless(size_t from, size_t to) {
       size_t start =  _binaryS(_bins[from].xMin(), 0, _binHashSparse.size());
       size_t end =    _binaryS(_bins[to].xMin(), 0, _binHashSparse.size());
-      for(size_t i = start; i < end; i++) {
-        if(!fuzzyEquals(_binHashSparse[i].first, _binHashSparse[i+1].first) &&
+      for (size_t i = start; i < end; i++) {
+        if (!fuzzyEquals(_binHashSparse[i].first, _binHashSparse[i+1].first) &&
            _binHashSparse[i].second != _binHashSparse[i+1].second) return false;
       }
       return true;
