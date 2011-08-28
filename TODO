@@ -18,6 +18,9 @@ NOW
   constructors! (MK)
 
 * Fix failing Histo2D test (MK)
+  MK: I have honestly no idea why this copy constructor fails.
+      I have moved it to .cc file and declared it to do nothing and it
+      still segfaults. Any ideas are appreciated here.
 
 * Improve tests Makefile setup to work out the path to the Python build dir. (AB)
 

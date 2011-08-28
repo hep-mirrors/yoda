@@ -11,6 +11,10 @@ using namespace std;
 namespace YODA {
 
 
+  /// A copy constructor with optional new path
+  Histo2D::Histo2D(const Histo2D& h, const std::string& path)
+  { }
+
   int Histo2D::fill(double x, double y, double weight) {
     return _axis.fill(x, y, weight);
   }

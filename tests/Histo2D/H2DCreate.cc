@@ -15,8 +15,7 @@ int main() {
   cout << "PASS" << endl;
 
   cout << "Testing the copy constructor:            ";
-  Histo2D h(20, 0, 100, 20, 0, 100);
-  Histo2D copyTest(h);
+  Histo2D copyTest(first);
   cout << "PASS" << endl;
 
   cout << "Adding/substracting/dividing:            ";

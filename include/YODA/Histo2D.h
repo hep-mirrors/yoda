@@ -63,11 +63,11 @@ namespace YODA {
 
 
     /// Copy constructor with optional new path
-    Histo2D(const Histo2D& h, const std::string& path="")
-      : AnalysisObject("Histo2D", (path.size() == 0) ? h.path() : path, h, h.title())
-    {
-      _axis = h._axis;
-    }
+    Histo2D(const Histo2D& h, const std::string& path="");
+      //: AnalysisObject("Histo2D", (path.size() == 0) ? h.path() : path, h, h.title())
+   // {
+      //_axis = h._axis;
+   // }
 
 
     /// @todo Add binning constructors from Scatter3D (and Profile2D when it exists)
