@@ -198,12 +198,24 @@ namespace YODA {
       return _dbnX.sumWX();
     }
 
+    double sumWX2() const {
+      return _dbnX.sumWX2();
+    }
+
     double sumWY() const {
       return _dbnY.sumWX();
     }
 
+    double sumWY2() const {
+      return _dbnY.sumWX2();
+    }
+
     double sumWZ() const {
       return _dbnZ.sumWX();
+    }
+
+    double sumWZ2() const {
+      return _dbnZ.sumWX2();
     }
 
     double sumWXY() const {

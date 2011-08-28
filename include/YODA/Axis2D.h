@@ -4,6 +4,7 @@
 #include "YODA/AnalysisObject.h"
 #include "YODA/Exceptions.h"
 #include "YODA/Bin.h"
+#include "YODA/HistoBin2D.h"
 #include "YODA/Utils/cachedvector.h"
 #include "YODA/Utils/MathUtils.h"
 #include "YODA/Dbn2D.h"
@@ -78,13 +79,6 @@ namespace YODA {
     }
 
 
-    /// Constructor provided with a vector of bin delimiters
-    Axis2D(const std::vector<Segment>& binLimits) {
-      _mkAxis(binLimits);
-      if (isGrid()) _setOutflows();
-    }
-
-
     /// Most standard constructor accepting X/Y ranges and number of bins
     /// on each of the axis. Both Axis are divided linearly.
     Axis2D(size_t nbinsX, double lowerX, double upperX, size_t nbinsY, double lowerY, double upperY) {
@@ -101,6 +95,20 @@ namespace YODA {
       _setOutflows();
     }
 
+
+    /// A constructor with specified x and y axis bin limits.
+    Axis2D(const std::vector<double>& xedges, const std::vector<double>& yedges) {
+      std::vector<Segment> binLimits;
+      /// Generate bin limits
+      for (size_t i = 0; i < yedges.size() - 1; ++i) {
+        for (size_t  j = 0; j < xedges.size() - 1; ++j) {
+          binLimits.push_back(std::make_pair(std::make_pair(xedges[j], yedges[i]),
+                                             std::make_pair(xedges[j+1], yedges[i+1])));
+        }
+      }
+      _mkAxis(binLimits);
+      _setOutflows();
+    }
 
     /// @brief A constructor accepting a list of bins and all the outflows
     ///
@@ -124,20 +132,6 @@ namespace YODA {
       _dbn = totalDbn;
     }
 
-    /// A constructor with specified x and y axis bin limits.
-    Axis2D(const std::vector<double>& xedges, const std::vector<double>& yedges) {
-      std::vector<Segment> binLimits;
-      /// Generate bin limits
-      for (int i = 0; i < yedges.size() - 1; ++i) {
-        for (int j = 0; j < xedges.size() - 1; ++j) {
-          binLimits.push_back(std::make_pair(std::make_pair(xedges[j], yedges[i]),
-                                             std::make_pair(xedges[j+1], yedges[i+1])));
-        }
-      }
-      _mkAxis(binLimits);
-      _setOutflows();
-    }
-
 
     /// A copy constructor
     Axis2D(const Axis2D& a) {
@@ -148,6 +142,13 @@ namespace YODA {
       _binHashSparse.first.regenCache();
       _binHashSparse.second.regenCache();
     }
+
+    /// Constructor provided with a vector of bin delimiters
+    Axis2D(const std::vector<Segment>& binLimits) {
+      _mkAxis(binLimits);
+      if (isGrid()) _setOutflows();
+    }
+
 
     //@}
 
@@ -210,13 +211,13 @@ namespace YODA {
     /// Merge a range of bins, given the bin IDs of points at the lower-left and upper-right.
     void mergeBins(size_t from, size_t to) {
       /// Acquire the starting/ending bins
-      HistoBin2D& start = bin(from);
-      HistoBin2D& end = bin(to);
+      BIN2D& start = bin(from);
+      BIN2D& end = bin(to);
 
       /// Set the bin to be added as a starting bin
       /// and then remove the unneeded starting bin from
       /// the list of bins.
-      HistoBin2D temp = start;
+      BIN2D temp = start;
       eraseBin(from);
 
       // Sanity-check of input indices

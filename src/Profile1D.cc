@@ -8,9 +8,6 @@
 #include "YODA/Scatter2D.h"
 
 #include <cmath>
-#include <iostream>
-
-using namespace std;
 
 namespace YODA {
 

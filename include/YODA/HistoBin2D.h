@@ -63,11 +63,6 @@ namespace YODA {
       Bin2D::reset();
     }
 
-    /// Rescaling the height of a bin
-    void scaleW(double scalefactor) {
-      _dbn.scaleW(scalefactor);
-    }
-
     //@}
 
 
@@ -116,48 +111,6 @@ namespace YODA {
     }
 
     //@}
-
-
-    /// @name Operators
-    //@{
-
-    /// Equality operator that checks if the location
-    /// of the two bins is the same
-    bool operator == (const HistoBin2D& other) const {
-      return _edges == other._edges;
-    }
-
-    bool operator != (const HistoBin2D& other) const {
-      return ! operator == (other);
-    }
-
-    /// Addition operator
-    HistoBin2D& operator += (const HistoBin2D& toAdd) {
-      return add(toAdd);
-    }
-
-    /// Subtraction operator
-    HistoBin2D& operator -= (const HistoBin2D& toSubtract) {
-      return subtract(toSubtract);
-    }
-
-    //@}
-
-
-  protected:
-
-    /// Named addition operator
-    HistoBin2D& add(const HistoBin2D& hb) {
-      Bin2D::subtract(hb);
-      return *this;
-    }
-
-    /// Named subtraction operator
-    HistoBin2D& subtract(const HistoBin2D& hb) {
-      Bin2D::subtract(hb);
-      return *this;
-    }
-
   };
 
 

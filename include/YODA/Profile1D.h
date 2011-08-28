@@ -242,13 +242,13 @@ namespace YODA {
     /// @name Adding and subtracting histograms
     //@{
 
-    /// Add another histogram to this
+    /// Add another profile to this one
     Profile1D& operator += (const Profile1D& toAdd) {
       _axis += toAdd._axis;
       return *this;
     }
 
-    /// Subtract another histogram from this
+    /// Subtract another profile from this one
     Profile1D& operator -= (const Profile1D& toSubtract) {
       _axis -= toSubtract._axis;
       return *this;

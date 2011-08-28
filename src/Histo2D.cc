@@ -4,6 +4,7 @@
 // Copyright (C) 2008-2011 The YODA collaboration (see AUTHORS for details)
 //
 #include "YODA/Histo2D.h"
+#include "YODA/ProfileBin2D.h"
 #include "YODA/Scatter3D.h"
 #include <cmath>
 using namespace std;

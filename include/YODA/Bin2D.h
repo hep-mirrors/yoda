@@ -103,6 +103,10 @@ namespace YODA {
 
       _dbn.scaleXY(scaleX, scaleY);
     }
+    
+    void scaleW(double scalefactor) {
+      _dbn.scaleW(scalefactor);
+    }
 
     //@}
 
@@ -254,6 +258,15 @@ namespace YODA {
       return subtract(b);
     }
 
+    /// Equality operator that checks if the location
+    /// of the two bins is the same
+    bool operator == (const Bin2D<DBN>& other) const {
+      return _edges == other._edges;
+    }
+
+    bool operator != (const Bin2D<DBN>& other) const {
+      return ! operator == (other);
+    }
     //@}
 
   protected:
@@ -294,7 +307,7 @@ namespace YODA {
   }
 
     Segment _edges;
-    Dbn2D _dbn;
+    DBN _dbn;
 
   };
 
