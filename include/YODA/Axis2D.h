@@ -188,7 +188,7 @@ namespace YODA {
     /// @name Modifiers
     //@{
 
-    /// @brief Fill operator
+    /// @brief Fill operator in 2D
     ///
     /// Called when it is wanted to fill a certain position on an Axis
     int fill(double x, double y, double weight) {
@@ -206,6 +206,19 @@ namespace YODA {
       // Return an information regarding what was filled.
       return index;
     }
+
+    /// @brief Fill operator for the 3D case
+    /// For a detailed description, please see the 2D one.
+    int fill(double x, double y, double z, double weight) {
+      _dbn.fill(x, y, z, weight);
+      
+      int index = getBinIndex(x,y);
+      if (index != -1) _bins[index].fill(x, y, z, weight);
+
+      else if (_outflows.size() == 8) _fillOutflows(x, y, z, weight);
+      return index;
+    }
+
 
 
     /// Merge a range of bins, given the bin IDs of points at the lower-left and upper-right.
@@ -656,7 +669,7 @@ namespace YODA {
     }
 
 
-    /// Outflow filler
+    /// 2D Outflow filler
     /// The function checks which outflow the coordinates are in
     /// and fills the right one.
     void _fillOutflows(double x, double y, double weight) {
@@ -683,6 +696,35 @@ namespace YODA {
       {
         size_t element = _binaryS(_binHashSparse.first, y, 0, _binHashSparse.first.size());
         _outflows[7][element].fill(x, y, weight);
+      }
+
+    }
+    
+    /// 3D outflow filler
+    void _fillOutflows(double x, double y, double z, double weight) {
+      if (x < _lowEdgeX && y > _highEdgeY) _outflows[0][0].fill(x, y, z, weight);
+      else if (x > _lowEdgeX && x < _highEdgeX && y > _highEdgeY)
+      {
+        size_t element = _binaryS(_binHashSparse.second, x, 0, _binHashSparse.second.size());
+        _outflows[1][element].fill(x, y, z, weight);
+      }
+      else if (x > _highEdgeX && y > _highEdgeY) _outflows[2][0].fill(x, y, z, weight);
+      else if (x > _highEdgeX && y > _lowEdgeY && y < _highEdgeY)
+      {
+        size_t element = _binaryS(_binHashSparse.first, y, 0, _binHashSparse.first.size());
+        _outflows[3][element].fill(x, y, z, weight);
+      }
+      else if (x > _highEdgeX && y < _lowEdgeY) _outflows[4][0].fill(x, y, z, weight);
+      else if (x > _lowEdgeX && x < _highEdgeX && y < _lowEdgeY)
+      {
+        size_t element = _binaryS(_binHashSparse.second, x, 0, _binHashSparse.second.size());
+        _outflows[5][element].fill(x, y, z, weight);
+      }
+      else if (x < _lowEdgeX && y < _lowEdgeY) _outflows[6][0].fill(x, y, z, weight);
+      else if (x < _lowEdgeX && y > _lowEdgeY && y < _highEdgeY)
+      {
+        size_t element = _binaryS(_binHashSparse.first, y, 0, _binHashSparse.first.size());
+        _outflows[7][element].fill(x, y, z, weight);
       }
 
     }

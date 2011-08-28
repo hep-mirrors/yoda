@@ -92,6 +92,7 @@ namespace YODA {
     for (size_t i = 0; i < numer.numBins(); ++i) {
       const ProfileBin1D& b1 = numer.bin(i);
       const ProfileBin1D& b2 = denom.bin(i);
+
       assert(fuzzyEquals(b1.focus(), b2.focus()));
       const double x = b1.focus();
       assert(fuzzyEquals(b1.xMin(), b2.xMin()));

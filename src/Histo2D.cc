@@ -224,8 +224,8 @@ namespace YODA {
       assert(fuzzyEquals(b1.midpoint().first, b2.midpoint().first));
       assert(fuzzyEquals(b1.midpoint().second, b2.midpoint().second));
 
-      const double x = bL.focus().first;
-      const double y = bL.focus().second;
+      const double x = bL.focus().first/2;
+      const double y = bL.focus().second/2;
 
       const double exminus = x - bL.xMin();
       const double explus = bL.xMax() - x;
