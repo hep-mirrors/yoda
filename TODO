@@ -19,6 +19,8 @@ NOW
 * Unify the API, especially the order of X/Y parameters in various
   constructors! (MK)
 
+* Add functions to Profile2D 'scaffolding' (MK)
+
 * Fix failing Histo2D test (MK)
   MK: I have honestly no idea why this copy constructor fails.
       I have moved it to .cc file and declared it to do nothing and it
