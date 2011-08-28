@@ -46,7 +46,7 @@ NOW
 
 * Add Scatter/Point1D (AB)
 
-* Template Bin2D and HistoBin2D on DBN type (Dbn2D/3D) cf. Bin1D<DBN> (MK)
+* Template Bin2D(done) and HistoBin2D on DBN type (Dbn2D/3D) cf. Bin1D<DBN> (MK)
 
 * Profile2D, using Dbn3D (AB/MK)
 
