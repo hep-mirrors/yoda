@@ -4,7 +4,6 @@ lib_LTLIBRARIES = libYODA.la
 
 libYODA_la_SOURCES = \
     Dbn1D.cc \
-    Bin2D.cc \
     Histo1D.cc \
     Histo2D.cc \
     Profile1D.cc \

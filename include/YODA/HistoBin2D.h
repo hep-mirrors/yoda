@@ -2,7 +2,7 @@
 #define YODA_HistoBin2D_h
 
 #include "YODA/Bin2D.h"
-#include "YODA/Dbn1D.h"
+#include "YODA/Dbn2D.h"
 #include "YODA/ProfileBin1D.h"
 #include "YODA/Exceptions.h"
 
@@ -17,7 +17,7 @@ namespace YODA {
   /// This is a 2D bin type, which supports all the operations defined for
   /// a generic Bin2D object, but also supplies the specific member functions
   /// for histogram-type data, as opposed to profile-type.
-  class HistoBin2D : public Bin2D {
+  class HistoBin2D : public Bin2D<Dbn2D> {
   public:
 
     /// @name Constructors

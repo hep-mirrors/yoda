@@ -19,6 +19,7 @@ namespace YODA {
   /// profile bin types as HistoBin2D and ProfileBin2D.
   /// The lower bin edges in x and y are inclusive. This base class provides no fill
   /// method, since the signatures for standard and profile histos differ.
+  template <class DBN>
   class Bin2D : public Bin {
   public:
 
@@ -33,17 +34,44 @@ namespace YODA {
     /// Mostly used when creating a bin manually since it requires the smallest
     /// amount of information transferred. All 4 edges are then constructed from
     /// extremal points for which coordinates are provided.
-    Bin2D(double lowedgeX, double lowedgeY, double highedgeX, double highedgeY);
+    Bin2D(double lowedgeX, double lowedgeY, double highedgeX, double highedgeY) {
+      if (lowedgeX > highedgeX || lowedgeY > highedgeY) {
+        throw RangeError("The bins are wrongly defined!");
+      }
+      _edges.first.first = lowedgeX;
+      _edges.first.second = lowedgeY;
+      _edges.second.first = highedgeX;
+      _edges.second.second = highedgeY;
+    }
 
     /// @brief A constructor usually used by functions creating Bins in bulk.
     /// Since all the edges are provided by an external function it creates a
     /// Bin slightly faster (this claim is very weakly true).  It is not
     /// suggested to use it if it is just needed to add few bins to an already
     /// created Histo2D.
-    Bin2D(const std::vector<Segment>& edges);
+    Bin2D(const std::vector<Segment>& edges) {
+      if (edges.size() != 4) {
+        throw RangeError("The edge vector does not define a full rectangle!");
+      }
+      _edges.first.first = edges[0].first.first;
+      _edges.first.second = edges[0].first.second;
+      _edges.second.first = edges[1].second.first;
+      _edges.second.second = edges[1].second.second;
+    }
 
     /// A copy constructor
-    Bin2D(const Bin2D& b);
+    Bin2D(const Bin2D& b) {
+      _edges  = b._edges;
+      _dbn    = b._dbn;
+    }
+
+
+    /// Copy assignment
+    Bin2D<DBN>& operator = (const Bin2D<DBN>& b) {
+      _edges = b._edges;
+      _dbn = b._dbn;
+      return *this;
+    }
 
     //@}
 
@@ -66,7 +94,15 @@ namespace YODA {
     }
 
     /// Scale the x and y coordinates and distributions.
-    void scaleXY(double scaleX, double scaleY);
+    void scaleXY(double scaleX, double scaleY) {
+      _edges.first.first *= scaleX;
+      _edges.second.first *= scaleX;
+
+      _edges.first.second *= scaleY;
+      _edges.second.second *= scaleY;
+
+      _dbn.scaleXY(scaleX, scaleY);
+    }
 
     //@}
 
@@ -118,7 +154,10 @@ namespace YODA {
     //@{
 
     /// Find the geometric midpoint of the bin
-    Point midpoint() const;
+    Point midpoint() const {
+    return std::make_pair((double)(xMax() - xMin())/2 + xMin(), (double)(yMax() - yMin())/2 + yMin());
+    }
+
 
     /// Find the weighted mean point of the bin, or the midpoint if unfilled
     Point focus() const {
@@ -207,11 +246,11 @@ namespace YODA {
     /// @name Operators
     //@{
 
-    Bin2D& operator += (const Bin2D& b) {
+    Bin2D<DBN>& operator += (const Bin2D<DBN>& b) {
       return add(b);
     }
 
-    Bin2D& operator -= (const Bin2D& b) {
+    Bin2D<DBN>& operator -= (const Bin2D<DBN>& b) {
       return subtract(b);
     }
 
@@ -230,9 +269,29 @@ namespace YODA {
 
   protected:
 
-    Bin2D& add(const Bin2D& b);
+    Bin2D<DBN>& add(const Bin2D<DBN>& b) {
+      if (_edges != b._edges) {
+        if (b.highEdgeX() > highEdgeX()) _setBounds(xMin(), yMin(), b.xMax(), yMax());
+        if (b.yMax() > yMax()) _setBounds(xMin(), yMin(), xMax(), b.yMax());
+        if (b.xMin() < xMin()) _setBounds(b.xMin(), yMin(), xMax(), yMax());
+        if (b.yMin() < yMin()) _setBounds(xMin(), b.yMin(), xMax(), yMax());
+      }
+      _dbn += b._dbn;
+      return *this;
+    }
 
-    Bin2D& subtract(const Bin2D& b);
+    Bin2D<DBN>& subtract(const Bin2D<DBN>& b) {
+    // Automatically resize if adding a bin that does not have the same location
+    // this way merging the bins works perfectly
+    if (_edges != b._edges) {
+      if (b.xMax() > xMax()) _setBounds(xMin(), yMin(), b.xMax(), yMax());
+      if (b.yMax() > yMax()) _setBounds(xMin(), yMin(), xMax(), b.yMax());
+      if (b.xMin() < xMin()) _setBounds(b.xMin(), yMin(), xMax(), yMax());
+      if (b.yMin() < yMin()) _setBounds(xMin(), b.yMin(), xMax(), yMax());
+    }
+    _dbn -= b._dbn;
+    return *this;
+  }
 
     Segment _edges;
     Dbn2D _dbn;
@@ -242,15 +301,16 @@ namespace YODA {
 
   /// @name Operators
   //@{
-
-  inline Bin2D operator + (const Bin2D& a, const Bin2D& b) {
-    Bin2D rtn = a;
+  template <class DBN>
+  inline Bin2D<DBN> operator + (const Bin2D<DBN>& a, const Bin2D<DBN>& b) {
+    Bin2D<DBN> rtn = a;
     rtn += b;
     return rtn;
   }
 
-  inline Bin2D operator - (const Bin2D& a, const Bin2D& b) {
-    Bin2D rtn = a;
+  template<class DBN>
+  inline Bin2D<DBN> operator - (const Bin2D<DBN>& a, const Bin2D<DBN>& b) {
+    Bin2D<DBN> rtn = a;
     rtn -= a;
     return rtn;
   }
