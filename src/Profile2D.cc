@@ -26,6 +26,13 @@ namespace YODA {
     return sumw;
   }
 
+  /// A copy constructor with optional new path
+  Profile2D::Profile2D(const Profile2D& p, const std::string& path)
+    : AnalysisObject("Profile2D", p.path(), p, p.title())
+  {
+    _axis = p._axis;
+  }
+
   /// Constructor from a Scatter3D's binning, with optional new path
   Profile2D::Profile2D(const Scatter3D& s, const std::string& path)
     : AnalysisObject("Profile2D", (path.size() == 0) ? s.path() : path, s, s.title())
@@ -49,6 +56,8 @@ namespace YODA {
   }
 
   /// Divide two profile histograms
+  /// Note: I have remove the const requirement as it makes the program compile,
+  /// was it right to do?
   Scatter3D divide(Profile2D& numer, Profile2D& denom) {
     /// @todo Make this check work
     if(numer != denom) throw "It is impossible to add two incompatibly binned profile histograms!";
@@ -56,15 +65,27 @@ namespace YODA {
     for (size_t i = 0; i < numer.numBins(); ++i) {
       const ProfileBin2D& b1 = numer.bin(i);
       const ProfileBin2D& b2 = denom.bin(i);
-      const ProfileBin2D& bA = b1 + b2;
+      const ProfileBin2D& bL = b1 + b2;
 
       assert(fuzzyEquals(b1.focus().first, b2.focus().first));
       assert(fuzzyEquals(b1.focus().second, b2.focus().second));
 
-      const double x = bA.focus().first/2;
-      const double y = bA.focus().second/2;
+      const double x = bL.focus().first/2;
+      const double y = bL.focus().second/2;
       const double z = b1.mean()/b2.mean();
+
+      const double exminus = x - bL.xMin()/2;
+      const double explus = bL.xMax()/2 - x;
+
+      const double eyminus = y - bL.yMin()/2;
+      const double eyplus = bL.yMax()/2 - y;
+
+      const double ez = z * sqrt(sqr(b1.stdErr()/b1.mean()) + sqr(b2.stdErr()/b2.mean()));
+
+      tmp.addPoint(x, exminus, explus, y, eyminus, eyplus, z, ez, ez);
     }
-  }  
-    //return Scatter3D();
+    assert(tmp.numPoints() == numer.numBins());
+    return tmp;
   }
+  
+}
