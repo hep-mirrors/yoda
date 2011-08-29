@@ -227,11 +227,11 @@ namespace YODA {
       const double x = bL.focus().first/2;
       const double y = bL.focus().second/2;
 
-      const double exminus = x - bL.xMin();
+      const double exminus = x - bL.xMin()/2;
       const double explus = bL.xMax() - x;
 
-      const double eyminus = y - b1.yMin();
-      const double eyplus = bL.yMax() - y;
+      const double eyminus = y - b1.yMin()/2;
+      const double eyplus = bL.yMax()/2 - y;
 
       const double z = b1.height() / b2.height();
       const double ez = z * sqrt( sqr(b1.heightErr()/b1.height()) + sqr(b2.heightErr()/b2.height()) );

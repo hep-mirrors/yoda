@@ -30,30 +30,28 @@ namespace YODA {
   Profile2D::Profile2D(const Scatter3D& s, const std::string& path)
     : AnalysisObject("Profile2D", (path.size() == 0) ? s.path() : path, s, s.title())
   {
-    throw "IMPLEMENT";
-    std::vector<ProfileBin2D> bins;
+    Bins bins;
     foreach (const Scatter3D::Point& p, s.points()) {
       bins.push_back(ProfileBin2D(p.xMin(), p.yMin(), p.xMax(), p.yMax()));
     }
-    //_axis = Profile2DAxis(bins);
+    _axis = Profile2DAxis(bins);
   }
 
   /// Constructor from a Histo2D's binning, with optional new path
   Profile2D::Profile2D(const Histo2D& h, const std::string& path)
     : AnalysisObject("Profile2D", (path.size() == 0) ? h.path() : path, h, h.title())
   {
-    throw "IMPLEMENT";
     Bins bins;
-    //foreach (const Histo2D::Bin<Dbn2D>& b, h.bins()) {
-     // bins.push_back(ProfileBin2D(b.xMin(), b.yMin(), b.xMax(), b.yMax()));
-    //}
-    //_axis = Profile2DAxis(bins);
+    foreach (const HistoBin2D& b, h.bins()) {
+      bins.push_back(ProfileBin2D(b.xMin(), b.yMin(), b.xMax(), b.yMax()));
+    }
+    _axis = Profile2DAxis(bins);
   }
 
   /// Divide two profile histograms
-  Scatter3D divide(const Profile2D& numer, const Profile2D& denom) {
-    throw "IMPLEMENT!";
-    //assert(numer._axis == denom._axis);
+  Scatter3D divide(Profile2D& numer, Profile2D& denom) {
+    /// @todo Make this check work
+    if(numer != denom) throw "It is impossible to add two incompatibly binned profile histograms!";
     Scatter3D tmp;
     for (size_t i = 0; i < numer.numBins(); ++i) {
       const ProfileBin2D& b1 = numer.bin(i);
@@ -65,7 +63,7 @@ namespace YODA {
 
       const double x = bA.focus().first/2;
       const double y = bA.focus().second/2;
-      const double z = b1.mean()/b2.mean();;
+      const double z = b1.mean()/b2.mean();
     }
   }  
     //return Scatter3D();

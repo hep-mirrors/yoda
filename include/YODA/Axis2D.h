@@ -132,6 +132,20 @@ namespace YODA {
       _dbn = totalDbn;
     }
 
+    /// A constructor accepting just a list of bins
+    Axis2D(const Bins& bins) 
+    {
+      std::vector<Segment> binLimits;
+      foreach(Bin bin, bins) {
+        binLimits.push_back(std::make_pair(std::make_pair(bin.xMin(), bin.yMin()),
+                                           std::make_pair(bin.xMax(), bin.yMax())));
+      }
+      _mkAxis(binLimits);
+      for (size_t i = 0; i < _bins.size(); ++i) {
+        _bins[i] = bins[i];
+      }
+      if (isGrid()) _setOutflows();
+    }
 
     /// A copy constructor
     Axis2D(const Axis2D& a) {
@@ -1113,7 +1127,7 @@ namespace YODA {
     tmp -= second;
     return tmp;
   }
-
+  
   //@}
 
 

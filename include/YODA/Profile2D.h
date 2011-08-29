@@ -28,7 +28,7 @@ namespace YODA {
     /// Convenience typedefs
     typedef Profile2DAxis Axis;
     typedef Axis::Bins Bins;
-    typedef ProfileBin1D Bin;
+    typedef ProfileBin2D Bin;
     typedef typename std::pair<double, double> Point;
     typedef typename std::pair<Point, Point> Segment;
 
@@ -59,7 +59,7 @@ namespace YODA {
 
     /// Constructor from a Histo2D's binning, with optional new path
     Profile2D(const Histo2D& h, const std::string& path="");
-
+    
     /// A state setting constructor
     Profile2D();
 
