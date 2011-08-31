@@ -4,6 +4,7 @@ SUBDIRS = yoda .
 
 all-local: yoda/yodawrap_wrap.cc
 	$(PYTHON) setup.py build
+	$(PYTHON) setup.py install --install-lib=build/
 
 install-exec-local:
 	$(PYTHON) setup.py install --prefix=$(DESTDIR)$(prefix)

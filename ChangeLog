@@ -1,3 +1,7 @@
+2011-08-31  Dave Mallows  <dave.mallows@gmail.com>
+
+	* Fixed python tests by installing python extension to pyext/build
+
 2011-08-23  Andy Buckley  <andy@insectnation.org>
 
 	* Adding rebinning interface to Histo1D and Profile1D, and adding
