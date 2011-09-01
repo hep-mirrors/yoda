@@ -327,23 +327,19 @@ namespace YODA {
         for(size_t i = 1; i < factorY; ++i){ 
           if(_hasAbove(endIndex) == 1) endIndex++;
           else break;
-          std::cout << "End index1: " << endIndex << std::endl;
         }
         binsInColumn -= endIndex - startIndex;
         for(size_t i = 1; i < factorX; ++i){
           if(endIndex + binsInColumn < _bins.size()) endIndex += binsInColumn;
           else break;
-          std::cout << "End index2: " << endIndex << std::endl;
         }
         if(endIndex + 1 >= _bins.size()) break;
-        std::cout << "Start index: " << startIndex << ", end index: " << _bins.size() << std::endl;
         mergeBins(startIndex, endIndex);
         if(startIndex + 1 < _bins.size()) startIndex++;
         else break;
 
         if(_hasAbove(startIndex-1) == 0) binsInColumn = _binHashSparse.first.size() -1;
       }
-      std::cout << "Number of bins: " << _bins.size() << std::endl;
 
     }
 
