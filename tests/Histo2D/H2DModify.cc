@@ -53,6 +53,11 @@ int main() {
     }
     cout << "PASS" << endl;
 
+    cout << "Does rebinning work?                     ";
+    Histo2D h2(20, 0, 100, 20, 0, 100);
+    h2.rebin(2,3);
+    cout << "PASS" << endl;
+
     // Now, adding a square that is in a non-overlapping location:
     cout << "Does bin addition work?                  ";
     beforeAdd = h.numBins();

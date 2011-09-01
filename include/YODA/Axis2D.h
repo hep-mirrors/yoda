@@ -252,6 +252,8 @@ namespace YODA {
         throw RangeError("The start bin has a greater x value than the end bin.");
       }
       if (start.midpoint().second > end.midpoint().second) {
+        std::cout << "Start: " << start.midpoint().second;
+        std::cout << " end: " << end.midpoint().second << std::endl;
         throw RangeError("The start bin has a greater y value than the end bin.");
       }
 
@@ -274,7 +276,7 @@ namespace YODA {
                fuzzyEquals(_binHashSparse.first[y].second[x].second.first, start.xMin())) &&
               (_binHashSparse.first[y].second[x].second.second < end.xMax() ||
                fuzzyEquals(_binHashSparse.first[y].second[x].second.second, end.xMax())))&&
-               std::find(toRemove.begin(), toRemove.end(), _binHashSparse.first[y].second[x].first) != toRemove.end())
+               !(std::find(toRemove.begin(), toRemove.end(), _binHashSparse.first[y].second[x].first) != toRemove.end()))
             {
               /// Merge it with the temp bin and mark it as ready for removal
               temp += bin(_binHashSparse.first[y].second[x].first);
@@ -282,19 +284,22 @@ namespace YODA {
             }
         }
       }
+
       /// Now, drop the bins to be dropped
       /// Keeping in mind that the bins must be removed from the highest index
       /// down, otherwise we will end up removing other bins that we intend to
       std::sort(toRemove.begin(), toRemove.end());
       std::reverse(toRemove.begin(), toRemove.end());
       foreach(size_t remove, toRemove) eraseBin(remove);
-
+      
       /// Add edges of our merged bin to _binHashSparse and don't create a default
       /// empty bin.
       _addEdge(temp.edges(), _binHashSparse, false);
 
       /// Add the actual merged bin to the Axis.
       _bins.push_back(temp);
+
+      
 
       /// And regenerate the caches on _binHashSparse
       _binHashSparse.first.regenCache();
@@ -308,11 +313,37 @@ namespace YODA {
 
     /// Rebin by an interger factor
     void rebin(size_t factorX, size_t factorY) {
-      if (!isGrid) throw GridError("Rebinning by a factor can only act on full grids!");
-      size_t binsInColumn = _binHashSparse.first.size() -  1;
-      size_t binsInRow    = _binHashSparse.second.size() - 1;
+      if (!isGrid()) throw GridError("Rebinning by a factor can only act on full grids!");
+      if(factorX < 1 || factorY < 1) throw RangeError("Factors cannot be smaller than unity!");
+      
+      size_t binsInColumn = _binHashSparse.first.size() - 1;
 
-      throw ("IMPLEMENT!");
+      std::cout << std::endl << "Bins in column: " << binsInColumn << std::endl;
+      std::cout <<  "Number of bins: " << _bins.size() << std::endl;
+      size_t startIndex = 0;
+      while(true) {
+        size_t endIndex = startIndex;
+        for(size_t i = 1; i < factorY; ++i){ 
+          if(_hasAbove(endIndex) == 1) endIndex++;
+          else break;
+          std::cout << "End index1: " << endIndex << std::endl;
+        }
+        binsInColumn -= endIndex - startIndex;
+        for(size_t i = 1; i < factorX; ++i){
+          if(endIndex + binsInColumn < _bins.size()) endIndex += binsInColumn;
+          else break;
+          std::cout << "End index2: " << endIndex << std::endl;
+        }
+        if(endIndex + 1 >= _bins.size()) break;
+        std::cout << "Start index: " << startIndex << ", end index: " << _bins.size() << std::endl;
+        mergeBins(startIndex, endIndex);
+        if(startIndex + 1 < _bins.size()) startIndex++;
+        else break;
+
+        if(_hasAbove(startIndex-1) == 0) binsInColumn = _binHashSparse.first.size() -1;
+      }
+      std::cout << "Number of bins: " << _bins.size() << std::endl;
+
     }
 
     /// Reset the axis statistics
@@ -665,6 +696,16 @@ namespace YODA {
 
 
   private:
+
+    int _hasAbove(size_t index){
+      if(index == _bins.size() - 1) return -1;
+      if(fuzzyEquals(_bins[index].yMax(), _bins[index+1].yMin()) &&
+         fuzzyEquals(_bins[index].xMin(), _bins[index+1].xMin()) &&
+         fuzzyEquals(_bins[index].xMax(), _bins[index+1].xMax())) return 1;
+      if(fuzzyEquals(_bins[index].xMax(), _bins[index+1].xMin())) return 0;
+      return 1500;
+    }
+
 
     /// @brief Outflows pre-setter
     /// Sets the correct number of bins in each of the outflows.

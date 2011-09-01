@@ -14,7 +14,7 @@ int main() {
   second.fill(1,1,1);
   cout << "PASS" << endl;
 
-  /*cout << "Testing the copy constructor:            ";
+  cout << "Testing the copy constructor:            ";
   Histo2D copyTest(first);
   cout << "PASS" << endl;
 
@@ -23,6 +23,6 @@ int main() {
   Histo2D subtracted(first-second);
   Scatter3D divided(first/second);
   cout << "PASS" << endl;
-*/
+
   return EXIT_SUCCESS;
 }
