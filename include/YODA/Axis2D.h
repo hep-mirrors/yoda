@@ -312,6 +312,7 @@ namespace YODA {
     }
 
     /// Rebin by an interger factor
+    /// NOT YET WORKING!!11!!1111
     void rebin(size_t factorX, size_t factorY) {
       if (!isGrid()) throw GridError("Rebinning by a factor can only act on full grids!");
       if(factorX < 1 || factorY < 1) throw RangeError("Factors cannot be smaller than unity!");
