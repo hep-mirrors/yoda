@@ -21,6 +21,8 @@ NOW
 * Add functions to Profile2D 'scaffolding' (MK)
   MK: Done
 
+* Change the set small numbers to something numerically correct (MK)
+
 * Fix failing Histo2D test (MK)
   MK: I have honestly no idea why this copy constructor fails.
       I have moved it to .cc file and declared it to do nothing and it
