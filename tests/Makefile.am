@@ -74,4 +74,4 @@ TESTS = \
   testscatter2Dmodify\
   testscatter3Dcreate\
   testscatter3Dmodify\
-  test-yoda-1.py test-yoda-2.py
+  test-yoda-1.py

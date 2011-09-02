@@ -3,28 +3,29 @@
 ## Get setup tools
 from distutils.core import setup, Extension
 
-"""A SWIG wrapper on the YODA (Yet more Objects for Data Analysis) data analysis
+"""A Cython wrapper on the YODA (Yet more Objects for Data Analysis) data analysis
 library.  All the functionality (histograms, profile histograms, scatter plots,
 and I/O) of YODA's C++ API are (or at least should be) provided for Python use
 via this module.
 """
-
 ## Extension definition
 import os
 incdir = os.path.abspath('@top_srcdir@/include')
 srcdir = os.path.abspath('@top_srcdir@/src')
-ext = Extension('_yodawrap',
-                ['@srcdir@/yoda/yodawrap_wrap.cc'],
-                include_dirs=[incdir],
-                library_dirs=[srcdir, os.path.join(srcdir,'.libs')],
-                libraries=['YODA'])
+
+ext = Extension(
+    "yoda",
+    ["yoda.cpp"],
+    language='c++',
+    include_dirs=[incdir],
+    library_dirs=[srcdir, os.path.join(srcdir,'.libs')],
+    libraries=['stdc++','YODA']
+)
 
 ## Setup definition
 setup(name = 'YODA',
       version = '@PACKAGE_VERSION@',
-      ext_package = 'yoda',
       ext_modules = [ext],
-      py_modules = ['yoda.__init__', 'yoda.yodawrap'],
       author = ['Andy Buckley'],
       author_email = 'andy@insectnation.org',
       url = 'http://projects.hepforge.org/yoda/',

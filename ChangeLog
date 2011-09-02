@@ -1,3 +1,17 @@
+2011-09-03  Dave Mallows  <dave.mallows@gmail.com>
+	
+	* Fixed ReaderAIDA: x-value and low y-error interchanged when filling
+	Scatter2D.
+
+	* Changed to Cython for Python bindings: Swig bindings were in need of
+	serious amounts of work. Cython should provide a means to provide more
+	Pythonic bindings to YODA. A minimal subset of ReaderAIDA, Scatter2D
+	and Point2D have been wrapped.
+
+	* Modified configure.ac, Makefile.am and pyext/Makefile.am to reflect
+	change to Cython. Added cython.m4 from python-efl (Part of the
+	enlightenment project; LGPL)
+
 2011-08-31  Dave Mallows  <dave.mallows@gmail.com>
 
 	* Fixed python tests by installing python extension to pyext/build

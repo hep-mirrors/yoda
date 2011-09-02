@@ -70,7 +70,7 @@ namespace YODA {
             double xcentre, xerrplus, xerrminus, ycentre, yerrplus, yerrminus;
             xssC >> xcentre; xssP >> xerrplus; xssM >> xerrminus;
             yssC >> ycentre; yssP >> yerrplus; yssM >> yerrminus;
-            dps->addPoint(xcentre, xerrminus, xerrplus, ycentre, yerrminus, yerrplus);
+            dps->addPoint(xcentre, ycentre, xerrminus, xerrplus, yerrminus, yerrplus);
           } else {
             cerr << "Couldn't get <measurement> tag" << endl;
             /// @todo Throw an exception here?

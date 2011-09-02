@@ -71,47 +71,19 @@ if test x$enable_pyext == xyes; then
     enable_pyext=no
   fi
 fi
-## SWIG checks
+
+## Cython checks (Probably need some help...)
 if test x$enable_pyext == xyes; then
-  AC_PROG_SWIG
-  if test x$SWIG == x; then
-    AC_MSG_ERROR([Can't build Python extension since swig could not be found])
+  cython_required_version=0.13
+  AM_CHECK_CYTHON([$cython_required_version], [:], [:])
+  if test "x$CYTHON_FOUND" != "xyes"; then
+    AC_MSG_ERROR([Can't build Python extension since Cython >= 0.13 could not be found])
     enable_pyext=no
   else
-    ## Test that SWIG makes a compilable source file...
-    ## cf. g++ 4.x requires that string literal is "_const_ char*"
-    cat > conftest.i <<EOL
-%module conftest
-%{
-  void foo();
-%}
-void foo();
-EOL
-    AC_MSG_CHECKING([if $SWIG can make a Python function wrapper])
-    flag_ok=yes
-    stat_string=`$SWIG -c++ -python conftest.i 2>&1 1>&5` ; test -z "$stat_string" || flag_ok=no
-    AC_MSG_RESULT([$flag_ok])
-    if test x$flag_ok != xyes; then
-      AC_MSG_ERROR([Can't build Python extension since $SWIG is not able to make a Python wrapper])
-      enable_pyext=no
-    else
-      swig_compiler=$CXX
-      AC_CEDAR_CHECKCXXFLAG([-Wno-format], [AC_MSG_NOTICE([adding -Wno-format to swig compilation test]);
-        swig_compiler="$swig_compiler -Wno-format"])
-      AC_MSG_CHECKING([if $SWIG is compatible with the $CXX compiler])
-      flag_ok=yes
-      if test x$flag_ok == xyes; then
-        stat_string=`$swig_compiler -c conftest_wrap.cxx -I$python_incpath 2>&1 1>&5` ; test -z "$stat_string" || flag_ok=no
-      fi
-      AC_MSG_RESULT([$flag_ok])
-      if test x$flag_ok != xyes; then
-        AC_MSG_ERROR([Can't build Python extension since $SWIG is not compatible with $CXX. Get a newer SWIG version!])
-        enable_pyext=no
-      fi
-    fi
+    cython_compiler=$CXX
   fi
-  rm -rf conftest*
 fi
+
 ## Finish
 if test x$enable_pyext == xyes; then
   AC_MSG_NOTICE([All Python build checks successful: 'yoda' Python extension will be built])
@@ -168,7 +140,7 @@ AC_CONFIG_FILES([Makefile Doxyfile])
 AC_CONFIG_FILES([include/Makefile include/YODA/Makefile])
 AC_CONFIG_FILES([src/Makefile src/tinyxml/Makefile])
 AC_CONFIG_FILES([tests/Makefile])
-AC_CONFIG_FILES([pyext/Makefile pyext/yoda/Makefile pyext/setup.py])
+AC_CONFIG_FILES([pyext/Makefile pyext/setup.py])
 #AC_CONFIG_FILES([bin/Makefile bin/yoda-config])
 
 AC_OUTPUT
