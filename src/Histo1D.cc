@@ -13,9 +13,7 @@ using namespace std;
 
 namespace YODA {
 
-
   // typedef vector<HistoBin1D> Bins;
-
 
   void Histo1D::fill(double x, double weight) {
     // Fill the underflow and overflow nicely
@@ -152,7 +150,7 @@ namespace YODA {
         break;
       }
 
-      tmp.addPoint(x, exminus, explus, y, ey, ey);
+      tmp.addPoint(x, y, exminus, explus, ey, ey);
 
     }
     assert(tmp.numPoints() == numer.numBins());
