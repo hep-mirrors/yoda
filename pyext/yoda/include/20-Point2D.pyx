@@ -1,9 +1,29 @@
+cdef extern from "YODA/Point2D.h" namespace "YODA":
+    cdef cppclass cPoint2D "YODA::Point2D":
+        cPoint2D ()
+        cPoint2D (cPoint2D &p)
+
+        cPoint2D (double x, double y,
+                  double exminus, double explus,
+                 double eyminus, double eyplus)
+
+        double x()
+        double y()
+        void setX(double x)
+        void setY(double y)
+        double xMin()
+        double xMax()
+        pair[double,double] xErrs()
+        pair[double,double] yErrs()
+        void setXErr(double minus, double plus)
+        void setYErr(double minus, double plus)
+
 cdef class Point2D:
     cdef cPoint2D* thisptr
 
     def __cinit__(self):
         self.thisptr = new cPoint2D()
-    
+
     def __init__(self,  *args):
         if len(args) == 0:
             self.pos = 0, 0
@@ -83,3 +103,5 @@ cdef class Point2D:
     def __repr__(self):
         return 'Point2D({0},{1})'.format(self.x, self.y)
 
+    def __dealloc__(self):
+        del self.thisptr

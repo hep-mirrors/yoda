@@ -1,3 +1,48 @@
+cdef extern from "YODA/HistoBin1D.h" namespace "YODA":
+
+    cdef cppclass cHistoBin1D "YODA::HistoBin1D":
+        cHistoBin1D (cHistoBin1D &h)
+        double area()
+        double height()
+        double areaErr()
+        double heightErr()
+        void reset()
+
+        # These are inherited methods from Bin1D... I can't seem to find a nice
+        # way to make Cython acknowledge these (it seems to be a typedef parsing
+        # issue rather than a technical issue).
+
+        void scaleW(double factor)
+        void scaleX(double factor)
+        
+        double lowEdge()
+        double highEdge()
+        double width()
+        double focus()
+        double midpoint()
+        double xMean()
+        double xVariance()
+        double xStdDev()
+        double xStdErr()
+        double numEntries()
+        double effNumEntries()
+        double sumW()
+        double sumW2()
+        double sumWX()
+        double sumWX2()
+
+# Disabled to work with Cython 0.13
+#cdef extern from "YODA/HistoBin1D.h" namespace "YODA::HistoBin1D":
+#    cHistoBin1D operator + (cHistoBin1D &, cHistoBin1D &)
+#    cHistoBin1D operator - (cHistoBin1D &, cHistoBin1D &)"""
+
+# TODO: re-enable these operators using a c++ shim like
+#using namespace YODA
+#Histo1D add__Histo1D(Histo1D a, Histo1D b) 
+#{ 
+#       return YODA::Histo1D::add(a, b); 
+#} 
+
 
 cdef class HistoBin1D:
     cdef cHistoBin1D *thisptr

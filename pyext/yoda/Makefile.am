@@ -1,5 +1,5 @@
 all-local:
-	cat imports.pyx include/Point2D.pyx > yoda.pyx
+	cat imports.pyx include/*.pyx > yoda.pyx
 	$(PYTHON) -m cython --cplus yoda.pyx	
 
 clean-local:

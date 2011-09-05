@@ -1,3 +1,39 @@
+cdef extern from "YODA/Histo1D.h" namespace "YODA":
+    #cHisto1D operator + (cHisto1D &, cHisto1D &)
+    #cHisto1D operator - (cHisto1D &, cHisto1D &)
+    #cScatter2D operator / (cHisto1D &, cHisto1D &)"""
+
+    cdef cppclass cHisto1D "YODA::Histo1D"(cAnalysisObject):
+        cHisto1D(size_t nbins, double lower, double upper, string &path,
+                string &title)
+        cHisto1D(vector[double] &binedges, string &path, string &title)
+        cHisto1D(vector[double] &binedges)
+        cHisto1D(cHisto1D &h, string &path)
+        cHisto1D(cHisto1D &h)
+
+        void fill(double x, double weight)
+        void reset()
+        void scaleW(double scalefactor)
+        void mergeBins(size_t a, size_t b)
+        void rebin(int n)
+
+        # Bin Accessors
+        size_t numBins()
+        double lowEdge()
+        double highEdge()
+        vector[cHistoBin1D] &bins()
+        cDbn1D &underflow()
+        cDbn1D &overflow()
+        void eraseBin(size_t index)
+
+        # Statistical functions
+        double integral(bool includeoverflows)
+        double integral(size_t a, size_t b)
+        double sumW(bool includeoverflows)
+        double sumW2(bool includeoverflows)
+        double variance(bool includeoverflows)
+        double stdDev(bool includeoverflows)
+
 cdef class Histo1D(AnalysisObject):
     def __cinit__(self, *args, **kwargs):
         cdef:
@@ -13,6 +49,8 @@ cdef class Histo1D(AnalysisObject):
             self.setptr(
                 new cHisto1D(nbins, lower, upper, string(path), string(title))
             )
+        else:
+            raise ValueError('Histo1D: Expected 3 arguments')
 
     cdef cHisto1D* ptr(self):
         return <cHisto1D *> self.thisptr
@@ -88,7 +126,7 @@ cdef class Histo1D(AnalysisObject):
         return self.ptr().stdDev(overflows)
 
 
-    def __add__(Histo1D a, Histo1D b):
+    """def __add__(Histo1D a, Histo1D b):
         cdef cHisto1D *res
         res = new cHisto1D(a.ptr()[0] + b.ptr()[0])
         return Histo1D().setptr(res)
@@ -134,7 +172,7 @@ cdef class Histo1D(AnalysisObject):
             elif ty is Histo1D:
                 return x._div_histo(y)
         
-        raise RuntimeError('Cannot multiply %r by %r' % (tx, ty))
+        raise RuntimeError('Cannot multiply %r by %r' % (tx, ty))"""
     
     def __repr__(self):
         return 'Histo1D%r' % self.bins

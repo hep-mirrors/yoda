@@ -1,3 +1,46 @@
+cdef extern from "YODA/Histo2D.h" namespace "YODA":
+    #cHisto2D operator + (cHisto2D &, cHisto2D &)
+    #cHisto2D operator - (cHisto2D &, cHisto2D &)
+
+    cdef cppclass cHisto2D "YODA::Histo2D"(cAnalysisObject):
+        cHisto2D(size_t nbinsX, double lowerX, double upperX,
+                 size_t nbinsY, double lowerY, double upperY,
+                 string &path, string &title)
+        
+        cHisto2D(cHisto2D &h)
+
+        void fill(double x, double y, double weight)
+        void reset()
+        void scaleW(double scalefactor)
+        void scaleXY(double scaleX, double scaleY)
+        void mergeBins(size_t a, size_t b)
+        void rebin(int a, int b)
+
+        # Bin Accessors
+        size_t numBins()
+        double lowEdgeX()
+        double lowEdgeY()
+        double highEdgeX()
+        double highEdgeY()
+
+        vector[cHistoBin2D] &bins()
+        cHistoBin2D& binByCoord(double x, double y)
+
+        void eraseBin(size_t index)
+
+        # Statistical functions
+        double integral(bool includeoverflows)
+        double sumW(bool includeoverflows)
+        double sumW2(bool includeoverflows)
+        double xMean(bool includeoverflows)
+        double yMean(bool includeoverflows)
+
+        double xVariance(bool includeoverflows)
+        double yVariance(bool includeoverflows)
+        
+        double xStdDev(bool includeoverflows)
+        double yStdDev(bool includeoverflows)
+
 cdef class Histo2D(AnalysisObject):
     def __cinit__(self, *args, **kwargs):
         cdef:
@@ -96,7 +139,7 @@ cdef class Histo2D(AnalysisObject):
         cdef cHisto2D *s = self.ptr()
         return (s.xStdDev(overflows), s.yStdDev(overflows))
 
-    def __add__(Histo2D a, Histo2D b):
+    """def __add__(Histo2D a, Histo2D b):
         cdef cHisto2D *res
         res = new cHisto2D(a.ptr()[0] + b.ptr()[0])
         return Histo2D().setptr(res)
@@ -118,7 +161,7 @@ cdef class Histo2D(AnalysisObject):
 
         res = new cHisto2D(histo.ptr()[0])
         res.scaleW(factor)
-        return Histo2D().setptr(res)
+        return Histo2D().setptr(res)"""
 
     
     def __repr__(self):
