@@ -1,13 +1,11 @@
 if ENABLE_PYEXT
 
-SUBDIRS = .
+SUBDIRS = yoda .
 CYTHONFLAGS = @CYTHONFLAGS@
 
-all-local: yoda.cc
+all-local: yoda
 	$(PYTHON) setup.py build
 	$(PYTHON) setup.py install --install-lib=build/
-yoda.cc:
-	$(PYTHON) -m cython --cplus yoda.pyx
 
 install-exec-local:
 	$(PYTHON) setup.py install --prefix=$(DESTDIR)$(prefix)

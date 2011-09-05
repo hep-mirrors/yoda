@@ -15,7 +15,7 @@ srcdir = os.path.abspath('@top_srcdir@/src')
 
 ext = Extension(
     "yoda",
-    ["yoda.cpp"],
+    ["@srcdir@/yoda/yoda.cpp"],
     language='c++',
     include_dirs=[incdir],
     library_dirs=[srcdir, os.path.join(srcdir,'.libs')],
