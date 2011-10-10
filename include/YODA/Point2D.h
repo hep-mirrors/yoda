@@ -109,16 +109,6 @@ namespace YODA {
     //@}
 
 
-    /// Scaling
-    void scale(double scaleX, double scaleY) {
-        setX(x()*scaleX);
-        setY(y()*scaleY);
-
-        setXErr(xErrMinus()*scaleX, xErrPlus()*scaleX);
-        setYErr(yErrMinus()*scaleY, yErrPlus()*scaleY);
-    }
-
-
     /// @name x error accessors
     //@{
 
@@ -220,6 +210,21 @@ namespace YODA {
     /// Get value plus positive y-error
     const double yMax() const {
       return _y + _ey.second;
+    }
+
+    //@}
+
+
+    // @name Manipulations
+    //@{
+
+    /// Scaling
+    void scale(double scaleX, double scaleY) {
+      setX(x()*scaleX);
+      setY(y()*scaleY);
+
+      setXErr(xErrMinus()*scaleX, xErrPlus()*scaleX);
+      setYErr(yErrMinus()*scaleY, yErrPlus()*scaleY);
     }
 
     //@}

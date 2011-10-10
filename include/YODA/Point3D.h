@@ -103,18 +103,10 @@ namespace YODA {
 
     /// Set z value
     void setZ(double z) { _z = z;}
+
     //@}
 
-    ///Scaling
-    void scale(double scaleX, double scaleY, double scaleZ) {
-        setX(x()*scaleX);
-        setY(y()*scaleY);
-        setZ(z()*scaleZ);
 
-        setXErr(xErrMinus()*scaleX, xErrPlus()*scaleX);
-        setYErr(yErrMinus()*scaleY, yErrPlus()*scaleY);
-        setZErr(zErrMinus()*scaleZ, zErrPlus()*scaleZ);
-    }
     /// @name x error accessors
     //@{
 
@@ -220,6 +212,7 @@ namespace YODA {
 
     //@}
 
+
     /// @name z error accessors
     //@{
 
@@ -243,18 +236,18 @@ namespace YODA {
       return (_ez.first + _ez.second)/2.0;
     }
 
-    /// Set szmmetric z error
+    /// Set symmetric z error
     void setZErr(double ez) {
       _ez.first = ez;
       _ez.second = ez;
     }
 
-    /// Set aszmmetric z error
+    /// Set asymmetric z error
     void setZErr(std::pair<double,double> ez) {
       _ez = ez;
     }
 
-    /// Set aszmmetric z error
+    /// Set asymmetric z error
     void setZErr(double ezminus, double ezplus) {
       _ez.first = ezminus;
       _ez.second = ezplus;
@@ -271,6 +264,24 @@ namespace YODA {
     }
 
     //@}
+
+
+    // @name Manipulations
+    //@{
+
+    /// Scaling
+    void scale(double scaleX, double scaleY, double scaleZ) {
+      setX(x()*scaleX);
+      setY(y()*scaleY);
+      setZ(z()*scaleZ);
+
+      setXErr(xErrMinus()*scaleX, xErrPlus()*scaleX);
+      setYErr(yErrMinus()*scaleY, yErrPlus()*scaleY);
+      setZErr(zErrMinus()*scaleZ, zErrPlus()*scaleZ);
+    }
+
+    //@}
+
 
   protected:
 

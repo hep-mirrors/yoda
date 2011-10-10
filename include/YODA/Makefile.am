@@ -1,7 +1,8 @@
 pkginclude_HEADERS = \
     Exceptions.h  \
     AnalysisObject.h \
-	Weights.h Bin.h Dbn1D.h \
+	Weights.h Bin.h \
+	Dbn1D.h Dbn2D.h \
 	Axis1D.h Bin1D.h \
     Axis2D.h Bin2D.h \
     Histo1D.h HistoBin1D.h  \
