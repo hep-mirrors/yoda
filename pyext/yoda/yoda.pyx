@@ -689,6 +689,7 @@ cdef extern from "YODA/Histo2D.h" namespace "YODA":
                  size_t nbinsY, double lowerY, double upperY,
                  string &path, string &title)
         
+        cHisto1D(cHisto1D &h, string &path)
         cHisto2D(cHisto2D &h)
 
         void fill(double x, double y, double weight)

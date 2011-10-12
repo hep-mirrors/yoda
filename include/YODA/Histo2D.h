@@ -63,11 +63,7 @@ namespace YODA {
 
 
     /// Copy constructor with optional new path
-    Histo2D(const Histo2D& h){}
-      //: AnalysisObject("Histo2D", (path.size() == 0) ? h.path() : path, h, h.title())
-   // {
-      //_axis = h._axis;
-   // }
+    Histo2D(const Histo2D& h, const std::string& path="");
 
 
     /// @todo Add binning constructors from Scatter3D (and Profile2D when it exists)
@@ -131,7 +127,7 @@ namespace YODA {
     void eraseBin(size_t index) {
       _axis.eraseBin(index);
     }
-    
+
     /// Rebin the whole histo by a @a factorX in the X direction and
     /// @a factorY in the Y direction
     void rebin(size_t factorX, size_t factorY){

@@ -12,6 +12,11 @@ using namespace std;
 namespace YODA {
 
 
+  Histo2D::Histo2D(const Histo2D& h, const std::string& path)
+    : AnalysisObject("Histo2D", (path.size() == 0) ? h.path() : path, h, h.title()),
+      _axis(h._axis)
+  { }
+
 
   int Histo2D::fill(double x, double y, double weight) {
     return _axis.fill(x, y, weight);
@@ -234,7 +239,7 @@ namespace YODA {
       const double ez = z * sqrt( sqr(b1.heightErr()/b1.height()) + sqr(b2.heightErr()/b2.height()) );
       tmp.addPoint(x, exminus, explus, y, eyminus, eyplus, z, ez, ez);
     }
-    
+
     assert(tmp.numPoints() == numer.numBinsTotal());
     return tmp;
   }
