@@ -477,8 +477,8 @@ namespace YODA {
       // In case we are just operating on a regular grid
       if (isGrid()) {
         /// @todo You can't do this... what if the typical scale of coord is 10e-10? This has to go.
-        coordX += 0.00000000001;
-        coordY += 0.00000000001;
+        coordX += coordX/2000000000;
+        coordY += coordY/2000000000;
         size_t indexY = (*_binHashSparse.first._cache.lower_bound(approx(coordY))).second;
 
         if (indexY < _binHashSparse.first.size()) {

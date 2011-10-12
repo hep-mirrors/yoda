@@ -43,6 +43,8 @@ namespace YODA {
       throw WeightError("Undefined weighted variance");
     }
     /// @todo Isn't this sensitive to the overall scale of the weights?
+    /// Shouldn't it check if den is bigger then num by a set number of 
+    /// orders of magnitude and vice versa?
     if (fabs(num) < 1E-10 && fabs(den) < 1E-10) {
       throw WeightError("Numerically unstable weights in width calculation");
     }

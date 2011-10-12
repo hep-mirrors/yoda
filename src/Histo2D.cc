@@ -234,6 +234,7 @@ namespace YODA {
       const double ez = z * sqrt( sqr(b1.heightErr()/b1.height()) + sqr(b2.heightErr()/b2.height()) );
       tmp.addPoint(x, exminus, explus, y, eyminus, eyplus, z, ez, ez);
     }
+    
     assert(tmp.numPoints() == numer.numBinsTotal());
     return tmp;
   }
