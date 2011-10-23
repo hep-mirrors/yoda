@@ -60,7 +60,13 @@ namespace YODA {
       : AnalysisObject("Histo2D", path, title),
       _axis(binedges)
     { }
-
+    
+    /// Constructor accepting the bin edges on X and Y axis.
+    Histo2D(const std::vector<double>& xedges, const std::vector<double>& yedges,
+            const std::string& path="", const std::string& title="")
+            : AnalysisObject("Histo2D", path, title),
+            _axis(xedges, yedges)
+    { }
 
     /// Copy constructor with optional new path
     Histo2D(const Histo2D& h, const std::string& path="");
@@ -82,7 +88,6 @@ namespace YODA {
 
 
   public:
-
 
     /// @name Modifiers
     //@{

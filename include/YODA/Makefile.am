@@ -18,7 +18,7 @@ nobase_pkginclude_HEADERS = \
 	Utils/MathUtils.h \
 	Utils/Formatting.h \
 	Utils/sortedvector.h \
-    Utils/cachedvector.h \
+  Utils/cachedvector.h \
 	Utils/nvector.h \
 	Config/YodaConfig.h \
 	Config/BuildConfig.h

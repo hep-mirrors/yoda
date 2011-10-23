@@ -476,7 +476,6 @@ namespace YODA {
     const int getBinIndex(double coordX, double coordY) const {
       // In case we are just operating on a regular grid
       if (isGrid()) {
-        /// @todo You can't do this... what if the typical scale of coord is 10e-10? This has to go.
         coordX += coordX/2000000000;
         coordY += coordY/2000000000;
         size_t indexY = (*_binHashSparse.first._cache.lower_bound(approx(coordY))).second;
@@ -796,10 +795,12 @@ namespace YODA {
         if (i == _binHashSparse.first.size() - 1) {
           if (_binHashSparse.first[i].second.size() != sizeX) {
             _isGrid = false;
+            return;
           }
         }
         else if (_binHashSparse.first[i].second.size() != 2*sizeX) {
           _isGrid = false;
+          return;
         }
       }
 
@@ -809,10 +810,12 @@ namespace YODA {
         if (i != _binHashSparse.second.size() - 1) {
           if (2*sizeY != _binHashSparse.second[i].second.size()) {
             _isGrid = false;
+            return;
           }
         }
         else if (_binHashSparse.second[i].second.size() != sizeY) {
           _isGrid = false;
+          return;
         }
       }
 

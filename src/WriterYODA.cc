@@ -115,6 +115,23 @@ namespace YODA {
     os << flush;
     os.flags(oldflags);
   }
+  
+  /*void WriterYODA::writeScatter3D(std::ostream& os, const Scatter3D& s) {
+    ios_base::fmtflags oldflags = os.flags();
+    const int precision = 6;
+    os << scientific << showpoint << setprecision(precision);
 
+    os << "# BEGIN YODA_SCATTER3D\n";
+    _writeAnnotations(os, s);
+    os << "# xval\t xerr-\t xerr+\t yval\t yerr-\t yerr+\t zval\t zerr-\t zerr+\n";
+    foreach (Point3D pt, s.points()) {
+      os << pt.x() << "\t" << pt.xErrMinus() << "\t" << pt.xErrMinus() << "\t";
+      os << pt.y() << "\t" << pt.yErrMinus() << "\t" << pt.yErrMinus() << "\t";
+      os << pt.z() << "\t" << pt.zErrMinus() << "\t" << pt.zErrMinus() << "\n";
+    }
+    os << "# END YODA_SCATTER2D\n";
 
+    os << flush;
+    os.flags(oldflags);
+  }*/
 }

@@ -40,7 +40,6 @@ namespace YODA {
     void writeProfile1D(std::ostream& os, const Profile1D& p);
     void writeScatter2D(std::ostream& os, const Scatter2D& s);
 
-
   private:
 
     /// Private since it's a singleton.
