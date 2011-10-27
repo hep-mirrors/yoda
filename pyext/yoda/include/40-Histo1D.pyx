@@ -1,4 +1,5 @@
 cdef extern from "YODA/Histo1D.h" namespace "YODA":
+    # TODO: We can use these in place of the workaround when Cython 0.15 is available
     #cHisto1D operator + (cHisto1D &, cHisto1D &)
     #cHisto1D operator - (cHisto1D &, cHisto1D &)
     #cScatter2D operator / (cHisto1D &, cHisto1D &)"""
@@ -58,7 +59,7 @@ cdef class Histo1D(AnalysisObject):
     cdef setptr(self, cHisto1D *ptr):
         self.thisptr = ptr
         return self
-    
+
     def fill(self, double x, double weight=1.0):
         self.ptr().fill(x, weight)
 
@@ -80,7 +81,7 @@ cdef class Histo1D(AnalysisObject):
     def bins(self):
         cdef size_t numbins = self.ptr().numBins()
         cdef size_t i
-        
+
         cdef vector[cHistoBin1D] bins = self.ptr().bins()
 
         cdef cHistoBin1D *b
@@ -91,7 +92,7 @@ cdef class Histo1D(AnalysisObject):
             out.append(HistoBin1D().set(bins[i]))
 
         return out
-    
+
     @property
     def lowEdge(self):
         return self.ptr().lowEdge()
@@ -171,9 +172,8 @@ cdef class Histo1D(AnalysisObject):
                 return x._div_scalar(y)
             elif ty is Histo1D:
                 return x._div_histo(y)
-        
+
         raise RuntimeError('Cannot multiply %r by %r' % (tx, ty))"""
-    
+
     def __repr__(self):
         return 'Histo1D%r' % self.bins
-

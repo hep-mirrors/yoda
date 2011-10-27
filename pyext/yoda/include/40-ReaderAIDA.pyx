@@ -4,6 +4,7 @@ cdef extern from "YODA/ReaderAIDA.h" namespace "YODA::ReaderAIDA":
 class ReaderAIDA:
     """Read AIDA files"""
 
+    @staticmethod
     def read(self, char *filename):
         """Takes a file, returns a list of AnalysisObjects"""
         cdef vector[AOptr] vec = vector[AOptr]()
@@ -23,7 +24,7 @@ class ReaderAIDA:
                 ana = AnalysisObject()
             ana.thisptr = vec[i]
             out.append(ana)
-        
+
         #print str(vec[0].type().c_str())
 
         return out

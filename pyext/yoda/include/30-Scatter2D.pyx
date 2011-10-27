@@ -6,16 +6,16 @@ cdef extern from "YODA/Scatter2D.h" namespace "YODA":
 
 cdef class Scatter2D(AnalysisObject):
 
-    @property
-    def numPoints(self):
-        return self.ptr().numPoints()
-    
     cdef cScatter2D * ptr(self):
         return <cScatter2D *> self.thisptr
 
     cdef setptr(self, cScatter2D *ptr):
         self.thisptr = ptr
         return self
+
+    @property
+    def numPoints(self):
+        return self.ptr().numPoints()
 
     @property
     def points(self):
