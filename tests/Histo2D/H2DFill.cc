@@ -119,9 +119,10 @@ int main() {
     tS = (startTime.tv_sec*1000000 + startTime.tv_usec)/(double)1000000;
     file2 << tE-tS << endl;
     cout << "Rebin: " << tE-tS << endl;
+	}
   */ 
     
-  }
+  
 
   // Testing if fill() function does what it should
   cout << "Does fill() do what it should?           ";
