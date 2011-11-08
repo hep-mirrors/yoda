@@ -4,8 +4,9 @@ all-local: yoda.cpp
 yoda.cpp: yoda.pyx
 	$(PYTHON) -m cython --cplus yoda.pyx
 
-yoda.pyx: imports.pyx include/10-AnalysisObject.pyx include/20-Dbn1D.pyx include/20-Point2D.pyx include/30-HistoBin1D.pyx include/30-HistoBin2D.pyx include/30-Reader.pyx include/30-Scatter2D.pyx include/40-Histo1D.pyx include/40-Histo2D.pyx include/40-ReaderAIDA.pyx
-	cat imports.pyx include/*.pyx > yoda.pyx
+yoda.pyx: include/00-imports.pyx include/10-AnalysisObject.pyx include/20-Dbn1D.pyx include/20-Point2D.pyx include/30-HistoBin1D.pyx include/30-HistoBin2D.pyx include/30-Reader.pyx include/30-Scatter2D.pyx include/40-Histo1D.pyx include/40-Histo2D.pyx include/40-WriterAIDA.pyx include/99-ReaderAIDA.pyx
+	cat include/*.pyx > yoda.pyx
 
 clean-local:
 	rm yoda.cpp yoda.pyx
+

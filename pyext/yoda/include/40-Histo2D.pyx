@@ -7,7 +7,6 @@ cdef extern from "YODA/Histo2D.h" namespace "YODA":
                  size_t nbinsY, double lowerY, double upperY,
                  string &path, string &title)
         
-        cHisto1D(cHisto1D &h, string &path)
         cHisto2D(cHisto2D &h)
 
         void fill(double x, double y, double weight)
@@ -43,7 +42,13 @@ cdef extern from "YODA/Histo2D.h" namespace "YODA":
         double yStdDev(bool includeoverflows)
 
 cdef class Histo2D(AnalysisObject):
-    def __cinit__(self, *args, **kwargs):
+    cdef tuple _bins
+
+    def __cinit__(self):
+        self._bins = None
+        self._dealloc = False
+
+    def __init__(self, *args, **kwargs):
         cdef:
             size_t nbinsX, nbinsY
             double lowX, highX, lowY, highY
@@ -55,16 +60,12 @@ cdef class Histo2D(AnalysisObject):
 
             self.setptr(
                 new cHisto2D(nbinsX, lowX, highX, nbinsY, lowY, highY,
-                             string(path), string(title))
+                             string(path), string(title)), True
             )
 
     cdef cHisto2D* ptr(self):
         return <cHisto2D *> self.thisptr
 
-    cdef setptr(self, cHisto2D *ptr):
-        self.thisptr = ptr
-        return self
-    
     def fill(self, double x, double y, double weight=1.0):
         self.ptr().fill(x, y, weight)
 
@@ -86,17 +87,12 @@ cdef class Histo2D(AnalysisObject):
     def bins(self):
         cdef size_t numbins = self.ptr().numBins()
         cdef size_t i
-        
-        cdef vector[cHistoBin2D] bins = self.ptr().bins()
 
-        cdef cHistoBin2D *b
+        if self._bins is None:
+            self._bins = tuple([HistoBin2D_fromptr(& self.ptr().bins().at(i))
+                          for i in xrange(numbins)])
 
-        out = []
-
-        for i in range(numbins):
-            out.append(HistoBin2D().set(bins[i]))
-
-        return out
+        return self._bins
     
     @property
     def lowEdgeX(self):
@@ -164,7 +160,11 @@ cdef class Histo2D(AnalysisObject):
         res.scaleW(factor)
         return Histo2D().setptr(res)"""
 
-    
     def __repr__(self):
         return 'Histo2D%r' % self.bins
 
+cdef Histo2D Histo2D_fromptr(cHisto2D *ptr, dealloc=False):
+    # Construct a Python Histo2D from a pointer to a cHisto2D,
+    # without calling __init__ and excessive memory allocation
+    cdef Histo2D bin = Histo2D.__new__(Histo2D)
+    return bin.setptr(ptr, dealloc)

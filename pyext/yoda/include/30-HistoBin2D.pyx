@@ -47,10 +47,23 @@ cdef extern from "YODA/HistoBin2D.h" namespace "YODA":
         double sumWXY()
         double sumWX2()
         double sumWY2()
+
 cdef class HistoBin2D:
     cdef cHistoBin2D *thisptr
 
-    cdef setptr(self, cHistoBin2D *ptr):
+    def __cinit__(self):
+        self._dealloc = False
+
+    def __dealloc__(self):
+        if self._dealloc:
+            del self.thisptr
+
+    cdef HistoBin2D setptr(self, cHistoBin2D *ptr, bool dealloc):
+        if self._dealloc:
+            del self.thisptr
+
+        self.thisptr = ptr
+        self._dealloc = dealloc
         return self
 
     cdef set(self, cHistoBin2D ptr):
@@ -79,7 +92,6 @@ cdef class HistoBin2D:
     def scaleW(self, double factor):
         self.ptr().scaleW(factor)
 
-
     @property
     def lowEdgeX(self):
         return self.ptr().lowEdgeX()
@@ -87,7 +99,6 @@ cdef class HistoBin2D:
     @property
     def highEdgeX(self):
         return self.ptr().highEdgeX()
-
 
     @property
     def lowEdgeY(self):
@@ -192,3 +203,9 @@ cdef class HistoBin2D:
 
     def __repr__(self):
         return 'HistoBin2D(%r)' % self.volume
+
+cdef HistoBin2D HistoBin2D_fromptr(cHistoBin2D *ptr, dealloc=False):
+    # Construct a Python HistoBin2D from a pointer to a cHistoBin2D,
+    # without calling __init__ and excessive memory allocation
+    cdef HistoBin2D bin = HistoBin2D.__new__(HistoBin2D)
+    return bin.setptr(ptr, dealloc)

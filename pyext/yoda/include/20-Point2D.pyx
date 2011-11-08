@@ -21,10 +21,26 @@ cdef extern from "YODA/Point2D.h" namespace "YODA":
 cdef class Point2D:
     cdef cPoint2D* thisptr
 
+    cdef bool _dealloc
+
+    cdef cPoint2D* ptr(self):
+        return self.thisptr
+
+    cdef Point2D setptr(self, cPoint2D* ptr, dealloc=False):
+        if self._dealloc:
+            del self.thisptr
+
+        self.thisptr = ptr
+        self._dealloc = dealloc
+        return self
+
     def __cinit__(self):
-        self.thisptr = new cPoint2D()
+        self._dealloc = False
 
     def __init__(self,  *args):
+        self.setptr(new cPoint2D(), True)
+        self._dealloc = True
+
         if len(args) == 0:
             self.pos = 0, 0
         elif len(args) == 2 :
@@ -39,18 +55,22 @@ cdef class Point2D:
         else:
             raise ValueError(
                 'Wrong number of values: can take 2, 4, or 6 parameters')
+
+    def __dealloc__(self):
+        if self._dealloc:
+            del self.thisptr
         
     def _x(self):
-        return self.thisptr.x()
+        return self.ptr().x()
 
     def _y(self):
-        return self.thisptr.y()
+        return self.ptr().y()
 
     def _setX(self, double x):
-        self.thisptr.setX(x)
+        self.ptr().setX(x)
 
     def _setY(self, double y):
-        self.thisptr.setY(y)
+        self.ptr().setY(y)
 
     x = property(_x, _setX)
     y = property(_y, _setY)
@@ -62,14 +82,14 @@ cdef class Point2D:
     def _setPos(self, pos):
         cdef double x, y
         x, y = pos
-        self.thisptr.setX(x)
-        self.thisptr.setY(y)
+        self.ptr().setX(x)
+        self.ptr().setY(y)
 
     pos = property(_pos, _setPos)
 
     def _xErrs(self):
         """The x-errors as a 2-tuple (low, high)"""
-        cdef pair[double, double] xErrs = self.thisptr.xErrs()
+        cdef pair[double, double] xErrs = self.ptr().xErrs()
         return (xErrs.first, xErrs.second)
 
     def _setxErrs(self, arg):
@@ -79,13 +99,13 @@ cdef class Point2D:
             low = arg
             high = arg
 
-        self.thisptr.setXErr(low, high)
+        self.ptr().setXErr(low, high)
 
     xErrs = property(_xErrs, _setxErrs)
 
     def _yErrs(self):
         """The y-errors as a 2-tuple (low, high)"""
-        cdef pair[double, double] yErrs = self.thisptr.yErrs()
+        cdef pair[double, double] yErrs = self.ptr().yErrs()
         return (yErrs.first, yErrs.second)
 
     def _setyErrs(self, arg):
@@ -96,12 +116,13 @@ cdef class Point2D:
             low = arg
             high = arg
 
-        self.thisptr.setYErr(low, high)
+        self.ptr().setYErr(low, high)
 
     yErrs = property(_yErrs, _setyErrs)
 
     def __repr__(self):
         return 'Point2D({0},{1})'.format(self.x, self.y)
 
-    def __dealloc__(self):
-        del self.thisptr
+cdef Point2D Point2D_fromptr(cPoint2D *ptr, dealloc = False):
+    cdef Point2D p = Point2D.__new__(Point2D)
+    return p.setptr(ptr, dealloc)
