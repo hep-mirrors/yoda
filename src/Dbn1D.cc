@@ -32,7 +32,7 @@ namespace YODA {
     // Weighted variance defined as
     // sig2 = ( sum(wx**2) * sum(w) - sum(wx)**2 ) / ( sum(w)**2 - sum(w**2) )
     // see http://en.wikipedia.org/wiki/Weighted_mean
-    if (isZero(effNumEntries(), 0.0)) {
+    if (effNumEntries() == 0) {
       throw LowStatsError("Requested width of a distribution with no net fill weights");
     } else if (fuzzyLessEquals(effNumEntries(), 1.0)) {
       throw LowStatsError("Requested width of a distribution with only one effective entry");
@@ -43,7 +43,7 @@ namespace YODA {
       throw WeightError("Undefined weighted variance");
     }
     /// @todo Isn't this sensitive to the overall scale of the weights?
-    /// Shouldn't it check if den is bigger then num by a set number of 
+    /// Shouldn't it check if den is bigger then num by a set number of
     /// orders of magnitude and vice versa?
     if (fabs(num) < 1E-10 && fabs(den) < 1E-10) {
       throw WeightError("Numerically unstable weights in width calculation");
@@ -60,6 +60,17 @@ namespace YODA {
     }
     /// @todo Unbiased should check that Neff > 1 and divide by N-1?
     return std::sqrt(variance() / effNumEntries());
+  }
+
+
+  double Dbn1D::rms() const {
+    // Weighted RMS defined as
+    // rms = \sqrt{ 1/N_eff \sum_i w_i x^2_i }
+    if (effNumEntries() == 0) {
+      throw LowStatsError("Requested RMS of a distribution with no net fill weights");
+    }
+    const double meansq = sumWX2() / effNumEntries();
+    return std::sqrt(meansq);
   }
 
 

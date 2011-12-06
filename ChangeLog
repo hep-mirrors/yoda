@@ -1,5 +1,9 @@
+2011-12-06  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Adding a (weighted) RMS calculating method to Dbn1D.
+
 2011-09-03  Dave Mallows  <dave.mallows@gmail.com>
-	
+
 	* Fixed ReaderAIDA: x-value and low y-error interchanged when filling
 	Scatter2D.
 

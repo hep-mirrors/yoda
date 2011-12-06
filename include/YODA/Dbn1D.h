@@ -134,6 +134,12 @@ namespace YODA {
     /// Synonym for interface compatibility with Dbn2D
     double xStdErr() const { return stdErr(); }
 
+
+    /// Weighted RMS, \f$ \sqrt{ 1/N_\text{eff} \sum_i w_i x^2_i } \f$, of distribution.
+    double rms() const;
+    /// Synonym for interface compatibility with Dbn2D
+    double xRms() const { return rms(); }
+
     //@}
 
 
