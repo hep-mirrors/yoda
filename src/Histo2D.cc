@@ -219,7 +219,7 @@ namespace YODA {
   Scatter3D divide(const Histo2D& numer, const Histo2D& denom) {
     if (numer != denom) throw GridError("The two histos are not equivalently binned!");
     Scatter3D tmp;
-    for (size_t i = 0; i < numer.numBinsTotal(); ++i) {
+    for (size_t i = 0; i < numer.numBins(); ++i) {
       const HistoBin2D& b1 = numer.bin(i);
       const HistoBin2D& b2 = denom.binByCoord(b1.midpoint().first, b1.midpoint().second);
       const HistoBin2D& bL = b1 + b2;
@@ -240,7 +240,7 @@ namespace YODA {
       tmp.addPoint(x, exminus, explus, y, eyminus, eyplus, z, ez, ez);
     }
 
-    assert(tmp.numPoints() == numer.numBinsTotal());
+    assert(tmp.numPoints() == numer.numBins());
     return tmp;
   }
 

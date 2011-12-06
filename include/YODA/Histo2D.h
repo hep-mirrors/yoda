@@ -60,7 +60,7 @@ namespace YODA {
       : AnalysisObject("Histo2D", path, title),
       _axis(binedges)
     { }
-    
+
     /// Constructor accepting the bin edges on X and Y axis.
     Histo2D(const std::vector<double>& xedges, const std::vector<double>& yedges,
             const std::string& path="", const std::string& title="")
@@ -108,6 +108,17 @@ namespace YODA {
     void scaleW(double scalefactor) {
       _axis.scaleW(scalefactor);
     }
+
+
+    /// Normalize the (visible) histo "volume" to the @a normto value.
+    ///
+    /// If @a includeoverflows is true, the original normalisation is computed with
+    /// the overflow bins included, so that the resulting visible normalisation can
+    /// be less than @a normto. This is probably what you want.
+    void normalize(double normto=1.0, bool includeoverflows=true) {
+      _axis.scaleW(normto / integral(includeoverflows));
+    }
+
 
     /// Scale the dimensions
     void scaleXY(double scaleX = 1.0, double scaleY = 1.0) {
@@ -223,21 +234,17 @@ namespace YODA {
       return _axis.getBinIndex(coordX, coordY);
     }
 
-    /// @todo Deprecated, remove
-    const size_t numBinsTotal() const {
-      return _axis.numBins();
-    }
-
+    /// Number of bins
     const size_t numBins() const {
       return _axis.numBins();
     }
 
-    /// Return number of bins along X axis
+    /// Number of bins along the x axis
     const size_t numBinsX() const {
       return _axis.numBinsX();
     }
 
-    /// Return the number of bins along Y axis
+    /// Number of bins along the y axis
     const size_t numBinsY() const{
       return _axis.numBinsY();
     }

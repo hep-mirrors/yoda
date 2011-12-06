@@ -1,5 +1,7 @@
 2011-12-06  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Adding normalize() methods to Histo1D/2D.
+
 	* Adding weighted RMS calculating methods to Dbn1D, Dbn2D and
 	Bin1D/2D.
 

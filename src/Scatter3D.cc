@@ -30,7 +30,7 @@ namespace YODA {
     Scatter3D ret;
     ret.setAnnotations(h.annotations());
     ret.setAnnotation("Type", h.type());
-    for (size_t i = 0; i < h.numBinsTotal(); ++i) {
+    for (size_t i = 0; i < h.numBins(); ++i) {
       const HistoBin2D& bin = h.bin(i);
 
       const double x = bin.focus().first;

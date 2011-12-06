@@ -113,6 +113,16 @@ namespace YODA {
     }
 
 
+    /// Normalize the (visible) histo area to the @a normto value.
+    ///
+    /// If @a includeoverflows is true, the original normalisation is computed with
+    /// the overflow bins included, so that the resulting visible normalisation can
+    /// be less than @a normto. This is probably what you want.
+    void normalize(double normto=1.0, bool includeoverflows=true) {
+      _axis.scaleW(normto / integral(includeoverflows));
+    }
+
+
     /// Merge together the bin range with indices from @a from to @a to, inclusive
     void mergeBins(size_t from, size_t to) {
       _axis.mergeBins(from, to);
