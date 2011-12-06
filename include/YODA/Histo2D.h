@@ -106,6 +106,7 @@ namespace YODA {
 
     /// Rescale as if all fill weights had been different by factor @a scalefactor.
     void scaleW(double scalefactor) {
+      setAnnotation("ScaledBy", annotation<double>("ScaledBy", 1.0) * scalefactor);
       _axis.scaleW(scalefactor);
     }
 
@@ -116,7 +117,9 @@ namespace YODA {
     /// the overflow bins included, so that the resulting visible normalisation can
     /// be less than @a normto. This is probably what you want.
     void normalize(double normto=1.0, bool includeoverflows=true) {
-      _axis.scaleW(normto / integral(includeoverflows));
+      const double oldintegral = integral(includeoverflows);
+      if (oldintegral == 0) throw WeightError("Attempted to normalize a histogram with null area");
+      _axis.scaleW(normto / oldintegral);
     }
 
 

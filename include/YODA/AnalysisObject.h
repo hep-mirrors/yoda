@@ -70,38 +70,22 @@ namespace YODA {
     ///@name Annotations
     //@{
 
-    /// @brief Add or set an annotation by name
-    /// Note: Templated on arg type, but stored as a string.
-    template <typename T>
-    void setAnnotation(const std::string& name, const T& value) {
-      _annotations[name] = boost::lexical_cast<std::string>(value);
+    /// Get all the annotations (as const ref)
+    const Annotations& annotations() const {
+      return _annotations;
     }
 
-    /// @brief Add or set an annotation by name
-    /// Note: Templated on arg type, but stored as a string. Synonym for setAnnotation
-    template <typename T>
-    void addAnnotation(const std::string& name, const T& value) {
-      setAnnotation(name, value);
-    }
 
     /// Check if an annotation is defined
     bool hasAnnotation(const std::string& name) const {
       return _annotations.find(name) != _annotations.end();
     }
 
-    /// Get all the annotations (as const ref)
-    const Annotations& annotations() const {
-      return _annotations;
-    }
-
-    /// Set all annotations at once
-    void setAnnotations(const Annotations& anns) {
-      _annotations = anns;
-    }
 
     /// @brief Get an annotation by name (as a string)
     const std::string& annotation(const std::string& name) const {
       Annotations::const_iterator v = _annotations.find(name);
+      // If not found... written this way round on purpose
       if (v == _annotations.end()) {
         std::string missing = "YODA::AnalysisObject: No annotation named " + name;
         throw AnnotationError(missing);
@@ -109,8 +93,18 @@ namespace YODA {
       return v->second;
     }
 
+
+    /// @brief Get an annotation by name (as a string) with a default in case the annotation is not found
+    const std::string& annotation(const std::string& name, const std::string& defaultreturn) const {
+      Annotations::const_iterator v = _annotations.find(name);
+      if (v != _annotations.end()) return v->second;
+      return defaultreturn;
+    }
+
+
     /// @brief Get an annotation by name (copied to another type)
-    /// Note: templated on return type, with default as string
+    ///
+    /// Note: templated on return type
     template <typename T>
     const T annotation(const std::string& name) const {
       std::string s = annotation(name);
@@ -118,10 +112,49 @@ namespace YODA {
     }
 
 
+    /// @brief Get an annotation by name (copied to another type) with a default in case the annotation is not found
+    ///
+    /// Note: templated on return type
+    template <typename T>
+    const T annotation(const std::string& name, const T& defaultreturn) const {
+      try {
+        std::string s = annotation(name);
+        return boost::lexical_cast<T>(s);
+      } catch (const AnnotationError& ae) {
+        return defaultreturn;
+      }
+    }
+
+
+    /// @brief Add or set an annotation by name
+    ///
+    /// Note: Templated on arg type, but stored as a string.
+    template <typename T>
+    void setAnnotation(const std::string& name, const T& value) {
+      _annotations[name] = boost::lexical_cast<std::string>(value);
+    }
+
+
+    /// Set all annotations at once
+    void setAnnotations(const Annotations& anns) {
+      _annotations = anns;
+    }
+
+
+    /// @brief Add or set an annotation by name
+    ///
+    /// Note: Templated on arg type, but stored as a string. This is just a synonym for setAnnotation.
+    template <typename T>
+    void addAnnotation(const std::string& name, const T& value) {
+      setAnnotation(name, value);
+    }
+
+
     /// Delete an annotation by name
     void rmAnnotation(const std::string& name) {
       _annotations.erase(name);
     }
+
 
     /// Delete an annotation by name
     void clearAnnotations() {

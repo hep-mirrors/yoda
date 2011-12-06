@@ -1,5 +1,10 @@
 2011-12-06  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Making Histo1D/2D::scaleW() write a ScaledBy annotation.
+
+	* Adding annotation-fetching methods with a default return value
+	argument to AnalysisObject.
+
 	* Adding normalize() methods to Histo1D/2D.
 
 	* Adding weighted RMS calculating methods to Dbn1D, Dbn2D and
