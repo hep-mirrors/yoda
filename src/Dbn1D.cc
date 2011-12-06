@@ -65,11 +65,11 @@ namespace YODA {
 
   double Dbn1D::rms() const {
     // Weighted RMS defined as
-    // rms = \sqrt{ 1/N_eff \sum_i w_i x^2_i }
+    // rms = sqrt(sum{w x^2} / sum{w})
     if (effNumEntries() == 0) {
       throw LowStatsError("Requested RMS of a distribution with no net fill weights");
     }
-    const double meansq = sumWX2() / effNumEntries();
+    const double meansq = sumWX2() / sumW();
     return std::sqrt(meansq);
   }
 

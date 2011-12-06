@@ -142,6 +142,16 @@ namespace YODA {
       return _dbnY.stdDev();
     }
 
+    /// Weighted RMS, \f$ \sqrt{ \sum{w x^2}/\sum{w} } \f$, of distribution.
+    double xRMS() const {
+      return _dbnX.rms();
+    }
+
+    /// Weighted RMS, \f$ \sqrt{ \sum{w y^2}/\sum{w} } \f$, of distribution.
+    double yRMS() const {
+      return _dbnY.rms();
+    }
+
     //@}
 
 

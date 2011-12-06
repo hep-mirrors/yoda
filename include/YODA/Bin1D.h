@@ -175,6 +175,11 @@ namespace YODA {
       return _dbn.xStdErr();
     }
 
+    /// The x RMS in the bin.
+    double xRMS() const {
+      return _dbn.xRMS();
+    }
+
     //@}
 
 

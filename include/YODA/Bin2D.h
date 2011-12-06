@@ -103,7 +103,7 @@ namespace YODA {
 
       _dbn.scaleXY(scaleX, scaleY);
     }
-    
+
     void scaleW(double scalefactor) {
       _dbn.scaleW(scalefactor);
     }
@@ -207,6 +207,16 @@ namespace YODA {
     /// Standard error on y mean
     double yStdErr() const {
       return _dbn.yStdErr();
+    }
+
+    /// RMS of x values
+    double xRMS() const {
+      return _dbn.xRMS();
+    }
+
+    /// RMS of y values
+    double yRMS() const {
+      return _dbn.yRMS();
     }
 
     //@}
