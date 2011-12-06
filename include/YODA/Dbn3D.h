@@ -5,15 +5,17 @@
 #include "YODA/Dbn1D.h"
 
 namespace YODA {
-  
+
+
+  /// A representation of the vital statistics of a 3D distribution
   class Dbn3D {
   public:
-  
+
     /// @name COnstructors
     //@{
 
     /// Default constructor
-    Dbn3D() { 
+    Dbn3D() {
       reset();
     }
 
@@ -29,7 +31,7 @@ namespace YODA {
       _sumWYZ(sumWYZ),
       _sumWXYZ(sumWYZ)
     { }
-   
+
     /// Copy constructor
     Dbn3D(const Dbn3D& toCopy) {
       _dbnX = toCopy._dbnX;
@@ -38,7 +40,7 @@ namespace YODA {
     }
 
     //@}
-   
+
     /// @name Modifiers
     //@{
 
@@ -51,7 +53,7 @@ namespace YODA {
       _sumWXZ += weight*valX*valZ;
       _sumWYZ += weight*valY*valZ;
       _sumWXYZ += weight*valX*valY*valZ;
-    } 
+    }
 
     /// Reset to the unfilled state
     void reset() {
@@ -283,7 +285,7 @@ namespace YODA {
     //@}
 
   protected:
-  
+
     /// Add two dbns
     Dbn3D& add(const Dbn3D& d) {
       _dbnX += d._dbnX;
@@ -310,7 +312,7 @@ namespace YODA {
   private:
     /// @name Storage
     // @{
-  
+
     /// The x moments and the pure-weight quantities are stored in a 1D 'x' distribution
     Dbn1D _dbnX;
 
@@ -327,7 +329,7 @@ namespace YODA {
     double _sumWXYZ;
     //@}
   };
-  
+
   /// Add two dbns
   inline Dbn3D operator + (const Dbn3D& a, const Dbn3D& b) {
     Dbn3D rtn = a;

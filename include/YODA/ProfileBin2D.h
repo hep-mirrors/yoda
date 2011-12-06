@@ -6,15 +6,23 @@
 #include "YODA/Exceptions.h"
 
 namespace YODA {
-    
+
+
+  /// @brief A Bin1D specialised for handling profile-type information
+  ///
+  /// This is a 1D bin type, which supports all the operations defined for
+  /// a generic Bin1D object, but also supplies the specific member functions
+  /// for profile-type data, as opposed to histogram-type. This means that
+  /// extra internal distribution statistics are stored for the extra
+  /// "y-direction" specified in the profile fill operation.
   class ProfileBin2D : public Bin2D<Dbn3D> {
   public:
-      
+
     /// @name Constructors
     //@{
 
     /// Constructor giving lowedgesX/Y
-    ProfileBin2D(double lowX, double lowY, double highX, double highY) 
+    ProfileBin2D(double lowX, double lowY, double highX, double highY)
       : Bin2D(lowX, lowY, highX, highY)
     { }
 
@@ -54,14 +62,14 @@ namespace YODA {
     void fillBin(double z, double weight=1.0){
       fill(midpoint().first, midpoint().second, z, weight);
     }
-    
+
     //@}
 
   public:
-    
+
     /// @name Bin content info
     //@{
-      
+
     double mean() const {
       return _dbn.zMean();
     }
@@ -97,7 +105,7 @@ namespace YODA {
     //@}
 
   public:
-    
+
     /// Add two bins (for use by Profile2D)
     ProfileBin2D& operator += (const ProfileBin2D& toAdd) {
       return add(toAdd);
@@ -108,7 +116,7 @@ namespace YODA {
     }
 
   protected:
-    
+
     /// Add two bins
     ProfileBin2D& add(const ProfileBin2D& pb) {
       Bin2D<Dbn3D>::add(pb);
