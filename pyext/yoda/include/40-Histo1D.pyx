@@ -23,6 +23,7 @@ cdef extern from "YODA/Histo1D.h" namespace "YODA":
         double highEdge()
         vector[cHistoBin1D] &bins()
         cHistoBin1D & bin "bin"(size_t i)
+        cDbn1D &totalDbn()
         cDbn1D &underflow()
         cDbn1D &overflow()
         void eraseBin(size_t index)
@@ -64,13 +65,13 @@ cdef class Histo1D(AnalysisObject):
 
     cdef cHisto1D* ptr(self):
         return <cHisto1D *> self.thisptr
-    
+
     def asScatter(self):
         """
         h.asScatter() -> Scatter2D
 
         Return a 2D scatter data object from the histogram's bins and heights
-        
+
         """
         cdef cScatter2D *s = new cScatter2D()
         s[0] = Scatter2D_mkScatter(self.ptr()[0])
@@ -91,7 +92,7 @@ cdef class Histo1D(AnalysisObject):
         h.reset() -> self
 
         Reset the histogram but leave the bin structure
-        
+
         """
         self.ptr().reset()
         return self
@@ -149,14 +150,14 @@ cdef class Histo1D(AnalysisObject):
         self.ptr().bins()
 
         return out
-    
+
     @property
     def lowEdge(self):
         """
         h.lowEdge -> float
 
         The x-value of the lowest edge of the lowest bin of the histogram.
-        
+
         """
         return self.ptr().lowEdge()
 
@@ -166,7 +167,7 @@ cdef class Histo1D(AnalysisObject):
         h.highEdge -> float
 
         The x-value of the highest edge of the highest bin of the histogram.
-        
+
         """
         return self.ptr().highEdge()
 
@@ -192,7 +193,7 @@ cdef class Histo1D(AnalysisObject):
 
         Return the total area of the histogram. If overflows is False, ignore
         over-and underflow bins.
-        
+
         """
         return self.ptr().integral(overflows)
 
@@ -213,7 +214,7 @@ cdef class Histo1D(AnalysisObject):
 
         Return the sum of weights squared. If overflows is False, ignore
         over-and underflow bins.
-        
+
         """
         return self.ptr().sumW2(overflows)
 
@@ -242,7 +243,7 @@ cdef class Histo1D(AnalysisObject):
 
         Return the standard deviation. If overflows is False, ignore over-and
         underflow bins.
-        
+
         """
         return self.ptr().stdDev(overflows)
 
@@ -257,7 +258,7 @@ cdef class Histo1D(AnalysisObject):
     def __mul__(x, y):
         """
         Scalar multiplication. Equivalent to scaleW acting on a copy.
-        
+
         """
         cdef cHisto1D *res
         tx, ty = type(x), type(y)
@@ -288,8 +289,8 @@ cdef class Histo1D(AnalysisObject):
     def __div__(x, y):
         """
         Division by scalar (i.e. multiplication by reciprocal) or another
-        1D histogram. 
-        
+        1D histogram.
+
         """
         tx = type(x); ty = type(y)
         if tx is Histo1D:
@@ -297,9 +298,9 @@ cdef class Histo1D(AnalysisObject):
                 return x._div_scalar(y)
             elif ty is Histo1D:
                 return x._div_histo(y)
-        
+
         raise RuntimeError('Cannot multiply %r by %r' % (tx, ty))
-    
+
     def __repr__(self):
         return 'Histo1D%r' % self.bins
 

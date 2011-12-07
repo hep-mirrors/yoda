@@ -6,7 +6,7 @@ cdef extern from "YODA/Histo2D.h" namespace "YODA":
         cHisto2D(size_t nbinsX, double lowerX, double upperX,
                  size_t nbinsY, double lowerY, double upperY,
                  string &path, string &title)
-        
+
         cHisto2D(cHisto2D &h)
 
         void fill(double x, double y, double weight)
@@ -22,6 +22,7 @@ cdef extern from "YODA/Histo2D.h" namespace "YODA":
         double lowEdgeY()
         double highEdgeX()
         double highEdgeY()
+        cDbn2D &totalDbn()
 
         vector[cHistoBin2D] &bins()
         cHistoBin2D& binByCoord(double x, double y)
@@ -37,7 +38,7 @@ cdef extern from "YODA/Histo2D.h" namespace "YODA":
 
         double xVariance(bool includeoverflows)
         double yVariance(bool includeoverflows)
-        
+
         double xStdDev(bool includeoverflows)
         double yStdDev(bool includeoverflows)
 
@@ -93,7 +94,7 @@ cdef class Histo2D(AnalysisObject):
                           for i in xrange(numbins)])
 
         return self._bins
-    
+
     @property
     def lowEdgeX(self):
         return self.ptr().lowEdgeX()

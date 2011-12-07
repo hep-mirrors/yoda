@@ -1,5 +1,9 @@
 2011-12-07  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Updating the Cython mappings to provide the totalDbn() methods
+	and add a placeholder mapping for Dbn2D. Completed mappings are
+	needed for Dbn{1,2,3}D and the Profile types.
+
 	* Adding totalDbn() accessors to data types.
 
 2011-12-06  Andy Buckley  <andy.buckley@cern.ch>
