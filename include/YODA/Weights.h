@@ -101,7 +101,7 @@ namespace YODA {
       return _values.find(keys()[index])->second;
     }
 
-    /// Number of weights entries
+    /// Number of weights keys
     unsigned int size() const {
       return _values.size();
     }
@@ -134,6 +134,7 @@ namespace YODA {
 
     /// Add another weights to this
     Weights& operator += (const Weights& toAdd) {
+      if (keys().empty()) _initToMatch(toAdd);
       if (keys() != toAdd.keys()) {
         throw WeightError("Mismatch in args to Weights += operator");
       }
@@ -145,6 +146,7 @@ namespace YODA {
 
     /// Subtract another weights from this
     Weights& operator -= (const Weights& toSubtract) {
+      if (keys().empty()) _initToMatch(toSubtract);
       if (keys() != toSubtract.keys()) {
         throw WeightError("Mismatch in args to Weights -= operator");
       }
@@ -156,6 +158,7 @@ namespace YODA {
 
     /// Multiply by another weights
     Weights& operator *= (const Weights& toMultiplyBy) {
+      if (keys().empty()) _initToMatch(toMultiplyBy);
       if (keys() != toMultiplyBy.keys()) {
         throw WeightError("Mismatch in args to Weights *= operator");
       }
@@ -167,6 +170,7 @@ namespace YODA {
 
     /// Divide by another weights
     Weights& operator /= (const Weights& toDivideBy) {
+      if (keys().empty()) _initToMatch(toDivideBy);
       if (keys() != toDivideBy.keys()) {
         throw WeightError("Mismatch in args to Weights /= operator");
       }
@@ -221,6 +225,18 @@ namespace YODA {
 
     /// @todo Allow implicit casting to double, if single-entried? Or too dangerous and not useful enough?
     // double operator (double) () {}
+
+  private:
+
+    /// Initialise an empty list of weights keys to match those of another Weights object
+    void _initToMatch(const Weights& other) {
+      if (keys().empty()) {
+        raise LogicError("Weights::_initToMatch shouldn't ever be called if there are already defined weights keys");
+      }
+      for (size_t i = 0; i < other.size(); ++i) {
+        _values[other.keys()[i]] = 0;
+      }
+    }
 
 
   private:
