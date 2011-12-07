@@ -15,7 +15,7 @@ cdef extern from "YODA/HistoBin1D.h" namespace "YODA":
 
         void scaleW(double factor)
         void scaleX(double factor)
-        
+
         double lowEdge()
         double highEdge()
         double width()
@@ -32,10 +32,12 @@ cdef extern from "YODA/HistoBin1D.h" namespace "YODA":
         double sumWX()
         double sumWX2()
 
+
 #Ugly hack using shim header for Cython 0.13
 cdef extern from "shims.h":
     cHistoBin1D add_HistoBin1D (cHistoBin1D &, cHistoBin1D &)
     cHistoBin1D subtract_HistoBin1D (cHistoBin1D &, cHistoBin1D &)
+
 
 cdef class HistoBin1D:
     cdef cHistoBin1D *thisptr
@@ -63,7 +65,7 @@ cdef class HistoBin1D:
     def lowEdge(self):
         """The lower of the two bin edges."""
         return self.ptr().lowEdge()
-    
+
     xMin = lowEdge
 
     @property
@@ -138,10 +140,10 @@ cdef class HistoBin1D:
     def area(self):
         """
         b.area <==> b.sumW
-        
+
         The area of the bin is the sum of weights of the bin; it is
         independent of width.
-       
+
         """
         return self.ptr().area()
 
@@ -149,10 +151,10 @@ cdef class HistoBin1D:
     def height(self):
         """
         b.height <==> b.area / b.width
-        
+
         The height of the bin is defined as the area divided by the
         width.
-        
+
         """
         return self.ptr().height()
 
@@ -161,7 +163,7 @@ cdef class HistoBin1D:
         """
         Error computed using binomial statistics on squared sum of bin weights,
         i.e. s.areaErr = sqrt(s.sumW2)
-        
+
         """
         return self.ptr().areaErr()
 
@@ -180,25 +182,26 @@ cdef class HistoBin1D:
         bin.scaleX(factor) -> bin
 
         Scale the x-axis of `bin` in-place by `factor`.
-        
+
         """
         self.ptr().scaleX(factor)
 
     def scaleW(self, double factor):
         """
-        bin.scaleW(factor) -> bin 
+        bin.scaleW(factor) -> bin
 
         Scale `bin` in-place as if all weights were scaled by given `factor`
 
         """
         self.ptr().scaleX(factor)
 
+
     def __repr__(self):
         return 'HistoBin1D(%r)' % self.area
+
 
 cdef HistoBin1D HistoBin1D_fromptr(cHistoBin1D *ptr, dealloc=False):
     # Construct a Python HistoBin1D from a pointer to a cHistoBin1D,
     # without calling __init__ and excessive memory allocation
     cdef HistoBin1D bin = HistoBin1D.__new__(HistoBin1D)
     return bin.setptr(ptr, dealloc)
-

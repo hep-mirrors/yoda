@@ -1,5 +1,7 @@
 2011-12-07  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Properly adding Dbn1D accessors for Histo1D.
+
 	* Updating the Cython mappings to provide the totalDbn() methods
 	and add a placeholder mapping for Dbn2D. Completed mappings are
 	needed for Dbn{1,2,3}D and the Profile types.
