@@ -9,4 +9,3 @@ yoda.pyx: include/00-imports.pyx include/10-AnalysisObject.pyx include/20-Dbn1D.
 
 clean-local:
 	rm yoda.cpp yoda.pyx
-

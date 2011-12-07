@@ -1,5 +1,7 @@
 2011-12-07  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Mapping the Dbn1D and Dbn2D classes into Python.
+
 	* Adding an outflows() accessor to Histo2D.
 
 	* Writing out total dbn lines for Histo1D and Profile1D in the
