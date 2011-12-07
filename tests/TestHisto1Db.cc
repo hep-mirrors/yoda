@@ -28,7 +28,11 @@ int main() {
   /// @todo Also test with another histo whose range is incomplete, to make sure
   /// that the under/overflows are working
 
-  /// Write one histo out to stdout
+  /// Write one histo out to stdout, with various scalings
+  WriterYODA::write(cout, h1);
+  h1.scaleW(0.5);
+  WriterYODA::write(cout, h1);
+  h1.scaleW(2);
   WriterYODA::write(cout, h1);
 
   /// Write two histos out to file
