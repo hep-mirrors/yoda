@@ -1,5 +1,9 @@
 2011-12-07  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Writing out total dbn lines for Histo1D and Profile1D in the
+	YODA format, and now writing out the 'cross-terms' for Profile1D,
+	too.
+
 	* Properly adding Dbn1D accessors for Histo1D.
 
 	* Updating the Cython mappings to provide the totalDbn() methods

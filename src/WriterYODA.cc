@@ -47,6 +47,10 @@ namespace YODA {
     os << "# Mean: " << h.mean() << "\n";
     os << "# Area: " << h.integral() << "\n";
     os << "# xlow\t xhigh\t sumw\t sumw2\t sumwx\t sumwx2\t numEntries\n";
+    os << "Total\tTotal\t";
+    os << h.totalDbn().sumW()  << "\t" << h.totalDbn().sumW2()  << "\t";
+    os << h.totalDbn().sumWX() << "\t" << h.totalDbn().sumWX2() << "\t";
+    os << h.totalDbn().numEntries() << "\n";
     os << "Underflow\tUnderflow\t";
     os << h.underflow().sumW()  << "\t" << h.underflow().sumW2()  << "\t";
     os << h.underflow().sumWX() << "\t" << h.underflow().sumWX2() << "\t";
@@ -75,15 +79,20 @@ namespace YODA {
     os << "# BEGIN YODA_PROFILE1D\n";
     _writeAnnotations(os, p);
     os << "# xlow\t xhigh\t sumw\t sumw2\t sumwx\t sumwx2\t sumwy\t sumwy2\t numEntries\n";
+    os << "Total\tTotal\t";
+    os << p.totalDbn().sumW()  << "\t" << p.totalDbn().sumW2()  << "\t";
+    os << p.totalDbn().sumWX() << "\t" << p.totalDbn().sumWX2() << "\t";
+    os << p.totalDbn().sumWY() << "\t" << p.totalDbn().sumWY2() << "\t";
+    os << p.totalDbn().numEntries() << "\n";
     os << "Underflow\tUnderflow\t";
     os << p.underflow().sumW()  << "\t" << p.underflow().sumW2()  << "\t";
     os << p.underflow().sumWX() << "\t" << p.underflow().sumWX2() << "\t";
-    //os << p.underflow().sumWY() << "\t" << p.underflow().sumWY2() << "\t"; // FIXME: This needs Dbn2D in the axis
+    os << p.underflow().sumWY() << "\t" << p.underflow().sumWY2() << "\t";
     os << p.underflow().numEntries() << "\n";
     os << "Overflow\tOverflow\t";
     os << p.overflow().sumW()  << "\t" << p.overflow().sumW2()  << "\t";
     os << p.overflow().sumWX() << "\t" << p.overflow().sumWX2() << "\t";
-    //os << p.overflow().sumWY() << "\t" << p.overflow().sumWY2() << "\t"; // FIXME: This needs Dbn2D in the axis
+    os << p.overflow().sumWY() << "\t" << p.overflow().sumWY2() << "\t";
     os << p.overflow().numEntries() << "\n";
     for (vector<ProfileBin1D>::const_iterator b = p.bins().begin(); b != p.bins().end(); ++b) {
       os << b->lowEdge() << "\t" << b->highEdge() << "\t";
@@ -115,7 +124,8 @@ namespace YODA {
     os << flush;
     os.flags(oldflags);
   }
-  
+
+
   /*void WriterYODA::writeScatter3D(std::ostream& os, const Scatter3D& s) {
     ios_base::fmtflags oldflags = os.flags();
     const int precision = 6;
@@ -134,4 +144,6 @@ namespace YODA {
     os << flush;
     os.flags(oldflags);
   }*/
+
+
 }
