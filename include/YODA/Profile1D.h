@@ -197,6 +197,17 @@ namespace YODA {
     }
 
 
+    /// Access summary distribution, including gaps and overflows (non-const version)
+    Dbn2D& totalDbn() {
+      return _axis.totalDbn();
+    }
+
+    /// Access summary distribution, including gaps and overflows (const version)
+    const Dbn2D& totalDbn() const {
+      return _axis.totalDbn();
+    }
+
+
     /// Access underflow (non-const version)
     Dbn2D& underflow() {
       return _axis.underflow();

@@ -1,3 +1,7 @@
+2011-12-07  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Adding totalDbn() accessors to data types.
+
 2011-12-06  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Making Histo1D/2D::scaleW() write a ScaledBy annotation.

@@ -13,7 +13,7 @@
 #include <map>
 
 namespace YODA {
-  
+
   // Forward declarations
   class Histo2D;
   class Scatter3D;
@@ -24,7 +24,7 @@ namespace YODA {
   /// A one-dimensional profile histogram.
   class Profile2D : public AnalysisObject {
   public:
-    
+
     /// Convenience typedefs
     typedef Profile2DAxis Axis;
     typedef Axis::Bins Bins;
@@ -37,15 +37,15 @@ namespace YODA {
     //@{
 
     /// Constructor giving range and number of bins
-    Profile2D(size_t nbinsX, double lowerX, double upperX, 
-              size_t nbinsY, double lowerY, double upperY, 
+    Profile2D(size_t nbinsX, double lowerX, double upperX,
+              size_t nbinsY, double lowerY, double upperY,
               const std::string& path="", const std::string& title="")
       : AnalysisObject("Profile2D", path, title),
         _axis(nbinsX, lowerX, upperX, nbinsY, lowerY, upperY)
     { }
 
     /// Constructor giving explicit bin edges in the direction of X and Y
-    Profile2D(const std::vector<double>& xedges, const std::vector<double>& yedges, 
+    Profile2D(const std::vector<double>& xedges, const std::vector<double>& yedges,
               const std::string& path="", const std::string& title="")
       : AnalysisObject("Profile2D", path, title),
         _axis(xedges, yedges)
@@ -59,7 +59,7 @@ namespace YODA {
 
     /// Constructor from a Histo2D's binning, with optional new path
     Profile2D(const Histo2D& h, const std::string& path="");
-    
+
     /// A state setting constructor
     Profile2D();
 
@@ -73,14 +73,15 @@ namespace YODA {
 
     //@}
 
+
     /// @name Persistency hooks
     //@{
 
     /// Get name of the analysis object type for persisting
     std::string type() const { return "Profile2D"; }
 
-    /// Set the state of the profile object for unpersisting
     //@}
+
 
     /// @name Modifiers
     //@{
@@ -89,6 +90,7 @@ namespace YODA {
     void fill(double x, double y, double z, double weight=1.0);
 
     /// @brief Reset the histogram
+    ///
     /// Keep the binning but reset the statistics
     void reset() {
       _axis.reset();
@@ -110,6 +112,7 @@ namespace YODA {
       //_axis.rebin(n);
     }
 
+
     /// @brief Bin addition operator
     /// Add a bin to an axis described by its lower-left and higher-right point
     void addBin(double lowX, double lowY, double highX, double highY) {
@@ -117,13 +120,14 @@ namespace YODA {
     }
 
     /// @brief Bin addition operator
-    /// Add a set of bins delimiting coordinates of which are contained 
+    /// Add a set of bins delimiting coordinates of which are contained
     /// in binLimits vector.
     void addBin(const std::vector<Segment>& binLimits) {
       _axis.addBin(binLimits);
     }
 
     //@}
+
 
     /// @name Bin accessors
     //@{
@@ -132,6 +136,7 @@ namespace YODA {
     size_t numBins() const {
       return _axis.bins().size();
     }
+
 
     /// Access the bin vector (non-const)
     std::vector<YODA::ProfileBin2D>& bins() {
@@ -143,10 +148,12 @@ namespace YODA {
       return _axis.bins();
     }
 
+
     /// Access a bin by index (non-const)
     const ProfileBin2D& bin(size_t index) const {
       return _axis.bins()[index];
     }
+
 
     /// Access a bin by x-coordinate (non-const)
     ProfileBin2D& binByCoord(double x, double y) {
@@ -157,6 +164,18 @@ namespace YODA {
     const ProfileBin2D& binByCoord(double x, double y) const {
       return _axis.binByCoord(x, y);
     }
+
+
+    /// Access summary distribution, including gaps and overflows (non-const version)
+    Dbn3D& totalDbn() {
+      return _axis.totalDbn();
+    }
+
+    /// Access summary distribution, including gaps and overflows (const version)
+    const Dbn3D& totalDbn() const {
+      return _axis.totalDbn();
+    }
+
 
     /// Access outflows (non-const)
     std::vector<std::vector<Dbn3D> > outflows() {
@@ -170,8 +189,9 @@ namespace YODA {
 
     //@}
 
+
   public:
-    
+
     /// @name Whole histo data
     //@{
 
@@ -182,7 +202,7 @@ namespace YODA {
     //@}
 
   public:
-    
+
     /// @name Adding and subtracting histograms
     //@{
 
@@ -197,11 +217,11 @@ namespace YODA {
       _axis -= toSubtract._axis;
       return *this;
     }
-    
+
     inline bool operator == (const Profile2D& other){
       return _axis == other._axis;
     }
-    
+
     inline bool operator != (const Profile2D& other){
       return ! operator == (other);
     }
@@ -258,4 +278,4 @@ namespace YODA {
 }
 
 #endif
-    
+

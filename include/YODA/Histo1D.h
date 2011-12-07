@@ -160,6 +160,7 @@ namespace YODA {
       return _axis.highEdge();
     }
 
+
     /// Access the bin vector
     std::vector<YODA::HistoBin1D>& bins() {
       return _axis.bins();
@@ -169,6 +170,7 @@ namespace YODA {
     const std::vector<YODA::HistoBin1D>& bins() const {
       return _axis.bins();
     }
+
 
     /// Access a bin by index (non-const version)
     HistoBin1D& bin(size_t index) {
@@ -180,6 +182,7 @@ namespace YODA {
       return _axis.bins()[index];
     }
 
+
     /// Access a bin by coordinate (non-const version)
     HistoBin1D& binByCoord(double x) {
       return _axis.binByCoord(x);
@@ -189,6 +192,18 @@ namespace YODA {
     const HistoBin1D& binByCoord(double x) const {
       return _axis.binByCoord(x);
     }
+
+
+    /// Access summary distribution, including gaps and overflows (non-const version)
+    Dbn1D& totalDbn() {
+      return _axis.totalDbn();
+    }
+
+    /// Access summary distribution, including gaps and overflows (const version)
+    const Dbn1D& totalDbn() const {
+      return _axis.totalDbn();
+    }
+
 
     /// Access underflow (non-const version)
     Dbn1D& underflow() {
@@ -200,6 +215,7 @@ namespace YODA {
       return _axis.underflow();
     }
 
+
     /// Access overflow (non-const version)
     Dbn1D& overflow() {
       return _axis.overflow();
@@ -209,6 +225,7 @@ namespace YODA {
     const Dbn1D& overflow() const {
       return _axis.overflow();
     }
+
 
     /// Add a new bin specifying its lower and upper bound
     void addBin(double from, double to) {
@@ -224,6 +241,7 @@ namespace YODA {
     void addBin(std::vector<std::pair<double,double> > edges) {
       _axis.addBin(edges);
     }
+
 
     /// Remove a bin
     void eraseBin(size_t index) {

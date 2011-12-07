@@ -170,6 +170,7 @@ namespace YODA {
       return lowEdgeX();
     }
 
+
     /// Low y edge of this histo's axis
     double lowEdgeY() const {
         return _axis.lowEdgeY();
@@ -178,6 +179,7 @@ namespace YODA {
     double yMin() const {
       return lowEdgeY();
     }
+
 
     /// High x edge of this histo's axis
     double highEdgeX() const {
@@ -188,6 +190,7 @@ namespace YODA {
       return highEdgeX();
     }
 
+
     /// High y edge of this histo's axis
     double highEdgeY() const {
         return _axis.highEdgeY();
@@ -196,6 +199,7 @@ namespace YODA {
     double yMax() const {
       return highEdgeY();
     }
+
 
     /// Access the bin vector (non-const version)
     std::vector<YODA::HistoBin2D>& bins() {
@@ -207,6 +211,7 @@ namespace YODA {
       return _axis.bins();
     }
 
+
     /// Access a bin by index (non-const version)
     HistoBin2D& bin(size_t index) {
       return _axis.bin(index);
@@ -216,6 +221,7 @@ namespace YODA {
     const HistoBin2D& bin(size_t index) const {
       return _axis.bin(index);
     }
+
 
     /// Access a bin by coordinate (non-const version)
     HistoBin2D& binByCoord(double x, double y) {
@@ -227,6 +233,7 @@ namespace YODA {
       return _axis.binByCoord(x, y);
     }
 
+
     /// Return bin index (non-const version)
     int findBinIndex(double coordX, double coordY) {
       return _axis.getBinIndex(coordX, coordY);
@@ -236,6 +243,7 @@ namespace YODA {
     const int findBinIndex(double coordX, double coordY) const {
       return _axis.getBinIndex(coordX, coordY);
     }
+
 
     /// Number of bins
     const size_t numBins() const {
@@ -250,6 +258,17 @@ namespace YODA {
     /// Number of bins along the y axis
     const size_t numBinsY() const{
       return _axis.numBinsY();
+    }
+
+
+    /// Access summary distribution, including gaps and overflows (non-const version)
+    Dbn2D& totalDbn() {
+      return _axis.totalDbn();
+    }
+
+    /// Access summary distribution, including gaps and overflows (const version)
+    const Dbn2D& totalDbn() const {
+      return _axis.totalDbn();
     }
 
     //@}
