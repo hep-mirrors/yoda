@@ -271,6 +271,17 @@ namespace YODA {
       return _axis.totalDbn();
     }
 
+
+    /// Access outflows (non-const)
+    std::vector<std::vector<Dbn2D> >& outflows() {
+      return _axis.outflows();
+    }
+
+    /// Access outflows (const)
+    const std::vector<std::vector<Dbn2D> >& outflows() const {
+      return _axis.outflows();
+    }
+
     //@}
 
 

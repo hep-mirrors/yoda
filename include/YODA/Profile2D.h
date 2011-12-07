@@ -178,12 +178,12 @@ namespace YODA {
 
 
     /// Access outflows (non-const)
-    std::vector<std::vector<Dbn3D> > outflows() {
+    std::vector<std::vector<Dbn3D> >& outflows() {
       return _axis.outflows();
     }
 
     /// Access outflows (const)
-    std::vector<std::vector<Dbn3D> > outflows() const {
+    const std::vector<std::vector<Dbn3D> >& outflows() const {
       return _axis.outflows();
     }
 

@@ -18,10 +18,14 @@ cdef extern from "YODA/Histo2D.h" namespace "YODA":
 
         # Bin Accessors
         size_t numBins()
+        size_t numBinsX()
+        size_t numBinsY()
+
         double lowEdgeX()
         double lowEdgeY()
         double highEdgeX()
         double highEdgeY()
+        vector[vector[cDbn2D]] &outflows()
         cDbn2D &totalDbn()
 
         vector[cHistoBin2D] &bins()
@@ -33,6 +37,7 @@ cdef extern from "YODA/Histo2D.h" namespace "YODA":
         double integral(bool includeoverflows)
         double sumW(bool includeoverflows)
         double sumW2(bool includeoverflows)
+
         double xMean(bool includeoverflows)
         double yMean(bool includeoverflows)
 
@@ -42,12 +47,14 @@ cdef extern from "YODA/Histo2D.h" namespace "YODA":
         double xStdDev(bool includeoverflows)
         double yStdDev(bool includeoverflows)
 
+
 cdef class Histo2D(AnalysisObject):
     cdef tuple _bins
 
     def __cinit__(self):
         self._bins = None
         self._dealloc = False
+
 
     def __init__(self, *args, **kwargs):
         cdef:
@@ -64,25 +71,32 @@ cdef class Histo2D(AnalysisObject):
                              string(path), string(title)), True
             )
 
+
     cdef cHisto2D* ptr(self):
         return <cHisto2D *> self.thisptr
 
+
     def fill(self, double x, double y, double weight=1.0):
         self.ptr().fill(x, y, weight)
+
 
     def reset(self):
         """Reset the histogram but leave the bin structure"""
         self.ptr().reset()
 
+
     def scaleW(self, double factor):
         """Scale the histogram and its statistics by given factor"""
         self.ptr().scaleW(factor)
 
+
     def mergeBins(self, size_t a, size_t b):
         self.ptr().mergeBins(a, b)
 
+
     def rebin(self, int a, int b):
         self.ptr().rebin(a, b)
+
 
     @property
     def bins(self):
@@ -95,74 +109,120 @@ cdef class Histo2D(AnalysisObject):
 
         return self._bins
 
+
     @property
     def lowEdgeX(self):
         return self.ptr().lowEdgeX()
+
 
     @property
     def lowEdgeY(self):
         return self.ptr().lowEdgeY()
 
+
     @property
     def highEdgeX(self):
         return self.ptr().highEdgeX()
+
 
     @property
     def highEdgeY(self):
         return self.ptr().highEdgeY()
 
-    def underflow(self):
-        pass
+
+    @property
+    def totalDbn(self):
+        """
+        h.totalDbn -> Distribution2D
+
+        Return the Distribution2D object representing the total distribution.
+
+        """
+        return Dbn2D_fromptr(&self.ptr().totalDbn())
+
+
+    def outflows(self):
+        cdef size_t numofsX = self.ptr().numBinsX()
+        cdef size_t numofsY = self.ptr().numBinsY()
+        cdef size_t i
+        cdef Dbn2D of
+
+        out = []
+        for i in xrange(numofsX):
+            for j in xrange(numofsY):
+                of = Dbn2D_fromptr(&self.ptr().outflows()[i][j])
+                out.append(bin)
+        # TODO: Why was this here?
+        # self.ptr().outflows()
+        return out
+
 
     def __delitem__(self, size_t ix):
         self.ptr().eraseBin(ix)
 
+
     def __getitem__(self, size_t ix):
         return HistoBin2D().set(self.ptr().bins()[ix])
+
 
     def integral(self, bool overflows=True):
         return self.ptr().integral(overflows)
 
+
     def sumW(self, bool overflows=True):
         return self.ptr().sumW(overflows)
 
+
     def sumW2(self, bool overflows=True):
         return self.ptr().sumW2(overflows)
+
+
+    def mean(self, bool overflows=True):
+        cdef cHisto2D *s = self.ptr()
+        return (s.xMean(overflows), s.yMean(overflows))
+
 
     def variance(self, bool overflows=True):
         cdef cHisto2D *s = self.ptr()
         return (s.xVariance(overflows), s.yVariance(overflows))
 
+
     def stdDev(self, bool overflows=True):
         cdef cHisto2D *s = self.ptr()
         return (s.xStdDev(overflows), s.yStdDev(overflows))
 
-    """def __add__(Histo2D a, Histo2D b):
-        cdef cHisto2D *res
-        res = new cHisto2D(a.ptr()[0] + b.ptr()[0])
-        return Histo2D().setptr(res)
 
-    def __sub__(Histo2D a, Histo2D b):
-        cdef cHisto2D *res
-        res = new cHisto2D(a.ptr()[0] - b.ptr()[0])
-        return Histo2D().setptr(res)
 
-    def __mul__(x, y):
-        cdef cHisto2D *res
-        tx, ty = type(x), type(y)
-        if (tx is int or tx is float) and ty is Histo2D:
-            histo = <Histo2D> y; factor = <Histo2D> x
-        elif tx is Histo2D and (ty is int or ty is float):
-            histo = <Histo2D> x; factor = <Histo2D> y
-        else:
-            raise RuntimeError('Cannot multiply %r by %r' % (tx, ty))
+    # def __add__(Histo2D a, Histo2D b):
+    #     cdef cHisto2D *res
+    #     res = new cHisto2D(a.ptr()[0] + b.ptr()[0])
+    #     return Histo2D().setptr(res)
 
-        res = new cHisto2D(histo.ptr()[0])
-        res.scaleW(factor)
-        return Histo2D().setptr(res)"""
+
+    # def __sub__(Histo2D a, Histo2D b):
+    #     cdef cHisto2D *res
+    #     res = new cHisto2D(a.ptr()[0] - b.ptr()[0])
+    #     return Histo2D().setptr(res)
+
+
+    # def __mul__(x, y):
+    #     cdef cHisto2D *res
+    #     tx, ty = type(x), type(y)
+    #     if (tx is int or tx is float) and ty is Histo2D:
+    #         histo = <Histo2D> y; factor = <Histo2D> x
+    #     elif tx is Histo2D and (ty is int or ty is float):
+    #         histo = <Histo2D> x; factor = <Histo2D> y
+    #     else:
+    #         raise RuntimeError('Cannot multiply %r by %r' % (tx, ty))
+
+    #     res = new cHisto2D(histo.ptr()[0])
+    #     res.scaleW(factor)
+    #     return Histo2D().setptr(res)
+
 
     def __repr__(self):
         return 'Histo2D%r' % self.bins
+
 
 cdef Histo2D Histo2D_fromptr(cHisto2D *ptr, dealloc=False):
     # Construct a Python Histo2D from a pointer to a cHisto2D,

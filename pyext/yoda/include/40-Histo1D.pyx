@@ -145,17 +145,16 @@ cdef class Histo1D(AnalysisObject):
         unless the copy() method is called on a bin.
 
         """
-
         cdef size_t numbins = self.ptr().numBins()
         cdef size_t i
         cdef HistoBin1D bin
 
         out = []
-
-        for i in range(numbins):
+        for i in xrange(numbins):
             bin = HistoBin1D_fromptr(& self.ptr().bins()[i])
             out.append(bin)
-        self.ptr().bins()
+        # TODO: Why was this here?
+        # self.ptr().bins()
 
         return out
 
@@ -190,7 +189,6 @@ cdef class Histo1D(AnalysisObject):
         Return the Distribution1D object representing the total distribution.
 
         """
-        cdef HistoBin1D bin
         return Dbn1D_fromptr(&self.ptr().totalDbn())
 
 
@@ -202,7 +200,6 @@ cdef class Histo1D(AnalysisObject):
         Return the Distribution1D object representing the underflow.
 
         """
-        cdef HistoBin1D bin
         return Dbn1D_fromptr(&self.ptr().underflow())
 
 
@@ -214,7 +211,6 @@ cdef class Histo1D(AnalysisObject):
         Return the Distribution1D object representing the overflow.
 
         """
-        cdef HistoBin1D bin
         return Dbn1D_fromptr(&self.ptr().overflow())
 
 

@@ -1,5 +1,7 @@
 2011-12-07  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Adding an outflows() accessor to Histo2D.
+
 	* Writing out total dbn lines for Histo1D and Profile1D in the
 	YODA format, and now writing out the 'cross-terms' for Profile1D,
 	too.

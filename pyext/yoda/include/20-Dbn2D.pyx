@@ -2,6 +2,7 @@ cdef extern from "YODA/Dbn2D.h" namespace "YODA":
     cdef cppclass cDbn2D "Dbn2D":
         pass
 
+
 cdef class Dbn2D:
     cdef cDbn2D *thisptr
     cdef bool _dealloc
@@ -23,3 +24,10 @@ cdef class Dbn2D:
 
     cdef cDbn2D* ptr(self):
         return self.thisptr
+
+
+cdef Dbn2D Dbn2D_fromptr(cDbn2D *ptr, dealloc=False):
+    # Construct a Python Dbn2D from a pointer to a cDbn2D,
+    # without calling __init__ and excessive memory allocation
+    cdef Dbn2D dbn = Dbn2D.__new__(Dbn2D)
+    return dbn.setptr(ptr, dealloc)
