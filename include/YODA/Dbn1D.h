@@ -38,7 +38,7 @@ namespace YODA {
     /// @brief Constructor to set a distribution with a pre-filled state.
     ///
     /// Principally designed for internal persistency use.
-    Dbn1D(unsigned int numEntries, double sumW, double sumW2, double sumWX, double sumWX2) {
+    Dbn1D(unsigned long numEntries, double sumW, double sumW2, double sumWX, double sumWX2) {
       _numFills = numEntries;
       _sumW = sumW;
       _sumW2 = sumW2;
@@ -47,7 +47,16 @@ namespace YODA {
     }
 
 
-    /// @todo Add copy constructor
+    /// Copy constructor
+    ///
+    /// Sets all the parameters using the ones provided from an existing Dbn1D.
+    Dbn1D(const Dbn1D& toCopy) {
+      _numFills = toCopy._numFills;
+      _sumW = toCopy._sumW;
+      _sumW2 = toCopy._sumW2;
+      _sumWX = toCopy._sumWX;
+      _sumWX2 = toCopy._sumWX2;
+    }
 
     //@}
 
@@ -72,12 +81,10 @@ namespace YODA {
 
     /// Rescale as if all fill weights had been different by factor @a scalefactor.
     void scaleW(double scalefactor) {
-      const double sf = scalefactor;
-      const double sf2 = sf*sf;
-      _sumW *= sf;
-      _sumW2 *= sf2;
-      _sumWX *= sf;
-      _sumWX2 *= sf2;
+      _sumW *= scalefactor;
+      _sumW2 *= scalefactor*scalefactor;
+      _sumWX *= scalefactor;
+      _sumWX2 *= scalefactor;
     }
 
 
@@ -89,21 +96,7 @@ namespace YODA {
 
     //@}
 
-
   public:
-
-    /// @name High-level info
-    //@{
-
-    // bool isUnfilled() const {
-    //   return (numEntries() == 0);
-    // }
-
-    // bool isEmpty() const {
-    //   return (sumW() == 0)
-    // }
-
-    //@}
 
 
     /// @name Distribution statistics
@@ -171,7 +164,7 @@ namespace YODA {
       return _sumWX;
     }
 
-    /// The sum of x^2 * weight
+    /// The sum of x^2*weight
     double sumWX2() const {
       return _sumWX2;
     }

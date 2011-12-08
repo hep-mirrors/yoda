@@ -1,3 +1,8 @@
+// -*- C++ -*-
+//
+// This file is part of YODA -- Yet more Objects for Data Analysis
+// Copyright (C) 2008-2011 The YODA collaboration (see AUTHORS for details)
+//
 #ifndef YODA_Dbn2D_h
 #define YODA_Dbn2D_h
 
@@ -7,14 +12,14 @@
 namespace YODA {
 
 
-  /// A representation of the vital statistics of a 2D distribution
+  /// @brief A 2D distribution
   class Dbn2D {
   public:
 
     /// @name Constructors
     //@{
 
-    /// Default constructor
+    /// Default constructor of a new distribution.
     Dbn2D() {
       reset();
     }
@@ -23,12 +28,12 @@ namespace YODA {
     /// Constructor to set a distribution with a pre-filled state.
     ///
     /// Principally designed for internal persistency use.
-    Dbn2D(unsigned int numEntries, double sumW, double sumW2,
+    Dbn2D(unsigned long numEntries, double sumW, double sumW2,
           double sumWX, double sumWX2, double sumWY, double sumWY2, double sumWXY)
       : _dbnX(numEntries, sumW, sumW2, sumWX, sumWX2),
         _dbnY(numEntries, sumW, sumW2, sumWY, sumWY2),
         _sumWXY(sumWXY)
-    {  }
+    { }
 
 
     /// Copy constructor
@@ -64,7 +69,7 @@ namespace YODA {
     void reset() {
       _dbnX.reset();
       _dbnY.reset();
-      _sumWXY = 0.0;
+      _sumWXY = 0;
     }
 
 
@@ -97,6 +102,8 @@ namespace YODA {
     }
 
     //@}
+
+  public:
 
 
     /// @name Distribution statistics
@@ -139,7 +146,7 @@ namespace YODA {
 
     /// Weighted standard error on the \f$ y \f$ mean, \f$ \sim \sigma_y/\sqrt{N-1} \f$, of distribution.
     double yStdErr() const {
-      return _dbnY.stdDev();
+      return _dbnY.stdErr();
     }
 
     /// Weighted RMS, \f$ \sqrt{ \sum{w x^2}/\sum{w} } \f$, of distribution.
@@ -183,17 +190,17 @@ namespace YODA {
       return _dbnX.sumWX();
     }
 
+    /// The sum of x^2*weight
+    double sumWX2() const {
+      return _dbnX.sumWX2();
+    }
+
     /// The sum of y*weight
     double sumWY() const {
       return _dbnY.sumWX();
     }
 
-    /// The sum of x*x*weight
-    double sumWX2() const {
-      return _dbnX.sumWX2();
-    }
-
-    /// The sum of y*y*weight
+    /// The sum of y^2*weight
     double sumWY2() const {
       return _dbnY.sumWX2();
     }
