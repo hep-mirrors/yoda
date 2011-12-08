@@ -1,8 +1,16 @@
+2011-12-08  Hendrik Hoeth  <hendrik.hoeth@cern.ch>
+
+	* ReaderYODA can now parse Histo1D and Profile1D flat files
+
 2011-12-08  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Adding a Utils::ndarray object and using it to implement a
 	general Scatter<N> system, with generalised Point<N> and Error<N>
 	to boot.
+
+2011-12-07  Hendrik Hoeth  <hendrik.hoeth@cern.ch>
+
+	* Lots of cleanup
 
 2011-12-07  Andy Buckley  <andy.buckley@cern.ch>
 

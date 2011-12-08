@@ -15,7 +15,8 @@ libYODA_la_SOURCES = \
     WriterAIDA.cc \
     WriterYODA.cc \
     Reader.cc \
-    ReaderAIDA.cc
+    ReaderAIDA.cc \
+    ReaderYODA.cc
 
 libYODA_la_LIBADD = tinyxml/libtinyxml.la
 libYODA_la_CPPFLAGS = $(AM_CPPFLAGS) -DTIXML_USE_STL
