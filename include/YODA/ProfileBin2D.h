@@ -95,11 +95,11 @@ namespace YODA {
 
     /// The sum of z*weight
     double sumWZ() const {
-      return _dbn.sumWX();
+      return _dbn.sumWZ();
     }
 
     double sumWZ2() const {
-      return _dbn.sumWX2();
+      return _dbn.sumWZ2();
     }
 
     //@}

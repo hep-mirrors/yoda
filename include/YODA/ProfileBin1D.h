@@ -108,12 +108,12 @@ namespace YODA {
 
     /// The sum of y*weight
     double sumWY() const {
-      return _dbn.sumWX();
+      return _dbn.sumWY();
     }
 
     /// The sum of y^2 * weight
     double sumWY2() const {
-      return _dbn.sumWX2();
+      return _dbn.sumWY2();
     }
 
     //@}
