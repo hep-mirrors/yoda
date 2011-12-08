@@ -9,7 +9,6 @@
 #include "YODA/Bin.h"
 #include "YODA/Dbn1D.h"
 #include <string>
-#include <iostream>
 #include <utility>
 #include <cassert>
 
@@ -171,7 +170,7 @@ namespace YODA {
     }
 
     /// The standard error on the bin focus.
-    double xStdError() const {
+    double xStdErr() const {
       return _dbn.xStdErr();
     }
 
@@ -185,7 +184,7 @@ namespace YODA {
 
   public:
 
-    /// @name Raw x distribution statistics
+    /// @name Raw distribution statistics
     //@{
 
     /// The number of entries
@@ -193,7 +192,7 @@ namespace YODA {
       return _dbn.numEntries();
     }
 
-    /// The number of entries
+    /// The effective number of entries
     unsigned long effNumEntries() const {
       return _dbn.effNumEntries();
     }
