@@ -47,7 +47,7 @@ namespace YODA {
     os << "# Mean: " << h.mean() << "\n";
     os << "# Area: " << h.integral() << "\n";
     os << "# xlow\t xhigh\t sumw\t sumw2\t sumwx\t sumwx2\t numEntries\n";
-    os << "Total\tTotal\t";
+    os << "Total   \tTotal   \t";
     os << h.totalDbn().sumW()  << "\t" << h.totalDbn().sumW2()  << "\t";
     os << h.totalDbn().sumWX() << "\t" << h.totalDbn().sumWX2() << "\t";
     os << h.totalDbn().numEntries() << "\n";
@@ -79,7 +79,7 @@ namespace YODA {
     os << "# BEGIN YODA_PROFILE1D\n";
     _writeAnnotations(os, p);
     os << "# xlow\t xhigh\t sumw\t sumw2\t sumwx\t sumwx2\t sumwy\t sumwy2\t numEntries\n";
-    os << "Total\tTotal\t";
+    os << "Total   \tTotal   \t";
     os << p.totalDbn().sumW()  << "\t" << p.totalDbn().sumW2()  << "\t";
     os << p.totalDbn().sumWX() << "\t" << p.totalDbn().sumWX2() << "\t";
     os << p.totalDbn().sumWY() << "\t" << p.totalDbn().sumWY2() << "\t";
