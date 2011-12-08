@@ -116,8 +116,6 @@ namespace YODA {
       return _dbn.sumWX2();
     }
 
-    /// @todo Expose sumXY just for persistency?
-
     //@}
 
 
