@@ -48,9 +48,6 @@ namespace YODA {
     {  }
 
 
-    /// @todo Add constructor from generic container/Range
-
-
     /// Constructor from a vector of values with no errors
     Scatter2D(const std::vector<double>& x, const std::vector<double>& y,
               const std::string& path="", const std::string& title="")

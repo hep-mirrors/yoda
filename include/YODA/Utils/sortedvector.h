@@ -10,29 +10,32 @@ namespace YODA {
   namespace Utils {
 
 
-    /// @brief Specialisation of std::vector to allow indexed access to ordered elements
+    /// Specialisation of std::vector to allow indexed access to ordered elements
+    ///
     /// @todo Need to template on the value-comparison definition?
     template <typename T>
     class sortedvector : public std::vector<T> {
     public:
 
-      /// @brief default constructor
+      /// Default constructor
       sortedvector() {}
 
-      /// @brief conversion from std::vector
-      sortedvector(const std::vector<T> & vec) 
-	: std::vector<T>(vec) {
-	std::sort(this->begin(), this->end());
+      /// Conversion from std::vector
+      sortedvector(const std::vector<T> & vec)
+        : std::vector<T>(vec) {
+        std::sort(this->begin(), this->end());
       }
 
-      /// @brief Insertion operator (push_back should not be used!)
+      /// Insertion operator (push_back should not be used!)
       void insert(const T& val) {
         std::vector<T>::push_back(val);
         std::sort(this->begin(), this->end());
       }
 
+
     private:
-      /// @brief hiding push_back from the base class
+
+      /// Hiding push_back from the base class
       void push_back();
 
     };

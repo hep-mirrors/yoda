@@ -30,7 +30,7 @@ namespace YODA {
           msg << "Value vector of wrong size supplied to a " << N << " dimensional array";
           throw RangeError(msg.str());
         }
-        std::copy(vec, vec+N, _val);
+        for (size_t i = 0; i < N; ++i) _val[i] = vec[i];
       }
 
 
@@ -40,16 +40,16 @@ namespace YODA {
       }
 
 
-      /// Conversion from C array
-      ndarray(const T arr[5]) {
-        try {
-          std::copy(arr, arr+N, _val);
-        } catch (...) {
-          std::stringstream msg;
-          msg << "Value vector of wrong size supplied to a " << N << " dimensional array";
-          throw RangeError(msg.str());
-        }
-      }
+      // /// Conversion from C array
+      // ndarray(const T arr[N]) {
+      //   try {
+      //     std::copy(arr, arr+N, _val);
+      //   } catch (...) {
+      //     std::stringstream msg;
+      //     msg << "Value vector of wrong size supplied to a " << N << " dimensional array";
+      //     throw RangeError(msg.str());
+      //   }
+      // }
 
       //@}
 

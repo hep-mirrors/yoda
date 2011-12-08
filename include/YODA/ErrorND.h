@@ -169,7 +169,8 @@ namespace YODA {
   inline bool operator==(const Error<N>& a, const Error<N>& b) {
     if (a.name() != b.name()) return false;
     for (size_t i = 0; i < N; ++i) {
-      if ( !fuzzyEquals(a.err()[i], b.err()[i]) ) return false;
+      if (!fuzzyEquals(a.errMinus(i), b.errMinus(i))) return false;
+      if (!fuzzyEquals(a.errPlus(i), b.errPlus(i))) return false;
     }
     return true;
   }

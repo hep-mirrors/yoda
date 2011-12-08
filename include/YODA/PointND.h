@@ -43,19 +43,20 @@ namespace YODA {
     {    }
 
 
-    /// Constructor from values with a single set of symmetric errors
-    Point(const NdVal& pos, const NdVal& errs)
-      : _pos(pos)
-    {
-      _errs.push_back(Error<N>(errs));
-    }
+    // /// Constructor from values with a single set of symmetric errors
+    // /// @todo Unnecessary since Error can be implicitly constructed this way
+    // Point(const NdVal& pos, const NdVal& errs)
+    //   : _pos(pos)
+    // {
+    //   _errs.insert(Error<N>(errs));
+    // }
 
 
     /// Constructor from values with a single set of asymmetric errors
     Point(const NdVal& pos, const NdValPair& errs)
       : _pos(pos)
     {
-      _errs.push_back(Error<N>(errs));
+      _errs.insert(Error<N>(errs));
     }
 
 
@@ -63,7 +64,7 @@ namespace YODA {
     Point(const NdVal& pos, const Error<N>& err)
       : _pos(pos)
     {
-      _errs.push_back(err);
+      _errs.insert(err);
     }
 
 
@@ -200,7 +201,7 @@ namespace YODA {
   inline bool operator<(const Point<N>& a, const Point<N>& b) {
     #define LT_IF_NOT_EQ(a,b) { if (!fuzzyEquals(a, b)) return a < b; }
     for (size_t i = 0; i < N; ++i) LT_IF_NOT_EQ(a.pos()[i], b.pos()[i]);
-    LT_IF_NOT_EQ(a.errs().size(), b.errs().size());
+    if (a.errs().size() != b.errs().size()) return a.errs().size() < b.errs().size();
     for (size_t i = 0; i < a.errs().size(); ++i) {
       if (a.errs()[i] != b.errs()[i]) return a.errs()[i] < b.errs()[i];
     }
