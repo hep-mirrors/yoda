@@ -3,6 +3,13 @@ YODA TODO list
 
 NOW
 
+* Bin2D: HH has a clean-up patch, but that doesn't compile yet
+  because Axis2D needs a complete rewrite.
+  Additionally: Fix order in which points are specified in the
+  Bin2D constructor. Add a merge() method in Bin2D. Add a constructor
+  that takes Dbns.
+  Axis2D: rewrite. The code is a nightmare and heavily broken.
+
 * Add copy assignment to Point/Scatter3D and Dbn1D/2D. (AB)
 
 * Rebinning: global rebinning of Axis2D -> Histo2D by integer factor(s) --
