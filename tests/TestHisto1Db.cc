@@ -2,6 +2,7 @@
 #include "YODA/WriterAIDA.h"
 #include "YODA/WriterYODA.h"
 #include "YODA/ReaderAIDA.h"
+#include "YODA/ReaderYODA.h"
 #include <cmath>
 #include <vector>
 #include <fstream>
@@ -47,6 +48,15 @@ int main() {
   assert(hs2.size() == 2);
   for (vector<AnalysisObject*>::const_iterator i = hs2.begin(); i != hs2.end(); ++i) {
     cout << (*i)->type() << endl;
+    if ((*i)->type() == "Histo1D") {
+      (*i)->path();
+    }
+  }
+
+  vector<AnalysisObject*> hs3 = ReaderYODA::create().read("test.dat");
+  for (vector<AnalysisObject*>::const_iterator i = hs3.begin(); i != hs3.end(); ++i) {
+    cout << (*i)->type() << endl;
+    YODA::WriterYODA::write(std::cout, (**i));
     if ((*i)->type() == "Histo1D") {
       (*i)->path();
     }
