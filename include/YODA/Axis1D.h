@@ -27,7 +27,7 @@ namespace YODA {
     typedef typename std::vector<BIN1D> Bins;
 
     /// A standard edge container. First number defines location
-    /// of the edge, the second one a bin nuber the edge is a member of.
+    /// of the edge, the second one a bin number the edge is a member of.
     typedef typename std::pair<double, size_t> Edge;
 
 
