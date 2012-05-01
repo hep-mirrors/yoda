@@ -28,13 +28,13 @@ namespace YODA {
 
     /// Init a new, empty bin with a pair of edges.
     HistoBin1D(double lowedge, double highedge)
-      : Bin1D(lowedge, highedge)
+      : Bin1D<Dbn1D>(lowedge, highedge)
     { }
 
 
     /// Init a new, empty bin with a pair of edges.
     HistoBin1D(const std::pair<double,double>& edges)
-      : Bin1D(edges)
+      : Bin1D<Dbn1D>(edges)
     { }
 
 
@@ -42,19 +42,19 @@ namespace YODA {
     ///
     /// Mainly intended for internal persistency use.
     HistoBin1D(double lowedge, double highedge, const Dbn1D& dbnx)
-      : Bin1D(lowedge, highedge, dbnx)
+      : Bin1D<Dbn1D>(lowedge, highedge, dbnx)
     { }
 
 
     /// Copy constructor
     HistoBin1D(const HistoBin1D& hb)
-      : Bin1D(hb)
+      : Bin1D<Dbn1D>(hb)
     { }
 
 
     /// Copy assignment
     HistoBin1D& operator = (const HistoBin1D& hb) {
-      Bin1D::operator=(hb);
+      Bin1D<Dbn1D>::operator=(hb);
       return *this;
     }
 

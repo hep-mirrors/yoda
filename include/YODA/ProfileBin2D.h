@@ -23,27 +23,27 @@ namespace YODA {
 
     /// Constructor giving lowedgesX/Y
     ProfileBin2D(double lowX, double lowY, double highX, double highY)
-      : Bin2D(lowX, lowY, highX, highY)
+      : Bin2D<Dbn3D>(lowX, lowY, highX, highY)
     { }
 
     ProfileBin2D(const std::vector<std::pair<std::pair<double,double>,std::pair<double,double> > >& edges)
-      : Bin2D(edges)
+      : Bin2D<Dbn3D>(edges)
     { }
 
     /// Unpersisting constructor
     ProfileBin2D(double lowX, double lowY, double highX, double highY,
                  const Dbn3D& dbnxyz)
-      : Bin2D(lowX, lowY, highX, highY)
+      : Bin2D<Dbn3D>(lowX, lowY, highX, highY)
     { }
 
     /// Copy constructor
     ProfileBin2D(const ProfileBin2D& pb)
-      : Bin2D(pb)
+      : Bin2D<Dbn3D>(pb)
     { }
 
     /// Copy assignment
     ProfileBin2D& operator = (const ProfileBin2D& pb) {
-      Bin2D::operator=(pb);
+      Bin2D<Dbn3D>::operator=(pb);
       return *this;
     }
 

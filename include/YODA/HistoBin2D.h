@@ -26,12 +26,12 @@ namespace YODA {
     /// Constructor accepting a set of extremal points of a bin
     HistoBin2D(double lowEdgeX, double highEdgeX,
                double lowEdgeY, double highEdgeY)
-      : Bin2D(lowEdgeX, lowEdgeY, highEdgeX, highEdgeY)
+      : Bin2D<Dbn2D>(lowEdgeX, lowEdgeY, highEdgeX, highEdgeY)
     { }
 
     /// Constructor accepting a set of all edges of a bin
     HistoBin2D(std::vector<std::pair<std::pair<double,double>, std::pair<double,double> > >& edges)
-      : Bin2D(edges)
+      : Bin2D<Dbn2D>(edges)
     { }
 
 
@@ -60,7 +60,7 @@ namespace YODA {
 
     /// A reset function
     void reset() {
-      Bin2D::reset();
+      Bin2D<Dbn2D>::reset();
     }
 
     //@}

@@ -6,6 +6,7 @@
 #ifndef YODA_Bin1D_h
 #define YODA_Bin1D_h
 
+#include "YODA/Utils/MathUtils.h"
 #include "YODA/Bin.h"
 #include "YODA/Dbn1D.h"
 #include <string>
