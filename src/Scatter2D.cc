@@ -16,7 +16,7 @@ namespace YODA {
       const double ex_p = b.highEdge() - b.focus();
       const double y = b.height();
       const double ey = b.heightErr();
-      const Point2D pt(x, ex_m, ex_p, y, ey, ey);
+      const Point2D pt(x, y, ex_m, ex_p, ey, ey);
       rtn.addPoint(pt);
     }
     assert(h.numBins() == rtn.numPoints());
@@ -35,7 +35,7 @@ namespace YODA {
       const double ex_p = b.highEdge() - b.focus();
       const double y = b.mean();
       const double ey = b.stdErr();
-      const Point2D pt(x, ex_m, ex_p, y, ey, ey);
+      const Point2D pt(x, y, ex_m, ex_p, ey, ey);
       rtn.addPoint(pt);
     }
     assert(p.numBins() == rtn.numPoints());
