@@ -390,7 +390,7 @@ namespace YODA {
     /// failure. A value exactly on a bin edge will be accepted into the
     /// bin on the RHS of the edge, unless it is the rightmost edge.
     size_t _binaryS(double value, size_t lower, size_t higher) const {
-      assert(_binHashSparse[lower].first <= value && _binHashSparse[higher].first >= value);
+      //      assert(_binHashSparse[lower].first <= value && _binHashSparse[higher].first >= value);
       if (lower == higher) return lower;
       size_t where = (higher+lower)/2; // binary split point
 
