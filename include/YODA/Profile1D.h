@@ -1,7 +1,7 @@
 // -*- C++ -*-
 //
 // This file is part of YODA -- Yet more Objects for Data Analysis
-// Copyright (C) 2008-2011 The YODA collaboration (see AUTHORS for details)
+// Copyright (C) 2008-2012 The YODA collaboration (see AUTHORS for details)
 //
 #ifndef YODA_Profile1D_h
 #define YODA_Profile1D_h
@@ -40,6 +40,13 @@ namespace YODA {
 
     /// @name Constructors
     //@{
+
+    /// Default constructor
+    Profile1D()
+      : AnalysisObject("Profile1D", "", ""),
+        _axis()
+    { }
+
 
     /// Constructor giving range and number of bins
     Profile1D(size_t nxbins, double xlower, double xupper,

@@ -1,3 +1,8 @@
+2012-05-03  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Adding more default constructors for analysis objects, to allow
+	member variable and STL container use without pointers.
+
 2012-05-02  Andy Buckley  <andy.buckley@cern.ch>
 
 	* A much simplified and more robust rewrite of the Axis1D class,
