@@ -7,6 +7,8 @@
 #include "YODA/Utils/StringUtils.h"
 
 #include <iostream>
+#include <iomanip>
+
 using namespace std;
 
 namespace YODA {
@@ -40,6 +42,10 @@ namespace YODA {
 
 
   void WriterAIDA::writeScatter2D(std::ostream& os, const Scatter2D& s) {
+    ios_base::fmtflags oldflags = os.flags();
+    const int precision = 7;
+    os << scientific << showpoint << setprecision(precision);
+
     string name = "";
     string path = "/";
     const size_t slashpos = s.path().rfind("/");
@@ -72,6 +78,8 @@ namespace YODA {
     }
     os << "  </dataPointSet>\n";
     os << flush;
+
+    os.flags(oldflags);
   }
 
 
