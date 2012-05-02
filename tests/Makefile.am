@@ -2,9 +2,6 @@ check_PROGRAMS = \
   testweights	\
   testhisto1Da testhisto1Db \
   testprofile1Da \
-  testhisto2De \
-  testpoint3D  \
-  testscatter3D\
   testindexedset testsortedvector\
   testhisto1Dcreate \
   testhisto1Dfill\
@@ -12,13 +9,19 @@ check_PROGRAMS = \
   testprofile1Dcreate\
   testprofile1Dfill \
   testprofile1Dmodify\
-  testhisto2Dcreate \
-  testhisto2Dfill\
-  testhisto2Dmodify\
   testscatter2Dcreate\
-  testscatter2Dmodify\
-  testscatter3Dcreate\
-  testscatter3Dmodify
+  testscatter2Dmodify
+
+#  testhisto2De \
+#  testpoint3D  \
+#  testscatter3D
+
+#  testhisto2Dcreate \
+#  testhisto2Dfill\
+#  testhisto2Dmodify
+
+#  testscatter3Dcreate\
+#  testscatter3Dmodify
 
 AM_LDFLAGS = -L$(top_builddir)/src -lYODA
 
@@ -56,9 +59,6 @@ TESTS = \
   testweights \
   testhisto1Da testhisto1Db \
   testprofile1Da \
-  testhisto2De \
-  testpoint3D    \
-  testscatter3D  \
   testindexedset testsortedvector \
   testhisto1Dcreate \
   testhisto1Dfill \
@@ -66,11 +66,17 @@ TESTS = \
   testprofile1Dcreate \
   testprofile1Dfill \
   testprofile1Dmodify\
-  testhisto2Dcreate \
-  testhisto2Dfill\
-  testhisto2Dmodify\
   testscatter2Dcreate\
   testscatter2Dmodify\
-  testscatter3Dcreate\
-  testscatter3Dmodify\
   test-yoda-1.py
+
+#  testhisto2De \
+#  testpoint3D    \
+#  testscatter3D  
+
+#  testhisto2Dcreate \
+#  testhisto2Dfill\
+#  testhisto2Dmodify
+
+#  testscatter3Dcreate\
+#  testscatter3Dmodify
