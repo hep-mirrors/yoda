@@ -76,7 +76,7 @@ namespace YODA {
     const int precision = 6;
     os << scientific << showpoint << setprecision(precision);
 
-    os << "# BEGIN YODA_PROFILE1D\n";
+    os << "# BEGIN YODA_PROFILE1D " << p.path() << "\n";
     _writeAnnotations(os, p);
     os << "# xlow\t xhigh\t sumw\t sumw2\t sumwx\t sumwx2\t sumwy\t sumwy2\t numEntries\n";
     os << "Total   \tTotal   \t";
@@ -101,7 +101,7 @@ namespace YODA {
       os << b->sumWY()   << "\t" << b->sumWY2()   << "\t";
       os << b->numEntries() << "\n";
     }
-    os << "# END YODA_PROFILE1D\n";
+    os << "# END YODA_PROFILE1D\n\n";
 
     os.flags(oldflags);
   }
@@ -112,14 +112,14 @@ namespace YODA {
     const int precision = 6;
     os << scientific << showpoint << setprecision(precision);
 
-    os << "# BEGIN YODA_SCATTER2D\n";
+    os << "# BEGIN YODA_SCATTER2D " << s.path() << "\n";
     _writeAnnotations(os, s);
     os << "# xval\t xerr-\t xerr+\t yval\t yerr-\t yerr+\n";
     foreach (Point2D pt, s.points()) {
       os << pt.x() << "\t" << pt.xErrMinus() << "\t" << pt.xErrMinus() << "\t";
       os << pt.y() << "\t" << pt.yErrMinus() << "\t" << pt.yErrMinus() << "\n";
     }
-    os << "# END YODA_SCATTER2D\n";
+    os << "# END YODA_SCATTER2D\n\n";
 
     os << flush;
     os.flags(oldflags);
@@ -131,7 +131,7 @@ namespace YODA {
     const int precision = 6;
     os << scientific << showpoint << setprecision(precision);
 
-    os << "# BEGIN YODA_SCATTER3D\n";
+    os << "# BEGIN YODA_SCATTER3D " << s.path() << "\n";
     _writeAnnotations(os, s);
     os << "# xval\t xerr-\t xerr+\t yval\t yerr-\t yerr+\t zval\t zerr-\t zerr+\n";
     foreach (Point3D pt, s.points()) {
