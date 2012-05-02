@@ -1,69 +1,69 @@
 #include "YODA/Histo1D.h"
+#include "YODA/Utils/Formatting.h"
 
-#include <iostream>
-using namespace std;
 using namespace YODA;
+using namespace std;
 
 int main() {
-  
+
+  MSG_(PAD(70) << "Setting up a 100 bin histo from 0-100: ");
   Histo1D h(100, 0, 100);
-  cout << "Trying to merge bins:                    ";
+  MSG_GREEN("PASS");
+
+  MSG_(PAD(70) << "Trying to merge bins: ");
   h.mergeBins(0, 10);
-  cout << "PASS" << endl;
+  MSG_GREEN("PASS");
 
-  cout << "Testing if bin nuber was updated:        ";
-  if(h.numBins() != 90) {
-    cout << "FAIL" << endl;
+  MSG_(PAD(70) << "Testing if bin number was updated: ");
+  if (h.numBins() != 90) {
+    MSG_RED("FAIL");
     return -1;
   }
-  cout << "PASS" << endl;
-  
-  cout << "Checking if bin size was updated:        ";
-  if(!fuzzyEquals(h.bin(0).xMin(), 0) || !fuzzyEquals(h.bin(0).xMax(),11)){
-    cout << "FAIL" << endl;
+  MSG_GREEN("PASS");
+
+  MSG_(PAD(70) << "Checking if bin size was updated: ");
+  if (!fuzzyEquals(h.bin(0).xMin(), 0) || !fuzzyEquals(h.bin(0).xMax(), 11)) {
+    MSG_RED("FAIL");
     return -1;
   }
-  cout << "PASS" << endl;
+  MSG_GREEN("PASS");
 
-  
-  
-  cout << "Checking if bin removal works:           ";
+  MSG_(PAD(70) << "Checking if bin removal works: ");
   h.eraseBin(0);
-  cout << "PASS" << endl;
-  
-  cout << "Was the bin number updated properly?     ";
-  if(h.numBins() != 89) {
-    cout << "FAIL" << endl;
+  MSG_GREEN("PASS");
+
+  MSG_(PAD(70) << "Was the bin number updated properly? ");
+  if (h.numBins() != 89) {
+    MSG_RED("FAIL");
     return -1;
   }
-  cout << "PASS" << endl;
+  MSG_GREEN("PASS");
 
-  cout << "Was the right bin removed?               ";
-  if(fuzzyEquals(h.bin(0).xMin(), 0) && fuzzyEquals(h.bin(0).xMax(), 11)){
-    cout << "FAIL" << endl;
+  MSG_(PAD(70) << "Was the right bin removed? ");
+  if (fuzzyEquals(h.bin(0).xMin(), 0) && fuzzyEquals(h.bin(0).xMax(), 11)) {
+    MSG_RED("FAIL");
     return -1;
   }
-  cout << "PASS" << endl;
+  MSG_GREEN("PASS");
 
+  MSG_(PAD(70) << "Checking if it is possible to add a bin: ");
+  h.addBin(0, 10.9);
+  MSG_GREEN("PASS");
 
-  cout << "Checking if it is possible to add a bin: ";
-  h.addBin(0,11);
-  cout << "PASS" << endl;
- 
-  cout << "Checking if it was added properly:       ";
-  if(!fuzzyEquals(h.binByCoord(1).xMin(), 0) || !fuzzyEquals(h.binByCoord(1).xMax(),11)){
-    cout << "FAIL" << endl;
+  MSG_(PAD(70) << "Checking if it was added properly: ");
+  if (!fuzzyEquals(h.binByCoord(1).xMin(), 0) || !fuzzyEquals(h.binByCoord(1).xMax(),11)) {
+    MSG_RED("FAIL");
     return -1;
   }
-  cout << "PASS" << endl;
+  MSG_GREEN("PASS");
 
-  cout << "Checking the reset fuction:              ";
+  MSG_(PAD(70) << "Checking the reset function: ");
   h.reset();
-  if(!(h.mean() != h.mean())|| !(h.mean(false) != h.mean(false))) {
-    cout << "FAIL" << endl;
+  if (!(h.mean() != h.mean())|| !(h.mean(false) != h.mean(false))) {
+    MSG_RED("FAIL");
     return -1;
   }
-  cout << "PASS" << endl;
+  MSG_GREEN("PASS");
 
   return EXIT_SUCCESS;
 }

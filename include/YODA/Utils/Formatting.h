@@ -2,13 +2,14 @@
 #define YODA_FORMATTING_H
 
 #include <iostream>
+#include <iomanip>
 #include <unistd.h>
-
 
 #define MSG_(msg) do { std::cout << msg; } while (0)
 
 #define MSG(msg) MSG_(msg << std::endl)
 
+#define PAD(n) std::setw(n) << std::left
 
 #define COLOR_(msg, code) \
   (isatty(1) ? code : "") << msg << (isatty(1) ? "\033[0m" : "")
