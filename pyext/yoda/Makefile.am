@@ -9,8 +9,10 @@ yoda.pyx: include/00-imports.pyx include/10-AnalysisObject.pyx \
 	include/30-HistoBin1D.pyx include/30-ProfileBin1D.pyx include/30-HistoBin2D.pyx include/30-Reader.pyx include/30-Scatter2D.pyx \
 	include/40-Histo1D.pyx include/40-Profile1D.pyx include/40-WriterAIDA.pyx \
 	include/99-ReaderAIDA.pyx include/99-ReaderYODA.pyx
+	cat $+ > yoda.pyx
+
 ##include/40-Histo2D.pyx
-	cat include/*.pyx > yoda.pyx
+
 
 clean-local:
 	rm yoda.cpp yoda.pyx
