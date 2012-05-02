@@ -170,8 +170,12 @@ namespace YODA {
     int getBinIndex(double coord) const {
       // First check that we are within the axis bounds at all
       if (coord < lowEdge() || coord > highEdge()) return -1;
-      // Then return the lower-bound lookup in the hash map
-      return _binhash.lower_bound(coord)->second;
+      // Then return the lower-edge lookup from the hash map
+      // NB. both upper_bound and lower_bound return values *greater* than (or equal) to coord,
+      // so we have to step back one iteration to get to the lower-or-equal containing bin edge.
+      BinHash::const_iterator itabove = _binhash.upper_bound(coord);
+      int index = (--itabove)->second;
+      return index;
     }
 
 
@@ -204,8 +208,8 @@ namespace YODA {
     /// Merge every group of @a n bins, starting from the LHS
     void rebin(int n) {
       size_t m = 0;
-      while (m < _bins.size()) {
-        const size_t end = (m + n - 1 < _bins.size()) ? m + n -1 : _bins.size() - 1;
+      while (m < numBins()) {
+        const size_t end = (m + n - 1 < numBins()) ? m + n -1 : numBins() - 1;
         if (end > m) mergeBins(m, end);
         m += 1;
       }
@@ -359,21 +363,19 @@ namespace YODA {
 
     /// Check if there are any bin edges between values @a from and @a to.
     bool _edgeInRange(double from, double to) const {
-      return \
-        _binhash.lower_bound(from) != _binhash.lower_bound(to) ||
-        _binhash.upper_bound(from) != _binhash.upper_bound(to);
+      return (--_binhash.upper_bound(from)) != (--_binhash.upper_bound(to));
     }
 
     /// Check if there are any gaps in the axis' binning between bin indices @a from and @a to, inclusive.
-    bool _gapInRange(size_t from, size_t to) const {
-      assert(from < numBins() && to < numBins() && from < to);
-      const double start = bin(from).midpoint();
-      const double end = bin(to).midpoint();
-      // Iterate across the ordered edges from greater than start to less than end
-      for (BinHash::const_iterator it = _binhash.lower_bound(start); it->first < end; ++it) {
-        if (it->second == -1) return false;
+    bool _gapInRange(size_t ifrom, size_t ito) const {
+      assert(ifrom < numBins() && ito < numBins() && ifrom <= ito);
+      if (ifrom == ito) return false;
+      BinHash::const_iterator start = (--_binhash.upper_bound(bin(ifrom).midpoint()));
+      BinHash::const_iterator end = _binhash.upper_bound(bin(ifrom).midpoint());
+      for (BinHash::const_iterator it = start; it != end; ++it) {
+        if (it->second == -1) return true;
       }
-      return true;
+      return false;
     }
 
 
