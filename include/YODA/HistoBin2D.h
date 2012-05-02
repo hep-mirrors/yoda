@@ -24,13 +24,13 @@ namespace YODA {
     //@{
 
     /// Constructor accepting a set of extremal points of a bin
-    HistoBin2D(double lowEdgeX, double highEdgeX,
-               double lowEdgeY, double highEdgeY)
-      : Bin2D<Dbn2D>(lowEdgeX, lowEdgeY, highEdgeX, highEdgeY)
+    HistoBin2D(double xMin, double xMax,
+               double yMin, double yMax)
+      : Bin2D<Dbn2D>(xMin, yMin, xMax, yMax)
     { }
 
     /// Constructor accepting a set of all edges of a bin
-    HistoBin2D(std::vector<std::pair<std::pair<double,double>, std::pair<double,double> > >& edges)
+    HistoBin2D(std::pair<std::pair<double,double>, std::pair<double,double> >& edges)
       : Bin2D<Dbn2D>(edges)
     { }
 

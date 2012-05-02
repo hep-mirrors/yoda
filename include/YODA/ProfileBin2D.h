@@ -26,7 +26,7 @@ namespace YODA {
       : Bin2D<Dbn3D>(lowX, lowY, highX, highY)
     { }
 
-    ProfileBin2D(const std::vector<std::pair<std::pair<double,double>,std::pair<double,double> > >& edges)
+    ProfileBin2D(const std::pair<std::pair<double,double>,std::pair<double,double> >& edges)
       : Bin2D<Dbn3D>(edges)
     { }
 

@@ -1,3 +1,8 @@
+// -*- C++ -*-
+//
+// This file is part of YODA -- Yet more Objects for Data Analysis
+// Copyright (C) 2008-2011 The YODA collaboration (see AUTHORS for details)
+//
 #ifndef YODA_Bin2D_h
 #define YODA_Bin2D_h
 
@@ -5,7 +10,6 @@
 #include "YODA/Dbn2D.h"
 #include <string>
 #include <utility>
-#include <vector>
 #include <cassert>
 
 namespace YODA {
@@ -30,40 +34,28 @@ namespace YODA {
     /// @name Constructors
     //@{
 
-    /// @brief Constructor that is mostly used in manual bin addition.
-    /// Mostly used when creating a bin manually since it requires the smallest
-    /// amount of information transferred. All 4 edges are then constructed from
-    /// extremal points for which coordinates are provided.
-    Bin2D(double lowedgeX, double lowedgeY, double highedgeX, double highedgeY) {
-      if (lowedgeX > highedgeX || lowedgeY > highedgeY) {
+    /// Init a new, empty bin with a pair of edges.
+    Bin2D(double xMin, double yMin, double xMax, double yMax) {
+      if (xMin > xMax || yMin > yMax) {
         throw RangeError("The bins are wrongly defined!");
       }
-      _edges.first.first = lowedgeX;
-      _edges.first.second = lowedgeY;
-      _edges.second.first = highedgeX;
-      _edges.second.second = highedgeY;
+      _edges.first.first = xMin;
+      _edges.first.second = yMin;
+      _edges.second.first = xMax;
+      _edges.second.second = yMax;
     }
 
-    /// @brief A constructor usually used by functions creating Bins in bulk.
-    /// Since all the edges are provided by an external function it creates a
-    /// Bin slightly faster (this claim is very weakly true).  It is not
-    /// suggested to use it if it is just needed to add few bins to an already
-    /// created Histo2D.
-    Bin2D(const std::vector<Segment>& edges) {
-      if (edges.size() != 4) {
-        throw RangeError("The edge vector does not define a full rectangle!");
-      }
-      _edges.first.first = edges[0].first.first;
-      _edges.first.second = edges[0].first.second;
-      _edges.second.first = edges[1].second.first;
-      _edges.second.second = edges[1].second.second;
+
+    /// Init a new, empty bin with a pair of edges.
+    Bin2D(const Segment& edges) {
+      _edges = edges;
     }
 
-    /// A copy constructor
-    Bin2D(const Bin2D& b) {
-      _edges  = b._edges;
-      _dbn    = b._dbn;
-    }
+    /// Copy constructor
+    Bin2D(const Bin2D<DBN>& b)
+      : _edges(b._edges),
+        _dbn(b._dbn)
+    { }
 
 
     /// Copy assignment
@@ -79,18 +71,14 @@ namespace YODA {
     /// @name Modifiers
     //@{
 
-    const std::vector<Segment> edges() const {
-      std::vector<Segment> ret;
-      ret.push_back(std::make_pair(std::make_pair(xMin(), yMin()), std::make_pair(xMin(), yMax())));
-      ret.push_back(std::make_pair(std::make_pair(xMin(), yMax()), std::make_pair(xMax(), yMax())));
-      ret.push_back(std::make_pair(std::make_pair(xMax(), yMin()), std::make_pair(xMax(), yMax())));
-      ret.push_back(std::make_pair(std::make_pair(xMin(), yMin()), std::make_pair(xMax(), yMin())));
-      return ret;
-    }
-
-    /// Reset all bin data
+    /// Reset this bin
     virtual void reset() {
       _dbn.reset();
+    }
+
+    /// Rescale as if all fill weights had been different by factor @a scalefactor
+    void scaleW(double scalefactor) {
+      _dbn.scaleW(scalefactor);
     }
 
     /// Scale the x and y coordinates and distributions.
@@ -104,117 +92,133 @@ namespace YODA {
       _dbn.scaleXY(scaleX, scaleY);
     }
 
-    void scaleW(double scalefactor) {
-      _dbn.scaleW(scalefactor);
-    }
-
     //@}
 
 
-    /// @name Bin geometry info
+  public:
+
+    /// @name X-axis info
     //@{
 
-    /// Get the low x edge of the bin.
+    /// Lower x limit of the bin (inclusive).
     double lowEdgeX() const {
       return _edges.first.first;
     }
     /// Synonym for lowEdgeX()
-    double xMin() const { return lowEdgeX(); }
+    double xMin() const {
+      return lowEdgeX();
+    }
 
-    /// Get the low y edge of the bin.
+    /// Lower y limit of the bin (inclusive).
     double lowEdgeY() const {
       return _edges.first.second;
     }
     /// Synonym for lowEdgeY()
-    double yMin() const { return lowEdgeY(); }
+    double yMin() const {
+      return lowEdgeY();
+    }
 
-    /// Get the high x edge of the bin.
+    /// Upper x limit of the bin (exclusive).
     double highEdgeX() const {
       return _edges.second.first;
     }
     /// Synonym for highEdgeX()
-    double xMax() const { return highEdgeX(); }
+    double xMax() const {
+      return highEdgeX();
+    }
 
-    /// Get the high y edge of the bin.
+    /// Upper y limit of the bin (exclusive).
     double highEdgeY() const {
       return _edges.second.second;
     }
     /// Synonym for highEdgeY()
-    double yMax() const { return highEdgeY(); }
+    double yMax() const {
+      return highEdgeY();
+    }
 
-    /// Width of the bin in y
-    double widthY() const {
-      return yMax() - yMin();
+    /// Get the {low,high} edges as an STL @c pair.
+    const Segment edges() const {
+      return _edges;
     }
 
     /// Width of the bin in x
     double widthX() const {
       return xMax() - xMin();
     }
+
+    /// Width of the bin in y
+    double widthY() const {
+      return yMax() - yMin();
+    }
+
+    /// The mean position in the bin, or the midpoint if that is not available.
+    Point focus() const {
+      if (!isZero(sumW())) {
+        return std::make_pair(xMean(), yMean());
+      } else {
+        return midpoint();
+      }
+    }
+
+    /// Geometric centre of the bin, i.e. high+low/2.0
+    Point midpoint() const {
+      return std::make_pair((xMax() + xMin())/2, (yMax() + yMin())/2);
+    }
+
     //@}
 
+
+  public:
 
     /// @name Distribution statistics
     //@{
 
-    /// Find the geometric midpoint of the bin
-    Point midpoint() const {
-    return std::make_pair((double)(xMax() - xMin())/2 + xMin(), (double)(yMax() - yMin())/2 + yMin());
-    }
-
-
-    /// Find the weighted mean point of the bin, or the midpoint if unfilled
-    Point focus() const {
-      if (_dbn.sumW() != 0) return std::make_pair(xMean(), yMean());
-      return midpoint();
-    }
-
-    /// Mean x value
+    /// Mean value of x-values in the bin.
     double xMean() const {
       return _dbn.xMean();
     }
 
-    /// Mean y value
+    /// Mean value of y-values in the bin.
     double yMean() const {
       return _dbn.yMean();
     }
 
-    /// Variance on x values
+    /// The variance of x-values in the bin.
     double xVariance() const {
       return _dbn.xVariance();
     }
 
-    /// Variance on y values
+    /// The variance of y-values in the bin.
     double yVariance() const {
       return _dbn.yVariance();
     }
 
-    /// Standard deviation of x values
+    /// The standard deviation (spread) of x-values in the bin.
     double xStdDev() const {
       return _dbn.xStdDev();
     }
 
-    /// Standard deviation of y values
+    /// The standard deviation (spread) of y-values in the bin.
     double yStdDev() const {
       return _dbn.yStdDev();
     }
 
-    /// Standard error on x mean
+    /// The standard error on the bin x focus.
     double xStdErr() const {
       return _dbn.xStdErr();
     }
 
-    /// Standard error on y mean
+    /// The standard error on the bin y focus.
     double yStdErr() const {
       return _dbn.yStdErr();
     }
 
-    /// RMS of x values
+    /// The x RMS in the bin.
     double xRMS() const {
       return _dbn.xRMS();
     }
 
-    /// RMS of y values
+    /// The y RMS in the bin.
     double yRMS() const {
       return _dbn.yRMS();
     }
@@ -222,34 +226,52 @@ namespace YODA {
     //@}
 
 
+  public:
+
     /// @name Raw distribution statistics
     //@{
 
-    /// Number of times the bin has been filled (weight-independent).
+    /// The number of entries
     unsigned long numEntries() const {
       return _dbn.numEntries();
     }
 
-    /// Sum of weights
+    /// The effective number of entries
+    unsigned long effNumEntries() const {
+      return _dbn.effNumEntries();
+    }
+
+    /// The sum of weights
     double sumW() const {
       return _dbn.sumW();
     }
 
+    /// The sum of weights squared
     double sumW2() const {
       return _dbn.sumW2();
     }
+
+    /// The sum of x*weight
     double sumWX() const {
       return _dbn.sumWX();
     }
+
+    /// The sum of y*weight
     double sumWY() const {
       return _dbn.sumWY();
     }
+
+    /// The sum of x*y*weight
     double sumWXY() const {
       return _dbn.sumWXY();
     }
+
+    /// The sum of x^2 * weight
     double sumWX2() const {
       return _dbn.sumWX2();
     }
+
+    /// The sum of y^2 * weight
     double sumWY2() const {
       return _dbn.sumWY2();
     }
@@ -257,73 +279,75 @@ namespace YODA {
     //@}
 
 
+  public:
+
     /// @name Operators
     //@{
 
+    /// Add two bins
     Bin2D<DBN>& operator += (const Bin2D<DBN>& b) {
       return add(b);
     }
 
+    /// Subtract one bin from another
     Bin2D<DBN>& operator -= (const Bin2D<DBN>& b) {
       return subtract(b);
     }
 
-    /// Equality operator that checks if the location
-    /// of the two bins is the same
-    bool operator == (const Bin2D<DBN>& other) const {
-      return _edges == other._edges;
-    }
-
-    bool operator != (const Bin2D<DBN>& other) const {
-      return ! operator == (other);
-    }
     //@}
 
-  protected:
 
-    /// Boundaries setter
-    void _setBounds(double xMin, double yMin, double xMax, double yMax) {
-      _edges.first.first = xMin;
-      _edges.first.second = yMin;
-      _edges.second.first = xMax;
-      _edges.second.second = yMax;
-    }
+    /// @name Named operators
+    //@{
+
+    /// Merge two adjacent bins
+    // @TODO: We still need to add a merge method
 
 
-  protected:
-
+    /// Add two bins (internal, explicitly named version)
+    ///
+    /// This operator is defined for adding two bins with equivalent binning.
+    /// It cannot be used to merge two bins into one larger bin.
     Bin2D<DBN>& add(const Bin2D<DBN>& b) {
       if (_edges != b._edges) {
-        if (b.highEdgeX() > highEdgeX()) _setBounds(xMin(), yMin(), b.xMax(), yMax());
-        if (b.yMax() > yMax()) _setBounds(xMin(), yMin(), xMax(), b.yMax());
-        if (b.xMin() < xMin()) _setBounds(b.xMin(), yMin(), xMax(), yMax());
-        if (b.yMin() < yMin()) _setBounds(xMin(), b.yMin(), xMax(), yMax());
+        throw LogicError("Attempted to add two bins with different edges");
       }
       _dbn += b._dbn;
       return *this;
     }
 
-    Bin2D<DBN>& subtract(const Bin2D<DBN>& b) {
-    // Automatically resize if adding a bin that does not have the same location
-    // this way merging the bins works perfectly
-    if (_edges != b._edges) {
-      if (b.xMax() > xMax()) _setBounds(xMin(), yMin(), b.xMax(), yMax());
-      if (b.yMax() > yMax()) _setBounds(xMin(), yMin(), xMax(), b.yMax());
-      if (b.xMin() < xMin()) _setBounds(b.xMin(), yMin(), xMax(), yMax());
-      if (b.yMin() < yMin()) _setBounds(xMin(), b.yMin(), xMax(), yMax());
-    }
-    _dbn -= b._dbn;
-    return *this;
-  }
 
+    /// Subtract one bin from another (internal, explicitly named version)
+    ///
+    /// This operator is defined for subtracting two bins with equivalent binning.
+    /// It cannot be used to merge two bins into one larger bin.
+    Bin2D<DBN>& subtract(const Bin2D<DBN>& b) {
+      if (_edges != b._edges) {
+        throw LogicError("Attempted to add two bins with different edges");
+      }
+      _dbn -= b._dbn;
+      return *this;
+    }
+
+    //@}
+
+
+  protected:
+
+    /// The bin limits
     Segment _edges;
+
+    // Distribution of weighted x (and perhaps y) values
     DBN _dbn;
 
   };
 
 
-  /// @name Operators
-  //@{
+
+  /// Add two bins
+  ///
+  /// This "add" operator is defined for adding two bins with equivalent binning.
+  /// It cannot be used to merge two bins into one larger bin.
   template <class DBN>
   inline Bin2D<DBN> operator + (const Bin2D<DBN>& a, const Bin2D<DBN>& b) {
     Bin2D<DBN> rtn = a;
@@ -331,17 +355,22 @@ namespace YODA {
     return rtn;
   }
 
-  template<class DBN>
+
+  /// Subtract one bin from another
+  ///
+  /// This "subtraction" operator is defined for subtracting two bins with equivalent binning.
+  /// It cannot be used to merge two bins into one larger bin.
+  template <class DBN>
   inline Bin2D<DBN> operator - (const Bin2D<DBN>& a, const Bin2D<DBN>& b) {
     Bin2D<DBN> rtn = a;
     rtn -= a;
     return rtn;
   }
 
-  //@}
 
 
 }
+
 
 
 #endif

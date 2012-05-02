@@ -973,10 +973,8 @@ namespace YODA {
     /// It contains all the commands that need to executed to properly add a
     /// bin. Specifically edges are added to the edge cache (_binHashSparse) and
     /// a bin is created from those edges.
-    void _addEdge(std::vector<Segment> edges, std::pair<Utils::cachedvector<EdgeCollection>,
+    void _addEdge(Segment edges, std::pair<Utils::cachedvector<EdgeCollection>,
                   Utils::cachedvector<EdgeCollection> >& binHash, bool addBin = true) {
-      // Check if there was no mistake made when adding segments to a vector.
-      if (edges.size() != 4) throw Exception("The segments supplied don't describe a full bin!");
 
       // This is the part in charge of adding each of the segments
       // to the edge cache. Segments are assumed to be validated
