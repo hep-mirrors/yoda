@@ -140,22 +140,19 @@ namespace YODA {
     }
 
     /// Bin addition operator
-    /// @todo Should be addBins()?
     void addBin(size_t from, size_t to) {
       _axis.addBin(from, to);
     }
 
     /// Bin addition operator
-    /// @todo Should be addBins()?
-    void addBin(const std::vector<double> binedges) {
-      _axis.addBin(binedges);
+    void addBins(const std::vector<double> binedges) {
+      _axis.addBins(binedges);
     }
 
-    /// Bin addition operator
-    /// @todo Should be addBins()?
-    void addBin(const std::vector<std::pair<double,double> > edges) {
-      _axis.addBin(edges);
-    }
+    // /// Bin addition operator
+    // void addBins(const std::vector<std::pair<double,double> > edges) {
+    //   _axis.addBins(edges);
+    // }
 
     //@}
 

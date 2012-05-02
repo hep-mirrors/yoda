@@ -36,7 +36,7 @@ namespace YODA {
         const string plotname = dpsE->Attribute("name");
 
         // DPS to be stored
-        /// @todo Clarify the memory management resulting from this
+        /// @todo Clarify the memory management resulting from this... need shared_ptr?
         Scatter2D* dps = new Scatter2D(plotpath + "/" + plotname);
 
         // Read in annotations

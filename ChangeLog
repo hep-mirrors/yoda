@@ -1,5 +1,8 @@
 2012-05-02  Andy Buckley  <andy.buckley@cern.ch>
 
+	* A much simplified and more robust rewrite of the Axis1D class,
+	just using STL map in place of the hand-written bin edge caching.
+
 	* Improvements (I hope) to the binary search in Axis1D, and
 	providing an experimental default constructor for Histo1D.
 

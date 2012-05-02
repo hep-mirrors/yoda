@@ -18,7 +18,7 @@ int main() {
 
   cout << "Resetting the profile:                   ";
   p.reset();
-  if(p.sumW() != 0 || p.sumW2() != 0){  
+  if(p.sumW() != 0 || p.sumW2() != 0){
     cout << "FAIL" << endl;
     return -1;
   }
@@ -61,22 +61,22 @@ int main() {
   cout << "Trying to add a bin (second method):     ";
   vector<double> test;
   test.push_back(120); test.push_back( 140); test.push_back(145);
-  p.addBin(test);
+  p.addBins(test);
   if(p.numBins() != 48){
     cout << "FAIL" << endl;
     return -1;
   }
   cout << "PASS" << endl;
 
-  cout << "Trying to add a bin (third method):      ";
-  vector<pair<double,double> > test2;
-  test2.push_back(make_pair(180,190));
-  p.addBin(test2);
-  if(p.numBins() != 49){
-    cout << "FAIL" << endl;
-    return -1;
-  }
-  cout << "PASS" << endl;
+  // cout << "Trying to add a bin (third method):      ";
+  // vector<pair<double,double> > test2;
+  // test2.push_back(make_pair(180,190));
+  // p.addBins(test2);
+  // if(p.numBins() != 49){
+  //   cout << "FAIL" << endl;
+  //   return -1;
+  // }
+  // cout << "PASS" << endl;
 
   return EXIT_SUCCESS;
 }
