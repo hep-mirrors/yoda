@@ -10,6 +10,7 @@
 #include "YODA/Reader.h"
 #include <YODA/Histo1D.h>
 #include <YODA/Profile1D.h>
+#include <YODA/Scatter2D.h>
 #include <boost/spirit/include/qi.hpp>
 #include <boost/spirit/include/phoenix_operator.hpp>
 #include <boost/fusion/include/adapt_struct.hpp>
@@ -49,6 +50,8 @@ namespace YODA {
       _profile1d.dbn_tot.reset();
       _profile1d.dbn_uflow.reset();
       _profile1d.dbn_oflow.reset();
+
+      _scatter2d.points.clear();
 
       _annotations.clear();
     }
@@ -99,6 +102,17 @@ namespace YODA {
       profile1ddbn dbn;
     };
 
+    /// Structs for the Scatter2D parser
+    /// The data for ScatterPoint2D
+    struct scatterpoint2d {
+      double x;
+      double exminus;
+      double explus;
+      double y;
+      double eyminus;
+      double eyplus;
+    };
+
     /// Structs for the key-value pair parser (annotations)
     struct keyval {
       std::string key;
@@ -128,6 +142,13 @@ namespace YODA {
       YODA::Dbn2D dbn_oflow;
     };
     static profile1d _profile1d;
+
+
+    /// All information for creating a Scatter2D
+    struct scatter2d {
+      std::vector<YODA::Point2D> points;
+    };
+    static scatter2d _scatter2d;
 
 
     /// Functions to call from the parser
@@ -173,6 +194,15 @@ namespace YODA {
       void operator()(const profile1dbin b, qi::unused_type, qi::unused_type) const {
         YODA::ProfileBin1D bin(b.lowedge, b.highedge, YODA::Dbn2D(b.dbn.numFills, b.dbn.sumW, b.dbn.sumW2, b.dbn.sumWX, b.dbn.sumWX2, b.dbn.sumWY, b.dbn.sumWY2, 0.0));
         _profile1d.bins.push_back(bin);
+      }
+    };
+
+
+    /// Filling a point
+    struct fillpoint {
+      void operator()(const scatterpoint2d p, qi::unused_type, qi::unused_type) const {
+        YODA::Point2D point(p.x, p.y, p.exminus, p.explus, p.eyminus, p.eyplus);
+        _scatter2d.points.push_back(point);
       }
     };
 
@@ -227,6 +257,7 @@ namespace YODA {
                Histo1Dtotal[filltotaldbn()]    |
                Histo1Duflow[filluflowdbn()]    |
                Histo1Doflow[filloflowdbn()]    |
+               ScatterPoint2D[fillpoint()]     |
                keyvaluepair[fillkeyval()]      |
                comment;
 
@@ -258,6 +289,7 @@ namespace YODA {
         // Scatter1D
 
         // Scatter2D
+        ScatterPoint2D %= double_ >> double_ >> double_ >> double_ >> double_ >> double_;
 
         // Scatter3D
 
@@ -288,6 +320,8 @@ namespace YODA {
 
       qi::rule<Iterator, profile1dbin(), Skipper> Profile1Dbin;
       qi::rule<Iterator, profile1ddbn(), Skipper> Profile1Ddbn, Profile1Dtotal, Profile1Duflow, Profile1Doflow;
+
+      qi::rule<Iterator, scatterpoint2d(), Skipper> ScatterPoint2D;
     };
 
   };
@@ -331,6 +365,16 @@ BOOST_FUSION_ADAPT_STRUCT(
   (double, lowedge)
   (double, highedge)
   (YODA::ReaderYODA::profile1ddbn, dbn)
+)
+
+BOOST_FUSION_ADAPT_STRUCT(
+  YODA::ReaderYODA::scatterpoint2d,
+  (double, x)
+  (double, exminus)
+  (double, explus)
+  (double, y)
+  (double, eyminus)
+  (double, eyplus)
 )
 
 BOOST_FUSION_ADAPT_STRUCT(

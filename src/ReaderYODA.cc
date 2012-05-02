@@ -16,6 +16,7 @@ namespace YODA {
   qi::symbols<char, int> ReaderYODA::egroup;
   ReaderYODA::histo1d ReaderYODA::_histo1d;
   ReaderYODA::profile1d ReaderYODA::_profile1d;
+  ReaderYODA::scatter2d ReaderYODA::_scatter2d;
   std::map<std::string, std::string> ReaderYODA::_annotations;
 
 
@@ -99,6 +100,18 @@ namespace YODA {
         case -3: // we left YODA_PROFILE1D
           if (contextchange) {
             YODA::Profile1D* h = new YODA::Profile1D(_profile1d.bins, _profile1d.dbn_tot, _profile1d.dbn_uflow, _profile1d.dbn_oflow);
+            std::pair <std::string, std::string> pss;  // to make boost's foreach happy
+            foreach (pss, _annotations) {
+              h->setAnnotation(pss.first, pss.second);
+            }
+            aos.push_back(h);
+            cleanup();
+            contextchange = false;
+          }
+          break;
+        case -6: // we left YODA_SCATTER2D
+          if (contextchange) {
+            YODA::Scatter2D* h = new YODA::Scatter2D(_scatter2d.points);
             std::pair <std::string, std::string> pss;  // to make boost's foreach happy
             foreach (pss, _annotations) {
               h->setAnnotation(pss.first, pss.second);
