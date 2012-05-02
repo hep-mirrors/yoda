@@ -20,6 +20,8 @@ def __read_YODA(char *filename):
             out.append(Histo1D_fromptr(<cHisto1D*>vec[i], True))
         elif ana_.type == 'Profile1D':
             out.append(Profile1D_fromptr(<cProfile1D*>vec[i], True))
+        elif ana_.type == 'Scatter2D':
+            out.append(Scatter2D_fromptr(<cScatter2D*>vec[i], True))
 
     return out
 
