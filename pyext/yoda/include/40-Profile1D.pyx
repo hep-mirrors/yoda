@@ -55,7 +55,6 @@ cdef class Profile1D(AnalysisObject):
 
         if len(args) == 3:
             nbins, lower, upper = args[0], args[1], args[2]
-
             self.setptr(
                 new cProfile1D(nbins, lower, upper, string(path), string(title))
             )

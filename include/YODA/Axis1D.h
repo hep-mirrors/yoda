@@ -26,7 +26,7 @@ namespace YODA {
     /// only for bins storage.
     typedef typename std::vector<BIN1D> Bins;
 
-    /// A standard edge container. First number defines location
+    /// A bin edge container. First number defines location
     /// of the edge, the second one a bin number the edge is a member of.
     typedef typename std::pair<double, size_t> Edge;
 
@@ -167,18 +167,11 @@ namespace YODA {
 
     /// Returns an index of a bin at a given coord, -1 if no bin.
     int getBinIndex(double coord) const {
-      // This is NOT a magic number, it is merely a 'trick' to yield a
-      // correct answer in the case of coord pointing exactly on an edge.
-      // This will never change the answer, since it is *much* smaller than
-      // the fuzzyEquals() tolerance!
-      /// @todo No it isn't: the fuzzyEquals tolerance is relative. You don't know that the typical scale of coord isn't 10e-10. This has to go.
-      coord += 0.00000000001;
-
       // Search for an edge
       size_t index = _binaryS(coord, 0, _binHashSparse.size());
 
       // If lower bound is a last edge, it means that we are 'above' the
-      // axis and no bin canbe found in such case. Therefore, announce it.
+      // axis and no bin can be found in such case. Therefore, announce it.
       if (index == _binHashSparse.size() - 1) return -1;
 
       // If on the left to the point in consideration there is an edge that is
@@ -389,20 +382,28 @@ namespace YODA {
     }
 
 
-    // Binary search algorithm. For an in-depth explanation
-    // please see the documentation of an analogous one in Axis2D
+    /// Binary search algorithm
+    ///
+    /// We are searching for a containing bin for 'value', located in
+    /// the range of bins from indices 'lower' to 'higher'. Failure to
+    /// find 'value' in the provided range will result in an assertion
+    /// failure. A value exactly on a bin edge will be accepted into the
+    /// bin on the RHS of the edge, unless it is the rightmost edge.
     size_t _binaryS(double value, size_t lower, size_t higher) const {
+      assert(_binHashSparse[lower].first <= value && _binHashSparse[higher].first >= value);
       if (lower == higher) return lower;
-      size_t where = (higher+lower)/2;
+      size_t where = (higher+lower)/2; // binary split point
+
+      /// @todo Explicitly throw if coord is exactly equal to an edge value?
 
       if (value >= _binHashSparse[where].first) {
         if (where == _binHashSparse.size() - 1) return where;
-        if (value <= _binHashSparse[where+1].first) return where;
+        if (value < _binHashSparse[where+1].first) return where;
         return _binaryS(value, where, higher);
+      } else {
+        if (where == 0) return where;
+        return _binaryS(value, lower, where);
       }
-
-      if (where == 0) return where;
-      return _binaryS(value, lower, where);
     }
 
 

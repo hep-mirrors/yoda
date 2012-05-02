@@ -1,3 +1,8 @@
+2012-05-02  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Improvements (I hope) to the binary search in Axis1D, and
+	providing an experimental default constructor for Histo1D.
+
 2011-12-08  Hendrik Hoeth  <hendrik.hoeth@cern.ch>
 
 	* ReaderYODA can now parse Histo1D and Profile1D flat files

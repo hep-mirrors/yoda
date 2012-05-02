@@ -4,6 +4,7 @@ cdef extern from "YODA/Histo1D.h" namespace "YODA":
     #cScatter2D operator / (cHisto1D &, cHisto1D &)"""
 
     cdef cppclass cHisto1D "YODA::Histo1D"(cAnalysisObject):
+        cHisto1D()
         cHisto1D(size_t nbins, double lower, double upper, string &path, string &title)
         cHisto1D(vector[double] &binedges, string &path, string &title)
         cHisto1D(vector[double] &binedges)

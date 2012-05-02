@@ -37,6 +37,14 @@ namespace YODA {
     /// @name Constructors
     //@{
 
+
+    /// Default constructor of an invalid histo
+    Histo1D()
+      : AnalysisObject("Histo1D", "", ""),
+        _axis()
+    { }
+
+
     /// Constructor giving range and number of bins.
     Histo1D(size_t nbins, double lower, double upper,
             const std::string& path="", const std::string& title="")
