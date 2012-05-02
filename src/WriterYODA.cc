@@ -116,8 +116,8 @@ namespace YODA {
     _writeAnnotations(os, s);
     os << "# xval\t xerr-\t xerr+\t yval\t yerr-\t yerr+\n";
     foreach (Point2D pt, s.points()) {
-      os << pt.x() << "\t" << pt.xErrMinus() << "\t" << pt.xErrMinus() << "\t";
-      os << pt.y() << "\t" << pt.yErrMinus() << "\t" << pt.yErrMinus() << "\n";
+      os << pt.x() << "\t" << pt.xErrMinus() << "\t" << pt.xErrPlus() << "\t";
+      os << pt.y() << "\t" << pt.yErrMinus() << "\t" << pt.yErrPlus() << "\n";
     }
     os << "# END YODA_SCATTER2D\n\n";
 
