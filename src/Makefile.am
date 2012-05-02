@@ -6,8 +6,8 @@ libYODA_la_SOURCES = \
     Dbn1D.cc \
     Histo1D.cc \
     Profile1D.cc \
-    Profile2D.cc \
     Scatter1D.cc \
+    Scatter2D.cc \
     Writer.cc \
     WriterAIDA.cc \
     WriterYODA.cc \
