@@ -11,6 +11,7 @@
 #include <YODA/Histo1D.h>
 #include <YODA/Profile1D.h>
 #include <boost/spirit/include/qi.hpp>
+#include <boost/spirit/include/qi_domain.hpp>
 #include <boost/spirit/include/phoenix_operator.hpp>
 #include <boost/fusion/include/adapt_struct.hpp>
 
