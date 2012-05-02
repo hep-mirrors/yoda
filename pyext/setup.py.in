@@ -11,13 +11,14 @@ via this module.
 ## Extension definition
 import os
 incdir = os.path.abspath('@top_srcdir@/include')
+boostdir = os.path.abspath('@BOOSTINCPATH@')
 srcdir = os.path.abspath('@top_srcdir@/src')
 
 ext = Extension(
     "yoda",
     ["@srcdir@/yoda/yoda.cpp"],
     language='c++',
-    include_dirs=[incdir],
+    include_dirs=[incdir,boostdir],
     library_dirs=[srcdir, os.path.join(srcdir,'.libs')],
     libraries=['stdc++','YODA']
 )
