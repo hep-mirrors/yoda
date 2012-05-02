@@ -281,6 +281,8 @@ namespace YODA {
       return rtn;
     }
 
+
+
     /// Get sum of weights in histo
     double sumW(bool includeoverflows=true) const;
 
@@ -295,8 +297,12 @@ namespace YODA {
 
     /// Get the standard deviation
     double stdDev(bool includeoverflows=true) const {
+      if (includeoverflows) return _axis.totalDbn().stdDev();
       return std::sqrt(variance(includeoverflows));
     }
+
+    /// Get the standard error
+    double stdErr(bool includeoverflows=true) const;
 
     //@}
 

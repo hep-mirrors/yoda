@@ -26,6 +26,10 @@ namespace YODA {
   }
 
 
+  /// @todo Improve/centralise this statistical aggregation by exposing the Dbn1D/2D objects
+  /// in the bins and using their native += operators to do the aggregation.
+
+
   double Histo1D::sumW(bool includeoverflows) const {
     if (includeoverflows) return _axis.totalDbn().sumW();
     double sumw = 0;
@@ -34,6 +38,7 @@ namespace YODA {
     }
     return sumw;
   }
+
 
   double Histo1D::sumW2(bool includeoverflows) const {
     if (includeoverflows) return _axis.totalDbn().sumW2();
@@ -49,9 +54,9 @@ namespace YODA {
     if (includeoverflows) return _axis.totalDbn().mean();
     double sumwx = 0;
     double sumw  = 0;
-    for (size_t i = 0; i < bins().size(); i++) {
-      sumwx += bins().at(i).sumWX();
-      sumw  += bins().at(i).sumW();
+    foreach (const Bin& b, bins()) {
+      sumwx += b.sumWX();
+      sumw  += b.sumW();
     }
     return sumwx/sumw;
   }
@@ -66,6 +71,13 @@ namespace YODA {
       sigma2 += diff * diff * b.sumW();
     }
     return sigma2/sumW();
+  }
+
+
+  double Histo1D::stdErr(bool includeoverflows) const {
+    if (includeoverflows) return _axis.totalDbn().stdErr();
+    const double effNumEntries = sumW(false)*sumW(false)/sumW2(false);
+    return std::sqrt(variance(false) / effNumEntries);
   }
 
 

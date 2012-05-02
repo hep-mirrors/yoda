@@ -26,7 +26,8 @@ cdef extern from "YODA/Histo1D.h" namespace "YODA":
         cDbn1D &totalDbn()
         cDbn1D &underflow()
         cDbn1D &overflow()
-        #addBin()
+        void addBin(double low, double high)
+        void addBins(vector[double] &binedges)
         void eraseBin(size_t index)
 
         # Statistical functions
@@ -37,6 +38,7 @@ cdef extern from "YODA/Histo1D.h" namespace "YODA":
         double mean(bool includeoverflows)
         double variance(bool includeoverflows)
         double stdDev(bool includeoverflows)
+        double stdErr(bool includeoverflows)
 
 
 cdef extern from "shims.h":
@@ -57,6 +59,9 @@ cdef class Histo1D(AnalysisObject):
             double upper
             char* path = '/'
             char* title = ''
+
+
+        # TODO: Handle more parameters (esp. path and title), and handle list[double] arguments
 
         if len(args) == 3:
             nbins, lower, upper = args[0], args[1], args[2]
@@ -216,6 +221,16 @@ cdef class Histo1D(AnalysisObject):
         return Dbn1D_fromptr(&self.ptr().overflow())
 
 
+    def addBin(self, low, high):
+        self.ptr().addBin(low, high)
+
+
+    def addBins(self, binedges):
+        # TODO: How to map the Python list to the C++ vector<double>?
+        #void addBins(vector[double] &binedges)
+        pass
+
+
     def __delitem__(self, size_t ix):
         self.ptr().eraseBin(ix)
 
@@ -229,7 +244,7 @@ cdef class Histo1D(AnalysisObject):
         s.integral([overflows]) -> float
 
         Return the total area of the histogram. If overflows is False, ignore
-        over-and underflow bins.
+        over-and underflow bins and any bin gaps.
 
         """
         return self.ptr().integral(overflows)
@@ -240,7 +255,7 @@ cdef class Histo1D(AnalysisObject):
         s.sumW([overflows]) -> float
 
         Return the sum of weights of the histogram. If overflows is False,
-        ignore over-and underflow bins.
+        ignore over-and underflow bins and any bin gaps.
 
         """
 
@@ -252,7 +267,7 @@ cdef class Histo1D(AnalysisObject):
         s.sumW2([overflows]) -> float
 
         Return the sum of weights squared. If overflows is False, ignore
-        over-and underflow bins.
+        over-and underflow bins and any bin gaps.
 
         """
         return self.ptr().sumW2(overflows)
@@ -263,7 +278,7 @@ cdef class Histo1D(AnalysisObject):
         s.mean([overflows]) -> float
 
         Return the mean. If overflows is False, ignore the over- and underflow
-        bins.
+        bins and any bin gaps.
 
         """
         return self.ptr().mean(overflows)
@@ -274,7 +289,7 @@ cdef class Histo1D(AnalysisObject):
         s.variance([overflows]) -> float
 
         Return the variance. If overflows is False, ignore the over- and
-        underflow bins.
+        underflow bins and any bin gaps.
 
         """
         return self.ptr().variance(overflows)
@@ -284,11 +299,24 @@ cdef class Histo1D(AnalysisObject):
         """
         s.stdDev([overflows]) -> float
 
-        Return the standard deviation. If overflows is False, ignore over-and
-        underflow bins.
+        Return the standard deviation. If overflows is False, ignore over- and
+        underflow bins and any bin gaps.
 
         """
         return self.ptr().stdDev(overflows)
+
+
+    def stdErr(self, bool overflows=True):
+        """
+        s.stdErr([overflows]) -> float
+
+        Return the standard error. If overflows is False, ignore over- and
+        underflow bins and any bin gaps.
+
+        """
+        return self.ptr().stdErr(overflows)
+
+
 
 
     def __add__(Histo1D a, Histo1D b):
