@@ -1,74 +1,80 @@
 #include "YODA/Histo1D.h"
+#include "YODA/Utils/Formatting.h"
 
-#include <iostream>
-using namespace std;
 using namespace YODA;
+using namespace std;
 
 int main() {
-  /// Creating a histo:
+  MSG_BLUE("Testing Histo1D filling: ");
+
+  MSG_(PAD(70) << "Setting up a 100 bin histo from 0-100: ");
   Histo1D h(100, 0, 100);
-  
-  cout << "Trying to fill the sample histogram:     ";
+  MSG_GREEN("PASS");
+
+  MSG_(PAD(70) << "Trying to fill the sample histogram: ");
   h.fill(0,2);
-  cout << "PASS" << endl;
-  
-  cout << "Checking sumW:                           ";
-  if(h.sumW() != 2) {
-    cout << "FAIL" << endl;
-    return -1;
-  }
-  cout << "PASS" << endl;
-  
-  cout << "Checking sumW2:                          ";
-  if(h.sumW2() != 4) {
-    cout << "FAIL" << endl;
-    return -1;
-  }
-  cout << "PASS" << endl;
-  
+  MSG_GREEN("PASS");
 
+  MSG_(PAD(70) << "Checking sumW: ");
+  if (h.sumW() != 2) {
+    MSG_RED("FAIL");
+    return -1;
+  }
+  MSG_GREEN("PASS");
+
+  MSG_(PAD(70) << "Checking sumW2: ");
+  if (h.sumW2() != 4) {
+    MSG_RED("FAIL");
+    return -1;
+  }
+  MSG_GREEN("PASS");
+
+  MSG_(PAD(70) << "Trying to fill again: ");
   h.fill(10, 2);
+  MSG_GREEN("PASS");
 
-  cout << "Checking mean:                           ";
-  if(!fuzzyEquals(5, h.mean(false))) {
-    cout << "FAIL" << endl;
+  MSG_(PAD(70) << "Checking mean: ");
+  if (!fuzzyEquals(5, h.mean(false))) {
+    MSG_RED("FAIL");
     return -1;
   }
-  cout << "PASS" << endl;
+  MSG_GREEN("PASS");
 
-  cout << "Checking variance:                       ";
-  if(!fuzzyEquals(25, h.variance(false))){
-    cout << "FAIL" << endl;
+  MSG_(PAD(70) << "Checking variance: ");
+  if (!fuzzyEquals(25, h.variance(false))) {
+    MSG_RED("FAIL");
     return -1;
   }
-  cout << "PASS" << endl;
-  
-  cout << "Checking standard deviation:             ";
-  if(!fuzzyEquals(5, h.stdDev(false))){
-    cout << "FAIL" << endl;
+  MSG_GREEN("PASS");
+
+  MSG_(PAD(70) << "Checking standard deviation: ");
+  if (!fuzzyEquals(5, h.stdDev(false))) {
+    MSG_RED("FAIL");
     return -1;
   }
-  cout << "PASS" << endl;
+  MSG_GREEN("PASS");
 
-  cout << "Trying to fill the underflow:            ";
+  MSG_(PAD(70) << "Trying to fill the underflow: ");
   h.fill(-10,1);
-  cout << "PASS" << endl;
-  cout << "Checking if stats were set correctly:    ";
-  if(!fuzzyEquals(h.underflow().mean(), -10)) {
-    cout << "FAIL" << endl;
-    return -1;
-  }
-  cout << "PASS" << endl;
+  MSG_GREEN("PASS");
 
-  cout << "Trying to fill the overflow:             ";
-  h.fill(110,1);
-  cout << "PASS" << endl;
-  cout << "Checking if stats were set correctly:    ";
-  if(!fuzzyEquals(h.overflow().mean(), 110)) {
-    cout << "FAIL" << endl;
+  MSG_(PAD(70) << "Checking if stats were set correctly: ");
+  if (!fuzzyEquals(h.underflow().mean(), -10)) {
+    MSG_RED("FAIL");
     return -1;
   }
-  cout << "PASS" << endl;
+  MSG_GREEN("PASS");
+
+  MSG_(PAD(70) << "Trying to fill the overflow: ");
+  h.fill(110,1);
+  MSG_GREEN("PASS");
+
+  MSG_(PAD(70) << "Checking if stats were set correctly: ");
+  if (!fuzzyEquals(h.overflow().mean(), 110)) {
+    MSG_RED("FAIL");
+    return -1;
+  }
+  MSG_GREEN("PASS");
 
   return EXIT_SUCCESS;
 }

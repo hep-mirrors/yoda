@@ -5,7 +5,7 @@ using namespace YODA;
 using namespace std;
 
 int main() {
-  MSG_BLUE("Testing Profile1D: ");
+  MSG_BLUE("Testing Profile1D modifiers: ");
 
   MSG_(PAD(70) << "Creating the Profile1D: ");
   Profile1D p(100,0,100);

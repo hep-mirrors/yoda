@@ -5,6 +5,7 @@ using namespace YODA;
 using namespace std;
 
 int main() {
+  MSG_BLUE("Testing Histo1D modifiers: ");
 
   MSG_(PAD(70) << "Setting up a 100 bin histo from 0-100: ");
   Histo1D h(100, 0, 100);
@@ -47,7 +48,7 @@ int main() {
   MSG_GREEN("PASS");
 
   MSG_(PAD(70) << "Checking if it is possible to add a bin: ");
-  h.addBin(0, 10.9);
+  h.addBin(0, 11);
   MSG_GREEN("PASS");
 
   MSG_(PAD(70) << "Checking if it was added properly: ");

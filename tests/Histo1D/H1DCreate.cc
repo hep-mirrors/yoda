@@ -8,7 +8,7 @@ using namespace std;
 int main() {
   MSG_BLUE("Testing Histo1D constructors: ");
 
-  MSG_("The most basic, linear constructor:");
+  MSG_(PAD(70) << "The most basic, linear constructor:");
   Histo1D h(100, 0, 100);
   if (h.numBins() != 100) {
     MSG_RED("FAIL: Wrong number of bins was created!");
@@ -29,7 +29,7 @@ int main() {
   MSG_GREEN("PASS");
 
 
-  MSG_("Explicit bin edges constructor: ");
+  MSG_(PAD(70) << "Explicit bin edges constructor: ");
   vector<double> edges;
   for (int i = 0; i < 101; ++i) edges.push_back(i);
   Histo1D h1(edges);
@@ -51,7 +51,8 @@ int main() {
   }
   MSG_GREEN("PASS");
 
-  MSG_("Copy constructor: ");
+
+  MSG_(PAD(70) << "Copy constructor: ");
   Histo1D h2(h);
   if (h2.numBins() != 100) {
     MSG_RED("FAIL: Wrong number of bins was created!");

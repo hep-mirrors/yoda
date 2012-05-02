@@ -356,14 +356,14 @@ namespace YODA {
         _binhash[bin(i).xMin()] = i;
         // If the next bin is not contiguous, add a gap index for the high edge of this bin
         if (i+1 < numBins() && !fuzzyEquals(bin(i).xMax(), bin(i+1).xMin())) {
-          _binhash[bin(i).xMin()] = -1;
+          _binhash[bin(i).xMax()] = -1;
         }
       }
     }
 
     /// Check if there are any bin edges between values @a from and @a to.
     bool _edgeInRange(double from, double to) const {
-      return (--_binhash.upper_bound(from)) != (--_binhash.upper_bound(to));
+      return (--_binhash.upper_bound(from)) != (--_binhash.lower_bound(to));
     }
 
     /// Check if there are any gaps in the axis' binning between bin indices @a from and @a to, inclusive.
