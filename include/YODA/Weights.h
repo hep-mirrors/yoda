@@ -231,7 +231,7 @@ namespace YODA {
     /// Initialise an empty list of weights keys to match those of another Weights object
     void _initToMatch(const Weights& other) {
       if (keys().empty()) {
-        raise LogicError("Weights::_initToMatch shouldn't ever be called if there are already defined weights keys");
+        throw LogicError("Weights::_initToMatch shouldn't ever be called if there are already defined weights keys");
       }
       for (size_t i = 0; i < other.size(); ++i) {
         _values[other.keys()[i]] = 0;

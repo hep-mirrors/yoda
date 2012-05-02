@@ -43,5 +43,5 @@ int main() {
   foo(5);
   foo(Weights(6));
 
-  return EXIT_SUCCESS;
+  return 0;
 }

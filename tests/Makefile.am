@@ -20,7 +20,6 @@ check_PROGRAMS = \
   testscatter3Dcreate\
   testscatter3Dmodify
 
-AM_CPPFLAGS = -I$(top_srcdir)/include
 AM_LDFLAGS = -L$(top_builddir)/src -lYODA
 
 testweights_SOURCES = TestWeights.cc
