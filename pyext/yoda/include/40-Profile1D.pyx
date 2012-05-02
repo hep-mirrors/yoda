@@ -1,14 +1,14 @@
-cdef extern from "YODA/Histo1D.h" namespace "YODA":
-    #cHisto1D operator + (cHisto1D &, cHisto1D &)
-    #cHisto1D operator - (cHisto1D &, cHisto1D &)
-    #cScatter2D operator / (cHisto1D &, cHisto1D &)"""
+cdef extern from "YODA/Profile1D.h" namespace "YODA":
+    #cProfile1D operator + (cProfile1D &, cProfile1D &)
+    #cProfile1D operator - (cProfile1D &, cProfile1D &)
+    #cScatter2D operator / (cProfile1D &, cProfile1D &)"""
 
-    cdef cppclass cHisto1D "YODA::Histo1D"(cAnalysisObject):
-        cHisto1D(size_t nbins, double lower, double upper, string &path, string &title)
-        cHisto1D(vector[double] &binedges, string &path, string &title)
-        cHisto1D(vector[double] &binedges)
-        cHisto1D(cHisto1D &h, string &path)
-        cHisto1D(cHisto1D &h)
+    cdef cppclass cProfile1D "YODA::Profile1D"(cAnalysisObject):
+        cProfile1D(size_t nbins, double lower, double upper, string &path, string &title)
+        cProfile1D(vector[double] &binedges, string &path, string &title)
+        cProfile1D(vector[double] &binedges)
+        cProfile1D(cProfile1D &h, string &path)
+        cProfile1D(cProfile1D &h)
 
         void fill(double x, double weight)
         void reset()
@@ -20,34 +20,30 @@ cdef extern from "YODA/Histo1D.h" namespace "YODA":
         size_t numBins()
         double lowEdge()
         double highEdge()
-        vector[cHistoBin1D] &bins()
-        cHistoBin1D & bin "bin"(size_t i)
-        cDbn1D &totalDbn()
-        cDbn1D &underflow()
-        cDbn1D &overflow()
-        #addBin()
-        void eraseBin(size_t index)
+        vector[cProfileBin1D] &bins()
+        cProfileBin1D & bin "bin"(size_t i)
+        cDbn2D &totalDbn()
+        cDbn2D &underflow()
+        cDbn2D &overflow()
+        #addBin
+        #void eraseBin(size_t index)
 
         # Statistical functions
-        double integral(bool includeoverflows)
-        double integral(size_t a, size_t b)
+        #double integral(bool includeoverflows)
+        #double integral(size_t a, size_t b)
         double sumW(bool includeoverflows)
         double sumW2(bool includeoverflows)
-        double mean(bool includeoverflows)
-        double variance(bool includeoverflows)
-        double stdDev(bool includeoverflows)
 
 
-cdef extern from "shims.h":
-    cHisto1D add_Histo1D (cHisto1D &, cHisto1D &)
-    cHisto1D subtract_Histo1D (cHisto1D &, cHisto1D &)
-    cScatter2D divide_Histo1D (cHisto1D &, cHisto1D &)
-    cScatter2D Scatter2D_mkScatter(cHisto1D &)
+    cProfile1D add(cProfile1D &, cProfile1D &)
+    cProfile1D subtract(cProfile1D &, cProfile1D &)
+    cScatter2D divide(cProfile1D &, cProfile1D &)
+    #cScatter2D mkScatter(cProfile1D &)
 
 from cython.operator cimport dereference as deref
 
 
-cdef class Histo1D(AnalysisObject):
+cdef class Profile1D(AnalysisObject):
     def __init__(self, *args, **kwargs):
         self._dealloc = True
         cdef:
@@ -61,26 +57,26 @@ cdef class Histo1D(AnalysisObject):
             nbins, lower, upper = args[0], args[1], args[2]
 
             self.setptr(
-                new cHisto1D(nbins, lower, upper, string(path), string(title))
+                new cProfile1D(nbins, lower, upper, string(path), string(title))
             )
         else:
-            raise ValueError('Histo1D: Expected 3 arguments')
+            raise ValueError('Profile1D: Expected 3 arguments')
 
 
-    cdef cHisto1D* ptr(self):
-        return <cHisto1D *> self.thisptr
+    cdef cProfile1D* ptr(self):
+        return <cProfile1D *> self.thisptr
 
 
-    def asScatter(self):
-        """
-        h.asScatter() -> Scatter2D
+    # def asScatter(self):
+    #     """
+    #     h.asScatter() -> Scatter2D
 
-        Return a 2D scatter data object from the histogram's bins and heights
+    #     Return a 2D scatter data object from the profile's bins and heights
 
-        """
-        cdef cScatter2D *s = new cScatter2D()
-        s[0] = Scatter2D_mkScatter(self.ptr()[0])
-        return Scatter2D_fromptr(s, True)
+    #     """
+    #     cdef cScatter2D *s = new cScatter2D()
+    #     s[0] = Scatter2D_mkScatter(self.ptr()[0])
+    #     return Scatter2D_fromptr(s, True)
 
 
     def fill(self, double x, double weight=1.0):
@@ -139,7 +135,7 @@ cdef class Histo1D(AnalysisObject):
     @property
     def bins(self):
         """
-        h.bins -> tuple(HistoBin1D)
+        h.bins -> tuple(ProfileBin1D)
 
         Access the bin objects of this histogram. Bin objects are mutable and
         changes to the bin objects will be propagated back to the histogram
@@ -148,11 +144,11 @@ cdef class Histo1D(AnalysisObject):
         """
         cdef size_t numbins = self.ptr().numBins()
         cdef size_t i
-        cdef HistoBin1D bin
+        cdef ProfileBin1D bin
 
         out = []
         for i in xrange(numbins):
-            bin = HistoBin1D_fromptr(& self.ptr().bins()[i])
+            bin = ProfileBin1D_fromptr(& self.ptr().bins()[i])
             out.append(bin)
         # TODO: Why was this here?
         # self.ptr().bins()
@@ -190,7 +186,7 @@ cdef class Histo1D(AnalysisObject):
         Return the Distribution1D object representing the total distribution.
 
         """
-        return Dbn1D_fromptr(&self.ptr().totalDbn())
+        return Dbn2D_fromptr(&self.ptr().totalDbn())
 
 
     @property
@@ -201,7 +197,7 @@ cdef class Histo1D(AnalysisObject):
         Return the Distribution1D object representing the underflow.
 
         """
-        return Dbn1D_fromptr(&self.ptr().underflow())
+        return Dbn2D_fromptr(&self.ptr().underflow())
 
 
     @property
@@ -212,26 +208,15 @@ cdef class Histo1D(AnalysisObject):
         Return the Distribution1D object representing the overflow.
 
         """
-        return Dbn1D_fromptr(&self.ptr().overflow())
+        return Dbn2D_fromptr(&self.ptr().overflow())
 
 
-    def __delitem__(self, size_t ix):
-        self.ptr().eraseBin(ix)
+    # def __delitem__(self, size_t ix):
+    #     self.ptr().eraseBin(ix)
 
 
     def __getitem__(self, size_t ix):
-        return HistoBin1D_fromptr(& self.ptr().bin(ix))
-
-
-    def integral(self, bool overflows=True):
-        """
-        s.integral([overflows]) -> float
-
-        Return the total area of the histogram. If overflows is False, ignore
-        over-and underflow bins.
-
-        """
-        return self.ptr().integral(overflows)
+        return ProfileBin1D_fromptr(& self.ptr().bin(ix))
 
 
     def sumW(self, bool overflows=True):
@@ -257,47 +242,14 @@ cdef class Histo1D(AnalysisObject):
         return self.ptr().sumW2(overflows)
 
 
-    def mean(self, bool overflows=True):
-        """
-        s.mean([overflows]) -> float
-
-        Return the mean. If overflows is False, ignore the over- and underflow
-        bins.
-
-        """
-        return self.ptr().mean(overflows)
+    def __add__(Profile1D a, Profile1D b):
+        cdef cProfile1D *res = new cProfile1D(add(a.ptr()[0], b.ptr()[0]))
+        return Profile1D_fromptr(res, True)
 
 
-    def variance(self, bool overflows=True):
-        """
-        s.variance([overflows]) -> float
-
-        Return the variance. If overflows is False, ignore the over- and
-        underflow bins.
-
-        """
-        return self.ptr().variance(overflows)
-
-
-    def stdDev(self, bool overflows=True):
-        """
-        s.stdDev([overflows]) -> float
-
-        Return the standard deviation. If overflows is False, ignore over-and
-        underflow bins.
-
-        """
-        return self.ptr().stdDev(overflows)
-
-
-    def __add__(Histo1D a, Histo1D b):
-        cdef cHisto1D *res = new cHisto1D(add_Histo1D(a.ptr()[0], b.ptr()[0]))
-        return Histo1D_fromptr(res, True)
-
-
-    def __sub__(Histo1D a, Histo1D b):
-        cdef cHisto1D *res = new cHisto1D(subtract_Histo1D(a.ptr()[0], b.ptr()[0]))
-        return Histo1D_fromptr(res, True)
+    def __sub__(Profile1D a, Profile1D b):
+        cdef cProfile1D *res = new cProfile1D(subtract(a.ptr()[0], b.ptr()[0]))
+        return Profile1D_fromptr(res, True)
 
 
     def __mul__(x, y):
@@ -305,32 +257,32 @@ cdef class Histo1D(AnalysisObject):
         Scalar multiplication. Equivalent to scaleW acting on a copy.
 
         """
-        cdef cHisto1D *res
+        cdef cProfile1D *res
         tx, ty = type(x), type(y)
-        if (tx is int or tx is float) and ty is Histo1D:
-            histo = <Histo1D> y; factor = <Histo1D> x
-        elif tx is Histo1D and (ty is int or ty is float):
-            histo = <Histo1D> x; factor = <Histo1D> y
+        if (tx is int or tx is float) and ty is Profile1D:
+            histo = <Profile1D> y; factor = <Profile1D> x
+        elif tx is Profile1D and (ty is int or ty is float):
+            histo = <Profile1D> x; factor = <Profile1D> y
         else:
             raise RuntimeError('Cannot multiply %r by %r' % (tx, ty))
 
-        res = new cHisto1D(histo.ptr()[0])
+        res = new cProfile1D(histo.ptr()[0])
         res.scaleW(factor)
-        return Histo1D_fromptr(res, True)
+        return Profile1D_fromptr(res, True)
 
 
-    def _div_scalar(Histo1D x, double y):
+    def _div_scalar(Profile1D x, double y):
         if y == 0:
-            raise ArithmeticError('Histo1D: Divide by zero scalar')
+            raise ArithmeticError('Profile1D: Divide by zero scalar')
 
-        cdef cHisto1D *res = new cHisto1D(x.ptr()[0])
+        cdef cProfile1D *res = new cProfile1D(x.ptr()[0])
 
         res.scaleW(1.0 / y)
-        return Histo1D_fromptr(res, True)
+        return Profile1D_fromptr(res, True)
 
 
-    def _div_histo(Histo1D x, Histo1D y):
-        cdef cScatter2D s = divide_Histo1D(x.ptr()[0], y.ptr()[0])
+    def _div_profile(Profile1D x, Profile1D y):
+        cdef cScatter2D s = divide(x.ptr()[0], y.ptr()[0])
         return Scatter2D_fromptr(&s)
 
 
@@ -341,19 +293,18 @@ cdef class Histo1D(AnalysisObject):
 
         """
         tx = type(x); ty = type(y)
-        if tx is Histo1D:
+        if tx is Profile1D:
             if ty is int or ty is float:
                 return x._div_scalar(y)
-            elif ty is Histo1D:
-                return x._div_histo(y)
-
+            elif ty is Profile1D:
+                return x._div_profile(y)
         raise RuntimeError('Cannot multiply %r by %r' % (tx, ty))
 
 
     def __repr__(self):
-        return 'Histo1D%r' % self.bins
+        return 'Profile1D%r' % self.bins
 
 
-cdef Histo1D Histo1D_fromptr(cHisto1D *ptr, bool dealloc=False):
-    cdef Histo1D histo = Histo1D.__new__(Histo1D)
-    return histo.setptr(ptr, dealloc)
+cdef Profile1D Profile1D_fromptr(cProfile1D *ptr, bool dealloc=False):
+    cdef Profile1D profile = Profile1D.__new__(Profile1D)
+    return profile.setptr(ptr, dealloc)

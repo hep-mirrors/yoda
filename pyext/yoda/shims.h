@@ -2,6 +2,7 @@
 
 #include "YODA/AnalysisObject.h"
 #include "YODA/Histo1D.h"
+#include "YODA/Profile1D.h"
 #include "YODA/Scatter2D.h"
 #include "YODA/HistoBin1D.h"
 #include "YODA/Histo2D.h"
@@ -49,12 +50,12 @@ inline Scatter3D divide_Histo2D(const Histo2D& a, const Histo2D& b) {
   return a / b;
 }
 
-void WriterAIDA_write (const std::string& filename, const std::vector<AnalysisObject*>& aos)
-{
+
+void WriterAIDA_write (const std::string& filename, const std::vector<AnalysisObject*>& aos) {
   return WriterAIDA::write(filename, aos);
 }
 
-Scatter2D Scatter2D_mkScatter(const Histo1D& h)
-{
+
+Scatter2D Scatter2D_mkScatter(const Histo1D& h) {
   return YODA::mkScatter(h);
 }

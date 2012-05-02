@@ -357,9 +357,7 @@ namespace YODA {
   }
 
 
-  /// Divide two histograms
-  ///
-  /// The
+  /// Divide two histograms, with a specified error treatment
   Scatter2D divide(const Histo1D& numer, const Histo1D& denom,
                    ErrorCombination erropt=QUAD);
 

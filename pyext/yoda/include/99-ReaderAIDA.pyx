@@ -1,6 +1,7 @@
 cdef extern from "YODA/ReaderAIDA.h" namespace "YODA::ReaderAIDA":
     cReader createReaderAIDA "YODA::ReaderAIDA::create" () 
 
+
 def __read_AIDA(char *filename):
     """Takes a file, returns a list of AnalysisObjects"""
     cdef vector[AOptr] vec = vector[AOptr]()
@@ -21,6 +22,7 @@ def __read_AIDA(char *filename):
             out.append(Scatter2D_fromptr(<cScatter2D*>vec[i], True))
 
     return out
+
 
 cdef class ReaderAIDA:
     """Read AIDA files"""

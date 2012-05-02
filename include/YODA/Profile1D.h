@@ -140,14 +140,19 @@ namespace YODA {
     }
 
     /// Bin addition operator
+    /// @todo Should be addBins()?
     void addBin(size_t from, size_t to) {
       _axis.addBin(from, to);
     }
 
+    /// Bin addition operator
+    /// @todo Should be addBins()?
     void addBin(const std::vector<double> binedges) {
       _axis.addBin(binedges);
     }
 
+    /// Bin addition operator
+    /// @todo Should be addBins()?
     void addBin(const std::vector<std::pair<double,double> > edges) {
       _axis.addBin(edges);
     }
@@ -161,6 +166,16 @@ namespace YODA {
     /// Number of bins on this axis (not counting under/overflow)
     size_t numBins() const {
       return bins().size();
+    }
+
+    /// Low edge of this histo's axis
+    double lowEdge() const {
+      return _axis.lowEdge();
+    }
+
+    /// High edge of this histo's axis
+    double highEdge() const {
+      return _axis.highEdge();
     }
 
 
