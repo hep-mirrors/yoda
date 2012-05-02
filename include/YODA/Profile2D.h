@@ -29,8 +29,8 @@ namespace YODA {
     typedef Profile2DAxis Axis;
     typedef Axis::Bins Bins;
     typedef ProfileBin2D Bin;
-    typedef typename std::pair<double, double> Point;
-    typedef typename std::pair<Point, Point> Segment;
+    typedef std::pair<double, double> Point;
+    typedef std::pair<Point, Point> Segment;
 
 
     /// @name Constructors
