@@ -7,6 +7,8 @@ cdef extern from "YODA/Scatter2D.h" namespace "YODA":
         cScatter2D (vector[cPoint2D]&, string, string)
         cScatter2D ()
 
+
+
 cdef class Scatter2D(AnalysisObject):
     cdef tuple _points
 
@@ -21,7 +23,7 @@ cdef class Scatter2D(AnalysisObject):
         for i in range(N):
             item = points[i]
             point_vector[i] = item.ptr()[0]
-        
+
         scatter = new cScatter2D(point_vector, string(path), string(title))
         self.setptr(scatter, True)
 
@@ -30,7 +32,7 @@ cdef class Scatter2D(AnalysisObject):
     @property
     def numPoints(self):
         return self.ptr().numPoints()
-    
+
     cdef cScatter2D * ptr(self):
         return <cScatter2D *> self.thisptr
 
@@ -60,7 +62,7 @@ cdef class Scatter2D(AnalysisObject):
     def __repr__(self):
         return '<Scatter2D>'
 
-        
+
 # dealloc decides whether or not the python object is responsible for freeing
 # used memory. Most times, it's not - we're just wrapping a C++ instance.
 # However, the same classes should be used for both wrapping and creating.

@@ -1,12 +1,9 @@
 cdef extern from "YODA/Profile1D.h" namespace "YODA":
-    #cProfile1D operator + (cProfile1D &, cProfile1D &)
-    #cProfile1D operator - (cProfile1D &, cProfile1D &)
-    #cScatter2D operator / (cProfile1D &, cProfile1D &)"""
 
     cdef cppclass cProfile1D "YODA::Profile1D"(cAnalysisObject):
+        cProfile1D()
         cProfile1D(size_t nbins, double lower, double upper, string &path, string &title)
         cProfile1D(vector[double] &binedges, string &path, string &title)
-        cProfile1D(vector[double] &binedges)
         cProfile1D(cProfile1D &h, string &path)
         cProfile1D(cProfile1D &h)
 
@@ -25,8 +22,9 @@ cdef extern from "YODA/Profile1D.h" namespace "YODA":
         cDbn2D &totalDbn()
         cDbn2D &underflow()
         cDbn2D &overflow()
-        #addBin
-        #void eraseBin(size_t index)
+        void addBin(double low, double high)
+        void addBins(vector[double] &binedges)
+        void eraseBin(size_t index)
 
         # Statistical functions
         #double integral(bool includeoverflows)
@@ -34,48 +32,92 @@ cdef extern from "YODA/Profile1D.h" namespace "YODA":
         double sumW(bool includeoverflows)
         double sumW2(bool includeoverflows)
 
-
     cProfile1D add(cProfile1D &, cProfile1D &)
     cProfile1D subtract(cProfile1D &, cProfile1D &)
     cScatter2D divide(cProfile1D &, cProfile1D &)
     #cScatter2D mkScatter(cProfile1D &)
 
-from cython.operator cimport dereference as deref
+cdef extern from "YODA/Scatter2D.h" namespace "YODA":
+    cScatter2D mkScatter(cProfile1D &)
+
 
 
 cdef class Profile1D(AnalysisObject):
+
     def __init__(self, *args, **kwargs):
+        """
+        Profile1D constructor. Several sets of arguments are permitted:
+
+        * Profile1D() -- default constructor. Not usually useful in Python, due to availability of None.
+        * Profile1D(nbins, low, high[, path, title]) -- linear binning with n bins between low-high.
+        * Profile1D(binedges[, path, title]) -- explicit bin edges (no bin gaps)
+
+        The path and title arguments are optional, and may either be specified via the
+        positional parameters or via explicit keyword arguments, e.g. path='/foo/bar'.
+        """
         self._dealloc = True
         cdef:
             size_t nbins
             double lower
             double upper
+            vector[double] binedges
             char* path = '/'
             char* title = ''
 
-        if len(args) == 3:
-            nbins, lower, upper = args[0], args[1], args[2]
-            self.setptr(
-                new cProfile1D(nbins, lower, upper, string(path), string(title))
-            )
+        ## Permit path and title specification via kwargs
+        if "path" in kwargs:
+            path = kwargs["path"]
+        if "title" in kwargs:
+            path = kwargs["title"]
+
+        ## Trigger different C++ constructors depending on Python args
+        # TODO: Map copy constructors, esp. the path-resetting one
+        if len(args) == 0:
+            self.setptr(new cProfile1D())
         else:
-            raise ValueError('Profile1D: Expected 3 arguments')
+            if type(args[0]) is list:
+                try:
+                    for i in args[0]:
+                        binedges.push_back(float(i))
+                except:
+                    raise Exception("Invalid binedges container supplied to Profile1D constructor")
+                if len(args) >= 2:
+                    assert "path" not in kwargs
+                    path = args[1]
+                if len(args) == 3:
+                    assert "title" not in kwargs
+                    path = args[2]
+                if len(args) > 3:
+                    raise ValueError("Too many arguments supplied to Profile1D constructor with a binedge list first arg")
+                self.setptr(new cProfile1D(binedges, string(path), string(title)))
+            else:
+                assert len(args) >= 3
+                nbins, lower, upper = args[0:3]
+                if len(args) >= 4:
+                    assert "path" not in kwargs
+                    path = args[3]
+                if len(args) == 5:
+                    assert "title" not in kwargs
+                    path = args[4]
+                if len(args) > 5:
+                    raise ValueError("Too many arguments supplied to Profile1D constructor")
+                self.setptr(new cProfile1D(nbins, lower, upper, string(path), string(title)))
 
 
     cdef cProfile1D* ptr(self):
         return <cProfile1D *> self.thisptr
 
 
-    # def asScatter(self):
-    #     """
-    #     h.asScatter() -> Scatter2D
+    def asScatter(self):
+        """
+        h.asScatter() -> Scatter2D
 
-    #     Return a 2D scatter data object from the profile's bins and heights
+        Return a 2D scatter data object from the profile's bins and heights
 
-    #     """
-    #     cdef cScatter2D *s = new cScatter2D()
-    #     s[0] = Scatter2D_mkScatter(self.ptr()[0])
-    #     return Scatter2D_fromptr(s, True)
+        """
+        cdef cScatter2D *s = new cScatter2D()
+        s[0] = mkScatter(self.ptr()[0])
+        return Scatter2D_fromptr(s, True)
 
 
     def fill(self, double x, double weight=1.0):

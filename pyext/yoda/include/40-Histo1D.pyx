@@ -1,13 +1,9 @@
 cdef extern from "YODA/Histo1D.h" namespace "YODA":
-    #cHisto1D operator + (cHisto1D &, cHisto1D &)
-    #cHisto1D operator - (cHisto1D &, cHisto1D &)
-    #cScatter2D operator / (cHisto1D &, cHisto1D &)"""
 
     cdef cppclass cHisto1D "YODA::Histo1D"(cAnalysisObject):
         cHisto1D()
         cHisto1D(size_t nbins, double lower, double upper, string &path, string &title)
         cHisto1D(vector[double] &binedges, string &path, string &title)
-        cHisto1D(vector[double] &binedges)
         cHisto1D(cHisto1D &h, string &path)
         cHisto1D(cHisto1D &h)
 
@@ -40,14 +36,13 @@ cdef extern from "YODA/Histo1D.h" namespace "YODA":
         double stdDev(bool includeoverflows)
         double stdErr(bool includeoverflows)
 
-
+# TODO: Remove shims and depend on Cython > 0.13
 cdef extern from "shims.h":
     cHisto1D add_Histo1D (cHisto1D &, cHisto1D &)
     cHisto1D subtract_Histo1D (cHisto1D &, cHisto1D &)
     cScatter2D divide_Histo1D (cHisto1D &, cHisto1D &)
     cScatter2D Scatter2D_mkScatter(cHisto1D &)
 
-from cython.operator cimport dereference as deref
 
 
 cdef class Histo1D(AnalysisObject):
@@ -61,7 +56,7 @@ cdef class Histo1D(AnalysisObject):
         * Histo1D(binedges[, path, title]) -- explicit bin edges (no bin gaps)
 
         The path and title arguments are optional, and may either be specified via the
-        positional parameters or via expliit keyword arguments, e.g. path='/foo/bar'.
+        positional parameters or via explicit keyword arguments, e.g. path='/foo/bar'.
         """
         self._dealloc = True
         cdef:
