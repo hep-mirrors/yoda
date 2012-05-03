@@ -3,7 +3,7 @@ YODA TODO list
 
 NOW
 
-*
+* Add nice constructor behaviour and docstrings to the Scatter2D Python interface. (AB)
 
 * Complete rewrite of Axis2D. (AB)
   Rewrite Axis2D to eliminate the crazy hashing scheme and demon code,
@@ -12,6 +12,8 @@ NOW
   Bin2D constructor. Add a merge() method in Bin2D. Add a constructor
   that takes Dbns.
 
+* Make Python interface test scripts (AB)
+
 * Add copy assignment to Point/Scatter3D and Dbn1D/2D. (AB)
 
 * Rebinning: global rebinning of Axis2D -> Histo2D by integer factor(s) --
@@ -19,7 +21,11 @@ NOW
 
 * Improve tests Makefile setup to work out the path to the Python build dir. (AB)
 
-* Make the first Python test actually test something in YODA! (AB)
+
+
+NEXT
+
+* Automatically determine input and output formats (= readers/writers) from file extn.
 
 * Test that a y-binned Histo2D has the same per-y-column stats as an
   equivalently x-binned Profile1D. Perhaps use this as an opportunity to
@@ -37,10 +43,6 @@ NOW
 * Transform 1D differential to integral histos and vice versa.
   Bins have to be contiguous. (AB)
 
-
-
-NEXT
-
 * Add a Counter type (mostly a UI/persistency wrapper on Dbn1D) (AB)
 
 * Multiple errors on Scatter2D -- via a vector of Error2D? How to implement
@@ -49,6 +51,8 @@ NEXT
 * WriterFlat and ReaderFlat, for Scatter2D representations only. (HH)
 
 * Arbitrary function transforms on Scatters (AB)
+
+* Optionally configurable ROOT writer.
 
 
 
