@@ -3,7 +3,7 @@ YODA TODO list
 
 NOW
 
-* Add extra constructors and path/title handling to Histo1D & Profile1D Python interfaces (AB)
+* Add extra constructors and path/title handling to Profile1D Python interface (AB)
 
 * Axis2D needs a complete rewrite. (AB)
   Additionally: Fix order in which points are specified in the
