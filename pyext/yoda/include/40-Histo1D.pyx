@@ -51,26 +51,65 @@ from cython.operator cimport dereference as deref
 
 
 cdef class Histo1D(AnalysisObject):
+
     def __init__(self, *args, **kwargs):
+        """
+        Histo1D constructor. Several sets of arguments are permitted:
+
+        * Histo1D() -- default constructor. Not usually useful in Python, due to availability of None.
+        * Histo1D(nbins, low, high[, path, title]) -- linear binning with n bins between low-high.
+        * Histo1D(binedges[, path, title]) -- explicit bin edges (no bin gaps)
+
+        The path and title arguments are optional, and may either be specified via the
+        positional parameters or via expliit keyword arguments, e.g. path='/foo/bar'.
+        """
         self._dealloc = True
         cdef:
             size_t nbins
             double lower
             double upper
+            vector[double] binedges
             char* path = '/'
             char* title = ''
 
+        ## Permit path and title specification via kwargs
+        if "path" in kwargs:
+            path = kwargs["path"]
+        if "title" in kwargs:
+            path = kwargs["title"]
 
-        # TODO: Handle more parameters (esp. path and title), and handle list[double] arguments
-
-        if len(args) == 3:
-            nbins, lower, upper = args[0], args[1], args[2]
-
-            self.setptr(
-                new cHisto1D(nbins, lower, upper, string(path), string(title))
-            )
+        ## Trigger different C++ constructors depending on Python args
+        # TODO: Map copy constructors, esp. the path-resetting one
+        if len(args) == 0:
+            self.setptr(new cHisto1D())
         else:
-            raise ValueError('Histo1D: Expected 3 arguments')
+            if type(args[0]) is list:
+                try:
+                    for i in args[0]:
+                        binedges.push_back(float(i))
+                except:
+                    raise Exception("Invalid binedges container supplied to Histo1D constructor")
+                if len(args) >= 2:
+                    assert "path" not in kwargs
+                    path = args[1]
+                if len(args) == 3:
+                    assert "title" not in kwargs
+                    path = args[2]
+                if len(args) > 3:
+                    raise ValueError("Too many arguments supplied to Histo1D constructor with a binedge list first arg")
+                self.setptr(new cHisto1D(binedges, string(path), string(title)))
+            else:
+                assert len(args) >= 3
+                nbins, lower, upper = args[0:3]
+                if len(args) >= 4:
+                    assert "path" not in kwargs
+                    path = args[3]
+                if len(args) == 5:
+                    assert "title" not in kwargs
+                    path = args[4]
+                if len(args) > 5:
+                    raise ValueError("Too many arguments supplied to Histo1D constructor")
+                self.setptr(new cHisto1D(nbins, lower, upper, string(path), string(title)))
 
 
     cdef cHisto1D* ptr(self):

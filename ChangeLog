@@ -1,5 +1,7 @@
 2012-05-03  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Adding nice constructor behaviours to the Histo1D Python interface.
+
 	* Adding more default constructors for analysis objects, to allow
 	member variable and STL container use without pointers.
 

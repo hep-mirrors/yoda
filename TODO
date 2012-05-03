@@ -3,6 +3,8 @@ YODA TODO list
 
 NOW
 
+* Add extra constructors and path/title handling to Histo1D & Profile1D Python interfaces (AB)
+
 * Axis2D needs a complete rewrite. (AB)
   Additionally: Fix order in which points are specified in the
   Bin2D constructor. Add a merge() method in Bin2D. Add a constructor
