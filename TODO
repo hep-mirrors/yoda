@@ -3,7 +3,11 @@ YODA TODO list
 
 NOW
 
-* Axis2D needs a complete rewrite. (AB)
+*
+
+* Complete rewrite of Axis2D. (AB)
+  Rewrite Axis2D to eliminate the crazy hashing scheme and demon code,
+  and use a 2D extension of the map lower/higher bound search now used on Axis1D.
   Additionally: Fix order in which points are specified in the
   Bin2D constructor. Add a merge() method in Bin2D. Add a constructor
   that takes Dbns.

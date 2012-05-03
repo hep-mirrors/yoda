@@ -1,11 +1,13 @@
 cdef extern from "YODA/Scatter2D.h" namespace "YODA":
     cdef cppclass cScatter2D "YODA::Scatter2D" (cAnalysisObject):
+        cScatter2D()
+        cScatter2D(vector[cPoint2D]&, string, string)
+        cScatter2D(cScatter2D &s)
+        # TODO: Add more constructors
+
         size_t numPoints()
         vector[cPoint2D] points()
         cPoint2D& point(size_t i)
-        cScatter2D (cScatter2D &s)
-        cScatter2D (vector[cPoint2D]&, string, string)
-        cScatter2D ()
 
 
 
@@ -20,6 +22,9 @@ cdef class Scatter2D(AnalysisObject):
         cdef Point2D item
         cdef cScatter2D *scatter
         cdef int i
+
+        # TODO: Add more constructors and nice arg behaviours cf. Profile1D and Histo1D
+
         for i in range(N):
             item = points[i]
             point_vector[i] = item.ptr()[0]
