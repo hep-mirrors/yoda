@@ -3,37 +3,15 @@ YODA TODO list
 
 NOW
 
-* Bin2D: HH has a clean-up patch, but that doesn't compile yet
-  because Axis2D needs a complete rewrite.
+* Axis2D needs a complete rewrite. (AB)
   Additionally: Fix order in which points are specified in the
   Bin2D constructor. Add a merge() method in Bin2D. Add a constructor
   that takes Dbns.
-  Axis2D: rewrite. The code is a nightmare and heavily broken.
 
 * Add copy assignment to Point/Scatter3D and Dbn1D/2D. (AB)
 
 * Rebinning: global rebinning of Axis2D -> Histo2D by integer factor(s) --
-  different factors in x and y directions. (MK)
-  MK: What if factor%(number of bins in X/Y direction) != 0?
-  AB: Merge the last n < factor bins: see Axis1D.
-
-* Comment, clean, and explain the Axis caching mechanisms and the very complex
-  functions that manipulate them. (MK)
-  MK: Done?
-
-* Unify the API, especially the order of X/Y parameters in various
-  constructors! (MK)
-  MK: Possibly done
-
-* Add functions to Profile2D 'scaffolding' (MK)
-  MK: Done
-
-* Change the set small numbers to something numerically correct (MK)
-
-* Fix failing Histo2D test (MK)
-  MK: I have honestly no idea why this copy constructor fails.
-      I have moved it to .cc file and declared it to do nothing and it
-      still segfaults. Any ideas are appreciated here.
+  different factors in x and y directions.
 
 * Improve tests Makefile setup to work out the path to the Python build dir. (AB)
 
@@ -42,46 +20,27 @@ NOW
 * Test that a y-binned Histo2D has the same per-y-column stats as an
   equivalently x-binned Profile1D. Perhaps use this as an opportunity to
   implement one of the the conversion functions mentioned in the NEXT
-  section... (MK)
-  MK: Conversion function implemented, no tests yet, though.
-  MK: Tested, test included in the test suite.
+  section...
 
-* Test bin-comparison and negative-weighted mean calculations.
-  MK: Scaling of errors is fine;)
+* Test negative- and mixed-weighted stat calculations, and scaling.
 
-* Review and SWIG-map Histo2D -> Histo/Profile1D conversion functions. (AB)
+* Test gap handling on 1D and 2D axes.
 
 * Add Histo2D binning constructors from Scatter3D and Profile2D.
 
-* New "flat" file format: adapt WriterYODA and fill ReaderYODA. (HH)
-  Need to persist the whole-histo Dbn1D/Dbn2Ds, and over/underflows.
-  Use state-setting constructors for Histo and Profile persistency via the
-  Reader classes.
+* Add Scatter1D/Point1D (AB)
 
-* Bin division: add quadratic / binomial error treatment enum option (AB)
-  AB: done... needs to be checked. Add a test that y +- 1 sigma in [0, 1]
-
-* Add Scatter/Point1D (AB)
-
-* Template Bin2D(done) and HistoBin2D(done) on DBN type (Dbn2D/3D) cf. Bin1D<DBN> (MK)
-  MK: Done
-
-* Profile2D, using Dbn3D (AB/MK)
-  MK: Done.
-
-* Transform 1D differential to integral histos and vice versa. Bins have to be
-  contiguous. (AB)
+* Transform 1D differential to integral histos and vice versa.
+  Bins have to be contiguous. (AB)
 
 
 
 NEXT
 
-* Use Weights objects in Dbn1D / Dbn2D (AB)
-
 * Add a Counter type (mostly a UI/persistency wrapper on Dbn1D) (AB)
 
 * Multiple errors on Scatter2D -- via a vector of Error2D? How to implement
-  flexible error combination? Error correlations? (DANIEL)
+  flexible error combination? Error correlations?
 
 * WriterFlat and ReaderFlat, for Scatter2D representations only. (HH)
 
@@ -93,28 +52,11 @@ AND AFTER THAT...
 
 * Scatter2D -> Scatter<N> again (?) with specialisations for 1D, 2D and 3D
 
-* Terminal histos via WriterTerminal
+* Terminal histos via WriterAsciiArt
 
 * Write scripts to convert between data formats and to plot results.
 
 * Template all classes on floating point type (default to double)
 
-
-PERSISTENCY
-
-* Look into pickling of C++ interfaced classes. WriterS10n? MessagePack? The
-  latter looks awesome...
-
-* Store enough information for datafile merging to be well defined
-  That means appropriate statistical combinations for each data type.
-
-* Store "norm" and "scale" as members (and write out in histo header)
-   Rather than convert type or scale internally. API for this?
-
-Data line definition:
-H1D: xl xh y dy w w2 n wx wx2 (dysys,...)
-P1D: xl xh y dy w w2 n wx wx2 wy wy2 (dysys,...)?
-Define integration with Hendrik's flat format:
-"#" marks for comments: gnuplot compatibility
-Metadata as special comments
-Suggesting logx, logy, etc.?
+* Look into pickling of C++ interfaced classes. WriterS10n? MessagePack? Protobuf?
+  The latter two look awesome...
