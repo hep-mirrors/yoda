@@ -119,7 +119,7 @@ namespace YODA {
 
   /// @brief Returns a number floored at the nth decimal place.
   inline double approx(double a, int n = 5) {
-    int roundTo = pow(10,n);
+    double roundTo = pow(10,n);
     a *= roundTo;
     a = floor(a);
     return a/roundTo;
@@ -305,9 +305,9 @@ namespace YODA {
   inline double covariance(const std::vector<int>& sample1, const std::vector<int>& sample2) {
     const double mean1 = mean(sample1);
     const double mean2 = mean(sample2);
-    const int N = sample1.size();
+    const size_t N = sample1.size();
     double cov = 0.0;
-    for (int i = 0; i < N; i++) {
+    for (size_t i = 0; i < N; i++) {
       const double cov_i = (sample1[i] - mean1)*(sample2[i] - mean2);
       cov += cov_i;
     }

@@ -194,7 +194,7 @@ namespace YODA {
     }
 
     /// The effective number of entries
-    unsigned long effNumEntries() const {
+    double effNumEntries() const {
       return _dbn.effNumEntries();
     }
 

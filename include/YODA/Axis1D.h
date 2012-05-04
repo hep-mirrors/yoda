@@ -28,7 +28,7 @@ namespace YODA {
 
     /// Type used to implement a search table of low bin edges mapped to bin indices.
     /// An index of -1 indicates a gap interval, without a corresponding bin.
-    typedef std::map<double, int> BinHash;
+    typedef std::map<double, long int> BinHash;
 
     /// @name Constructors
     //@{
@@ -118,14 +118,14 @@ namespace YODA {
 
     /// Return a bin at a given coordinate (non-const)
     BIN1D& binByCoord(double x) {
-      const int index = getBinIndex(x);
+      const long int index = getBinIndex(x);
       if (index == -1) throw RangeError("There is no bin at the specified x");
       return bin(index);
     }
 
     /// Return a bin at a given coordinate (const)
     const BIN1D& binByCoord(double x) const {
-      const int index = getBinIndex(x);
+      const long int index = getBinIndex(x);
       if (index == -1) throw RangeError("There is no bin at the specified x");
       return bin(index);
     }
@@ -167,14 +167,14 @@ namespace YODA {
     //@{
 
     /// Returns an index of a bin at a given coord, -1 if no bin matches
-    int getBinIndex(double coord) const {
+    long int getBinIndex(double coord) const {
       // First check that we are within the axis bounds at all
       if (coord < lowEdge() || coord > highEdge()) return -1;
       // Then return the lower-edge lookup from the hash map
       // NB. both upper_bound and lower_bound return values *greater* than (or equal) to coord,
       // so we have to step back one iteration to get to the lower-or-equal containing bin edge.
       BinHash::const_iterator itabove = _binhash.upper_bound(coord);
-      int index = (--itabove)->second;
+      long int index = (--itabove)->second;
       return index;
     }
 
