@@ -23,22 +23,28 @@ namespace YODA {
     /// @name Constructors
     //@{
 
-    /// Constructor accepting a set of extremal points of a bin
-    HistoBin2D(double xMin, double xMax,
-               double yMin, double yMax)
-      : Bin2D<Dbn2D>(xMin, yMin, xMax, yMax)
+    /// Make a new, empty bin with two pairs of edges.
+    HistoBin2D(double xmin, double ymin, double xmax, double ymax)
+      : Bin2D<Dbn2D>(std::make_pair(xmin, ymin), std::make_pair(xmax, ymax))
     { }
 
     /// Constructor accepting a set of all edges of a bin
-    HistoBin2D(std::pair<std::pair<double,double>, std::pair<double,double> >& edges)
-      : Bin2D<Dbn2D>(edges)
-    { }
+    HistoBin2D(const std::pair<double,double>& xedges, std::pair<double,double>& yedges)
+      : Bin2D<Dbn2D>(xedges, yedges)
+      { }
 
+    /// @brief Make a bin with all the components of a fill history.
+    ///
+    /// Mainly intended for internal persistency use.
+    HistoBin2D(const std::pair<double, double>& xedges,
+               const std::pair<double, double>& yedges, const Dbn2D& dbn)
+      : Bin2D<Dbn2D>(xedges, yedges, dbn)
+      { }
 
-    /// @todo Add copy constructor
-
-    //@}
-
+    /// Copy constructor
+    HistoBin2D(const HistoBin2D& pb)
+      : Bin2D<Dbn2D>(pb)
+      { }
 
     /// @name Modifiers
     //@{
@@ -95,20 +101,20 @@ namespace YODA {
     /// @name Transformers
     //@{
 
-    /// @brief Transformer taking x as the primary axis of ProfileBin1D
-    /// @todo Need to think about the name, and clarify what "primary axis" means
-    ProfileBin1D transformX() {
-      ProfileBin1D ret(xMin(), xMax(), Dbn2D(_dbn));
-      return ret;
-    }
+    // /// @brief Transformer taking x as the primary axis of ProfileBin1D
+    // /// @todo Need to think about the name, and clarify what "primary axis" means
+    // ProfileBin1D transformX() {
+    //   ProfileBin1D ret(std::make_pair(xMin(), xMax()), Dbn2D(_dbn));
+    //   return ret;
+    // }
 
-    /// @brief Transformer taking y as the primary axis of ProfileBin1D
-    /// @todo Need to think about the name, and clarify what "primary axis" means
-    ProfileBin1D transformY() {
-      Dbn2D dbn = _dbn; dbn.flipXY();
-      ProfileBin1D ret(yMin(), yMax(), Dbn2D(dbn));
-      return ret;
-    }
+    // /// @brief Transformer taking y as the primary axis of ProfileBin1D
+    // /// @todo Need to think about the name, and clarify what "primary axis" means
+    // ProfileBin1D transformY() {
+    //   Dbn2D dbn = _dbn; dbn.flipXY();
+    //   ProfileBin1D ret(std::make_pair(yMin(), yMax()), Dbn2D(dbn));
+    //   return ret;
+    // }
 
     //@}
   };

@@ -50,16 +50,6 @@ namespace YODA {
         _axis(nbinsX, lowerX, upperX, nbinsY, lowerY, upperY)
     { }
 
-    /// A default constructor. One needs to provide two points
-    /// (top-right and bottom-left) for each rectangular bin that
-    /// is created. It is assumed that the binedges vector is nonempty (why btw?).
-    /// @todo Drop the pairings -- it is more natural, less contrived, and cleaner in code as xlow/high and ylow/high
-    Histo2D(const std::vector<std::pair<std::pair<double,double>, std::pair<double,double> > >& binedges,
-            const std::string& path="",
-            const std::string& title="")
-      : AnalysisObject("Histo2D", path, title),
-      _axis(binedges)
-    { }
 
     /// Constructor accepting the bin edges on X and Y axis.
     Histo2D(const std::vector<double>& xedges, const std::vector<double>& yedges,
@@ -67,6 +57,7 @@ namespace YODA {
             : AnalysisObject("Histo2D", path, title),
             _axis(xedges, yedges)
     { }
+
 
     /// Copy constructor with optional new path
     Histo2D(const Histo2D& h, const std::string& path="");
@@ -92,13 +83,11 @@ namespace YODA {
     /// @name Modifiers
     //@{
 
-    /// @brief Fill histo by value and weight
-    ///
-    /// It relies on Axis2D for searching procedures and complains loudly if no
-    /// bin was found.
-    int fill(double x, double y, double weight=1.0);
+    /// @brief Fill histo with weight at (x,y)
+    void fill(double x, double y, double weight=1.0);
 
     /// @brief Reset the histogram.
+    ///
     /// Keep the binning but set all bin contents and related quantities to zero
     void reset() {
       _axis.reset();
@@ -128,20 +117,23 @@ namespace YODA {
       _axis.scaleXY(scaleX, scaleY);
     }
 
-    /// Adding bins
-    void addBin(const std::vector<std::pair<std::pair<double,double>, std::pair<double,double> > > coords) {
-        _axis.addBin(coords);
-    }
+    // /// Adding bins
+    /// @todo TODO
+    // void addBin(const std::vector<std::pair<std::pair<double,double>, std::pair<double,double> > > coords) {
+    //     _axis.addBin(coords);
+    // }
 
-    /// Adding bins which is not so eloquent
-    void addBin(double lowX, double lowY, double highX, double highY)   {
-        _axis.addBin(lowX, lowY, highX, highY);
-    }
+    // /// Adding bins which is not so eloquent
+    /// @todo TODO
+    // void addBin(double lowX, double lowY, double highX, double highY)   {
+    //     _axis.addBin(lowX, lowY, highX, highY);
+    // }
 
-    /// Merge the bins
-    void mergeBins(size_t from, size_t to) {
-      _axis.mergeBins(from, to);
-    }
+    // /// Merge the bins
+    /// @todo TODO
+    // void mergeBins(size_t from, size_t to) {
+    //   _axis.mergeBins(from, to);
+    // }
 
     void eraseBin(size_t index) {
       _axis.eraseBin(index);
@@ -149,9 +141,10 @@ namespace YODA {
 
     /// Rebin the whole histo by a @a factorX in the X direction and
     /// @a factorY in the Y direction
-    void rebin(size_t factorX, size_t factorY){
-      _axis.rebin(factorX, factorY);
-    }
+    /// @todo TODO
+    // void rebin(size_t factorX, size_t factorY){
+    //   _axis.rebin(factorX, factorY);
+    // }
 
     //@}
 
@@ -355,31 +348,31 @@ namespace YODA {
     //@}
 
 
-    /// @name Slicing operators
-    //@{
+    // /// @name Slicing operators
+    // //@{
 
-    /// @brief Create a Histo1D for the bin slice parallel to the x axis at the specified y coordinate
-    ///
-    /// Note that the created histogram will not have correctly filled underflow and overflow bins.
-    /// @todo It's not really *at* the specified y coord: it's for the corresponding bin row.
-    /// @todo Change the name!
-    Histo1D cutterX(double atY, const std::string& path="", const std::string& title="");
-
-
-    /// @brief Create a Histo1D for the bin slice parallel to the y axis at the specified x coordinate
-    ///
-    /// Note that the created histogram will not have correctly filled underflow and overflow bins.
-    /// @todo It's not really *at* the specified x coord: it's for the corresponding bin row.
-    /// @todo Change the name!
-    Histo1D cutterY(double atX, const std::string& path="", const std::string& title="");
+    // /// @brief Create a Histo1D for the bin slice parallel to the x axis at the specified y coordinate
+    // ///
+    // /// Note that the created histogram will not have correctly filled underflow and overflow bins.
+    // /// @todo It's not really *at* the specified y coord: it's for the corresponding bin row.
+    // /// @todo Change the name!
+    // Histo1D cutterX(double atY, const std::string& path="", const std::string& title="");
 
 
-    /// @brief X-wise Profile1D creator from Histo2D
-    Profile1D mkProfileX();
+    // /// @brief Create a Histo1D for the bin slice parallel to the y axis at the specified x coordinate
+    // ///
+    // /// Note that the created histogram will not have correctly filled underflow and overflow bins.
+    // /// @todo It's not really *at* the specified x coord: it's for the corresponding bin row.
+    // /// @todo Change the name!
+    // Histo1D cutterY(double atX, const std::string& path="", const std::string& title="");
 
-    /// @brief Y-wise Profile1D creator from Histo2D
-    Profile1D mkProfileY();
-    //@}
+
+    // /// @brief X-wise Profile1D creator from Histo2D
+    // Profile1D mkProfileX();
+
+    // /// @brief Y-wise Profile1D creator from Histo2D
+    // Profile1D mkProfileY();
+    // //@}
 
 
 

@@ -13,9 +13,8 @@ libYODA_la_SOURCES = \
     WriterYODA.cc \
     Reader.cc \
     ReaderAIDA.cc \
-    ReaderYODA.cc
-
-#    Histo2D.cc \
+    ReaderYODA.cc \
+    Histo2D.cc
 #    Profile2D.cc \
 #    Scatter3D.cc
 

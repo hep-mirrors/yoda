@@ -188,11 +188,11 @@ namespace YODA {
     /// Filling a bin
     struct fillbin {
       void operator()(const histo1dbin b, qi::unused_type, qi::unused_type) const {
-        YODA::HistoBin1D bin(b.lowedge, b.highedge, YODA::Dbn1D(b.dbn.numFills, b.dbn.sumW, b.dbn.sumW2, b.dbn.sumWX, b.dbn.sumWX2));
+        YODA::HistoBin1D bin(std::make_pair(b.lowedge, b.highedge), YODA::Dbn1D(b.dbn.numFills, b.dbn.sumW, b.dbn.sumW2, b.dbn.sumWX, b.dbn.sumWX2));
         _histo1d.bins.push_back(bin);
       }
       void operator()(const profile1dbin b, qi::unused_type, qi::unused_type) const {
-        YODA::ProfileBin1D bin(b.lowedge, b.highedge, YODA::Dbn2D(b.dbn.numFills, b.dbn.sumW, b.dbn.sumW2, b.dbn.sumWX, b.dbn.sumWX2, b.dbn.sumWY, b.dbn.sumWY2, 0.0));
+        YODA::ProfileBin1D bin(std::make_pair(b.lowedge, b.highedge), YODA::Dbn2D(b.dbn.numFills, b.dbn.sumW, b.dbn.sumW2, b.dbn.sumWX, b.dbn.sumWX2, b.dbn.sumWY, b.dbn.sumWY2, 0.0));
         _profile1d.bins.push_back(bin);
       }
     };
@@ -211,7 +211,7 @@ namespace YODA {
     struct fillkeyval {
       void operator()(const keyval m, qi::unused_type, qi::unused_type) const {
         _annotations[m.key] = m.val;
-      } 
+      }
     };
 
 

@@ -19,20 +19,24 @@ namespace YODA {
   class Axis1D {
   public:
 
-    /// Convenience typedefs
+    /// Typedefs
+    //@{
+
+    /// Bin type
     typedef BIN1D Bin;
 
-    /// A vector containing 1D bins. It is not used for searching,
-    /// only for bins storage.
-    typedef typename std::vector<BIN1D> Bins;
+    /// A vector containing 1D bins. Not used for searching.
+    typedef typename std::vector<Bin> Bins;
 
-    /// Type used to implement a search table of low bin edges mapped to bin indices.
+    /// @brief Type used to implement a search table of low bin edges mapped to bin indices.
     /// An index of -1 indicates a gap interval, without a corresponding bin.
     typedef std::map<double, long int> BinHash;
 
+    //@}
+
+
     /// @name Constructors
     //@{
-
 
     /// Empty constructor
     Axis1D() { }
@@ -45,6 +49,7 @@ namespace YODA {
 
 
     /// Constructor with the number of bins and the axis limits
+    /// @todo Rewrite interface to use a pair for the low/high
     Axis1D(size_t nbins, double lower, double upper) {
       _addBins(linspace(lower, upper, nbins));
     }
@@ -170,7 +175,7 @@ namespace YODA {
     long int getBinIndex(double coord) const {
       // First check that we are within the axis bounds at all
       if (coord < lowEdge() || coord > highEdge()) return -1;
-      // Then return the lower-edge lookup from the hash map
+      // Then return the lower-edge lookup from the hash map.
       // NB. both upper_bound and lower_bound return values *greater* than (or equal) to coord,
       // so we have to step back one iteration to get to the lower-or-equal containing bin edge.
       BinHash::const_iterator itabove = _binhash.upper_bound(coord);
@@ -361,10 +366,12 @@ namespace YODA {
       }
     }
 
+
     /// Check if there are any bin edges between values @a from and @a to.
     bool _edgeInRange(double from, double to) const {
       return (--_binhash.upper_bound(from)) != (--_binhash.lower_bound(to));
     }
+
 
     /// Check if there are any gaps in the axis' binning between bin indices @a from and @a to, inclusive.
     bool _gapInRange(size_t ifrom, size_t ito) const {
@@ -390,7 +397,7 @@ namespace YODA {
     /// Total distribution
     DBN _dbn;
 
-    /// Under- and over- flows
+    /// Under- and overflows
     DBN _underflow;
     DBN _overflow;
 

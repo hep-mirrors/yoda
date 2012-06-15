@@ -33,30 +33,35 @@ namespace YODA {
     /// @name Constructors
     //@{
 
-    /// Init a new, empty bin with a pair of edges.
-    Bin1D(double lowedge, double highedge)
-      : _edges( std::make_pair(lowedge, highedge) )
-    {
-      assert( _edges.second > _edges.first );
-    }
+    // /// Make a new, empty bin with a pair of edges.
+    // Bin1D(double lowedge, double highedge)
+    //   : _edges( std::make_pair(lowedge, highedge) )
+    // {
+    //   if (_edges.second < _edges.first) {
+    //     throw RangeError("The bin edges are wrongly defined!");
+    //   }
+    // }
 
 
-    /// Init a new, empty bin with a pair of edges.
+    /// Make a new, empty bin with a pair of edges.
     Bin1D(const std::pair<double,double>& edges)
-      : _edges( edges )
+      : _edges(edges)
     {
-      assert( _edges.second >= _edges.first );
+      if (_edges.second < _edges.first) {
+        throw RangeError("The bin edges are wrongly defined!");
+      }
     }
 
 
-    /// @brief Init a bin with all the components of a fill history.
+    /// @brief Make a bin with all the components of a fill history.
     ///
     /// Mainly intended for internal persistency use.
-    Bin1D(double lowedge, double highedge, const DBN& dbn)
-      : _edges( std::make_pair(lowedge, highedge) ),
-        _dbn(dbn)
+    Bin1D(const std::pair<double,double>& edges, const DBN& dbn)
+      : _edges(edges), _dbn(dbn)
     {
-      assert( _edges.second >= _edges.first );
+      if (_edges.second < _edges.first) {
+        throw RangeError("The bin edges are wrongly defined!");
+      }
     }
 
 

@@ -26,23 +26,23 @@ namespace YODA {
     /// @name Constructor giving bin low and high edges.
     //@{
 
-    /// Init a new, empty bin with a pair of edges.
+    /// Make a new, empty bin with a pair of edges.
     HistoBin1D(double lowedge, double highedge)
-      : Bin1D<Dbn1D>(lowedge, highedge)
+      : Bin1D<Dbn1D>(std::make_pair(lowedge, highedge))
     { }
 
 
-    /// Init a new, empty bin with a pair of edges.
+    /// Make a new, empty bin with a pair of edges.
     HistoBin1D(const std::pair<double,double>& edges)
       : Bin1D<Dbn1D>(edges)
     { }
 
 
-    /// @brief Init a bin with all the components of a fill history.
+    /// @brief Make a bin with all the components of a fill history.
     ///
     /// Mainly intended for internal persistency use.
-    HistoBin1D(double lowedge, double highedge, const Dbn1D& dbnx)
-      : Bin1D<Dbn1D>(lowedge, highedge, dbnx)
+    HistoBin1D(std::pair<double, double> edges, const Dbn1D& dbnx)
+      : Bin1D<Dbn1D>(edges, dbnx)
     { }
 
 

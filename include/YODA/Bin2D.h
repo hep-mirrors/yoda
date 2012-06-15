@@ -27,40 +27,64 @@ namespace YODA {
   class Bin2D : public Bin {
   public:
 
-    /// Convenience typedefs
-    typedef typename std::pair<double, double> Point;
-    typedef typename std::pair<Point, Point> Segment;
-
     /// @name Constructors
     //@{
 
-    /// Init a new, empty bin with a pair of edges.
-    Bin2D(double xMin, double yMin, double xMax, double yMax) {
-      if (xMin > xMax || yMin > yMax) {
-        throw RangeError("The bins are wrongly defined!");
+    // /// Make a new, empty bin with two pairs of edges.
+    // Bin2D(double xmin, double ymin, double xmax, double ymax)
+    //   : _xedges( std::make_pair(xmin, xmax) ),
+    //     _yedges( std::make_pair(ymin, ymax) )
+    // {
+    //   if (_xedges.second < _xedges.first) {
+    //     throw RangeError("The bin x-edges are wrongly defined!");
+    //   }
+    //   if (_yedges.second < _yedges.first) {
+    //     throw RangeError("The bin y-edges are wrongly defined!");
+    //   }
+    // }
+
+
+   /// Make a new, empty bin with two pairs of edges.
+    Bin2D(const std::pair<double, double>& xedges, const std::pair<double, double>& yedges)
+      : _xedges( xedges ), _yedges( yedges )
+    {
+      if (_xedges.second < _xedges.first) {
+        throw RangeError("The bin x-edges are wrongly defined!");
       }
-      _edges.first.first = xMin;
-      _edges.first.second = yMin;
-      _edges.second.first = xMax;
-      _edges.second.second = yMax;
+      if (_yedges.second < _yedges.first) {
+        throw RangeError("The bin y-edges are wrongly defined!");
+      }
     }
 
 
-    /// Init a new, empty bin with a pair of edges.
-    Bin2D(const Segment& edges) {
-      _edges = edges;
+    /// @brief Make a bin with all the components of a fill history.
+    ///
+    /// Mainly intended for internal persistency use.
+    Bin2D(const std::pair<double, double>& xedges,
+          const std::pair<double, double>& yedges, const DBN& dbn)
+      : _xedges(xedges), _yedges(yedges), _dbn(dbn)
+    {
+      if (_xedges.second < _xedges.first) {
+        throw RangeError("The bin x-edges are wrongly defined!");
+      }
+      if (_yedges.second < _yedges.first) {
+        throw RangeError("The bin y-edges are wrongly defined!");
+      }
     }
+
 
     /// Copy constructor
     Bin2D(const Bin2D<DBN>& b)
-      : _edges(b._edges),
+      : _xedges(b._xedges),
+        _yedges(b._yedges),
         _dbn(b._dbn)
     { }
 
 
     /// Copy assignment
     Bin2D<DBN>& operator = (const Bin2D<DBN>& b) {
-      _edges = b._edges;
+      _xedges = b._xedges;
+      _yedges = b._yedges;
       _dbn = b._dbn;
       return *this;
     }
@@ -83,11 +107,11 @@ namespace YODA {
 
     /// Scale the x and y coordinates and distributions.
     void scaleXY(double scaleX, double scaleY) {
-      _edges.first.first *= scaleX;
-      _edges.second.first *= scaleX;
+      _xedges.first *= scaleX;
+      _xedges.second *= scaleX;
 
-      _edges.first.second *= scaleY;
-      _edges.second.second *= scaleY;
+      _yedges.first *= scaleY;
+      _yedges.second *= scaleY;
 
       _dbn.scaleXY(scaleX, scaleY);
     }
@@ -102,7 +126,7 @@ namespace YODA {
 
     /// Lower x limit of the bin (inclusive).
     double lowEdgeX() const {
-      return _edges.first.first;
+      return _xedges.first;
     }
     /// Synonym for lowEdgeX()
     double xMin() const {
@@ -111,7 +135,7 @@ namespace YODA {
 
     /// Lower y limit of the bin (inclusive).
     double lowEdgeY() const {
-      return _edges.first.second;
+      return _yedges.first;
     }
     /// Synonym for lowEdgeY()
     double yMin() const {
@@ -120,7 +144,7 @@ namespace YODA {
 
     /// Upper x limit of the bin (exclusive).
     double highEdgeX() const {
-      return _edges.second.first;
+      return _xedges.second;
     }
     /// Synonym for highEdgeX()
     double xMax() const {
@@ -129,16 +153,11 @@ namespace YODA {
 
     /// Upper y limit of the bin (exclusive).
     double highEdgeY() const {
-      return _edges.second.second;
+      return _yedges.second;
     }
     /// Synonym for highEdgeY()
     double yMax() const {
       return highEdgeY();
-    }
-
-    /// Get the {low,high} edges as an STL @c pair.
-    const Segment edges() const {
-      return _edges;
     }
 
     /// Width of the bin in x
@@ -152,7 +171,7 @@ namespace YODA {
     }
 
     /// The mean position in the bin, or the midpoint if that is not available.
-    Point focus() const {
+    std::pair<double, double> focus() const {
       if (!isZero(sumW())) {
         return std::make_pair(xMean(), yMean());
       } else {
@@ -161,7 +180,7 @@ namespace YODA {
     }
 
     /// Geometric centre of the bin, i.e. high+low/2.0
-    Point midpoint() const {
+    std::pair<double, double> midpoint() const {
       return std::make_pair((xMax() + xMin())/2, (yMax() + yMin())/2);
     }
 
@@ -309,7 +328,7 @@ namespace YODA {
     /// This operator is defined for adding two bins with equivalent binning.
     /// It cannot be used to merge two bins into one larger bin.
     Bin2D<DBN>& add(const Bin2D<DBN>& b) {
-      if (_edges != b._edges) {
+      if (_xedges != b._xedges || _yedges != b._yedges) {
         throw LogicError("Attempted to add two bins with different edges");
       }
       _dbn += b._dbn;
@@ -322,7 +341,7 @@ namespace YODA {
     /// This operator is defined for subtracting two bins with equivalent binning.
     /// It cannot be used to merge two bins into one larger bin.
     Bin2D<DBN>& subtract(const Bin2D<DBN>& b) {
-      if (_edges != b._edges) {
+      if (_xedges != b._xedges || _yedges != b._yedges) {
         throw LogicError("Attempted to add two bins with different edges");
       }
       _dbn -= b._dbn;
@@ -335,7 +354,8 @@ namespace YODA {
   protected:
 
     /// The bin limits
-    Segment _edges;
+    std::pair<double,double> _xedges;
+    std::pair<double,double> _yedges;
 
     // Distribution of weighted x (and perhaps y) values
     DBN _dbn;

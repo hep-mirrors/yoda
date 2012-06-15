@@ -21,6 +21,8 @@ NOW
 
 * Improve tests Makefile setup to work out the path to the Python build dir. (AB)
 
+* Remove nasty Cython shims (DM)
+
 
 
 NEXT

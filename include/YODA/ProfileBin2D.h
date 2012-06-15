@@ -21,19 +21,22 @@ namespace YODA {
     /// @name Constructors
     //@{
 
-    /// Constructor giving lowedgesX/Y
-    ProfileBin2D(double lowX, double lowY, double highX, double highY)
-      : Bin2D<Dbn3D>(lowX, lowY, highX, highY)
+    /// Make a new, empty bin with two pairs of edges.
+    ProfileBin2D(double xmin, double ymin, double xmax, double ymax) {
+      : Bin2D<Dbn3D>(std::make_pair(xmin, ymin), std::make_pair(xmax, ymax))
     { }
 
-    ProfileBin2D(const std::pair<std::pair<double,double>,std::pair<double,double> >& edges)
-      : Bin2D<Dbn3D>(edges)
+    /// Constructor accepting a set of all edges of a bin
+    ProfileBin2D(const std::pair<double,double> xedges, std::pair<double,double>& yedges)
+      : Bin2D<Dbn3D>(xedges, yedges)
     { }
 
-    /// Unpersisting constructor
-    ProfileBin2D(double lowX, double lowY, double highX, double highY,
-                 const Dbn3D& dbnxyz)
-      : Bin2D<Dbn3D>(lowX, lowY, highX, highY)
+    /// @brief Make a bin with all the components of a fill history.
+    ///
+    /// Mainly intended for internal persistency use.
+    ProfileBin2D(const std::pair<double, double>& xedges,
+                 const std::pair<double, double>& yedges, const Dbn3D& dbn)
+      : Bin2D<Dbn3D>(xedges, yedges, dbn)
     { }
 
     /// Copy constructor
