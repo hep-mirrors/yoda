@@ -1,3 +1,8 @@
+// -*- C++ -*-
+//
+// This file is part of YODA -- Yet more Objects for Data Analysis
+// Copyright (C) 2008-2012 The YODA collaboration (see AUTHORS for details)
+//
 #ifndef YODA_Axis2D_h
 #define YODA_Axis2D_h
 
@@ -16,12 +21,10 @@
 namespace YODA {
 
 
-  /// @brief 2D bin container and provider
+  /// @brief 1D bin container
   ///
-  /// This class handles almost all boiler-plate operations
-  /// on 2D bins (like creating axis, adding, searching, testing).
-  /// Note that the class template arguments change its internal
-  /// workings.
+  /// This class handles most of the low-level operations on an axis of bins
+  /// arranged in a 2D grid (including gaps).
   template <typename BIN2D, typename DBN>
   class Axis2D {
   public:
@@ -50,95 +53,43 @@ namespace YODA {
     Axis2D() {}
 
 
-    /// Most standard constructor accepting X/Y ranges and number of bins
-    /// on each of the axis. Both axes are divided linearly.
-    /// @todo Rewrite interface to use pairs for the low/high
-    Axis2D(size_t nbinsX, double lowerX, double upperX, size_t nbinsY, double lowerY, double upperY) {
-      /// @todo TODO
-
-      // std::vector<Segment> binLimits;
-      // double coeffX = (upperX - lowerX)/(double)nbinsX;
-      // double coeffY = (upperY - lowerX)/(double)nbinsY;
-      // for (double i = lowerX; i < upperX; i += coeffX) {
-      //   for (double j = lowerY; j < upperY; j += coeffY) {
-      //     binLimits.push_back(std::make_pair(std::make_pair(i, j),
-      //                                        std::make_pair((double)(i+coeffX), (double)(j+coeffY))));
-      //   }
-      // }
-      // _mkAxis(binLimits);
-      // _setOutflows();
-    }
-
-
     /// A constructor with specified x and y axis bin limits.
     Axis2D(const std::vector<double>& xedges, const std::vector<double>& yedges) {
-      /// @todo TODO
-
-      // std::vector<Segment> binLimits;
-      // /// Generate bin limits
-      // for (size_t i = 0; i < yedges.size() - 1; ++i) {
-      //   for (size_t  j = 0; j < xedges.size() - 1; ++j) {
-      //     binLimits.push_back(std::make_pair(std::make_pair(xedges[j], yedges[i]),
-      //                                        std::make_pair(xedges[j+1], yedges[i+1])));
-      //   }
-      // }
-      // _mkAxis(binLimits);
-      // _setOutflows();
-    }
-
-    /// @brief A constructor accepting a list of bins and all the outflows
-    ///
-    /// Creates an Axis2D from existing bins
-    Axis2D(const Bins& bins,
-           const std::vector<std::vector<DBN> >& outflows,
-           const DBN& totalDbn)
-    {
-      /// @todo TODO
-
-      // std::vector<Segment> binLimits;
-      // foreach(Bin bin, bins) {
-      //   binLimits.push_back(std::make_pair(std::make_pair(bin.xMin(), bin.yMin()),
-      //                                      std::make_pair(bin.xMax(), bin.yMax())));
-      // }
-      // _mkAxis(binLimits);
-      // for (size_t i = 0; i < _bins.size(); ++i) {
-      //   _bins[i] = bins[i];
-      // }
-      // if (isGrid()) _setOutflows();
-      // _outflows = outflows;
-
-      // _dbn = totalDbn;
+      _addBins(xedges, yedges);
     }
 
 
-    /// Constructor accepting just a list of bins
-    Axis2D(const Bins& bins)
-    {
-      /// @todo TODO
-
-      // std::vector<Segment> binLimits;
-      // foreach(Bin bin, bins) {
-      //   binLimits.push_back(std::make_pair(std::make_pair(bin.xMin(), bin.yMin()),
-      //                                      std::make_pair(bin.xMax(), bin.yMax())));
-      // }
-      // _mkAxis(binLimits);
-      // for (size_t i = 0; i < _bins.size(); ++i) {
-      //   _bins[i] = bins[i];
-      // }
-      // if (isGrid()) _setOutflows();
+    /// Most standard constructor accepting X/Y ranges and number of bins
+    /// on each of the axis. Both axes are divided linearly.
+    Axis2D(size_t nbinsX, const std::pair<double,double>& rangeX,
+           size_t nbinsY, const std::pair<double,double>& rangeY) {
+      _addBins(linspace(rangeX.first, rangeX.second, nbinsX),
+               linspace(rangeY.first, rangeY.second, nbinsY));
     }
 
 
-    /// Copy constructor
-    Axis2D(const Axis2D& a) {
-      _bins = a._bins;
-      _dbn = a._dbn;
-      _outflows = a._outflows;
-
-      /// @todo TODO
-      // _binHashSparse.first.regenCache();
-      // _binHashSparse.second.regenCache();
+    /// Constructor accepting a list of bins
+    Axis2D(const Bins& bins) {
+      _addBins(bins);
     }
+
+
+    /// @todo TODO
+    // /// State-setting constructor for persistency
+    // Axis2D(const Bins& bins,
+    //        const std::vector<std::vector<DBN> >& outflows,
+    //        const DBN& totalDbn)
+    // {
+    // }
+
+
+    // /// Copy constructor
+    // /// @todo Needed?
+    // Axis2D(const Axis2D& a) {
+    //   _bins = a._bins;
+    //   _dbn = a._dbn;
+    //   _outflows = a._outflows;
+    // }
 
     //@}
 
@@ -553,17 +504,24 @@ namespace YODA {
 
   private:
 
-    // /// Add new bins, constructed from two sorted vectors of edges, to the axis
-    // void _addBins(const std::vector<double>& xbinedges, const std::vector<double>& ybinedges) {
-    //   //std::sort(binedges.begin(), binedges.end());
-    //   if (_edgeInRange(binedges.front(), binedges.back())) {
-    //     throw RangeError("New bin range overlaps with existing bin edges");
-    //   }
-    //   for (size_t i = 0; i < binedges.size() - 1; ++i) {
-    //     _bins.push_back(BIN1D(binedges[i], binedges[i+1]));
-    //   }
-    //   _updateAxis();
-    // }
+    /// Add new bins, constructed from two sorted vectors of edges, to the axis
+    void _addBins(const std::vector<double>& xbinedges, const std::vector<double>& ybinedges) {
+      /// @todo Check that vectors are sorted?
+
+      /// @todo Check whether there is overlap with any existing edges in either direction
+      // if (_edgeInRange(binedges.front(), binedges.back())) {
+      //   throw RangeError("New bin range overlaps with existing bin edges");
+      // }
+
+      // Create and add bins
+      for (size_t i = 0; i < xbinedges.size() - 1; ++i) {
+        for (size_t j = 0; j < ybinedges.size() - 1; ++j) {
+          _bins.push_back( BIN2D(std::make_pair(xbinedges[i], xbinedges[i+1]),
+                                 std::make_pair(ybinedges[j], ybinedges[j+1])) );
+        }
+      }
+      _updateAxis();
+    }
 
 
     /// Add new bins to the axis
@@ -587,12 +545,26 @@ namespace YODA {
     void _updateAxis() {
       std::sort(_bins.begin(), _bins.end());
       _binhash.clear();
+      /// @todo Create a double hash based on the two sets of low edges
+
+      /// @todo First, set up the collection of low edges based on all unique edges
+      std::vector<double> xedges, yedges;
+      for (size_t i = 0; i < numBins(); ++i) {
+        xedges.push_back(bin(i).xMin());
+        yedges.push_back(bin(i).yMin());
+      }
+      std::unique(xedges.begin(), xedges.end());
+      std::unique(yedges.begin(), yedges.end());
+
       for (size_t i = 0; i < numBins(); ++i) {
         // Add low edge hash for each bin
-        _binhash[bin(i).xMin()] = i;
+        //_binhash[bin(i).xMin()] = i;
+
+        /// @todo Make a 2D version of this gap detection, allowing for duplicate indices
+
         // If the next bin is not contiguous, add a gap index for the high edge of this bin
         if (i+1 < numBins() && !fuzzyEquals(bin(i).xMax(), bin(i+1).xMin())) {
-          _binhash[bin(i).xMax()] = -1;
+          //_binhash[bin(i).xMax()] = -1;
         }
       }
     }

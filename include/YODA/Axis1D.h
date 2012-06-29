@@ -14,7 +14,7 @@ namespace YODA {
   /// @brief 1D bin container
   ///
   /// This class handles most of the low-level operations on an axis of bins
-  /// arranged in a 1D line.
+  /// arranged in a 1D line (including gaps).
   template <typename BIN1D, typename DBN>
   class Axis1D {
   public:

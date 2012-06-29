@@ -22,8 +22,8 @@ namespace YODA {
     //@{
 
     /// Make a new, empty bin with two pairs of edges.
-    ProfileBin2D(double xmin, double ymin, double xmax, double ymax) {
-      : Bin2D<Dbn3D>(std::make_pair(xmin, ymin), std::make_pair(xmax, ymax))
+    ProfileBin2D(double xmin, double xmax, double ymin, double ymax) {
+      : Bin2D<Dbn3D>(std::make_pair(xmin, xmax), std::make_pair(ymin, ymax))
     { }
 
     /// Constructor accepting a set of all edges of a bin

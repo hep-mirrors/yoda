@@ -46,7 +46,7 @@ namespace YODA {
 
    /// Make a new, empty bin with two pairs of edges.
     Bin2D(const std::pair<double, double>& xedges, const std::pair<double, double>& yedges)
-      : _xedges( xedges ), _yedges( yedges )
+      : _xedges(xedges), _yedges(yedges)
     {
       if (_xedges.second < _xedges.first) {
         throw RangeError("The bin x-edges are wrongly defined!");
@@ -133,15 +133,6 @@ namespace YODA {
       return lowEdgeX();
     }
 
-    /// Lower y limit of the bin (inclusive).
-    double lowEdgeY() const {
-      return _yedges.first;
-    }
-    /// Synonym for lowEdgeY()
-    double yMin() const {
-      return lowEdgeY();
-    }
-
     /// Upper x limit of the bin (exclusive).
     double highEdgeX() const {
       return _xedges.second;
@@ -149,6 +140,27 @@ namespace YODA {
     /// Synonym for highEdgeX()
     double xMax() const {
       return highEdgeX();
+    }
+
+    /// Get the {low,high} edges as an STL @c pair.
+    std::pair<double,double> xedges() const {
+      return _xedges;
+    }
+
+    /// Width of the bin in x
+    double widthX() const {
+      return xMax() - xMin();
+    }
+
+
+
+    /// Lower y limit of the bin (inclusive).
+    double lowEdgeY() const {
+      return _yedges.first;
+    }
+    /// Synonym for lowEdgeY()
+    double yMin() const {
+      return lowEdgeY();
     }
 
     /// Upper y limit of the bin (exclusive).
@@ -160,9 +172,9 @@ namespace YODA {
       return highEdgeY();
     }
 
-    /// Width of the bin in x
-    double widthX() const {
-      return xMax() - xMin();
+    /// Get the {low,high} edges as an STL @c pair.
+    std::pair<double,double> yedges() const {
+      return _yedges;
     }
 
     /// Width of the bin in y
@@ -385,6 +397,15 @@ namespace YODA {
     Bin2D<DBN> rtn = a;
     rtn -= a;
     return rtn;
+  }
+
+
+  /// Bin2Ds are compared for axis sorting by lower edge position in first x and then y directions
+  template <class DBN>
+  inline bool operator<(const Bin2D<DBN>& a, const Bin2D<DBN>& b) {
+    if (!fuzzyEquals(a.xedges().first, b.xedges().first))
+      return b.xedges().first > a.xedges().first;
+    return b.yedges().first > a.yedges().first;
   }
 
 

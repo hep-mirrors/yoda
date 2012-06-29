@@ -47,7 +47,7 @@ namespace YODA {
             size_t nbinsY, double lowerY, double upperY,
             const std::string& path="", const std::string& title="")
       : AnalysisObject("Histo2D", path, title),
-        _axis(nbinsX, lowerX, upperX, nbinsY, lowerY, upperY)
+        _axis(nbinsX, std::make_pair(lowerX, upperX), nbinsY, std::make_pair(lowerY, upperY))
     { }
 
 
@@ -66,14 +66,16 @@ namespace YODA {
     /// @todo Add binning constructors from Scatter3D (and Profile2D when it exists)
 
 
-    /// @brief State-setting constructor
-    /// Mainly intended for internal persistency use.
-    Histo2D(const std::vector<HistoBin2D>& bins,
-            const std::vector<std::vector<Dbn2D> >& outflows,
-            const Dbn2D& totalDbn,
-            const std::string& path="", const std::string& title="")
-      : AnalysisObject("Histo2D", path, title), _axis(bins, outflows, totalDbn)
-    { }
+    /// @todo TODO
+    // /// @brief State-setting constructor
+    // /// Mainly intended for internal persistency use.
+    // Histo2D(const std::vector<HistoBin2D>& bins,
+    //         const std::vector<std::vector<Dbn2D> >& outflows,
+    //         const Dbn2D& totalDbn,
+    //         const std::string& path="", const std::string& title="")
+    //   : AnalysisObject("Histo2D", path, title),
+    //     _axis(bins, outflows, totalDbn)
+    // { }
 
     //@}
 

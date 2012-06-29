@@ -24,14 +24,14 @@ namespace YODA {
     //@{
 
     /// Make a new, empty bin with two pairs of edges.
-    HistoBin2D(double xmin, double ymin, double xmax, double ymax)
-      : Bin2D<Dbn2D>(std::make_pair(xmin, ymin), std::make_pair(xmax, ymax))
+    HistoBin2D(double xmin, double xmax, double ymin, double ymax)
+      : Bin2D<Dbn2D>(std::make_pair(xmin, xmax), std::make_pair(ymin, ymax))
     { }
 
     /// Constructor accepting a set of all edges of a bin
-    HistoBin2D(const std::pair<double,double>& xedges, std::pair<double,double>& yedges)
+    HistoBin2D(const std::pair<double,double>& xedges, const std::pair<double,double>& yedges)
       : Bin2D<Dbn2D>(xedges, yedges)
-      { }
+    { }
 
     /// @brief Make a bin with all the components of a fill history.
     ///
