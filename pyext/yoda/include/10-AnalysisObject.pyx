@@ -1,6 +1,7 @@
 cdef extern from "YODA/AnalysisObject.h" namespace "YODA":
     cdef cppclass cAnalysisObject "YODA::AnalysisObject":
         string type()
+        map[string, string] annotations
 
 ctypedef cAnalysisObject* AOptr 
 
@@ -16,6 +17,16 @@ cdef class AnalysisObject:
     def type(self):
         """The type of this analysis object as a string"""
         return self.thisptr.type().c_str()
+
+    def annotations(self):
+        d = dict()
+        cdef map[string, string] annotations = self.thisptr.annotations()
+
+        it = annotations.begin()
+        while it != annotations.end():
+            d[deref(it).first.c_str()] = deref(it).second.c_str()
+            inc(it)
+        return d
 
     def __dealloc__(self):
         if self._dealloc:
