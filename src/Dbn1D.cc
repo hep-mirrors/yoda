@@ -4,7 +4,6 @@
 // Copyright (C) 2008-2012 The YODA collaboration (see AUTHORS for details)
 //
 #include "YODA/Dbn1D.h"
-#include "YODA/Utils/MathUtils.h"
 
 namespace YODA {
 
@@ -20,7 +19,7 @@ namespace YODA {
 
 
   double Dbn1D::mean() const {
-    if (isZero(effNumEntries(), 0.0)) {
+    if (effNumEntries() == 0) {
       throw LowStatsError("Requested mean of a distribution with no net fill weights");
     }
     // This is ok, even for negative sum(w)
@@ -39,7 +38,7 @@ namespace YODA {
     }
     const double num = _sumWX2*_sumW - _sumWX*_sumWX;
     const double den = _sumW*_sumW - _sumW2;
-    if (den == 0) {
+    if (isZero(den)) {
       throw WeightError("Undefined weighted variance");
     }
     /// @todo Isn't this sensitive to the overall scale of the weights?

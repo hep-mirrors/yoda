@@ -33,8 +33,18 @@ namespace YODA {
       const double x = b.focus();
       const double ex_m = b.focus() - b.lowEdge();
       const double ex_p = b.highEdge() - b.focus();
-      const double y = b.mean();
-      const double ey = b.stdErr();
+      double y;
+      try {
+        y = b.mean();
+      } catch (const LowStatsError& lse) {
+        y = 0.0;
+      }
+      double ey;
+      try {
+        ey = b.stdErr();
+      } catch (const LowStatsError& lse) {
+        ey = 0.0;
+      }
       const Point2D pt(x, y, ex_m, ex_p, ey, ey);
       rtn.addPoint(pt);
     }

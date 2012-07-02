@@ -7,6 +7,7 @@
 #define YODA_Dbn1D_h
 
 #include "YODA/Exceptions.h"
+#include "YODA/Utils/MathUtils.h"
 #include <cmath>
 
 namespace YODA {
@@ -146,6 +147,7 @@ namespace YODA {
 
     /// Effective number of entries \f$ = (\sum w)^2 / \sum w^2 \f$
     double effNumEntries() const {
+      if (isZero(_sumW2)) return 0;
       return _sumW*_sumW / _sumW2;
     }
 
