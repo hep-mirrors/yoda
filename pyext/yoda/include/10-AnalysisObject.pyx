@@ -1,7 +1,7 @@
 cdef extern from "YODA/AnalysisObject.h" namespace "YODA":
     cdef cppclass cAnalysisObject "YODA::AnalysisObject":
         string type()
-        map[string, string] annotations
+        map[string, string] annotations()
 
 ctypedef cAnalysisObject* AOptr 
 
@@ -19,13 +19,17 @@ cdef class AnalysisObject:
         return self.thisptr.type().c_str()
 
     def annotations(self):
-        d = dict()
+        stuff = dict()
         cdef map[string, string] annotations = self.thisptr.annotations()
+        cdef pair[string, string] obj
 
+        # TODO: clean up some of this, as required
         it = annotations.begin()
         while it != annotations.end():
-            d[deref(it).first.c_str()] = deref(it).second.c_str()
+            obj = deref(it)
+            d[obj.first.c_str()] = obj.second.c_str()
             inc(it)
+
         return d
 
     def __dealloc__(self):
