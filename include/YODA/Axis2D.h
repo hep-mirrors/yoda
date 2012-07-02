@@ -40,7 +40,7 @@ namespace YODA {
 
     /// @brief Type used to implement a search table of low bin edges (in 2D) mapped to bin indices.
     /// An index of -1 indicates a gap interval, without a corresponding bin.
-    typedef std::map<double, int> SubBinHash;
+    typedef std::map<double, long int> SubBinHash;
     typedef std::map<double, SubBinHash> BinHash;
 
     //@}
@@ -543,29 +543,54 @@ namespace YODA {
     ///
     /// The bin hash is purely for searching, and is generated from the bins list only.
     void _updateAxis() {
-      std::sort(_bins.begin(), _bins.end());
-      _binhash.clear();
-      /// @todo Create a double hash based on the two sets of low edges
-
-      /// @todo First, set up the collection of low edges based on all unique edges
+      /// First, set up the collection of low edges based on all unique edges
       std::vector<double> xedges, yedges;
+      std::sort(_bins.begin(), _bins.end());
       for (size_t i = 0; i < numBins(); ++i) {
         xedges.push_back(bin(i).xMin());
+        xedges.push_back(bin(i).xMax()); // only the unique max edges will "survive"
         yedges.push_back(bin(i).yMin());
+        yedges.push_back(bin(i).xMax()); // only the unique max edges will "survive"
       }
       std::unique(xedges.begin(), xedges.end());
       std::unique(yedges.begin(), yedges.end());
 
-      for (size_t i = 0; i < numBins(); ++i) {
-        // Add low edge hash for each bin
-        //_binhash[bin(i).xMin()] = i;
+      // Create a double-map hash based on the two sets of low edges. Initialize with null bin indices.
+      _binhash.clear();
+      for (size_t ix = 0; ix < xedges.size() - 1; ++ix) {
+        _binhash[xedges[ix]] = SubBinHash();
+        for (size_t iy = 0; iy < yedges.size() - 1; ++iy) {
+          _binhash[xedges[ix]][yedges[iy]] = -1;
+        }
+      }
+
+      // Loop over bins, setting each one's non-null bin index appropriately in the double-hashmap.
+      for (size_t ib = 0; ib < numBins(); ++ib) {
+
+        // Find the axis low edges contained within this bin
+        const double xmin(bin(ib).xMin()), ymin(bin(ib).xMin());
+        std::vector<double> xlowedges_in_bin, ylowedges_in_bin;
+        /// @todo STL alg for this?
+        for (size_t ix = 0; ix < xedges.size() - 1; ++ix) {
+          if (xedges[ix] >= xmin) xlowedges_in_bin.push_back(xedges[ix]);
+        }
+        /// @todo STL alg for this?
+        for (size_t iy = 0; iy < yedges.size() - 1; ++iy) {
+          if (yedges[iy] >= ymin) ylowedges_in_bin.push_back(yedges[iy]);
+        }
+
+        // Set bin indices
+        for (std::vector<double>::const_iterator x = xlowedges_in_bin.begin(); x != xlowedges_in_bin.end(); ++x) {
+          for (std::vector<double>::const_iterator y = ylowedges_in_bin.begin(); y != ylowedges_in_bin.end(); ++y) {
+            _binhash[*x][*y] = ib;
+          }
+        }
 
         /// @todo Make a 2D version of this gap detection, allowing for duplicate indices
-
         // If the next bin is not contiguous, add a gap index for the high edge of this bin
-        if (i+1 < numBins() && !fuzzyEquals(bin(i).xMax(), bin(i+1).xMin())) {
-          //_binhash[bin(i).xMax()] = -1;
-        }
+        // if (i+1 < numBins() && !fuzzyEquals(bin(i).xMax(), bin(i+1).xMin())) {
+        //   _binhash[bin(i).xMax()] = -1;
+        // }
       }
     }
 
