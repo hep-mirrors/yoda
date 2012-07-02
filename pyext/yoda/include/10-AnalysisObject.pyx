@@ -19,7 +19,7 @@ cdef class AnalysisObject:
         return self.thisptr.type().c_str()
 
     def annotations(self):
-        stuff = dict()
+        d = dict()
         cdef map[string, string] annotations = self.thisptr.annotations()
         cdef pair[string, string] obj
 
