@@ -18,11 +18,13 @@ namespace YODA {
   void Histo1D::fill(double x, double weight) {
     // Fill the underflow and overflow nicely
     _axis.totalDbn().fill(x, weight);
-    if (x < _axis.lowEdge()) { _axis.underflow().fill(x, weight); return; }
-    if (x >= _axis.highEdge()) { _axis.overflow().fill(x, weight); return; }
+    if (x < _axis.xMin()) { _axis.underflow().fill(x, weight); return; }
+    if (x >= _axis.xMax()) { _axis.overflow().fill(x, weight); return; }
     // Fill the normal bins
-    HistoBin1D& b = binByCoord(x);
-    b.fill(x, weight);
+    try {
+      HistoBin1D& b = binByCoord(x);
+      b.fill(x, weight);
+    } catch (const RangeError& re) {}
   }
 
 

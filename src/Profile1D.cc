@@ -13,16 +13,15 @@ namespace YODA {
 
 
   void Profile1D::fill(double x, double y, double weight) {
-    // Filling under/over flows
-    if (x < _axis.xMin()) {
-      _axis.underflow().fill(x, y, weight);
-    } else if (x >= _axis.xMax()) {
-      _axis.overflow().fill(x, y, weight);
-    } else {
+    // Fill the underflow and overflow nicely
+    _axis.totalDbn().fill(x, y, weight);
+    if (x < _axis.xMin()) { _axis.underflow().fill(x, y, weight); return; }
+    if (x >= _axis.xMax()) { _axis.overflow().fill(x, y, weight); return; }
+    // Fill the normal bins
+    try {
       ProfileBin1D& b = binByCoord(x);
       b.fill(x, y, weight);
-    }
-    _axis.totalDbn().fill(x, y, weight);
+    } catch (const RangeError& re) {}
   }
 
 
