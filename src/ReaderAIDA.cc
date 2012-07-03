@@ -39,12 +39,13 @@ namespace YODA {
         /// @todo Clarify the memory management resulting from this... need shared_ptr?
         Scatter2D* dps = new Scatter2D(plotpath + "/" + plotname);
 
-        // Read in annotations
-        for (const TiXmlNode* annN = dpsN->FirstChild("annotation"); annN; annN = annN->NextSibling()) {
-          for (const TiXmlNode* itN = annN->FirstChild("item"); itN; itN = itN->NextSibling()) {
-            dps->setAnnotation(itN->ToElement()->Attribute("key"), itN->ToElement()->Attribute("value"));
-          }
-        }
+        // FIXME: This code crashes when there are annotations in the AIDA file:
+        //// Read in annotations
+        //for (const TiXmlNode* annN = dpsN->FirstChild("annotation"); annN; annN = annN->NextSibling()) {
+        //  for (const TiXmlNode* itN = annN->FirstChild("item"); itN; itN = itN->NextSibling()) {
+        //    dps->setAnnotation(itN->ToElement()->Attribute("key"), itN->ToElement()->Attribute("value"));
+        //  }
+        //}
 
         for (const TiXmlNode* dpN = dpsN->FirstChild("dataPoint"); dpN; dpN = dpN->NextSibling()) {
           const TiXmlNode* xMeasN = dpN->FirstChild("measurement");
