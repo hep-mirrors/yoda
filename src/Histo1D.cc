@@ -60,6 +60,9 @@ namespace YODA {
       sumwx += b.sumWX();
       sumw  += b.sumW();
     }
+    if ( sumw == 0 ) {
+      throw LowStatsError("Requested mean of a Histo1D with no net fill weights");
+    }
     return sumwx/sumw;
   }
 
