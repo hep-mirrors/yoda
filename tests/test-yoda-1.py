@@ -1,14 +1,17 @@
 #! /usr/bin/env python
 
 import yoda
-import unittest
 
-class TestReader(unittest.TestCase):
-    def setUp(self):
-        print "Set Up"
+print "WE NEED SOME REAL WORLD YODA PYTHON EXAMPLES AS TESTS!"
 
-    def test_reader(self):
-        reader = yoda.ReaderAIDA()
+# import unittest
 
-if __name__=='__main__':
-    unittest.main()
+# class TestReader(unittest.TestCase):
+#     def setUp(self):
+#         print "Unit test setup"
+
+#     def test_reader(self):
+#         reader = yoda.ReaderAIDA()
+
+# if __name__=='__main__':
+#     unittest.main()

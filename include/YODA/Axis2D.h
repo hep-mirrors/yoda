@@ -552,8 +552,12 @@ namespace YODA {
         yedges.push_back(bin(i).yMin());
         yedges.push_back(bin(i).xMax()); // only the unique max edges will "survive"
       }
-      std::unique(xedges.begin(), xedges.end());
-      std::unique(yedges.begin(), yedges.end());
+      std::sort(xedges.begin(), xedges.end());
+      std::vector<double>::iterator itx = std::unique(xedges.begin(), xedges.end());
+      xedges.resize(itx - xedges.begin());
+      std::sort(yedges.begin(), yedges.end());
+      std::vector<double>::iterator ity = std::unique(yedges.begin(), yedges.end());
+      yedges.resize(ity - yedges.begin());
 
       // Create a double-map hash based on the two sets of low edges. Initialize with null bin indices.
       _binhash.clear();
@@ -570,11 +574,11 @@ namespace YODA {
         // Find the axis low edges contained within this bin
         const double xmin(bin(ib).xMin()), ymin(bin(ib).xMin());
         std::vector<double> xlowedges_in_bin, ylowedges_in_bin;
-        /// @todo STL alg for this?
+        /// @todo Use std::upper/lower_bound?
         for (size_t ix = 0; ix < xedges.size() - 1; ++ix) {
           if (xedges[ix] >= xmin) xlowedges_in_bin.push_back(xedges[ix]);
         }
-        /// @todo STL alg for this?
+        /// @todo Use std::upper/lower_bound?
         for (size_t iy = 0; iy < yedges.size() - 1; ++iy) {
           if (yedges[iy] >= ymin) ylowedges_in_bin.push_back(yedges[iy]);
         }
@@ -593,13 +597,12 @@ namespace YODA {
         // }
       }
 
-
-      // DEBUG
-      for (size_t ix = 0; ix < xedges.size() - 1; ++ix) {
-        for (size_t iy = 0; iy < yedges.size() - 1; ++iy) {
-          std::cout << xedges[ix] << "  " << yedges[iy] << "   " << _binhash[xedges[ix]][yedges[iy]] << std::cout;
-        }
-      }
+      // // DEBUG
+      // for (size_t ix = 0; ix < xedges.size() - 1; ++ix) {
+      //   for (size_t iy = 0; iy < yedges.size() - 1; ++iy) {
+      //     std::cout << xedges[ix] << "  " << yedges[iy] << "   " << _binhash[xedges[ix]][yedges[iy]] << std::endl;
+      //   }
+      // }
 
 
     }
