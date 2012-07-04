@@ -60,7 +60,7 @@ int main() {
 
   MSG_(PAD(70) << "Checking the reset function: ");
   h.reset();
-  if (!(h.mean() != h.mean())|| !(h.mean(false) != h.mean(false))) {
+  if (h.integral() != 0) {
     MSG_RED("FAIL");
     return -1;
   }

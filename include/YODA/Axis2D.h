@@ -592,6 +592,16 @@ namespace YODA {
         //   _binhash[bin(i).xMax()] = -1;
         // }
       }
+
+
+      // DEBUG
+      for (size_t ix = 0; ix < xedges.size() - 1; ++ix) {
+        for (size_t iy = 0; iy < yedges.size() - 1; ++iy) {
+          std::cout << xedges[ix] << "  " << yedges[iy] << "   " << _binhash[xedges[ix]][yedges[iy]] << std::cout;
+        }
+      }
+
+
     }
 
 

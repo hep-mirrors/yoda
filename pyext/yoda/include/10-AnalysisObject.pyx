@@ -3,7 +3,8 @@ cdef extern from "YODA/AnalysisObject.h" namespace "YODA":
         string type()
         map[string, string] annotations()
 
-ctypedef cAnalysisObject* AOptr 
+ctypedef cAnalysisObject* AOptr
+
 
 cdef class AnalysisObject:
     """Base object class"""
@@ -26,8 +27,7 @@ cdef class AnalysisObject:
         # TODO: clean up some of this, as required
         it = annotations.begin()
         while it != annotations.end():
-            obj = deref(it)
-            d[obj.first.c_str()] = obj.second.c_str()
+            d[deref(it).first.c_str()] = deref(it).second.c_str()
             inc(it)
 
         return d
