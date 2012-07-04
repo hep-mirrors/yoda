@@ -39,18 +39,25 @@ namespace YODA {
     //@{
 
     /// Empty constructor
-    Axis1D() { }
+    Axis1D()
+      : _locked(false)
+    { }
 
 
     /// Constructor accepting a list of bin edges
-    Axis1D(const std::vector<double>& binedges) {
+    Axis1D(const std::vector<double>& binedges)
+      : _locked(false)
+    {
+      _locked = false;
       _addBins(binedges);
     }
 
 
     /// Constructor with the number of bins and the axis limits
     /// @todo Rewrite interface to use a pair for the low/high
-    Axis1D(size_t nbins, double lower, double upper) {
+    Axis1D(size_t nbins, double lower, double upper)
+      : _locked(false)
+    {
       _addBins(linspace(lower, upper, nbins));
     }
 
@@ -60,14 +67,16 @@ namespace YODA {
     /// Note that not only dimensions of these bins will be set,
     /// all the contents of the bins will be copied across, including
     /// the statistics
-    Axis1D(const std::vector<BIN1D>& bins) {
+    Axis1D(const std::vector<BIN1D>& bins)
+      : _locked(false)
+    {
       _addBins(bins);
     }
 
 
     /// State-setting constructor for persistency
     Axis1D(const Bins& bins, const DBN& dbn_tot, const DBN& dbn_uflow, const DBN& dbn_oflow)
-      : _dbn(dbn_tot), _underflow(dbn_uflow), _overflow(dbn_oflow)
+      : _dbn(dbn_tot), _underflow(dbn_uflow), _overflow(dbn_oflow), _locked(false)
     {
       _addBins(bins);
     }
@@ -190,6 +199,13 @@ namespace YODA {
       _underflow.reset();
       _overflow.reset();
       for (size_t i = 0; i < _bins.size(); ++i) _bins[i].reset();
+      _locked = false;
+    }
+
+
+    /// Set the axis lock state
+    void _setLock(bool locked) {
+      _locked = locked;
     }
 
 
@@ -328,6 +344,9 @@ namespace YODA {
     /// Add new bins, constructed from a sorted vector of edges, to the axis
     void _addBins(const std::vector<double>& binedges) {
       //std::sort(binedges.begin(), binedges.end());
+      if (_locked) {
+        throw LockError("Attempting to add bins to a locked axis");
+      }
       if (_edgeInRange(binedges.front(), binedges.back())) {
         throw RangeError("New bin range overlaps with existing bin edges");
       }
@@ -403,6 +422,9 @@ namespace YODA {
 
     /// Cached bin edges for searching
     BinHash _binhash;
+
+    /// Whether modifying bin edges is permitted
+    bool _locked;
 
     //@}
 

@@ -3,14 +3,19 @@ YODA TODO list
 
 NOW
 
+* Add Axis1D/2D _locked member -> true on first fill. (AB)
+
 * Add nice constructor behaviour and docstrings to the Scatter2D Python interface. (AB)
 
-* Complete rewrite of Axis2D. (AB)
-  Rewrite Axis2D to eliminate the crazy hashing scheme and demon code,
-  and use a 2D extension of the map lower/higher bound search now used on Axis1D.
-  Additionally: Fix order in which points are specified in the
-  Bin2D constructor. Add a merge() method in Bin2D. Add a constructor
-  that takes Dbns.
+* Add Axis2D block outflows and outflow(ix, iy) with ix, oy in [-1, 0, 1]. (AB)
+
+
+* Remove nasty Cython shims (DM)
+
+
+* Complete basid Histo2D and Profile2D functionality. (AB)
+
+* Add a merge() method in Bin2D. Add a constructor that takes Dbns.
 
 * Make Python interface test scripts (AB)
 
@@ -21,7 +26,6 @@ NOW
 
 * Improve tests Makefile setup to work out the path to the Python build dir. (AB)
 
-* Remove nasty Cython shims (DM)
 
 
 

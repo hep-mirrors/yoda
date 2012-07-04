@@ -22,6 +22,7 @@ namespace YODA {
       ProfileBin1D& b = binByCoord(x);
       b.fill(x, y, weight);
     } catch (const RangeError& re) {}
+    _axis._setLock(true);
   }
 
 

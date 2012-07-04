@@ -37,6 +37,13 @@ namespace YODA {
   };
 
 
+  /// Error for modification of a data object where filling has already begun.
+  class LockError : public Exception {
+  public:
+    LockError(const std::string& what) : Exception(what) {}
+  };
+
+
   /// Error to throw when a slicing is requested on a non-slicable state of an object.
   class GridError : public Exception {
   public:

@@ -25,6 +25,7 @@ namespace YODA {
       HistoBin1D& b = binByCoord(x);
       b.fill(x, weight);
     } catch (const RangeError& re) {}
+    _axis._setLock(true);
   }
 
 

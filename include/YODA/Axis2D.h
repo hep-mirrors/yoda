@@ -50,7 +50,8 @@ namespace YODA {
     //@{
 
     /// Empty constructor
-    Axis2D() {}
+    Axis2D()
+    { }
 
 
     /// A constructor with specified x and y axis bin limits.
@@ -590,11 +591,6 @@ namespace YODA {
           }
         }
 
-        /// @todo Make a 2D version of this gap detection, allowing for duplicate indices
-        // If the next bin is not contiguous, add a gap index for the high edge of this bin
-        // if (i+1 < numBins() && !fuzzyEquals(bin(i).xMax(), bin(i+1).xMin())) {
-        //   _binhash[bin(i).xMax()] = -1;
-        // }
       }
 
       // // DEBUG
@@ -603,7 +599,6 @@ namespace YODA {
       //     std::cout << xedges[ix] << "  " << yedges[iy] << "   " << _binhash[xedges[ix]][yedges[iy]] << std::endl;
       //   }
       // }
-
 
     }
 
