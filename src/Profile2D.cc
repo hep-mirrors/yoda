@@ -2,11 +2,28 @@
 #include "YODA/Scatter3D.h"
 #include "YODA/Histo2D.h"
 
-namespace YODA { 
-  
+using namespace std;
+
+namespace YODA {
+
+
   void Profile2D::fill(double x, double y, double z, double weight) {
-    _axis.fill(x, y, z, weight);
+    // Fill the overall distribution
+    _axis.totalDbn().fill(x, y, z, weight);
+    // Fill the bins and overflows
+    try {
+      HistoBin2D& b = binByCoord(x);
+      b.fill(x, y, z, weight);
+    } catch (const RangeError& re) {
+      size_t ix(0), iy(0);
+      if (x <  _axis.xMin()) ix = -1 else if (x >= _axis.xMax()) ix = 1;
+      if (y <  _axis.yMin()) iy = -1 else if (y >= _axis.yMax()) iy = 1;
+      _axis.outflow(ix, iy).fill(x, y, z, weight);
+    }
+    // // Lock the axis now that a fill has happened
+    // _axis._setLock(true);
   }
+
 
   double Profile2D::sumW(bool includeoverflows) const {
     if (includeoverflows) return _axis.totalDbn().sumW2();
@@ -17,6 +34,7 @@ namespace YODA {
     return sumw;
   }
 
+
   double Profile2D::sumW2(bool includeoverflows) const {
     if (includeoverflows) return _axis.totalDbn().sumW2();
     double sumw = 0;
@@ -26,12 +44,14 @@ namespace YODA {
     return sumw;
   }
 
+
   /// A copy constructor with optional new path
   Profile2D::Profile2D(const Profile2D& p, const std::string& path)
     : AnalysisObject("Profile2D", p.path(), p, p.title())
   {
     _axis = p._axis;
   }
+
 
   /// Constructor from a Scatter3D's binning, with optional new path
   Profile2D::Profile2D(const Scatter3D& s, const std::string& path)
@@ -44,6 +64,7 @@ namespace YODA {
     _axis = Profile2DAxis(bins);
   }
 
+
   /// Constructor from a Histo2D's binning, with optional new path
   Profile2D::Profile2D(const Histo2D& h, const std::string& path)
     : AnalysisObject("Profile2D", (path.size() == 0) ? h.path() : path, h, h.title())
@@ -55,12 +76,13 @@ namespace YODA {
     _axis = Profile2DAxis(bins);
   }
 
+
   /// Divide two profile histograms
   /// Note: I have remove the const requirement as it makes the program compile,
   /// was it right to do?
   Scatter3D divide(Profile2D& numer, Profile2D& denom) {
     /// @todo Make this check work
-    if(numer != denom) throw "It is impossible to add two incompatibly binned profile histograms!";
+    if (numer != denom) throw "It is impossible to add two incompatibly binned profile histograms!";
     Scatter3D tmp;
     for (size_t i = 0; i < numer.numBins(); ++i) {
       const ProfileBin2D& b1 = numer.bin(i);
@@ -87,5 +109,5 @@ namespace YODA {
     assert(tmp.numPoints() == numer.numBins());
     return tmp;
   }
-  
+
 }

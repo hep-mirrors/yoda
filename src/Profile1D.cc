@@ -8,20 +8,23 @@
 #include "YODA/Scatter2D.h"
 
 #include <cmath>
+using namespace std;
 
 namespace YODA {
 
 
   void Profile1D::fill(double x, double y, double weight) {
-    // Fill the underflow and overflow nicely
+    // Fill the overall distribution
     _axis.totalDbn().fill(x, y, weight);
-    if (x < _axis.xMin()) { _axis.underflow().fill(x, y, weight); return; }
-    if (x >= _axis.xMax()) { _axis.overflow().fill(x, y, weight); return; }
-    // Fill the normal bins
+    // Fill the bins and overflows
     try {
       ProfileBin1D& b = binByCoord(x);
       b.fill(x, y, weight);
-    } catch (const RangeError& re) {}
+    } catch (const RangeError& re) {
+      if      (x <  _axis.xMin()) _axis.underflow().fill(x, y, weight);
+      else if (x >= _axis.xMax()) _axis.overflow().fill(x, y, weight);
+    }
+    // Lock the axis now that a fill has happened
     _axis._setLock(true);
   }
 

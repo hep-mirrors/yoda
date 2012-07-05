@@ -11,6 +11,7 @@ using namespace std;
 namespace YODA {
 
 
+  /// @todo Move to header?
   Histo2D::Histo2D(const Histo2D& h, const std::string& path)
     : AnalysisObject("Histo2D", (path.size() == 0) ? h.path() : path, h, h.title()),
       _axis(h._axis)
@@ -18,8 +19,20 @@ namespace YODA {
 
 
   void Histo2D::fill(double x, double y, double weight) {
-    /// @todo TODO, incl. overflows
-    // return _axis.fill(x, y, weight);
+    // Fill the overall distribution
+    _axis.totalDbn().fill(x, y, weight);
+    // Fill the bins and overflows
+    try {
+      HistoBin2D& b = binByCoord(x, y);
+      b.fill(x, y, weight);
+    } catch (const RangeError& re) {
+      size_t ix(0), iy(0);
+      if (x <  _axis.xMin()) ix = -1; else if (x >= _axis.xMax()) ix = 1;
+      if (y <  _axis.yMin()) iy = -1; else if (y >= _axis.yMax()) iy = 1;
+      _axis.outflow(ix, iy).fill(x, y, weight);
+    }
+    // // Lock the axis now that a fill has happened
+    // _axis._setLock(true);
   }
 
 

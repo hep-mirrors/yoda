@@ -38,6 +38,9 @@ namespace YODA {
     /// The internal bin container type. Not used for searching.
     typedef typename std::vector<Bin> Bins;
 
+    /// The internal container type for outflow distributions.
+    typedef std::map<size_t, DBN> Outflows;
+
     /// @brief Type used to implement a search table of low bin edges (in 2D) mapped to bin indices.
     /// An index of -1 indicates a gap interval, without a corresponding bin.
     typedef std::map<double, long int> SubBinHash;
@@ -75,22 +78,18 @@ namespace YODA {
     }
 
 
-    /// @todo TODO
-    // /// State-setting constructor for persistency
-    // Axis2D(const Bins& bins,
-    //        const std::vector<std::vector<DBN> >& outflows,
-    //        const DBN& totalDbn)
-    // {
-    // }
+    /// State-setting constructor for persistency
+    Axis2D(const Bins& bins,
+           const DBN& totalDbn,
+           const Outflows& outflows)
+      : _bins(bins), _dbn(totalDbn), _outflows(outflows)
+    {
+      if (_outflows.size() != 8) {
+        throw Exception("Axis2D outflow containers must have exactly 8 elements");
+      }
+      _updateAxis();
+    }
 
-
-    // /// Copy constructor
-    // /// @todo Needed?
-    // Axis2D(const Axis2D& a) {
-    //   _bins = a._bins;
-    //   _dbn = a._dbn;
-    //   _outflows = a._outflows;
-    // }
 
     //@}
 
@@ -104,10 +103,8 @@ namespace YODA {
     /// bin, which is then constructed and added as usual.
     void addBin(double lowX, double lowY, double highX, double highY) {
       /// @todo TODO
-      // std::vector<Segment> coords;
-      // coords.push_back(std::make_pair(std::make_pair(lowX, lowY),
-      //                                 std::make_pair(highX, highY)));
-      // addBin(coords);
+
+      /// @todo Check for overlaps
     }
 
     //@}
@@ -262,24 +259,32 @@ namespace YODA {
       if (numBins() == 0) throw RangeError("This axis contains no bins and so has no defined range");
       return _binhash.begin()->first;
     }
+    /// A alias for lowEdgeX()
+    double xMin() const { return lowEdgeX();}
 
     /// Get the value of the highest x-edge on the axis
     const double highEdgeX() const {
       if (numBins() == 0) throw RangeError("This axis contains no bins and so has no defined range");
       return (--_binhash.end())->first;
     }
+    /// Alias for highEdgeX()
+    double xMax() const { return highEdgeX();}
 
     /// Get the value of the lowest y-edge on the axis
     const double lowEdgeY() const {
       if (numBins() == 0) throw RangeError("This axis contains no bins and so has no defined range");
       return _binhash.begin()->second.begin()->first;
     }
+    /// A alias for lowEdgeY()
+    double yMin() const { return lowEdgeY();}
 
     /// Get the value of the highest y-edge on the axis
     const double highEdgeY() const {
       if (numBins() == 0) throw RangeError("This axis contains no bins and so has no defined range");
       return (--_binhash.begin()->second.end())->first;
     }
+    /// Alias for highEdgeY()
+    double yMax() const { return highEdgeY();}
 
 
     /// Get the bins (non-const version)
@@ -293,16 +298,26 @@ namespace YODA {
     }
 
 
-    /// Get the outflows (non-const version)
-    /// @todo Explain the index structure
-    std::vector<std::vector<DBN> >& outflows() {
-      return _outflows;
+    /// @brief Get an outflow (non-const version)
+    ///
+    /// Two indices are used, for x and y: -1 = underflow, 0 = in-range, and +1 = overflow.
+    /// (0,0) is not a valid overflow index pair, since it is in range for both x and y.
+    DBN& outflow(size_t ix, size_t iy) {
+      if (ix == 0 && iy == 0) throw UserError("(0,0) is not a valid Axis2D overflow index");
+      if (abs(ix) > 1 || abs(iy) > 1) throw UserError("Axis2D overflow indices are -1, 0, 1");
+      size_t realindex = 3*(ix+1) + (iy+1);
+      return _outflows[realindex];
     }
 
-    /// Get the outflows (const version)
-    /// @todo Explain the index structure
-    const std::vector<std::vector<DBN> >& outflows() const {
-      return _outflows;
+    /// @brief Get an outflow (const version)
+    ///
+    /// Two indices are used, for x and y: -1 = underflow, 0 = in-range, and +1 = overflow.
+    /// (0,0) is not a valid overflow index pair, since it is in range for both x and y.
+    const DBN& outflow(size_t ix, size_t iy) const {
+      if (ix == 0 && iy == 0) throw UserError("(0,0) is not a valid Axis2D overflow index");
+      if (abs(ix) > 1 || abs(iy) > 1) throw UserError("Axis2D overflow indices are -1, 0, 1");
+      size_t realindex = 3*(ix+1) + (iy+1);
+      return _outflows.find(realindex)->second;
     }
 
 
@@ -424,15 +439,14 @@ namespace YODA {
         bin.scaleXY(scaleX, scaleY);
       }
       _dbn.scaleXY(scaleX, scaleY);
-
-      /// @todo Outflows
-      // for (size_t i = 0; i < _outflows.size(); ++i) {
-      //   for (size_t j =0; j < _outflows[i].size(); ++j) {
-      //     _outflows[i][j].scaleXY(scaleX, scaleY);
-      //   }
-      // }
-
-      /// @todo Rehash
+      // Outflows
+      for (size_t i = 0; i < 3; ++i) {
+        for (size_t j = 0; j < 3; ++j) {
+          _outflows[3*i+j].scaleXY(scaleX, scaleY);;
+        }
+      }
+      // Rehash
+      _updateAxis();
     }
 
 
@@ -442,13 +456,12 @@ namespace YODA {
         bin.scaleW(scalefactor);
       }
       _dbn.scaleW(scalefactor);
-
-      /// @todo Outflows
-      // for (size_t i = 0; i < _outflows.size(); ++i) {
-      //   for (size_t j = 0; j < _outflows[i].size(); ++j) {
-      //     _outflows[i][j].scaleW(scalefactor);
-      //   }
-      // }
+      // Outflows
+      for (size_t i = 0; i < 3; ++i) {
+        for (size_t j = 0; j < 3; ++j) {
+          _outflows[3*i+j].scaleW(scalefactor);
+        }
+      }
     }
 
     //@}
@@ -624,14 +637,6 @@ namespace YODA {
     // }
 
 
-    /// 2D outflow filler
-    /// The function checks which outflow the coordinates are in
-    /// and fills the right one.
-    void _fillOutflows(double x, double y, double weight) {
-      /// @todo TODO
-    }
-
-
   private:
 
     /// @name Data structures
@@ -643,15 +648,8 @@ namespace YODA {
     /// Total distribution
     DBN _dbn;
 
-    /// Outflow distributions
-    ///
-    /// This contains eight subvectors, each being 1/8 of an outflow
-    /// and numbered clockwise from top left corner. The 'corner' outflows
-    /// contain just one DBN each. The ones between them contain as many DBNs
-    /// as the number of columns/rows in the respective part of the grid.
-    ///
-    /// @todo Replace with a more specialised class or a fixed array?
-    std::vector<std::vector<DBN> > _outflows;
+    /// Outflow distributions, indexed clockwise from top
+    Outflows _outflows;
 
     /// Cached bin edges for searching
     BinHash _binhash;

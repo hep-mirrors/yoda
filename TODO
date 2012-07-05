@@ -4,25 +4,17 @@ YODA TODO list
 NOW
 
 * Add Axis1D/2D _locked member -> true on first fill. (AB)
+   Done for Axis1D: is it a good idea?
 
 * Add nice constructor behaviour and docstrings to the Scatter2D Python interface. (AB)
 
-* Add Axis2D block outflows and outflow(ix, iy) with ix, oy in [-1, 0, 1]. (AB)
-
-
 * Remove nasty Cython shims (DM)
 
+* Complete basic Histo2D and Profile2D functionality. (AB)
 
-* Complete basid Histo2D and Profile2D functionality. (AB)
-
-* Add a merge() method in Bin2D. Add a constructor that takes Dbns.
-
-* Make Python interface test scripts (AB)
+* Make Python interface test scripts (DM)
 
 * Add copy assignment to Point/Scatter3D and Dbn1D/2D. (AB)
-
-* Rebinning: global rebinning of Axis2D -> Histo2D by integer factor(s) --
-  different factors in x and y directions.
 
 * Improve tests Makefile setup to work out the path to the Python build dir. (AB)
 
@@ -30,6 +22,11 @@ NOW
 
 
 NEXT
+
+* Add a merge() method in Bin2D. Add a constructor that takes Dbns.
+
+* Rebinning: global rebinning of Axis2D -> Histo2D by integer factor(s) --
+  different factors in x and y directions.
 
 * Automatically determine input and output formats (= readers/writers) from file extn.
 
