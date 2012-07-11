@@ -19,7 +19,7 @@ namespace YODA {
     //@{
 
     /// Default constructor
-    Histo1D()
+    Plot()
       : AnalysisObject("Plot", "", "")
     { }
 
