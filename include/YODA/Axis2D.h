@@ -55,7 +55,9 @@ namespace YODA {
     /// Empty constructor
     Axis2D()
       : _isPerfectGrid(true), _locked(false)
-    { }
+    {
+      reset();
+    }
 
 
     /// A constructor with specified x and y axis bin limits.
@@ -63,6 +65,7 @@ namespace YODA {
       : _isPerfectGrid(true), _locked(false)
     {
       _addBins(xedges, yedges);
+      reset();
     }
 
 
@@ -74,12 +77,14 @@ namespace YODA {
     {
       _addBins(linspace(rangeX.first, rangeX.second, nbinsX),
                linspace(rangeY.first, rangeY.second, nbinsY));
+      reset();
     }
 
 
     /// Constructor accepting a list of bins
     Axis2D(const Bins& bins) {
       _addBins(bins);
+      reset();
     }
 
 
@@ -232,8 +237,9 @@ namespace YODA {
     /// Reset the axis statistics
     void reset() {
       _dbn.reset();
-      for (size_t ix = -1; ix <= 1; ++ix) {
-        for (size_t iy = -1; ix <= 1; ++ix) {
+      for (int ix = -1; ix <= 1; ++ix) {
+        for (int iy = -1; iy <= 1; ++iy) {
+          if (ix == 0 && iy == 0) continue;
           outflow(ix, iy).reset();
         }
       }
@@ -451,14 +457,15 @@ namespace YODA {
     /// Scales the axis with a given scale.
     /// @todo Add a specific check for a scaling of 1.0, to avoid doing work when no scaling is wanted.
     void scaleXY(double scaleX, double scaleY) {
-      foreach(Bin bin, _bins) {
+      foreach (Bin bin, _bins) {
         bin.scaleXY(scaleX, scaleY);
       }
       _dbn.scaleXY(scaleX, scaleY);
       // Outflows
-      for (size_t i = 0; i < 3; ++i) {
-        for (size_t j = 0; j < 3; ++j) {
-          _outflows[3*i+j].scaleXY(scaleX, scaleY);;
+      for (int ix = -1; ix <= 1; ++ix) {
+        for (int iy = -1; iy <= 1; ++iy) {
+          if (ix == 0 && iy == 0) continue;
+          outflow(ix, iy).scaleXY(scaleX, scaleY);
         }
       }
       // Rehash
@@ -468,14 +475,15 @@ namespace YODA {
 
     /// Scales the bin weights
     void scaleW(double scalefactor) {
-      foreach(Bin bin, _bins) {
+      foreach (Bin bin, _bins) {
         bin.scaleW(scalefactor);
       }
       _dbn.scaleW(scalefactor);
       // Outflows
-      for (size_t i = 0; i < 3; ++i) {
-        for (size_t j = 0; j < 3; ++j) {
-          _outflows[3*i+j].scaleW(scalefactor);
+      for (int ix = -1; ix <= 1; ++ix) {
+        for (int iy = -1; iy <= 1; ++iy) {
+          if (ix == 0 && iy == 0) continue;
+          outflow(ix, iy).scaleW(scalefactor);
         }
       }
     }

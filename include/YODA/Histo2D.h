@@ -271,7 +271,7 @@ namespace YODA {
     ///
     /// Two indices are used, for x and y: -1 = underflow, 0 = in-range, and +1 = overflow.
     /// (0,0) is not a valid overflow index pair, since it is in range for both x and y.
-    Dbn2D& outflow(size_t ix, size_t iy) {
+    Dbn2D& outflow(int ix, int iy) {
       return _axis.outflow(ix, iy);
     }
 
@@ -279,7 +279,7 @@ namespace YODA {
     ///
     /// Two indices are used, for x and y: -1 = underflow, 0 = in-range, and +1 = overflow.
     /// (0,0) is not a valid overflow index pair, since it is in range for both x and y.
-    const Dbn2D& outflow(size_t ix, size_t iy) const {
+    const Dbn2D& outflow(int ix, int iy) const {
       return _axis.outflow(ix, iy);
     }
 

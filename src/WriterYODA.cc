@@ -33,6 +33,7 @@ namespace YODA {
     os << scientific << showpoint << setprecision(_precision);
     typedef pair<string,string> sspair;
     foreach (const sspair& kv, ao.annotations()) {
+      if (kv.first.empty() || kv.second.empty()) continue; // <- good idea?
       os << kv.first << "=" << kv.second << "\n";
     }
   }
@@ -92,8 +93,8 @@ namespace YODA {
     os << h.totalDbn().sumWX() << "\t" << h.totalDbn().sumWX2() << "\t";
     os << h.totalDbn().sumWY() << "\t" << h.totalDbn().sumWY2() << "\t";
     os << h.totalDbn().numEntries() << "\n";
-    for (size_t ix = -1; ix <= 1; ++ix) {
-      for (size_t iy = -1; ix <= 1; ++ix) {
+    for (int ix = -1; ix <= 1; ++ix) {
+      for (int iy = -1; iy <= 1; ++iy) {
         if (ix == 0 && iy == 0) continue;
         os << "Outflow\t" << ix << ":" << iy << "\t";
         const Dbn2D& d = h.outflow(ix, iy);

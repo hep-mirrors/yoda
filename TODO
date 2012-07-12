@@ -3,9 +3,6 @@ YODA TODO list
 
 NOW
 
-* Add Axis1D/2D _locked member -> true on first fill. (AB)
-   Done for Axis1D: is it a good idea?
-
 * Write / support comments on ends of YODA format data lines
    Ignore anything after "#" on data lines -- use this to write convenience
    height & error info for each bin since not obvious from sumWX2 etc.
