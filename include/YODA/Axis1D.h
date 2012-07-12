@@ -183,7 +183,7 @@ namespace YODA {
     /// Returns an index of a bin at a given coord, -1 if no bin matches
     long int getBinIndex(double coord) const {
       // First check that we are within the axis bounds at all
-      if (coord < lowEdge() || coord > highEdge()) return -1;
+      if (_binhash.empty() || coord < lowEdge() || coord > highEdge()) return -1;
       // Then return the lower-edge lookup from the hash map.
       // NB. both upper_bound and lower_bound return values *greater* than (or equal) to coord,
       // so we have to step back one iteration to get to the lower-or-equal containing bin edge.
@@ -388,6 +388,7 @@ namespace YODA {
 
     /// Check if there are any bin edges between values @a from and @a to.
     bool _edgeInRange(double from, double to) const {
+      if ( _binhash.empty() ) return false;
       return (--_binhash.upper_bound(from)) != (--_binhash.lower_bound(to));
     }
 
