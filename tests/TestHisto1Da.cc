@@ -6,6 +6,7 @@
 using namespace std;
 using namespace YODA;
 
+
 bool compareHeight(const HistoBin1D& a, const HistoBin1D& b) {
   return a.height() < b.height();
 }

@@ -5,6 +5,12 @@
 //
 #include "YODA/WriterYODA.h"
 
+#include "YODA/Plot.h"
+#include "YODA/Histo1D.h"
+#include "YODA/Histo2D.h"
+#include "YODA/Profile1D.h"
+#include "YODA/Scatter2D.h"
+
 #include <iostream>
 #include <iomanip>
 
@@ -14,11 +20,7 @@ namespace YODA {
 
 
   void WriterYODA::writeHeader(std::ostream& os) {
-    // os <<
-    //   "# BEGIN PLOT\n"
-    //   "LogY=0\n"
-    //   "Title=Test Histo\n"
-    //   "# END PLOT\n\n";
+    os << flush;
   }
 
 
@@ -27,9 +29,8 @@ namespace YODA {
   }
 
 
-  void _writeAnnotations(std::ostream& os, const AnalysisObject& ao) {
-    // os << "Path=" << h.path() << "\n";
-    // os << "Title=" << h.title() << "\n";
+  void WriterYODA::_writeAnnotations(std::ostream& os, const AnalysisObject& ao) {
+    os << scientific << showpoint << setprecision(_precision);
     typedef pair<string,string> sspair;
     foreach (const sspair& kv, ao.annotations()) {
       os << kv.first << "=" << kv.second << "\n";
@@ -37,10 +38,14 @@ namespace YODA {
   }
 
 
+  void WriterYODA::writePlot(std::ostream& os, const Plot& p) {
+    _writeAnnotations(os, p);
+  }
+
+
   void WriterYODA::writeHisto1D(std::ostream& os, const Histo1D& h) {
     ios_base::fmtflags oldflags = os.flags();
-    const int precision = 6;
-    os << scientific << showpoint << setprecision(precision);
+    os << scientific << showpoint << setprecision(_precision);
 
     os << "# BEGIN YODA_HISTO1D " << h.path() << "\n";
     _writeAnnotations(os, h);
@@ -60,11 +65,11 @@ namespace YODA {
     os << h.overflow().sumW()  << "\t" << h.overflow().sumW2()  << "\t";
     os << h.overflow().sumWX() << "\t" << h.overflow().sumWX2() << "\t";
     os << h.overflow().numEntries() << "\n";
-    for (vector<HistoBin1D>::const_iterator b = h.bins().begin(); b != h.bins().end(); ++b) {
-      os << b->lowEdge() << "\t" << b->highEdge() << "\t";
-      os << b->sumW()    << "\t" << b->sumW2()    << "\t";
-      os << b->sumWX()   << "\t" << b->sumWX2()   << "\t";
-      os << b->numEntries() << "\n";
+    foreach (const HistoBin1D& b, h.bins()) {
+      os << b.lowEdge() << "\t" << b.highEdge() << "\t";
+      os << b.sumW()    << "\t" << b.sumW2()    << "\t";
+      os << b.sumWX()   << "\t" << b.sumWX2()   << "\t";
+      os << b.numEntries() << "\n";
     }
     os << "# END YODA_HISTO1D\n\n";
 
@@ -72,10 +77,48 @@ namespace YODA {
   }
 
 
+  void WriterYODA::writeHisto2D(std::ostream& os, const Histo2D& h) {
+    ios_base::fmtflags oldflags = os.flags();
+    os << scientific << showpoint << setprecision(_precision);
+
+    os << "# BEGIN YODA_HISTO2D " << h.path() << "\n";
+    _writeAnnotations(os, h);
+    if ( h.totalDbn().numEntries() > 0 )
+      os << "# Mean: (" << h.xMean() << ", " << h.yMean() << ")\n";
+    os << "# Area: " << h.integral() << "\n";
+    os << "# xlow\t xhigh\t ylow\t yhigh\t sumw\t sumw2\t sumwx\t sumwx2\t sumwy\t sumwy2\t numEntries\n";
+    os << "Total   \tTotal   \t";
+    os << h.totalDbn().sumW()  << "\t" << h.totalDbn().sumW2()  << "\t";
+    os << h.totalDbn().sumWX() << "\t" << h.totalDbn().sumWX2() << "\t";
+    os << h.totalDbn().sumWY() << "\t" << h.totalDbn().sumWY2() << "\t";
+    os << h.totalDbn().numEntries() << "\n";
+    for (size_t ix = -1; ix <= 1; ++ix) {
+      for (size_t iy = -1; ix <= 1; ++ix) {
+        os << "Outflow\t" << ix << ":" << iy << "\t";
+        const Dbn2D& d = h.outflow(ix, iy);
+        os << d.sumW()  << "\t" << d.sumW2()  << "\t";
+        os << d.sumWX() << "\t" << d.sumWX2() << "\t";
+        os << d.sumWY() << "\t" << d.sumWY2() << "\t";
+        os << d.numEntries() << "\n";
+      }
+    }
+    foreach (const HistoBin2D& b, h.bins()) {
+      os << b.lowEdgeX() << "\t" << b.highEdgeX() << "\t";
+      os << b.lowEdgeY() << "\t" << b.highEdgeY() << "\t";
+      os << b.sumW()    << "\t" << b.sumW2()    << "\t";
+      os << b.sumWX()   << "\t" << b.sumWX2()   << "\t";
+      os << b.sumWY()   << "\t" << b.sumWY2()   << "\t";
+      os << b.numEntries() << "\n";
+    }
+    os << "# END YODA_HISTO2D\n\n";
+
+    os.flags(oldflags);
+  }
+
+
   void WriterYODA::writeProfile1D(std::ostream& os, const Profile1D& p) {
     ios_base::fmtflags oldflags = os.flags();
-    const int precision = 6;
-    os << scientific << showpoint << setprecision(precision);
+    os << scientific << showpoint << setprecision(_precision);
 
     os << "# BEGIN YODA_PROFILE1D " << p.path() << "\n";
     _writeAnnotations(os, p);
@@ -95,12 +138,12 @@ namespace YODA {
     os << p.overflow().sumWX() << "\t" << p.overflow().sumWX2() << "\t";
     os << p.overflow().sumWY() << "\t" << p.overflow().sumWY2() << "\t";
     os << p.overflow().numEntries() << "\n";
-    for (vector<ProfileBin1D>::const_iterator b = p.bins().begin(); b != p.bins().end(); ++b) {
-      os << b->lowEdge() << "\t" << b->highEdge() << "\t";
-      os << b->sumW()    << "\t" << b->sumW2()    << "\t";
-      os << b->sumWX()   << "\t" << b->sumWX2()   << "\t";
-      os << b->sumWY()   << "\t" << b->sumWY2()   << "\t";
-      os << b->numEntries() << "\n";
+    foreach (const ProfileBin1D& b, p.bins()) {
+      os << b.lowEdge() << "\t" << b.highEdge() << "\t";
+      os << b.sumW()    << "\t" << b.sumW2()    << "\t";
+      os << b.sumWX()   << "\t" << b.sumWX2()   << "\t";
+      os << b.sumWY()   << "\t" << b.sumWY2()   << "\t";
+      os << b.numEntries() << "\n";
     }
     os << "# END YODA_PROFILE1D\n\n";
 
@@ -110,8 +153,7 @@ namespace YODA {
 
   void WriterYODA::writeScatter2D(std::ostream& os, const Scatter2D& s) {
     ios_base::fmtflags oldflags = os.flags();
-    const int precision = 6;
-    os << scientific << showpoint << setprecision(precision);
+    os << scientific << showpoint << setprecision(_precision);
 
     os << "# BEGIN YODA_SCATTER2D " << s.path() << "\n";
     _writeAnnotations(os, s);
@@ -129,8 +171,7 @@ namespace YODA {
 
   /*void WriterYODA::writeScatter3D(std::ostream& os, const Scatter3D& s) {
     ios_base::fmtflags oldflags = os.flags();
-    const int precision = 6;
-    os << scientific << showpoint << setprecision(precision);
+    os << scientific << showpoint << setprecision(_precision);
 
     os << "# BEGIN YODA_SCATTER3D " << s.path() << "\n";
     _writeAnnotations(os, s);

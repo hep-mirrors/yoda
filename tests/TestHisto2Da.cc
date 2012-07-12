@@ -1,6 +1,7 @@
 
 #include "YODA/Histo2D.h"
 #include "YODA/Scatter3D.h"
+#include "YODA/WriterYODA.h"
 
 #include <cmath>
 #include <iostream>
@@ -34,9 +35,9 @@ void printStats(Histo2D& h, bool full=false){
 
 
 int main() {
- 
+
     cout << "-----------------------------" << endl;
-    // Addition/Subtraction:
+    // Addition/subtraction:
     cout << "Creating histos to be added/subtracted/divided:" << endl;
 
     Histo2D first(10, 0, 100, 10, 0, 100);
@@ -54,12 +55,16 @@ int main() {
     Histo2D added(first+second);
     cout << "Addition? Copy constructor?" << endl;
     Histo2D subtracted(first-second);
-    cout << "Division crashes!" << endl;
-    Scatter3D divided(first/second);
+
+    // cout << "Division crashes!" << endl;
+    // Scatter3D divided(first/second);
 
     cout << "Done!" << endl;
     printStats(added);
     printStats(subtracted);
+
+    // Write to stdout
+    WriterYODA::write(cout, added);
 
     cout << "-----------------------------" << endl;
     return EXIT_SUCCESS;

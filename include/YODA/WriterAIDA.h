@@ -23,6 +23,7 @@ namespace YODA {
     /// Singleton creation function
     static Writer& create() {
       static WriterAIDA _instance;
+      _instance.setPrecision(6);
       return _instance;
     }
 
@@ -36,7 +37,9 @@ namespace YODA {
     void writeHeader(std::ostream& stream);
     void writeFooter(std::ostream& stream);
 
+    void writePlot(std::ostream& os, const Plot& p);
     void writeHisto1D(std::ostream& os, const Histo1D& h);
+    void writeHisto2D(std::ostream& os, const Histo2D& h);
     void writeProfile1D(std::ostream& os, const Profile1D& p);
     void writeScatter2D(std::ostream& os, const Scatter2D& s);
 

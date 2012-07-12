@@ -6,6 +6,12 @@
 #include "YODA/WriterAIDA.h"
 #include "YODA/Utils/StringUtils.h"
 
+#include "YODA/Plot.h"
+#include "YODA/Histo1D.h"
+#include "YODA/Histo2D.h"
+#include "YODA/Profile1D.h"
+#include "YODA/Scatter2D.h"
+
 #include <iostream>
 #include <iomanip>
 
@@ -27,10 +33,23 @@ namespace YODA {
   }
 
 
+  void WriterAIDA::writePlot(std::ostream& os, const Plot& p) {
+    os << flush;
+  }
+
+
   void WriterAIDA::writeHisto1D(std::ostream& os, const Histo1D& h) {
     Scatter2D tmp = mkScatter(h);
     tmp.setAnnotation("Type", "Histo1D");
     writeScatter2D(os, tmp);
+  }
+
+
+  void WriterAIDA::writeHisto2D(std::ostream& os, const Histo2D& h) {
+    os << endl << "<!-- HISTO2D WRITING TO AIDA IS CURRENTLY UNSUPPORTED! -->" << endl << endl;
+    // Scatter3D tmp = mkScatter(h);
+    // tmp.setAnnotation("Type", "Histo2D");
+    // writeScatter3D(os, tmp);
   }
 
 

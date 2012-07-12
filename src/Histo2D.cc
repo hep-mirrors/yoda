@@ -31,6 +31,7 @@ namespace YODA {
       if (y <  _axis.yMin()) iy = -1; else if (y >= _axis.yMax()) iy = 1;
       _axis.outflow(ix, iy).fill(x, y, weight);
     }
+    /// @todo Re-enable
     // // Lock the axis now that a fill has happened
     // _axis._setLock(true);
   }
@@ -39,7 +40,7 @@ namespace YODA {
   double Histo2D::sumW(bool includeoverflows) const {
     if (includeoverflows) return _axis.totalDbn().sumW();
     double sumw = 0;
-    for(size_t i = 0; i < bins().size(); ++i) sumw += bin(i).sumW();
+    foreach (const HistoBin2D& b, bins()) sumw += b.sumW();
     return sumw;
   }
 
@@ -47,7 +48,7 @@ namespace YODA {
   double Histo2D::sumW2(bool includeoverflows) const {
     if (includeoverflows) return _axis.totalDbn().sumW2();
     double sumw2 = 0;
-    for(size_t i = 0; i < bins().size(); ++i) sumw2+= bin(i).sumW2();
+    foreach (const HistoBin2D& b, bins()) sumw2 += b.sumW2();
     return sumw2;
   }
 
@@ -55,24 +56,16 @@ namespace YODA {
   double Histo2D::xMean(bool includeoverflows) const {
     if (includeoverflows) return _axis.totalDbn().xMean();
     double sumwx = 0;
-    double sumw  = 0;
-    for(size_t i = 0; i < bins().size(); ++i) {
-      sumwx += bin(i).sumW2();
-      sumw  += bin(i).sumW();
-    }
-    return sumwx/sumw;
+    foreach (const HistoBin2D& b, bins()) sumwx += b.sumWX();
+    return sumwx/sumW();
   }
 
 
   double Histo2D::yMean(bool includeoverflows) const {
     if (includeoverflows) return _axis.totalDbn().yMean();
     double sumwy = 0;
-    double sumw = 0;
-    for(size_t i = 0; i < bins().size(); ++i) {
-      sumwy += bin(i).sumWY();
-      sumw  += bin(i).sumW();
-    }
-    return sumwy/sumw;
+    foreach (const HistoBin2D& b, bins()) sumwy += b.sumWY();
+    return sumwy/sumW();
   }
 
 
@@ -80,7 +73,7 @@ namespace YODA {
     if (includeoverflows) return _axis.totalDbn().xVariance();
     double sigma2 = 0;
     const double xMean = this->xMean();
-    for(size_t i = 0; i < bins().size(); ++i) {
+    for (size_t i = 0; i < bins().size(); ++i) {
       const double diff = bin(i).focus().first - xMean;
       sigma2 += diff * diff * bin(i).sumW();
     }
@@ -92,7 +85,7 @@ namespace YODA {
     if (includeoverflows) return _axis.totalDbn().yVariance();
     double sigma2 = 0;
     const double yMean = this->yMean();
-    for(size_t i = 0; i < bins().size(); ++i) {
+    for (size_t i = 0; i < bins().size(); ++i) {
       const double diff = bin(i).focus().first - yMean;
       sigma2 += diff * diff * bin(i).sumW();
     }

@@ -1,6 +1,7 @@
 check_PROGRAMS = \
   testweights \
   testhisto1Da testhisto1Db \
+  testhisto2Da \
   testprofile1Da \
   testindexedset testsortedvector\
   testhisto1Dcreate \
@@ -32,6 +33,7 @@ testhisto1Dmodify_SOURCES = Histo1D/H1DModify.cc
 testprofile1Dcreate_SOURCES = Profile1D/P1DCreate.cc
 testprofile1Dfill_SOURCES = Profile1D/P1DFill.cc
 testprofile1Dmodify_SOURCES = Profile1D/P1DModify.cc
+testhisto2Da_SOURCES = TestHisto2Da.cc
 # testhisto2De_SOURCES = TestHisto2Derase.cc
 testhisto2Dcreate_SOURCES = Histo2D/H2DCreate.cc
 testhisto2Dfill_SOURCES = Histo2D/H2DFill.cc
@@ -53,6 +55,7 @@ TESTS_ENVIRONMENT = \
 TESTS = \
   testweights \
   testhisto1Da testhisto1Db \
+  testhisto2Da \
   testprofile1Da \
   testindexedset testsortedvector \
   testhisto1Dcreate \

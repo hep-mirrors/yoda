@@ -7,9 +7,12 @@
 #define YODA_Writer_h
 
 #include "YODA/AnalysisObject.h"
+#include "YODA/Plot.h"
 #include "YODA/Histo1D.h"
+#include "YODA/Histo2D.h"
 #include "YODA/Profile1D.h"
 #include "YODA/Scatter2D.h"
+
 #include <string>
 #include <fstream>
 
@@ -110,18 +113,30 @@ namespace YODA {
     //@}
 
 
+    /// Set precision of numerical quantities in this writer's output.
+    void setPrecision(int precision) {
+      _precision = precision;
+    }
+
+
   protected:
 
     /// Main writer elements
     virtual void writeHeader(std::ostream& stream) = 0;
-    void writeBody(std::ostream& stream, const AnalysisObject& ao);
+    virtual void writeBody(std::ostream& stream, const AnalysisObject& ao);
     virtual void writeFooter(std::ostream& stream) = 0;
 
     /// Specific AO type writer implementations
+    virtual void writePlot(std::ostream& os, const Plot& h) = 0;
     virtual void writeHisto1D(std::ostream& os, const Histo1D& h) = 0;
+    virtual void writeHisto2D(std::ostream& os, const Histo2D& h) = 0;
     virtual void writeProfile1D(std::ostream& os, const Profile1D& p) = 0;
+    // virtual void writeProfile2D(std::ostream& os, const Profile2D& p) = 0;
     virtual void writeScatter2D(std::ostream& os, const Scatter2D& s) = 0;
-    //virtual void writeScatter3D(std::ostream& os, const Scatter3D& s) = 0;
+    // virtual void writeScatter3D(std::ostream& os, const Scatter3D& s) = 0;
+
+    /// Output precision
+    int _precision;
 
   };
 

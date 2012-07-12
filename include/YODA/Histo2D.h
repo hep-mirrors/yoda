@@ -292,7 +292,6 @@ namespace YODA {
     //@{
 
     /// Get the total volume of the histogram
-    // @todo This does not work!! (AB: Explain what you mean!)
     double integral(bool includeoverflows=true) const {
       return sumW(includeoverflows);
     }

@@ -6,11 +6,17 @@ NOW
 * Add Axis1D/2D _locked member -> true on first fill. (AB)
    Done for Axis1D: is it a good idea?
 
+* Write / support comments on ends of YODA format data lines
+   Ignore anything after "#" on data lines -- use this to write convenience
+   height & error info for each bin since not obvious from sumWX2 etc.
+
 * Add nice constructor behaviour and docstrings to the Scatter2D Python interface. (AB)
 
 * Remove nasty Cython shims (DM)
+   Does inheritance work automatically in Cython now?
 
 * Complete basic Histo2D and Profile2D functionality. (AB)
+   Axis2D is working
 
 * Make Python interface test scripts (DM)
 
@@ -23,17 +29,15 @@ NOW
 
 NEXT
 
+* Add "official" counter and bar-chart types (AB)
+   Need better names!
+
 * Add a merge() method in Bin2D. Add a constructor that takes Dbns.
 
 * Rebinning: global rebinning of Axis2D -> Histo2D by integer factor(s) --
   different factors in x and y directions.
 
 * Automatically determine input and output formats (= readers/writers) from file extn.
-
-* Test that a y-binned Histo2D has the same per-y-column stats as an
-  equivalently x-binned Profile1D. Perhaps use this as an opportunity to
-  implement one of the the conversion functions mentioned in the NEXT
-  section...
 
 * Test negative- and mixed-weighted stat calculations, and scaling.
 
