@@ -94,6 +94,7 @@ namespace YODA {
     os << h.totalDbn().numEntries() << "\n";
     for (size_t ix = -1; ix <= 1; ++ix) {
       for (size_t iy = -1; ix <= 1; ++ix) {
+        if (ix == 0 && iy == 0) continue;
         os << "Outflow\t" << ix << ":" << iy << "\t";
         const Dbn2D& d = h.outflow(ix, iy);
         os << d.sumW()  << "\t" << d.sumW2()  << "\t";

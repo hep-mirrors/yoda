@@ -31,9 +31,8 @@ namespace YODA {
       if (y <  _axis.yMin()) iy = -1; else if (y >= _axis.yMax()) iy = 1;
       _axis.outflow(ix, iy).fill(x, y, weight);
     }
-    /// @todo Re-enable
-    // // Lock the axis now that a fill has happened
-    // _axis._setLock(true);
+    // Lock the axis now that a fill has happened
+    _axis._setLock(true);
   }
 
 

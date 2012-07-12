@@ -48,7 +48,6 @@ namespace YODA {
     Axis1D(const std::vector<double>& binedges)
       : _locked(false)
     {
-      _locked = false;
       _addBins(binedges);
     }
 
@@ -198,7 +197,7 @@ namespace YODA {
       _dbn.reset();
       _underflow.reset();
       _overflow.reset();
-      for (size_t i = 0; i < _bins.size(); ++i) _bins[i].reset();
+      foreach(Bin& bin, _bins) bin.reset();
       _locked = false;
     }
 
@@ -359,6 +358,9 @@ namespace YODA {
 
     /// Add new bins to the axis
     void _addBins(const Bins& bins) {
+      if (_locked) {
+        throw LockError("Attempting to add bins to a locked axis");
+      }
       for (size_t i = 0; i < bins.size(); ++i) {
         if (_edgeInRange(bins[i].xMin(), bins[i].xMax())) {
           throw RangeError("New bin range overlaps with existing bin edges");

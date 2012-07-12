@@ -54,11 +54,14 @@ namespace YODA {
 
     /// Empty constructor
     Axis2D()
+      : _isPerfectGrid(true), _locked(false)
     { }
 
 
     /// A constructor with specified x and y axis bin limits.
-    Axis2D(const std::vector<double>& xedges, const std::vector<double>& yedges) {
+    Axis2D(const std::vector<double>& xedges, const std::vector<double>& yedges)
+      : _isPerfectGrid(true), _locked(false)
+    {
       _addBins(xedges, yedges);
     }
 
@@ -66,7 +69,9 @@ namespace YODA {
     /// Most standard constructor accepting X/Y ranges and number of bins
     /// on each of the axis. Both axes are divided linearly.
     Axis2D(size_t nbinsX, const std::pair<double,double>& rangeX,
-           size_t nbinsY, const std::pair<double,double>& rangeY) {
+           size_t nbinsY, const std::pair<double,double>& rangeY)
+      : _isPerfectGrid(true), _locked(false)
+    {
       _addBins(linspace(rangeX.first, rangeX.second, nbinsX),
                linspace(rangeY.first, rangeY.second, nbinsY));
     }
@@ -82,7 +87,8 @@ namespace YODA {
     Axis2D(const Bins& bins,
            const DBN& totalDbn,
            const Outflows& outflows)
-      : _bins(bins), _dbn(totalDbn), _outflows(outflows)
+      : _bins(bins), _dbn(totalDbn), _outflows(outflows),
+        _isPerfectGrid(true), _locked(false)
     {
       if (_outflows.size() != 8) {
         throw Exception("Axis2D outflow containers must have exactly 8 elements");
@@ -104,7 +110,7 @@ namespace YODA {
     void addBin(double lowX, double lowY, double highX, double highY) {
       /// @todo TODO
 
-      /// @todo Check for overlaps
+      /// @todo Check for overlaps and whether axis is locked
     }
 
     //@}
@@ -226,9 +232,19 @@ namespace YODA {
     /// Reset the axis statistics
     void reset() {
       _dbn.reset();
-      foreach(Bin bin, _bins) {
-        bin.reset();
+      for (size_t ix = -1; ix <= 1; ++ix) {
+        for (size_t iy = -1; ix <= 1; ++ix) {
+          outflow(ix, iy).reset();
+        }
       }
+      foreach(Bin& bin, _bins) bin.reset();
+      _locked = false;
+    }
+
+
+    /// Set the axis lock state
+    void _setLock(bool locked) {
+      _locked = locked;
     }
 
     //@}
@@ -520,6 +536,10 @@ namespace YODA {
 
     /// Add new bins, constructed from two sorted vectors of edges, to the axis
     void _addBins(const std::vector<double>& xbinedges, const std::vector<double>& ybinedges) {
+      if (_locked) {
+        throw LockError("Attempting to add bins to a locked axis");
+      }
+
       /// @todo Check that vectors are sorted?
 
       /// @todo Check whether there is overlap with any existing edges in either direction
@@ -540,6 +560,9 @@ namespace YODA {
 
     /// Add new bins to the axis
     void _addBins(const Bins& bins) {
+      if (_locked) {
+        throw LockError("Attempting to add bins to a locked axis");
+      }
       for (size_t i = 0; i < bins.size(); ++i) {
 
         /// @todo Check for 2D edge overlaps
@@ -572,6 +595,10 @@ namespace YODA {
       std::sort(yedges.begin(), yedges.end());
       std::vector<double>::iterator ity = std::unique(yedges.begin(), yedges.end());
       yedges.resize(ity - yedges.begin());
+
+      // Guess that it's a perfect grid if (nxedge-1)*(nyedge-1) == nbins
+      /// @todo This is not an ideal check: it could be a numerical coincidence. Fix!
+      _isPerfectGrid = ( (xedges.size()-1)*(yedges.size()-1) == numBins());
 
       // Create a double-map hash based on the two sets of low edges. Initialize with null bin indices.
       _binhash.clear();
@@ -653,6 +680,12 @@ namespace YODA {
 
     /// Cached bin edges for searching
     BinHash _binhash;
+
+    /// Whether the binning exactly matches the hash edges
+    bool _isPerfectGrid;
+
+    /// Whether modifying bin edges is permitted
+    bool _locked;
 
     //@}
 

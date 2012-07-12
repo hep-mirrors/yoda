@@ -1,5 +1,7 @@
 2012-07-12  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Adding axis locking to Axis2D.
+
 	* Supporting Histo2D in WriterYODA.
 
 2012-07-02  Andy Buckley  <andy.buckley@cern.ch>
