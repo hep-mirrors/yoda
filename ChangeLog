@@ -1,5 +1,7 @@
 2012-07-12  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Reintroducing Profile2D and Scatter3D.
+
 	* Adding axis locking to Axis2D.
 
 	* Supporting Histo2D in WriterYODA.
