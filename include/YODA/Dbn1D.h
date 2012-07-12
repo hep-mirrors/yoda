@@ -59,6 +59,19 @@ namespace YODA {
       _sumWX2 = toCopy._sumWX2;
     }
 
+
+    /// Copy assignment
+    ///
+    /// Sets all the parameters using the ones provided from an existing Dbn1D.
+    Dbn1D& operator=(const Dbn1D& toCopy) {
+      _numFills = toCopy._numFills;
+      _sumW = toCopy._sumW;
+      _sumW2 = toCopy._sumW2;
+      _sumWX = toCopy._sumWX;
+      _sumWX2 = toCopy._sumWX2;
+      return *this;
+    }
+
     //@}
 
 

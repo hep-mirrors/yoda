@@ -51,6 +51,21 @@ namespace YODA {
       _sumWXYZ = toCopy._sumWXYZ;
     }
 
+
+    /// Copy assignment
+    ///
+    /// Sets all the parameters using the ones provided from an existing Dbn3D.
+    Dbn3D& operator=(const Dbn3D& toCopy) {
+      _dbnX = toCopy._dbnX;
+      _dbnY = toCopy._dbnY;
+      _dbnZ = toCopy._dbnZ;
+      _sumWXY = toCopy._sumWXY;
+      _sumWXZ = toCopy._sumWXZ;
+      _sumWYZ = toCopy._sumWYZ;
+      _sumWXYZ = toCopy._sumWXYZ;
+      return *this;
+    }
+
     //@}
 
 

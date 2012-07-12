@@ -5,6 +5,7 @@ pkginclude_HEADERS = \
 	Dbn1D.h Dbn2D.h \
 	Axis1D.h Bin1D.h \
     Axis2D.h Bin2D.h \
+    Plot.h \
     Histo1D.h HistoBin1D.h  \
     Histo2D.h HistoBin2D.h  \
     Profile1D.h ProfileBin1D.h \
@@ -18,7 +19,7 @@ nobase_pkginclude_HEADERS = \
 	Utils/MathUtils.h \
 	Utils/Formatting.h \
 	Utils/sortedvector.h \
-  Utils/cachedvector.h \
+    Utils/cachedvector.h \
 	Utils/nvector.h \
 	Config/YodaConfig.h \
 	Config/BuildConfig.h

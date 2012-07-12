@@ -3,7 +3,10 @@ YODA TODO list
 
 NOW
 
-* Write / support comments on ends of YODA format data lines
+* Read Plot sections (HH)
+   DM to use this in implementing the make-plots replacement.
+
+* Allow comments on ends of YODA format data lines in ReaderYODA (HH)
    Ignore anything after "#" on data lines -- use this to write convenience
    height & error info for each bin since not obvious from sumWX2 etc.
 
@@ -17,7 +20,7 @@ NOW
 
 * Make Python interface test scripts (DM)
 
-* Add copy assignment to Point/Scatter3D and Dbn1D/2D. (AB)
+* Add copy assignment to Point/Scatter3D (AB)
 
 * Improve tests Makefile setup to work out the path to the Python build dir. (AB)
 

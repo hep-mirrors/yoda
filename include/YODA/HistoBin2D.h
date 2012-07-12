@@ -3,11 +3,11 @@
 
 #include "YODA/Bin2D.h"
 #include "YODA/Dbn2D.h"
-#include "YODA/ProfileBin1D.h"
+// #include "YODA/ProfileBin1D.h"
 #include "YODA/Exceptions.h"
 
-#include <cmath>
-#include <sys/time.h>
+// #include <cmath>
+// #include <sys/time.h>
 
 namespace YODA {
 
@@ -29,7 +29,8 @@ namespace YODA {
     { }
 
     /// Constructor accepting a set of all edges of a bin
-    HistoBin2D(const std::pair<double,double>& xedges, const std::pair<double,double>& yedges)
+    HistoBin2D(const std::pair<double,double>& xedges,
+               const std::pair<double,double>& yedges)
       : Bin2D<Dbn2D>(xedges, yedges)
     { }
 
@@ -39,12 +40,21 @@ namespace YODA {
     HistoBin2D(const std::pair<double, double>& xedges,
                const std::pair<double, double>& yedges, const Dbn2D& dbn)
       : Bin2D<Dbn2D>(xedges, yedges, dbn)
-      { }
+    { }
 
     /// Copy constructor
     HistoBin2D(const HistoBin2D& pb)
       : Bin2D<Dbn2D>(pb)
-      { }
+    { }
+
+    /// Copy assignment
+    HistoBin2D& operator = (const HistoBin2D& hb) {
+      Bin2D<Dbn2D>::operator=(hb);
+      return *this;
+    }
+
+    //@}
+
 
     /// @name Modifiers
     //@{
@@ -126,6 +136,7 @@ namespace YODA {
     rtn += a;
     return rtn;
   }
+
 
   /// Bin subtraction operator
   inline HistoBin2D operator - (const HistoBin2D& a, const HistoBin2D& b) {

@@ -7,16 +7,15 @@ libYODA_la_SOURCES = \
     Histo1D.cc \
     Histo2D.cc \
     Profile1D.cc \
-    ReaderAIDA.cc \
-    ReaderYODA.cc \
+    Profile2D.cc \
     Scatter1D.cc \
     Scatter2D.cc \
+    Scatter3D.cc \
+    ReaderAIDA.cc \
+    ReaderYODA.cc \
     Writer.cc \
     WriterAIDA.cc \
-    WriterYODA.cc 
-#    Profile2D.cc \
-#    Scatter3D.cc
-
+    WriterYODA.cc
 
 libYODA_la_LIBADD = tinyxml/libtinyxml.la
 libYODA_la_CPPFLAGS = $(AM_CPPFLAGS) -DTIXML_USE_STL

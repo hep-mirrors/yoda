@@ -70,6 +70,7 @@ namespace YODA {
 
   double Histo2D::xVariance(bool includeoverflows) const {
     if (includeoverflows) return _axis.totalDbn().xVariance();
+    /// @todo Improve this, by adding the Dbn2Ds and returning the resulting xVariance
     double sigma2 = 0;
     const double xMean = this->xMean();
     for (size_t i = 0; i < bins().size(); ++i) {
@@ -82,6 +83,7 @@ namespace YODA {
 
   double Histo2D::yVariance(bool includeoverflows) const {
     if (includeoverflows) return _axis.totalDbn().yVariance();
+    /// @todo Improve this, by adding the Dbn2Ds and returning the resulting yVariance
     double sigma2 = 0;
     const double yMean = this->yMean();
     for (size_t i = 0; i < bins().size(); ++i) {

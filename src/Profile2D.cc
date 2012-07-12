@@ -12,16 +12,16 @@ namespace YODA {
     _axis.totalDbn().fill(x, y, z, weight);
     // Fill the bins and overflows
     try {
-      HistoBin2D& b = binByCoord(x);
+      ProfileBin2D& b = binByCoord(x, y);
       b.fill(x, y, z, weight);
     } catch (const RangeError& re) {
       size_t ix(0), iy(0);
-      if (x <  _axis.xMin()) ix = -1 else if (x >= _axis.xMax()) ix = 1;
-      if (y <  _axis.yMin()) iy = -1 else if (y >= _axis.yMax()) iy = 1;
+      if (x <  _axis.xMin()) ix = -1; else if (x >= _axis.xMax()) ix = 1;
+      if (y <  _axis.yMin()) iy = -1; else if (y >= _axis.yMax()) iy = 1;
       _axis.outflow(ix, iy).fill(x, y, z, weight);
     }
-    // // Lock the axis now that a fill has happened
-    // _axis._setLock(true);
+    // Lock the axis now that a fill has happened
+    _axis._setLock(true);
   }
 
 
@@ -47,10 +47,8 @@ namespace YODA {
 
   /// A copy constructor with optional new path
   Profile2D::Profile2D(const Profile2D& p, const std::string& path)
-    : AnalysisObject("Profile2D", p.path(), p, p.title())
-  {
-    _axis = p._axis;
-  }
+    : AnalysisObject("Profile2D", p.path(), p, p.title()), _axis(p._axis)
+  {  }
 
 
   /// Constructor from a Scatter3D's binning, with optional new path
@@ -78,35 +76,35 @@ namespace YODA {
 
 
   /// Divide two profile histograms
-  /// Note: I have remove the const requirement as it makes the program compile,
-  /// was it right to do?
-  Scatter3D divide(Profile2D& numer, Profile2D& denom) {
-    /// @todo Make this check work
-    if (numer != denom) throw "It is impossible to add two incompatibly binned profile histograms!";
+  Scatter3D divide(const Profile2D& numer, const Profile2D& denom) {
+    /// @todo TODO
+
+    /// @todo Check that bins match
+
     Scatter3D tmp;
-    for (size_t i = 0; i < numer.numBins(); ++i) {
-      const ProfileBin2D& b1 = numer.bin(i);
-      const ProfileBin2D& b2 = denom.bin(i);
-      const ProfileBin2D& bL = b1 + b2;
+    // for (size_t i = 0; i < numer.numBins(); ++i) {
+    //   const ProfileBin2D& b1 = numer.bin(i);
+    //   const ProfileBin2D& b2 = denom.bin(i);
+    //   const ProfileBin2D& bL = b1 + b2;
 
-      assert(fuzzyEquals(b1.focus().first, b2.focus().first));
-      assert(fuzzyEquals(b1.focus().second, b2.focus().second));
+    //   assert(fuzzyEquals(b1.focus().first, b2.focus().first));
+    //   assert(fuzzyEquals(b1.focus().second, b2.focus().second));
 
-      const double x = bL.focus().first/2;
-      const double y = bL.focus().second/2;
-      const double z = b1.mean()/b2.mean();
+    //   const double x = bL.focus().first/2;
+    //   const double y = bL.focus().second/2;
+    //   const double z = b1.mean()/b2.mean();
 
-      const double exminus = x - bL.xMin()/2;
-      const double explus = bL.xMax()/2 - x;
+    //   const double exminus = x - bL.xMin()/2;
+    //   const double explus = bL.xMax()/2 - x;
 
-      const double eyminus = y - bL.yMin()/2;
-      const double eyplus = bL.yMax()/2 - y;
+    //   const double eyminus = y - bL.yMin()/2;
+    //   const double eyplus = bL.yMax()/2 - y;
 
-      const double ez = z * sqrt(sqr(b1.stdErr()/b1.mean()) + sqr(b2.stdErr()/b2.mean()));
+    //   const double ez = z * sqrt(sqr(b1.stdErr()/b1.mean()) + sqr(b2.stdErr()/b2.mean()));
 
-      tmp.addPoint(x, exminus, explus, y, eyminus, eyplus, z, ez, ez);
-    }
-    assert(tmp.numPoints() == numer.numBins());
+    //   tmp.addPoint(x, exminus, explus, y, eyminus, eyplus, z, ez, ez);
+    // }
+    // assert(tmp.numPoints() == numer.numBins());
     return tmp;
   }
 

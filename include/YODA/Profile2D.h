@@ -41,7 +41,7 @@ namespace YODA {
               size_t nbinsY, double lowerY, double upperY,
               const std::string& path="", const std::string& title="")
       : AnalysisObject("Profile2D", path, title),
-        _axis(nbinsX, lowerX, upperX, nbinsY, lowerY, upperY)
+        _axis(nbinsX, std::make_pair(lowerX, upperX), nbinsY, std::make_pair(lowerY, upperY))
     { }
 
     /// Constructor giving explicit bin edges in the direction of X and Y
@@ -98,33 +98,39 @@ namespace YODA {
 
     /// Rescale as if all fill weights had been different by a @a scalefactor
     void scaleW(double scalefactor) {
+      /// @todo Is this ScaledBy annotation needed?
+      setAnnotation("ScaledBy", annotation<double>("ScaledBy", 1.0) * scalefactor);
       _axis.scaleW(scalefactor);
     }
 
-    /// Merge together the bin range with indices from @a from to @a to, inclusive
-    void mergeBins(size_t from, size_t to) {
-      _axis.mergeBins(from, to);
-    }
+    /// @todo TODO
+    // /// Merge together the bin range with indices from @a from to @a to, inclusive
+    // void mergeBins(size_t from, size_t to) {
+    //   _axis.mergeBins(from, to);
+    // }
 
-    /// Merge every group of n bins, starting from the LHS
-    void rebin(size_t n) {
-      throw "IMPLEMENT!";
-      //_axis.rebin(n);
-    }
+    /// @todo TODO
+    // /// Merge every group of n bins, starting from the LHS
+    // void rebin(size_t n) {
+    //   throw "IMPLEMENT!";
+    //   //_axis.rebin(n);
+    // }
 
 
-    /// @brief Bin addition operator
-    /// Add a bin to an axis described by its lower-left and higher-right point
-    void addBin(double lowX, double lowY, double highX, double highY) {
-      _axis.addBin(lowX, lowY, highX, highY);
-    }
+    /// @todo TODO
+    // /// @brief Bin addition operator
+    // /// Add a bin to an axis described by its lower-left and higher-right point
+    // void addBin(double lowX, double lowY, double highX, double highY) {
+    //   _axis.addBin(lowX, lowY, highX, highY);
+    // }
 
-    /// @brief Bin addition operator
-    /// Add a set of bins delimiting coordinates of which are contained
-    /// in binLimits vector.
-    void addBin(const std::vector<Segment>& binLimits) {
-      _axis.addBin(binLimits);
-    }
+    /// @todo TODO
+    // /// @brief Bin addition operator
+    // /// Add a set of bins delimiting coordinates of which are contained
+    // /// in binLimits vector.
+    // void addBin(const std::vector<Segment>& binLimits) {
+    //   _axis.addBin(binLimits);
+    // }
 
     //@}
 
@@ -177,14 +183,20 @@ namespace YODA {
     }
 
 
-    /// Access outflows (non-const)
-    std::vector<std::vector<Dbn3D> >& outflows() {
-      return _axis.outflows();
+    /// @brief Access an outflow (non-const)
+    ///
+    /// Two indices are used, for x and y: -1 = underflow, 0 = in-range, and +1 = overflow.
+    /// (0,0) is not a valid overflow index pair, since it is in range for both x and y.
+    Dbn3D& outflow(int ix, int iy) {
+      return _axis.outflow(ix, iy);
     }
 
-    /// Access outflows (const)
-    const std::vector<std::vector<Dbn3D> >& outflows() const {
-      return _axis.outflows();
+    /// @brief Access an outflow (const)
+    ///
+    /// Two indices are used, for x and y: -1 = underflow, 0 = in-range, and +1 = overflow.
+    /// (0,0) is not a valid overflow index pair, since it is in range for both x and y.
+    const Dbn3D& outflow(int ix, int iy) const {
+      return _axis.outflow(ix, iy);
     }
 
     //@}
@@ -197,7 +209,37 @@ namespace YODA {
 
     /// Get sum of weights in histo
     double sumW(bool includeoverflows=true) const;
+
+    /// Get the sum of squared weights in histo
     double sumW2(bool includeoverflows=true) const;
+
+    /// @todo TODO
+    // /// Get the mean x
+    // double xMean(bool includeoverflows=true) const;
+
+    /// @todo TODO
+    // /// Get the mean y
+    // double yMean(bool includeoverflows=true) const;
+
+    /// @todo TODO
+    // /// Get the variance in x
+    // double xVariance(bool includeoverflows=true) const;
+
+    /// @todo TODO
+    // /// Get the variance in y
+    // double yVariance(bool includeoverflows=true) const;
+
+    /// @todo TODO
+    // /// Get the standard deviation in x
+    // double xStdDev(bool includeoverflows=true) const {
+    //   return std::sqrt(xVariance(includeoverflows));
+    // }
+
+    /// @todo TODO
+    // /// Get the standard deviation in y
+    // double yStdDev(bool includeoverflows=true) const {
+    //   return std::sqrt(yVariance(includeoverflows));
+    // }
 
     //@}
 
