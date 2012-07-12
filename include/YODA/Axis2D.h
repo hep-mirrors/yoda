@@ -377,8 +377,8 @@ namespace YODA {
     /// interest.
     const long getBinIndex(double coordX, double coordY) const {
       // First check that we are within the axis bounds at all
-      if (coordX < lowEdgeX() || coordX > highEdgeX()) return -1;
-      if (coordY < lowEdgeY() || coordY > highEdgeY()) return -1;
+      if (coordX < lowEdgeX() || coordX >= highEdgeX()) return -1;
+      if (coordY < lowEdgeY() || coordY >= highEdgeY()) return -1;
       // Then return the lower-edge lookup (in both directions) from the hash map.
       // NB. both upper_bound and lower_bound return values *greater* than (or equal) to coord,
       // so we have to step back one iteration to get to the lower-or-equal containing bin edge.
