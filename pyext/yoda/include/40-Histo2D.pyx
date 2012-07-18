@@ -5,16 +5,16 @@ cdef extern from "YODA/Histo2D.h" namespace "YODA":
     cdef cppclass cHisto2D "YODA::Histo2D"(cAnalysisObject):
         cHisto2D(size_t nbinsX, double lowerX, double upperX,
                  size_t nbinsY, double lowerY, double upperY,
-                 string &path, string &title)
+                 string& path, string& title)
 
-        cHisto2D(cHisto2D &h)
+        cHisto2D(cHisto2D& h)
 
         void fill(double x, double y, double weight)
         void reset()
         void scaleW(double scalefactor)
         void scaleXY(double scaleX, double scaleY)
-        void mergeBins(size_t a, size_t b)
-        void rebin(int a, int b)
+        # void mergeBins(size_t a, size_t b)
+        # void rebin(int a, int b)
 
         # Bin Accessors
         size_t numBins()
@@ -25,10 +25,10 @@ cdef extern from "YODA/Histo2D.h" namespace "YODA":
         double lowEdgeY()
         double highEdgeX()
         double highEdgeY()
-        vector[vector[cDbn2D]] &outflows()
-        cDbn2D &totalDbn()
+        cDbn2D& outflow(int ix, int iy)
+        cDbn2D& totalDbn()
 
-        vector[cHistoBin2D] &bins()
+        vector[cHistoBin2D]& bins()
         cHistoBin2D& binByCoord(double x, double y)
 
         void eraseBin(size_t index)
@@ -63,6 +63,8 @@ cdef class Histo2D(AnalysisObject):
             char* path = '/'
             char* title = ''
 
+        # TODO: make nice multi-mode constructor
+
         if len(args) == 6:
             nbinsX, lowX, highX, nbinsY, lowY, highY = args
 
@@ -90,12 +92,12 @@ cdef class Histo2D(AnalysisObject):
         self.ptr().scaleW(factor)
 
 
-    def mergeBins(self, size_t a, size_t b):
-        self.ptr().mergeBins(a, b)
+    # def mergeBins(self, size_t a, size_t b):
+    #     self.ptr().mergeBins(a, b)
 
 
-    def rebin(self, int a, int b):
-        self.ptr().rebin(a, b)
+    # def rebin(self, int a, int b):
+    #     self.ptr().rebin(a, b)
 
 
     @property
@@ -141,20 +143,8 @@ cdef class Histo2D(AnalysisObject):
         return Dbn2D_fromptr(&self.ptr().totalDbn())
 
 
-    def outflows(self):
-        cdef size_t numofsX = self.ptr().numBinsX()
-        cdef size_t numofsY = self.ptr().numBinsY()
-        cdef size_t i
-        cdef Dbn2D of
-
-        out = []
-        for i in xrange(numofsX):
-            for j in xrange(numofsY):
-                of = Dbn2D_fromptr(&self.ptr().outflows()[i][j])
-                out.append(bin)
-        # TODO: Why was this here?
-        # self.ptr().outflows()
-        return out
+    def outflow(self, ix, iy):
+        return Dbn2D_fromptr(&self.ptr().outflow(ix, iy))
 
 
     def __delitem__(self, size_t ix):

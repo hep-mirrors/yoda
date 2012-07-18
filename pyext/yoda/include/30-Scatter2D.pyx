@@ -3,7 +3,6 @@ cdef extern from "YODA/Scatter2D.h" namespace "YODA":
         cScatter2D()
         cScatter2D(vector[cPoint2D]&, string, string)
         cScatter2D(cScatter2D &s)
-        # TODO: Add more constructors
 
         size_t numPoints()
         vector[cPoint2D] points()
@@ -12,27 +11,68 @@ cdef extern from "YODA/Scatter2D.h" namespace "YODA":
 
 
 cdef class Scatter2D(AnalysisObject):
-    cdef tuple _points
 
-    def __init__(self, points, char *path="", char *title=""):
-        points = tuple(points)
+    def __init__(self, *args, **kwargs):
+        """
+        Scatter2D constructor. Several sets of arguments are permitted:
 
-        cdef size_t N = len(points)
-        cdef vector[cPoint2D] point_vector = vector[cPoint2D](N)
-        cdef Point2D item
-        cdef cScatter2D *scatter
-        cdef int i
+        * Scatter2D() -- default constructor. Not usually useful in Python, due to availability of None.
+        * Scatter2D(points[, path, title]) -- explicit construction from a list of points.
+        * Scatter2D(xs, ys[, path, title]) -- constructing points from lists of x and y positions (no errs).
+        * Scatter2D(xs, ys, exs, eys[, path, title]) -- constructing points from lists of x and y positions and errs (errs can be pairs).
+        * Scatter2D(xs, ys, ex-s, ex+s, ey-s, ey+s[, path, title]) -- constructing points from lists of x and y positions and errs.
 
-        # TODO: Add more constructors and nice arg behaviours cf. Profile1D and Histo1D
+        The path and title arguments are optional, and may either be specified via the
+        positional parameters or via explicit keyword arguments, e.g. path='/foo/bar'.
+        """
+        #self._dealloc = True
+        cdef:
+            # size_t N = len(points)
+            # int i
+            Point2D item
+            vector[cPoint2D] point_vector
+            cScatter2D* scatter
+            char* path = '/'
+            char* title = ''
 
-        for i in range(N):
-            item = points[i]
-            point_vector[i] = item.ptr()[0]
+        ## Permit path and title specification via kwargs
+        if "path" in kwargs:
+            path = kwargs["path"]
+        if "title" in kwargs:
+            path = kwargs["title"]
+
+        ## Trigger different construction methods depending on Python args
+        # TODO: Map copy constructors, esp. the path-resetting one
+        if len(args) == 0:
+            self.setptr(new cScatter2D())
+        elif len(args) == 1:
+            for point in args[0]:
+                item = point
+                point_vector.push_back( item.ptr()[0] )
+        elif len(args) == 2:
+            # Scatter2D(xs, ys[, path, title])
+            assert len(args[0]) == len(args[1])
+            for i in xrange(args[0]):
+                item = Point2D(args[0][i], args[1][i])
+                point_vector.push_back( item.ptr()[0] )
+        elif len(args) == 4:
+            # Scatter2D(xs, ys, exs, eys[, path, title])
+            assert len(args[0]) == len(args[1]) == len(args[2]) == len(args[3])
+            for i in xrange(args[0]):
+                item = Point2D(args[0][i], args[1][i], args[2][i], args[3][i])
+                point_vector.push_back( item.ptr()[0] )
+        elif len(args) == 6:
+            # Scatter2D(xs, ys, ex-s, ex+s, ey-s, ey+s[, path, title])
+            assert len(args[0]) == len(args[1]) == len(args[2]) == len(args[3])
+            for i in xrange(args[0]):
+                item = Point2D(args[0][i], args[1][i], args[2][i], args[3][i], args[4][i], args[5][i])
+                point_vector.push_back( item.ptr()[0] )
+        else:
+            raise ValueError('Wrong number of values: can take 2, 4, or 6 parameters')
 
         scatter = new cScatter2D(point_vector, string(path), string(title))
         self.setptr(scatter, True)
 
-        self._points = points
 
     @property
     def numPoints(self):

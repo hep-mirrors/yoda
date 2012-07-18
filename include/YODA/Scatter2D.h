@@ -73,30 +73,30 @@ namespace YODA {
     }
 
 
-    /// Constructor from values with symmetric errors on x and asymmetric errors on y
-    Scatter2D(const std::vector<double>& x, const std::vector<double>& y,
-              const std::vector<double>& ex, const std::vector<std::pair<double,double> >& ey,
-              const std::string& path="", const std::string& title="")
-      : AnalysisObject("Scatter2D", path, title)
-    {
-      assert(x.size() == y.size() && x.size() == ex.size() && x.size() == ey.size());
-      for (size_t i = 0; i < x.size(); ++i) {
-        addPoint(Point2D(x[i], y[i], ex[i], ey[i]));
-      }
-    }
+    // /// Constructor from values with symmetric errors on x and asymmetric errors on y
+    // Scatter2D(const std::vector<double>& x, const std::vector<double>& y,
+    //           const std::vector<double>& ex, const std::vector<std::pair<double,double> >& ey,
+    //           const std::string& path="", const std::string& title="")
+    //   : AnalysisObject("Scatter2D", path, title)
+    // {
+    //   assert(x.size() == y.size() && x.size() == ex.size() && x.size() == ey.size());
+    //   for (size_t i = 0; i < x.size(); ++i) {
+    //     addPoint(Point2D(x[i], y[i], ex[i], ey[i]));
+    //   }
+    // }
 
 
-    /// Constructor from values with asymmetric errors on x and symmetric errors on y
-    Scatter2D(const std::vector<double>& x, const std::vector<double>& y,
-              const std::vector<std::pair<double,double> >& ex, const std::vector<double>& ey,
-              const std::string& path="", const std::string& title="")
-      : AnalysisObject("Scatter2D", path, title)
-    {
-      assert(x.size() == y.size() && x.size() == ex.size() && x.size() == ey.size());
-      for (size_t i = 0; i < x.size(); ++i) {
-        addPoint(Point2D(x[i], y[i], ex[i], ey[i]));
-      }
-    }
+    // /// Constructor from values with asymmetric errors on x and symmetric errors on y
+    // Scatter2D(const std::vector<double>& x, const std::vector<double>& y,
+    //           const std::vector<std::pair<double,double> >& ex, const std::vector<double>& ey,
+    //           const std::string& path="", const std::string& title="")
+    //   : AnalysisObject("Scatter2D", path, title)
+    // {
+    //   assert(x.size() == y.size() && x.size() == ex.size() && x.size() == ey.size());
+    //   for (size_t i = 0; i < x.size(); ++i) {
+    //     addPoint(Point2D(x[i], y[i], ex[i], ey[i]));
+    //   }
+    // }
 
 
     /// Constructor from values with asymmetric errors on both x and y
@@ -221,17 +221,17 @@ namespace YODA {
       return *this;
     }
 
-    /// Insert a new point, defined as the x/y value pair and mixed errors
-    Scatter2D& addPoint(double x, double y, std::pair<double,double> ex, double ey) {
-      _points.insert(Point2D(x, y, ex, ey));
-      return *this;
-    }
+    // /// Insert a new point, defined as the x/y value pair and mixed errors
+    // Scatter2D& addPoint(double x, double y, std::pair<double,double> ex, double ey) {
+    //   _points.insert(Point2D(x, y, ex, ey));
+    //   return *this;
+    // }
 
-    /// Insert a new point, defined as the x/y value pair and mixed errors
-    Scatter2D& addPoint(double x, double y, double ex, std::pair<double,double> ey) {
-      _points.insert(Point2D(x, y, ex, ey));
-      return *this;
-    }
+    // /// Insert a new point, defined as the x/y value pair and mixed errors
+    // Scatter2D& addPoint(double x, double y, double ex, std::pair<double,double> ey) {
+    //   _points.insert(Point2D(x, y, ex, ey));
+    //   return *this;
+    // }
 
     /// Insert a new point, defined as the x/y value pair and asymmetric errors
     Scatter2D& addPoint(double x, double y, std::pair<double,double> ex, std::pair<double,double> ey) {

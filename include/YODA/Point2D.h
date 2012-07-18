@@ -49,20 +49,20 @@ namespace YODA {
     }
 
 
-    /// Constructor from values with symmetric errors on x and asymmetric errors on y
-    Point2D(double x, double y, double ex, const std::pair<double,double>& ey)
-      : _x(x), _y(y), _ey(ey)
-    {
-      _ex = std::make_pair(ex, ex);
-    }
+    // /// Constructor from values with symmetric errors on x and asymmetric errors on y
+    // Point2D(double x, double y, double ex, const std::pair<double,double>& ey)
+    //   : _x(x), _y(y), _ey(ey)
+    // {
+    //   _ex = std::make_pair(ex, ex);
+    // }
 
 
-    /// Constructor from values with asymmetric errors on x and symmetric errors on y
-    Point2D(double x, double y, const std::pair<double,double>& ex, double ey)
-      : _x(x), _y(y), _ex(ex)
-    {
-      _ey = std::make_pair(ey, ey);
-    }
+    // /// Constructor from values with asymmetric errors on x and symmetric errors on y
+    // Point2D(double x, double y, const std::pair<double,double>& ex, double ey)
+    //   : _x(x), _y(y), _ex(ex)
+    // {
+    //   _ey = std::make_pair(ey, ey);
+    // }
 
 
     /// Constructor from values with asymmetric errors on both x and y
@@ -73,7 +73,8 @@ namespace YODA {
 
     /// Copy constructor
     Point2D(const Point2D& p)
-      : _x(p._x), _y(p._y), _ex(p._ex), _ey(p._ey)
+      : _x(p._x), _y(p._y),
+        _ex(p._ex), _ey(p._ey)
     {  }
 
 
@@ -258,12 +259,12 @@ namespace YODA {
   }
 
   /// Equality test of x characteristics only
-  inline bool operator!=(const YODA::Point2D& a, const YODA::Point2D& b) {
+  inline bool operator != (const YODA::Point2D& a, const YODA::Point2D& b) {
     return !(a == b);
   }
 
   /// Less-than operator used to sort bins by x-ordering
-  inline bool operator<(const YODA::Point2D& a, const YODA::Point2D& b) {
+  inline bool operator < (const YODA::Point2D& a, const YODA::Point2D& b) {
     if (!YODA::fuzzyEquals(a.x(), b.x())) {
       return a.x() < b.x();
     }
@@ -277,18 +278,18 @@ namespace YODA {
   }
 
   /// Less-than-or-equals operator used to sort bins by x-ordering
-  inline bool operator<=(const YODA::Point2D& a, const YODA::Point2D& b) {
+  inline bool operator <= (const YODA::Point2D& a, const YODA::Point2D& b) {
     if (a == b) return true;
     return a < b;
   }
 
   /// Greater-than operator used to sort bins by x-ordering
-  inline bool operator>(const YODA::Point2D& a, const YODA::Point2D& b) {
+  inline bool operator > (const YODA::Point2D& a, const YODA::Point2D& b) {
     return !(a <= b);
   }
 
   /// Greater-than-or-equals operator used to sort bins by x-ordering
-  inline bool operator>=(const YODA::Point2D& a, const YODA::Point2D& b) {
+  inline bool operator >= (const YODA::Point2D& a, const YODA::Point2D& b) {
     return !(a < b);
   }
 

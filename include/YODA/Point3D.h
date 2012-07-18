@@ -59,24 +59,29 @@ namespace YODA {
             const std::pair<double,double>& ex,
             const std::pair<double,double>& ey,
             const std::pair<double,double>& ez)
-      : _x(x), _y(y), _z(z)
-    {
-        _ex = ex;
-        _ey = ey;
-        _ez = ez;
-    }
+      : _x(x), _y(y), _z(z),
+        _ex(ex), _ey(ey), _ez(ez)
+    {  }
 
 
-    /// @brief A copy constructor
-    Point3D(const Point3D& p) {
+    /// @brief Copy constructor
+    Point3D(const Point3D& p)
+      : _x(p._x), _y(p._y), _z(p._z),
+        _ex(p._ex), _ey(p._ey), _ez(p._ez)
+    {  }
+
+
+    /// Copy assignment
+    Point3D& operator = (const Point3D& p) {
       _x = p._x;
       _y = p._y;
       _z = p._z;
-
       _ex = p._ex;
       _ey = p._ey;
       _ez = p._ez;
+      return *this;
     }
+
 
     //@}
 
@@ -315,46 +320,46 @@ namespace YODA {
   }
 
   /// Inequality operator
-  inline bool operator!=(const  Point3D& a, const YODA::Point3D& b) {
+  inline bool operator != (const  Point3D& a, const YODA::Point3D& b) {
     return !(a == b);
   }
 
   /// Less-than operator used to sort bins by x-first ordering
-  inline bool operator<(const  Point3D& a, const YODA::Point3D& b) {
+  inline bool operator < (const  Point3D& a, const YODA::Point3D& b) {
     if (! fuzzyEquals(a.x(), b.x())) {
       return a.x() < b.x();
     }
-    if(!fuzzyEquals(a.y(), b.y())) {
+    if (!fuzzyEquals(a.y(), b.y())) {
       return a.y() < b.y();
     }
     if (! fuzzyEquals(a.xErrMinus(), b.xErrMinus())) {
       return a.xErrMinus() < b.xErrMinus();
     }
-    if(!fuzzyEquals(a.yErrMinus(), b.yErrMinus())) {
+    if (!fuzzyEquals(a.yErrMinus(), b.yErrMinus())) {
       return a.yErrMinus() < b.yErrMinus();
     }
     if (! fuzzyEquals(a.xErrPlus(), b.xErrPlus())) {
       return a.xErrPlus() < b.xErrPlus();
     }
-    if(!fuzzyEquals(a.yErrPlus(), b.yErrPlus())) {
+    if (!fuzzyEquals(a.yErrPlus(), b.yErrPlus())) {
       return a.yErrPlus() < b.yErrPlus();
     }
     return false;
   }
 
   /// Less-than-or-equals operator
-  inline bool operator<=(const  Point3D& a, const YODA::Point3D& b) {
+  inline bool operator <= (const  Point3D& a, const YODA::Point3D& b) {
     if (a == b) return true;
     return a < b;
   }
 
   /// Greater-than operator
-  inline bool operator>(const  Point3D& a, const YODA::Point3D& b) {
+  inline bool operator > (const  Point3D& a, const YODA::Point3D& b) {
     return !(a <= b);
   }
 
   /// Greater-than-or-equals operator
-  inline bool operator>=(const  Point3D& a, const YODA::Point3D& b) {
+  inline bool operator >= (const  Point3D& a, const YODA::Point3D& b) {
     return !(a < b);
   }
 

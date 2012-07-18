@@ -1,15 +1,29 @@
 /// This file is purely for backward compatibility with Cython 1.3 and 1.4.
+/// @todo Now to be removed!
 
 #include "YODA/AnalysisObject.h"
+
+// 1D
 #include "YODA/Histo1D.h"
 #include "YODA/Profile1D.h"
 #include "YODA/Scatter2D.h"
 #include "YODA/HistoBin1D.h"
+#include "YODA/ProfileBin1D.h"
+
+// 2D
 // #include "YODA/Histo2D.h"
+// #include "YODA/Profile2D.h"
 // #include "YODA/Scatter3D.h"
+#include "YODA/HistoBin2D.h"
+#include "YODA/ProfileBin2D.h"
+
+// Writers
+#include "YODA/WriterYODA.h"
 #include "YODA/WriterAIDA.h"
+
 #include <string>
 #include <vector>
+
 
 using namespace YODA;
 
@@ -53,6 +67,10 @@ inline HistoBin1D subtract_HistoBin1D(const HistoBin1D& a, const HistoBin1D& b) 
 
 void WriterAIDA_write (const std::string& filename, const std::vector<AnalysisObject*>& aos) {
   return WriterAIDA::write(filename, aos);
+}
+
+void WriterYODA_write (const std::string& filename, const std::vector<AnalysisObject*>& aos) {
+  return WriterYODA::write(filename, aos);
 }
 
 
