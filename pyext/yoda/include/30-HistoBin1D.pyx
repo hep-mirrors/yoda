@@ -1,14 +1,15 @@
 cdef extern from "YODA/HistoBin1D.h" namespace "YODA":
 
     cdef cppclass cHistoBin1D "YODA::HistoBin1D":
-        cHistoBin1D (cHistoBin1D &h)
-        cHistoBin1D (double, double)
+        cHistoBin1D(cHistoBin1D &h)
+        cHistoBin1D(double, double)
         double area()
         double height()
         double areaErr()
         double heightErr()
         void reset()
 
+        # TODO
         # These are inherited methods from Bin1D... I can't seem to find a nice
         # way to make Cython acknowledge these (it seems to be a typedef parsing
         # issue rather than a technical issue).
@@ -25,6 +26,7 @@ cdef extern from "YODA/HistoBin1D.h" namespace "YODA":
         double xVariance()
         double xStdDev()
         double xStdErr()
+        double xRMS()
         double numEntries()
         double effNumEntries()
         double sumW()
@@ -33,15 +35,24 @@ cdef extern from "YODA/HistoBin1D.h" namespace "YODA":
         double sumWX2()
 
 
-#Ugly hack using shim header for Cython 0.13
+# TODO: Ugly hack using shim header for Cython 0.13
 cdef extern from "shims.h":
     cHistoBin1D add_HistoBin1D (cHistoBin1D &, cHistoBin1D &)
     cHistoBin1D subtract_HistoBin1D (cHistoBin1D &, cHistoBin1D &)
 
 
 cdef class HistoBin1D:
-    cdef cHistoBin1D *thisptr
+    """
+    A 1D histogram bin, as stored inside Histo1D.
+
+    Only one Python constructor:
+
+    * HistoBin1D(xlow, xhigh)
+    """
+
+    cdef cHistoBin1D* thisptr
     cdef bool _dealloc
+
 
     def __cinit__(self):
         self._dealloc = False
@@ -50,7 +61,13 @@ cdef class HistoBin1D:
         if self._dealloc:
             del self.thisptr
 
-    cdef HistoBin1D setptr(self, cHistoBin1D *ptr, bool dealloc):
+
+    # TODO: Why does Cython hate this?!?
+    # def __init__(self, double xlow, double xhigh):
+    #     self.setptr(new cHistoBin1D(xlow, xhigh), dealloc=True)
+
+
+    cdef HistoBin1D setptr(self, cHistoBin1D* ptr, bool dealloc):
         if self._dealloc:
             del self.thisptr
 
@@ -61,6 +78,11 @@ cdef class HistoBin1D:
     cdef cHistoBin1D* ptr(self):
         return self.thisptr
 
+
+    ##############################
+    # THIS IS ALL BIN1D STUFF: CAN WE INHERIT THE PY MAPPING?
+
+
     @property
     def lowEdge(self):
         """The lower of the two bin edges."""
@@ -68,12 +90,14 @@ cdef class HistoBin1D:
 
     xMin = lowEdge
 
+
     @property
     def highEdge(self):
         """The higher of the two bin edges."""
         return self.ptr().highEdge()
 
     xMax = highEdge
+
 
     @property
     def width(self):
@@ -90,6 +114,7 @@ cdef class HistoBin1D:
         """The point half-way between the bin edges."""
         return self.ptr().midpoint()
 
+
     @property
     def xMean(self):
         """The mean of the x-values that have filled the bin."""
@@ -104,6 +129,16 @@ cdef class HistoBin1D:
     def xStdDev(self):
         """The standard deviation of the x-values that have filled the bin."""
         return self.ptr().xStdDev()
+
+    @property
+    def xStdErr(self):
+        """The standard error of the x-values that have filled the bin."""
+        return self.ptr().xStdErr()
+
+    @property
+    def xRMS(self):
+        """The RMS of the x-values that have filled the bin."""
+        return self.ptr().xRMS()
 
     @property
     def numEntries(self):
@@ -135,6 +170,10 @@ cdef class HistoBin1D:
     def sumWX2(self):
         """Sum of the products of x-values squared and their weights."""
         return self.ptr().sumWX2()
+
+
+    ########################
+
 
     @property
     def area(self):

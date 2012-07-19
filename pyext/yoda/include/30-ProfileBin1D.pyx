@@ -25,10 +25,12 @@ cdef extern from "YODA/ProfileBin1D.h" namespace "YODA":
         double xVariance()
         double xStdDev()
         double xStdErr()
+        double xRMS()
         double mean()
         double variance()
         double stdDev()
         double stdErr()
+        double rms()
         double numEntries()
         double effNumEntries()
         double sumW()
@@ -46,7 +48,15 @@ cdef extern from "shims.h":
 
 
 cdef class ProfileBin1D:
-    cdef cProfileBin1D *thisptr
+    """
+    A 1D profile histogram bin, as stored inside Histo1D.
+
+    Only one Python constructor:
+
+    * ProfileBin1D(xlow, xhigh)
+    """
+
+    cdef cProfileBin1D* thisptr
     cdef bool _dealloc
 
     def __cinit__(self):
@@ -56,7 +66,13 @@ cdef class ProfileBin1D:
         if self._dealloc:
             del self.thisptr
 
-    cdef ProfileBin1D setptr(self, cProfileBin1D *ptr, bool dealloc):
+
+    # TODO: Why does Cython hate this?!?
+    # def __init__(self, double xlow, double xhigh):
+    #     self.setptr(new cHistoBin1D(xlow, xhigh), dealloc=True)
+
+
+    cdef ProfileBin1D setptr(self, cProfileBin1D* ptr, bool dealloc):
         if self._dealloc:
             del self.thisptr
 
@@ -66,6 +82,10 @@ cdef class ProfileBin1D:
 
     cdef cProfileBin1D* ptr(self):
         return self.thisptr
+
+
+    ##############################
+    # THIS IS ALL BIN1D STUFF: CAN WE INHERIT THE PY MAPPING?
 
     @property
     def lowEdge(self):
@@ -115,6 +135,14 @@ cdef class ProfileBin1D:
         return self.ptr().xStdErr()
 
     @property
+    def xRMS(self):
+        """The RMS of the x-values that have filled the bin."""
+        return self.ptr().xRMS()
+
+    ####################################
+
+
+    @property
     def mean(self):
         """The mean of the y-values that have filled the bin."""
         return self.ptr().mean()
@@ -133,6 +161,11 @@ cdef class ProfileBin1D:
     def stdErr(self):
         """The standard error of the y-values that have filled the bin."""
         return self.ptr().stdErr()
+
+    @property
+    def rms(self):
+        """The RMS of the y-values that have filled the bin."""
+        return self.ptr().rms()
 
     @property
     def numEntries(self):

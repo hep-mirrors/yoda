@@ -10,34 +10,44 @@ NOW
    Ignore anything after "#" on data lines -- use this to write convenience
    height & error info for each bin since not obvious from sumWX2 etc.
 
-* Add nice constructor behaviour and docstrings to the Scatter2D Python interface. (AB)
-
 * Remove nasty Cython shims (DM)
-   Does inheritance work automatically in Cython now?
+   Does inheritance work automatically in Cython now? Add operator support
+   everywhere it's needed.
 
-* Complete basic Histo2D and Profile2D functionality. (AB)
-   Axis2D is working
+* Add Axis2D -> Histo2D/Profile2D bin adding and erasing. (AB)
 
 * Make Python interface test scripts (DM)
 
-* Add copy assignment to Point/Scatter3D (AB)
+* Add copy assignment to both C++ and Cython (AB)
 
-* Improve tests Makefile setup to work out the path to the Python build dir. (AB)
+* Docstrings for Points, Dbns and Bins (AB)
 
+* Add stdErr to HistoBinXD (AB)
+
+* Add Dbn3D, ProfileBin2D, Profile2D and Scatter3D in Cython (AB)
+
+* Test Histo2D and Scatter2D from Python (AB)
+
+* Sort out _dealloc treatment (AB, DM)
+
+* Adding 2D operator support and bin-adding/erasing
 
 
 
 NEXT
 
-* Add "official" counter and bar-chart types (AB)
-   Need better names!
+* Auto-determine input and output formats (= readers/writers) from file extn (AB)
 
-* Add a merge() method in Bin2D. Add a constructor that takes Dbns.
+* Improve tests Makefile setup to work out the path to the Python build dir. (AB)
 
-* Rebinning: global rebinning of Axis2D -> Histo2D by integer factor(s) --
-  different factors in x and y directions.
+* Add a merge() method in Bin2D. Add a constructor that takes Dbns (AB)
+   Use merge() to implement merging/rebinning in Axis2D -> Histo2D & Profile2D.
 
-* Automatically determine input and output formats (= readers/writers) from file extn.
+* Detecting perfect/imperfect 2D grids (AB)
+
+* 2D bin merging and rebinning (AB)
+   Only rebin perfect grids? Global rebinning of Axis2D -> Histo2D by generally
+   different integer factors in x and y directions.
 
 * Test negative- and mixed-weighted stat calculations, and scaling.
 
@@ -48,12 +58,16 @@ NEXT
 * Add Scatter1D/Point1D (AB)
 
 * Transform 1D differential to integral histos and vice versa.
-  Bins have to be contiguous. (AB)
+   Bins have to be contiguous. (AB)
 
 * Add a Counter type (mostly a UI/persistency wrapper on Dbn1D) (AB)
+   "Binning"/"axis" option on arbitrary types, particularly strings? ->
+   generalised bar charts.
 
-* Multiple errors on Scatter2D -- via a vector of Error2D? How to implement
-  flexible error combination? Error correlations?
+* "BinnedValues" type: use Axis behaviour to look up fixed values.
+
+* Multiple errors on Scatters -- via a vector of Errors?
+   Flexible error combination? Error correlations? Max/min?
 
 * WriterFlat and ReaderFlat, for Scatter2D representations only. (HH)
 

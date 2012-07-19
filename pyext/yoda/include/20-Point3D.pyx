@@ -29,9 +29,20 @@ cdef extern from "YODA/Point3D.h" namespace "YODA":
 
 
 cdef class Point3D:
-    cdef cPoint3D* thisptr
+    """
+    A 3D point, as contained in Scatter3D.
 
+    Several constructor forms are supported:
+
+    * Point3D() - default point construction at (0,0,0)
+    * Point3D(x, y, z) - point construction at (x,y,z)
+    * Point3D(x, y, z, ex, ey, ez) - point construction at (x,y,z) with errors. ex and ey can be pairs.
+    * Point3D(x, y, z, ex-, ex+, ey-, ey+, ez-, ez+) - point construction at (x,y,z) with asymm errors.
+    """
+
+    cdef cPoint3D* thisptr
     cdef bool _dealloc
+
 
     cdef cPoint3D* ptr(self):
         return self.thisptr
@@ -44,6 +55,7 @@ cdef class Point3D:
         self._dealloc = dealloc
         return self
 
+
     def __cinit__(self):
         self._dealloc = False
 
@@ -52,7 +64,7 @@ cdef class Point3D:
         self._dealloc = True
 
         if len(args) == 0:
-            self.pos = 0, 0
+            self.pos = 0, 0, 0
         elif len(args) == 3:
             self.pos = args
         elif len(args) == 6:

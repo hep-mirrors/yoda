@@ -83,12 +83,10 @@ cdef class Histo2D(AnalysisObject):
 
     TODO: Add constructors from Scatter and Profile
     TODO: Support adding and erasing bins
+    TODO: Support add, mul, div operators
     """
 
-    # cdef tuple _bins
-
     def __cinit__(self):
-        # self._bins = None
         self._dealloc = False
 
 

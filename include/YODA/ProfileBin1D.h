@@ -100,6 +100,10 @@ namespace YODA {
       return _dbn.yStdErr();
     }
 
+    double rms() const {
+      return _dbn.yRMS();
+    }
+
     //@}
 
 

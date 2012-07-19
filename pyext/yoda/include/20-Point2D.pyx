@@ -20,8 +20,18 @@ cdef extern from "YODA/Point2D.h" namespace "YODA":
 
 
 cdef class Point2D:
-    cdef cPoint2D* thisptr
+    """
+    A 2D point, as contained in Scatter2D.
 
+    Several constructor forms are supported:
+
+    * Point2D() - default point construction at (0,0)
+    * Point2D(x, y) - point construction at (x,y)
+    * Point2D(x, y, ex, ey) - point construction at (x,y) with errors. ex and ey can be pairs.
+    * Point2D(x, y, ex-, ex+, ey-, ey+) - point construction at (x,y) with asymm errors.
+    """
+
+    cdef cPoint2D* thisptr
     cdef bool _dealloc
 
     cdef cPoint2D* ptr(self):

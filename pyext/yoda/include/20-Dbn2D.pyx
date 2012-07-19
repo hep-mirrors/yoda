@@ -31,7 +31,14 @@ cdef extern from "YODA/Dbn2D.h" namespace "YODA":
 
 
 cdef class Dbn2D:
-    cdef cDbn2D *thisptr
+    """
+    A 2D distribution 'counter', used and exposed by 1D histograms and their bins.
+
+    TODO: Allow no-arg construction?
+    TODO: map operator+ and operator-, both internal and external
+    """
+
+    cdef cDbn2D* thisptr
     cdef bool _dealloc
 
     def __cinit__(self):
@@ -64,78 +71,119 @@ cdef class Dbn2D:
 
 
     def fill(self, double x, double y, double weight=1.0):
+        "Fill the distribution with the given weight at given x and y."
         self.ptr().fill(x, y, weight)
 
     def reset(self):
+        "Reset the distribution counters to the unfilled state."
         self.ptr().reset()
 
     def scaleW(self, scalefactor):
+        "Scale the fill weights by the given factor"
         self.ptr().scaleW(scalefactor)
 
     def scaleX(self, factor):
+        "Scale the x variable by the given factor"
         self.ptr().scaleX(factor)
 
     def scaleY(self, factor):
+        "Scale the y variable by the given factor"
         self.ptr().scaleY(factor)
 
+    @property
     def xMean(self):
+        "Get the weighted mean x"
         return self.ptr().xMean()
 
+    @property
     def yMean(self):
+        "Get the weighted mean y"
         return self.ptr().yMean()
 
+    @property
     def xVariance(self):
+        "Get the weighted variance of x"
         return self.ptr().xVariance()
 
+    @property
     def yVariance(self):
+        "Get the weighted variance of y"
         return self.ptr().yVariance()
 
+    @property
     def xStdDev(self):
+        "Get the weighted standard deviation of x"
         return self.ptr().xStdDev()
 
+    @property
     def yStdDev(self):
+        "Get the weighted standard deviation of y"
         return self.ptr().yStdDev()
 
+    @property
     def xStdErr(self):
+        "Get the weighted standard error on <x>"
         return self.ptr().xStdDev()
 
+    @property
     def yStdErr(self):
+        "Get the weighted standard error on <y>"
         return self.ptr().yStdDev()
 
+    @property
     def xRMS(self):
+        "Get the weighted RMS of x"
         return self.ptr().xRMS()
 
+    @property
     def yRMS(self):
+        "Get the weighted RMS of y"
         return self.ptr().yRMS()
 
+    @property
     def numEntries(self):
+        "Get the number of entries"
         return self.ptr().numEntries()
 
+    @property
     def effNumEntries(self):
+        "Get the effective number of entries (for weighted events)"
         return self.ptr().effNumEntries()
 
+    @property
     def sumW(self):
+        "Get the sum of weights"
         return self.ptr().sumW()
 
+    @property
     def sumW2(self):
+        "Get the sum of squared-weights"
         return self.ptr().sumW2()
 
+    @property
     def sumWX(self):
+        "Get the sum of weighted xs"
         return self.ptr().sumWX()
 
+    @property
     def sumWX2(self):
+        "Get the sum of weighted squared-xs"
         return self.ptr().sumWX2()
 
+    @property
     def sumWY(self):
+        "Get the sum of weighted ys"
         return self.ptr().sumWY()
 
+    @property
     def sumWY2(self):
+        "Get the sum of weighted squared-ys"
         return self.ptr().sumWY2()
 
+    @property
     def sumWXY(self):
+        "Get the sum of weighted (x*y)s"
         return self.ptr().sumWXY()
-
-    # TODO: map operator+ and operator-, both internal and external
 
 
 
