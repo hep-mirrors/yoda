@@ -340,6 +340,12 @@ namespace YODA {
       return std::sqrt(yVariance(includeoverflows));
     }
 
+    /// Get the standard error in x
+    double xStdErr(bool includeoverflows=true) const;
+
+    /// Get the standard error in y
+    double yStdErr(bool includeoverflows=true) const;
+
     //@}
 
 

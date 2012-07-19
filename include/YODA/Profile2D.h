@@ -42,6 +42,7 @@ namespace YODA {
         _axis()
     { }
 
+
     /// Constructor giving range and number of bins
     Profile2D(size_t nbinsX, double lowerX, double upperX,
               size_t nbinsY, double lowerY, double upperY,
@@ -50,12 +51,14 @@ namespace YODA {
         _axis(nbinsX, std::make_pair(lowerX, upperX), nbinsY, std::make_pair(lowerY, upperY))
     { }
 
+
     /// Constructor giving explicit bin edges in the direction of X and Y
     Profile2D(const std::vector<double>& xedges, const std::vector<double>& yedges,
               const std::string& path="", const std::string& title="")
       : AnalysisObject("Profile2D", path, title),
         _axis(xedges, yedges)
     { }
+
 
     /// A copy constructor with optional new path
     Profile2D(const Profile2D& p, const std::string& path="");

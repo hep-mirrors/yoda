@@ -7,8 +7,9 @@ cdef extern from "YODA/Scatter2D.h" namespace "YODA":
 
         size_t numPoints()
         vector[cPoint2D] points()
-        cPoint2D& point(size_t i)
 
+        cPoint2D& point(size_t i)
+        void erasePoint(size_t i)
 
 
 cdef class Scatter2D(AnalysisObject):
@@ -80,6 +81,7 @@ cdef class Scatter2D(AnalysisObject):
 
     @property
     def numPoints(self):
+        "The number of points in this scatter"
         return self.ptr().numPoints()
 
     cdef cScatter2D * ptr(self):
@@ -93,20 +95,10 @@ cdef class Scatter2D(AnalysisObject):
 
     @property
     def points(self):
+        "Access the points"
         cdef size_t i
         cdef Point2D pt
-        if self._points:
-            return self._points
-        else:
-            out = []
-
-            for i in range(self.ptr().numPoints()):
-                pt = Point2D_fromptr(& self.ptr().point(i))
-                out.append(pt)
-
-            out = tuple(out)
-            self._points = out
-            return out
+        return tuple(Point2D_fromptr(& self.ptr().point(i)) for i in xrange(self.ptr().numPoints()))
 
     def __repr__(self):
         return '<Scatter2D>'

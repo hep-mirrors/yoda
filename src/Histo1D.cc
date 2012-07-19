@@ -120,7 +120,6 @@ namespace YODA {
       bins.push_back(HistoBin1D(b.xMin(), b.xMax()));
     }
     _axis = Histo1DAxis(bins);
-
   }
 
 

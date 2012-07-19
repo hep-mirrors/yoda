@@ -11,13 +11,6 @@ using namespace std;
 namespace YODA {
 
 
-  /// @todo Move to header?
-  Histo2D::Histo2D(const Histo2D& h, const std::string& path)
-    : AnalysisObject("Histo2D", (path.size() == 0) ? h.path() : path, h, h.title()),
-      _axis(h._axis)
-  { }
-
-
   void Histo2D::fill(double x, double y, double weight) {
     // Fill the overall distribution
     _axis.totalDbn().fill(x, y, weight);
@@ -92,6 +85,57 @@ namespace YODA {
     }
     return sigma2/sumW();
   }
+
+
+  double Histo2D::xStdErr(bool includeoverflows) const {
+    if (includeoverflows) return _axis.totalDbn().xStdErr();
+    const double effNumEntries = sumW(false)*sumW(false)/sumW2(false);
+    return std::sqrt(xVariance(false) / effNumEntries);
+  }
+
+
+  double Histo2D::yStdErr(bool includeoverflows) const {
+    if (includeoverflows) return _axis.totalDbn().yStdErr();
+    const double effNumEntries = sumW(false)*sumW(false)/sumW2(false);
+    return std::sqrt(yVariance(false) / effNumEntries);
+  }
+
+
+  /////////////////////////////////////
+
+
+  /// Copy constructor with optional new path
+  Histo2D::Histo2D(const Histo2D& h, const std::string& path)
+    : AnalysisObject("Histo2D", (path.size() == 0) ? h.path() : path, h, h.title()),
+      _axis(h._axis)
+  { }
+
+
+  // /// Constructor from a Scatter3D's binning, with optional new path
+  // Histo2D::Histo2D(const Scatter3D& s, const std::string& path)
+  //   : AnalysisObject("Histo2D", (path.size() == 0) ? s.path() : path, s, s.title())
+  // {
+  //   std::vector<HistoBin2D> bins;
+  //   foreach (const Scatter3D::Point& p, s.points()) {
+  //     bins.push_back(HistoBin2D(p.xMin(), p.xMax(), p.yMin(), p.yMax()));
+  //   }
+  //   _axis = Histo2DAxis(bins);
+  // }
+
+
+  // /// Constructor from a Profile2D's binning, with optional new path
+  // Histo2D::Histo2D(const Profile2D& p, const std::string& path)
+  //   : AnalysisObject("Histo2D", (path.size() == 0) ? p.path() : path, p, p.title())
+  // {
+  //   std::vector<HistoBin2D> bins;
+  //   foreach (const ProfileBin2D& b, p.bins()) {
+  //     bins.push_back(HistoBin2D(b.xMin(), b.xMax(), b.yMin(), b.yMax()));
+  //   }
+  //   _axis = Histo2DAxis(bins);
+  // }
+
+
+  ////////////////////////////////////
 
 
   // Histo1D Histo2D::cutterX(double atY, const std::string& path, const std::string& title) {

@@ -1,5 +1,7 @@
 2012-07-19  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Adding stdErr for Histo2D + Python mapping, and more Cython improvements.
+
 	* Adding path/title-only AO constructors and making nice Python constructor for Histo2D.
 
 	* Cython mapping improvements & additions for Point3D + Scatter3D.

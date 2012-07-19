@@ -34,7 +34,8 @@ cdef extern from "YODA/Histo2D.h" namespace "YODA":
         vector[cHistoBin2D]& bins()
         cHistoBin2D& binByCoord(double x, double y)
 
-        void eraseBin(size_t index)
+        cHistoBin2D& bin(size_t i)
+        void eraseBin(size_t i)
 
         # Statistical functions
         double integral(bool includeoverflows)
@@ -49,6 +50,9 @@ cdef extern from "YODA/Histo2D.h" namespace "YODA":
 
         double xStdDev(bool includeoverflows)
         double yStdDev(bool includeoverflows)
+
+        double xStdErr(bool includeoverflows)
+        double yStdErr(bool includeoverflows)
 
 
 cdef class Histo2D(AnalysisObject):
@@ -126,16 +130,17 @@ cdef class Histo2D(AnalysisObject):
 
 
     def fill(self, double x, double y, double weight=1.0):
+        "Fill the bin at (x, y) with the given weight"
         self.ptr().fill(x, y, weight)
 
 
     def reset(self):
-        """Reset the histogram but leave the bin structure"""
+        """Reset the histogram counters but leave the bin structure"""
         self.ptr().reset()
 
 
     def scaleW(self, double factor):
-        """Scale the histogram and its statistics by given factor"""
+        """Scale the histogram and its statistics by the given factor"""
         self.ptr().scaleW(factor)
 
 
@@ -149,48 +154,53 @@ cdef class Histo2D(AnalysisObject):
 
     @property
     def bins(self):
-        cdef size_t numbins = self.ptr().numBins()
+        "Access the bins"
         cdef size_t i
-
-        if self._bins is None:
-            self._bins = tuple([HistoBin2D_fromptr(& self.ptr().bins().at(i))
-                          for i in xrange(numbins)])
-
-        return self._bins
-
+        return tuple(HistoBin2D_fromptr(&self.ptr().bin(i)) for i in xrange(self.ptr().numBins()))
 
     @property
     def lowEdgeX(self):
+        "The lower bound of the histogram bin range in x"
         return self.ptr().lowEdgeX()
 
 
     @property
     def lowEdgeY(self):
+        "The lower bound of the histogram bin range in y"
         return self.ptr().lowEdgeY()
 
 
     @property
     def highEdgeX(self):
+        "The upper bound of the histogram bin range in x"
         return self.ptr().highEdgeX()
 
 
     @property
     def highEdgeY(self):
+        "The upper bound of the histogram bin range in y"
         return self.ptr().highEdgeY()
 
 
     @property
     def totalDbn(self):
         """
-        h.totalDbn -> Distribution2D
+        h.totalDbn -> Dbn2D
 
-        Return the Distribution2D object representing the total distribution.
+        Return the Dbn2D object representing the total distribution.
 
         """
         return Dbn2D_fromptr(&self.ptr().totalDbn())
 
 
     def outflow(self, ix, iy):
+        """
+        h.outflow(ix, iy) -> Dbn2D
+
+        Return the Dbn2D object representing the outflow in the (ix,iy)
+        direction, where ix, iy = {-1, 0, 1}.
+        """
+
         return Dbn2D_fromptr(&self.ptr().outflow(ix, iy))
 
 
@@ -203,30 +213,79 @@ cdef class Histo2D(AnalysisObject):
 
 
     def integral(self, bool overflows=True):
+        """
+        h.integral([bool overflows=True] -> float
+
+        Get the integral of the histo, with an optional bool argument to decide
+        whether the bin-range overflows are to be included. Effectively a
+        synonym for sumW.
+        """
         return self.ptr().integral(overflows)
 
 
     def sumW(self, bool overflows=True):
+        """
+        h.sumW([bool overflows=True] -> float
+
+        Get the weight integral of the histo, with an optional bool argument to
+        decide whether the bin-range overflows are to be included.
+        """
         return self.ptr().sumW(overflows)
 
 
     def sumW2(self, bool overflows=True):
+        """
+        h.sumW2([bool overflows=True] -> float
+
+        Get the weight**2 integral of the histo, with an optional bool argument
+        to decide whether the bin-range overflows are to be included.
+        """
         return self.ptr().sumW2(overflows)
 
 
     def mean(self, bool overflows=True):
+        """
+        h.mean([bool overflows=True] -> (float, float)
+
+        Get the mean (x,y) point for this histo, with an optional bool argument
+        to decide whether the bin-range overflows are to be included.
+        """
         cdef cHisto2D *s = self.ptr()
         return (s.xMean(overflows), s.yMean(overflows))
 
 
     def variance(self, bool overflows=True):
+        """
+        h.variance([bool overflows=True] -> (float, float)
+
+        Get the (x,y) variances for this histo, with an optional bool argument
+        to decide whether the bin-range overflows are to be included.
+        """
         cdef cHisto2D *s = self.ptr()
         return (s.xVariance(overflows), s.yVariance(overflows))
 
 
     def stdDev(self, bool overflows=True):
+        """
+        h.stdDev([bool overflows=True] -> (float, float)
+
+        Get the (x,y) standard deviations for this histo, with an optional bool
+        argument to decide whether the bin-range overflows are to be included.
+        """
         cdef cHisto2D *s = self.ptr()
         return (s.xStdDev(overflows), s.yStdDev(overflows))
+
+
+    def stdErr(self, bool overflows=True):
+        """
+        h.stdErr([bool overflows=True] -> (float, float)
+
+        Get the (x,y) standard errors on the mean for this histo, with an
+        optional bool argument to decide whether the bin-range overflows are to
+        be included.
+        """
+        cdef cHisto2D *s = self.ptr()
+        return (s.xStdErr(overflows), s.yStdErr(overflows))
 
 
 
