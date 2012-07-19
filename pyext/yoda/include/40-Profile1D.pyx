@@ -2,12 +2,12 @@ cdef extern from "YODA/Profile1D.h" namespace "YODA":
 
     cdef cppclass cProfile1D "YODA::Profile1D"(cAnalysisObject):
         cProfile1D()
-        cProfile1D(size_t nbins, double lower, double upper, string &path, string &title)
-        cProfile1D(vector[double] &binedges, string &path, string &title)
-        cProfile1D(cProfile1D &h, string &path)
-        cProfile1D(cProfile1D &h)
+        cProfile1D(size_t nbins, double lower, double upper, string& path, string& title)
+        cProfile1D(vector[double]& binedges, string& path, string& title)
+        cProfile1D(cProfile1D& h, string& path)
+        cProfile1D(cProfile1D& h)
 
-        void fill(double x, double weight)
+        void fill(double x, double y, double weight)
         void reset()
         void scaleW(double scalefactor)
         void mergeBins(size_t a, size_t b)
@@ -17,14 +17,16 @@ cdef extern from "YODA/Profile1D.h" namespace "YODA":
         size_t numBins()
         double lowEdge()
         double highEdge()
-        vector[cProfileBin1D] &bins()
-        cProfileBin1D & bin "bin"(size_t i)
-        cDbn2D &totalDbn()
-        cDbn2D &underflow()
-        cDbn2D &overflow()
+
+        vector[cProfileBin1D]& bins()
+        cProfileBin1D& bin(size_t i)
+        void eraseBin(size_t i)
+
+        cDbn2D& totalDbn()
+        cDbn2D& underflow()
+        cDbn2D& overflow()
         void addBin(double low, double high)
-        void addBins(vector[double] &binedges)
-        void eraseBin(size_t index)
+        void addBins(vector[double]& binedges)
 
         # Statistical functions
         #double integral(bool includeoverflows)
@@ -43,18 +45,31 @@ cdef extern from "YODA/Scatter2D.h" namespace "YODA":
 
 
 cdef class Profile1D(AnalysisObject):
+    """
+    1D profile histogram. Complete histogramming is supported, including
+    uniform/regular binning, variable width binning, unbinned gaps in the
+    covered range, and under/overflows (including the gaps). Rebinning by
+    integer factors, or by explicit merging of contiguous bins is also
+    supported.
+
+    Rescaling of weights and/or the x axis is permitted in-place: the result
+    is a still-valid Profile1D. Binning-compatible 2D profiles may be
+    divided, resulting in a Scatter2D rather than a Profile1D, since further
+    fills would not be meaningful.
+
+    Several sets of arguments are permitted to the constructor:
+
+    * Profile1D() -- default constructor. Not usually useful in Python, due to availability of None.
+    * Profile1D(nbins, low, high[, path, title]) -- linear binning with n bins between low-high.
+    * Profile1D(binedges[, path, title]) -- explicit bin edges (no bin gaps)
+
+    The path and title arguments are optional, and may either be specified via the
+    positional parameters or via explicit keyword arguments, e.g. path='/foo/bar'.
+
+    TODO: Add constructors from Scatter and Histo
+    """
 
     def __init__(self, *args, **kwargs):
-        """
-        Profile1D constructor. Several sets of arguments are permitted:
-
-        * Profile1D() -- default constructor. Not usually useful in Python, due to availability of None.
-        * Profile1D(nbins, low, high[, path, title]) -- linear binning with n bins between low-high.
-        * Profile1D(binedges[, path, title]) -- explicit bin edges (no bin gaps)
-
-        The path and title arguments are optional, and may either be specified via the
-        positional parameters or via explicit keyword arguments, e.g. path='/foo/bar'.
-        """
         self._dealloc = True
         cdef:
             size_t nbins
@@ -112,7 +127,7 @@ cdef class Profile1D(AnalysisObject):
         """
         h.asScatter() -> Scatter2D
 
-        Return a 2D scatter data object from the profile's bins and heights
+        Return a 2D scatter data object from the profile's bins and heights.
 
         """
         cdef cScatter2D *s = new cScatter2D()
@@ -120,14 +135,14 @@ cdef class Profile1D(AnalysisObject):
         return Scatter2D_fromptr(s, True)
 
 
-    def fill(self, double x, double weight=1.0):
+    def fill(self, double x, double y, double weight=1.0):
         """
-        h.fill(x[, weight=1.0]) -> self
+        h.fill(x, y[, weight=1.0]) -> self
 
-        Fill the given histogram with value x and optional weighting
+        Fill the given profile with value y at position x, and optional weighting.
 
         """
-        self.ptr().fill(x, weight)
+        self.ptr().fill(x, y, weight)
         return self
 
 
@@ -183,18 +198,9 @@ cdef class Profile1D(AnalysisObject):
         unless the copy() method is called on a bin.
 
         """
-        cdef size_t numbins = self.ptr().numBins()
         cdef size_t i
-        cdef ProfileBin1D bin
-
-        out = []
-        for i in xrange(numbins):
-            bin = ProfileBin1D_fromptr(& self.ptr().bins()[i])
-            out.append(bin)
-        # TODO: Why was this here?
-        # self.ptr().bins()
-
-        return out
+        # cdef ProfileBin1D bin
+        return tuple(ProfileBin1D_fromptr(& self.ptr().bin(i)) for i in xrange(self.ptr().numBins()))
 
 
     @property

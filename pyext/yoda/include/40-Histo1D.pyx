@@ -48,18 +48,31 @@ cdef extern from "shims.h":
 
 
 cdef class Histo1D(AnalysisObject):
+    """
+    1D histogram. Complete histogramming is supported, including
+    uniform/regular binning, variable width binning, unbinned gaps in the
+    covered range, and under/overflows (including the gaps). Rebinning by
+    integer factors, or by explicit merging of contiguous bins is also
+    supported.
+
+    Rescaling of weights and/or the x axis is permitted in-place: the result
+    is a still-valid Histo1D. Binning-compatible 1D histograms may be
+    divided, resulting in a Scatter2D rather than a Histo1D, since further
+    fills would not be meaningful.
+
+    Several sets of arguments are permitted to the constructor:
+
+    * Histo1D() -- default constructor. Not usually useful in Python, due to availability of None.
+    * Histo1D(nbins, low, high[, path, title]) -- linear binning with n bins between low-high.
+    * Histo1D(binedges[, path, title]) -- explicit bin edges (no bin gaps)
+
+    The path and title arguments are optional, and may either be specified via the
+    positional parameters or via explicit keyword arguments, e.g. path='/foo/bar'.
+
+    TODO: Add constructors from Scatter and Profile
+    """
 
     def __init__(self, *args, **kwargs):
-        """
-        Histo1D constructor. Several sets of arguments are permitted:
-
-        * Histo1D() -- default constructor. Not usually useful in Python, due to availability of None.
-        * Histo1D(nbins, low, high[, path, title]) -- linear binning with n bins between low-high.
-        * Histo1D(binedges[, path, title]) -- explicit bin edges (no bin gaps)
-
-        The path and title arguments are optional, and may either be specified via the
-        positional parameters or via explicit keyword arguments, e.g. path='/foo/bar'.
-        """
         self._dealloc = True
         cdef:
             size_t nbins

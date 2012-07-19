@@ -101,6 +101,7 @@ cdef class Scatter2D(AnalysisObject):
         return tuple(Point2D_fromptr(& self.ptr().point(i)) for i in xrange(self.ptr().numPoints()))
 
     def __repr__(self):
+        # TODO: include points information in this repr string
         return '<Scatter2D>'
 
 

@@ -66,6 +66,11 @@ cdef class Histo2D(AnalysisObject):
     be a bit more complex than usual due to the increased number of ways for it
     to not work if the bin shapes are irregular.)
 
+    Rescaling of weights and/or the x and y axes is permitted in-place: the result
+    is a still-valid Histo2D. Binning-compatible 2D histograms may be
+    divided, resulting in a Scatter3D rather than a Histo2D, since further
+    fills would not be meaningful.
+
     Several sets of arguments are permitted to the constructor:
 
     * Histo2D() -- default constructor. Not usually useful in Python, due to availability of None.
@@ -75,6 +80,8 @@ cdef class Histo2D(AnalysisObject):
 
     The path and title arguments are optional, and may either be specified via the
     positional parameters or via explicit keyword arguments, e.g. path='/foo/bar'.
+
+    TODO: Add constructors from Scatter and Profile
     """
 
     # cdef tuple _bins
