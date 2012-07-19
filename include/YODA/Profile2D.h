@@ -36,6 +36,12 @@ namespace YODA {
     /// @name Constructors
     //@{
 
+    /// Default constructor
+    Profile2D(const std::string& path="", const std::string& title="")
+      : AnalysisObject("Profile2D", path, title),
+        _axis()
+    { }
+
     /// Constructor giving range and number of bins
     Profile2D(size_t nbinsX, double lowerX, double upperX,
               size_t nbinsY, double lowerY, double upperY,

@@ -38,9 +38,9 @@ namespace YODA {
     //@{
 
 
-    /// Default constructor of an invalid histo
-    Histo1D()
-      : AnalysisObject("Histo1D", "", ""),
+    /// Default constructor
+    Histo1D(const std::string& path="", const std::string& title="")
+      : AnalysisObject("Histo1D", path, title),
         _axis()
     { }
 
@@ -63,6 +63,13 @@ namespace YODA {
         _axis(binedges)
     { }
 
+
+    /// Constructor accepting an explicit collection of bins.
+    Histo1D(const std::vector<Bin>& bins,
+            const std::string& path="", const std::string& title="")
+            : AnalysisObject("Histo1D", path, title),
+            _axis(bins)
+    { }
 
     /// Copy constructor with optional new path
     Histo1D(const Histo1D& h, const std::string& path="");

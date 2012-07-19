@@ -37,10 +37,17 @@ namespace YODA {
     typedef Histo2DAxis Axis;
     typedef Axis::Bins Bins;
     typedef HistoBin2D Bin;
-
+    typedef Axis::Outflows Outflows;
 
     /// @name Constructors
     //@{
+
+    /// Default constructor
+    Histo2D(const std::string& path="", const std::string& title="")
+      : AnalysisObject("Histo2D", path, title),
+        _axis()
+    { }
+
 
     /// Constructor giving range and number of bins.
     Histo2D(size_t nbinsX, double lowerX, double upperX,
@@ -59,23 +66,31 @@ namespace YODA {
     { }
 
 
+    /// Constructor accepting an explicit collection of bins.
+    Histo2D(const std::vector<Bin>& bins,
+            const std::string& path="", const std::string& title="")
+            : AnalysisObject("Histo2D", path, title),
+            _axis(bins)
+    { }
+
+
     /// Copy constructor with optional new path
     Histo2D(const Histo2D& h, const std::string& path="");
 
 
-    /// @todo Add binning constructors from Scatter3D (and Profile2D when it exists)
+    /// @todo Add binning constructors from Scatter3D (and Profile2D?)
 
 
-    /// @todo TODO
-    // /// @brief State-setting constructor
-    // /// Mainly intended for internal persistency use.
-    // Histo2D(const std::vector<HistoBin2D>& bins,
-    //         const std::vector<std::vector<Dbn2D> >& outflows,
-    //         const Dbn2D& totalDbn,
-    //         const std::string& path="", const std::string& title="")
-    //   : AnalysisObject("Histo2D", path, title),
-    //     _axis(bins, outflows, totalDbn)
-    // { }
+    /// @brief State-setting constructor
+    ///
+    /// Mainly intended for internal persistency use.
+    Histo2D(const std::vector<HistoBin2D>& bins,
+            const Dbn2D& totalDbn,
+            const Outflows& outflows,
+            const std::string& path="", const std::string& title="")
+      : AnalysisObject("Histo2D", path, title),
+        _axis(bins, totalDbn, outflows)
+    { }
 
     //@}
 

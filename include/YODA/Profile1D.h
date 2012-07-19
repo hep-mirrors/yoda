@@ -42,8 +42,8 @@ namespace YODA {
     //@{
 
     /// Default constructor
-    Profile1D()
-      : AnalysisObject("Profile1D", "", ""),
+    Profile1D(const std::string& path="", const std::string& title="")
+      : AnalysisObject("Profile1D", path, title),
         _axis()
     { }
 

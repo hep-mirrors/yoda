@@ -3,10 +3,13 @@ cdef extern from "YODA/Histo2D.h" namespace "YODA":
     #cHisto2D operator - (cHisto2D &, cHisto2D &)
 
     cdef cppclass cHisto2D "YODA::Histo2D"(cAnalysisObject):
+        cHisto2D()
+        cHisto2D(string& path, string& title)
         cHisto2D(size_t nbinsX, double lowerX, double upperX,
                  size_t nbinsY, double lowerY, double upperY,
                  string& path, string& title)
-
+        cHisto2D(vector[cHistoBin2D]&, string& path, string& title)
+        cHisto2D(vector[double]& xedges, vector[double]& yedges, string& path, string& title)
         cHisto2D(cHisto2D& h)
 
         void fill(double x, double y, double weight)
@@ -49,10 +52,31 @@ cdef extern from "YODA/Histo2D.h" namespace "YODA":
 
 
 cdef class Histo2D(AnalysisObject):
-    cdef tuple _bins
+    """
+    2D histogram. Basic histogramming is currently supported, i.e. a two-dimensional bin layout
+    may be specified, filled, and queried. Outflow distributions around the 8 sides and
+    corners of the grid are supported, and the bins need not be regularly sized or contiguous:
+    bins which span rows and/or columns, and gaps between bins are permitted.
+
+    TODO: Bin merging/rebinning is not currently supported (the algorithm has to
+    be a bit more complex than usual due to the increased number of ways for it
+    to not work if the bin shapes are irregular.)
+
+    Several sets of arguments are permitted to the constructor:
+
+    * Histo2D() -- default constructor. Not usually useful in Python, due to availability of None.
+    * Histo2D(bins[, path, title]) -- constructor from a list of bins.
+    * Histo2D(nx, xlow, xhigh, ny, ylow, yhigh[, path, title]) -- construct a uniform bin grid in both x and y directions.
+    * Histo2D(xedges, yedges[, path, title]) -- make a regular bin grid with given bin edges in x and y.
+
+    The path and title arguments are optional, and may either be specified via the
+    positional parameters or via explicit keyword arguments, e.g. path='/foo/bar'.
+    """
+
+    # cdef tuple _bins
 
     def __cinit__(self):
-        self._bins = None
+        # self._bins = None
         self._dealloc = False
 
 
@@ -60,18 +84,41 @@ cdef class Histo2D(AnalysisObject):
         cdef:
             size_t nbinsX, nbinsY
             double lowX, highX, lowY, highY
+            HistoBin2D item
+            vector[cHistoBin2D] bin_vector
+            vector[double] xedges
+            vector[double] yedges
             char* path = '/'
             char* title = ''
 
-        # TODO: make nice multi-mode constructor
+        ## Permit path and title specification via kwargs
+        if "path" in kwargs:
+            path = kwargs["path"]
+        if "title" in kwargs:
+            title = kwargs["title"]
 
-        if len(args) == 6:
+        # TODO: Map copy constructor
+
+        if len(args) == 0:
+            self.setptr(new cHisto2D(string(path), string(title)), True)
+        elif len(args) == 1:
+            # Histo2D(bins[, path, title])
+            for b in args[0]:
+                item = b
+                bin_vector.push_back( item.ptr()[0] )
+            self.setptr(new cHisto2D(bin_vector, string(path), string(title)))
+        elif len(args) == 2:
+            # Histo2D(xedges, yedges[, path, title])
+            for x in args[0]:
+                xedges.push_back(x)
+            for y in args[1]:
+                yedges.push_back(y)
+            self.setptr(new cHisto2D(xedges, yedges, string(path), string(title)))
+        elif len(args) == 6:
+            # Histo2D(nx, xlow, xhigh, ny, ylow, yhigh[, path, title]) -- construct a uniform bin grid in both x and y directions.
             nbinsX, lowX, highX, nbinsY, lowY, highY = args
-
-            self.setptr(
-                new cHisto2D(nbinsX, lowX, highX, nbinsY, lowY, highY,
-                             string(path), string(title)), True
-            )
+            self.setptr(new cHisto2D(nbinsX, lowX, highX, nbinsY, lowY, highY,
+                                     string(path), string(title)), True)
 
 
     cdef cHisto2D* ptr(self):

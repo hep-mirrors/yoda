@@ -2,10 +2,12 @@ cdef extern from "YODA/Histo1D.h" namespace "YODA":
 
     cdef cppclass cHisto1D "YODA::Histo1D"(cAnalysisObject):
         cHisto1D()
-        cHisto1D(size_t nbins, double lower, double upper, string &path, string &title)
-        cHisto1D(vector[double] &binedges, string &path, string &title)
-        cHisto1D(cHisto1D &h, string &path)
-        cHisto1D(cHisto1D &h)
+        cHisto1D(string& path, string& title)
+        cHisto1D(vector[cHistoBin1D]&, string& path, string& title)
+        cHisto1D(size_t nbins, double lower, double upper, string& path, string& title)
+        cHisto1D(vector[double]& binedges, string& path, string& title)
+        cHisto1D(cHisto1D& h, string& path)
+        cHisto1D(cHisto1D& h)
 
         void fill(double x, double weight)
         void reset()
@@ -71,12 +73,12 @@ cdef class Histo1D(AnalysisObject):
         if "path" in kwargs:
             path = kwargs["path"]
         if "title" in kwargs:
-            path = kwargs["title"]
+            title = kwargs["title"]
 
         ## Trigger different C++ constructors depending on Python args
         # TODO: Map copy constructors, esp. the path-resetting one
         if len(args) == 0:
-            self.setptr(new cHisto1D())
+            self.setptr(new cHisto1D(string(path), string(title)))
         else:
             if type(args[0]) is list:
                 try:

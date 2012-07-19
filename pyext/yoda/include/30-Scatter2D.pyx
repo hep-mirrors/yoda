@@ -1,7 +1,8 @@
 cdef extern from "YODA/Scatter2D.h" namespace "YODA":
     cdef cppclass cScatter2D "YODA::Scatter2D" (cAnalysisObject):
         cScatter2D()
-        cScatter2D(vector[cPoint2D]&, string, string)
+        cScatter2D(string& path, string& title)
+        cScatter2D(vector[cPoint2D]&, string& path, string& title)
         cScatter2D(cScatter2D &s)
 
         size_t numPoints()
@@ -11,24 +12,27 @@ cdef extern from "YODA/Scatter2D.h" namespace "YODA":
 
 
 cdef class Scatter2D(AnalysisObject):
+    """
+    2D scatter plot / cf. TGraphAsymmErrs. Unlike histograms/profiles, the position and error
+    values of Scatter points can be set directly. They are the normal type used for reference
+    data, as well as being the result of some histo combining operations such as division, whose
+    result is not another valid histo which could meaningfully be filled.
+
+    Several sets of arguments are permitted to the constructor:
+
+    * Scatter2D() -- default constructor. Not usually useful in Python, due to availability of None.
+    * Scatter2D(points[, path, title]) -- explicit construction from a list of points.
+    * Scatter2D(xs, ys[, path, title]) -- constructing points from lists of x and y positions (no errs).
+    * Scatter2D(xs, ys, exs, eys[, path, title]) -- constructing points from lists of x and y positions and errs (errs can be pairs).
+    * Scatter2D(xs, ys, ex-s, ex+s, ey-s, ey+s[, path, title]) -- constructing points from lists of x and y positions and errs.
+
+    The path and title arguments are optional, and may either be specified via the
+    positional parameters or via explicit keyword arguments, e.g. path='/foo/bar'.
+    """
 
     def __init__(self, *args, **kwargs):
-        """
-        Scatter2D constructor. Several sets of arguments are permitted:
-
-        * Scatter2D() -- default constructor. Not usually useful in Python, due to availability of None.
-        * Scatter2D(points[, path, title]) -- explicit construction from a list of points.
-        * Scatter2D(xs, ys[, path, title]) -- constructing points from lists of x and y positions (no errs).
-        * Scatter2D(xs, ys, exs, eys[, path, title]) -- constructing points from lists of x and y positions and errs (errs can be pairs).
-        * Scatter2D(xs, ys, ex-s, ex+s, ey-s, ey+s[, path, title]) -- constructing points from lists of x and y positions and errs.
-
-        The path and title arguments are optional, and may either be specified via the
-        positional parameters or via explicit keyword arguments, e.g. path='/foo/bar'.
-        """
         #self._dealloc = True
         cdef:
-            # size_t N = len(points)
-            # int i
             Point2D item
             vector[cPoint2D] point_vector
             cScatter2D* scatter
@@ -39,12 +43,12 @@ cdef class Scatter2D(AnalysisObject):
         if "path" in kwargs:
             path = kwargs["path"]
         if "title" in kwargs:
-            path = kwargs["title"]
+            title = kwargs["title"]
 
         ## Trigger different construction methods depending on Python args
         # TODO: Map copy constructors, esp. the path-resetting one
         if len(args) == 0:
-            self.setptr(new cScatter2D())
+            self.setptr(new cScatter2D(string(path), string(title)))
         elif len(args) == 1:
             for point in args[0]:
                 item = point
