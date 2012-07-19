@@ -70,6 +70,7 @@ cdef class Histo1D(AnalysisObject):
     positional parameters or via explicit keyword arguments, e.g. path='/foo/bar'.
 
     TODO: Add constructors from Scatter and Profile
+    TODO: Support addBins
     """
 
     def __init__(self, *args, **kwargs):
@@ -275,7 +276,7 @@ cdef class Histo1D(AnalysisObject):
 
 
     def addBins(self, binedges):
-        # TODO: How to map the Python list to the C++ vector<double>?
+        # TODO
         #void addBins(vector[double] &binedges)
         pass
 

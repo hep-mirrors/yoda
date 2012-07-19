@@ -67,6 +67,7 @@ cdef class Profile1D(AnalysisObject):
     positional parameters or via explicit keyword arguments, e.g. path='/foo/bar'.
 
     TODO: Add constructors from Scatter and Histo
+    TODO: Support addBin, addBins, eraseBin
     """
 
     def __init__(self, *args, **kwargs):

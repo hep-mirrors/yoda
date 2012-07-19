@@ -82,6 +82,7 @@ cdef class Histo2D(AnalysisObject):
     positional parameters or via explicit keyword arguments, e.g. path='/foo/bar'.
 
     TODO: Add constructors from Scatter and Profile
+    TODO: Support adding and erasing bins
     """
 
     # cdef tuple _bins
