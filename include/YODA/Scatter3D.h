@@ -45,32 +45,39 @@ namespace YODA {
     }
 
 
+    /// Constructor from vectors of values with no errors
+    Scatter3D(const std::vector<double>& x, const std::vector<double>& y, const std::vector<double>& z,
+              const std::string& path="", const std::string& title="")
+    {
+      if (x.size() != y.size() || y.size() != z.size()) {
+        throw RangeError("There are different numbers of x, y, and z values in the provided vectors.");
+      }
+      const std::pair<double,double> nullerr = std::make_pair(0.0, 0.0);
+      for (size_t i = 0; i < x.size(); ++i) {
+        addPoint(Point3D(x[i], y[i], z[i], nullerr, nullerr, nullerr));
+      }
+      std::sort(_points.begin(), _points.end());
+    }
+
+
     /// Constructor from vectors of values with asymmetric errors on both x and y
     Scatter3D(const std::vector<double>& x, const std::vector<double>& y, const std::vector<double>& z,
               const std::vector<std::pair<double,double> >& ex, const std::vector<std::pair<double,double> >& ey, const std::vector<std::pair<double,double> >& ez,
               const std::string& path="", const std::string& title="")
       : AnalysisObject("Scatter3D", path, title)
     {
-      if(x.size() != y.size() || y.size() != z.size() ||
-         x.size() != ex.size() || y.size() != ey.size() || z.size() != ez.size())
-        throw RangeError("There are either different amounts of points on x/y/z vectors or not every of these vectors has properly defined error vectors!");
-
+      if (x.size() != y.size() || y.size() != z.size()) {
+        throw RangeError("There are different numbers of x, y, and z values in the provided vectors.");
+      }
+      if (x.size() != ex.size() || y.size() != ey.size() || z.size() != ez.size()) {
+        throw RangeError("The sizes of the provided error vectors don't match the corresponding x, y, or z value vectors.");
+      }
       for (size_t i = 0; i < x.size(); ++i) {
         addPoint(Point3D(x[i], y[i], z[i], ex[i], ey[i], ez[i]));
       }
       std::sort(_points.begin(), _points.end());
     }
 
-
-    /// Constructor from vectors of values with no errors
-    Scatter3D(const std::vector<double>& x, const std::vector<double>& y, const std::vector<double>& z,
-              const std::string& path="", const std::string& title="") {
-        std::vector<std::pair<double,double> > null;
-        null.resize(x.size());
-
-        for(unsigned int i=0; i < null.size(); i++) null[i] = std::make_pair(0.0, 0.0);
-        Scatter3D(x, y, z, null, null, null, path, title);
-    }
 
     /// Constructor from vectors of values with completely explicit asymmetric errors
     Scatter3D(const std::vector<double>& x, const std::vector<double>& y, const std::vector<double> z,

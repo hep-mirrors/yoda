@@ -1,3 +1,9 @@
+2012-07-22  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Adding Cython mappings for Scatter3D and ProfileBin2D.
+
+	* Fixing more crap code legacy from old 2D plot implementation, this time in Scatter3D.
+
 2012-07-19  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Adding stdErr for Histo2D + Python mapping, and more Cython improvements.

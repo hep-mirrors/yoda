@@ -50,31 +50,35 @@ cdef class Scatter2D(AnalysisObject):
         # TODO: Map copy constructors, esp. the path-resetting one
         if len(args) == 0:
             self.setptr(new cScatter2D(string(path), string(title)))
-        elif len(args) == 1:
+            return
+        #
+        if len(args) == 1:
+            # Scatter2D(points[, path, title])
             for point in args[0]:
                 item = point
                 point_vector.push_back( item.ptr()[0] )
-        elif len(args) == 2:
-            # Scatter2D(xs, ys[, path, title])
-            assert len(args[0]) == len(args[1])
-            for i in xrange(args[0]):
-                item = Point2D(args[0][i], args[1][i])
-                point_vector.push_back( item.ptr()[0] )
-        elif len(args) == 4:
-            # Scatter2D(xs, ys, exs, eys[, path, title])
-            assert len(args[0]) == len(args[1]) == len(args[2]) == len(args[3])
-            for i in xrange(args[0]):
-                item = Point2D(args[0][i], args[1][i], args[2][i], args[3][i])
-                point_vector.push_back( item.ptr()[0] )
-        elif len(args) == 6:
-            # Scatter2D(xs, ys, ex-s, ex+s, ey-s, ey+s[, path, title])
-            assert len(args[0]) == len(args[1]) == len(args[2]) == len(args[3])
-            for i in xrange(args[0]):
-                item = Point2D(args[0][i], args[1][i], args[2][i], args[3][i], args[4][i], args[5][i])
+        elif len(args) <= 6:
+            reflen = len(args[0])
+            ## Check that lengths of vector arguments agree
+            for i in xrange(len(args)):
+                assert len(args[i]) == reflen
+            for i in xrange(reflen):
+                # TODO: Use zip(*args) to compress these to one meta-constructor call for n vector args?
+                if len(args) == 2:
+                    # Scatter2D(xs, ys[, path, title])
+                    item = Point2D(args[0][i], args[1][i])
+                elif len(args) == 4:
+                    # Scatter2D(xs, ys, exs, eys[, path, title])
+                    item = Point2D(args[0][i], args[1][i], args[2][i], args[3][i])
+                elif len(args) == 6:
+                    # Scatter2D(xs, ys, ex-s, ex+s, ey-s, ey+s[, path, title])
+                    item = Point2D(args[0][i], args[1][i], args[2][i],
+                                   args[3][i], args[4][i], args[5][i])
                 point_vector.push_back( item.ptr()[0] )
         else:
             raise ValueError('Wrong number of values: can take 2, 4, or 6 parameters')
 
+        ## Finally, construct using the intermediate point vector
         scatter = new cScatter2D(point_vector, string(path), string(title))
         self.setptr(scatter, True)
 

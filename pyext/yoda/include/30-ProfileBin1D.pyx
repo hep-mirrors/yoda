@@ -9,6 +9,7 @@ cdef extern from "YODA/ProfileBin1D.h" namespace "YODA":
         double heightErr()
         void reset()
 
+        # TODO
         # These are inherited methods from Bin1D... I can't seem to find a nice
         # way to make Cython acknowledge these (it seems to be a typedef parsing
         # issue rather than a technical issue).

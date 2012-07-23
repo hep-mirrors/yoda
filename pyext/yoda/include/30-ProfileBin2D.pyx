@@ -1,18 +1,13 @@
-cdef extern from "YODA/HistoBin2D.h" namespace "YODA":
+cdef extern from "YODA/ProfileBin2D.h" namespace "YODA":
 
-    #cHistoBin2D operator + (cHistoBin2D &, cHistoBin2D &)
-    #cHistoBin2D operator - (cHistoBin2D &, cHistoBin2D &)
+    #cProfileBin2D operator + (cProfileBin2D &, cProfileBin2D &)
+    #cProfileBin2D operator - (cProfileBin2D &, cProfileBin2D &)
 
-    cdef cppclass cHistoBin2D "YODA::HistoBin2D":
-        cHistoBin2D (cHistoBin2D &h)
+    cdef cppclass cProfileBin2D "YODA::ProfileBin2D":
+        cProfileBin2D (cProfileBin2D &h)
 
-        double volume()
-        double volumeErr()
-        double height()
-        double heightErr()
         void reset()
 
-        # TODO
         # These are inherited methods from Bin2D... I can't seem to find a nice
         # way to make Cython acknowledge these (it seems to be a typedef parsing
         # issue rather than a technical issue).
@@ -27,6 +22,7 @@ cdef extern from "YODA/HistoBin2D.h" namespace "YODA":
         double widthY()
         pair[double,double] focus()
         pair[double,double] midpoint()
+
         double xMean()
         double xVariance()
         double xStdDev()
@@ -36,6 +32,11 @@ cdef extern from "YODA/HistoBin2D.h" namespace "YODA":
         double yMean()
         double yVariance()
         double yStdDev()
+
+        double stdErr()
+        double mean()
+        double variance()
+        double stdDev()
 
         double numEntries()
         # double effNumEntries()
@@ -49,8 +50,12 @@ cdef extern from "YODA/HistoBin2D.h" namespace "YODA":
         double sumWX2()
         double sumWY2()
 
-cdef class HistoBin2D:
-    cdef cHistoBin2D *thisptr
+        double sumWZ()
+        double sumWZ2()
+
+
+cdef class ProfileBin2D:
+    cdef cProfileBin2D *thisptr
 
     def __cinit__(self):
         self._dealloc = False
@@ -59,7 +64,7 @@ cdef class HistoBin2D:
         if self._dealloc:
             del self.thisptr
 
-    cdef HistoBin2D setptr(self, cHistoBin2D *ptr, bool dealloc):
+    cdef ProfileBin2D setptr(self, cProfileBin2D *ptr, bool dealloc):
         if self._dealloc:
             del self.thisptr
 
@@ -67,28 +72,13 @@ cdef class HistoBin2D:
         self._dealloc = dealloc
         return self
 
-    cdef set(self, cHistoBin2D ptr):
-        self.thisptr = new cHistoBin2D(ptr)
+    cdef set(self, cProfileBin2D ptr):
+        self.thisptr = new cProfileBin2D(ptr)
         return self
 
-    cdef cHistoBin2D* ptr(self):
+    cdef cProfileBin2D* ptr(self):
         return self.thisptr
 
-    @property
-    def volume(self):
-        return self.ptr().volume()
-
-    @property
-    def volumeErr(self):
-        return self.ptr().volumeErr()
-
-    @property
-    def height(self):
-        return self.ptr().height()
-
-    @property
-    def heightErr(self):
-        return self.ptr().heightErr()
 
     def scaleW(self, double factor):
         self.ptr().scaleW(factor)
@@ -202,11 +192,35 @@ cdef class HistoBin2D:
     def sumWY2(self):
         return self.ptr().sumWY2()
 
-    def __repr__(self):
-        return 'HistoBin2D(%r)' % self.volume
+    @property
+    def sumWXY(self):
+        return self.ptr().sumWXY()
 
-cdef HistoBin2D HistoBin2D_fromptr(cHistoBin2D *ptr, dealloc=False):
-    # Construct a Python HistoBin2D from a pointer to a cHistoBin2D,
-    # without calling __init__ and excessive memory allocation
-    cdef HistoBin2D bin = HistoBin2D.__new__(HistoBin2D)
-    return bin.setptr(ptr, dealloc)
+    @property
+    def sumWZ(self):
+        return self.ptr().sumWZ()
+
+    @property
+    def sumWZ2(self):
+        return self.ptr().sumWZ2()
+
+
+    @property
+    def mean(self):
+        return self.ptr().mean()
+
+    @property
+    def variance(self):
+        return self.ptr().variance()
+
+    @property
+    def stdDev(self):
+        return self.ptr().stdDev()
+
+    @property
+    def stdErr(self):
+        return self.ptr().stdErr()
+
+
+    def __repr__(self):
+        return 'ProfileBin2D(%r)' % self.volume
