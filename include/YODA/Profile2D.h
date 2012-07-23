@@ -1,18 +1,22 @@
-#ifndef YODA_Profile1D_h
-#define YODA_Profile1D_h
+// -*- C++ -*-
+//
+// This file is part of YODA -- Yet more Objects for Data Analysis
+// Copyright (C) 2008-2012 The YODA collaboration (see AUTHORS for details)
+//
+#ifndef YODA_Profile2D_h
+#define YODA_Profile2D_h
 
 #include "YODA/AnalysisObject.h"
 #include "YODA/ProfileBin2D.h"
-#include "YODA/Scatter3D.h"
 #include "YODA/Dbn3D.h"
 #include "YODA/Axis2D.h"
+#include "YODA/Scatter3D.h"
 #include "YODA/Exceptions.h"
 
 #include <vector>
-#include <string>
-#include <map>
 
 namespace YODA {
+
 
   // Forward declarations
   class Histo2D;
@@ -21,7 +25,8 @@ namespace YODA {
   /// Convenience typedef
   typedef Axis2D<ProfileBin2D, Dbn3D> Profile2DAxis;
 
-  /// A one-dimensional profile histogram.
+
+  /// A two-dimensional profile histogram.
   class Profile2D : public AnalysisObject {
   public:
 
@@ -29,8 +34,7 @@ namespace YODA {
     typedef Profile2DAxis Axis;
     typedef Axis::Bins Bins;
     typedef ProfileBin2D Bin;
-    typedef std::pair<double, double> Point;
-    typedef std::pair<Point, Point> Segment;
+    typedef Axis::Outflows Outflows;
 
 
     /// @name Constructors
@@ -60,6 +64,14 @@ namespace YODA {
     { }
 
 
+    /// Constructor accepting an explicit collection of bins.
+    Profile2D(const std::vector<Bin>& bins,
+              const std::string& path="", const std::string& title="")
+      : AnalysisObject("Profile2D", path, title),
+        _axis(bins)
+    { }
+
+
     /// A copy constructor with optional new path
     Profile2D(const Profile2D& p, const std::string& path="");
 
@@ -70,7 +82,14 @@ namespace YODA {
     Profile2D(const Histo2D& h, const std::string& path="");
 
     /// A state setting constructor
-    Profile2D();
+    Profile2D(const std::vector<ProfileBin2D>& bins,
+              const Dbn3D& totalDbn,
+              const Outflows& outflows,
+              const std::string& path="", const std::string& title="")
+      : AnalysisObject("Profile2D", path, title),
+        _axis(bins, totalDbn, outflows)
+    { }
+
 
     /// Assignment operator
     Profile2D& operator = (const Profile2D& p1) {
@@ -141,15 +160,53 @@ namespace YODA {
     //   _axis.addBin(binLimits);
     // }
 
+    void eraseBin(size_t index) {
+      _axis.eraseBin(index);
+    }
+
     //@}
 
 
     /// @name Bin accessors
     //@{
 
-    /// Number of bins of this axis (not counting under/over flow)
-    size_t numBins() const {
-      return _axis.bins().size();
+    /// Low x edge of this histo's axis
+    double lowEdgeX() const {
+      return _axis.lowEdgeX();
+    }
+    /// Alias for lowEdgeX()
+    double xMin() const {
+      return lowEdgeX();
+    }
+
+
+    /// Low y edge of this histo's axis
+    double lowEdgeY() const {
+        return _axis.lowEdgeY();
+    }
+    /// Alias for lowEdgeY()
+    double yMin() const {
+      return lowEdgeY();
+    }
+
+
+    /// High x edge of this histo's axis
+    double highEdgeX() const {
+      return _axis.highEdgeX();
+    }
+    /// Alias for highEdgeX()
+    double xMax() const {
+      return highEdgeX();
+    }
+
+
+    /// High y edge of this histo's axis
+    double highEdgeY() const {
+        return _axis.highEdgeY();
+    }
+    /// Alias for highEdgeY()
+    double yMax() const {
+      return highEdgeY();
     }
 
 
@@ -165,19 +222,51 @@ namespace YODA {
 
 
     /// Access a bin by index (non-const)
+    ProfileBin2D& bin(size_t index) {
+      return _axis.bins()[index];
+    }
+
+    /// Access a bin by index (const)
     const ProfileBin2D& bin(size_t index) const {
       return _axis.bins()[index];
     }
 
 
-    /// Access a bin by x-coordinate (non-const)
+    /// Access a bin by coordinate (non-const)
     ProfileBin2D& binByCoord(double x, double y) {
       return _axis.binByCoord(x, y);
     }
 
-    /// Access a bin by x-coordinate (const)
+    /// Access a bin by coordinate (const)
     const ProfileBin2D& binByCoord(double x, double y) const {
       return _axis.binByCoord(x, y);
+    }
+
+
+    /// Return bin index (non-const version)
+    int findBinIndex(double coordX, double coordY) {
+      return _axis.getBinIndex(coordX, coordY);
+    }
+
+    /// Return bin index (const version)
+    const int findBinIndex(double coordX, double coordY) const {
+      return _axis.getBinIndex(coordX, coordY);
+    }
+
+
+    /// Number of bins of this axis (not counting under/over flow)
+    size_t numBins() const {
+      return _axis.bins().size();
+    }
+
+    /// Number of bins along the x axis
+    const size_t numBinsX() const {
+      return _axis.numBinsX();
+    }
+
+    /// Number of bins along the y axis
+    const size_t numBinsY() const{
+      return _axis.numBinsY();
     }
 
 
@@ -222,33 +311,41 @@ namespace YODA {
     /// Get the sum of squared weights in histo
     double sumW2(bool includeoverflows=true) const;
 
-    /// @todo TODO
-    // /// Get the mean x
-    // double xMean(bool includeoverflows=true) const;
+    /// Get the mean x
+    double xMean(bool includeoverflows=true) const;
+
+    /// Get the mean y
+    double yMean(bool includeoverflows=true) const;
+
+    /// Get the variance in x
+    double xVariance(bool includeoverflows=true) const;
+
+    /// Get the variance in y
+    double yVariance(bool includeoverflows=true) const;
+
+    /// Get the standard deviation in x
+    double xStdDev(bool includeoverflows=true) const {
+      return std::sqrt(xVariance(includeoverflows));
+    }
+
+    /// Get the standard deviation in y
+    double yStdDev(bool includeoverflows=true) const {
+      return std::sqrt(yVariance(includeoverflows));
+    }
+
+    /// Get the standard error on <x>
+    double xStdErr(bool includeoverflows=true) const;
+
+    /// Get the standard error on <y>
+    double yStdErr(bool includeoverflows=true) const;
 
     /// @todo TODO
-    // /// Get the mean y
-    // double yMean(bool includeoverflows=true) const;
+    // /// Get the RMS in x
+    // double xRMS(bool includeoverflows=true) const;
 
     /// @todo TODO
-    // /// Get the variance in x
-    // double xVariance(bool includeoverflows=true) const;
-
-    /// @todo TODO
-    // /// Get the variance in y
-    // double yVariance(bool includeoverflows=true) const;
-
-    /// @todo TODO
-    // /// Get the standard deviation in x
-    // double xStdDev(bool includeoverflows=true) const {
-    //   return std::sqrt(xVariance(includeoverflows));
-    // }
-
-    /// @todo TODO
-    // /// Get the standard deviation in y
-    // double yStdDev(bool includeoverflows=true) const {
-    //   return std::sqrt(yVariance(includeoverflows));
-    // }
+    // /// Get the RMS in y
+    // double yRMS(bool includeoverflows=true) const;
 
     //@}
 
@@ -288,6 +385,7 @@ namespace YODA {
 
     //@}
   };
+
 
   /// @name Combining profile histos: global operators
   //@{

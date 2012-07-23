@@ -5,7 +5,7 @@ yoda.cpp: yoda.pyx
 	$(PYTHON) -m cython --cplus yoda.pyx
 
 yoda.pyx: include/00-imports.pyx include/10-AnalysisObject.pyx \
-	include/20-Dbn1D.pyx include/20-Dbn2D.pyx \
+	include/20-Dbn1D.pyx include/20-Dbn2D.pyx include/20-Dbn3D.pyx \
 	include/20-Point2D.pyx include/20-Point3D.pyx \
 	include/30-HistoBin1D.pyx include/30-ProfileBin1D.pyx \
 	include/30-HistoBin2D.pyx include/30-ProfileBin2D.pyx \

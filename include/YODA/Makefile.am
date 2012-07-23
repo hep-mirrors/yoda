@@ -2,13 +2,14 @@ pkginclude_HEADERS = \
     Exceptions.h  \
     AnalysisObject.h \
 	Weights.h Bin.h \
-	Dbn1D.h Dbn2D.h \
+	Dbn1D.h Dbn2D.h Dbn3D.h \
 	Axis1D.h Bin1D.h \
     Axis2D.h Bin2D.h \
     Plot.h \
     Histo1D.h HistoBin1D.h  \
     Histo2D.h HistoBin2D.h  \
     Profile1D.h ProfileBin1D.h \
+    Profile2D.h ProfileBin2D.h \
     Scatter2D.h Point2D.h \
     Scatter3D.h Point3D.h \
     Writer.h WriterAIDA.h WriterYODA.h \

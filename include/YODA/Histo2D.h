@@ -7,13 +7,10 @@
 #define YODA_Histo2D_h
 
 #include "YODA/AnalysisObject.h"
-#include "YODA/Profile1D.h"
-#include "YODA/Histo1D.h"
-#include "YODA/Scatter3D.h"
 #include "YODA/HistoBin2D.h"
-#include "YODA/HistoBin1D.h"
 #include "YODA/Dbn2D.h"
 #include "YODA/Axis2D.h"
+#include "YODA/Scatter3D.h"
 #include "YODA/Exceptions.h"
 
 #include <vector>
@@ -22,15 +19,14 @@ namespace YODA {
 
 
   // Forward declaration
-  class Scatter3D;
+  class Profile2D;
 
   /// Convenience typedef
   typedef Axis2D<HistoBin2D, Dbn2D> Histo2DAxis;
 
 
-  /// A  one-dimensional histogram.
+  /// A two-dimensional histogram.
   class Histo2D : public AnalysisObject {
-
   public:
 
     /// Convenience typedefs
@@ -78,7 +74,13 @@ namespace YODA {
     Histo2D(const Histo2D& h, const std::string& path="");
 
 
-    /// @todo Add binning constructors from Scatter3D (and Profile2D?)
+    /// @todo Add binning constructors from Scatter3D and Profile2D?
+
+    // /// A constructor from a Scatter3D's binning, with optional new path
+    // Histo2D(const Scatter3D& s, const std::string& path="");
+
+    // /// Constructor from a Profile2D's binning, with optional new path
+    // Histo2D(const Profile2D& h, const std::string& path="");
 
 
     /// @brief State-setting constructor
@@ -153,16 +155,16 @@ namespace YODA {
     //   _axis.mergeBins(from, to);
     // }
 
-    void eraseBin(size_t index) {
-      _axis.eraseBin(index);
-    }
-
     /// Rebin the whole histo by a @a factorX in the X direction and
     /// @a factorY in the Y direction
     /// @todo TODO
     // void rebin(size_t factorX, size_t factorY){
     //   _axis.rebin(factorX, factorY);
     // }
+
+    void eraseBin(size_t index) {
+      _axis.eraseBin(index);
+    }
 
     //@}
 
@@ -345,6 +347,12 @@ namespace YODA {
 
     /// Get the standard error in y
     double yStdErr(bool includeoverflows=true) const;
+
+    /// Get the RMS in x
+    double xRMS(bool includeoverflows=true) const;
+
+    /// Get the RMS in y
+    double yRMS(bool includeoverflows=true) const;
 
     //@}
 

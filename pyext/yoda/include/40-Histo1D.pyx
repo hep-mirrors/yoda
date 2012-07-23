@@ -241,9 +241,9 @@ cdef class Histo1D(AnalysisObject):
     @property
     def totalDbn(self):
         """
-        h.totalDbn -> Distribution1D
+        h.totalDbn -> Dbn1D
 
-        Return the Distribution1D object representing the total distribution.
+        Return the Dbn1D object representing the total distribution.
 
         """
         return Dbn1D_fromptr(&self.ptr().totalDbn())
@@ -252,9 +252,9 @@ cdef class Histo1D(AnalysisObject):
     @property
     def underflow(self):
         """
-        h.underflow -> Distribution1D
+        h.underflow -> Dbn1D
 
-        Return the Distribution1D object representing the underflow.
+        Return the Dbn1D object representing the underflow.
 
         """
         return Dbn1D_fromptr(&self.ptr().underflow())
@@ -263,9 +263,9 @@ cdef class Histo1D(AnalysisObject):
     @property
     def overflow(self):
         """
-        h.overflow -> Distribution1D
+        h.overflow -> Dbn1D
 
-        Return the Distribution1D object representing the overflow.
+        Return the Dbn1D object representing the overflow.
 
         """
         return Dbn1D_fromptr(&self.ptr().overflow())

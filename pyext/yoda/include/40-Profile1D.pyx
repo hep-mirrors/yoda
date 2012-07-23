@@ -229,9 +229,9 @@ cdef class Profile1D(AnalysisObject):
     @property
     def totalDbn(self):
         """
-        h.totalDbn -> Distribution1D
+        h.totalDbn -> Dbn2D
 
-        Return the Distribution1D object representing the total distribution.
+        Return the Dbn2D object representing the total distribution.
 
         """
         return Dbn2D_fromptr(&self.ptr().totalDbn())
@@ -240,9 +240,9 @@ cdef class Profile1D(AnalysisObject):
     @property
     def underflow(self):
         """
-        h.underflow -> Distribution1D
+        h.underflow -> Dbn2D
 
-        Return the Distribution1D object representing the underflow.
+        Return the Dbn2D object representing the underflow.
 
         """
         return Dbn2D_fromptr(&self.ptr().underflow())
@@ -251,9 +251,9 @@ cdef class Profile1D(AnalysisObject):
     @property
     def overflow(self):
         """
-        h.overflow -> Distribution1D
+        h.overflow -> Dbn2D
 
-        Return the Distribution1D object representing the overflow.
+        Return the Dbn2D object representing the overflow.
 
         """
         return Dbn2D_fromptr(&self.ptr().overflow())

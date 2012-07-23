@@ -6,6 +6,7 @@
 #include "YODA/Histo2D.h"
 #include "YODA/Scatter3D.h"
 #include <cmath>
+
 using namespace std;
 
 namespace YODA {
@@ -99,6 +100,18 @@ namespace YODA {
     const double effNumEntries = sumW(false)*sumW(false)/sumW2(false);
     return std::sqrt(yVariance(false) / effNumEntries);
   }
+
+
+  // double Profile2D::xRMS(bool includeoverflows) const {
+  //   if (includeoverflows) return _axis.totalDbn().xRMS();
+  //   /// @todo Finish
+  // }
+
+
+  // double Profile2D::yRMS(bool includeoverflows) const {
+  //   if (includeoverflows) return _axis.totalDbn().yRMS();
+  //   /// @todo Finish
+  // }
 
 
   /////////////////////////////////////
@@ -266,6 +279,7 @@ namespace YODA {
 
 
   Scatter3D divide(const Histo2D& numer, const Histo2D& denom) {
+    /// @todo Don't abuse equality operator -- test *axis* compatibility
     if (numer != denom) throw GridError("The two histos are not equivalently binned!");
     Scatter3D tmp;
     for (size_t i = 0; i < numer.numBins(); ++i) {

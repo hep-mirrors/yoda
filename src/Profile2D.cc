@@ -1,3 +1,8 @@
+// -*- C++ -*-
+//
+// This file is part of YODA -- Yet more Objects for Data Analysis
+// Copyright (C) 2008-2012 The YODA collaboration (see AUTHORS for details)
+//
 #include "YODA/Profile2D.h"
 #include "YODA/Scatter3D.h"
 #include "YODA/Histo2D.h"
@@ -28,9 +33,7 @@ namespace YODA {
   double Profile2D::sumW(bool includeoverflows) const {
     if (includeoverflows) return _axis.totalDbn().sumW2();
     double sumw = 0;
-    foreach (const ProfileBin2D& b, bins()) {
-      sumw += b.sumW();
-    }
+    foreach (const ProfileBin2D& b, bins()) sumw += b.sumW();
     return sumw;
   }
 
@@ -38,11 +41,81 @@ namespace YODA {
   double Profile2D::sumW2(bool includeoverflows) const {
     if (includeoverflows) return _axis.totalDbn().sumW2();
     double sumw = 0;
-    foreach (const ProfileBin2D& b, bins()) {
-      sumw += b.sumW();
-    }
+    foreach (const ProfileBin2D& b, bins()) sumw += b.sumW();
     return sumw;
   }
+
+
+  double Profile2D::xMean(bool includeoverflows) const {
+    if (includeoverflows) return _axis.totalDbn().xMean();
+    double sumwx = 0;
+    foreach (const ProfileBin2D& b, bins()) sumwx += b.sumWX();
+    return sumwx/sumW();
+  }
+
+
+  double Profile2D::yMean(bool includeoverflows) const {
+    if (includeoverflows) return _axis.totalDbn().yMean();
+    double sumwy = 0;
+    foreach (const ProfileBin2D& b, bins()) sumwy += b.sumWY();
+    return sumwy/sumW();
+  }
+
+
+  double Profile2D::xVariance(bool includeoverflows) const {
+    if (includeoverflows) return _axis.totalDbn().xVariance();
+    /// @todo Improve this, by adding the Dbn2Ds and returning the resulting xVariance
+    double sigma2 = 0;
+    const double xMean = this->xMean();
+    for (size_t i = 0; i < bins().size(); ++i) {
+      const double diff = bin(i).focus().first - xMean;
+      sigma2 += diff * diff * bin(i).sumW();
+    }
+    return sigma2/sumW();
+  }
+
+
+  double Profile2D::yVariance(bool includeoverflows) const {
+    if (includeoverflows) return _axis.totalDbn().yVariance();
+    /// @todo Improve this, by adding the Dbn2Ds and returning the resulting yVariance
+    double sigma2 = 0;
+    const double yMean = this->yMean();
+    for (size_t i = 0; i < bins().size(); ++i) {
+      const double diff = bin(i).focus().first - yMean;
+      sigma2 += diff * diff * bin(i).sumW();
+    }
+    return sigma2/sumW();
+  }
+
+
+  double Profile2D::xStdErr(bool includeoverflows) const {
+    if (includeoverflows) return _axis.totalDbn().xStdErr();
+    const double effNumEntries = sumW(false)*sumW(false)/sumW2(false);
+    return std::sqrt(xVariance(false) / effNumEntries);
+  }
+
+
+  double Profile2D::yStdErr(bool includeoverflows) const {
+    if (includeoverflows) return _axis.totalDbn().yStdErr();
+    const double effNumEntries = sumW(false)*sumW(false)/sumW2(false);
+    return std::sqrt(yVariance(false) / effNumEntries);
+  }
+
+
+  // double Profile2D::xRMS(bool includeoverflows) const {
+  //   if (includeoverflows) return _axis.totalDbn().xRMS();
+  //   /// @todo Finish
+  // }
+
+
+  // double Profile2D::yRMS(bool includeoverflows) const {
+  //   if (includeoverflows) return _axis.totalDbn().yRMS();
+  //   /// @todo Finish
+  // }
+
+
+
+  /////////////////////////////////////
 
 
   /// A copy constructor with optional new path
@@ -77,9 +150,10 @@ namespace YODA {
 
   /// Divide two profile histograms
   Scatter3D divide(const Profile2D& numer, const Profile2D& denom) {
-    /// @todo TODO
+    /// @todo TODO -- implement!
 
     /// @todo Check that bins match
+    /// @todo Don't abuse equality operator -- test *axis* compatibility
 
     Scatter3D tmp;
     // for (size_t i = 0; i < numer.numBins(); ++i) {

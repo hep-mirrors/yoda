@@ -1,3 +1,7 @@
+2012-07-23  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Adding Cython mappings for Dbn3D and Profile2D, and other fixes/improvements.
+
 2012-07-22  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Adding Cython mappings for Scatter3D and ProfileBin2D.

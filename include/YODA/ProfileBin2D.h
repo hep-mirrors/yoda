@@ -1,3 +1,8 @@
+// -*- C++ -*-
+//
+// This file is part of YODA -- Yet more Objects for Data Analysis
+// Copyright (C) 2008-2012 The YODA collaboration (see AUTHORS for details)
+//
 #ifndef YODA_ProfileBin2D_h
 #define YODA_ProfileBin2D_h
 

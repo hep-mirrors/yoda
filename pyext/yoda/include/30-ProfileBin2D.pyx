@@ -224,3 +224,9 @@ cdef class ProfileBin2D:
 
     def __repr__(self):
         return 'ProfileBin2D(%r)' % self.volume
+
+cdef ProfileBin2D ProfileBin2D_fromptr(cProfileBin2D *ptr, dealloc=False):
+    # Construct a Python ProfileBin2D from a pointer to a cProfileBin2D,
+    # without calling __init__ and excessive memory allocation
+    cdef ProfileBin2D bin = ProfileBin2D.__new__(ProfileBin2D)
+    return bin.setptr(ptr, dealloc)

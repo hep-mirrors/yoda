@@ -32,10 +32,11 @@ cdef extern from "YODA/Histo2D.h" namespace "YODA":
         cDbn2D& totalDbn()
 
         vector[cHistoBin2D]& bins()
+        int findBinIndex(double coordX, double coordY)
         cHistoBin2D& binByCoord(double x, double y)
-
         cHistoBin2D& bin(size_t i)
         void eraseBin(size_t i)
+
 
         # Statistical functions
         double integral(bool includeoverflows)

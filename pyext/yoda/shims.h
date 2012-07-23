@@ -11,9 +11,9 @@
 #include "YODA/ProfileBin1D.h"
 
 // 2D
-// #include "YODA/Histo2D.h"
-// #include "YODA/Profile2D.h"
-// #include "YODA/Scatter3D.h"
+#include "YODA/Histo2D.h"
+#include "YODA/Profile2D.h"
+#include "YODA/Scatter3D.h"
 #include "YODA/HistoBin2D.h"
 #include "YODA/ProfileBin2D.h"
 
@@ -77,3 +77,15 @@ void WriterYODA_write (const std::string& filename, const std::vector<AnalysisOb
 Scatter2D Scatter2D_mkScatter(const Histo1D& h) {
   return YODA::mkScatter(h);
 }
+
+// Scatter2D Scatter2D_mkScatter(const Profile1D& p) {
+//   return YODA::mkScatter(p);
+// }
+
+// Scatter3D Scatter3D_mkScatter(const Histo2D& h) {
+//   return YODA::mkScatter(h);
+// }
+
+// Scatter3D Scatter3D_mkScatter(const Profile2D& p) {
+//   return YODA::mkScatter(p);
+// }
