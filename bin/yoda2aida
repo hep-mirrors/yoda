@@ -1,22 +1,29 @@
 #! /usr/bin/env python
 
 """\
-%prog yodafile aidafile
+%prog yodafile [aidafile]
 """
 
-import yoda, sys
-from optparse import OptionParser
+import yoda, sys, optparse
 
+parser = optparse.OptionParser(usage=__doc__)
+opts, args = parser.parse_args()
 
-if __name__ == "__main__":
+INFILE = None
+OUTFILE = None
 
-    parser = OptionParser(usage=__doc__)
-    opts, args = parser.parse_args()
+if len(args) == 1:
+    INFILE = args[0]
+    if INFILE.endswith(".yoda"):
+        OUTFILE = INFILE.replace(".yoda", ".aida")
+    else:
+        OUTFILE = INFILE + ".aida"
+elif len(args) == 2:
+    INFILE = args[0]
+    OUTFILE = args[1]
+else:
+    sys.stderr.write("You must specify the YODA and AIDA file names\n")
+    sys.exit(1)
 
-    if len(args) != 2:
-        sys.stderr.write("need to specify yoda and aida file name\n")
-        sys.exit(1)
-
-    analysisobjects = yoda.ReaderYODA().read(args[0])
-    yoda.WriterAIDA().write(args[1], analysisobjects)
-
+analysisobjects = yoda.ReaderYODA().read(INFILE)
+yoda.WriterAIDA().write(OUTFILE, analysisobjects)

@@ -1,0 +1,1 @@
+dist_bin_SCRIPTS = yoda2aida yoda-plot
