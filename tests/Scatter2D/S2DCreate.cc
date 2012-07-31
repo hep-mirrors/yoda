@@ -29,18 +29,19 @@ int main() {
   Scatter2D s4(values, values, values, values);
   MSG_GREEN("PASS");
 
-  MSG_(PAD(70) << "Constructing a scatter (sym err x,asym y)");
   vector<pair<double, double> > valuesS;
   valuesS.push_back(make_pair(0,0));
-  Scatter2D s5(values, values, values, valuesS);
-  MSG_GREEN("PASS");
+
+  // MSG_(PAD(70) << "Constructing a scatter (sym err x,asym y)");
+  // Scatter2D s5(values, values, values, valuesS);
+  // MSG_GREEN("PASS");
+
+  // MSG_(PAD(70) << "Constructing a scatter (asym x, sym y) ");
+  // Scatter2D s6(values, values, valuesS, values);
+  // MSG_GREEN("PASS");
 
   MSG_(PAD(70) << "Constructing a scatter (asym x, asym y) ");
-  Scatter2D s6(values, values, valuesS, valuesS);
-  MSG_GREEN("PASS");
-
-  MSG_(PAD(70) << "Constructing a scatter (axym x, sym y) ");
-  Scatter2D s7(values, values, valuesS, values);
+  Scatter2D s7(values, values, valuesS, valuesS);
   MSG_GREEN("PASS");
 
   MSG_(PAD(70) << "Constructing a scatter (explicit asym) ");

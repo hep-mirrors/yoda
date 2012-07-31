@@ -16,7 +16,7 @@ int main() {
 
 
   MSG_(PAD(70) << "Scaling the scatter: ");
-  s1.scale(2,3);
+  s1.scale(2, 3);
   if (s1.point(1).x() != 2 || s1.point(1).y() != 3) {
     MSG_RED("FAIL");
     return -1;
@@ -25,7 +25,7 @@ int main() {
 
 
   MSG_(PAD(70) << "Adding a point (first method): ");
-  Point2D point(1,1);
+  Point2D point(1, 1);
   s1.addPoint(point);
   if (s1.numPoints() != 3) {
     MSG_RED("FAIL");
@@ -52,7 +52,7 @@ int main() {
 
 
   MSG_(PAD(70) << "Adding a point (third method): ");
-  s1.addPoint(5,4,6,3);
+  s1.addPoint(5, 4, 6, 3);
   if (s1.numPoints() != 5) {
     MSG_RED("FAIL");
     return -1;
@@ -66,16 +66,15 @@ int main() {
   MSG_GREEN("PASS");
 
   MSG_(PAD(70) << "Adding a point (fourth method): ");
-  pair<double, double> errs;
-  errs = make_pair(1,2);
-  s1.addPoint(10,11, errs, 2);
+  pair<double, double> errs = make_pair(1.0, 2.0);
+  s1.addPoint(10, 11, errs, errs);
   if (s1.numPoints() != 6) {
     MSG_RED("FAIL");
     return -1;
   }
   if (s1.point(5).x() != 10 || s1.point(5).y() != 11 ||
       s1.point(5).xErrMinus() != 1 || s1.point(5).xErrPlus() != 2 ||
-      s1.point(5).yErrMinus() != 2 || s1.point(5).yErrPlus() != 2){
+      s1.point(5).yErrMinus() != 1 || s1.point(5).yErrPlus() != 2) {
     MSG_RED("FAIL");
     return -1;
   }
@@ -83,13 +82,13 @@ int main() {
 
 
   MSG_(PAD(70) << "Adding a point (fifth method): ");
-  s1.addPoint(12,14,6,errs);
+  s1.addPoint(12, 14, make_pair(6, 5), errs);
   if (s1.numPoints() != 7) {
     MSG_RED("FAIL");
     return -1;
   }
   if (s1.point(6).x() != 12 || s1.point(6).y() != 14 ||
-      s1.point(6).xErrMinus() != 6 || s1.point(6).xErrPlus() != 6 ||
+      s1.point(6).xErrMinus() != 6 || s1.point(6).xErrPlus() != 5 ||
       s1.point(6).yErrMinus() != 1 || s1.point(6).yErrPlus() != 2){
     MSG_RED("FAIL");
     return -1;
