@@ -50,12 +50,12 @@ cdef class Dbn1D(util.Base):
         return (self._Dbn1D().xVariance())
 
     @property
-    def std_dev(self):
+    def stdDev(self):
         """Weighted standard deviation of x"""
         return (self._Dbn1D().xStdDev())
 
     @property
-    def std_err(self):
+    def stdErr(self):
         """Weighted standard error on <x>"""
         return (self._Dbn1D().xStdErr())
 
@@ -65,33 +65,33 @@ cdef class Dbn1D(util.Base):
         return (self._Dbn1D().xRMS())
 
     @property
-    def count(self):
+    def numEntries(self):
         """The number of entries"""
         return self._Dbn1D().numEntries()
 
     @property
-    def effective_count(self):
+    def effNumEntries(self):
         """Effective number of entries (for weighted events)"""
-        return self._Dbn1D().numEntries()
+        return self._Dbn1D().effNumEntries()
 
     @property
-    def sum_w(self):
+    def sumW(self):
         """sum(weights)"""
         return self._Dbn1D().sumW()
 
     @property
-    def sum_w2(self):
-        """sum(weights**2)"""
+    def sumW2(self):
+        """sum(weights * weights)"""
         return self._Dbn1D().sumW2()
 
     @property
-    def sum_wx(self):
+    def sumWX(self):
         """sum(weights * xs)"""
         return self._Dbn1D().sumWX()
 
     @property
-    def sum_wx2(self):
-        """sum(weights * xs**2)"""
+    def sumWX2(self):
+        """sum(weights * xs * xs)"""
         return self._Dbn1D().sumWX2()
 
     def __add__(Dbn1D self, Dbn1D other):
@@ -103,7 +103,7 @@ cdef class Dbn1D(util.Base):
             deref(self._Dbn1D()) - deref(other._Dbn1D())))
 
     def __repr__(self):
-        return 'Dbn1D(mean=%g, stdDev=%g)' % (self.mean, self.stdDev)
+        return '<Dbn1D(mean=%g, stdDev=%g)>' % (self.mean, self.stdDev)
 
     # Magic stuff
     cdef c.Dbn1D *_Dbn1D(self) except NULL:

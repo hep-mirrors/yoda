@@ -1,4 +1,11 @@
 # Readers and writers
+# TODO: (low priority) refactor to improve readability.
+
+# The basic idea here is to provide Python IO semantics by using Python to do
+# the IO. Otherwise we get C++ IO semantics in Python. It also means we can use
+# dummy files, e.g. anything with read/write attirbutes. Generally a much better
+# idea than just "give this a filename", and well worth the inefficiencies and
+# potential memory limits.
 
 cdef list aobjects_to_list(vector[c.AnalysisObject*] *aobjects):
     cdef list out = []

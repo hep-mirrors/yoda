@@ -1,3 +1,5 @@
+# TODO (when there is absolutely nothing else to do) docstrings (but never will
+# it be a user facing class... it's merely there for tests)
 cdef class Axis2D_${BIN2D}_${DBN}(util.Base):
 
     def __init__(self, nx, xl, xu, ny, yl, yu):

@@ -1,36 +1,10 @@
+#TODO: Tidy up + docstrings etc.
 
 cdef class Scatter2D(AnalysisObject):
     """
-    1D histogram. Complete histogramming is supported, including
-    uniform/regular binning, variable wideth bininng, unbinned gaps in
-    the covered range, and under/overflows. Rebinning by integer
-    factors, or by explicit merging of contiguous bins is also
-    supported.
+    2D Scatter plot.
 
-    Rescaling of weights and/or the x axis is permitted in-place: the
-    result is still a valid Scatter2D. Binning-compatible 1D histograms
-    may be divided, resulting in a Scatter2D since further fulls would
-    not be meaningful.
-
-    Several sets of arguments are tried by the constructor in the
-    following order.
-
-    Scatter2D(path="", title=""). Construct a histogram with optional path
-    and title but no bins.
-
-    Scatter2D(B, path="", title=""). Construct a histogram from an
-    iterator of bins, B.
-
-    Scatter2D(E, path="", title=""). Construct a histogram from an
-    iterator of edges, E.
-
-    Should this constructor fail, then 
-    Scatter2D(nbins, low, high, path="", title="")
     """
-
-    # Is there a reason why this sounds like an advert? I'M ALREADY SOLD
-    # DAMMIT!
-
 
     cdef inline c.Scatter2D *_Scatter2D(self) except NULL:
         return <c.Scatter2D*> self.ptr()
@@ -41,7 +15,6 @@ cdef class Scatter2D(AnalysisObject):
     # ([bins], **kwargs)
 
     def __init__(self, *args, **kwargs):
-        #try_loop([self.__init2, self.__init5, self.__init3], *args, **kwargs)
         util.try_loop([self.__init_2, self.__init_3], *args, **kwargs)
 
     def __init_2(self, char* path="", char* title=""):

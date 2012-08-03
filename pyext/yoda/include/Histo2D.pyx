@@ -1,3 +1,5 @@
+#TODO tidy up when Axis2D is fixed
+
 cdef class Histo2D(AnalysisObject):
 
     cdef inline c.Histo2D *_Histo2D(self) except NULL:

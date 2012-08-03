@@ -1,6 +1,8 @@
 from collections import namedtuple
 from libcpp cimport bool
 
+# TODO: make more consistent with Point2D
+
 cdef class Point3D(util.Base):
     """
     A 1D distribution 'counter', used and exposed by 1D histograms and their bins.

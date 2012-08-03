@@ -186,6 +186,8 @@ cdef extern from "YODA/Point2D.h" namespace "YODA":
         void setYErr(pair[double, double]) except+ err
         double xMin() except+ err
         double xMax() except+ err
+        double yMin() except+ err
+        double yMax() except+ err
         void scale(double x, double y) except+ err
         bool operator == (Point2D) except+ err
         bool operator != (Point2D b) except+ err

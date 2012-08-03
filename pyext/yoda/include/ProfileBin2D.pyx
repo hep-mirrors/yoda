@@ -1,3 +1,4 @@
+#TODO improve this once we have a working Profile2D
 cdef class ProfileBin2D(Bin2D_Dbn3D):
 
     cdef inline c.ProfileBin2D *_ProfileBin2D(self) except NULL:

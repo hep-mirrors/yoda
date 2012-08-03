@@ -1,4 +1,5 @@
 #TODO: docstrings!!!
+#TODO: introduce better constructors
 
 cdef class Profile1D(AnalysisObject):
     cdef inline c.Profile1D *_Profile1D(self) except NULL:
@@ -32,35 +33,8 @@ cdef class Profile1D(AnalysisObject):
     def __repr__(self):
         return "<Profile1D at %x>" % id(self)
 
-    def fill(self, double x, double y, double weight=1.0):
+    def fill(self, x, y, weight=1.0):
         self._Profile1D().fill(x, y, weight)
-
-    def fillMany(self, xs, ys, ws=None):
-        cdef double x, y, w
-        cdef c.Profile1D *p = self._Profile1D()
-
-        itx = iter(xs)
-        ity = iter(ys)
-        if ws:
-            itw = iter(ws)
-            while True:
-                try:
-                    x = next(itx, None)
-                    y = next(ity, None)
-                    w = next(itw, None)
-                except TypeError:
-                    break
-                else:
-                    p.fill(x, y, w)
-        else:
-            while True:
-                try:
-                    x = next(itx, None)
-                    y = next(ity, None)
-                except TypeError:
-                    break
-                else:
-                    p.fill(x, y, 1.0)
 
     def copy(self, char *path=""):
         return util.new_owned_cls(Profile1D,
@@ -98,7 +72,7 @@ cdef class Profile1D(AnalysisObject):
     def rebin(self, int n):
         self._Profile1D().rebin(n)
 
-    def addBin(self, double low, double high):
+    def addBin(self, low, high):
         """Add a bin to the Profile1D"""
         self._Profile1D().addBin(low, high)
         return self

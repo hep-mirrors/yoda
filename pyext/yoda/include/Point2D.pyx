@@ -28,6 +28,7 @@ cdef class Point2D(util.Base):
         return util.new_owned_cls(Point2D,
                                   new c.Point2D(deref(self._Point2D())))
 
+
     property x:
         """x coordinate"""
         def __get__(self):
@@ -35,6 +36,7 @@ cdef class Point2D(util.Base):
 
         def __set__(self, x):
             self._Point2D().setX(x)
+            
 
     property y:
         """y coordinate"""
@@ -44,6 +46,7 @@ cdef class Point2D(util.Base):
         def __set__(self, y):
             self._Point2D().setY(y)
 
+
     property coords:
         """x and y coordinates as a tuple"""
         def __get__(self):
@@ -52,11 +55,24 @@ cdef class Point2D(util.Base):
         def __set__(self, val):
             self.x, self.y = val
 
+
     property xRange:
-        """The minimum and maximum points within the error"""
+        """The minimum and maximum points within the x errors"""
         def __get__(self):
             return util.Edges(self._Point2D().xMin(),
                               self._Point2D().xMax())
+
+    property yRange:
+        """The minimum and maximum points within the y errors"""
+        def __get__(self):
+            return util.Edges(self._Point2D().yMin(),
+                              self._Point2D().yMax())
+
+    property ranges:
+        """The x- and y-ranges"""
+        def __get__(self):
+            return util.XY(self.xRange, self.yRange)
+
 
     property xErrs:
         """The x errors"""
@@ -66,6 +82,7 @@ cdef class Point2D(util.Base):
         def __set__(self, val):
             self._Point2D().setXErr(read_symmetric(val))
 
+
     property yErrs:
         """The y errors"""
         def __get__(self):
@@ -73,6 +90,7 @@ cdef class Point2D(util.Base):
 
         def __set__(self, val):
             self._Point2D().setYErr(read_symmetric(val))
+
 
     property errs:
         """The x and y errors as a tuple"""
@@ -95,7 +113,7 @@ cdef class Point2D(util.Base):
         """
         (x=1.0, y=1.0) -> None
 
-        Scale the Dbn's variables by the given factors
+        Scale the Point's variables by the given factors.
 
         """
         self._Point2D().scale(x, y)

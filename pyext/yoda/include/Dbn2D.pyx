@@ -21,25 +21,6 @@ cdef class Dbn2D(util.Base):
         """
         self._Dbn2D().fill(x, y, weight)
 
-    def fill_many(self, xs, ys, ws=repeat(1)):
-        """
-        (xs, ys, ws=repeat(1.0)) -> None
-
-        Fills the distribution from iterables xs, ys and ws.
-
-        """
-        cdef c.Dbn2D *ptr = self._Dbn2D()
-        itx = iter(xs)
-        ity = iter(ys)
-        itw = iter(ws)
-        while True:
-            x = next(xs, None)
-            y = next(ys, None)
-            w = next(ws, None)
-            if x is None or y is None or w is None:
-                break
-            ptr.fill(x, y, w)
-
     def reset(self):
         """
         () -> None
@@ -74,12 +55,12 @@ cdef class Dbn2D(util.Base):
         return util.XY(self._Dbn2D().xVariance(), self._Dbn2D().yVariance())
 
     @property
-    def std_dev(self):
+    def stdDev(self):
         """Weighted standard deviation of x"""
         return util.XY(self._Dbn2D().xStdDev(), self._Dbn2D().yStdDev())
 
     @property
-    def std_err(self):
+    def stdErr(self):
         """Weighted standard error on <x>"""
         return util.XY(self._Dbn2D().xStdErr(), self._Dbn2D().yStdErr())
 
@@ -89,47 +70,47 @@ cdef class Dbn2D(util.Base):
         return util.XY(self._Dbn2D().xRMS(), self._Dbn2D().yRMS())
 
     @property
-    def count(self):
+    def numEntries(self):
         """The number of entries"""
         return self._Dbn2D().numEntries()
 
     @property
-    def effective_count(self):
+    def effNumEntries(self):
         """Effective number of entries (for weighted events)"""
         return self._Dbn2D().effNumEntries()
 
     @property
-    def sum_w(self):
+    def sumW(self):
         """sum(weights)"""
         return self._Dbn2D().sumW()
 
     @property
-    def sum_w2(self):
-        """sum(weights**2)"""
+    def sumW2(self):
+        """sum(weights * weights)"""
         return self._Dbn2D().sumW2()
 
     @property
-    def sum_wx(self):
+    def sumWX(self):
         """sum(weights * xs)"""
         return self._Dbn2D().sumWX()
 
     @property
-    def sum_wy(self):
+    def sumWY(self):
         """sum(weights * ys)"""
         return self._Dbn2D().sumWY()
 
     @property
-    def sum_wx2(self):
-        """sum(weights * xs**2)"""
+    def sumWX2(self):
+        """sum(weights * xs * xs)"""
         return self._Dbn2D().sumWX2()
 
     @property
-    def sum_wy2(self):
-        """sum(weights * ys**2)"""
+    def sumWY2(self):
+        """sum(weights * ys * ys)"""
         return self._Dbn2D().sumWY2()
 
     @property
-    def sum_wxy(self):
+    def sumWXY(self):
         """sum(weights xs * ys)"""
         return self._Dbn2D().sumWXY()
 
@@ -142,7 +123,7 @@ cdef class Dbn2D(util.Base):
             deref(self._Dbn2D()) - deref(other._Dbn2D())))
 
     def __repr__(self):
-        return 'Dbn2D(mean=(%g, %g), stdDev=(%g, %g))' % (self.mean + self.std_dev)
+        return '<Dbn2D(mean=(%g, %g), stdDev=(%g, %g))>' % (self.mean + self.std_dev)
 
     # Magic stuff
     cdef c.Dbn2D *_Dbn2D(self) except NULL:

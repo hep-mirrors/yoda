@@ -1,3 +1,4 @@
+# TODO: tidy once we have a working Histo2D
 cdef class HistoBin2D(Bin2D_Dbn2D):
 
     cdef inline c.HistoBin2D *_HistoBin2D(self) except NULL:

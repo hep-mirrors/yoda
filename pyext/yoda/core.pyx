@@ -28,8 +28,6 @@ include "include/HistoBin1D.pyx"
 
 include "include/ProfileBin1D.pyx"
 
-include "include/Annotations.pyx"
-
 include "include/AnalysisObject.pyx"
 
 include "include/Histo1D.pyx"

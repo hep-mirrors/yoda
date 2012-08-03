@@ -1,7 +1,8 @@
 from cython.operator cimport dereference as deref, preincrement as preinc
 from cStringIO import StringIO
 
-cdef void set_ann(c.AnalysisObject *ana, char *k, char *v):
+# Useful helper function to avoid hoops in Cython's type system
+cdef void set_annotation(c.AnalysisObject *ana, char *k, char *v):
     ana.setAnnotation(string(k), string(v))
 
 # AnalysisObject is the base class of most of the user facing objects
@@ -13,13 +14,13 @@ cdef class AnalysisObject(util.Base):
 
     # Deallocator (only needed as a base class)
     def __dealloc__(self):
-        cdef c.AnalysisObject *p = self._AnalysisObject()
+        p = self._AnalysisObject()
         if self._deallocate:
             del p
 
     def annotations(self):
         """
-        Key value pairs of metadata, returned as a dictionary.
+        Key value pairs of metadata, returned as a Python dictionary.
         
         """
         ana = self._AnalysisObject().annotations()
@@ -45,7 +46,8 @@ cdef class AnalysisObject(util.Base):
     def updateAnnotations(self, E=None, **F):
         """
         AO.update([E, ]**F) -> None.  Update annotations of AO from
-        dict/iterable E and F.
+        dict/iterable E and F. Has the same semantics as Python's
+        dict.update(...).
 
         If E present and has a .keys() method:
             for k in E: AO[k] = E[k]
@@ -59,13 +61,13 @@ cdef class AnalysisObject(util.Base):
         if E is not None:
             if hasattr(E, 'keys'):
                 for k in E:
-                    set_ann(AO, k, E[k])
+                    set_annotation(AO, k, E[k])
             else:
                 for k, v in E:
-                    set_ann(AO, k, v)
+                    set_annotation(AO, k, v)
 
         for k in F:
-            set_ann(AO, k, F[k])
+            set_annotation(AO, k, F[k])
 
     property path:
         """

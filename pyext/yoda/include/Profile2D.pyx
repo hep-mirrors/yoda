@@ -1,3 +1,4 @@
+#TODO rewrite when we have a Profile2D
 cdef class Profile2D(AnalysisObject):
     cdef inline c.Profile2D *_Profile2D(self) except NULL:
         return <c.Profile2D*> self.ptr()

@@ -22,28 +22,6 @@ cdef class Dbn3D(util.Base):
         """
         self._Dbn3D().fill(x, y, z, weight)
 
-    def fill_many(self, xs, ys, zs, ws=repeat(1)):
-        """
-        (xs, ys, ws=repeat(1.0)) -> None
-
-        Fills the distribution from iterables xs, ys and ws.
-
-        """
-        cdef c.Dbn3D *ptr = self._Dbn3D()
-        itx = iter(xs)
-        ity = iter(ys)
-        itz = iter(zs)
-        itw = iter(ws)
-        while True:
-            x = next(xs, None)
-            y = next(ys, None)
-            z = next(zs, None)
-            w = next(ws, None)
-            if x is None or y is None or w is None:
-                break
-            ptr.fill(x, y, z, w)
-
-
     def reset(self):
         """
         () -> None
@@ -53,9 +31,9 @@ cdef class Dbn3D(util.Base):
 
     def scale(self, x=1.0, y=1.0, z=1.0, w=1.0):
         """
-        (x=1.0, y=1.0, w=1.0) -> None
+        (x=1.0, y=1.0, z=1.0, w=1.0) -> None
 
-        Scale Dbn3D's parameters
+        Scale Dbn3D's x, y, z and/or weight parameters.
 
         """
         if x != 1.0 and y != 1.0 and z != 1.0:
@@ -86,14 +64,14 @@ cdef class Dbn3D(util.Base):
                         self._Dbn3D().zVariance())
 
     @property
-    def std_dev(self):
+    def stdDev(self):
         """Weighted standard deviation of x"""
         return util.XYZ(self._Dbn3D().xStdDev(),
                         self._Dbn3D().yStdDev(),
                         self._Dbn3D().zStdDev())
 
     @property
-    def std_err(self):
+    def stdErr(self):
         """Weighted standard error on <x>"""
         return util.XYZ(self._Dbn3D().xStdErr(),
                         self._Dbn3D().yStdErr(),
@@ -107,74 +85,69 @@ cdef class Dbn3D(util.Base):
                        self._Dbn3D().zRMS())
 
     @property
-    def count(self):
+    def numEntries(self):
         """The number of entries"""
         return self._Dbn3D().numEntries()
 
     @property
-    def effective_count(self):
+    def effNumEntries(self):
         """Effective number of entries (for weighted events)"""
         return self._Dbn3D().effNumEntries()
 
     @property
-    def sum_w(self):
+    def sumW(self):
         """sum(weights)"""
         return self._Dbn3D().sumW()
 
     @property
-    def sum_w2(self):
-        """sum(weights**2)"""
+    def sumW2(self):
+        """sum(weights * weights)"""
         return self._Dbn3D().sumW2()
 
     @property
-    def sum_wx(self):
+    def sumWX(self):
         """sum(weights * xs)"""
         return self._Dbn3D().sumWX()
 
     @property
-    def sum_wy(self):
+    def sumWY(self):
         """sum(weights * ys)"""
         return self._Dbn3D().sumWY()
 
     @property
-    def sum_wz(self):
-        """sum(weights * ys)"""
+    def sumWZ(self):
+        """sum(weights * zs)"""
         return self._Dbn3D().sumWZ()
 
     @property
-    def sum_wx2(self):
-        """sum(weights * xs**2)"""
+    def sumWX2(self):
+        """sum(weights * xs * xs)"""
         return self._Dbn3D().sumWX2()
 
     @property
-    def sum_wy2(self):
-        """sum(weights * ys**2)"""
+    def sumWY2(self):
+        """sum(weights * ys * ys)"""
         return self._Dbn3D().sumWY2()
 
     @property
-    def sum_wz2(self):
-        """sum(weights * ys)"""
+    def sumWZ2(self):
+        """sum(weights * zs * zs")"""
         return self._Dbn3D().sumWZ2()
 
     @property
-    def sum_wxy(self):
-        """sum(weights xs * ys)"""
+    def sumWXY(self):
+        """sum(weights * xs * ys)"""
         return self._Dbn3D().sumWXY()
 
     @property
-    def sum_wxz(self):
-        """sum(weights xs * ys)"""
+    def sumWXZ(self):
+        """sum(weights * xs * zs)"""
         return self._Dbn3D().sumWXZ()
 
     @property
-    def sum_wyz(self):
-        """sum(weights xs * ys)"""
+    def sumWYZ(self):
+        """sum(weights * ys * zs)"""
         return self._Dbn3D().sumWYZ()
-
-    @property
-    def sum_wxyz(self):
-        """sum(weights xs * ys)"""
-        return self._Dbn3D().sumWXYZ()
 
     def __add__(Dbn3D self, Dbn3D other):
         return util.new_owned_cls(Dbn3D, new c.Dbn3D(
