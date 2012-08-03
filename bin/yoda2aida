@@ -26,4 +26,4 @@ else:
     sys.exit(1)
 
 analysisobjects = yoda.readYODA(INFILE)
-yoda.WriteAIDA(analysisobjects, OUTFILE)
+yoda.writeAIDA(analysisobjects, OUTFILE)
