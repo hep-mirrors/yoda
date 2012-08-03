@@ -106,6 +106,10 @@ namespace YODA {
       return _dbn.zStdErr();
     }
 
+    double rms() const {
+      return _dbn.zRMS();
+    }
+
     //@}
 
     /// @name Raw z distribution statistics

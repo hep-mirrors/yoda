@@ -10,10 +10,6 @@ NOW
    Ignore anything after "#" on data lines -- use this to write convenience
    height & error info for each bin since not obvious from sumWX2 etc.
 
-* Remove nasty Cython shims (DM)
-   Does inheritance work automatically in Cython now? Add operator support
-   everywhere it's needed.
-
 * Add Axis2D -> Histo2D/Profile2D bin adding and erasing. (AB)
 
 * Make Python interface test scripts (DM)
@@ -21,6 +17,8 @@ NOW
 * Add copy assignment to both C++ and Cython (AB)
 
 * Docstrings for Points, Dbns and Bins (AB)
+
+* Reintroduce missing docstrings (DM)
 
 * Add stdErr to HistoBinXD (AB)
 

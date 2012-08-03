@@ -1,3 +1,10 @@
+2012-08-02  Dave Mallows  <dave.mallows@gmail.com>
+	* Heavily refactored Cython bindings
+
+	* HistoBin1D, ProfileBin1D etc. now inherit from Bin1D[DBN]
+
+	* Temporarily removed Histo2D, Profile2D and Scatter3D mappings.
+
 2012-07-23  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Installing scripts from bin dir, and making the yoda2aida interface nicer.

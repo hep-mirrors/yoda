@@ -48,7 +48,7 @@ AZ_PYTHON_DEFAULT
 ## Basic Python checks
 if test x$enable_pyext == xyes; then
   AZ_PYTHON_PATH
-  AZ_PYTHON_VERSION_ENSURE([2.4])
+  AZ_PYTHON_VERSION_ENSURE([2.6])
   PYTHON_VERSION=`$PYTHON -c "import sys; print '.'.join(map(str, sys.version_info@<:@:2@:>@));"`
   AC_SUBST(PYTHON_VERSION)
   RIVET_PYTHONPATH=`$PYTHON -c "import distutils.sysconfig; print distutils.sysconfig.get_python_lib(prefix='$prefix', plat_specific=True);"`
@@ -74,10 +74,9 @@ fi
 
 ## Cython checks (Probably need some help...)
 if test x$enable_pyext == xyes; then
-  cython_required_version=0.13
-  AM_CHECK_CYTHON([$cython_required_version], [:], [:])
-  if test "x$CYTHON_FOUND" != "xyes"; then
-    AC_MSG_ERROR([Can't build Python extension since Cython >= 0.13 could not be found])
+  AM_CHECK_CYTHON([0.16], [:], [:])
+  if test x$CYTHON_FOUND != xyes; then
+    AC_MSG_ERROR([Can't build Python extension since Cython >= 0.16 could not be found])
     enable_pyext=no
   else
     cython_compiler=$CXX
@@ -142,7 +141,7 @@ AC_CONFIG_FILES([include/Makefile include/YODA/Makefile])
 AC_CONFIG_FILES([src/Makefile src/tinyxml/Makefile])
 AC_CONFIG_FILES([tests/Makefile])
 AC_CONFIG_FILES([bin/Makefile])
-AC_CONFIG_FILES([pyext/Makefile pyext/yoda/Makefile pyext/setup.py])
+AC_CONFIG_FILES([pyext/Makefile pyext/setup.py])
 #AC_CONFIG_FILES([bin/Makefile bin/yoda-config])
 
 AC_OUTPUT

@@ -147,8 +147,8 @@ namespace YODA {
     }
 
     /// Bin addition operator
-    void addBin(size_t from, size_t to) {
-      _axis.addBin(from, to);
+    void addBin(double xlow, double xhigh) {
+      _axis.addBin(xlow, xhigh);
     }
 
     /// Bin addition operator

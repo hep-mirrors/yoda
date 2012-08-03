@@ -25,5 +25,5 @@ else:
     sys.stderr.write("You must specify the YODA and AIDA file names\n")
     sys.exit(1)
 
-analysisobjects = yoda.ReaderYODA().read(INFILE)
-yoda.WriterAIDA().write(OUTFILE, analysisobjects)
+analysisobjects = yoda.readYODA(INFILE)
+yoda.WriteAIDA(analysisobjects, OUTFILE)
