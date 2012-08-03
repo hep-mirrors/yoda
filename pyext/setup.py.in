@@ -20,7 +20,7 @@ statics = os.path.join('yoda', 'errors.cpp')
 def ext(name, depends=[], statics=[]):
     return Extension(
         '%s.%s' % (PKGNAME, name),
-        ['%s/%s.cpp' % (PKGNAME, name)] + statics,
+        ['%s/%s.pyx' % (PKGNAME, name)] + statics,
         language='c++',
         depends=depends,
         include_dirs=[incdir, PKGNAME, boostdir],

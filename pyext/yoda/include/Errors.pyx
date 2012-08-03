@@ -6,7 +6,7 @@ from cpython.exc cimport PyErr_NewException
 
 # These are called from translate_yoda_error in errors.cpp
 
-cpdef public:
+cdef public:
     # Master exception
     object YodaExc_Exception = PyErr_NewException(
         "yoda.Exception", <object> NULL, <object> NULL)
@@ -34,4 +34,4 @@ cpdef public:
         "yoda.UserError", YodaExc_Exception, <object> NULL)
 
 # Note that these don't appear in python space due to the cdef. What we will
-# have to do is use some magic to make these appear in Python space.
+# have to do is use some kind of magic to make these appear in Python space.
