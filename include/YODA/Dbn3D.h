@@ -28,13 +28,18 @@ namespace YODA {
     /// Constructor to set a distribution with a pre-filled state.
     ///
     /// Principally designed for internal persistency use.
-    Dbn3D(unsigned long numEntries, double sumW, double sumW2,
-          double sumWX, double sumWX2, double sumWY, double sumWY2, double sumWZ, double sumWZ2,
-          double sumWXY, double sumWXZ, double sumWYZ, double sumWXYZ)
+    Dbn3D(unsigned long numEntries, 
+	  double sumW, double sumW2,
+          double sumWX, double sumWX2, 
+	  double sumWY, double sumWY2, 
+	  double sumWZ, double sumWZ2,
+          double sumWXY, double sumWXZ, double sumWYZ, 
+	  double sumWXYZ)
       : _dbnX(numEntries, sumW, sumW2, sumWX, sumWX2),
         _dbnY(numEntries, sumW, sumW2, sumWY, sumWY2),
         _dbnZ(numEntries, sumW, sumW2, sumWZ, sumWZ2),
-        _sumWXY(sumWXY), _sumWXZ(sumWXZ), _sumWYZ(sumWYZ), _sumWXYZ(sumWYZ)
+        _sumWXY(sumWXY), _sumWXZ(sumWXZ), _sumWYZ(sumWYZ), 
+	_sumWXYZ(sumWXYZ)
     { }
 
 
