@@ -212,8 +212,8 @@ namespace YODA {
     /// Merge a series of bins, between the bins identified by indices @a from and @a to
     void mergeBins(size_t from, size_t to) {
       // Correctness checking
-      if (from < 0 || from >= numBins()) throw RangeError("First index is out of range!");
-      if (to < 0 || to >= numBins()) throw RangeError("Second index is out of range!");
+      if (from >= numBins()) throw RangeError("First index is out of range!");
+      if (  to >= numBins()) throw RangeError("Second index is out of range!");
       if (_bins[from].xMin() > _bins[to].xMin()) throw RangeError("The starting bin is greater than ending bin!");
       if (_gapInRange(from, to)) throw RangeError("Bin ranges containing binning gaps cannot be merged!");
 
@@ -261,8 +261,8 @@ namespace YODA {
 
     /// Remove a bin range
     void eraseBins(size_t from, size_t to) {
-      if (from < 0 || from >= numBins()) throw ("First index is out of range!");
-      if (to < 0 || to >= numBins()) throw ("Second index is out of range!");
+      if (from >= numBins()) throw ("First index is out of range!");
+      if (  to >= numBins()) throw ("Second index is out of range!");
       if (_bins[from].xMin() > _bins[to].xMin()) throw RangeError("The starting bin is greater than ending bin!");
       _bins.erase(_bins.begin() + from, _bins.begin() + to + 1);
       _updateAxis();
