@@ -158,7 +158,7 @@ namespace YODA {
   /// Bin addition operator
   inline ProfileBin2D operator + (const ProfileBin2D& a, const ProfileBin2D& b) {
     ProfileBin2D rtn(a);
-    rtn += a;
+    rtn += b;
     return rtn;
   }
 
@@ -166,7 +166,7 @@ namespace YODA {
   /// Bin subtraction operator
   inline ProfileBin2D operator - (const ProfileBin2D& a, const ProfileBin2D& b) {
     ProfileBin2D rtn(a);
-    rtn -= a;
+    rtn -= b;
     return rtn;
   }
 

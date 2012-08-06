@@ -300,7 +300,7 @@ namespace YODA {
   /// Divide a double by a Weights
   /// @todo Is this really needed?
   inline Weights operator / (double a, const Weights& w) {
-    Weights tmp(w.keys(), 1.0);
+    Weights tmp(w.keys(), a);
     tmp /= w;
     return tmp;
   }

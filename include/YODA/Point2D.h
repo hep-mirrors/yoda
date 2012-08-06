@@ -119,12 +119,12 @@ namespace YODA {
     }
 
     /// Get negative x-error value
-    const double xErrMinus() const {
+    double xErrMinus() const {
       return _ex.first;
     }
 
     /// Get positive x-error value
-    const double xErrPlus() const {
+    double xErrPlus() const {
       return _ex.second;
     }
 
@@ -151,12 +151,12 @@ namespace YODA {
     }
 
     /// Get value minus negative x-error
-    const double xMin() const {
+    double xMin() const {
       return _x - _ex.first;
     }
 
     /// Get value plus positive x-error
-    const double xMax() const {
+    double xMax() const {
       return _x + _ex.second;
     }
 
@@ -172,12 +172,12 @@ namespace YODA {
     }
 
     /// Get negative y-error value
-    const double yErrMinus() const {
+    double yErrMinus() const {
       return _ey.first;
     }
 
     /// Get positive y-error value
-    const double yErrPlus() const {
+    double yErrPlus() const {
       return _ey.second;
     }
 
@@ -204,12 +204,12 @@ namespace YODA {
     }
 
     /// Get value minus negative y-error
-    const double yMin() const {
+    double yMin() const {
       return _y - _ey.first;
     }
 
     /// Get value plus positive y-error
-    const double yMax() const {
+    double yMax() const {
       return _y + _ey.second;
     }
 

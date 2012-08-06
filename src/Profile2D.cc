@@ -120,13 +120,18 @@ namespace YODA {
 
   /// A copy constructor with optional new path
   Profile2D::Profile2D(const Profile2D& p, const std::string& path)
-    : AnalysisObject("Profile2D", p.path(), p, p.title()), _axis(p._axis)
+    : AnalysisObject("Profile2D", 
+		     (path.size() == 0) ? p.path() : path, 
+		     p, p.title()), 
+      _axis(p._axis)
   {  }
 
 
   /// Constructor from a Scatter3D's binning, with optional new path
   Profile2D::Profile2D(const Scatter3D& s, const std::string& path)
-    : AnalysisObject("Profile2D", (path.size() == 0) ? s.path() : path, s, s.title())
+    : AnalysisObject("Profile2D", 
+		     (path.size() == 0) ? s.path() : path, 
+		     s, s.title())
   {
     Bins bins;
     foreach (const Scatter3D::Point& p, s.points()) {
@@ -149,7 +154,7 @@ namespace YODA {
 
 
   /// Divide two profile histograms
-  Scatter3D divide(const Profile2D& numer, const Profile2D& denom) {
+  Scatter3D divide(const Profile2D& , const Profile2D& ) {
     /// @todo TODO -- implement!
 
     /// @todo Check that bins match

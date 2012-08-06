@@ -155,13 +155,13 @@ namespace YODA {
 
   inline ProfileBin1D operator + (const ProfileBin1D& a, const ProfileBin1D& b) {
     ProfileBin1D rtn(a);
-    rtn += a;
+    rtn += b;
     return rtn;
   }
 
   inline ProfileBin1D operator - (const ProfileBin1D& a, const ProfileBin1D& b) {
     ProfileBin1D rtn(a);
-    rtn -= a;
+    rtn -= b;
     return rtn;
   }
 

@@ -133,7 +133,7 @@ namespace YODA {
   /// Bin addition operator
   inline HistoBin2D operator + (const HistoBin2D& a, const HistoBin2D& b) {
     HistoBin2D rtn(a);
-    rtn += a;
+    rtn += b;
     return rtn;
   }
 
@@ -141,7 +141,7 @@ namespace YODA {
   /// Bin subtraction operator
   inline HistoBin2D operator - (const HistoBin2D& a, const HistoBin2D& b) {
     HistoBin2D rtn(a);
-    rtn -= a;
+    rtn -= b;
     return rtn;
   }
 

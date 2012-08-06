@@ -53,9 +53,7 @@ namespace YODA {
     }
 
     /// Constructor from asymmetric errors given as vectors
-    Point3D(const double& x,
-            const double& y,
-            const double& z,
+    Point3D(double x, double y, double z,
             const std::pair<double,double>& ex,
             const std::pair<double,double>& ey,
             const std::pair<double,double>& ez)
@@ -121,12 +119,12 @@ namespace YODA {
     }
 
     /// Get negative x-error value
-    const double xErrMinus() const {
+    double xErrMinus() const {
       return _ex.first;
     }
 
     /// Get positive x-error value
-    const double xErrPlus() const {
+    double xErrPlus() const {
       return _ex.second;
     }
 
@@ -153,12 +151,12 @@ namespace YODA {
     }
 
     /// Get value minus negative x-error
-    const double xMin() const {
+    double xMin() const {
       return _x - _ex.first;
     }
 
     /// Get value plus positive x-error
-    const double xMax() const {
+    double xMax() const {
       return _x + _ex.second;
     }
 
@@ -174,12 +172,12 @@ namespace YODA {
     }
 
     /// Get negative y-error value
-    const double yErrMinus() const {
+    double yErrMinus() const {
       return _ey.first;
     }
 
     /// Get positive y-error value
-    const double yErrPlus() const {
+    double yErrPlus() const {
       return _ey.second;
     }
 
@@ -206,12 +204,12 @@ namespace YODA {
     }
 
     /// Get value minus negative y-error
-    const double yMin() const {
+    double yMin() const {
       return _y - _ey.first;
     }
 
     /// Get value plus positive y-error
-    const double yMax() const {
+    double yMax() const {
       return _y + _ey.second;
     }
 
@@ -227,12 +225,12 @@ namespace YODA {
     }
 
     /// Get negative z-error value
-    const double zErrMinus() const {
+    double zErrMinus() const {
       return _ez.first;
     }
 
     /// Get positive z-error value
-    const double zErrPlus() const {
+    double zErrPlus() const {
       return _ez.second;
     }
 
@@ -259,12 +257,12 @@ namespace YODA {
     }
 
     /// Get value minus negative z-error
-    const double zMin() const {
+    double zMin() const {
       return _z - _ez.first;
     }
 
     /// Get value plus positive z-error
-    const double zMax() const {
+    double zMax() const {
       return _z + _ez.second;
     }
 

@@ -253,23 +253,23 @@ namespace YODA {
     }
 
     /// Return bin index (const version)
-    const int findBinIndex(double coordX, double coordY) const {
+    int findBinIndex(double coordX, double coordY) const {
       return _axis.getBinIndex(coordX, coordY);
     }
 
 
     /// Number of bins
-    const size_t numBins() const {
+    size_t numBins() const {
       return _axis.numBins();
     }
 
     /// Number of bins along the x axis
-    const size_t numBinsX() const {
+    size_t numBinsX() const {
       return _axis.numBinsX();
     }
 
     /// Number of bins along the y axis
-    const size_t numBinsY() const{
+    size_t numBinsY() const{
       return _axis.numBinsY();
     }
 

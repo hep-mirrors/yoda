@@ -46,8 +46,12 @@ namespace YODA {
 
 
     /// Constructor from vectors of values with no errors
-    Scatter3D(const std::vector<double>& x, const std::vector<double>& y, const std::vector<double>& z,
-              const std::string& path="", const std::string& title="")
+    Scatter3D(const std::vector<double>& x, 
+	      const std::vector<double>& y, 
+	      const std::vector<double>& z,
+              const std::string& path="", 
+	      const std::string& title="")
+      : AnalysisObject("Scatter3D", path, title)
     {
       if (x.size() != y.size() || y.size() != z.size()) {
         throw RangeError("There are different numbers of x, y, and z values in the provided vectors.");

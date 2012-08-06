@@ -395,7 +395,7 @@ namespace YODA {
   template <class DBN>
   inline Bin2D<DBN> operator - (const Bin2D<DBN>& a, const Bin2D<DBN>& b) {
     Bin2D<DBN> rtn = a;
-    rtn -= a;
+    rtn -= b;
     return rtn;
   }
 

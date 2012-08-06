@@ -33,8 +33,8 @@ namespace YODA {
   }
 
 
-  void WriterAIDA::writePlot(std::ostream& os, const Plot& p) {
-    os << flush;
+  void WriterAIDA::writePlot(std::ostream& os, const Plot&) {
+    os << "\n<!-- PLOT WRITING TO AIDA IS UNSUPPORTED! -->\n" << endl;
   }
 
 
@@ -45,7 +45,7 @@ namespace YODA {
   }
 
 
-  void WriterAIDA::writeHisto2D(std::ostream& os, const Histo2D& h) {
+  void WriterAIDA::writeHisto2D(std::ostream& os, const Histo2D&) {
     os << endl << "<!-- HISTO2D WRITING TO AIDA IS CURRENTLY UNSUPPORTED! -->" << endl << endl;
     // Scatter3D tmp = mkScatter(h);
     // tmp.setAnnotation("Type", "Histo2D");

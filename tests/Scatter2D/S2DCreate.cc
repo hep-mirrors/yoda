@@ -9,7 +9,7 @@ int main() {
 
 
   MSG_(PAD(70) << "Constructing a scatter (empty const): ");
-  Scatter2D s1();
+  Scatter2D s1;
   MSG_GREEN("PASS");
 
   MSG_(PAD(70) << "Constructing a scatter (vector of points)");

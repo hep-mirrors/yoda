@@ -112,7 +112,8 @@ namespace YODA {
     ///
     /// This operator is supplied with the extremal coordinates of just a new
     /// bin, which is then constructed and added as usual.
-    void addBin(double lowX, double lowY, double highX, double highY) {
+    //    void addBin(double lowX, double lowY, double highX, double highY) {
+    void addBin(double, double, double, double) {
       /// @todo TODO
 
       /// @todo Check for overlaps and whether axis is locked
@@ -261,23 +262,23 @@ namespace YODA {
 
     /// Get the total number of bins
     /// @todo Can't this just be numBins?
-    const size_t numBins() const {
+    size_t numBins() const {
       return _bins.size();
     }
 
     /// Get the number of bins along X axis
-    const size_t numBinsX() const {
+    size_t numBinsX() const {
       return (numBins() > 0) ? _binhash.size() : 0;
     }
 
     /// Get the number of bins along Y axis
-    const size_t numBinsY() const {
+    size_t numBinsY() const {
       return (numBins() > 0) ? _binhash.begin()->second.size() : 0;
     }
 
 
     /// Get the value of the lowest x-edge on the axis
-    const double lowEdgeX() const {
+    double lowEdgeX() const {
       if (numBins() == 0) throw RangeError("This axis contains no bins and so has no defined range");
       return _binhash.begin()->first;
     }
@@ -285,7 +286,7 @@ namespace YODA {
     double xMin() const { return lowEdgeX();}
 
     /// Get the value of the highest x-edge on the axis
-    const double highEdgeX() const {
+    double highEdgeX() const {
       if (numBins() == 0) throw RangeError("This axis contains no bins and so has no defined range");
       return (--_binhash.end())->first;
     }
@@ -293,7 +294,7 @@ namespace YODA {
     double xMax() const { return highEdgeX();}
 
     /// Get the value of the lowest y-edge on the axis
-    const double lowEdgeY() const {
+    double lowEdgeY() const {
       if (numBins() == 0) throw RangeError("This axis contains no bins and so has no defined range");
       return _binhash.begin()->second.begin()->first;
     }
@@ -301,7 +302,7 @@ namespace YODA {
     double yMin() const { return lowEdgeY();}
 
     /// Get the value of the highest y-edge on the axis
-    const double highEdgeY() const {
+    double highEdgeY() const {
       if (numBins() == 0) throw RangeError("This axis contains no bins and so has no defined range");
       return (--_binhash.begin()->second.end())->first;
     }
@@ -397,7 +398,7 @@ namespace YODA {
     ///
     /// Looks through all the bins to see which one contains the point of
     /// interest.
-    const long getBinIndex(double coordX, double coordY) const {
+    long getBinIndex(double coordX, double coordY) const {
       // First check that we are within the axis bounds at all
       if (coordX < lowEdgeX() || coordX >= highEdgeX()) return -1;
       if (coordY < lowEdgeY() || coordY >= highEdgeY()) return -1;
@@ -412,7 +413,7 @@ namespace YODA {
 
 
     // /// Fast column number searcher
-    // const size_t getBinColumn(size_t index) const {
+    // size_t getBinColumn(size_t index) const {
     //   // Check if assumptions are reasonable
     //   if (!_isGrid) throw GridError("This operation can only be performed when an array is a grid!");
     //   if (index >= _bins.size()) throw RangeError("Index is bigger than the size of bins vector!");
@@ -424,7 +425,7 @@ namespace YODA {
 
 
     // /// Fast row number searcher
-    // const size_t getBinRow(size_t index) const {
+    // size_t getBinRow(size_t index) const {
     //   // Check if assumptions are reasonable
     //   if (!_isGrid) throw GridError("This operation can only be performed when an array is a grid!");
     //   if (index >= _bins.size()) throw RangeError("Index is bigger than the size of bins vector!");
@@ -495,7 +496,7 @@ namespace YODA {
     //@{
 
     /// Equality operator (on binning only)
-    bool operator == (const Axis2D& other) const {
+    bool operator == (const Axis2D& ) const {
       /// @todo TODO
       return true;
     }
