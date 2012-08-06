@@ -151,14 +151,14 @@ namespace YODA {
   /// Add two bins
   inline HistoBin1D operator + (const HistoBin1D& a, const HistoBin1D& b) {
     HistoBin1D rtn(a);
-    rtn += a;
+    rtn += b;
     return rtn;
   }
 
   /// Subtract two bins
   inline HistoBin1D operator - (const HistoBin1D& a, const HistoBin1D& b) {
     HistoBin1D rtn(a);
-    rtn -= a;
+    rtn -= b;
     return rtn;
   }
 
