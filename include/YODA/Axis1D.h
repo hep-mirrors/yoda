@@ -5,11 +5,12 @@
 #include "YODA/Exceptions.h"
 #include "YODA/Bin.h"
 #include "YODA/Utils/MathUtils.h"
+#include "YODA/Utils/BinSearcher.h"
+#include <limits>
 
 #include <string>
 
 namespace YODA {
-
 
   /// @brief 1D bin container
   ///
@@ -28,12 +29,7 @@ namespace YODA {
     /// A vector containing 1D bins. Not used for searching.
     typedef typename std::vector<Bin> Bins;
 
-    /// @brief Type used to implement a search table of low bin edges mapped to bin indices.
-    /// An index of -1 indicates a gap interval, without a corresponding bin.
-    typedef std::map<double, long int> BinHash;
-
     //@}
-
 
     /// @name Constructors
     //@{
@@ -48,16 +44,7 @@ namespace YODA {
     Axis1D(const std::vector<double>& binedges)
       : _locked(false)
     {
-      _addBins(binedges);
-    }
-
-
-    /// Constructor with the number of bins and the axis limits
-    /// @todo Rewrite interface to use a pair for the low/high
-    Axis1D(size_t nbins, double lower, double upper)
-      : _locked(false)
-    {
-      _addBins(linspace(lower, upper, nbins));
+      addBins(binedges);
     }
 
 
@@ -69,19 +56,29 @@ namespace YODA {
     Axis1D(const std::vector<BIN1D>& bins)
       : _locked(false)
     {
-      _addBins(bins);
+      addBins(bins);
     }
 
 
-    /// State-setting constructor for persistency
+    /// Constructor with the number of bins and the axis limits
+    /// @todo Rewrite interface to use a pair for the low/high
+    Axis1D(size_t nbins, double lower, double upper)
+      : _locked(false)
+    {
+      addBins(linspace(lower, upper, nbins));
+    }
+
+
+    /// @brief Constructor accepting a vector of bins.
+    ///
+    /// Note that not only dimensions of these bins will be set,
+    /// all the contents of the bins will be copied across, including
+    /// the statistics
     Axis1D(const Bins& bins, const DBN& dbn_tot, const DBN& dbn_uflow, const DBN& dbn_oflow)
       : _dbn(dbn_tot), _underflow(dbn_uflow), _overflow(dbn_oflow), _locked(false)
     {
-      _addBins(bins);
+      addBins(bins);
     }
-
-    //@}
-
 
     /// @name Statistics accessor functions
     //@{
@@ -91,13 +88,13 @@ namespace YODA {
       return bins().size();
     }
 
-    /// Return a vector of bins (non-const)
-    Bins& bins() {
-      return _bins;
-    }
-
     /// Return a vector of bins (const)
     const Bins& bins() const {
+      return _bins;
+    }
+    
+    /// Return a vector of bins (non-const)
+    Bins& bins() {
       return _bins;
     }
 
@@ -143,19 +140,15 @@ namespace YODA {
       return bin(index);
     }
 
-    /// Return the total distribution (non-const)
-    DBN& totalDbn() {
-      return _dbn;
-    }
 
     /// Return the total distribution (const)
     const DBN& totalDbn() const {
       return _dbn;
     }
 
-    /// Return underflow (non-const)
-    DBN& underflow() {
-      return _underflow;
+    /// Return the total distribution (non-const)
+    DBN& totalDbn() {
+      return _dbn;
     }
 
     /// Return underflow (const)
@@ -163,15 +156,21 @@ namespace YODA {
       return _underflow;
     }
 
-    /// Return overflow (non-const)
-    DBN& overflow() {
-      return _overflow;
+    /// Return underflow (non-const)
+    DBN& underflow() {
+      return _underflow;
     }
 
     /// Return overflow (const)
     const DBN& overflow() const {
       return _overflow;
     }
+
+    /// Return overflow (non-const)
+    DBN& overflow() {
+      return _overflow;
+    }
+
 
     //@}
 
@@ -180,17 +179,10 @@ namespace YODA {
     //@{
 
     /// Returns an index of a bin at a given coord, -1 if no bin matches
-    long int getBinIndex(double coord) const {
-      // First check that we are within the axis bounds at all
-      if (_binhash.empty() || coord < lowEdge() || coord >= highEdge()) return -1;
-      // Then return the lower-edge lookup from the hash map.
-      // NB. both upper_bound and lower_bound return values *greater* than (or equal) to coord,
-      // so we have to step back one iteration to get to the lower-or-equal containing bin edge.
-      BinHash::const_iterator itabove = _binhash.upper_bound(coord);
-      long int index = (--itabove)->second;
-      return index;
+    long getBinIndex(double coord) const {
+      // Yes, this is robust even with an empty axis.
+      return _indexes[_binsearcher.index(coord)];
     }
-
 
     /// Reset all the bin statistics on the axis
     void reset() {
@@ -212,72 +204,123 @@ namespace YODA {
     /// Merge a series of bins, between the bins identified by indices @a from and @a to
     void mergeBins(size_t from, size_t to) {
       // Correctness checking
-      if (from >= numBins()) throw RangeError("First index is out of range!");
-      if (  to >= numBins()) throw RangeError("Second index is out of range!");
-      if (_bins[from].xMin() > _bins[to].xMin()) throw RangeError("The starting bin is greater than ending bin!");
-      if (_gapInRange(from, to)) throw RangeError("Bin ranges containing binning gaps cannot be merged!");
+      if (from >= numBins())
+        throw RangeError("Initial merge index is out of range");
+      if (to >= numBins())
+        throw RangeError("Final merge index is out of range");
+      if (from > to)
+        throw RangeError("Final bin must be greater than initial bin");
+      if (_gapInRange(from, to))
+        throw RangeError("Bin ranges containing gaps cannot be merged");
 
-      BIN1D& b = _bins[from];
-      for (size_t i = from+1; i <= to; ++i) {
+      Bin &b = bin(from);
+
+      for (size_t i = from + 1; i <= to; i++)
         b.merge(_bins[i]);
-      }
+
       eraseBins(from+1, to);
     }
 
-
     /// Merge every group of @a n bins, starting from the LHS
-    void rebin(int n) {
-      size_t m = 0;
-      while (m < numBins()) {
+    void rebin(size_t n) {
+      for(size_t m=0; m < numBins(); m++) {
         const size_t end = (m + n - 1 < numBins()) ? m + n -1 : numBins() - 1;
         if (end > m) mergeBins(m, end);
-        m += 1;
       }
     }
 
-
     /// Add a bin, providing its low and high edge
     void addBin(double low, double high) {
-      std::vector<double> edges;
-      edges.push_back(low);
-      edges.push_back(high);
-      _addBins(edges);
+      Bins newBins(_bins);
+      newBins.push_back(Bin(low, high));
+      _updateAxis(newBins);
     }
 
 
     /// Add a contiguous set of bins to an axis, via their list of edges
-    void addBins(const std::vector<double>& binedges) {
-      _addBins(binedges);
+    void addBins(const std::vector<double> &binedges) {
+      Bins newBins(_bins);
+      if (binedges.size() == 0)
+        return;
+      
+      double low = binedges.front();
+
+      for (size_t i=1; i < binedges.size(); i++) {
+        double high = binedges[i];
+        newBins.push_back(Bin(low, high));
+        low = high;
+      }
+
+      _updateAxis(newBins);
     }
 
+    // (The following proposed method would drastically simplify the
+    // Python interfaces handling of bin adding -- it would also
+    // simplify some of the hurdles of bins not having default
+    // constructors)
+
+    /// Add a list of bins as pairs of lowEdge, highEdge
+    void addBins(const std::vector<std::pair<double, double> > &binpairs) {
+      // Make a copy of the current binning
+      Bins newBins(_bins);
+
+      // Iterate over given bins
+      for (size_t i=0; i<binpairs.size(); i++) {
+        std::pair<double, double> b = binpairs[i];
+        newBins.push_back(Bin(b.first, b.second));
+      }
+      _updateAxis(newBins);
+    }
+
+
+    void addBins(const Bins &bins) {
+      Bins newBins(_bins);
+      foreach(const Bin &b, bins) {
+        newBins.push_back(b);
+      }
+      _updateAxis(newBins);
+    }
 
     /// Remove a bin
-    void eraseBin(size_t index) {
-      if (index >= _bins.size()) throw RangeError("Index out of range!");
-      _bins.erase(_bins.begin() + index);
-      _updateAxis();
-    }
+    void eraseBin(const size_t i) {
+      // Might as well erase from the internal bins, as we can guarantee
+      // consistency.
+      if (i >= numBins())
+        throw RangeError("Bin index is out of range");
 
+      const bool wasLocked = _locked;
+      _locked=false;
+      _bins.erase(_bins.begin() + i);
+      _updateAxis(_bins);
+      _locked = wasLocked;
+    }
 
     /// Remove a bin range
-    void eraseBins(size_t from, size_t to) {
-      if (from >= numBins()) throw ("First index is out of range!");
-      if (  to >= numBins()) throw ("Second index is out of range!");
-      if (_bins[from].xMin() > _bins[to].xMin()) throw RangeError("The starting bin is greater than ending bin!");
+    void eraseBins(const size_t from, const size_t to) {
+      if (from >= numBins())
+        throw RangeError("Initial index out of range");
+      if (to >= numBins())
+        throw RangeError("Final index out of range");
+      if (from > to)
+        throw RangeError("Final index is less than initial index");
+
+      const bool wasLocked = _locked;
+      _locked=false;
       _bins.erase(_bins.begin() + from, _bins.begin() + to + 1);
-      _updateAxis();
+      _updateAxis(_bins);
+      _locked = wasLocked;
     }
 
-
     /// Scale the size of an axis by a factor
+    // @todo What if somebody passes in negative scalefactor? (test idea)
     void scaleX(double scalefactor) {
       _dbn.scaleX(scalefactor);
       _underflow.scaleX(scalefactor);
       _overflow.scaleX(scalefactor);
-      for (size_t i = 0; i < _bins.size(); ++i) _bins[i].scaleX(scalefactor);
-      _updateAxis();
+      for (size_t i = 0; i < _bins.size(); ++i)
+        _bins[i].scaleX(scalefactor);
+      _updateAxis(_bins);
     }
-
 
     /// Scale the amount of fills by a factor
     void scaleW(double scalefactor) {
@@ -289,13 +332,17 @@ namespace YODA {
 
     //@}
 
-
     /// @name Operators
     //@{
 
     /// Check if two of the Axis have the same binning
     bool operator == (const Axis1D& other) const {
-      return _binhash == other._binhash;
+      for(size_t i=0; i < numBins(); i++)
+        if (bin(i).lowEdge() != other.bin(i).lowEdge() ||
+            bin(i).highEdge() != other.bin(i).highEdge())
+          return false;
+
+      return true;
     }
 
 
@@ -339,74 +386,68 @@ namespace YODA {
 
   private:
 
-
-    /// Add new bins, constructed from a sorted vector of edges, to the axis
-    void _addBins(const std::vector<double>& binedges) {
-      //std::sort(binedges.begin(), binedges.end());
+    /// Sort the given bins vector, and regenerate the bin searcher
+    //
+    /// The bin searcher is purely for searching, and is generated from
+    /// the bins list only.
+    void _updateAxis(Bins &bins) {
+      // Ensure that axis is not locked
       if (_locked) {
-        throw LockError("Attempting to add bins to a locked axis");
+        throw LockError("Attempting to update a locked axis");
       }
-      if (_edgeInRange(binedges.front(), binedges.back())) {
-        throw RangeError("New bin range overlaps with existing bin edges");
-      }
-      for (size_t i = 0; i < binedges.size() - 1; ++i) {
-        _bins.push_back(BIN1D(binedges[i], binedges[i+1]));
-      }
-      _updateAxis();
-    }
+      // Define the new cuts and indexes
+      std::vector<double> edgeCuts;
+      std::vector<long> indexes;
 
+      // Sort the bins
+      std::sort(bins.begin(), bins.end());
 
-    /// Add new bins to the axis
-    void _addBins(const Bins& bins) {
-      if (_locked) {
-        throw LockError("Attempting to add bins to a locked axis");
-      }
-      for (size_t i = 0; i < bins.size(); ++i) {
-        if (_edgeInRange(bins[i].xMin(), bins[i].xMax())) {
-          throw RangeError("New bin range overlaps with existing bin edges");
+      // Keep a lag of the last high edge
+      double last_high = -std::numeric_limits<double>::infinity();
+
+      for (size_t i=0; i < bins.size(); i++) {
+        Bin &currentBin = bins[i];
+
+        if(currentBin.lowEdge() < last_high) {
+          throw RangeError("Bin edges overlap");
+        } else if (last_high < currentBin.lowEdge()) {
+          indexes.push_back(-1);
+          edgeCuts.push_back(currentBin.lowEdge());
         }
-        _bins.push_back(bins[i]);
+
+        // Bins check that they are not zero or negative width. It's perfectly
+        // okay for them to throw an exception here, as we haven't changed
+        // anything yet.
+        indexes.push_back(i);
+        edgeCuts.push_back(currentBin.highEdge());
+
+        last_high = currentBin.highEdge();
       }
-      _updateAxis();
-    }
+      indexes.push_back(-1);
 
-
-    /// Sort the bins vector, and regenerate the bin hash
-    ///
-    /// The bin hash is purely for searching, and is generated from the bins list only.
-    void _updateAxis() {
-      std::sort(_bins.begin(), _bins.end());
-      _binhash.clear();
-      for (size_t i = 0; i < numBins(); ++i) {
-        // Add low edge hash for each bin
-        _binhash[bin(i).xMin()] = i;
-        // If the next bin is not contiguous, add a gap index for the high edge of this bin
-        if (i+1 < numBins() && !fuzzyEquals(bin(i).xMax(), bin(i+1).xMin())) {
-          _binhash[bin(i).xMax()] = -1;
-        }
-      }
-    }
-
-
-    /// Check if there are any bin edges between values @a from and @a to.
-    bool _edgeInRange(double from, double to) const {
-      if ( _binhash.empty() ) return false;
-      return (--_binhash.upper_bound(from)) != (--_binhash.lower_bound(to));
+      // Everything was okay, so let's make our changes
+      //std::cout << "In" << std::endl;
+      _binsearcher = Utils::BinSearcher(edgeCuts);
+      //std::cout << "Out" << std::endl;
+      _indexes = indexes;
+      _bins = bins;
     }
 
 
     /// Check if there are any gaps in the axis' binning between bin indices @a from and @a to, inclusive.
-    bool _gapInRange(size_t ifrom, size_t ito) const {
-      assert(ifrom < numBins() && ito < numBins() && ifrom <= ito);
-      if (ifrom == ito) return false;
-      BinHash::const_iterator start = (--_binhash.upper_bound(bin(ifrom).midpoint()));
-      BinHash::const_iterator end = _binhash.upper_bound(bin(ifrom).midpoint());
-      for (BinHash::const_iterator it = start; it != end; ++it) {
-        if (it->second == -1) return true;
-      }
+    bool _gapInRange(size_t from, size_t to) const {
+      assert(from < numBins() && to < numBins() && from < to);
+      if (from == to) return false;
+
+      const size_t from_ix = _binsearcher.index(bin(from).lowEdge());
+      const size_t to_ix = _binsearcher.index(bin(to).lowEdge());
+
+      for (size_t i = from_ix; i <= to_ix; i++)
+        if (_indexes[i] == -1)
+          return true;
+
       return false;
     }
-
 
   private:
 
@@ -423,8 +464,10 @@ namespace YODA {
     DBN _underflow;
     DBN _overflow;
 
-    /// Cached bin edges for searching
-    BinHash _binhash;
+    // Binsearcher, for searching bins
+    Utils::BinSearcher _binsearcher;
+    // Mapping from binsearcher indices to bin indices (allowing gaps)
+    std::vector<long> _indexes;
 
     /// Whether modifying bin edges is permitted
     bool _locked;
@@ -449,7 +492,6 @@ namespace YODA {
     tmp -= second;
     return tmp;
   }
-
 
 }
 

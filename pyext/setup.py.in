@@ -27,11 +27,6 @@ def ext(name, depends=[], statics=[]):
         library_dirs=[srcdir, os.path.join(srcdir, '.libs')],
         libraries=['stdc++', 'YODA'])
  
-extns = [ext('util'),
-         ext('core', statics=[statics],
-             depends=glob('yoda/include/*.pyx')
-            ),
-        ]
 
 # Make the templates
 make_templates('Axis1D_BIN1D_DBN',
@@ -44,6 +39,15 @@ make_templates('Axis2D_BIN2D_DBN',
 
 make_templates('Bin1D_DBN', DBN=('Dbn1D', 'Dbn2D'))
 make_templates('Bin2D_DBN', DBN=('Dbn2D', 'Dbn3D'))
+
+extns = [ext('util'),
+         ext('core', statics=[statics],
+             depends=glob('yoda/include/*.pyx')
+            ),
+         ext('axis', statics=[statics],
+             depends=glob('yoda/include/Axis*.pyx')
+            ),
+        ]
 
 setup(
     name = PKGNAME,

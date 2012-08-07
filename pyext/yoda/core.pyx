@@ -20,8 +20,6 @@ include "include/Point2D.pyx"
 include "include/Point3D.pyx"
 include "include/Bin.pyx"
 
-include "include/Axis1D.pxi"
-
 include "include/Bin1D.pxi"
 
 include "include/HistoBin1D.pyx"

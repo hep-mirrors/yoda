@@ -1,3 +1,6 @@
+2012-08-07  Dave Mallows  <dave.mallows@gmail.com>
+	* Converted Axis1D to use new Utils/BinSearcher.
+
 2012-08-02  Dave Mallows  <dave.mallows@gmail.com>
 	* Heavily refactored Cython bindings
 

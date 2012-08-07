@@ -767,47 +767,6 @@ cdef extern from "YODA/Histo2D.h" namespace "YODA":
         operator / (Histo2D)
 # Histo2D }}}
 
-"""INTERNAL CLASSES -- FOR TESTING PURPOSES"""
-
-# Axis1D {{{
-cdef extern from "YODA/Axis1D.h" namespace "YODA":
-    cdef cppclass Axis1D[BIN1D, DBN]:
-        Axis1D() except+ err
-        Axis1D(vector[double] binedges) except+ err
-        Axis1D(size_t, double, double) except+ err
-        Axis1D(vector[BIN1D] bins) except+ err
-        size_t numBins() except+ err
-        vector[BIN1D] &bins()
-        double lowEdge() except+ err
-        double highEdge() except+ err
-        long getBinIndex(double)
-        void reset()
-        DBN &totalDbn()
-        DBN &underflow()
-        DBN &overflow()
-# Axis1D }}}
-
-# Axis2D {{{
-cdef extern from "YODA/Axis2D.h" namespace "YODA":
-    cdef cppclass Axis2D[BIN2D, DBN]:
-        Axis2D() except+ err
-        Axis2D(vector[double] xedges, vector[double] yedges) except+ err
-        Axis2D(size_t, pair[double, double],
-               size_t, pair[double, double]) except+ err
-        Axis2D(vector[BIN2D] bins) except+ err
-        size_t numBins() except+ err
-        vector[BIN2D] &bins()
-        double lowEdgeX() except+ err
-        double highEdgeX() except+ err
-        double lowEdgeY() except+ err
-        double highEdgeY() except+ err
-        long getBinIndex(double, double)
-        void reset()
-        DBN totalDbn() except +err
-        DBN outflow(int, int) except +err
-
-# Axis2D }}}
-
 # Streams {{{
 cdef extern from "<sstream>" namespace "std":
     cdef cppclass ostringstream:
@@ -840,3 +799,24 @@ cdef extern from "YODA/WriterYODA.h" namespace "YODA":
 cdef extern from "YODA/WriterAIDA.h" namespace "YODA":
     Writer& WriterAIDA_create "YODA::WriterAIDA::create" ()
 # Streams }}}
+
+# Axis1D {{{
+cdef extern from "YODA/Axis1D.h" namespace "YODA":
+    cdef cppclass Axis1D[BIN1D, DBN]:
+        Axis1D() except+ err
+        Axis1D(vector[double] binedges) except+ err
+        Axis1D(size_t, double, double) except+ err
+        Axis1D(vector[BIN1D] bins) except+ err
+        void addBin(double, double) except+ err
+        size_t numBins() except+ err
+        vector[BIN1D] &bins()
+        double lowEdge() except+ err
+        double highEdge() except+ err
+        long getBinIndex(double)
+        void reset()
+        DBN &totalDbn()
+        DBN &underflow()
+        DBN &overflow()
+        void eraseBin(size_t index) except+ err
+        void mergeBins(size_t, size_t) except+ err
+# Axis1D }}}

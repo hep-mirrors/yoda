@@ -4,7 +4,6 @@ SUBDIRS = .
 CYTHONFLAGS = @CYTHONFLAGS@
 
 all-local:
-	$(PYTHON) setup.py build
 	$(PYTHON) setup.py install --install-lib=build/
 
 install-exec-local:
