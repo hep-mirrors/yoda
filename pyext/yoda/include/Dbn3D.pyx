@@ -16,9 +16,9 @@ cdef class Dbn3D(util.Base):
     def fill(self, x, y, z, weight=1.0):
         """
         (x, y, z, weight=1.0) -> None
-        
+
         Fills the distribution with the given weight at given (x, y).
-        
+
         """
         self._Dbn3D().fill(x, y, z, weight)
 
@@ -81,8 +81,8 @@ cdef class Dbn3D(util.Base):
     def rms(self):
         """Weighted root mean squared (RMS) of x"""
         return util.XYZ(self._Dbn3D().xRMS(),
-                       self._Dbn3D().yRMS(),
-                       self._Dbn3D().zRMS())
+                        self._Dbn3D().yRMS(),
+                        self._Dbn3D().zRMS())
 
     @property
     def numEntries(self):

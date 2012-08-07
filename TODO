@@ -10,6 +10,9 @@ NOW
    Ignore anything after "#" on data lines -- use this to write convenience
    height & error info for each bin since not obvious from sumWX2 etc.
 
+* Remove non-const bin access from Histos and Profiles?
+   cf. David D's point re. consistency via email on 7/8/2012
+
 * Add Axis2D -> Histo2D/Profile2D bin adding and erasing. (AB)
 
 * Make Python interface test scripts (DM)
@@ -22,11 +25,7 @@ NOW
 
 * Add stdErr to HistoBinXD (AB)
 
-* Add Dbn3D, ProfileBin2D, Profile2D and Scatter3D in Cython (AB)
-
 * Test Histo2D and Scatter2D from Python (AB)
-
-* Sort out _dealloc treatment (AB, DM)
 
 * Adding 2D operator support and bin-adding/erasing
 

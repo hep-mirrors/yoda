@@ -462,8 +462,7 @@ namespace YODA {
 
   /// @brief Divide two histograms
   ///
-  /// Keep in mind that for the following to work, two Histos must
-  /// be _exactly_ the same, including the ghost bins.
+  /// Keep in mind that for the following to work, two Histos must be _exactly_ the same.
   Scatter3D divide(const Histo2D& numer, const Histo2D& denom);
 
 

@@ -1,7 +1,13 @@
+2012-08-07  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Removing unused (beyond 2nd order) sumWXYZ counter from Dbn3D.
+
 2012-08-07  Dave Mallows  <dave.mallows@gmail.com>
+
 	* Converted Axis1D to use new Utils/BinSearcher.
 
 2012-08-02  Dave Mallows  <dave.mallows@gmail.com>
+
 	* Heavily refactored Cython bindings
 
 	* HistoBin1D, ProfileBin1D etc. now inherit from Bin1D[DBN]

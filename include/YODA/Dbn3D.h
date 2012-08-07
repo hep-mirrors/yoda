@@ -28,18 +28,16 @@ namespace YODA {
     /// Constructor to set a distribution with a pre-filled state.
     ///
     /// Principally designed for internal persistency use.
-    Dbn3D(unsigned long numEntries, 
-	  double sumW, double sumW2,
-          double sumWX, double sumWX2, 
-	  double sumWY, double sumWY2, 
-	  double sumWZ, double sumWZ2,
-          double sumWXY, double sumWXZ, double sumWYZ, 
-	  double sumWXYZ)
+    Dbn3D(unsigned long numEntries,
+          double sumW, double sumW2,
+          double sumWX, double sumWX2,
+          double sumWY, double sumWY2,
+          double sumWZ, double sumWZ2,
+          double sumWXY, double sumWXZ, double sumWYZ)
       : _dbnX(numEntries, sumW, sumW2, sumWX, sumWX2),
         _dbnY(numEntries, sumW, sumW2, sumWY, sumWY2),
         _dbnZ(numEntries, sumW, sumW2, sumWZ, sumWZ2),
-        _sumWXY(sumWXY), _sumWXZ(sumWXZ), _sumWYZ(sumWYZ), 
-	_sumWXYZ(sumWXYZ)
+        _sumWXY(sumWXY), _sumWXZ(sumWXZ), _sumWYZ(sumWYZ)
     { }
 
 
@@ -53,7 +51,6 @@ namespace YODA {
       _sumWXY = toCopy._sumWXY;
       _sumWXZ = toCopy._sumWXZ;
       _sumWYZ = toCopy._sumWYZ;
-      _sumWXYZ = toCopy._sumWXYZ;
     }
 
 
@@ -67,7 +64,6 @@ namespace YODA {
       _sumWXY = toCopy._sumWXY;
       _sumWXZ = toCopy._sumWXZ;
       _sumWYZ = toCopy._sumWYZ;
-      _sumWXYZ = toCopy._sumWXYZ;
       return *this;
     }
 
@@ -85,7 +81,6 @@ namespace YODA {
       _sumWXY += weight*valX*valY;
       _sumWXZ += weight*valX*valZ;
       _sumWYZ += weight*valY*valZ;
-      _sumWXYZ += weight*valX*valY*valZ;
     }
 
 
@@ -104,7 +99,6 @@ namespace YODA {
       _sumWXY = 0;
       _sumWXZ = 0;
       _sumWYZ = 0;
-      _sumWXYZ = 0;
     }
 
 
@@ -116,7 +110,6 @@ namespace YODA {
       _sumWXY *= scalefactor;
       _sumWXZ *= scalefactor;
       _sumWYZ *= scalefactor;
-      _sumWXYZ *= scalefactor;
     }
 
 
@@ -125,7 +118,6 @@ namespace YODA {
       _dbnX.scaleX(xscale);
       _sumWXY *= xscale;
       _sumWXZ *= xscale;
-      _sumWXYZ *= xscale;
     }
 
 
@@ -134,7 +126,6 @@ namespace YODA {
       _dbnY.scaleX(yscale);
       _sumWXY *= yscale;
       _sumWYZ *= yscale;
-      _sumWXYZ *= yscale;
     }
 
 
@@ -143,7 +134,6 @@ namespace YODA {
       _dbnZ.scaleX(zscale);
       _sumWXZ *= zscale;
       _sumWYZ *= zscale;
-      _sumWXYZ *= zscale;
     }
 
 
@@ -329,11 +319,6 @@ namespace YODA {
       return _sumWXZ;
     }
 
-    /// The sum of x*y*z*weight
-    double sumWXYZ() const {
-      return _sumWXYZ;
-    }
-
     //@}
 
 
@@ -407,7 +392,6 @@ namespace YODA {
       _sumWXY += d._sumWXY;
       _sumWXZ += d._sumWXZ;
       _sumWYZ += d._sumWYZ;
-      _sumWXYZ += d._sumWXYZ;
       return *this;
     }
 
@@ -419,7 +403,6 @@ namespace YODA {
       _sumWXY -= d._sumWXY;
       _sumWXZ -= d._sumWXZ;
       _sumWYZ -= d._sumWYZ;
-      _sumWXYZ -= d._sumWXYZ;
       return *this;
     }
 
@@ -442,7 +425,6 @@ namespace YODA {
     double _sumWXY;
     double _sumWXZ;
     double _sumWYZ;
-    double _sumWXYZ;
     //@}
 
   };
