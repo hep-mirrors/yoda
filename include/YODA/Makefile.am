@@ -19,8 +19,10 @@ nobase_pkginclude_HEADERS = \
 	WriterMethods.icc \
 	Utils/MathUtils.h \
 	Utils/Formatting.h \
+	Utils/BinSearcher.h \
 	Utils/sortedvector.h \
     Utils/cachedvector.h \
 	Utils/nvector.h \
+	Utils/fastlog.h \
 	Config/YodaConfig.h \
 	Config/BuildConfig.h
