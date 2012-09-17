@@ -62,7 +62,7 @@ namespace YODA {
 
   void WriterAIDA::writeScatter2D(std::ostream& os, const Scatter2D& s) {
     ios_base::fmtflags oldflags = os.flags();
-    const int precision = 7;
+    const int precision = 8;
     os << scientific << showpoint << setprecision(precision);
 
     string name = "";
@@ -72,9 +72,9 @@ namespace YODA {
       name = s.path().substr(slashpos+1, s.path().length() - slashpos - 1);
       path = s.path().substr(0, slashpos);
     }
-    os << "  <dataPointSet name=\"" << Utils::encodeForXML(name) << "\""
-       << " title=\"" << Utils::encodeForXML(s.title()) << "\""
-       << " path=\"" << Utils::encodeForXML(path) << "\">\n";
+    os << "  <dataPointSet name=\"" << Utils::encodeForXML(name) << "\"\n"
+       << "    title=\"" << Utils::encodeForXML(s.title()) << "\""
+       << " path=\"" << Utils::encodeForXML(path) << "\" dimension=\"2\">\n";
     os << "    <dimension dim=\"0\" title=\"\" />\n";
     os << "    <dimension dim=\"1\" title=\"\" />\n";
     os << "    <annotation>\n";
@@ -90,9 +90,13 @@ namespace YODA {
     foreach (Point2D pt, s.points()) {
       os << "    <dataPoint>\n";
       os << "      <measurement value=\"" << pt.x()
-         << "\" errorMinus=\"" << pt.xErrMinus() << "\" errorPlus=\"" << pt.xErrPlus() << "\"/>\n";
+	 << "\" errorPlus=\"" << pt.xErrPlus() 
+         << "\" errorMinus=\"" << pt.xErrMinus() 
+	 << "\"/>\n";
       os << "      <measurement value=\"" << pt.y()
-         << "\" errorMinus=\"" << pt.yErrMinus() << "\" errorPlus=\"" << pt.yErrPlus() << "\"/>\n";
+	 << "\" errorPlus=\"" << pt.yErrPlus() 
+         << "\" errorMinus=\"" << pt.yErrMinus() 
+	 << "\"/>\n";
       os << "    </dataPoint>\n";
     }
     os << "  </dataPointSet>\n";
