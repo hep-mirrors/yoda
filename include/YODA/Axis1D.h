@@ -408,11 +408,14 @@ namespace YODA {
       for (size_t i=0; i < bins.size(); i++) {
         Bin &currentBin = bins[i];
 
-        if(currentBin.lowEdge() < last_high) {
+	double new_low  = currentBin.lowEdge();
+	double reldiff = (new_low - last_high) / (new_low + last_high);
+	double eps = 1.0e-12;
+        if( reldiff < -eps ) {
           throw RangeError("Bin edges overlap");
-        } else if (last_high < currentBin.lowEdge()) {
+        } else if ( ! reldiff < eps ) { // do not swap, this works with the NaN from underflow
           indexes.push_back(-1);
-          edgeCuts.push_back(currentBin.lowEdge());
+          edgeCuts.push_back(new_low);
         }
 
         // Bins check that they are not zero or negative width. It's perfectly
