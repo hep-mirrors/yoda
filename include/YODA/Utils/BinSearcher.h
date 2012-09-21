@@ -21,7 +21,8 @@ namespace YODA {
     /// the guess, the less time spent looking.
     class Estimator {
       public:
-        virtual const double operator() (double x) const { return x; }
+        virtual double operator() (double x) const { return x; }
+	virtual ~Estimator() {}
     };
 
     /// @brief Linear bin estimator
@@ -35,7 +36,7 @@ namespace YODA {
           _m = (double) N / (xhigh - xlow);
         }
 
-        const double operator() (double x) const {
+        double operator() (double x) const {
           return _m * (x - _c);
         }
 
@@ -55,7 +56,7 @@ namespace YODA {
           _m = N / (log2(xhigh) - _c);
         }
 
-        const double operator() (double x) const {
+        double operator() (double x) const {
           return 1 + _m * (fastlog2(x) - _c);
         }
 
@@ -151,7 +152,7 @@ namespace YODA {
 
         // Lookup a bin
         __attribute__((noinline)) 
-          size_t const index(double x) const {
+          size_t index(double x) const {
 
             size_t index = estimate(x);
 
@@ -172,17 +173,17 @@ namespace YODA {
             return index - 1;
           }
 
-        const size_t estimate(const double x) const {
+        size_t estimate(const double x) const {
           double y = (*_est)(x);
           size_t yi = 0 ? (y < 0) : y;
           return (yi > _max) ? _max : yi;
         }
 
-        const std::pair<double, double> indexRange(size_t ix) const {
+        std::pair<double, double> indexRange(size_t ix) const {
           return std::make_pair(_lows[ix], _lows[ix+1]);
         }
 
-        const bool inRange (std::pair<double, double> range, double x) const {
+        bool inRange (std::pair<double, double> range, double x) const {
           return (range.first <= x) && (x < range.second);
         }
 
