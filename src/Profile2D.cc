@@ -13,6 +13,12 @@ namespace YODA {
 
 
   void Profile2D::fill(double x, double y, double z, double weight) {
+    if ( isnan(x) ) throw RangeError("X is NaN");
+    if ( isinf(x) ) throw RangeError("X is Inf");
+    if ( isnan(y) ) throw RangeError("Y is NaN");
+    if ( isinf(y) ) throw RangeError("Y is Inf");
+    if ( isnan(z) ) throw RangeError("Z is NaN");
+    if ( isinf(z) ) throw RangeError("Z is Inf");
     // Fill the overall distribution
     _axis.totalDbn().fill(x, y, z, weight);
     // Fill the bins and overflows

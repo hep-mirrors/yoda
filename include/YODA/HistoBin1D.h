@@ -66,7 +66,7 @@ namespace YODA {
     /// @name Modifiers
     //@{
 
-    /// @brief Fill this bin with weight @a weight at position @a coord.
+    /// @brief Fill this bin with weight @a weight at position @a x.
     void fill(double x, double weight=1.0) {
       assert( _edges.first < _edges.second );
       assert( x >= _edges.first && x < _edges.second );
