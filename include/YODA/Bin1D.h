@@ -268,7 +268,8 @@ namespace YODA {
     /// This operator is defined for adding two bins with equivalent binning.
     /// It cannot be used to merge two bins into one larger bin.
     Bin1D<DBN>& add(const Bin1D<DBN>& b) {
-      if (_edges != b._edges) {
+      if (!fuzzyEquals(_edges.first, b._edges.first) ||
+          !fuzzyEquals(_edges.second, b._edges.second)) {
         throw LogicError("Attempted to add two bins with different edges");
       }
       _dbn += b._dbn;
@@ -281,7 +282,8 @@ namespace YODA {
     /// This operator is defined for subtracting two bins with equivalent binning.
     /// It cannot be used to merge two bins into one larger bin.
     Bin1D<DBN>& subtract(const Bin1D<DBN>& b) {
-      if (_edges != b._edges) {
+      if (!fuzzyEquals(_edges.first, b._edges.first) ||
+          !fuzzyEquals(_edges.second, b._edges.second)) {
         throw LogicError("Attempted to subtract two bins with different edges");
       }
       _dbn -= b._dbn;
