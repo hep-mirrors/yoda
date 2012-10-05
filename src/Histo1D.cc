@@ -137,13 +137,13 @@ namespace YODA {
     for (size_t i = 0; i < numer.numBins(); ++i) {
       const HistoBin1D& b1 = numer.bin(i);
       const HistoBin1D& b2 = denom.bin(i);
-      const HistoBin1D bL = b1 + b2;
 
       /// @todo Can't we do this check with a method on Axis1D?
       if (!fuzzyEquals(b1.midpoint(), b2.midpoint())) {
         throw BinningError("Axis binnings are not equivalent");
       }
 
+      const HistoBin1D bL = b1 + b2;
       const double x = bL.focus();
       /// @todo Use exceptions instead, since this is a user-inducible error
       assert(fuzzyEquals(b1.xMin(), b2.xMin()));
@@ -154,11 +154,13 @@ namespace YODA {
       assert(exminus >= 0);
       assert(explus >= 0);
       //
+      if (b2.height() == 0) continue;  // Don't create bins with inf or nan
       const double y = b1.height() / b2.height();
       double ey = -1;
 
       switch (erropt) {
       case QUAD:
+        if (b1.height() == 0) continue;  // Don't create bins with inf or nan
         ey = y * sqrt( sqr(b1.heightErr()/b1.height()) + sqr(b2.heightErr()/b2.height()) );
         break;
       case BINOMIAL:
@@ -166,6 +168,7 @@ namespace YODA {
         /// factor is applied to the weights on bins 1 and 2?
         /// @todo I think this is only valid if the fills of b1 are a subset of the fills of b2. Throw an
         /// error if Neff(b1) > Neff(b2)
+        if (b2.effNumEntries() == 0) continue;  // Don't create bins with inf or nan
         ey = sqrt( b1.effNumEntries() * (1 - b1.effNumEntries()/b2.effNumEntries()) ) / b2.effNumEntries();
         break;
       }
@@ -173,7 +176,6 @@ namespace YODA {
       tmp.addPoint(x, y, exminus, explus, ey, ey);
 
     }
-    assert(tmp.numPoints() == numer.numBins());
     return tmp;
   }
 
