@@ -354,7 +354,7 @@ namespace YODA {
     /// It cannot be used to merge two bins into one larger bin.
     Bin2D<DBN>& subtract(const Bin2D<DBN>& b) {
       if (_xedges != b._xedges || _yedges != b._yedges) {
-        throw LogicError("Attempted to add two bins with different edges");
+        throw LogicError("Attempted to subtract two bins with different edges");
       }
       _dbn -= b._dbn;
       return *this;
