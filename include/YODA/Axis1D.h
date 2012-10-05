@@ -92,7 +92,7 @@ namespace YODA {
     const Bins& bins() const {
       return _bins;
     }
-    
+
     /// Return a vector of bins (non-const)
     Bins& bins() {
       return _bins;
@@ -242,7 +242,7 @@ namespace YODA {
       Bins newBins(_bins);
       if (binedges.size() == 0)
         return;
-      
+
       double low = binedges.front();
 
       for (size_t i=1; i < binedges.size(); i++) {
@@ -408,9 +408,9 @@ namespace YODA {
       for (size_t i=0; i < bins.size(); i++) {
         Bin &currentBin = bins[i];
 
-	double new_low  = currentBin.lowEdge();
-	double reldiff = (new_low - last_high) / currentBin.width();
-	double eps = 1.0e-10;
+        double new_low  = currentBin.lowEdge();
+        double reldiff = (new_low - last_high) / currentBin.width();
+        double eps = 1.0e-10;
         if( reldiff < -eps ) {
           throw RangeError("Bin edges overlap");
         } else if ( reldiff > eps ) {
