@@ -13,7 +13,11 @@ NOW
 * Remove non-const bin access from Histos and Profiles?
    cf. David D's point re. consistency via email on 7/8/2012
 
+* Multi-error support on Point types
+   Access by index, with negative (enum) indices for quad/linear/largest combn?
+
 * Add Axis2D -> Histo2D/Profile2D bin adding and erasing. (AB)
+   Adding 2D operator support and bin-adding/erasing
 
 * Make Python interface test scripts (DM)
 
@@ -27,7 +31,6 @@ NOW
 
 * Test Histo2D and Scatter2D from Python (AB)
 
-* Adding 2D operator support and bin-adding/erasing
 
 
 
@@ -53,6 +56,8 @@ NEXT
 * Add Histo2D binning constructors from Scatter3D and Profile2D.
 
 * Add Scatter1D/Point1D (AB)
+
+* Generalise/expose Axis*D for binning of general objects, e.g. "binned histos"
 
 * Transform 1D differential to integral histos and vice versa.
    Bins have to be contiguous. (AB)

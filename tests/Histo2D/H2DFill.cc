@@ -13,7 +13,7 @@ using namespace YODA;
 int main() {
   ios_base::sync_with_stdio(0);
   Histo2D h(200, 0, 100, 200, 0, 100);
-  
+
   struct timeval startTime;
   struct timeval endTime;
   gettimeofday(&startTime, NULL);
@@ -45,17 +45,17 @@ int main() {
     for(int j = 0; j < 100000; j++) temp.fill(99, 99, 2);
     gettimeofday(&endTime, NULL);
 
-    tE = (endTime.tv_sec*1000000 + endTime.tv_usec)/(double)1000000; 
+    tE = (endTime.tv_sec*1000000 + endTime.tv_usec)/(double)1000000;
     tS = (startTime.tv_sec*1000000 + startTime.tv_usec)/(double)1000000;
     file << i*i << " " << tE-tS << " ";
     cout << tE-tS << endl;
 
-    Histo2D temp2(logspace(1, 100, i), logspace(1, 100, i));
+    Histo2D temp2(logspace(i, 1, 100), logspace(i, 1, 100));
     gettimeofday(&startTime, NULL);
     for(int j = 0; j < 100000; j++) temp2.fill(99, 99, 2);
     gettimeofday(&endTime, NULL);
 
-    tE = (endTime.tv_sec*1000000 + endTime.tv_usec)/(double)1000000; 
+    tE = (endTime.tv_sec*1000000 + endTime.tv_usec)/(double)1000000;
     tS = (startTime.tv_sec*1000000 + startTime.tv_usec)/(double)1000000;
     file << tE-tS << " ";
     cout << tE-tS << endl;
@@ -65,15 +65,15 @@ int main() {
     for(int j = 0; j < 1000; j++) temp.fill(99, 99, 2);
     gettimeofday(&endTime, NULL);
 
-    tE = (endTime.tv_sec*1000000 + endTime.tv_usec)/(double)1000000; 
+    tE = (endTime.tv_sec*1000000 + endTime.tv_usec)/(double)1000000;
     tS = (startTime.tv_sec*1000000 + startTime.tv_usec)/(double)1000000;
     file << tE-tS << endl;
     cout << tE-tS << endl;
-    
+
     cout << i << endl;
   }
   cout << endl;
-  
+
   cout << "Doing the second (add/rem/modify) bench  ";
   ofstream file2("bench.dat");
   for(int i=10; i < 310; i+=10){
@@ -84,7 +84,7 @@ int main() {
       gettimeofday(&startTime, NULL);
       for(int j=0; j < 1000; j++) temp.addBin(i*100, i,(i+1)*100, i+1);
       gettimeofday(&endTime, NULL);
-      tE = (endTime.tv_sec*1000000 + endTime.tv_usec)/(double)1000000; 
+      tE = (endTime.tv_sec*1000000 + endTime.tv_usec)/(double)1000000;
       tS = (startTime.tv_sec*1000000 + startTime.tv_usec)/(double)1000000;
       totalTime+= tE-tS;
     }
@@ -94,7 +94,7 @@ int main() {
       gettimeofday(&startTime, NULL);
       for(int j=0; j<1000; j++) temp.eraseBin(0);
       gettimeofday(&endTime, NULL);
-      tE = (endTime.tv_sec*1000000 + endTime.tv_usec)/(double)1000000; 
+      tE = (endTime.tv_sec*1000000 + endTime.tv_usec)/(double)1000000;
       tS = (startTime.tv_sec*1000000 + startTime.tv_usec)/(double)1000000;
       file2 << tE-tS << " ";
       cout << tE-tS << endl;
@@ -105,24 +105,24 @@ int main() {
     gettimeofday(&startTime, NULL);
     temp2.mergeBins(0, temp2.numBins()-1);
     gettimeofday(&endTime, NULL);
-    tE = (endTime.tv_sec*1000000 + endTime.tv_usec)/(double)1000000; 
+    tE = (endTime.tv_sec*1000000 + endTime.tv_usec)/(double)1000000;
     tS = (startTime.tv_sec*1000000 + startTime.tv_usec)/(double)1000000;
     file2 << tE-tS << endl;
     cout << "Merge: " << tE-tS << endl;*/
    /*
-    
+
     Histo2D temp3(i, 0, 100, i, 0, 100);
     gettimeofday(&startTime, NULL);
     temp3.rebin(temp3.numBinsX()-1, temp3.numBinsY()-1);
     gettimeofday(&endTime, NULL);
-    tE = (endTime.tv_sec*1000000 + endTime.tv_usec)/(double)1000000; 
+    tE = (endTime.tv_sec*1000000 + endTime.tv_usec)/(double)1000000;
     tS = (startTime.tv_sec*1000000 + startTime.tv_usec)/(double)1000000;
     file2 << tE-tS << endl;
     cout << "Rebin: " << tE-tS << endl;
 	}
-  */ 
-    
-  
+  */
+
+
 
   // Testing if fill() function does what it should
   cout << "Does fill() do what it should?           ";
@@ -131,6 +131,6 @@ int main() {
     return -1;
   }
   cout << "PASS" << endl;
-  
+
   return EXIT_SUCCESS;
 }

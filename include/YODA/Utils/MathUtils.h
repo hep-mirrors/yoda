@@ -236,7 +236,7 @@ namespace YODA {
   //@{
 
   /// Make a list of @a nbins + 1 values equally spaced between @a start and @a end inclusive.
-  inline std::vector<double> linspace(double start, double end, size_t nbins) {
+  inline std::vector<double> linspace(size_t nbins, double start, double end) {
     assert(end >= start);
     assert(nbins > 0);
     std::vector<double> rtn;
@@ -252,13 +252,13 @@ namespace YODA {
 
 
   /// Make a list of @a nbins + 1 values exponentially spaced between @a start and @a end inclusive.
-  inline std::vector<double> logspace(double start, double end, size_t nbins) {
+  inline std::vector<double> logspace(size_t nbins, double start, double end) {
     assert(end >= start);
     assert(start > 0);
     assert(nbins > 0);
     const double logstart = std::log(start);
     const double logend = std::log(end);
-    const std::vector<double> logvals = linspace(logstart, logend, nbins);
+    const std::vector<double> logvals = linspace(nbins, logstart, logend);
     std::vector<double> rtn;
     for (size_t i = 0; i < logvals.size(); ++i) {
       rtn.push_back(std::exp(logvals[i]));

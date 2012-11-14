@@ -75,8 +75,8 @@ namespace YODA {
            size_t nbinsY, const std::pair<double,double>& rangeY)
       : _isPerfectGrid(true), _locked(false)
     {
-      _addBins(linspace(rangeX.first, rangeX.second, nbinsX),
-               linspace(rangeY.first, rangeY.second, nbinsY));
+      _addBins(linspace(nbinsX, rangeX.first, rangeX.second),
+               linspace(nbinsY, rangeY.first, rangeY.second));
       reset();
     }
 

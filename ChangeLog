@@ -1,3 +1,7 @@
+2012-11-14  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Converting linspace, logspace, and their usage to place the nbins argument first.
+
 2012-08-07  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Removing unused (beyond 2nd order) sumWXYZ counter from Dbn3D.

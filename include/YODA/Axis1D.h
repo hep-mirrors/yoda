@@ -65,7 +65,7 @@ namespace YODA {
     Axis1D(size_t nbins, double lower, double upper)
       : _locked(false)
     {
-      addBins(linspace(lower, upper, nbins));
+      addBins(linspace(nbins, lower, upper));
     }
 
 
