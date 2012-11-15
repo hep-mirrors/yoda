@@ -14,17 +14,6 @@
 namespace YODA {
 
 
-  /// @name Enums
-  ///
-  /// Definitions of enums used by many/all of the classes
-  //@{
-
-  enum ErrorCombination { QUAD, BINOMIAL };
-
-  //@}
-
-
-
   /// AnalysisObject is the base class for histograms and scatters
   class AnalysisObject {
 

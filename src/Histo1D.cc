@@ -129,52 +129,35 @@ namespace YODA {
 
 
   // Divide two histograms
-  Scatter2D divide(const Histo1D& numer, const Histo1D& denom,
-                   ErrorCombination erropt) {
-    //if (!numer._axis.compatible(denom._axis)) ...
+  Scatter2D divide(const Histo1D& numer, const Histo1D& denom) {
+    return divide(mkScatter(numer), mkScatter(denom));
+  }
 
-    Scatter2D tmp;
-    for (size_t i = 0; i < numer.numBins(); ++i) {
-      const HistoBin1D& b1 = numer.bin(i);
-      const HistoBin1D& b2 = denom.bin(i);
 
-      /// @todo Can't we do this check with a method on Axis1D?
-      if (!fuzzyEquals(b1.midpoint(), b2.midpoint())) {
-        throw BinningError("Axis binnings are not equivalent");
+  // Calculate a histogrammed efficiency ratio of two histograms
+  Scatter2D efficiency(const Histo1D& accepted, const Histo1D& total) {
+    Scatter2D tmp = divide(accepted, total);
+    for (size_t i = 0; i < accepted.numBins(); ++i) {
+      const HistoBin1D& b_acc = accepted.bin(i);
+      const HistoBin1D& b_tot = total.bin(i);
+      Point2D& point = tmp.point(i);
+
+      // Check that the numerator is a subset of the denominator
+      if (b_acc.effNumEntries() > b_tot.effNumEntries() || b_acc.sumW() > b_tot.sumW())
+        throw UserError("Attempt to calculate an efficiency when the numerator is not a subset of the denominator");
+
+      // If no entries on the denominator, set eff = 0 and move to the next bin
+      if (b_tot.effNumEntries() == 0) {
+        point.setY(0.0);
+        point.setYErr(0.0, 0.0);
+        continue;
       }
 
-      const HistoBin1D bL = b1 + b2;
-      const double x = bL.focus();
-      /// @todo Use exceptions instead, since this is a user-inducible error
-      assert(fuzzyEquals(b1.xMin(), b2.xMin()));
-      assert(fuzzyEquals(b1.xMax(), b2.xMax()));
-      const double exminus = x - b1.xMin();
-      const double explus = b1.xMax() - x;
-      /// @todo Use exceptions instead, since this is a user-inducible error
-      assert(exminus >= 0);
-      assert(explus >= 0);
-      //
-      if (b2.height() == 0) continue;  // Don't create bins with inf or nan
-      const double y = b1.height() / b2.height();
-      double ey = -1;
-
-      switch (erropt) {
-      case QUAD:
-        if (b1.height() == 0) continue;  // Don't create bins with inf or nan
-        ey = y * sqrt( sqr(b1.heightErr()/b1.height()) + sqr(b2.heightErr()/b2.height()) );
-        break;
-      case BINOMIAL:
-        /// @todo Check that this is correct -- isn't it a problem that this varies if the same scale
-        /// factor is applied to the weights on bins 1 and 2?
-        /// @todo I think this is only valid if the fills of b1 are a subset of the fills of b2. Throw an
-        /// error if Neff(b1) > Neff(b2)
-        if (b2.effNumEntries() == 0) continue;  // Don't create bins with inf or nan
-        ey = sqrt( b1.effNumEntries() * (1 - b1.effNumEntries()/b2.effNumEntries()) ) / b2.effNumEntries();
-        break;
-      }
-
-      tmp.addPoint(x, y, exminus, explus, ey, ey);
-
+      // Calculate the values and errors, using numEntries rather than sumW
+      const double eff = b_acc.effNumEntries() / b_tot.effNumEntries();
+      const double ey = sqrt( b_acc.effNumEntries() * (1 - b_acc.effNumEntries()/b_tot.effNumEntries()) ) / b_tot.effNumEntries();
+      point.setY(eff);
+      point.setYErr(ey, ey);
     }
     return tmp;
   }

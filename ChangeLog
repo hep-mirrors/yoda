@@ -1,3 +1,8 @@
+2012-11-15  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Improving division and efficiency treatments, and allowing
+	arbitrary f(x), f(y), and flip transformations on Scatter2D.
+
 2012-11-14  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Converting linspace, logspace, and their usage to place the nbins argument first.

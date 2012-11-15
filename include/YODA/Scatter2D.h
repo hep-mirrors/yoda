@@ -240,7 +240,8 @@ namespace YODA {
     }
 
     /// Insert a new point, defined as the x/y value pair and asymmetric errors
-    Scatter2D& addPoint(double x, double y, double exminus, double explus,
+    Scatter2D& addPoint(double x, double y,
+                        double exminus, double explus,
                         double eyminus, double eyplus) {
       _points.insert(Point2D(x, y, exminus, explus, eyminus, eyplus));
       return *this;
@@ -358,6 +359,75 @@ namespace YODA {
   /// Divide two scatters
   inline Scatter2D operator / (const Scatter2D& numer, const Scatter2D& denom) {
     return divide(numer, denom);
+  }
+
+
+
+  //@}
+
+
+  /// @name Transforming operations on Scatter2D
+  //@{
+
+  /// @brief Apply transformation fx(x) to all values and error positions (operates in-place on @a s)
+  ///
+  /// fx should be a function which takes double x -> double newx
+  template<typename FNX>
+  inline void transformX(Scatter2D& s, FNX fx) {
+    for (size_t i = 0; i < s.numPoints(); ++i) {
+      Point2D& p = s.point(i);
+      const double newx = fx(p.x());
+      const double fx_xmin = fx(p.xMin());
+      const double fx_xmax = fx(p.xMax());
+      // Deal with possible inversions of min/max ordering under the transformation
+      const double newxmin = std::min(fx_xmin, fx_xmax);
+      const double newxmax = std::max(fx_xmin, fx_xmax);
+      // Set new point x values
+      p.setX(newx);
+      p.setXMin(newxmin);
+      p.setXMax(newxmax);
+    }
+  }
+
+
+  /// @brief Apply transformation fy(y) to all values and error positions (operates in-place on @a s)
+  ///
+  /// fy should be a function which takes double y -> double newy
+  template<typename FNY>
+  inline void transformY(Scatter2D& s, FNY fy) {
+    for (size_t i = 0; i < s.numPoints(); ++i) {
+      Point2D& p = s.point(i);
+      const double newy = fy(p.y());
+      const double fy_ymin = fy(p.yMin());
+      const double fy_ymax = fy(p.yMax());
+      // Deal with possible inversions of min/max ordering under the transformation
+      const double newymin = std::min(fy_ymin, fy_ymax);
+      const double newymax = std::max(fy_ymin, fy_ymax);
+      // Set new point y values
+      p.setY(newy);
+      p.setYMin(newymin);
+      p.setYMax(newymax);
+    }
+  }
+
+
+  /// @brief Exchange the x and y axes (operates in-place on @a s)
+  inline void flip(Scatter2D& s) {
+    for (size_t i = 0; i < s.numPoints(); ++i) {
+      Point2D& p = s.point(i);
+      const double newx = p.y();
+      const double newy = p.x();
+      const double newxmin = p.yMin();
+      const double newxmax = p.yMax();
+      const double newymin = p.xMin();
+      const double newymax = p.xMax();
+      p.setX(newx);
+      p.setY(newy);
+      p.setXMin(newxmin);
+      p.setXMax(newxmax);
+      p.setYMin(newymin);
+      p.setYMax(newymax);
+    }
   }
 
   //@}

@@ -92,7 +92,7 @@ namespace YODA {
 
   public:
 
-    /// @name Value and error accessors
+    /// @name Value accessors
     //@{
 
     /// Get x value
@@ -106,6 +106,9 @@ namespace YODA {
 
     /// Set y value
     void setY(double y) { _y = y; }
+
+    // /// Set x and y values
+    // void setXY(double x, double y) { setX(x); setY(y); }
 
     //@}
 
@@ -133,21 +136,31 @@ namespace YODA {
       return (_ex.first + _ex.second)/2.0;
     }
 
+    /// Set negative x error
+    void setXErrMinus(double exminus) {
+      _ex.first = exminus;
+    }
+
+    /// Set positive x error
+    void setXErrPlus(double explus) {
+      _ex.second = explus;
+    }
+
     /// Set symmetric x error
     void setXErr(double ex) {
-      _ex.first = ex;
-      _ex.second = ex;
+      setXErrMinus(ex);
+      setXErrPlus(ex);
+    }
+
+    /// Set asymmetric x error
+    void setXErr(double exminus, double explus) {
+      setXErrMinus(exminus);
+      setXErrPlus(explus);
     }
 
     /// Set asymmetric x error
     void setXErr(std::pair<double,double> ex) {
       _ex = ex;
-    }
-
-    /// Set asymmetric x error
-    void setXErr(double exminus, double explus) {
-      _ex.first = exminus;
-      _ex.second = explus;
     }
 
     /// Get value minus negative x-error
@@ -158,6 +171,18 @@ namespace YODA {
     /// Get value plus positive x-error
     double xMax() const {
       return _x + _ex.second;
+    }
+
+    /// Set negative x-error via the xMin position
+    void setXMin(double xmin) {
+      if (xmin > x()) throw UserError("Attempted to set an xmin > x");
+      setXErrMinus(x() - xmin);
+    }
+
+    /// Set positive x-error via the xMax position
+    void setXMax(double xmax) {
+      if (xmax < x()) throw UserError("Attempted to set an xmax < x");
+      setXErrPlus(xmax - x());
     }
 
     //@}
@@ -186,21 +211,31 @@ namespace YODA {
       return (_ey.first + _ey.second)/2.0;
     }
 
+    /// Set negative y error
+    void setYErrMinus(double eyminus) {
+      _ey.first = eyminus;
+    }
+
+    /// Set positive y error
+    void setYErrPlus(double eyplus) {
+      _ey.second = eyplus;
+    }
+
     /// Set symmetric y error
     void setYErr(double ey) {
-      _ey.first = ey;
-      _ey.second = ey;
+      setYErrMinus(ey);
+      setYErrPlus(ey);
+    }
+
+    /// Set asymmetric y error
+    void setYErr(double eyminus, double eyplus) {
+      setYErrMinus(eyminus);
+      setYErrPlus(eyplus);
     }
 
     /// Set asymmetric y error
     void setYErr(std::pair<double,double> ey) {
       _ey = ey;
-    }
-
-    /// Set asymmetric y error
-    void setYErr(double eyminus, double eyplus) {
-      _ey.first = eyminus;
-      _ey.second = eyplus;
     }
 
     /// Get value minus negative y-error
@@ -211,6 +246,18 @@ namespace YODA {
     /// Get value plus positive y-error
     double yMax() const {
       return _y + _ey.second;
+    }
+
+    /// Set negative y-error via the yMin position
+    void setYMin(double ymin) {
+      if (ymin > y()) throw UserError("Attempted to set an ymin > y");
+      setYErrMinus(y() - ymin);
+    }
+
+    /// Set positive y-error via the yMax position
+    void setYMax(double ymax) {
+      if (ymax < y()) throw UserError("Attempted to set an ymax < y");
+      setYErrPlus(ymax - y());
     }
 
     //@}

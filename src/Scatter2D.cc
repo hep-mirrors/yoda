@@ -66,8 +66,8 @@ namespace YODA {
     for (size_t i = 0; i < first.numPoints(); ++i) {
       const Point2D& p1 = first.point(i);
       const Point2D& p2 = second.point(i);
-      assert(fuzzyEquals(p1.xMin(), p2.xMin()));
-      assert(fuzzyEquals(p1.xMax(), p2.xMax()));
+      if (!fuzzyEquals(p1.xMin(), p2.xMin()) || !fuzzyEquals(p1.xMax(), p2.xMax()))
+        throw BinningError("Point x 'bins' are not equivalent");
       const double x = (p1.x() + p2.x())/2.0;
       //
       const double y = p1.y() + p2.y();
@@ -86,8 +86,8 @@ namespace YODA {
     for (size_t i = 0; i < first.numPoints(); ++i) {
       const Point2D& p1 = first.point(i);
       const Point2D& p2 = second.point(i);
-      assert(fuzzyEquals(p1.xMin(), p2.xMin()));
-      assert(fuzzyEquals(p1.xMax(), p2.xMax()));
+      if (!fuzzyEquals(p1.xMin(), p2.xMin()) || !fuzzyEquals(p1.xMax(), p2.xMax()))
+        throw BinningError("Point x 'bins' are not equivalent");
       const double x = (p1.x() + p2.x())/2.0;
       //
       const double y = p1.y() - p2.y();
@@ -106,14 +106,16 @@ namespace YODA {
     for (size_t i = 0; i < numer.numPoints(); ++i) {
       const Point2D& p1 = numer.point(i);
       const Point2D& p2 = denom.point(i);
-      assert(fuzzyEquals(p1.xMin(), p2.xMin()));
-      assert(fuzzyEquals(p1.xMax(), p2.xMax()));
+      if (!fuzzyEquals(p1.xMin(), p2.xMin()) || !fuzzyEquals(p1.xMax(), p2.xMax()))
+        throw BinningError("Point x 'bins' are not equivalent");
       const double x = (p1.x() + p2.x())/2.0;
       //
       const double y = p1.y() / p2.y();
-      /// @todo Deal with +/- errors separately
-      const double ey = y * sqrt( sqr(p1.yErrAvg()/p1.y()) + sqr(p2.yErrAvg()/p2.y()) );
-      tmp.addPoint(x, p1.xErrMinus(), p1.xErrPlus(), y, ey, ey);
+      /// Deal with +/- errors separately, inverted for the denominator contributions
+      // const double eyavg = y * sqrt( sqr(p1.yErrAvg()/p1.y()) + sqr(p2.yErrAvg()/p2.y()) );
+      const double eyplus = y * sqrt( sqr(p1.yErrPlus()/p1.y()) + sqr(p2.yErrMinus()/p2.y()) );
+      const double eyminus = y * sqrt( sqr(p1.yErrMinus()/p1.y()) + sqr(p2.yErrPlus()/p2.y()) );
+      tmp.addPoint(x, p1.xErrMinus(), p1.xErrPlus(), y, eyminus, eyplus);
     }
     assert(tmp.numPoints() == numer.numPoints());
     return tmp;

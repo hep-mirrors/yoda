@@ -379,15 +379,19 @@ namespace YODA {
   }
 
 
-  /// Divide two histograms, with a specified error treatment
-  Scatter2D divide(const Histo1D& numer, const Histo1D& denom,
-                   ErrorCombination erropt=QUAD);
-
+  /// Divide two histograms, with an uncorrelated error treatment
+  Scatter2D divide(const Histo1D& numer, const Histo1D& denom);
 
   /// Divide two histograms, with an uncorrelated error treatment
   inline Scatter2D operator / (const Histo1D& numer, const Histo1D& denom) {
     return divide(numer, denom);
   }
+
+  /// @brief Calculate a histogrammed efficiency ratio of two histograms
+  ///
+  /// Note that an efficiency is not the same thing as a standard division of two
+  /// histograms: the errors must be treated as correlated
+  Scatter2D efficiency(const Histo1D& accepted, const Histo1D& total);
 
   //@}
 
