@@ -3,51 +3,47 @@ YODA TODO list
 
 NOW
 
-* Read Plot sections (HH)
-   DM to use this in implementing the make-plots replacement.
-
-* Allow comments on ends of YODA format data lines in ReaderYODA (HH)
-   Ignore anything after "#" on data lines -- use this to write convenience
-   height & error info for each bin since not obvious from sumWX2 etc.
-
-* Remove non-const bin access from Histos and Profiles?
+* Remove non-const bin access from Histos and Profiles
    cf. David D's point re. consistency via email on 7/8/2012
 
-* Multi-error support on Point types
-   Access by index, with negative (enum) indices for quad/linear/largest combn?
+* Auto-determine input and output formats (= readers/writers) from file extn (AB)
 
 * Add Axis2D -> Histo2D/Profile2D bin adding and erasing. (AB)
    Adding 2D operator support and bin-adding/erasing
 
-* Make Python interface test scripts (DM)
+* Make Python interface test scripts (DM,AB)
+   Test Histo2D and Scatter2D from Python
 
 * Add copy assignment to both C++ and Cython (AB)
 
 * Docstrings for Points, Dbns and Bins (AB)
 
-* Reintroduce missing docstrings (DM)
-
 * Add stdErr to HistoBinXD (AB)
 
-* Test Histo2D and Scatter2D from Python (AB)
+* WriterFlat, for Scatter2D representations only. (HH)
 
+* Transform 1D differential to integral histos and vice versa.
+   Bins have to be contiguous. Scatter -> Scatter, and Histo1D -> Scatter (AB)
 
 
 
 NEXT
 
-* Auto-determine input and output formats (= readers/writers) from file extn (AB)
+* ROOT analysis type converter functions
+   In YODA/ROOTCnv.h -- pure header library to avoid bild-time ROOT dependence
 
-* Improve tests Makefile setup to work out the path to the Python build dir. (AB)
+* Optionally configurable ROOT writer.
 
-* Add a merge() method in Bin2D. Add a constructor that takes Dbns (AB)
-   Use merge() to implement merging/rebinning in Axis2D -> Histo2D & Profile2D.
+* Add a Counter type (mostly a UI/persistency wrapper on Dbn1D) (AB)
+   "Binning"/"axis" option on arbitrary types, particularly strings? ->
+   generalised bar charts. Make counter a pure sumW, sumW2 object and use it in
+   implementation of Dbn1D/2D.
 
-* Detecting perfect/imperfect 2D grids (AB)
+* Generalise/expose Axis*D for binning of general objects, e.g. "binned histos"
 
 * 2D bin merging and rebinning (AB)
-   Only rebin perfect grids? Global rebinning of Axis2D -> Histo2D by generally
-   different integer factors in x and y directions.
+   Only rebin perfect grids: need to detect them. Global rebinning of Axis2D ->
+   Histo2D by generally different integer factors in x and y directions.
 
 * Test negative- and mixed-weighted stat calculations, and scaling.
 
@@ -57,29 +53,25 @@ NEXT
 
 * Add Scatter1D/Point1D (AB)
 
-* Generalise/expose Axis*D for binning of general objects, e.g. "binned histos"
-
-* Transform 1D differential to integral histos and vice versa.
-   Bins have to be contiguous. (AB)
-
-* Add a Counter type (mostly a UI/persistency wrapper on Dbn1D) (AB)
-   "Binning"/"axis" option on arbitrary types, particularly strings? ->
-   generalised bar charts.
-
-* "BinnedValues" type: use Axis behaviour to look up fixed values.
-
-* Multiple errors on Scatters -- via a vector of Errors?
-   Flexible error combination? Error correlations? Max/min?
-
-* WriterFlat and ReaderFlat, for Scatter2D representations only. (HH)
-
-* Arbitrary function transforms on Scatters (AB)
-
-* Optionally configurable ROOT writer.
+* "BinnedValues" type: use Axis behaviour to look up fixed values without Dbn "history".
 
 
 
 AND AFTER THAT...
+
+* Integer axis
+
+* Read Plot sections in YODA format (HH)
+   Use this in implementing the make-plots replacement.
+
+* ReaderFlat -> Scatter2D
+
+* Allow comments on ends of YODA format data lines in ReaderYODA (HH)
+   Ignore anything after "#" on data lines -- use this to write convenience
+   height & error info for each bin since not obvious from sumWX2 etc.
+
+* Multi-error support on Point types
+   Access by index, with negative (enum) indices for quad/linear/largest combn?
 
 * Scatter2D -> Scatter<N> again (?) with specialisations for 1D, 2D and 3D
 

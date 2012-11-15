@@ -26,11 +26,11 @@ cdef class Histo1D(AnalysisObject):
     Histo1D(E, path="", title=""). Construct a histogram from an
     iterator of edges, E.
 
-    Should this constructor fail, then 
+    Should this constructor fail, then
     Histo1D(nbins, low, high, path="", title="")
     """
 
-    # Is there a reason why this sounds like an advert? I'M ALREADY SOLD
+    # Is there a reason why this sounds like an advert? I'VE ALREADY SOLD OUT.
     # DAMMIT!
 
 
@@ -107,7 +107,7 @@ cdef class Histo1D(AnalysisObject):
     @property
     def totalDbn(self):
         """The Dbn1D representing the total distribution."""
-        # Now does this actually involve a copy in Cython? We should probably
+        # TODO: Now does this actually involve a copy in Cython? We should probably
         # find out!
         return util.new_borrowed_cls(
             Dbn1D, &self._Histo1D().totalDbn(), self)
@@ -115,7 +115,7 @@ cdef class Histo1D(AnalysisObject):
     def reset(self):
         """
         Reset the histogram but leave the bin structure.
-        
+
         """
         self._Histo1D().reset()
 
@@ -123,7 +123,7 @@ cdef class Histo1D(AnalysisObject):
         """
         (double w=1.0) -> None. Scale Histogram and its statistics as if all
         weights had been scaled by given factor.
-        
+
         """
         self._Histo1D().scaleW(w)
 
@@ -157,10 +157,10 @@ cdef class Histo1D(AnalysisObject):
         cdef vector[double] cedges
         for edge in edges:
             cedges.push_back(edge)
-        
+
         if len(edges):
             self._Histo1D().addBins(cedges)
-    
+
     def __addBins_bins(self, bins):
         self.__addBins_tuples(imap(attrgetter('edges'), bins))
 
