@@ -431,10 +431,10 @@ namespace YODA {
 
     bool operator == (const Axis2D& other) const {
       for(size_t i=0; i < numBins(); i++)
-        if (fuzzyEquals(bin(i).lowEdgeX(), other.bin(i).lowEdgeX()) &&
-            fuzzyEquals(bin(i).highEdgeX(), other.bin(i).highEdgeX()) &&
-            fuzzyEquals(bin(i).lowEdgeY(), other.bin(i).lowEdgeY()) &&
-            fuzzyEquals(bin(i).highEdgeY(), other.bin(i).highEdgeY()));
+        if (!(fuzzyEquals(bin(i).lowEdgeX(), other.bin(i).lowEdgeX()) &&
+              fuzzyEquals(bin(i).highEdgeX(), other.bin(i).highEdgeX()) &&
+              fuzzyEquals(bin(i).lowEdgeY(), other.bin(i).lowEdgeY()) &&
+              fuzzyEquals(bin(i).highEdgeY(), other.bin(i).highEdgeY())))
           return false;
 
       return true;
