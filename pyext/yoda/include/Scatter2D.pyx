@@ -1,5 +1,7 @@
 #TODO: Tidy up + docstrings etc.
 
+cdef object transform_functor = ctypes.CFUNCTYPE(ctypes.c_double, ctypes.c_double)
+
 cdef class Scatter2D(AnalysisObject):
     """
     2D Scatter plot.
@@ -66,3 +68,24 @@ cdef class Scatter2D(AnalysisObject):
                 self._Scatter2D().combineWith(deref(other._Scatter2D()))
         else:
             self._Scatter2D().combineWith(deref(other._Scatter2D()))
+
+
+    def transformX(self, f):
+        try:
+            callback = transform_functor(f)
+        except:
+            raise RuntimeError("Callback be of type (double) -> double")
+
+        fptr = (<c.dbl_dbl_fptr*><size_t>ctypes.addressof(callback))[0]
+
+        c.Scatter2D_transformX(deref(self._Scatter2D()), fptr)
+
+    def transformY(self, f):
+        try:
+            callback = transform_functor(f)
+        except:
+            raise RuntimeError("Callback be of type (double) -> double")
+
+        fptr = (<c.dbl_dbl_fptr*><size_t>ctypes.addressof(callback))[0]
+
+        c.Scatter2D_transformY(deref(self._Scatter2D()), fptr)

@@ -11,7 +11,7 @@ cdef extern from "errors.hh":
     void err "translate_yoda_error" ()
 
 ctypedef map[string, string] Annotations
-
+ctypedef double (*dbl_dbl_fptr) (double) 
 
 # Distributions
 
@@ -513,6 +513,9 @@ cdef extern from "YODA/Scatter2D.h" namespace "YODA":
 
         Scatter2D combineWith(Scatter2D)
         Scatter2D combineWith(vector[Scatter2D])
+
+    void Scatter2D_transformX "YODA::transformX" (Scatter2D&, dbl_dbl_fptr)
+    void Scatter2D_transformY "YODA::transformY" (Scatter2D&, dbl_dbl_fptr)
 
 #}}} Scatter2D
 
