@@ -348,6 +348,8 @@ cdef extern from "YODA/Bin2D.h" namespace "YODA":
         Bin2D operator + (Bin2D) except+ err
         Bin2D operator - (Bin2D) except+ err
 
+        int adjacentTo(Bin2D) except+ err
+
 ctypedef Bin2D[Dbn2D] Bin2D_Dbn2D
 ctypedef Bin2D[Dbn3D] Bin2D_Dbn3D
 # }}} Bin2D
@@ -621,8 +623,8 @@ cdef extern from "YODA/Profile2D.h" namespace "YODA":
         #void mergeBins(size_t, size_t) except+ err
         #void rebin(int n) except+ err
 
-        # void addBin(double, double) except+ err
-        # void addBins(vector[double] edges) except+ err
+        void addBin(pair[double, double], pair[double, double]) except+ err
+        void addBins(vector[double], vector[double]) except+ err
         # void eraseBin(size_t index) except+ err
 
         size_t numBins() except+ err
@@ -725,6 +727,10 @@ cdef extern from "YODA/Histo2D.h" namespace "YODA":
         HistoBin2D bin(size_t ix) except+ err
         HistoBin2D binByCoord(double x) except+ err
 
+        void addBins(vector[HistoBin2D]&)
+
+        void addBin(pair[double, double], pair[double, double])
+
         # These must be treated as references or the semantics is wrong.
         # However, these can also throw exceptions! But the two cannot mix, or
         # Cython puts out rubbish C++. Since this *is* a reported 'major' bug,
@@ -742,6 +748,8 @@ cdef extern from "YODA/Histo2D.h" namespace "YODA":
 
         double highEdgeX() except+ err
         double highEdgeY() except+ err
+
+
 
         int findBinIndex(double, double)
         size_t numBinsX()
@@ -820,3 +828,26 @@ cdef extern from "YODA/Axis1D.h" namespace "YODA":
         void eraseBin(size_t index) except+ err
         void mergeBins(size_t, size_t) except+ err
 # Axis1D }}}
+
+# Axis2D {{{
+cdef extern from "YODA/Axis2D.h" namespace "YODA":
+    cdef cppclass Axis2D[BIN2D, DBN]:
+        Axis2D() except+ err
+        Axis2D(vector[double], vector[double]) except+ err
+        Axis2D(size_t, pair[double, double], size_t, pair[double, double]) except+ err
+        Axis2D(vector[BIN2D] bins) except+ err
+        void addBin(pair[double, double], pair[double, double]) except+ err
+        size_t numBins() except+ err
+        vector[BIN2D] &bins()
+        double lowEdgeX() except+ err
+        double highEdgeX() except+ err
+        double lowEdgeY() except+ err
+        double highEdgeY() except+ err
+        long getBinIndex(double, double)
+        void reset()
+        DBN &totalDbn()
+        DBN &outflow(int, int)
+        void eraseBin(size_t index) except+ err
+        void mergeBins(size_t, size_t) except+ err
+# Axis2D }}}
+

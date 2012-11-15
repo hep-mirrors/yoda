@@ -145,12 +145,26 @@ namespace YODA {
     // }
 
 
-    /// @todo TODO
     // /// @brief Bin addition operator
-    // /// Add a bin to an axis described by its lower-left and higher-right point
-    // void addBin(double lowX, double lowY, double highX, double highY) {
-    //   _axis.addBin(lowX, lowY, highX, highY);
-    // }
+    // /// Add a bin to an axis described by its x and y ranges.
+    void addBin(Axis::EdgePair1D xrange, Axis::EdgePair1D yrange) {
+       _axis.addBin(xrange, yrange);
+     }
+
+
+    /// @brief Bins addition operator
+    /// Add multiple bins from edge cuts without resetting 
+    void addBins(const Axis::EdgeCuts &xcuts, const Axis::EdgeCuts &ycuts) {
+      _axis.addBins(xcuts, ycuts);
+    }
+
+
+    /// @brief Bins addition operator
+    /// Add multiple bins without resetting 
+    void addBins(const Bins &bins) {
+      _axis.addBins(bins);
+    }
+
 
     /// @todo TODO
     // /// @brief Bin addition operator

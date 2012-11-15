@@ -36,10 +36,8 @@ include "include/IO.pyx"
 
 include "include/Scatter2D.pyx"
 
-#include "include/Bin2D.pxi"
-#include "include/ProfileBin2D.pyx"
-#include "include/HistoBin2D.pyx"
-#include "include/Histo2D.pyx"
-#include "include/Profile2D.pyx"
-
-#include "include/Axis2D.pxi"
+include "include/Bin2D.pxi"
+include "include/ProfileBin2D.pyx"
+include "include/HistoBin2D.pyx"
+include "include/Histo2D.pyx"
+include "include/Profile2D.pyx"

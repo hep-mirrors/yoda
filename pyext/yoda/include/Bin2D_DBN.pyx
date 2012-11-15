@@ -22,40 +22,40 @@ cdef class Bin2D_${DBN}(Bin):
         """The lower and upper edges."""
         cdef pair[double, double] x = self._Bin2D().xedges()
         cdef pair[double, double] y = self._Bin2D().yedges()
-        return XY(util.Edges(x.first, x.second),
+        return util.XY(util.Edges(x.first, x.second),
                   util.Edges(y.first, y.second))
 
     @property
     def widths(self):
         """The widths of this bin in the x- and y-dimensions."""
-        return XY(self._Bin2D().widthX(), self._Bin2D().widthY())
+        return util.XY(self._Bin2D().widthX(), self._Bin2D().widthY())
 
     @property
     def focus(self):
         """The focus of the bin in the x- and y-dimensions"""
         cdef pair[double, double] f = self._Bin2D().focus()
-        return XY(f.first, f.second)
+        return util.XY(f.first, f.second)
 
     @property
     def midpoint(self):
         cdef pair[double, double] f = self._Bin2D().midpoint()
-        return XY(f.first, f.second)
+        return util.XY(f.first, f.second)
 
     @property
     def mean(self):
-        return XY(self._Bin2D().xMean(), self._Bin2D().yMean())
+        return util.XY(self._Bin2D().xMean(), self._Bin2D().yMean())
 
     @property
     def std_dev(self):
-        return XY(self._Bin2D().xStdDev(), self._Bin2D().yStdDev())
+        return util.XY(self._Bin2D().xStdDev(), self._Bin2D().yStdDev())
 
     @property
     def std_err(self):
-        return XY(self._Bin2D().xStdErr(), self._Bin2D().yStdErr())
+        return util.XY(self._Bin2D().xStdErr(), self._Bin2D().yStdErr())
 
     @property
     def rms(self):
-        return XY(self._Bin2D().xRMS(), self._Bin2D().yRMS())
+        return util.XY(self._Bin2D().xRMS(), self._Bin2D().yRMS())
 
     # Raw statistics #
     ##################
@@ -98,6 +98,9 @@ cdef class Bin2D_${DBN}(Bin):
     #def merge(Bin2D_${DBN} self, Bin2D_${DBN} other):
     #    self._Bin2D().merge(deref(other._Bin2D()))
     #    return self
+
+    def adjacentTo(Bin2D_${DBN} self, Bin2D_${DBN} other):
+        return self._Bin2D().adjacentTo(deref(other._Bin2D()))
 
     def __add__(Bin2D_${DBN} self, Bin2D_${DBN} other):
         return util.new_owned_cls(

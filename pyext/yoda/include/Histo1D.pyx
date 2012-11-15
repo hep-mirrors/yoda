@@ -82,6 +82,15 @@ cdef class Histo1D(AnalysisObject):
         """
         self._Histo1D().fill(x, weight)
 
+    ## HACK hACK HACK HACK HACK
+    def fill_many(self, xs, weight=1.0):
+        """
+        (x, weight=1.0) -> None. Fill with given x and optional weight.
+
+        """
+        for x in xs:
+            self._Histo1D().fill(x, weight)
+
     def copy(self, char *path=""):
         """(path="") -> Histo1D. Clone this Histo1D with optional new path."""
         return util.new_owned_cls(Histo1D,

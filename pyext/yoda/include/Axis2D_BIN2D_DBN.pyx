@@ -24,6 +24,9 @@ cdef class Axis2D_${BIN2D}_${DBN}(util.Base):
         return util.new_owned_cls(
             ${DBN}, new c.${DBN}(self._Axis2D().totalDbn()))
 
+    def addBin(self, a, b, c, d):
+        self._Axis1D().addBin(a, b, c, d)
+
     @property
     def outflow(self, ix, iy):
         return util.new_owned_cls(
@@ -31,9 +34,9 @@ cdef class Axis2D_${BIN2D}_${DBN}(util.Base):
     
     @property
     def edges(self):
-        return XY(
-            Edge(self._Axis2D().lowEdgeX(), self._Axis2D().highEdgeX()),
-            Edge(self._Axis2D().lowEdgeY(), self._Axis2D().highEdgeY())
+        return util.XY(
+            util.Edges(self._Axis2D().lowEdgeX(), self._Axis2D().highEdgeX()),
+            util.Edges(self._Axis2D().lowEdgeY(), self._Axis2D().highEdgeY())
         )
 
     def reset(self):

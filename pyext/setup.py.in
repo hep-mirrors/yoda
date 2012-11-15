@@ -40,12 +40,14 @@ make_templates('Axis2D_BIN2D_DBN',
 make_templates('Bin1D_DBN', DBN=('Dbn1D', 'Dbn2D'))
 make_templates('Bin2D_DBN', DBN=('Dbn2D', 'Dbn3D'))
 
+header_files = glob('../include/YODA/*.h') + glob('../include/YODA/Utils/*.h')
+
 extns = [ext('util'),
          ext('core', statics=[statics],
-             depends=glob('yoda/include/*.pyx')
+             depends=glob('yoda/include/*.pyx') + header_files
             ),
          ext('axis', statics=[statics],
-             depends=glob('yoda/include/Axis*.pyx')
+             depends=glob('yoda/include/Axis*.pyx') + header_files
             ),
         ]
 

@@ -137,6 +137,28 @@ namespace YODA {
       _axis.scaleXY(scaleX, scaleY);
     }
 
+
+    // /// @brief Bin addition operator
+    // /// Add a bin to an axis described by its x and y ranges.
+    void addBin(Axis::EdgePair1D xrange, Axis::EdgePair1D yrange) {
+       _axis.addBin(xrange, yrange);
+     }
+
+
+    /// @brief Bins addition operator
+    /// Add multiple bins from edge cuts without resetting 
+    void addBins(const Axis::EdgeCuts &xcuts, const Axis::EdgeCuts &ycuts) {
+      _axis.addBins(xcuts, ycuts);
+    }
+
+
+    /// @brief Bins addition operator
+    /// Add multiple bins without resetting 
+    void addBins(const Bins &bins) {
+      _axis.addBins(bins);
+    }
+
+
     // /// Adding bins
     /// @todo TODO
     // void addBin(const std::vector<std::pair<std::pair<double,double>, std::pair<double,double> > > coords) {
@@ -290,6 +312,7 @@ namespace YODA {
     /// Two indices are used, for x and y: -1 = underflow, 0 = in-range, and +1 = overflow.
     /// (0,0) is not a valid overflow index pair, since it is in range for both x and y.
     Dbn2D& outflow(int ix, int iy) {
+      std::cout << "Histo2D::outflow\n";
       return _axis.outflow(ix, iy);
     }
 

@@ -11,7 +11,11 @@ from libcpp.map cimport map
 # Pure python imports
 from itertools import repeat, imap
 from operator import attrgetter
-from yoda import *
+
+from yoda.core import (Dbn1D, Dbn2D, Dbn3D,
+                       HistoBin1D, HistoBin2D,
+                       ProfileBin1D, ProfileBin2D)
 
 include "include/Errors.pyx"
 include "include/Axis1D.pxi"
+include "include/Axis2D.pxi"

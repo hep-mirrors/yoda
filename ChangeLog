@@ -1,3 +1,8 @@
+2012-11-15  Dave Mallows  <dave.mallows@gmail.com>
+
+	* Commited numerous changes to Axis2D. Axis2D now uses BinSearcher as
+	with Axis1D.
+
 2012-11-15  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Improving division and efficiency treatments, and allowing

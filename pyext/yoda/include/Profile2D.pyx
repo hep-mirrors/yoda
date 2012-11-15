@@ -30,9 +30,6 @@ cdef class Profile2D(AnalysisObject):
         return util.new_borrowed_cls(
             ProfileBin2D, & self._Profile2D().bins().at(i), self)
 
-    def __repr__(self):
-        return "<Profile2D at %x>" % id(self)
-
     def fill(self, double x, double y, double z, double weight=1.0):
         self._Profile2D().fill(x, y, z, weight)
 
@@ -80,7 +77,6 @@ cdef class Profile2D(AnalysisObject):
         return util.new_borrowed_cls(
             Dbn3D, new c.Dbn3D(self._Profile2D().totalDbn()), self)
 
-    @property
     def outflow(self, ix, iy):
         return util.new_borrowed_cls(
             Dbn3D, new c.Dbn3D(self._Profile2D().outflow(ix, iy)), self)
@@ -135,15 +131,20 @@ cdef class Profile2D(AnalysisObject):
     #def rebin(self, int n):
     #    self._Profile2D().rebin(n)
 
-    #def add_bin(self, double low, double high):
-    #    """Add a bin to the Profile2D"""
-    #    self._Profile2D().addBin(low, high)
-    #    return self
+    def addBin(self, double xlow, double xhigh, double ylow, double yhigh):
+        """Add a bin to the Profile2D"""
+        self._Profile2D().addBin(pair[double, double](xlow, xhigh),
+                                 pair[double, double](ylow, yhigh))
+        return self
 
-    #def add_bins(self, edges):
-    #    cdef vector[double] cedges
-    #    for i in edges:
-    #        cedges.push_back(i)
-    #    self._Profile2D().addBins(cedges)
-    #    return self
+    def addBins(self, xcuts, ycuts):
+        cdef vector[double] _xcuts
+        cdef vector[double] _ycuts
+        for x in xcuts:
+            _xcuts.push_back(x)
+        for y in ycuts:
+            _ycuts.push_back(y)
+
+        self._Profile2D().addBins(_xcuts, _ycuts)
+        return self
 

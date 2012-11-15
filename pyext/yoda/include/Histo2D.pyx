@@ -35,8 +35,12 @@ cdef class Histo2D(AnalysisObject):
     def __repr__(self):
         return "Histo2D"
 
-    def fill(self, x, y, weight=1.0):
+    def fill(self, double x, double y, weight=1.0):
         self._Histo2D().fill(x, y, weight)
+
+    def fill_many(self, xs, ys, weight=1.0):
+        for x, y in izip(xs, ys):
+            self._Histo2D().fill(x, y, weight)
 
     def copy(self, char *path=""):
         return util.new_owned_cls(Histo2D,
@@ -58,22 +62,22 @@ cdef class Histo2D(AnalysisObject):
         return self._Histo2D().sumW(overflows)
 
     def mean(self, overflows=True):
-        return XY(
+        return util.XY(
             self._Histo2D().xMean(overflows),
             self._Histo2D().yMean(overflows))
 
     def variance(self, overflows=True):
-        return XY(
+        return util.XY(
             self._Histo2D().xVariance(overflows),
             self._Histo2D().yVariance(overflows))
 
     def std_dev(self, overflows=True):
-        return XY(
+        return util.XY(
             self._Histo2D().xStdDev(overflows),
             self._Histo2D().yStdDev(overflows))
 
     def std_err(self, overflows=True):
-        return XY(
+        return util.XY(
             self._Histo2D().xStdErr(overflows),
             self._Histo2D().yStdErr(overflows))
 
@@ -99,11 +103,23 @@ cdef class Histo2D(AnalysisObject):
     #def rebin(self, int n):
     #    self._Histo2D().rebin(n)
 
-    #def addBin(self, double low, double high):
-    #    """Add a bin to the Histo2D"""
-    #    self._Histo2D().addBin(low, high)
-    #    return self
+    def addBin(self, xlow, xhigh, ylow, yhigh):
+        """Add a bin to the Histo2D"""
+        self._Histo2D().addBin(pair[double, double](xlow, xhigh), 
+                               pair[double, double](ylow, yhigh))
+        return self
 
+    def addBins(self, bounds):
+        v = new vector[HistoBin2D]()
+
+        for xlow, xhigh, ylow, yhigh in bounds:
+            v.push_back(HistoBin2D(xlow, xhigh, ylow, yhigh))
+
+        self._Histo2D().addBins(deref(v))
+        del v
+
+
+    # Need to look at all the possible things here...
     #def addBins(self, edges):
     #    cdef vector[double] cedges
     #    for i in edges:

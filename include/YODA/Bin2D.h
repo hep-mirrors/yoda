@@ -332,7 +332,22 @@ namespace YODA {
     //@{
 
     /// Merge two adjacent bins
-    // @TODO: We still need to add a merge method
+    /*
+    Bin2D<DBN>& merge(const Bin2D<DBN>& b) {
+
+      if (fuzzyEquals(_edges.second, b._edges.first)) {
+        _edges.second = b._edges.second;
+      } else if (fuzzyEquals(_edges.second, b._edges.first)) {
+        _edges.first = b._edges.first;
+      } else {
+        throw LogicError("Attempted to merge two non-adjacent bins");
+      }
+      // std::cout << "a " << _dbn.sumW() << std::endl;
+      _dbn += b._dbn;
+      // std::cout << "b " << _dbn.sumW() << std::endl;
+      return *this;
+    }
+    */
 
 
     /// Add two bins (internal, explicitly named version)
@@ -360,6 +375,33 @@ namespace YODA {
       return *this;
     }
 
+    /// Test whether this bin would fit inside the given area.
+    bool fitsInside(std::pair<double, double> xrange, 
+                    std::pair<double, double> yrange) const
+    {
+      return (lowEdgeX() >= xrange.first && 
+              lowEdgeY() >= yrange.first &&
+              highEdgeX() < xrange.second &&
+              highEdgeY() < yrange.second);
+    }
+
+    /// Test whether a point lies within the current bin
+    bool bounds(double x, double y) const {
+      return (x >= lowEdgeX() && x < highEdgeX()
+              && y >= lowEdgeY() && y < highEdgeY());
+    }
+
+
+
+    /// Test whether two bins are adjacent and, if so, return how as an integer.
+    int adjacentTo(const Bin2D<DBN> &b) const {
+      for(int i=0; i<4; i++) {
+        if (_edges_equal(b, i, (i+2) % 4))
+          return i;
+      }
+      return -1;
+    }
+
     //@}
 
 
@@ -372,7 +414,43 @@ namespace YODA {
     // Distribution of weighted x (and perhaps y) values
     DBN _dbn;
 
+    std::pair<double, double> _edge_par(int i) const {
+      if (i % 2)
+        return xedges();
+      else
+        return yedges();
+    }
+
+    double _edge_perp(int i) const {
+      double output;
+
+      switch (i) {
+        case 0: output = xMax(); break;
+        case 1: output = yMax(); break;
+        case 2: output = xMin(); break;
+        case 3: output = yMin(); break;
+      }
+
+      return output;
+    }
+
+    // Check if common edge.
+    bool _edges_equal(const Bin2D<DBN> &other, const int i, const int j) const {
+      return other._edges_equal(_edge_perp(i), _edge_par(i), j);
+    }
+
+    bool _edges_equal(const double perp,
+        const std::pair<double, double> par, int j) const {
+      return (
+          fuzzyEquals(perp, _edge_perp(j)) &&
+          fuzzyEquals(par.first, _edge_par(j).first) &&
+          fuzzyEquals(par.second, _edge_par(j).second)
+          );
+    }
+
   };
+
+
 
 
 
