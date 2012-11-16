@@ -1,7 +1,7 @@
 ## Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.59)
-AC_INIT([YODA],[0.4.0beta0],[yoda@projects.hepforge.org],[YODA])
+AC_INIT([YODA],[0.5.0beta0],[yoda@projects.hepforge.org],[YODA])
 AM_INIT_AUTOMAKE
 #AC_CONFIG_SRCDIR([src/Bin1D.cc])
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
@@ -120,7 +120,7 @@ AM_CPPFLAGS="$AM_CPPFLAGS -I\$(BOOSTINCPATH) \$(BOOST_CPPFLAGS)"
 
 AC_CEDAR_CHECKCXXFLAG([-pedantic], [AM_CXXFLAGS="$AM_CXXFLAGS -pedantic "])
 dnl ansi is implied by std=c++, listing it confuses clang
-dnl AC_CEDAR_CHECKCXXFLAG([-ansi], [AM_CXXFLAGS="$AM_CXXFLAGS -ansi "]) 
+dnl AC_CEDAR_CHECKCXXFLAG([-ansi], [AM_CXXFLAGS="$AM_CXXFLAGS -ansi "])
 AC_CEDAR_CHECKCXXFLAG([-Wall], [AM_CXXFLAGS="$AM_CXXFLAGS -Wall -Wno-format"])
 dnl AC_CEDAR_CHECKCXXFLAG([-Wno-long-long], [AM_CXXFLAGS="$AM_CXXFLAGS -Wno-long-long "])
 dnl Need to be C++98!
@@ -141,9 +141,8 @@ AC_CONFIG_FILES([Makefile Doxyfile])
 AC_CONFIG_FILES([include/Makefile include/YODA/Makefile])
 AC_CONFIG_FILES([src/Makefile src/tinyxml/Makefile])
 AC_CONFIG_FILES([tests/Makefile])
-AC_CONFIG_FILES([bin/Makefile])
 AC_CONFIG_FILES([pyext/Makefile pyext/setup.py])
-#AC_CONFIG_FILES([bin/Makefile bin/yoda-config])
+AC_CONFIG_FILES([bin/Makefile bin/yoda-config])
 
 AC_OUTPUT
 
