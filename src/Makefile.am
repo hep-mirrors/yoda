@@ -15,6 +15,7 @@ libYODA_la_SOURCES = \
     ReaderYODA.cc \
     Writer.cc \
     WriterAIDA.cc \
+    WriterFLAT.cc \
     WriterYODA.cc
 
 libYODA_la_LIBADD = tinyxml/libtinyxml.la

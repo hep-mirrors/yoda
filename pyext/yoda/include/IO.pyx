@@ -83,6 +83,25 @@ def writeYODA(ana_objs, file_or_filename):
             f.write(oss.str().c_str())
 
 
+def writeFLAT(ana_objs, file_or_filename):
+    cdef c.ostringstream oss
+    cdef vector[c.AnalysisObject*] vec
+    cdef AnalysisObject a
+
+    for a in ana_objs:
+        vec.push_back(a._AnalysisObject())
+
+    # Most of the time we just won't care about memory
+    # Perhaps speak with andy re: huge files
+    c.WriterFLAT_create().write(oss, vec)
+
+    if hasattr(file_or_filename, 'write'):
+        file_or_filename.write(oss.str().c_str())
+    else:
+        with open(file_or_filename, 'w') as f:
+            f.write(oss.str().c_str())
+
+
 def writeAIDA(ana_objs, file_or_filename):
     cdef c.ostringstream oss
     cdef vector[c.AnalysisObject*] vec

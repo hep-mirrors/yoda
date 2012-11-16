@@ -1,0 +1,29 @@
+#! /usr/bin/env python
+
+"""\
+%prog yodafile [flatfile]
+"""
+
+import yoda, sys, optparse
+
+parser = optparse.OptionParser(usage=__doc__)
+opts, args = parser.parse_args()
+
+INFILE = None
+OUTFILE = None
+
+if len(args) == 1:
+    INFILE = args[0]
+    if INFILE.endswith(".yoda"):
+        OUTFILE = INFILE.replace(".yoda", ".dat")
+    else:
+        OUTFILE = INFILE + ".dat"
+elif len(args) == 2:
+    INFILE = args[0]
+    OUTFILE = args[1]
+else:
+    sys.stderr.write("You must specify the YODA and FLAT file names\n")
+    sys.exit(1)
+
+analysisobjects = yoda.readYODA(INFILE)
+yoda.writeFLAT(analysisobjects, OUTFILE)

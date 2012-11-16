@@ -1,9 +1,9 @@
 pkginclude_HEADERS = \
     Exceptions.h  \
     AnalysisObject.h \
-	Weights.h Bin.h \
-	Dbn1D.h Dbn2D.h Dbn3D.h \
-	Axis1D.h Bin1D.h \
+    Weights.h Bin.h \
+    Dbn1D.h Dbn2D.h Dbn3D.h \
+    Axis1D.h Bin1D.h \
     Axis2D.h Bin2D.h \
     Plot.h \
     Histo1D.h HistoBin1D.h  \
@@ -12,7 +12,7 @@ pkginclude_HEADERS = \
     Profile2D.h ProfileBin2D.h \
     Scatter2D.h Point2D.h \
     Scatter3D.h Point3D.h \
-    Writer.h WriterAIDA.h WriterYODA.h \
+    Writer.h WriterAIDA.h WriterFLAT.h WriterYODA.h \
     Reader.h ReaderAIDA.h ReaderYODA.h
 
 nobase_pkginclude_HEADERS = \
@@ -21,7 +21,7 @@ nobase_pkginclude_HEADERS = \
 	Utils/Formatting.h \
 	Utils/BinSearcher.h \
 	Utils/sortedvector.h \
-    Utils/cachedvector.h \
+	Utils/cachedvector.h \
 	Utils/nvector.h \
 	Utils/fastlog.h \
 	Config/YodaConfig.h \

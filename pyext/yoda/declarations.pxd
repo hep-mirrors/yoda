@@ -807,6 +807,9 @@ cdef extern from "YODA/Writer.h" namespace "YODA":
 cdef extern from "YODA/WriterYODA.h" namespace "YODA":
     Writer& WriterYODA_create "YODA::WriterYODA::create" ()
 
+cdef extern from "YODA/WriterFLAT.h" namespace "YODA":
+    Writer& WriterFLAT_create "YODA::WriterFLAT::create" ()
+
 cdef extern from "YODA/WriterAIDA.h" namespace "YODA":
     Writer& WriterAIDA_create "YODA::WriterAIDA::create" ()
 # Streams }}}

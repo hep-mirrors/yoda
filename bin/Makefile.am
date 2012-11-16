@@ -1,1 +1,1 @@
-dist_bin_SCRIPTS = yoda2aida yoda-plot
+dist_bin_SCRIPTS = yoda2aida yoda2flat yoda-plot

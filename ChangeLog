@@ -1,3 +1,7 @@
+2012-11-16  Hendrik Hoeth  <hendrik.hoeth@cern.ch>
+
+	* Adding WriterFLAT and yoda2flat
+
 2012-11-16  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Adding toIntegralHisto(Histo1D&) function.
