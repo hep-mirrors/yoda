@@ -22,15 +22,15 @@ NOW
 
 * WriterFlat, for Scatter2D representations only. (HH)
 
-* Transform 1D differential to integral histos and vice versa.
-   Bins have to be contiguous. Scatter -> Scatter, and Histo1D -> Scatter (AB)
-
-
-
-NEXT
+* Add a goodness of fit test collection (AB)
+   Simple GoF measures, such as chi2 of a bin and of a histo (chained), for 1D
+   and 2D Histos, Profiles and Scatters. Also KS (later)?
 
 * ROOT analysis type converter functions
    In YODA/ROOTCnv.h -- pure header library to avoid bild-time ROOT dependence
+
+
+NEXT
 
 * Optionally configurable ROOT writer.
 
@@ -65,6 +65,8 @@ AND AFTER THAT...
    Use this in implementing the make-plots replacement.
 
 * ReaderFlat -> Scatter2D
+
+* Simple ntupling, done well :-)
 
 * Allow comments on ends of YODA format data lines in ReaderYODA (HH)
    Ignore anything after "#" on data lines -- use this to write convenience

@@ -1,3 +1,7 @@
+2012-11-16  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Adding toIntegralHisto(Histo1D&) function.
+
 2012-11-15  Dave Mallows  <dave.mallows@gmail.com>
 
 	* Commited numerous changes to Axis2D. Axis2D now uses BinSearcher as

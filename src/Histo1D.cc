@@ -163,4 +163,20 @@ namespace YODA {
   }
 
 
+  // Convert a Histo1D to a Scatter2D representing the integral of the histogram
+  Scatter2D toIntegralHisto(const Histo1D& h, bool includeunderflow) {
+    /// @todo Check that the histogram binning has no gaps, otherwise throw a BinningError
+    Scatter2D tmp = mkScatter(h);
+    double integral = includeunderflow ? h.underflow().sumW() : 0.0;
+    for (size_t i = 0; i < h.numBins(); ++i) {
+      Point2D& point = tmp.point(i);
+      integral += h.bin(i).sumW();
+      const double err = sqrt(integral);
+      point.setY(integral);
+      point.setYErr(err, err);
+    }
+    return tmp;
+  }
+
+
 }

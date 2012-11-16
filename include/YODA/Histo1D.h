@@ -277,11 +277,15 @@ namespace YODA {
       return sumW(includeoverflows);
     }
 
-    /// Get the integrated area of the histogram between bins @a binindex1 and @a binindex2.
+    /// @brief Get the integrated area of the histogram between bins @a binindex1 and @a binindex2.
+    ///
+    /// NB. The area of bin @a binindex2 is not included in the returned
+    /// value. To include the underflow and overflow areas, you should add them
+    /// explicitly with the underflow() and overflow() methods.
     double integral(size_t binindex1, size_t binindex2) const {
       assert(binindex1 > binindex2);
       if (binindex1 >= numBins()) throw RangeError("binindex1 is out of range");
-      if (binindex2 >= numBins()) throw RangeError("binindex2 is out of range");
+      if (binindex2 > numBins()) throw RangeError("binindex2 is out of range");
       double rtn = 0;
       for (size_t i = binindex1; i < binindex2; ++i) {
         rtn += bin(i).area();
@@ -392,6 +396,13 @@ namespace YODA {
   /// Note that an efficiency is not the same thing as a standard division of two
   /// histograms: the errors must be treated as correlated
   Scatter2D efficiency(const Histo1D& accepted, const Histo1D& total);
+
+  /// @brief Convert a Histo1D to a Scatter2D representing the integral of the histogram
+  ///
+  /// NB. The integral histo errors are calculated as sqrt(binvalue), as if they
+  /// are uncorrelated. This is not in general true for integral histograms, so if you
+  /// need accurate errors you should explicitly monitor bin-to-bin correlations.
+  Scatter2D toIntegralHisto(const Histo1D& h, bool includeunderflow=true);
 
   //@}
 
