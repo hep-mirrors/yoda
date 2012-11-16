@@ -13,7 +13,8 @@ pkginclude_HEADERS = \
     Scatter2D.h Point2D.h \
     Scatter3D.h Point3D.h \
     Writer.h WriterAIDA.h WriterFLAT.h WriterYODA.h \
-    Reader.h ReaderAIDA.h ReaderYODA.h
+    Reader.h ReaderAIDA.h ReaderYODA.h \
+	ROOTCnv.h
 
 nobase_pkginclude_HEADERS = \
 	WriterMethods.icc \
