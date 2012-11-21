@@ -221,9 +221,13 @@ namespace YODA {
       eraseBins(from+1, to);
     }
 
-    /// Merge every group of @a n bins, starting from the LHS
+    /// @brief Merge every group of @a n bins, starting from the LHS
+    ///
+    /// If the number of bins is not a multiple of @a n, the last @a m < @a n
+    /// bins on the RHS will also be merged, as the closest possible approach to
+    /// factor @n rebinning everywhere.
     void rebin(size_t n) {
-      for(size_t m=0; m < numBins(); m++) {
+      for (size_t m = 0; m < numBins(); m++) {
         const size_t end = (m + n - 1 < numBins()) ? m + n -1 : numBins() - 1;
         if (end > m) mergeBins(m, end);
       }
@@ -238,7 +242,7 @@ namespace YODA {
 
 
     /// Add a contiguous set of bins to an axis, via their list of edges
-    void addBins(const std::vector<double> &binedges) {
+    void addBins(const std::vector<double>& binedges) {
       Bins newBins(_bins);
       if (binedges.size() == 0)
         return;
