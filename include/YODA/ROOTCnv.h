@@ -98,10 +98,12 @@ namespace YODA {
   //@{
 
   /// @brief Convert a YODA Histo1D to a ROOT 1D histogram
+  ///
+  /// @todo Check/improve/extend -- needs SetBinError or not?
   inline TH1D toTH1D(const Histo1D& h) {
     // Work out bin edges first
     std::vector<double> edges;
-    edges.reserve(h.numBins());
+    edges.reserve(h.numBins()+1);
     edges.push_back(h.bin(0).lowEdge());
     for (size_t i = 0; i < h.numBins(); ++i) {
       HistoBin1D& b = h.bin(i);
@@ -109,12 +111,12 @@ namespace YODA {
       if (!fuzzyEquals(edges.back(), b.highEdge())) edges.push_back(b.highEdge());
     }
     // Book ROOT histogram
-    TH1D rtn(h.name(), h.title(), edges.size()-1, &edges[0]);
+    TH1D rtn(h.name().c_str(), h.title().c_str(), edges.size()-1, &edges[0]);
     rtn.Sumw2();
     TArrayD& sumw2s = *rtn.GetSumw2();
     for (int i = 1; i <= rtn.GetNbinsX(); ++i) {
       try {
-        HistoBin1D& b = h.binByCoord(rtn.GetBinCenter(i)); // throws if in a gap
+        Bin1D& b = h.binByCoord(rtn.GetBinCenter(i)); // throws if in a gap
         rtn.SetBinContent(i, b.sumW());
         sumw2s[i] = b.sumW2();
       } catch (const Exception& e) {  }
@@ -125,15 +127,78 @@ namespace YODA {
     sumw2s[0] = h.underflow().sumW2();
     sumw2s[rtn.GetNbinsX()+1] = h.overflow().sumW2();
     // Labels
-    if (h.hasAnnotation("XLabel")) rtn.SetXTitle(h.annotation("XLabel"));
-    if (h.hasAnnotation("YLabel")) rtn.SetYTitle(h.annotation("YLabel"));
+    if (h.hasAnnotation("XLabel")) rtn.SetXTitle(h.annotation("XLabel").c_str());
+    if (h.hasAnnotation("YLabel")) rtn.SetYTitle(h.annotation("YLabel").c_str());
     return rtn;
   }
 
 
-  /// @todo toTProfile: Profile1D -> TProfile
+  /// @brief Convert a YODA Scatter2D to a ROOT TH1D
 
-  /// @todo toTGraphAsymmErrs: Scatter2D -> TGraphAsymmErrs
+
+  /// @brief Convert a YODA Profile1D to a ROOT TProfile
+  ///
+  /// @todo Check/improve/extend. How to set all the y-weights in ROOT profiles?
+  inline TProfile toTProfile(const Profile1D& p) {
+    // Work out bin edges first
+    std::vector<double> edges;
+    edges.reserve(p.numBins()+1);
+    edges.push_back(p.bin(0).lowEdge());
+    for (size_t i = 0; i < p.numBins(); ++i) {
+      Bin1D& b = p.bin(i);
+      if (!fuzzyEquals(edges.back(), b.lowEdge())) edges.push_back(b.lowEdge());
+      if (!fuzzyEquals(edges.back(), b.highEdge())) edges.push_back(b.highEdge());
+    }
+    // Book ROOT histogram
+    TProfile rtn(p.name().c_str(), p.title().c_str(), edges.size()-1, &edges[0]);
+    rtn.Sumw2();
+    TArrayD& sumw2s = *rtn.GetSumw2();
+    for (int i = 1; i <= rtn.GetNbinsX(); ++i) {
+      try {
+        ProfileBin1D& b = p.binByCoord(rtn.GetBinCenter(i)); // throws if in a gap
+        /// @todo This part is probably wrong -- also need to do something with GetW,
+        ///   GetW2, GetB, GetB2, and/or GetBinSumw2? ROOT docs are 100% useless...
+        rtn.SetBinContent(i, b.sumW());
+        sumw2s[i] = b.sumW2();
+      } catch (const Exception& e) {  }
+    }
+    // Overflows
+    rtn.SetBinContent(0, p.underflow().sumW());
+    rtn.SetBinContent(rtn.GetNbinsX()+1, p.overflow().sumW());
+    sumw2s[0] = p.underflow().sumW2();
+    sumw2s[rtn.GetNbinsX()+1] = p.overflow().sumW2();
+    // Labels
+    if (p.hasAnnotation("XLabel")) rtn.SetXTitle(p.annotation("XLabel").c_str());
+    if (p.hasAnnotation("YLabel")) rtn.SetYTitle(p.annotation("YLabel").c_str());
+    return rtn;
+  }
+
+
+  /// @brief Convert a YODA Scatter2D to a ROOT TGraphAsymmErrors
+  ///
+  /// @todo Check/improve/extend.
+  inline TGraphAsymmErrors toTGraph(const Scatter2D& s) {
+    TVectorF xs(s.numPoints()), ys(s.numPoints());
+    TVectorF exls(s.numPoints()), exhs(s.numPoints());
+    TVectorF eyls(s.numPoints()), eyhs(s.numPoints());
+    for (size_t i = 0; i < s.numPoints(); ++i) {
+      Point2D& p = s.bin(i);
+      xs[i] = p.x();
+      ys[i] = p.y();
+      exls[i] = p.xErrMinus();
+      exhs[i] = p.xErrPlus();
+      eyls[i] = p.yErrMinus();
+      eyhs[i] = p.yErrPlus();
+    }
+    // Make the ROOT object... mm, the constructors don't take name+title, unlike all this histos!
+    TGraphAsymmErrors rtn(xs, ys, exls, exhs, eyls, eyhs);
+    rtn.SetName(s.name().c_str());
+    rtn.SetTitle(s.title().c_str());
+    // Labels
+    if (s.hasAnnotation("XLabel")) rtn.GetXaxis()->SetTitle(s.annotation("XLabel").c_str());
+    if (s.hasAnnotation("YLabel")) rtn.GetYaxis()->SetTitle(s.annotation("YLabel").c_str());
+    return rtn;
+  }
 
   //@}
 

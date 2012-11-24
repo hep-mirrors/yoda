@@ -3,13 +3,8 @@ YODA TODO list
 
 NOW
 
-* Remove non-const bin access from Histos and Profiles
-   cf. David D's point re. consistency via email on 7/8/2012
 
 * Auto-determine input and output formats (= readers/writers) from file extn (AB)
-
-* Add Axis2D -> Histo2D/Profile2D bin adding and erasing. (AB)
-   Adding 2D operator support and bin-adding/erasing
 
 * Make Python interface test scripts (DM,AB)
    Test Histo2D and Scatter2D from Python
@@ -20,19 +15,21 @@ NOW
 
 * Add stdErr to HistoBinXD (AB)
 
-* WriterFlat, for Scatter2D representations only. (HH)
-
 * Add a goodness of fit test collection (AB)
    Simple GoF measures, such as chi2 of a bin and of a histo (chained), for 1D
    and 2D Histos, Profiles and Scatters. Also KS (later)?
 
-* ROOT analysis type converter functions
-   In YODA/ROOTCnv.h -- pure header library to avoid bild-time ROOT dependence
-
 
 NEXT
 
-* Optionally configurable ROOT writer.
+* Remove non-const bin access from Histos and Profiles?
+   cf. David D's point re. consistency via email on 7/8/2012
+   In practice they can't be removed as they are used internally. Attempting to
+   make them protected/private didn't work due to requirements of the Python
+   wrapper code... leaving it be for now.
+
+* Add Axis2D -> Histo2D/Profile2D bin adding and erasing. (AB)
+   Adding 2D operator support and bin-adding/erasing
 
 * Add a Counter type (mostly a UI/persistency wrapper on Dbn1D) (AB)
    "Binning"/"axis" option on arbitrary types, particularly strings? ->

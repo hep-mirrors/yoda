@@ -1,3 +1,11 @@
+2012-11-24  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Bump version to 0.6beta0
+
+	* Adding more ROOT converters. Who knows how to make TProfiles
+	from scratch, but Histo1D and Scatter2D are covered, which should
+	be enough to get started with, at least.
+
 2012-11-16  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Adding yoda-config
