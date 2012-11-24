@@ -12,18 +12,21 @@ pkginclude_HEADERS = \
     Profile2D.h ProfileBin2D.h \
     Scatter2D.h Point2D.h \
     Scatter3D.h Point3D.h \
+    ScatterND.h PointND.h ErrorND.h \
     Writer.h WriterAIDA.h WriterFLAT.h WriterYODA.h \
     Reader.h ReaderAIDA.h ReaderYODA.h \
 	ROOTCnv.h
 
 nobase_pkginclude_HEADERS = \
 	WriterMethods.icc \
+	Utils/StringUtils.h \
 	Utils/MathUtils.h \
 	Utils/Formatting.h \
 	Utils/BinSearcher.h \
 	Utils/sortedvector.h \
 	Utils/cachedvector.h \
 	Utils/nvector.h \
+	Utils/ndarray.h \
 	Utils/fastlog.h \
 	Config/YodaConfig.h \
 	Config/BuildConfig.h
