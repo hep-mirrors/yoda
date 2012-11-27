@@ -34,6 +34,11 @@ namespace YODA {
       _readDoc(stream, aos);
     }
 
+
+    // Hide from Doxygen until endcond
+    /// @cond
+
+
   protected:
 
     void _readDoc(std::istream& stream, std::vector<AnalysisObject*>& aos);
@@ -59,12 +64,11 @@ namespace YODA {
   public:
 
     /// Private constructor, since it's a singleton.
+    /// @todo This is definitely not private!
     ReaderYODA() { }
 
 
-
-    /// Here comes everything we need for the parser
-
+    // Here comes everything we need for the parser
 
     /// Structs for the Histo1D parser
     /// The data for Dbn1D
@@ -324,14 +328,20 @@ namespace YODA {
       qi::rule<Iterator, scatterpoint2d(), Skipper> ScatterPoint2D;
     };
 
+
+    /// @endcond
+
   };
 
 } // end of YODA namespace
 
 
-/// Now we need to make boost aware of the structs we want to
-/// fill directly from the parser. Boost wants this magic in
-/// the global scope, that's why we have it outside the namespace.
+
+// Now we need to make boost aware of the structs we want to
+// fill directly from the parser. Boost wants this magic in
+// the global scope, that's why we have it outside the namespace.
+
+/// @cond PRIVATE
 
 BOOST_FUSION_ADAPT_STRUCT(
   YODA::ReaderYODA::histo1ddbn,
@@ -383,6 +393,6 @@ BOOST_FUSION_ADAPT_STRUCT(
   (std::string, val)
 )
 
-
+/// @endcond
 
 #endif
