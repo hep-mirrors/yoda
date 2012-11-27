@@ -1,7 +1,9 @@
 if ENABLE_PYEXT
 
-SUBDIRS = .
+SUBDIRS = yoda
 CYTHONFLAGS = @CYTHONFLAGS@
+
+EXTRA_DIST = template.py
 
 all-local:
 	$(PYTHON) setup.py install --install-lib=build/

@@ -1,7 +1,7 @@
 ## Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.59)
-AC_INIT([YODA],[0.6.0beta0],[yoda@projects.hepforge.org],[YODA])
+AC_INIT([YODA],[0.6.0beta1],[yoda@projects.hepforge.org],[YODA])
 AM_INIT_AUTOMAKE
 #AC_CONFIG_SRCDIR([src/Bin1D.cc])
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
@@ -141,7 +141,7 @@ AC_CONFIG_FILES([Makefile Doxyfile])
 AC_CONFIG_FILES([include/Makefile include/YODA/Makefile])
 AC_CONFIG_FILES([src/Makefile src/tinyxml/Makefile])
 AC_CONFIG_FILES([tests/Makefile])
-AC_CONFIG_FILES([pyext/Makefile pyext/setup.py])
+AC_CONFIG_FILES([pyext/Makefile pyext/setup.py pyext/yoda/Makefile pyext/yoda/include/Makefile])
 AC_CONFIG_FILES([bin/Makefile bin/yoda-config])
 
 AC_OUTPUT
