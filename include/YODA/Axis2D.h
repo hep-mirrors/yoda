@@ -257,7 +257,7 @@ namespace YODA {
     /// will be deleted, and false means it will be kept.
     void eraseBins(const std::vector<bool> deleteMask) {
       Bins newBins;
-      for (size_t i = 0; i < numBins; i++)
+      for (size_t i = 0; i < numBins(); i++)
         if (!deleteMask[i])
           newBins.push_back(bins(i));
 
