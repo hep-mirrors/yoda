@@ -5,6 +5,10 @@
 //
 
 #include "YODA/Writer.h"
+#include "YODA/WriterYODA.h"
+#include "YODA/WriterAIDA.h"
+#include "YODA/WriterFLAT.h"
+#include "boost/algorithm/string.hpp"
 #include <iostream>
 #include <typeinfo>
 #include <sstream>
@@ -12,6 +16,16 @@
 using namespace std;
 
 namespace YODA {
+
+
+  Writer& Writer::makeWriter(const std::string& name) {
+    const size_t lastdot = name.find_last_of(".");
+    const string fmt = boost::to_lower_copy((lastdot == std::string::npos) ? name : name.substr(lastdot+1));
+    if (fmt == "yoda") return WriterYODA::create();
+    if (fmt == "aida") return WriterAIDA::create();
+    if (fmt == "flat") return WriterFLAT::create();
+    throw UserError("Format cannot be identified from string '" + name + "'");
+  }
 
 
   void Writer::write(std::ostream& stream, const AnalysisObject& ao) {

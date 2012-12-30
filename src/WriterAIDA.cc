@@ -62,8 +62,8 @@ namespace YODA {
 
   void WriterAIDA::writeScatter2D(std::ostream& os, const Scatter2D& s) {
     ios_base::fmtflags oldflags = os.flags();
-    const int precision = 8;
-    os << scientific << showpoint << setprecision(precision);
+    // const int precision = 8;
+    os << scientific << showpoint << setprecision(_precision);
 
     string name = "";
     string path = "/";
@@ -90,12 +90,12 @@ namespace YODA {
     foreach (Point2D pt, s.points()) {
       os << "    <dataPoint>\n";
       os << "      <measurement value=\"" << pt.x()
-	 << "\" errorPlus=\"" << pt.xErrPlus() 
-         << "\" errorMinus=\"" << pt.xErrMinus() 
+	 << "\" errorPlus=\"" << pt.xErrPlus()
+         << "\" errorMinus=\"" << pt.xErrMinus()
 	 << "\"/>\n";
       os << "      <measurement value=\"" << pt.y()
-	 << "\" errorPlus=\"" << pt.yErrPlus() 
-         << "\" errorMinus=\"" << pt.yErrMinus() 
+	 << "\" errorPlus=\"" << pt.yErrPlus()
+         << "\" errorMinus=\"" << pt.yErrMinus()
 	 << "\"/>\n";
       os << "    </dataPoint>\n";
     }

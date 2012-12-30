@@ -13,6 +13,8 @@
 #include "YODA/Profile1D.h"
 #include "YODA/Scatter2D.h"
 
+#include "boost/range.hpp"
+
 #include <string>
 #include <fstream>
 
@@ -43,42 +45,16 @@ namespace YODA {
     //@{
 
     /// Write out a collection of objects @a objs to output stream @a stream.
-    void write(std::ostream& stream, const std::vector<AnalysisObject*>& aos) {
-      write(stream, aos.begin(), aos.end());
+    template <typename RANGE>
+    void write(std::ostream& stream, const RANGE& aos) {
+      typedef typename boost::range_iterator<const RANGE>::type const_iterator;
+      write(stream, boost::begin(aos), boost::end(aos));
     }
     /// Write out a collection of objects @a objs to file @a filename.
-    void write(const std::string& filename, const std::vector<AnalysisObject*>& aos) {
-      write(filename, aos.begin(), aos.end());
-    }
-
-
-    /// Write out a collection of objects @a objs to output stream @a stream.
-    void write(std::ostream& stream, const std::list<AnalysisObject*>& aos) {
-      write(stream, aos.begin(), aos.end());
-    }
-    /// Write out a collection of objects @a objs to file @a filename.
-    void write(const std::string& filename, const std::list<AnalysisObject*>& aos) {
-      write(filename, aos.begin(), aos.end());
-    }
-
-
-    /// Write out a collection of objects @a objs to output stream @a stream.
-    void write(std::ostream& stream, const std::set<AnalysisObject*>& aos) {
-      write(stream, aos.begin(), aos.end());
-    }
-    /// Write out a collection of objects @a objs to file @a filename.
-    void write(const std::string& filename, const std::set<AnalysisObject*>& aos) {
-      write(filename, aos.begin(), aos.end());
-    }
-
-
-    /// Write out a collection of objects @a objs to output stream @a stream.
-    void write(std::ostream& stream, const std::deque<AnalysisObject*>& aos) {
-      write(stream, aos.begin(), aos.end());
-    }
-    /// Write out a collection of objects @a objs to file @a filename.
-    void write(const std::string& filename, const std::deque<AnalysisObject*>& aos) {
-      write(filename, aos.begin(), aos.end());
+    template <typename RANGE>
+    void write(const std::string& filename, const RANGE& aos) {
+      typedef typename boost::range_iterator<const RANGE>::type const_iterator;
+      write(filename, boost::begin(aos), boost::end(aos));
     }
 
     //@}
@@ -108,6 +84,37 @@ namespace YODA {
       outstream.open(filename.c_str());
       write(outstream, begin, end);
       outstream.close();
+    }
+
+
+    //@}
+
+
+    /// @name Static functions with automatic file extension detection
+    //@{
+
+    /// Factory function to make a writer object by format name or a filename (upper or lower case).
+    static Writer& makeWriter(const std::string& format_name);
+
+    /// Write out object @a ao to file @a filename
+    static void writeTo(const std::string& filename, const AnalysisObject& ao) {
+      Writer& w = makeWriter(filename);
+      w.write(filename, ao);
+    }
+
+    /// Write out a collection of objects @a objs to file @a filename.
+    template <typename RANGE>
+    static void writeTo(const std::string& filename, const RANGE& aos) {
+      Writer& w = makeWriter(filename);
+      w.write(filename, aos);
+    }
+
+    /// @brief Write out the objects specified by start iterator @a begin and end
+    /// iterator @a end to file @a filename.
+    template <typename AOITER>
+    static void writeTo(const std::string& filename, const AOITER& begin, const AOITER& end) {
+      Writer& w = makeWriter(filename);
+      w.write(filename, begin, end);
     }
 
     //@}

@@ -71,15 +71,19 @@ namespace YODA {
             _axis(bins)
     { }
 
+
     /// Copy constructor with optional new path
+    /// @todo Don't copy the path?
     Histo1D(const Histo1D& h, const std::string& path="");
 
 
     /// Constructor from a Scatter2D's binning, with optional new path
+    /// @todo Don't copy the path?
     Histo1D(const Scatter2D& s, const std::string& path="");
 
 
     /// Constructor from a Profile1D's binning, with optional new path
+    /// @todo Don't copy the path?
     Histo1D(const Profile1D& p, const std::string& path="");
 
 

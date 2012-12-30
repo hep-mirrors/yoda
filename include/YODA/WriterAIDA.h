@@ -24,8 +24,7 @@ namespace YODA {
     /// Singleton creation function
     static Writer& create() {
       static WriterAIDA _instance;
-      // Unused anyway; but if used, does not work in yoda2aida
-      // _instance.setPrecision(6);
+      _instance.setPrecision(6);
       return _instance;
     }
 

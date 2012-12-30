@@ -3,10 +3,7 @@ YODA TODO list
 
 NOW
 
-
-* Auto-determine input and output formats (= readers/writers) from file extn (AB)
-
-* Make Python interface test scripts (DM,AB)
+* Make Python interface test scripts (DM, AB)
    Test Histo2D and Scatter2D from Python
 
 * Add copy assignment to both C++ and Cython (AB)
@@ -22,15 +19,6 @@ NOW
 
 NEXT
 
-* Remove non-const bin access from Histos and Profiles?
-   cf. David D's point re. consistency via email on 7/8/2012
-   In practice they can't be removed as they are used internally. Attempting to
-   make them protected/private didn't work due to requirements of the Python
-   wrapper code... leaving it be for now.
-
-* Add Axis2D -> Histo2D/Profile2D bin adding and erasing. (AB)
-   Adding 2D operator support and bin-adding/erasing
-
 * Add a Counter type (mostly a UI/persistency wrapper on Dbn1D) (AB)
    "Binning"/"axis" option on arbitrary types, particularly strings? ->
    generalised bar charts. Make counter a pure sumW, sumW2 object and use it in
@@ -38,20 +26,31 @@ NEXT
 
 * Generalise/expose Axis*D for binning of general objects, e.g. "binned histos"
 
+* "BinnedValues" type: use Axis behaviour to look up fixed values without Dbn "history".
+
+* Test negative- and mixed-weighted stat calculations, and scaling.
+
+
+AND THEN...
+
+* Remove non-const bin access from Histos and Profiles?
+   cf. David D's point re. consistency via email on 7/8/2012
+   In practice they can't be removed as they are used internally. Attempting to
+   make them protected/private didn't work due to requirements of the Python
+   wrapper code... leaving it as-is for now.
+
+* Add Axis2D -> Histo2D/Profile2D bin adding and erasing. (AB)
+   Adding 2D operator support and bin-adding/erasing
+
 * 2D bin merging and rebinning (AB)
    Only rebin perfect grids: need to detect them. Global rebinning of Axis2D ->
    Histo2D by generally different integer factors in x and y directions.
-
-* Test negative- and mixed-weighted stat calculations, and scaling.
 
 * Test gap handling on 1D and 2D axes.
 
 * Add Histo2D binning constructors from Scatter3D and Profile2D.
 
 * Add Scatter1D/Point1D (AB)
-
-* "BinnedValues" type: use Axis behaviour to look up fixed values without Dbn "history".
-
 
 
 AND AFTER THAT...
@@ -62,8 +61,6 @@ AND AFTER THAT...
    Use this in implementing the make-plots replacement.
 
 * ReaderFlat -> Scatter2D
-
-* Simple ntupling, done well :-)
 
 * Allow comments on ends of YODA format data lines in ReaderYODA (HH)
    Ignore anything after "#" on data lines -- use this to write convenience
@@ -81,4 +78,9 @@ AND AFTER THAT...
 * Template all classes on floating point type (default to double)
 
 * Look into pickling of C++ interfaced classes. WriterS10n? MessagePack? Protobuf?
-  The latter two look awesome...
+
+* Simple ntupling, done well :-)
+   Surprisingly the Protobuf, MsgPack, etc. systems don't seem designed for
+   ntuples... surely something is? Maybe wrap HDF5 or similar? Not to be
+   embarked upon lightly: we'd need to be certain that we could make something
+   really nice.
