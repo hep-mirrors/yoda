@@ -282,42 +282,42 @@ namespace YODA {
     }
 
     /// Return the lowest-valued bin edge along the x-axis
-    const double lowEdgeX() const {
+    double lowEdgeX() const {
       return _xRange.first;
     }
 
     /// Alias for lowEdgeX()
-    const double xMin() const {
+    double xMin() const {
       return lowEdgeX();
     }
 
     /// Return the highest-valued bin edge along the x-axis
-    const double highEdgeX() const {
+    double highEdgeX() const {
       return _xRange.second;
     }
 
     /// Alias for highEdgeX()
-    const double xMax() const {
+    double xMax() const {
       return highEdgeX();
     }
 
     /// Return the lowest-valued bin edge along the y-axis
-    const double lowEdgeY() const {
+    double lowEdgeY() const {
       return _yRange.first;
     }
 
     /// Alias for lowEdgeY()
-    const double yMin() const {
+    double yMin() const {
       return lowEdgeY();
     }
 
     /// Return the highest-valued bin edge along the y-axis
-    const double highEdgeY() const {
+    double highEdgeY() const {
       return _yRange.second;
     }
 
     /// Alias for highEdgeY()
-    const double yMax() const {
+    double yMax() const {
       return highEdgeY();
     }
 
