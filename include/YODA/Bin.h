@@ -18,8 +18,10 @@ namespace YODA {
   /// weight statistics access, as 1D/2D and basic/profile histos have
   /// quite difference implementations.
   class Bin {
-
   public:
+
+    /// Virtual destructor for inheritance
+    virtual ~Bin() { }
 
     /// @name Miscellaneous
     //@{
@@ -29,8 +31,6 @@ namespace YODA {
 
     //@}
 
-
-  public:
 
     /// @name Fill statistics
     //@{

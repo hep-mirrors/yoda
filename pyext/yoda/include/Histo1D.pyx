@@ -82,7 +82,7 @@ cdef class Histo1D(AnalysisObject):
         """
         self._Histo1D().fill(x, weight)
 
-    ## HACK hACK HACK HACK HACK
+    # TODO: HACK HACK HACK HACK HACK
     def fill_many(self, xs, weight=1.0):
         """
         (x, weight=1.0) -> None. Fill with given x and optional weight.

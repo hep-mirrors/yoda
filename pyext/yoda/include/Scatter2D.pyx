@@ -41,6 +41,9 @@ cdef class Scatter2D(AnalysisObject):
         return util.new_owned_cls(Scatter2D,
             new c.Scatter2D(deref(self._Scatter2D()), string(path)))
 
+    def points(self):
+        return list(self)
+
     def addPoints(self, iterable):
         for row in iterable:
             self.addPoint(*row)
