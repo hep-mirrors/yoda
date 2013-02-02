@@ -35,7 +35,7 @@ cdef extern from "YODA/Dbn1D.h" namespace "YODA":
 
         # Raw distribution running sums
         unsigned long numEntries() except+ err
-        unsigned long effNumEntries() except+ err
+        double effNumEntries() except+ err
         double sumW() except+ err
         double sumW2() except+ err
         double sumWX() except+ err
@@ -73,7 +73,7 @@ cdef extern from "YODA/Dbn2D.h" namespace "YODA":
         
         # Raw distribution running sums
         unsigned long numEntries() except+ err
-        unsigned long effNumEntries() except+ err
+        double effNumEntries() except+ err
         double sumW() except+ err
         double sumW2() except+ err
         double sumWX() except+ err
@@ -129,7 +129,7 @@ cdef extern from "YODA/Dbn3D.h" namespace "YODA":
         
         # Raw distribution running sums
         unsigned long numEntries()
-        unsigned long effNumEntries()
+        double effNumEntries()
         double sumW()
         double sumW2()
 
@@ -280,7 +280,7 @@ cdef extern from "YODA/Bin1D.h" namespace "YODA":
 
         # raw statistics
         unsigned long numEntries() except+ err
-        unsigned long effNumEntries() except+ err
+        double effNumEntries() except+ err
         double sumW() except+ err
         double sumW2() except+ err
         double sumWX() except+ err
@@ -335,7 +335,7 @@ cdef extern from "YODA/Bin2D.h" namespace "YODA":
 
         # raw statistics
         unsigned long numEntries() except+ err
-        unsigned long effNumEntries() except+ err
+        double effNumEntries() except+ err
         double sumW() except+ err
         double sumW2() except+ err
         double sumWX() except+ err

@@ -1,6 +1,5 @@
 #TODO: Tidy up + docstrings etc.
 
-cdef object transform_functor = ctypes.CFUNCTYPE(ctypes.c_double, ctypes.c_double)
 
 cdef class Scatter2D(AnalysisObject):
     """
@@ -10,11 +9,6 @@ cdef class Scatter2D(AnalysisObject):
 
     cdef inline c.Scatter2D *_Scatter2D(self) except NULL:
         return <c.Scatter2D*> self.ptr()
-
-    # There is a pythonic constructor here, and it looks a little like...
-    # __init__(self, *args, **kwargs)
-    # ([edge], path="", title="")
-    # ([bins], **kwargs)
 
     def __init__(self, *args, **kwargs):
         util.try_loop([self.__init_2, self.__init_3], *args, **kwargs)
@@ -74,20 +68,30 @@ cdef class Scatter2D(AnalysisObject):
 
 
     def transformX(self, f):
+        # Import ctypes here (rather than at module import) so that Python 2.4
+        # users don't need ctypes to use the rest of the library.
+        import ctypes
+
         try:
-            callback = transform_functor(f)
+            callback = ctypes.CFUNCTYPE(ctypes.c_double, ctypes.c_double)(f)
         except:
-            raise RuntimeError("Callback be of type (double) -> double")
+            raise RuntimeError("Callback is not of type (double) -> double")
+
 
         fptr = (<c.dbl_dbl_fptr*><size_t>ctypes.addressof(callback))[0]
 
         c.Scatter2D_transformX(deref(self._Scatter2D()), fptr)
 
     def transformY(self, f):
+        # Import ctypes here (rather than at module import) so that Python 2.4
+        # users don't need ctypes to use the rest of the library.
+        import ctypes
+
         try:
-            callback = transform_functor(f)
+            callback = ctypes.CFUNCTYPE(ctypes.c_double, ctypes.c_double)(f)
         except:
-            raise RuntimeError("Callback be of type (double) -> double")
+            raise RuntimeError("Callback is not of type (double) -> double")
+
 
         fptr = (<c.dbl_dbl_fptr*><size_t>ctypes.addressof(callback))[0]
 

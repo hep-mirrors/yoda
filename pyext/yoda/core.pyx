@@ -6,7 +6,7 @@ from libcpp.string cimport string
 from libcpp.vector cimport vector
 from libcpp.pair cimport pair
 from libcpp.map cimport map
-import ctypes
+#import ctypes # Not done here any more, instead done on transformX/Y.
 
 # Pure python imports
 from itertools import repeat, imap

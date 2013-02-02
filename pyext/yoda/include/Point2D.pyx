@@ -1,6 +1,3 @@
-from collections import namedtuple
-from libcpp cimport bool
-
 cdef inline pair[double, double] read_symmetric(object val) except *:
     try:
         a, b = val

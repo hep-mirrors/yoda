@@ -38,9 +38,16 @@ cdef class Histo2D(AnalysisObject):
     def fill(self, double x, double y, weight=1.0):
         self._Histo2D().fill(x, y, weight)
 
+    # Todo: amalgomate this with fill to take arbitrary iterators?
     def fill_many(self, xs, ys, weight=1.0):
-        for x, y in izip(xs, ys):
-            self._Histo2D().fill(x, y, weight)
+        cdef double x, y
+        try:
+            while True:
+                x = next(xs)
+                y = next(ys)
+                self._Histo2D().fill(x, y, weight)
+        except StopIteration:
+            pass
 
     def copy(self, char *path=""):
         return util.new_owned_cls(Histo2D,

@@ -1,6 +1,3 @@
-from collections import namedtuple
-from libcpp cimport bool
-
 # TODO: make more consistent with Point2D
 
 cdef class Point3D(util.Base):

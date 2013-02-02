@@ -268,7 +268,7 @@ namespace YODA {
     }
 
     /// The effective number of entries
-    unsigned long effNumEntries() const {
+    double effNumEntries() const {
       return _dbn.effNumEntries();
     }
 
@@ -421,8 +421,8 @@ namespace YODA {
         return yedges();
     }
 
-    double _edge_perp(int i) const {
-      double output;
+    double _edge_perp(size_t i) const {
+      double output = 0.0;
 
       switch (i) {
         case 0: output = xMax(); break;

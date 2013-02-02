@@ -1,6 +1,3 @@
-from collections import namedtuple
-from itertools import izip, repeat
-
 cdef class Dbn3D(util.Base):
     """
     A 2D distribution 'counter', used and exposed by 2D histograms and
