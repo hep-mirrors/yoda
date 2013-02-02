@@ -45,10 +45,7 @@ header_files = glob('../include/YODA/*.h') + glob('../include/YODA/Utils/*.h')
 extns = [ext('util'),
          ext('core', statics=[statics],
              depends=glob('yoda/include/*.pyx') + header_files
-            ),
-         ext('axis', statics=[statics],
-             depends=glob('yoda/include/Axis*.pyx') + header_files
-            ),
+            )
         ]
 
 setup(
