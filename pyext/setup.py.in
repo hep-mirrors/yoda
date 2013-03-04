@@ -26,16 +26,16 @@ def ext(name, depends=[], statics=[]):
         include_dirs=[incdir, PKGNAME, boostdir],
         library_dirs=[srcdir, os.path.join(srcdir, '.libs')],
         libraries=['stdc++', 'YODA'])
- 
+
 
 # Make the templates
 make_templates('Axis1D_BIN1D_DBN',
-         dict(DBN='Dbn2D', BIN1D='ProfileBin1D'),
-         dict(DBN='Dbn1D', BIN1D='HistoBin1D'))
+               dict(DBN='Dbn2D', BIN1D='ProfileBin1D'),
+               dict(DBN='Dbn1D', BIN1D='HistoBin1D'))
 
 make_templates('Axis2D_BIN2D_DBN',
-         dict(DBN='Dbn3D', BIN2D='ProfileBin2D'),
-         dict(DBN='Dbn2D', BIN2D='HistoBin2D'))
+               dict(DBN='Dbn3D', BIN2D='ProfileBin2D'),
+               dict(DBN='Dbn2D', BIN2D='HistoBin2D'))
 
 make_templates('Bin1D_DBN', DBN=('Dbn1D', 'Dbn2D'))
 make_templates('Bin2D_DBN', DBN=('Dbn2D', 'Dbn3D'))
@@ -43,14 +43,9 @@ make_templates('Bin2D_DBN', DBN=('Dbn2D', 'Dbn3D'))
 header_files = glob('../include/YODA/*.h') + glob('../include/YODA/Utils/*.h')
 
 extns = [ext('util'),
-         ext('core', statics=[statics],
-             depends=glob('yoda/include/*.pyx') + header_files
-            )
-        ]
+         ext('core', statics=[statics], depends=glob('yoda/include/*.pyx') + header_files)]
 
-setup(
-    name = PKGNAME,
-    ext_modules = extns,
-    cmdclass = dict(build_ext=build_ext),
-    packages = [PKGNAME]
-)
+setup(name = PKGNAME,
+      ext_modules = extns,
+      cmdclass = dict(build_ext=build_ext),
+      packages = [PKGNAME])

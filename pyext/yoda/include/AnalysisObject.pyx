@@ -21,7 +21,7 @@ cdef class AnalysisObject(util.Base):
     def annotations(self):
         """
         Key value pairs of metadata, returned as a Python dictionary.
-        
+
         """
         ana = self._AnalysisObject().annotations()
         it = ana.begin()
@@ -37,12 +37,12 @@ cdef class AnalysisObject(util.Base):
         stored in a YODA file.
 
         """
-        f = StringIO() 
+        f = StringIO()
         writeYODA([self], f)
         f.seek(0)
         return f.read().strip()
 
-    
+
     def updateAnnotations(self, E=None, **F):
         """
         AO.update([E, ]**F) -> None.  Update annotations of AO from
