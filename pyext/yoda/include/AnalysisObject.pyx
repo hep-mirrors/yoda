@@ -25,6 +25,7 @@ cdef class AnalysisObject(util.Base):
         Key value pairs of metadata, returned as a Python dictionary.
 
         """
+        # TODO: It would be best if this was returned by reference so that it could also be *modified* as a dict
         ana = self._AnalysisObject().annotations()
         it = ana.begin()
         out_dict = {}

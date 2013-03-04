@@ -21,7 +21,9 @@ namespace YODA {
     /// Default constructor
     Plot()
       : AnalysisObject("Plot", "", "")
-    { }
+    {
+      clearAnnotations();
+    }
 
     //@}
 
