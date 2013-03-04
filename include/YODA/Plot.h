@@ -23,6 +23,7 @@ namespace YODA {
       : AnalysisObject("Plot", "", "")
     {
       clearAnnotations();
+      setAnnotation("Type", "Plot");
     }
 
     //@}
