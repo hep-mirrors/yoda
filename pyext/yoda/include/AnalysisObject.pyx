@@ -2,8 +2,10 @@ from cython.operator cimport dereference as deref, preincrement as preinc
 from cStringIO import StringIO
 
 # Useful helper function to avoid hoops in Cython's type system
+# TODO: Necessary?
 cdef void set_annotation(c.AnalysisObject *ana, char *k, char *v):
     ana.setAnnotation(string(k), string(v))
+
 
 # AnalysisObject is the base class of most of the user facing objects
 cdef class AnalysisObject(util.Base):
@@ -31,19 +33,8 @@ cdef class AnalysisObject(util.Base):
             preinc(it)
         return out_dict
 
-    def string(self):
-        """
-        A human readable representation of this object as it would be
-        stored in a YODA file.
-
-        """
-        f = StringIO()
-        writeYODA([self], f)
-        f.seek(0)
-        return f.read().strip()
-
-
     def updateAnnotations(self, E=None, **F):
+        # TODO: Yuck!
         """
         AO.update([E, ]**F) -> None.  Update annotations of AO from
         dict/iterable E and F. Has the same semantics as Python's
@@ -61,13 +52,47 @@ cdef class AnalysisObject(util.Base):
         if E is not None:
             if hasattr(E, 'keys'):
                 for k in E:
+                    # TODO: reinstate with str cast: set_annotation(AO, k, str(E[k]))
                     set_annotation(AO, k, E[k])
             else:
                 for k, v in E:
+                    # TODO: reinstate with str cast: set_annotation(AO, k, str(v))
                     set_annotation(AO, k, v)
 
         for k in F:
+            # TODO: reinstate with str cast: set_annotation(AO, k, str(F[k]))
             set_annotation(AO, k, F[k])
+
+    # string annotation(string key) except+ err
+    # string annotation(string key, string default) except+ err
+
+    def setAnnotation(self, k, v):
+        AO = self._AnalysisObject()
+        set_annotation(AO, k, v)
+
+    # def hasAnnotation(self, k):
+    #     AO = self._AnalysisObject()
+    #     return AO.hasAnnotation(string(k))
+
+    # def rmAnnotation(self, k):
+    #     AO = self._AnalysisObject()
+    #     return AO.rmAnnotation(string(k))
+
+    def clearAnnotations(self):
+        AO = self._AnalysisObject()
+        AO.clearAnnotations()
+
+
+    def string(self):
+        """
+        A human readable representation of this object as it would be
+        stored in a YODA file.
+
+        """
+        f = StringIO()
+        writeYODA([self], f)
+        f.seek(0)
+        return f.read().strip()
 
     property path:
         """

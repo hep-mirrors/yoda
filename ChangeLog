@@ -1,5 +1,7 @@
 2013-03-04  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Adding Plot mapping to Cython and improving the AO annotations handling in Python.
+
 	* Adding PLOT section writing to WriterFLAT (and WriterYODA,
 	although that might be a bad idea...)
 

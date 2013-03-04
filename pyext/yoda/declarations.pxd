@@ -11,7 +11,7 @@ cdef extern from "errors.hh":
     void err "translate_yoda_error" ()
 
 ctypedef map[string, string] Annotations
-ctypedef double (*dbl_dbl_fptr) (double) 
+ctypedef double (*dbl_dbl_fptr) (double)
 
 # Distributions
 
@@ -50,8 +50,8 @@ cdef extern from "YODA/Dbn1D.h" namespace "YODA":
 cdef extern from "YODA/Dbn2D.h" namespace "YODA":
     cdef cppclass Dbn2D:
         Dbn2D ()
-        Dbn2D (Dbn2D) 
-        
+        Dbn2D (Dbn2D)
+
         void fill(double x, double y, double weight) except+ err
         void reset() except+ err
         void scaleW(double) except+ err
@@ -70,7 +70,7 @@ cdef extern from "YODA/Dbn2D.h" namespace "YODA":
         double yStdDev() except+ err
         double yStdErr() except+ err
         double yRMS() except+ err
-        
+
         # Raw distribution running sums
         unsigned long numEntries() except+ err
         double effNumEntries() except+ err
@@ -126,7 +126,7 @@ cdef extern from "YODA/Dbn3D.h" namespace "YODA":
         double zStdErr()
         double zRMS()
 
-        
+
         # Raw distribution running sums
         unsigned long numEntries()
         double effNumEntries()
@@ -270,7 +270,7 @@ cdef extern from "YODA/Bin1D.h" namespace "YODA":
         double width() except+ err
         double focus() except+ err
         double midpoint() except+ err
-        
+
         # x statistics
         double xMean() except+ err
         double xVariance() except+ err
@@ -299,7 +299,7 @@ ctypedef Bin1D[Dbn3D] Bin1D_Dbn3D
 cdef extern from "YODA/Bin2D.h" namespace "YODA":
     cdef cppclass Bin2D[DBN](Bin):
         Bin2D(pair[double, double] xedges,
-              pair[double, double] yedges) except+ 
+              pair[double, double] yedges) except+
         Bin2D(Bin2D bin) except+ err
 
         # CYTHON HACK DO NOT CALL THIS IT DOES NOT EXIST
@@ -319,7 +319,7 @@ cdef extern from "YODA/Bin2D.h" namespace "YODA":
 
         pair[double, double] focus() except+ err
         pair[double, double] midpoint() except+ err
-        
+
         # x statistics
         double xMean() except+ err
         double xVariance() except+ err
@@ -444,7 +444,8 @@ cdef extern from "YODA/HistoBin2D.h" namespace "YODA":
         #Bin2D_Dbn2D merge(HistoBin2D b)
 #}}} HistoBin2D
 
-# Analaysis Objects
+
+# Analysis Objects
 
 # AnalysisObject {{{
 cdef extern from "YODA/AnalysisObject.h" namespace "YODA":
@@ -489,7 +490,7 @@ cdef extern from "YODA/Scatter2D.h" namespace "YODA":
     cdef cppclass Scatter2D(AnalysisObject):
         Scatter2D(string path, string title) except+ err
 
-        Scatter2D(sortedvector[Point2D], 
+        Scatter2D(sortedvector[Point2D],
                 string path,
                 string title) except+ err
 
@@ -523,7 +524,7 @@ cdef extern from "YODA/Scatter2D.h" namespace "YODA":
 cdef extern from "YODA/Scatter3D.h" namespace "YODA":
     cdef cppclass Scatter3D(AnalysisObject):
         Scatter3D(string path, string title) except+ err
-        Scatter3D(sortedvector[Point3D], 
+        Scatter3D(sortedvector[Point3D],
                 string path,
                 string title) except+ err
 
@@ -857,3 +858,10 @@ cdef extern from "YODA/Axis2D.h" namespace "YODA":
         void mergeBins(size_t, size_t) except+ err
 # Axis2D }}}
 
+
+# Plot {{{
+cdef extern from "YODA/Plot.h" namespace "YODA":
+    cdef cppclass Plot(AnalysisObject):
+        pass
+    #Histo2D(string path, string title) except+ err
+# Plot }}}

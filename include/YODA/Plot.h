@@ -25,6 +25,10 @@ namespace YODA {
 
     //@}
 
+
+    /// Make this class non-abstract
+    void reset() {};
+
   };
 
 

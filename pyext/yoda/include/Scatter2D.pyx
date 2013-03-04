@@ -7,7 +7,7 @@ cdef class Scatter2D(AnalysisObject):
 
     """
 
-    cdef inline c.Scatter2D *_Scatter2D(self) except NULL:
+    cdef inline c.Scatter2D* _Scatter2D(self) except NULL:
         return <c.Scatter2D*> self.ptr()
 
     def __init__(self, *args, **kwargs):

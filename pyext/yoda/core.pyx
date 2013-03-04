@@ -42,3 +42,10 @@ include "include/ProfileBin2D.pyx"
 include "include/HistoBin2D.pyx"
 include "include/Histo2D.pyx"
 include "include/Profile2D.pyx"
+
+cdef class Plot(AnalysisObject):
+    cdef inline c.Plot *_Plot(self) except NULL:
+        return <c.Plot*> self.ptr()
+
+    def __init__(self):
+        util.set_owned_ptr(self, new c.Plot())

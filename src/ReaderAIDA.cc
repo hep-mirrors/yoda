@@ -32,6 +32,7 @@ namespace YODA {
       if (!aidaN) throw ReadError("Couldn't get <aida> root element");
       for (const TiXmlNode* dpsN = aidaN->FirstChild("dataPointSet"); dpsN; dpsN = dpsN->NextSibling()) {
         const TiXmlElement* dpsE = dpsN->ToElement();
+        assert(dpsE != 0);
         const string plotpath = dpsE->Attribute("path");
         const string plotname = dpsE->Attribute("name");
 
