@@ -36,8 +36,11 @@ namespace YODA {
         const string plotname = dpsE->Attribute("name");
 
         // DPS to be stored
+        /// @todo Use a proper path handling class... like Boost.Filesystem's path, but without the PITA linking
+        string sep = "/";
+        if (plotpath.rfind("/") == plotpath.size()-1 || plotname.find("/") == 0) sep = "";
         /// @todo Clarify the memory management resulting from this... need shared_ptr?
-        Scatter2D* dps = new Scatter2D(plotpath + "/" + plotname);
+        Scatter2D* dps = new Scatter2D(plotpath + sep + plotname);
 
         // FIXME: This code crashes when there are annotations in the AIDA file:
         //// Read in annotations
