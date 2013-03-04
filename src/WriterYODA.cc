@@ -40,7 +40,10 @@ namespace YODA {
 
 
   void WriterYODA::writePlot(std::ostream& os, const Plot& p) {
+    /// @todo Do we really want to write anything here?
+    os << "# BEGIN YODA_PLOT" << "\n";
     _writeAnnotations(os, p);
+    os << "# END YODA_PLOT\n\n";
   }
 
 

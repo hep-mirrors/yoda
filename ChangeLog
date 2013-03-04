@@ -1,5 +1,8 @@
 2013-03-04  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Adding PLOT section writing to WriterFLAT (and WriterYODA,
+	although that might be a bad idea...)
+
 	* Adding aida2yoda and aida2flat converter scripts.
 
 2013-02-02  David Mallows  <dave.mallows@gmail.com>

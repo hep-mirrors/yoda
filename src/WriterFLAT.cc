@@ -40,7 +40,9 @@ namespace YODA {
 
 
   void WriterFLAT::writePlot(std::ostream& os, const Plot& p) {
+    os << "# BEGIN PLOT" << "\n";
     _writeAnnotations(os, p);
+    os << "# END PLOT" << "\n";
   }
 
 
@@ -52,7 +54,7 @@ namespace YODA {
 
 
   void WriterFLAT::writeHisto2D(std::ostream& os, const Histo2D& h) {
-    // FIXME: Currently not supported
+    /// @todo Currently not supported
     os << flush;
 
     //Scatter3D tmp = mkScatter(h);

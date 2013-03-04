@@ -53,7 +53,7 @@ namespace YODA {
         for (const TiXmlNode* dpN = dpsN->FirstChild("dataPoint"); dpN; dpN = dpN->NextSibling()) {
           const TiXmlNode* xMeasN = dpN->FirstChild("measurement");
           const TiXmlNode* yMeasN = xMeasN->NextSibling();
-          if (xMeasN && yMeasN)  {
+          if (xMeasN && yMeasN) {
             const TiXmlElement* xMeasE = xMeasN->ToElement();
             const TiXmlElement* yMeasE = yMeasN->ToElement();
             const string xcentreStr   = xMeasE->Attribute("value");
