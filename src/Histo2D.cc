@@ -1,7 +1,7 @@
 // -*- C++ -*-
 //
 // This file is part of YODA -- Yet more Objects for Data Analysis
-// Copyright (C) 2008-2012 The YODA collaboration (see AUTHORS for details)
+// Copyright (C) 2008-2013 The YODA collaboration (see AUTHORS for details)
 //
 #include "YODA/Histo2D.h"
 #include "YODA/Scatter3D.h"
