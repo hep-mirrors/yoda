@@ -1,0 +1,31 @@
+#! /usr/bin/env python
+
+"""\
+%prog aidafile [yodafile]
+
+Convert an AIDA data file to the YODA data format.
+"""
+
+import yoda, sys, optparse
+
+parser = optparse.OptionParser(usage=__doc__)
+opts, args = parser.parse_args()
+
+INFILE = None
+OUTFILE = None
+
+if len(args) == 1:
+    INFILE = args[0]
+    if INFILE.endswith(".aida"):
+        OUTFILE = INFILE.replace(".aida", ".yoda")
+    else:
+        OUTFILE = INFILE + ".yoda"
+elif len(args) == 2:
+    INFILE = args[0]
+    OUTFILE = args[1]
+else:
+    sys.stderr.write("You must specify the AIDA and YODA file names\n")
+    sys.exit(1)
+
+analysisobjects = yoda.readAIDA(INFILE)
+yoda.writeYODA(analysisobjects, OUTFILE)

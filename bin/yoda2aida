@@ -2,6 +2,8 @@
 
 """\
 %prog yodafile [aidafile]
+
+Convert a YODA data file to the old AIDA data format.
 """
 
 import yoda, sys, optparse
