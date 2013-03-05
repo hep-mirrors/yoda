@@ -29,8 +29,6 @@ cdef void make_iss(c.istringstream &iss, char *s):
 
 def readYODA(file_or_filename):
     """
-    readYODA(file_or_filename)
-
     Read data objects from the provided YODA-format file.
     Returns a list of analysis objects
     """
@@ -52,8 +50,6 @@ def readYODA(file_or_filename):
 
 def readAIDA(file_or_filename):
     """
-    readAIDA(file_or_filename)
-
     Read data objects from the provided AIDA-format file.
     Returns a list of analysis objects
     """
@@ -79,8 +75,6 @@ def readAIDA(file_or_filename):
 
 def writeYODA(ana_objs, file_or_filename):
     """
-    writeYODA(ana_objs, file_or_filename)
-
     Write data objects to the provided file in YODA format.
     """
     cdef c.ostringstream oss
@@ -103,8 +97,6 @@ def writeYODA(ana_objs, file_or_filename):
 
 def writeFLAT(ana_objs, file_or_filename):
     """
-    writeFLAT(ana_objs, file_or_filename)
-
     Write data objects to the provided file in FLAT format.
     """
     cdef c.ostringstream oss
@@ -127,8 +119,6 @@ def writeFLAT(ana_objs, file_or_filename):
 
 def writeAIDA(ana_objs, file_or_filename):
     """
-    writeAIDA(ana_objs, file_or_filename)
-
     Write data objects to the provided file in AIDA format.
     """
     cdef c.ostringstream oss

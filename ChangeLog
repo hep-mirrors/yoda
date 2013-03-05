@@ -1,3 +1,11 @@
+2013-03-05  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Removing the Plot from Cython... and soon from YODA itself:
+	we'll do this stuff manually and less hackily.
+
+	* Make Cython automatically add a copy of the original call
+	signature to each function's docstring.
+
 2013-03-04  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Adding Plot mapping to Cython and improving the AO annotations handling in Python.

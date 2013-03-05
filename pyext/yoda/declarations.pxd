@@ -859,9 +859,9 @@ cdef extern from "YODA/Axis2D.h" namespace "YODA":
 # Axis2D }}}
 
 
-# Plot {{{
-cdef extern from "YODA/Plot.h" namespace "YODA":
-    cdef cppclass Plot(AnalysisObject):
-        pass
-    #Histo2D(string path, string title) except+ err
-# Plot }}}
+# # Plot {{{
+# cdef extern from "YODA/Plot.h" namespace "YODA":
+#     cdef cppclass Plot(AnalysisObject):
+#         pass
+#     #Histo2D(string path, string title) except+ err
+# # Plot }}}
