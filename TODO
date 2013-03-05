@@ -2,13 +2,18 @@ YODA TODO list
 ==============
 
 NOW
+---
+
+* Python docstrings for Points, Dbns and Bins (AB)
 
 * Make Python interface test scripts (DM, AB)
    Test Histo2D and Scatter2D from Python
 
-* Add copy assignment to both C++ and Cython (AB)
+* Simplify Cython extension building
+   Can remove the template hack now? Package -> module since Cython is more
+   flexible than SWIG w.r.t. adding Python-only extensions.
 
-* Docstrings for Points, Dbns and Bins (AB)
+* Add copy assignment to both C++ and Cython (AB)
 
 * Add stdErr to HistoBinXD (AB)
 
@@ -18,6 +23,7 @@ NOW
 
 
 NEXT
+----
 
 * Add a Counter type (mostly a UI/persistency wrapper on Dbn1D) (AB)
    "Binning"/"axis" option on arbitrary types, particularly strings? ->
@@ -25,13 +31,14 @@ NEXT
    implementation of Dbn1D/2D.
 
 * Generalise/expose Axis*D for binning of general objects, e.g. "binned histos"
-
-* "BinnedValues" type: use Axis behaviour to look up fixed values without Dbn "history".
+   "BinnedValues" type: use Axis behaviour to look up fixed values without Dbn
+   "history". Separate "bin-lookup" types with and without overflow capability.
 
 * Test negative- and mixed-weighted stat calculations, and scaling.
 
 
 AND THEN...
+-----------
 
 * Remove non-const bin access from Histos and Profiles?
    cf. David D's point re. consistency via email on 7/8/2012
@@ -56,9 +63,6 @@ AND THEN...
 AND AFTER THAT...
 
 * Integer axis
-
-* Read Plot sections in YODA format (HH)
-   Use this in implementing the make-plots replacement.
 
 * ReaderFlat -> Scatter2D
 

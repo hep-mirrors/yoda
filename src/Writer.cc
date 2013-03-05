@@ -45,9 +45,7 @@ namespace YODA {
 
   void Writer::writeBody(std::ostream& stream, const AnalysisObject& ao) {
     const string aotype = ao.type();
-    if (aotype == "Plot") {
-      writePlot(stream, dynamic_cast<const Plot&>(ao));
-    } else if (aotype == "Histo1D") {
+    if (aotype == "Histo1D") {
       writeHisto1D(stream, dynamic_cast<const Histo1D&>(ao));
     } else if (aotype == "Histo2D") {
       writeHisto2D(stream, dynamic_cast<const Histo2D&>(ao));

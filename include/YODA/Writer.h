@@ -7,7 +7,6 @@
 #define YODA_Writer_h
 
 #include "YODA/AnalysisObject.h"
-#include "YODA/Plot.h"
 #include "YODA/Histo1D.h"
 #include "YODA/Histo2D.h"
 #include "YODA/Profile1D.h"
@@ -134,7 +133,6 @@ namespace YODA {
     virtual void writeFooter(std::ostream& stream) = 0;
 
     /// Specific AO type writer implementations
-    virtual void writePlot(std::ostream& os, const Plot& h) = 0;
     virtual void writeHisto1D(std::ostream& os, const Histo1D& h) = 0;
     virtual void writeHisto2D(std::ostream& os, const Histo2D& h) = 0;
     virtual void writeProfile1D(std::ostream& os, const Profile1D& p) = 0;

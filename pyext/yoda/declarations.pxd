@@ -857,11 +857,3 @@ cdef extern from "YODA/Axis2D.h" namespace "YODA":
         void eraseBin(size_t index) except+ err
         void mergeBins(size_t, size_t) except+ err
 # Axis2D }}}
-
-
-# # Plot {{{
-# cdef extern from "YODA/Plot.h" namespace "YODA":
-#     cdef cppclass Plot(AnalysisObject):
-#         pass
-#     #Histo2D(string path, string title) except+ err
-# # Plot }}}

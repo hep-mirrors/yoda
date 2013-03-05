@@ -5,7 +5,6 @@
 //
 #include "YODA/WriterFLAT.h"
 
-#include "YODA/Plot.h"
 #include "YODA/Histo1D.h"
 #include "YODA/Histo2D.h"
 #include "YODA/Profile1D.h"
@@ -37,13 +36,6 @@ namespace YODA {
       /// @todo Should write out floating point annotations as scientific notation...
       os << kv.first << "=" << kv.second << "\n";
     }
-  }
-
-
-  void WriterFLAT::writePlot(std::ostream& os, const Plot& p) {
-    os << "# BEGIN PLOT" << "\n";
-    _writeAnnotations(os, p);
-    os << "# END PLOT" << "\n";
   }
 
 

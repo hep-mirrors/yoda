@@ -1,5 +1,9 @@
 2013-03-05  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Removing Plot entirely from YODA: it was an anomaly only added
+	to make plot file generation easy, but this is now done better via
+	StringIO (in new compare-histos/rivet-cmphistos).
+
 	* Removing the Plot from Cython... and soon from YODA itself:
 	we'll do this stuff manually and less hackily.
 

@@ -6,7 +6,6 @@
 #include "YODA/WriterAIDA.h"
 #include "YODA/Utils/StringUtils.h"
 
-#include "YODA/Plot.h"
 #include "YODA/Histo1D.h"
 #include "YODA/Histo2D.h"
 #include "YODA/Profile1D.h"
@@ -30,11 +29,6 @@ namespace YODA {
 
   void WriterAIDA::writeFooter(std::ostream& stream) {
     stream << "</aida>\n";
-  }
-
-
-  void WriterAIDA::writePlot(std::ostream& os, const Plot&) {
-    os << "\n<!-- PLOT WRITING TO AIDA IS UNSUPPORTED! -->\n" << endl;
   }
 
 
