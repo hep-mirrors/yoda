@@ -121,6 +121,9 @@ namespace YODA {
     template <typename T>
     void setAnnotation(const std::string& name, const T& value) {
       _annotations[name] = boost::lexical_cast<std::string>(value);
+      /// @todo Specialise for float, double, etc. with this safer recipe from the Boost docs:
+      // std::stringstream ss;
+      // ss << setprecison(std::numeric_limits<double>::max_digits10) << scientific << output_value;
     }
 
 

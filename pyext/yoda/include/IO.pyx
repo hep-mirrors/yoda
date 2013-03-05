@@ -3,7 +3,7 @@
 
 # The basic idea here is to provide Python IO semantics by using Python to do
 # the IO. Otherwise we get C++ IO semantics in Python. It also means we can use
-# dummy files, e.g. anything with read/write attirbutes. Generally a much better
+# dummy files, e.g. anything with read/write attributes. Generally a much better
 # idea than just "give this a filename", and well worth the inefficiencies and
 # potential memory limits.
 
@@ -22,11 +22,18 @@ cdef list aobjects_to_list(vector[c.AnalysisObject*] *aobjects):
 cdef void make_iss(c.istringstream &iss, char *s):
     iss.str(string(s))
 
+
 ##
 ## Readers
 ##
 
 def readYODA(file_or_filename):
+    """
+    readYODA(file_or_filename)
+
+    Read data objects from the provided YODA-format file.
+    Returns a list of analysis objects
+    """
     cdef c.istringstream iss
     cdef vector[c.AnalysisObject*] aobjects
 
@@ -37,13 +44,19 @@ def readYODA(file_or_filename):
             s = f.read()
 
     make_iss(iss, s)
-     
     c.ReaderYODA_create().read(iss, aobjects)
 
     # Not as expensive as it looks!
     return aobjects_to_list(&aobjects)
 
+
 def readAIDA(file_or_filename):
+    """
+    readAIDA(file_or_filename)
+
+    Read data objects from the provided AIDA-format file.
+    Returns a list of analysis objects
+    """
     cdef c.istringstream iss
     cdef vector[c.AnalysisObject*] aobjects
 
@@ -54,17 +67,22 @@ def readAIDA(file_or_filename):
             s = f.read()
 
     make_iss(iss, s)
-     
     c.ReaderAIDA_create().read(iss, aobjects)
 
     # Not as expensive as it looks!
     return aobjects_to_list(&aobjects)
+
 
 ##
 ## Writers
 ##
 
 def writeYODA(ana_objs, file_or_filename):
+    """
+    writeYODA(ana_objs, file_or_filename)
+
+    Write data objects to the provided file in YODA format.
+    """
     cdef c.ostringstream oss
     cdef vector[c.AnalysisObject*] vec
     cdef AnalysisObject a
@@ -84,6 +102,11 @@ def writeYODA(ana_objs, file_or_filename):
 
 
 def writeFLAT(ana_objs, file_or_filename):
+    """
+    writeFLAT(ana_objs, file_or_filename)
+
+    Write data objects to the provided file in FLAT format.
+    """
     cdef c.ostringstream oss
     cdef vector[c.AnalysisObject*] vec
     cdef AnalysisObject a
@@ -103,6 +126,11 @@ def writeFLAT(ana_objs, file_or_filename):
 
 
 def writeAIDA(ana_objs, file_or_filename):
+    """
+    writeAIDA(ana_objs, file_or_filename)
+
+    Write data objects to the provided file in AIDA format.
+    """
     cdef c.ostringstream oss
     cdef vector[c.AnalysisObject*] vec
     cdef AnalysisObject a
