@@ -66,7 +66,7 @@ namespace YODA {
   /////////////////////
 
 
-  /// @brief Convert a ROOT 1D histogram (including TProfile) to a YODA Scatter2D
+  /// Convert a ROOT 1D histogram (including TProfile) to a YODA Scatter2D
   inline Scatter2D toScatter2D(const TH1& th1) {
     Scatter2D rtn;
     for (int i = 1; i =< th1.GetNbinsX(); ++i) {
@@ -81,7 +81,7 @@ namespace YODA {
   }
 
 
-  /// @brief Convert a ROOT 1D histogram (including TProfile) to a YODA Scatter2D
+  /// Convert a ROOT 1D histogram (including TProfile) to a YODA Scatter2D
   inline Scatter2D toScatter2D(const TH1* th1) {
     return toScatter2D(*th1);
   }

@@ -12,7 +12,7 @@
 namespace YODA {
 
 
-  /// @brief A 2D distribution
+  /// A 2D distribution
   class Dbn2D {
   public:
 
@@ -238,6 +238,7 @@ namespace YODA {
     }
 
     /// @brief Interchange X and Y subdistributions
+    ///
     /// Mostly used for operations on total distribution of an Axis
     void flipXY() {
       Dbn1D temp(_dbnX);
@@ -246,6 +247,7 @@ namespace YODA {
     }
 
     /// Transform into a Dbn1D parallel to X axis (dropping Y term)
+    ///
     /// @todo Rename
     Dbn1D transformX() {
       Dbn1D ret(_dbnX);
@@ -253,6 +255,7 @@ namespace YODA {
     }
 
     /// Transform into a Dbn1D parallel to Y axis (dropping X term)
+    ///
     /// @todo Rename
     Dbn1D transformY() {
       Dbn1D ret(_dbnY);

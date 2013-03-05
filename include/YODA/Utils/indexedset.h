@@ -10,6 +10,7 @@ namespace YODA {
 
 
     /// @brief Specialisation of std::set to allow indexed access to ordered set elements
+    ///
     /// The STL set is already implemented in an ordered style, so this specialisation is
     /// implemented in a super-simple way by just iterating over the set elements until
     /// the desired index is reached. This is not scalable, of course, but this implementation
@@ -20,6 +21,7 @@ namespace YODA {
 
 
       /// @brief Const index-access operator
+      ///
       /// Non-const is not permitted with sets (== self-keyed maps) as it would change ordering.
       const T& operator[](size_t index) const {
         if (index >= this->size()) {

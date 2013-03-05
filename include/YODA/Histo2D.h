@@ -102,7 +102,7 @@ namespace YODA {
     /// @name Modifiers
     //@{
 
-    /// @brief Fill histo with weight at (x,y)
+    /// Fill histo with weight at (x,y)
     void fill(double x, double y, double weight=1.0);
 
     /// @brief Reset the histogram.
@@ -138,22 +138,25 @@ namespace YODA {
     }
 
 
-    // /// @brief Bin addition operator
-    // /// Add a bin to an axis described by its x and y ranges.
+    /// @brief Bin addition operator
+    ///
+    /// Add a bin to an axis described by its x and y ranges.
     void addBin(Axis::EdgePair1D xrange, Axis::EdgePair1D yrange) {
        _axis.addBin(xrange, yrange);
      }
 
 
     /// @brief Bins addition operator
-    /// Add multiple bins from edge cuts without resetting 
+    ///
+    /// Add multiple bins from edge cuts without resetting
     void addBins(const Axis::EdgeCuts &xcuts, const Axis::EdgeCuts &ycuts) {
       _axis.addBins(xcuts, ycuts);
     }
 
 
     /// @brief Bins addition operator
-    /// Add multiple bins without resetting 
+    ///
+    /// Add multiple bins without resetting
     void addBins(const Bins &bins) {
       _axis.addBins(bins);
     }
@@ -427,10 +430,10 @@ namespace YODA {
     // Histo1D cutterY(double atX, const std::string& path="", const std::string& title="");
 
 
-    // /// @brief X-wise Profile1D creator from Histo2D
+    // /// X-wise Profile1D creator from Histo2D
     // Profile1D mkProfileX();
 
-    // /// @brief Y-wise Profile1D creator from Histo2D
+    // /// Y-wise Profile1D creator from Histo2D
     // Profile1D mkProfileY();
     // //@}
 

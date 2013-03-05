@@ -12,7 +12,7 @@
 namespace YODA {
 
 
-  /// @brief Persistency reader for AIDA XML format.
+  /// Persistency reader for AIDA XML format.
   class ReaderAIDA : public Reader {
   public:
 

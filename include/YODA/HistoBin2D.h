@@ -112,6 +112,7 @@ namespace YODA {
     //@{
 
     // /// @brief Transformer taking x as the primary axis of ProfileBin1D
+    // ///
     // /// @todo Need to think about the name, and clarify what "primary axis" means
     // ProfileBin1D transformX() {
     //   ProfileBin1D ret(std::make_pair(xMin(), xMax()), Dbn2D(_dbn));
@@ -119,6 +120,7 @@ namespace YODA {
     // }
 
     // /// @brief Transformer taking y as the primary axis of ProfileBin1D
+    // ///
     // /// @todo Need to think about the name, and clarify what "primary axis" means
     // ProfileBin1D transformY() {
     //   Dbn2D dbn = _dbn; dbn.flipXY();

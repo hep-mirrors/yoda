@@ -109,7 +109,7 @@ namespace YODA {
       w.write(filename, aos);
     }
 
-    /// @brief Write out the objects specified by start iterator @a begin and end
+    /// Write out the objects specified by start iterator @a begin and end
     /// iterator @a end to file @a filename.
     template <typename AOITER>
     static void writeTo(const std::string& filename, const AOITER& begin, const AOITER& end) {

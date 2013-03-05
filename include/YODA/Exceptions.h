@@ -68,21 +68,21 @@ namespace YODA {
   };
 
 
-  /// @brief Errors relating to insufficient (effective) statistics
+  /// Errors relating to insufficient (effective) statistics
   class LowStatsError : public Exception {
   public:
     LowStatsError(const std::string& what) : Exception(what) {}
   };
 
 
-  /// @brief Error for unfound or broken AnalysisObject annotations
+  /// Error for unfound or broken AnalysisObject annotations
   class AnnotationError : public Exception {
   public:
     AnnotationError(const std::string& what) : Exception(what) {}
   };
 
 
-  /// @brief Error for file reading errors
+  /// Error for file reading errors
   class ReadError : public Exception {
   public:
     ReadError(const std::string& what) : Exception(what) {}

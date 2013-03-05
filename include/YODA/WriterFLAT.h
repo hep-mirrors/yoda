@@ -17,7 +17,7 @@
 namespace YODA {
 
 
-  /// @brief Persistency writer for flat text format.
+  /// Persistency writer for flat text format.
   class WriterFLAT : public Writer {
   public:
 

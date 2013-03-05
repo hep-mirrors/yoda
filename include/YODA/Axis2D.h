@@ -12,6 +12,7 @@
 
 namespace YODA {
 
+
   /// @brief 2D bin container
   ///
   /// This class handles most of the low-level operations on an axis of bins
@@ -52,7 +53,7 @@ namespace YODA {
 
     /// A constructor with specified x and y axis bin cuts.
     Axis2D(const EdgeCuts &xedges,
-           const EdgeCuts &yedges) 
+           const EdgeCuts &yedges)
       : _locked(false)
     {
       addBins(xedges, yedges);
@@ -201,8 +202,8 @@ namespace YODA {
     void eraseBin(size_t i) {
       if (i >= numBins())
         throw RangeError("Bin index is out of range");
-      
-      // Temporarily unlock the axis during the update 
+
+      // Temporarily unlock the axis during the update
       _bins.erase(_bins.begin() + i);
       _updateAxis(_bins);
     }
@@ -355,7 +356,7 @@ namespace YODA {
       _checkUnlocked();
 
       Bins newBins(_bins);
-      
+
       for (size_t xi=0; xi < xcuts.size() - 1; xi++) {
         for (size_t yi=0; yi < ycuts.size() - 1; yi++) {
           newBins.push_back(Bin(
@@ -445,7 +446,7 @@ namespace YODA {
       return ! operator == (other);
     }
 
-    /// @brief Addition operator
+    /// Addition operator
     Axis2D<BIN2D, DBN>& operator += (const Axis2D<BIN2D, DBN>& toAdd) {
       if (*this != toAdd) {
         throw LogicError("YODA::Axis2D: Cannot add axes with different binnings.");
@@ -509,7 +510,7 @@ namespace YODA {
       // @todo -- fuzzy equality
       xcuts.resize(std::unique(xcuts.begin(), xcuts.end()) - xcuts.begin());
       ycuts.resize(std::unique(ycuts.begin(), ycuts.end()) - ycuts.begin());
-    
+
       size_t nx = xcuts.size();
       size_t ny = ycuts.size();
       size_t N = nx * ny;
@@ -521,7 +522,7 @@ namespace YODA {
       Utils::BinSearcher xSearcher(xcuts);
       Utils::BinSearcher ySearcher(ycuts);
 
-      // Iterate through bins and find out which 
+      // Iterate through bins and find out which
       for(size_t i=0; i < bins.size(); i++) {
         Bin &bin = bins[i];
         size_t xiMin= xSearcher.index(bin.xMin()) - 1;

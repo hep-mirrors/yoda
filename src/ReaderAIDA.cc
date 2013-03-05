@@ -51,35 +51,38 @@ namespace YODA {
         //  }
         //}
 
+        size_t ipt = 0;
         for (const TiXmlNode* dpN = dpsN->FirstChild("dataPoint"); dpN; dpN = dpN->NextSibling()) {
+          ipt += 1;
           const TiXmlNode* xMeasN = dpN->FirstChild("measurement");
-          const TiXmlNode* yMeasN = xMeasN->NextSibling();
-          if (xMeasN && yMeasN) {
-            const TiXmlElement* xMeasE = xMeasN->ToElement();
-            const TiXmlElement* yMeasE = yMeasN->ToElement();
-            const string xcentreStr   = xMeasE->Attribute("value");
-            const string xerrplusStr  = xMeasE->Attribute("errorPlus");
-            const string xerrminusStr = xMeasE->Attribute("errorMinus");
-            const string ycentreStr   = yMeasE->Attribute("value");
-            const string yerrplusStr  = yMeasE->Attribute("errorPlus");
-            const string yerrminusStr = yMeasE->Attribute("errorMinus");
-            //if (!centreStr) throw ReadError("Couldn't get a valid bin centre");
-            //if (!errplusStr) throw ReadError("Couldn't get a valid bin err+");
-            //if (!errminusStr) throw ReadError("Couldn't get a valid bin err-");
-            istringstream xssC(xcentreStr);
-            istringstream xssP(xerrplusStr);
-            istringstream xssM(xerrminusStr);
-            istringstream yssC(ycentreStr);
-            istringstream yssP(yerrplusStr);
-            istringstream yssM(yerrminusStr);
-            double xcentre, xerrplus, xerrminus, ycentre, yerrplus, yerrminus;
-            xssC >> xcentre; xssP >> xerrplus; xssM >> xerrminus;
-            yssC >> ycentre; yssP >> yerrplus; yssM >> yerrminus;
-            dps->addPoint(xcentre, ycentre, xerrminus, xerrplus, yerrminus, yerrplus);
-          } else {
-            cerr << "Couldn't get <measurement> tag" << endl;
-            /// @todo Throw an exception here?
+          if (!xMeasN) {
+            cerr << "Couldn't get any <measurement> tag in DPS " << dpsE->Attribute("name") << " point #" << ipt << endl; continue;
           }
+          const TiXmlNode* yMeasN = xMeasN->NextSibling();
+          if (!yMeasN) {
+            cerr << "Couldn't get y-axis <measurement> tag in DPS " << dpsE->Attribute("name") << " point #" << ipt << endl; continue;
+          }
+          const TiXmlElement* xMeasE = xMeasN->ToElement();
+          const TiXmlElement* yMeasE = yMeasN->ToElement();
+          const string xcentreStr   = xMeasE->Attribute("value");
+          const string xerrplusStr  = xMeasE->Attribute("errorPlus");
+          const string xerrminusStr = xMeasE->Attribute("errorMinus");
+          const string ycentreStr   = yMeasE->Attribute("value");
+          const string yerrplusStr  = yMeasE->Attribute("errorPlus");
+          const string yerrminusStr = yMeasE->Attribute("errorMinus");
+          //if (!centreStr) throw ReadError("Couldn't get a valid bin centre");
+          //if (!errplusStr) throw ReadError("Couldn't get a valid bin err+");
+          //if (!errminusStr) throw ReadError("Couldn't get a valid bin err-");
+          istringstream xssC(xcentreStr);
+          istringstream xssP(xerrplusStr);
+          istringstream xssM(xerrminusStr);
+          istringstream yssC(ycentreStr);
+          istringstream yssP(yerrplusStr);
+          istringstream yssM(yerrminusStr);
+          double xcentre, xerrplus, xerrminus, ycentre, yerrplus, yerrminus;
+          xssC >> xcentre; xssP >> xerrplus; xssM >> xerrminus;
+          yssC >> ycentre; yssP >> yerrplus; yssM >> yerrminus;
+          dps->addPoint(xcentre, ycentre, xerrminus, xerrplus, yerrminus, yerrplus);
         }
         aos.push_back(dps);
 

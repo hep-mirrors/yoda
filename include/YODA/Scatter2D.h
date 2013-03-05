@@ -411,7 +411,7 @@ namespace YODA {
   }
 
 
-  /// @brief Exchange the x and y axes (operates in-place on @a s)
+  /// Exchange the x and y axes (operates in-place on @a s)
   inline void flip(Scatter2D& s) {
     for (size_t i = 0; i < s.numPoints(); ++i) {
       Point2D& p = s.point(i);

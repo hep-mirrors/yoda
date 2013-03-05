@@ -79,6 +79,7 @@ namespace YODA {
     //@{
 
     /// @brief Contribute a sample at @a val with weight @a weight.
+    ///
     /// @todo Be careful about negative weights.
     void fill(double val, double weight=1.0);
 

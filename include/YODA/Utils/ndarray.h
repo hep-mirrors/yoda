@@ -10,7 +10,7 @@ namespace YODA {
   namespace Utils {
 
 
-    /// @brief Fixed-size array with constructors from standard array types
+    /// Fixed-size array with constructors from standard array types
     template <typename T, int N>
     class ndarray {
     public:

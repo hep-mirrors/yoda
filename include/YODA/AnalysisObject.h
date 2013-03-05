@@ -71,7 +71,7 @@ namespace YODA {
     }
 
 
-    /// @brief Get an annotation by name (as a string)
+    /// Get an annotation by name (as a string)
     const std::string& annotation(const std::string& name) const {
       Annotations::const_iterator v = _annotations.find(name);
       // If not found... written this way round on purpose
@@ -83,7 +83,7 @@ namespace YODA {
     }
 
 
-    /// @brief Get an annotation by name (as a string) with a default in case the annotation is not found
+    /// Get an annotation by name (as a string) with a default in case the annotation is not found
     const std::string& annotation(const std::string& name, const std::string& defaultreturn) const {
       Annotations::const_iterator v = _annotations.find(name);
       if (v != _annotations.end()) return v->second;
@@ -93,7 +93,7 @@ namespace YODA {
 
     /// @brief Get an annotation by name (copied to another type)
     ///
-    /// Note: templated on return type
+    /// @note Templated on return type
     template <typename T>
     const T annotation(const std::string& name) const {
       std::string s = annotation(name);
@@ -103,7 +103,7 @@ namespace YODA {
 
     /// @brief Get an annotation by name (copied to another type) with a default in case the annotation is not found
     ///
-    /// Note: templated on return type
+    /// @note Templated on return type
     template <typename T>
     const T annotation(const std::string& name, const T& defaultreturn) const {
       try {
@@ -117,7 +117,7 @@ namespace YODA {
 
     /// @brief Add or set an annotation by name
     ///
-    /// Note: Templated on arg type, but stored as a string.
+    /// @note Templated on arg type, but stored as a string.
     template <typename T>
     void setAnnotation(const std::string& name, const T& value) {
       _annotations[name] = boost::lexical_cast<std::string>(value);
