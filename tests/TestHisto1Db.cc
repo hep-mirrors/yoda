@@ -15,7 +15,7 @@ using namespace YODA;
 int main() {
 
   Histo1D h1(20, 0.0, 1.0);
-  h1.setPath("/MyHisto1");
+  h1.setPath("/path/to/MyHisto1");
   Histo1D h2(40, 0.0, 1.0, "/MyHisto2");
   for (size_t n = 0; n < 2000; ++n) {
     const double num = rand()/static_cast<double>(RAND_MAX);
@@ -53,7 +53,7 @@ int main() {
     }
   }
 
-  vector<AnalysisObject*> hs3 = ReaderYODA::create().read("test.dat");
+  vector<AnalysisObject*> hs3 = ReaderYODA::create().read("test.yoda");
   for (vector<AnalysisObject*>::const_iterator i = hs3.begin(); i != hs3.end(); ++i) {
     cout << (*i)->type() << endl;
     YODA::WriterYODA::write(std::cout, (**i));

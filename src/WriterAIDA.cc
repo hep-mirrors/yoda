@@ -64,7 +64,7 @@ namespace YODA {
     const size_t slashpos = s.path().rfind("/");
     if (slashpos != string::npos) {
       name = s.path().substr(slashpos+1, s.path().length() - slashpos - 1);
-      path = s.path().substr(0, slashpos);
+      if (slashpos > 0) path = s.path().substr(0, slashpos);
     }
     os << "  <dataPointSet name=\"" << Utils::encodeForXML(name) << "\"\n"
        << "    title=\"" << Utils::encodeForXML(s.title()) << "\""
