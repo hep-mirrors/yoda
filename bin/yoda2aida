@@ -6,7 +6,7 @@
 Convert a YODA data file to the old AIDA data format.
 """
 
-import yoda, sys, optparse
+import yoda, os, sys, optparse
 
 parser = optparse.OptionParser(usage=__doc__)
 opts, args = parser.parse_args()
@@ -20,6 +20,7 @@ if len(args) == 1:
         OUTFILE = INFILE.replace(".yoda", ".aida")
     else:
         OUTFILE = INFILE + ".aida"
+    OUTFILE = os.path.basename(OUTFILE)
 elif len(args) == 2:
     INFILE = args[0]
     OUTFILE = args[1]

@@ -1,3 +1,8 @@
+2013-03-08  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Making the x2y converter scripts write a copy into the *current*
+	directory if only the input is specified.
+
 2013-03-05  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Removing Plot entirely from YODA: it was an anomaly only added
