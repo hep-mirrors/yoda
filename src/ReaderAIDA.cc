@@ -30,7 +30,7 @@ namespace YODA {
       // Walk down tree to get to the <dataPointSet> elements
       const TiXmlNode* aidaN = doc.FirstChild("aida");
       if (!aidaN) throw ReadError("Couldn't get <aida> root element");
-      for (const TiXmlNode* dpsN = aidaN->FirstChild("dataPointSet"); dpsN; dpsN = dpsN->NextSibling()) {
+      for (const TiXmlNode* dpsN = aidaN->FirstChild("dataPointSet"); dpsN; dpsN = dpsN->NextSibling("dataPointSet")) {
         const TiXmlElement* dpsE = dpsN->ToElement();
         if (dpsE == 0) continue;
         const string plotpath = dpsE->Attribute("path");
@@ -43,7 +43,7 @@ namespace YODA {
         /// @todo Clarify the memory management resulting from this... need shared_ptr?
         Scatter2D* dps = new Scatter2D(plotpath + sep + plotname);
 
-        // FIXME: This code crashes when there are annotations in the AIDA file:
+        /// @todo This code crashes when there are annotations in the AIDA file: fix
         //// Read in annotations
         //for (const TiXmlNode* annN = dpsN->FirstChild("annotation"); annN; annN = annN->NextSibling()) {
         //  for (const TiXmlNode* itN = annN->FirstChild("item"); itN; itN = itN->NextSibling()) {
@@ -52,13 +52,13 @@ namespace YODA {
         //}
 
         size_t ipt = 0;
-        for (const TiXmlNode* dpN = dpsN->FirstChild("dataPoint"); dpN; dpN = dpN->NextSibling()) {
+        for (const TiXmlNode* dpN = dpsN->FirstChild("dataPoint"); dpN; dpN = dpN->NextSibling("dataPoint")) {
           ipt += 1;
           const TiXmlNode* xMeasN = dpN->FirstChild("measurement");
           if (!xMeasN) {
             cerr << "Couldn't get any <measurement> tag in DPS " << dpsE->Attribute("name") << " point #" << ipt << endl; continue;
           }
-          const TiXmlNode* yMeasN = xMeasN->NextSibling();
+          const TiXmlNode* yMeasN = xMeasN->NextSibling("measurement");
           if (!yMeasN) {
             cerr << "Couldn't get y-axis <measurement> tag in DPS " << dpsE->Attribute("name") << " point #" << ipt << endl; continue;
           }

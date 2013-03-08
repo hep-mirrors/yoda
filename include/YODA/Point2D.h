@@ -263,6 +263,11 @@ namespace YODA {
     //@}
 
 
+    /// @todo Support multiple weights (then need to discard setYMin/Max?)
+
+    /// @todo Add setY(y, err) combinations for user convenience
+
+
     // @name Manipulations
     //@{
 
