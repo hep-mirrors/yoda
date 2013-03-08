@@ -54,7 +54,7 @@
 2012-11-16  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Adding YODA/ROOTCnv.h. for data object converter functions. Two
- 	(untested) functions added for TH1 -> YODA.
+	(untested) functions added for TH1 -> YODA.
 
 	* Adding toIntegralHisto(Histo1D&) function.
 
