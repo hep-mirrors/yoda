@@ -27,7 +27,7 @@ cdef void make_iss(c.istringstream &iss, char *s):
 ## Readers
 ##
 
-def readFrom(filename):
+def read(filename):
     """
     Read data objects from the provided filename,
     auto-determining the format from the file extension.
@@ -89,7 +89,7 @@ def readAIDA(file_or_filename):
 ## Writers
 ##
 
-def writeTo(ana_objs, filename):
+def write(ana_objs, filename):
     """
     Write data objects to the provided filename,
     auto-determining the format from the file extension.
