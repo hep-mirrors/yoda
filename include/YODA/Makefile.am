@@ -14,7 +14,7 @@ pkginclude_HEADERS = \
     ScatterND.h PointND.h ErrorND.h \
     Writer.h WriterAIDA.h WriterFLAT.h WriterYODA.h \
     Reader.h ReaderAIDA.h ReaderYODA.h \
-	ROOTCnv.h
+    IO.h ROOTCnv.h
 
 nobase_pkginclude_HEADERS = \
 	WriterMethods.icc \

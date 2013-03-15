@@ -814,7 +814,7 @@ cdef extern from "YODA/ReaderAIDA.h" namespace "YODA":
     Reader& ReaderAIDA_create "YODA::ReaderAIDA::create" ()
 
 cdef extern from "YODA/Reader.h" namespace "YODA":
-    Reader& Reader_create "YODA::Reader::makeReader" (string& filename)
+    Reader& Reader_create "YODA::mkReader" (string& filename)
 
 
 cdef extern from "YODA/Writer.h" namespace "YODA":
@@ -831,7 +831,7 @@ cdef extern from "YODA/WriterAIDA.h" namespace "YODA":
     Writer& WriterAIDA_create "YODA::WriterAIDA::create" ()
 
 cdef extern from "YODA/Reader.h" namespace "YODA":
-    Writer& Writer_create "YODA::Writer::makeWriter" (string& filename)
+    Writer& Writer_create "YODA::mkWriter" (string& filename)
 
 # Streams }}}
 

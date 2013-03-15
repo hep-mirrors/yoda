@@ -1,5 +1,10 @@
 2013-03-15  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Re-organising the C++ side of the auto-format I/O functions,
+	into a new IO header and separated from the Reader.h and
+	Writer.h. I'm tempted to say that users shouldn't really NEED to
+	ever directly touch the Reader and Writer objects...
+
 	* Adding auto-format read and write functions. I will probably
 	change the API. Python mappings have been provided, but the string
 	workarounds were too much of a pain with Cython 0.16 so I have

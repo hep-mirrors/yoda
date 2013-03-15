@@ -12,7 +12,7 @@ using namespace std;
 namespace YODA {
 
 
-  Reader& Reader::makeReader(const string& name) {
+  Reader& mkReader(const string& name) {
     const size_t lastdot = name.find_last_of(".");
     const string fmt = boost::to_lower_copy((lastdot == string::npos) ? name : name.substr(lastdot+1));
     if (fmt == "yoda") return ReaderYODA::create();

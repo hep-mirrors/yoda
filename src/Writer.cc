@@ -17,7 +17,7 @@ using namespace std;
 namespace YODA {
 
 
-  Writer& Writer::makeWriter(const std::string& name) {
+  Writer& mkWriter(const std::string& name) {
     const size_t lastdot = name.find_last_of(".");
     const string fmt = boost::to_lower_copy((lastdot == std::string::npos) ? name : name.substr(lastdot+1));
     if (fmt == "yoda") return WriterYODA::create();
