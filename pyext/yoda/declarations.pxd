@@ -26,7 +26,6 @@ cdef extern from "YODA/Dbn1D.h" namespace "YODA":
         void scaleW(double)
         void scaleX(double)
 
-
         double xMean() except+ err
         double xVariance() except+ err
         double xStdDev() except+ err
@@ -45,6 +44,7 @@ cdef extern from "YODA/Dbn1D.h" namespace "YODA":
         Dbn1D operator+ (Dbn1D) except+ err
         Dbn1D operator- (Dbn1D) except+ err
 #}}} Dbn1D
+
 
 # Dbn2D {{{
 cdef extern from "YODA/Dbn2D.h" namespace "YODA":
@@ -92,6 +92,7 @@ cdef extern from "YODA/Dbn2D.h" namespace "YODA":
         # TODO: += and -= operators in Cython (maybe 0.17?)
 #}}} Dbn2D
 
+
 # Dbn3D {{{
 cdef extern from "YODA/Dbn3D.h" namespace "YODA":
     cdef cppclass Dbn3D:
@@ -125,7 +126,6 @@ cdef extern from "YODA/Dbn3D.h" namespace "YODA":
         double zStdDev()
         double zStdErr()
         double zRMS()
-
 
         # Raw distribution running sums
         unsigned long numEntries()
@@ -162,6 +162,7 @@ cdef extern from "YODA/Dbn3D.h" namespace "YODA":
         # TODO: += and -= operators in Cython (maybe 0.17?)
 #}}} Dbn3D
 
+
 # Points
 
 # Point2D {{{
@@ -196,6 +197,7 @@ cdef extern from "YODA/Point2D.h" namespace "YODA":
         bool operator > (Point2D b) except+ err
         bool operator >= (Point2D b) except+ err
 # }}} Point2D
+
 
 # Point3D {{{
 cdef extern from "YODA/Point3D.h" namespace "YODA":
@@ -239,6 +241,7 @@ cdef extern from "YODA/Point3D.h" namespace "YODA":
         bool operator >= (Point3D b)
 #}}} Point3D
 
+
 # Bins
 
 # Bin {{{
@@ -246,6 +249,7 @@ cdef extern from "YODA/Bin.h" namespace "YODA":
     cdef cppclass Bin:
         pass
 # }}} Bin
+
 
 #Bin1D {{{
 cdef extern from "YODA/Bin1D.h" namespace "YODA":
@@ -294,6 +298,7 @@ ctypedef Bin1D[Dbn1D] Bin1D_Dbn1D
 ctypedef Bin1D[Dbn2D] Bin1D_Dbn2D
 ctypedef Bin1D[Dbn3D] Bin1D_Dbn3D
 #}}} Bin1D
+
 
 # Bin2D {{{
 cdef extern from "YODA/Bin2D.h" namespace "YODA":
@@ -353,6 +358,7 @@ cdef extern from "YODA/Bin2D.h" namespace "YODA":
 ctypedef Bin2D[Dbn2D] Bin2D_Dbn2D
 ctypedef Bin2D[Dbn3D] Bin2D_Dbn3D
 # }}} Bin2D
+
 
 # ProfileBin1D {{{
 cdef extern from "YODA/ProfileBin1D.h" namespace "YODA":
@@ -417,7 +423,6 @@ cdef extern from "YODA/HistoBin1D.h" namespace "YODA":
         HistoBin1D operator+(HistoBin1D) except +err
         HistoBin1D operator-(HistoBin1D) except +err
 
-
 #}}} HistoBin1D
 
 
@@ -478,12 +483,14 @@ cdef extern from "YODA/AnalysisObject.h" namespace "YODA":
         string type() except +err
 # }}} AnalysisObject
 
+
 cdef extern from "YODA/Utils/sortedvector.h" namespace "YODA::Utils":
     cdef cppclass sortedvector[T](vector):
         sortedvector(vector[T]) except +err
         void insert(T) except +err
 
 # TODO: forward declarations for bin-copying constructors
+
 
 # Scatter2D {{{
 cdef extern from "YODA/Scatter2D.h" namespace "YODA":
@@ -520,6 +527,7 @@ cdef extern from "YODA/Scatter2D.h" namespace "YODA":
 
 #}}} Scatter2D
 
+
 # Scatter3D {{{
 cdef extern from "YODA/Scatter3D.h" namespace "YODA":
     cdef cppclass Scatter3D(AnalysisObject):
@@ -550,6 +558,7 @@ cdef extern from "YODA/Scatter3D.h" namespace "YODA":
         Scatter3D combineWith(Scatter3D)
         Scatter3D combineWith(vector[Scatter3D])
 #}}} Scatter3D
+
 
 # Profile1D {{{
 cdef extern from "YODA/Profile1D.h" namespace "YODA":
@@ -603,6 +612,7 @@ cdef extern from "YODA/Profile1D.h" namespace "YODA":
 
 #}}} Profile1D
 
+
 # Profile2D {{{
 cdef extern from "YODA/Profile2D.h" namespace "YODA":
     cdef cppclass Profile2D(AnalysisObject):
@@ -655,6 +665,7 @@ cdef extern from "YODA/Profile2D.h" namespace "YODA":
 
 #}}} Profile2D
 
+
 # Histo1D#{{{
 cdef extern from "YODA/Histo1D.h" namespace "YODA":
     cdef cppclass Histo1D(AnalysisObject):
@@ -699,6 +710,7 @@ cdef extern from "YODA/Histo1D.h" namespace "YODA":
         void addBins(vector[double] edges) except+ err
         void eraseBin(size_t index) except+ err
 #}}} Histo1D
+
 
 # Histo2D {{{
 cdef extern from "YODA/Histo2D.h" namespace "YODA":
@@ -753,8 +765,6 @@ cdef extern from "YODA/Histo2D.h" namespace "YODA":
         double highEdgeX() except+ err
         double highEdgeY() except+ err
 
-
-
         int findBinIndex(double, double)
         size_t numBinsX()
         size_t numBinsY()
@@ -779,7 +789,9 @@ cdef extern from "YODA/Histo2D.h" namespace "YODA":
         operator / (Histo2D)
 # Histo2D }}}
 
+
 # Streams {{{
+
 cdef extern from "<sstream>" namespace "std":
     cdef cppclass ostringstream:
         ostringstream()
@@ -790,6 +802,7 @@ cdef extern from "<sstream>" namespace "std":
         istringstream()
         string& str(string &)
 
+
 cdef extern from "YODA/Reader.h" namespace "YODA":
     cdef cppclass Reader:
         void read(istringstream &, vector[AnalysisObject*] &) except +err
@@ -799,6 +812,9 @@ cdef extern from "YODA/ReaderYODA.h" namespace "YODA":
 
 cdef extern from "YODA/ReaderAIDA.h" namespace "YODA":
     Reader& ReaderAIDA_create "YODA::ReaderAIDA::create" ()
+
+cdef extern from "YODA/Reader.h" namespace "YODA":
+    Reader& Reader_create "YODA::Reader::makeReader" (string& filename)
 
 
 cdef extern from "YODA/Writer.h" namespace "YODA":
@@ -813,7 +829,12 @@ cdef extern from "YODA/WriterFLAT.h" namespace "YODA":
 
 cdef extern from "YODA/WriterAIDA.h" namespace "YODA":
     Writer& WriterAIDA_create "YODA::WriterAIDA::create" ()
+
+cdef extern from "YODA/Reader.h" namespace "YODA":
+    Writer& Writer_create "YODA::Writer::makeWriter" (string& filename)
+
 # Streams }}}
+
 
 # Axis1D {{{
 cdef extern from "YODA/Axis1D.h" namespace "YODA":

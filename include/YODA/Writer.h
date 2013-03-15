@@ -89,19 +89,23 @@ namespace YODA {
     //@}
 
 
-    /// @name Static functions with automatic file extension detection
+    /// @name Static functions with automatic format detection
     //@{
 
-    /// Factory function to make a writer object by format name or a filename (upper or lower case).
+    /// Factory function to make a writer object by format name or a filename
     static Writer& makeWriter(const std::string& format_name);
 
     /// Write out object @a ao to file @a filename
+    ///
+    /// @todo Better naming?
     static void writeTo(const std::string& filename, const AnalysisObject& ao) {
       Writer& w = makeWriter(filename);
       w.write(filename, ao);
     }
 
     /// Write out a collection of objects @a objs to file @a filename.
+    ///
+    /// @todo Better naming?
     template <typename RANGE>
     static void writeTo(const std::string& filename, const RANGE& aos) {
       Writer& w = makeWriter(filename);
@@ -110,6 +114,8 @@ namespace YODA {
 
     /// Write out the objects specified by start iterator @a begin and end
     /// iterator @a end to file @a filename.
+    ///
+    /// @todo Better naming?
     template <typename AOITER>
     static void writeTo(const std::string& filename, const AOITER& begin, const AOITER& end) {
       Writer& w = makeWriter(filename);

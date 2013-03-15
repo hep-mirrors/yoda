@@ -27,6 +27,22 @@ cdef void make_iss(c.istringstream &iss, char *s):
 ## Readers
 ##
 
+def readFrom(filename):
+    """
+    Read data objects from the provided filename,
+    auto-determining the format from the file extension.
+    Returns a list of analysis objects
+    """
+    cdef c.istringstream iss
+    cdef vector[c.AnalysisObject*] aobjects
+    with open(filename) as f:
+        s = f.read()
+    make_iss(iss, s)
+    c.Reader_create(filename).read(iss, aobjects)
+    # Not as expensive as it looks!
+    return aobjects_to_list(&aobjects)
+
+
 def readYODA(file_or_filename):
     """
     Read data objects from the provided YODA-format file.
@@ -72,6 +88,21 @@ def readAIDA(file_or_filename):
 ##
 ## Writers
 ##
+
+def writeTo(ana_objs, filename):
+    """
+    Write data objects to the provided filename,
+    auto-determining the format from the file extension.
+    """
+    cdef c.ostringstream oss
+    cdef vector[c.AnalysisObject*] vec
+    cdef AnalysisObject a
+    for a in ana_objs:
+        vec.push_back(a._AnalysisObject())
+    c.Writer_create(filename).write(oss, vec)
+    with open(filename, 'w') as f:
+        f.write(oss.str())
+
 
 def writeYODA(ana_objs, file_or_filename):
     """

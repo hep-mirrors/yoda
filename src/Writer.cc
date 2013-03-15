@@ -3,7 +3,6 @@
 // This file is part of YODA -- Yet more Objects for Data Analysis
 // Copyright (C) 2008-2013 The YODA collaboration (see AUTHORS for details)
 //
-
 #include "YODA/Writer.h"
 #include "YODA/WriterYODA.h"
 #include "YODA/WriterAIDA.h"
@@ -45,6 +44,9 @@ namespace YODA {
 
   void Writer::writeBody(std::ostream& stream, const AnalysisObject& ao) {
     const string aotype = ao.type();
+    // if (aotype == "Counter") {
+    //   writeCounter(stream, dynamic_cast<const Counter&>(ao));
+    // } else
     if (aotype == "Histo1D") {
       writeHisto1D(stream, dynamic_cast<const Histo1D&>(ao));
     } else if (aotype == "Histo2D") {
@@ -53,6 +55,8 @@ namespace YODA {
       writeProfile1D(stream, dynamic_cast<const Profile1D&>(ao));
     // } else if (aotype == "Profile2D") {
     //   writeProfile2D(stream, dynamic_cast<const Profile2D&>(ao));
+    // } else if (aotype == "Scatter1D") {
+    //   writeScatter1D(stream, dynamic_cast<const Scatter1D&>(ao));
     } else if (aotype == "Scatter2D") {
       writeScatter2D(stream, dynamic_cast<const Scatter2D&>(ao));
     // } else if (aotype == "Scatter3D") {

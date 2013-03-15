@@ -1,3 +1,11 @@
+2013-03-15  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Adding auto-format read and write functions. I will probably
+	change the API. Python mappings have been provided, but the string
+	workarounds were too much of a pain with Cython 0.16 so I have
+	updated the Cython version requirement to 0.17 where it is
+	automatic and hence much cleaner.
+
 2013-03-08  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Making the x2y converter scripts write a copy into the *current*
