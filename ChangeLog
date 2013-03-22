@@ -1,3 +1,11 @@
+2013-03-22  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Removing the use of svn:external to pull in Boost macros and
+	using a minimal local set instead.
+
+	* Using the nice Boost-finding macros from
+	https://github.com/tsuna/boost.m4 and tidying up configure.ac
+
 2013-03-15  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Re-organising the C++ side of the auto-format I/O functions,
