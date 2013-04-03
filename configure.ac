@@ -38,8 +38,6 @@ LIB_SUFFIX=\\\"$shrext_cmds\\\"
 AC_SUBST([LIB_SUFFIX])
 
 ## Set default build flags
-AM_CPPFLAGS="-I\$(top_srcdir)/include -I\$(top_builddir)/include"
-AM_CPPFLAGS="$AM_CPPFLAGS -I\$(BOOSTINCPATH) \$(BOOST_CPPFLAGS)"
 AC_CEDAR_CHECKCXXFLAG([-pedantic], [AM_CXXFLAGS="$AM_CXXFLAGS -pedantic "])
 AC_CEDAR_CHECKCXXFLAG([-Wall], [AM_CXXFLAGS="$AM_CXXFLAGS -Wall -Wno-format"])
 AC_CEDAR_CHECKCXXFLAG([-std=c++98], [AM_CXXFLAGS="$AM_CXXFLAGS -std=c++98 "])
@@ -116,19 +114,24 @@ AM_CONDITIONAL(ENABLE_PYEXT, [test x$enable_pyext == xyes])
 
 
 ## Boost C++ utility library
-BOOST_REQUIRE([1.34.0])
+BOOST_REQUIRE([1.40.0])
 BOOST_FOREACH
 BOOST_SMART_PTR
 BOOST_FIND_HEADER([boost/lexical_cast.hpp])
 BOOST_FIND_HEADER([boost/assign.hpp])
+BOOST_FIND_HEADER([boost/spirit/include/qi.hpp])
+BOOST_FIND_HEADER([boost/spirit/include/phoenix_operator.hpp])
+BOOST_FIND_HEADER([boost/fusion/include/adapt_struct.hpp])
 
 
-## Substitute the default build flags after lib testing
+## Extend and substitute the default build flags after lib testing
+AM_CPPFLAGS="-I\$(top_srcdir)/include -I\$(top_builddir)/include"
+AM_CPPFLAGS="$AM_CPPFLAGS \$(BOOST_CPPFLAGS)"
 AC_SUBST(AM_CPPFLAGS)
 AC_SUBST(AM_CXXFLAGS)
 
 
-## BUild file output
+## Build file output
 AC_EMPTY_SUBST
 AC_CONFIG_FILES([Makefile Doxyfile])
 AC_CONFIG_FILES([include/Makefile include/YODA/Makefile])
