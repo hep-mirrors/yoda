@@ -11,8 +11,8 @@ PKGNAME = 'yoda'
 ## Extension definition
 import os.path
 incdir = os.path.abspath('@top_srcdir@/include')
-boostdir = os.path.abspath('@BOOSTINCPATH@')
 srcdir = os.path.abspath('@top_srcdir@/src')
+libdir = os.path.abspath("@top_builddir@/src/.libs")
 
 statics = os.path.join('yoda', 'errors.cpp')
 
@@ -23,8 +23,10 @@ def ext(name, depends=[], statics=[]):
         ['%s/%s.pyx' % (PKGNAME, name)] + statics,
         language='c++',
         depends=depends,
-        include_dirs=[incdir, PKGNAME, boostdir],
-        library_dirs=[srcdir, os.path.join(srcdir, '.libs')],
+        include_dirs=[incdir, PKGNAME],
+        extra_compile_args= "-I@prefix@/include @BOOST_CPPFLAGS@".split(),
+        library_dirs=[libdir],
+        extra_link_args = ["-L@prefix@/lib"],
         libraries=['stdc++', 'YODA'])
 
 
