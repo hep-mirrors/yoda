@@ -43,17 +43,11 @@ tmp=$( echo "$*" | egrep -- '--\<libdir\>')
 test -n "$tmp" && OUT="$OUT @libdir@"
 
 ## "Pre-rolled" build info
-tmp=$( echo "$*" | egrep -- '--\<cxxflags\>')
-if test -n "$tmp"; then
-    iyoda="@includedir@"
-    test -n "$iyoda" && OUT="$OUT -I${iyoda}"
-fi
+tmp=$( echo "$*" | egrep -- '--\<cppflags|cxxflags\>')
+test -n "$tmp" && OUT="$OUT -I@includedir@ @BOOST_CPPFLAGS@"
 
-tmp=$( echo "$*" | egrep -- '--\<libs\>')
-if test -n "$tmp"; then
-    lyoda="@libdir@"
-    test -n "$lyoda" && OUT="$OUT -L${lyoda} -lYODA"
-fi
+tmp=$( echo "$*" | egrep -- '--\<ldflags|libs\>')
+test -n "$tmp" && OUT="$OUT -L@libdir@ -lYODA"
 
 ## Version
 tmp=$( echo "$*" | egrep -- '--\<version\>')
