@@ -174,8 +174,8 @@ namespace YODA {
           }
 
         size_t estimate(const double x) const {
-          size_t y = (size_t)(*_est)(x);
-          size_t yi = 0 ? (y < 0) : y;
+          double y = (*_est)(x);
+          size_t yi = (y < 0) ? 0 : y;
           return (yi > _max) ? _max : yi;
         }
 
