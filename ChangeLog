@@ -1,3 +1,8 @@
+2013-04-10  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Being more careful about adding -Wno-* flags to the C++ compiler
+	used to built the Cython extension lib.
+
 2013-03-22  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Removing the use of svn:external to pull in Boost macros and

@@ -38,9 +38,9 @@ LIB_SUFFIX=\\\"$shrext_cmds\\\"
 AC_SUBST([LIB_SUFFIX])
 
 ## Set default build flags
-AC_CEDAR_CHECKCXXFLAG([-pedantic], [AM_CXXFLAGS="$AM_CXXFLAGS -pedantic "])
+AC_CEDAR_CHECKCXXFLAG([-pedantic], [AM_CXXFLAGS="$AM_CXXFLAGS -pedantic"])
 AC_CEDAR_CHECKCXXFLAG([-Wall], [AM_CXXFLAGS="$AM_CXXFLAGS -Wall -Wno-format"])
-AC_CEDAR_CHECKCXXFLAG([-std=c++98], [AM_CXXFLAGS="$AM_CXXFLAGS -std=c++98 "])
+AC_CEDAR_CHECKCXXFLAG([-std=c++98], [AM_CXXFLAGS="$AM_CXXFLAGS -std=c++98"])
 
 ## Debug flag (default=none)
 AC_ARG_ENABLE([debug], [AC_HELP_STRING(--enable-debug, [build with debugging symbols  @<:@default=no@:>@])], [], [enable_debug=no])
@@ -102,6 +102,12 @@ if test x$enable_pyext == xyes; then
 fi
 AM_CONDITIONAL(ENABLE_PYEXT, [test x$enable_pyext == xyes])
 
+## Set extra Python extension build flags (to cope with Cython output code oddities)
+PYEXT_CXXFLAGS=
+AC_CEDAR_CHECKCXXFLAG([-Wno-unused-but-set-variable], [PYEXT_CXXFLAGS="$PYEXT_CXXFLAGS -Wno-unused-but-set-variable"])
+AC_CEDAR_CHECKCXXFLAG([-Wno-sign-compare], [PYEXT_CXXFLAGS="$PYEXT_CXXFLAGS -Wno-sign-compare"])
+AC_SUBST(PYEXT_CXXFLAGS)
+
 
 ## Optional ROOT analysis framework
 #AC_ARG_ENABLE([ROOT], [AC_HELP_STRING(--enable-root, [build with ROOT output @<:@default=yes@:>@])], [], [enable_root=yes])
@@ -126,7 +132,7 @@ BOOST_FIND_HEADER([boost/fusion/include/adapt_struct.hpp])
 
 ## Extend and substitute the default build flags after lib testing
 AM_CPPFLAGS="-I\$(top_srcdir)/include -I\$(top_builddir)/include"
-AM_CPPFLAGS="$AM_CPPFLAGS \$(BOOST_CPPFLAGS)"
+AM_CPPFLAGS="$AM_CPPFLAGS $BOOST_CPPFLAGS"
 AC_SUBST(AM_CPPFLAGS)
 AC_SUBST(AM_CXXFLAGS)
 
