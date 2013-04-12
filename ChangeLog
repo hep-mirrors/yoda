@@ -1,3 +1,7 @@
+2013-04-12  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Releasing version 1.0.0 -- it seems stable enough.
+
 2013-04-10  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Being more careful about adding -Wno-* flags to the C++ compiler
