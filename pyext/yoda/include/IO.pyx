@@ -7,6 +7,9 @@
 # idea than just "give this a filename", and well worth the inefficiencies and
 # potential memory limits.
 
+import sys
+
+
 cdef list aobjects_to_list(vector[c.AnalysisObject*] *aobjects):
     cdef list out = []
     cdef c.AnalysisObject *ao
@@ -97,11 +100,22 @@ def write(ana_objs, filename):
     cdef c.ostringstream oss
     cdef vector[c.AnalysisObject*] vec
     cdef AnalysisObject a
-    for a in ana_objs:
+
+    try:
+        for a in ana_objs:
+            vec.push_back(a._AnalysisObject())
+    except:
+        a = ana_objs
         vec.push_back(a._AnalysisObject())
+
+    # Most of the time we just won't care about memory
     c.Writer_create(filename).write(oss, vec)
-    with open(filename, 'w') as f:
-        f.write(oss.str())
+
+    if filename == "-":
+        sys.stdout.write(oss.str().c_str())
+    else:
+        with open(filename, 'w') as f:
+            f.write(oss.str().c_str())
 
 
 def writeYODA(ana_objs, file_or_filename):
@@ -112,18 +126,25 @@ def writeYODA(ana_objs, file_or_filename):
     cdef vector[c.AnalysisObject*] vec
     cdef AnalysisObject a
 
-    for a in ana_objs:
+    try:
+        for a in ana_objs:
+            vec.push_back(a._AnalysisObject())
+    except:
+        a = ana_objs
         vec.push_back(a._AnalysisObject())
 
     # Most of the time we just won't care about memory
-    # Perhaps speak with andy re: huge files
     c.WriterYODA_create().write(oss, vec)
 
     if hasattr(file_or_filename, 'write'):
         file_or_filename.write(oss.str().c_str())
     else:
-        with open(file_or_filename, 'w') as f:
-            f.write(oss.str().c_str())
+        fname = file_or_filename
+        if fname == "-":
+            sys.stdout.write(oss.str().c_str())
+        else:
+            with open(fname, 'w') as f:
+                f.write(oss.str().c_str())
 
 
 def writeFLAT(ana_objs, file_or_filename):
@@ -134,18 +155,25 @@ def writeFLAT(ana_objs, file_or_filename):
     cdef vector[c.AnalysisObject*] vec
     cdef AnalysisObject a
 
-    for a in ana_objs:
+    try:
+        for a in ana_objs:
+            vec.push_back(a._AnalysisObject())
+    except:
+        a = ana_objs
         vec.push_back(a._AnalysisObject())
 
     # Most of the time we just won't care about memory
-    # Perhaps speak with andy re: huge files
     c.WriterFLAT_create().write(oss, vec)
 
     if hasattr(file_or_filename, 'write'):
         file_or_filename.write(oss.str().c_str())
     else:
-        with open(file_or_filename, 'w') as f:
-            f.write(oss.str().c_str())
+        fname = file_or_filename
+        if fname == "-":
+            sys.stdout.write(oss.str().c_str())
+        else:
+            with open(fname, 'w') as f:
+                f.write(oss.str().c_str())
 
 
 def writeAIDA(ana_objs, file_or_filename):
@@ -156,15 +184,22 @@ def writeAIDA(ana_objs, file_or_filename):
     cdef vector[c.AnalysisObject*] vec
     cdef AnalysisObject a
 
-    for a in ana_objs:
+    try:
+        for a in ana_objs:
+            vec.push_back(a._AnalysisObject())
+    except:
+        a = ana_objs
         vec.push_back(a._AnalysisObject())
 
     # Most of the time we just won't care about memory
-    # Perhaps speak with andy re: huge files
     c.WriterAIDA_create().write(oss, vec)
 
     if hasattr(file_or_filename, 'write'):
         file_or_filename.write(oss.str().c_str())
     else:
-        with open(file_or_filename, 'w') as f:
-            f.write(oss.str().c_str())
+        fname = file_or_filename
+        if fname == "-":
+            sys.stdout.write(oss.str().c_str())
+        else:
+            with open(fname, 'w') as f:
+                f.write(oss.str().c_str())

@@ -1,3 +1,8 @@
+2013-04-23  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Adding Python output handling for single AOs and to be able to
+	use a "-" filename to mean stdout.
+
 2013-04-12  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Releasing version 1.0.0 -- it seems stable enough.
