@@ -2,7 +2,7 @@ SUBDIRS = yoda
 EXTRA_DIST = template.py
 
 if ENABLE_PYEXT
-PYEXT_ENV = CC=$(CC) CXX=$(CXX)
+PYEXT_ENV = CC="$(CC)" CXX="$(CXX)"
 
 all-local:
 	$(PYEXT_ENV) $(PYTHON) setup.py install --install-lib=build/
