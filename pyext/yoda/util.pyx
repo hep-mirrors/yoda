@@ -14,16 +14,17 @@ def try_loop(fs, *args, char *_msg='Invalid arguments', **kwargs):
 
     raise TypeError(_msg)
 
+
 class Edges(tuple):
-    'Edges(low, high)' 
+    'Edges(low, high)'
 
-    __slots__ = () 
+    __slots__ = ()
 
-    _fields = ('low', 'high') 
+    _fields = ('low', 'high')
 
     def __new__(_cls, low, high):
         'Create new instance of Edges(low, high)'
-        return tuple.__new__(_cls, (low, high)) 
+        return tuple.__new__(_cls, (low, high))
 
     @classmethod
     def _make(cls, iterable, new=tuple.__new__, len=len):
@@ -31,43 +32,43 @@ class Edges(tuple):
         result = new(cls, iterable)
         if len(result) != 2:
             raise TypeError('Expected 2 arguments, got %d' % len(result))
-        return result 
+        return result
 
     def __repr__(self):
         'Return a nicely formatted representation string'
-        return 'Edges(low=%r, high=%r)' % self 
+        return 'Edges(low=%r, high=%r)' % self
 
     def _asdict(self):
         'Return a new dict which maps field names to their values'
-        return dict(zip(self._fields, self)) 
+        return dict(zip(self._fields, self))
 
-    __dict__ = property(_asdict) 
+    __dict__ = property(_asdict)
 
     def _replace(_self, **kwds):
         'Return a new Edges object replacing specified fields with new values'
         result = _self._make(map(kwds.pop, ('low', 'high'), _self))
         if kwds:
             raise ValueError('Got unexpected field names: %r' % kwds.keys())
-        return result 
+        return result
 
     def __getnewargs__(self):
         'Return self as a plain tuple.  Used by copy and pickle.'
-        return tuple(self) 
+        return tuple(self)
 
     low = property(itemgetter(0), doc='Alias for field number 0')
     high = property(itemgetter(1), doc='Alias for field number 1')
 
 
 class Errors(tuple):
-    'Errors(minus, plus)' 
+    'Errors(minus, plus)'
 
-    __slots__ = () 
+    __slots__ = ()
 
-    _fields = ('minus', 'plus') 
+    _fields = ('minus', 'plus')
 
     def __new__(_cls, minus, plus):
         'Create new instance of Errors(minus, plus)'
-        return tuple.__new__(_cls, (minus, plus)) 
+        return tuple.__new__(_cls, (minus, plus))
 
     @classmethod
     def _make(cls, iterable, new=tuple.__new__, len=len):
@@ -75,28 +76,28 @@ class Errors(tuple):
         result = new(cls, iterable)
         if len(result) != 2:
             raise TypeError('Expected 2 arguments, got %d' % len(result))
-        return result 
+        return result
 
     def __repr__(self):
         'Return a nicely formatted representation string'
-        return 'Errors(minus=%r, plus=%r)' % self 
+        return 'Errors(minus=%r, plus=%r)' % self
 
     def _asdict(self):
         'Return a new dict which maps field names to their values'
-        return dict(zip(self._fields, self)) 
+        return dict(zip(self._fields, self))
 
-    __dict__ = property(_asdict) 
+    __dict__ = property(_asdict)
 
     def _replace(_self, **kwds):
         'Return a new Errors object replacing specified fields with new values'
         result = _self._make(map(kwds.pop, ('minus', 'plus'), _self))
         if kwds:
             raise ValueError('Got unexpected field names: %r' % kwds.keys())
-        return result 
+        return result
 
     def __getnewargs__(self):
         'Return self as a plain tuple.  Used by copy and pickle.'
-        return tuple(self) 
+        return tuple(self)
 
     minus = property(itemgetter(0), doc='Alias for field number 0')
     plus = property(itemgetter(1), doc='Alias for field number 1')
@@ -106,15 +107,15 @@ class Errors(tuple):
 #Errors = namedtuple('Errors', ('minus', 'plus'))
 #XY = namedtuple('XY', ('x', 'y'))
 class XY(tuple):
-    'XY(x, y)' 
+    'XY(x, y)'
 
-    __slots__ = () 
+    __slots__ = ()
 
-    _fields = ('x', 'y') 
+    _fields = ('x', 'y')
 
     def __new__(_cls, x, y):
         'Create new instance of XY(x, y)'
-        return tuple.__new__(_cls, (x, y)) 
+        return tuple.__new__(_cls, (x, y))
 
     @classmethod
     def _make(cls, iterable, new=tuple.__new__, len=len):
@@ -122,44 +123,44 @@ class XY(tuple):
         result = new(cls, iterable)
         if len(result) != 2:
             raise TypeError('Expected 2 arguments, got %d' % len(result))
-        return result 
+        return result
 
     def __repr__(self):
         'Return a nicely formatted representation string'
-        return 'XY(x=%r, y=%r)' % self 
+        return 'XY(x=%r, y=%r)' % self
 
     def _asdict(self):
         'Return a new dict which maps field names to their values'
-        return dict(zip(self._fields, self)) 
+        return dict(zip(self._fields, self))
 
-    __dict__ = property(_asdict) 
+    __dict__ = property(_asdict)
 
     def _replace(_self, **kwds):
         'Return a new XY object replacing specified fields with new values'
         result = _self._make(map(kwds.pop, ('x', 'y'), _self))
         if kwds:
             raise ValueError('Got unexpected field names: %r' % kwds.keys())
-        return result 
+        return result
 
     def __getnewargs__(self):
         'Return self as a plain tuple.  Used by copy and pickle.'
-        return tuple(self) 
+        return tuple(self)
 
     x = property(itemgetter(0), doc='Alias for field number 0')
     y = property(itemgetter(1), doc='Alias for field number 1')
 
+
 #XYZ = namedtuple('XYZ', ('x', 'y', 'z'))
-
 class XYZ(tuple):
-    'XYZ(x, y, z)' 
+    'XYZ(x, y, z)'
 
-    __slots__ = () 
+    __slots__ = ()
 
-    _fields = ('x', 'y', 'z') 
+    _fields = ('x', 'y', 'z')
 
     def __new__(_cls, x, y, z):
         'Create new instance of XYZ(x, y, z)'
-        return tuple.__new__(_cls, (x, y, z)) 
+        return tuple.__new__(_cls, (x, y, z))
 
     @classmethod
     def _make(cls, iterable, new=tuple.__new__, len=len):
@@ -167,30 +168,29 @@ class XYZ(tuple):
         result = new(cls, iterable)
         if len(result) != 3:
             raise TypeError('Expected 3 arguments, got %d' % len(result))
-        return result 
+        return result
 
     def __repr__(self):
         'Return a nicely formatted representation string'
-        return 'XYZ(x=%r, y=%r, z=%r)' % self 
+        return 'XYZ(x=%r, y=%r, z=%r)' % self
 
     def _asdict(self):
         'Return a new dict which maps field names to their values'
-        return dict(zip(self._fields, self)) 
+        return dict(zip(self._fields, self))
 
-    __dict__ = property(_asdict) 
+    __dict__ = property(_asdict)
 
     def _replace(_self, **kwds):
         'Return a new XYZ object replacing specified fields with new values'
         result = _self._make(map(kwds.pop, ('x', 'y', 'z'), _self))
         if kwds:
             raise ValueError('Got unexpected field names: %r' % kwds.keys())
-        return result 
+        return result
 
     def __getnewargs__(self):
         'Return self as a plain tuple.  Used by copy and pickle.'
-        return tuple(self) 
+        return tuple(self)
 
     x = property(itemgetter(0), doc='Alias for field number 0')
     y = property(itemgetter(1), doc='Alias for field number 1')
     z = property(itemgetter(2), doc='Alias for field number 2')
-

@@ -1,10 +1,8 @@
 
-
-
 cdef class Histo1D(AnalysisObject):
     """
     1D histogram. Complete histogramming is supported, including
-    uniform/regular binning, variable wideth bininng, unbinned gaps in
+    uniform/regular binning, variable-width bininng, unbinned gaps in
     the covered range, and under/overflows. Rebinning by integer
     factors, or by explicit merging of contiguous bins is also
     supported.
@@ -29,10 +27,6 @@ cdef class Histo1D(AnalysisObject):
     Should this constructor fail, then
     Histo1D(nbins, low, high, path="", title="")
     """
-
-    # Is there a reason why this sounds like an advert? I'VE ALREADY SOLD OUT.
-    # DAMMIT!
-
 
     cdef inline c.Histo1D *_Histo1D(self) except NULL:
         return <c.Histo1D*> self.ptr()
@@ -107,8 +101,7 @@ cdef class Histo1D(AnalysisObject):
     @property
     def totalDbn(self):
         """The Dbn1D representing the total distribution."""
-        # TODO: Now does this actually involve a copy in Cython? We should probably
-        # find out!
+        # TODO: Now does this actually involve a copy in Cython? We should find out!
         return util.new_borrowed_cls(
             Dbn1D, &self._Histo1D().totalDbn(), self)
 

@@ -1,3 +1,9 @@
+2013-05-13  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Adding combined value+error setX/Y functions on Point2D.
+
+	* Adding HistoBin1D::relErr()
+
 2013-04-23  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Adding Python output handling for single AOs and to be able to

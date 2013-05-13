@@ -265,7 +265,48 @@ namespace YODA {
 
     /// @todo Support multiple weights (then need to discard setYMin/Max?)
 
-    /// @todo Add setY(y, err) combinations for user convenience
+
+    /// @name Combined x/y value and error setters
+    //@{
+
+    /// Set x value and symmetric error
+    void setX(double x, double ex) {
+      setX(x);
+      setXErr(ex);
+    }
+
+    /// Set x value and asymmetric error
+    void setX(double x, double exminus, double explus) {
+      setX(x);
+      setXErr(exminus, explus);
+    }
+
+    /// Set x value and asymmetric error
+    void setX(double x, std::pair<double,double> ex) {
+      setX(x);
+      setXErr(ex);
+    }
+
+
+    /// Set y value and symmetric error
+    void setY(double y, double ey) {
+      setY(y);
+      setYErr(ey);
+    }
+
+    /// Set y value and asymmetric error
+    void setY(double y, double eyminus, double eyplus) {
+      setY(y);
+      setYErr(eyminus, eyplus);
+    }
+
+    /// Set y value and asymmetric error
+    void setY(double y, std::pair<double,double> ey) {
+      setY(y);
+      setYErr(ey);
+    }
+
+    //@}
 
 
     // @name Manipulations

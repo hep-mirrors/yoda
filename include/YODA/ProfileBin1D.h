@@ -100,6 +100,12 @@ namespace YODA {
       return _dbn.yStdErr();
     }
 
+    /// @todo Add relative error
+    // /// The relative size of the error (same for either area or height errors)
+    // double relErr() const {
+    //   return sqrt(sumW2()) / sumW();
+    // }
+
     double rms() const {
       return _dbn.yRMS();
     }

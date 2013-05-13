@@ -1,16 +1,15 @@
-# Readers and writers
-# TODO: (low priority) refactor to improve readability.
+"""Readers and writers
 
-# The basic idea here is to provide Python IO semantics by using Python to do
-# the IO. Otherwise we get C++ IO semantics in Python. It also means we can use
-# dummy files, e.g. anything with read/write attributes. Generally a much better
-# idea than just "give this a filename", and well worth the inefficiencies and
-# potential memory limits.
+The basic idea here is to provide Python IO semantics by using Python to do
+the IO. Otherwise we get C++ IO semantics in Python. It also means we can use
+dummy files, e.g. anything with read/write attributes. Generally a much better
+idea than just "give this a filename", and well worth the inefficiencies and
+potential memory limits.
+"""
 
 import sys
 
-
-cdef list aobjects_to_list(vector[c.AnalysisObject*] *aobjects):
+cdef list _aobjects_to_list(vector[c.AnalysisObject*] *aobjects):
     cdef list out = []
     cdef c.AnalysisObject *ao
     cdef size_t i
@@ -22,7 +21,7 @@ cdef list aobjects_to_list(vector[c.AnalysisObject*] *aobjects):
     return out
 
 # Set a istringstream's string from a C/Python string
-cdef void make_iss(c.istringstream &iss, char *s):
+cdef void _make_iss(c.istringstream &iss, char *s):
     iss.str(string(s))
 
 
@@ -40,10 +39,10 @@ def read(filename):
     cdef vector[c.AnalysisObject*] aobjects
     with open(filename) as f:
         s = f.read()
-    make_iss(iss, s)
+    _make_iss(iss, s)
     c.Reader_create(filename).read(iss, aobjects)
     # Not as expensive as it looks!
-    return aobjects_to_list(&aobjects)
+    return _aobjects_to_list(&aobjects)
 
 
 def readYODA(file_or_filename):
@@ -60,11 +59,11 @@ def readYODA(file_or_filename):
         with open(file_or_filename) as f:
             s = f.read()
 
-    make_iss(iss, s)
+    _make_iss(iss, s)
     c.ReaderYODA_create().read(iss, aobjects)
 
     # Not as expensive as it looks!
-    return aobjects_to_list(&aobjects)
+    return _aobjects_to_list(&aobjects)
 
 
 def readAIDA(file_or_filename):
@@ -81,11 +80,11 @@ def readAIDA(file_or_filename):
         with open(file_or_filename) as f:
             s = f.read()
 
-    make_iss(iss, s)
+    _make_iss(iss, s)
     c.ReaderAIDA_create().read(iss, aobjects)
 
     # Not as expensive as it looks!
-    return aobjects_to_list(&aobjects)
+    return _aobjects_to_list(&aobjects)
 
 
 ##
