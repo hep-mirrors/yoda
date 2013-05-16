@@ -1,5 +1,7 @@
 2013-05-17  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Mapping HistoBin1D.relErr in Python.
+
 	* Adding a non-const points() accessor to Scatter2D.
 
 2013-05-13  Andy Buckley  <andy.buckley@cern.ch>

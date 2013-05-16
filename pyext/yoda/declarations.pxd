@@ -419,6 +419,7 @@ cdef extern from "YODA/HistoBin1D.h" namespace "YODA":
         double height() except +err
         double areaErr() except +err
         double heightErr() except +err
+        double relErr() except +err
 
         HistoBin1D operator+(HistoBin1D) except +err
         HistoBin1D operator-(HistoBin1D) except +err

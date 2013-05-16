@@ -3,10 +3,12 @@ cdef class HistoBin1D(Bin1D_Dbn1D):
     cdef inline c.HistoBin1D *_HistoBin1D(self) except NULL:
         return <c.HistoBin1D *> self.ptr()
 
+
     def __init__(self, double a, double b):
         util.set_owned_ptr(
             self, new c.HistoBin1D(a, b))
-        
+
+
     def fill(self, value=None, double weight=1.0):
         """
         (value=None, weight=1.0)
@@ -19,6 +21,7 @@ cdef class HistoBin1D(Bin1D_Dbn1D):
         except TypeError:
             self._HistoBin1D().fillBin(weight)
 
+
     @property
     def area(self):
         """
@@ -29,6 +32,7 @@ cdef class HistoBin1D(Bin1D_Dbn1D):
 
         """
         return self._HistoBin1D().area()
+
 
     @property
     def height(self):
@@ -41,6 +45,7 @@ cdef class HistoBin1D(Bin1D_Dbn1D):
         """
         return self._HistoBin1D().height()
 
+
     @property
     def areaErr(self):
         """
@@ -49,6 +54,7 @@ cdef class HistoBin1D(Bin1D_Dbn1D):
 
         """
         return self._HistoBin1D().areaErr()
+
 
     @property
     def heightErr(self):
@@ -59,12 +65,23 @@ cdef class HistoBin1D(Bin1D_Dbn1D):
         """
         return self._HistoBin1D().heightErr()
 
+
+    @property
+    def relErr(self):
+        """
+        Relative error - same for either area or height interpretations.
+
+        """
+        return self._HistoBin1D().relErr()
+
+
     def __add__(HistoBin1D a, HistoBin1D b):
         return util.new_owned_cls(
             HistoBin1D,
             new c.HistoBin1D(
-                deref(a._HistoBin1D()) + 
+                deref(a._HistoBin1D()) +
                 deref(b._HistoBin1D())))
+
 
     def __sub__(HistoBin1D a, HistoBin1D b):
         return util.new_owned_cls(
@@ -72,4 +89,3 @@ cdef class HistoBin1D(Bin1D_Dbn1D):
             new c.HistoBin1D(
                 deref(a._HistoBin1D()) -
                 deref(b._HistoBin1D())))
-
