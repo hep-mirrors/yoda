@@ -178,7 +178,13 @@ namespace YODA {
     }
 
 
-    /// Get the collection of points
+    /// Get the collection of points (non-const)
+    Points& points() {
+      return _points;
+    }
+
+
+    /// Get the collection of points (const)
     const Points& points() const {
       return _points;
     }

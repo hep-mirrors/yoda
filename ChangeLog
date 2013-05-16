@@ -1,3 +1,7 @@
+2013-05-17  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Adding a non-const points() accessor to Scatter2D.
+
 2013-05-13  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Adding combined value+error setX/Y functions on Point2D.
