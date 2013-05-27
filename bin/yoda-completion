@@ -1,0 +1,146 @@
+## -*- sh -*-
+## Analysis name completion for YODA scripts
+
+(type _filedir &> /dev/null) || \
+function _filedir() {
+    local cur prev commands options command
+    cur="${COMP_WORDS[COMP_CWORD]}"
+    COMPREPLY=( $(compgen -W "$(ls ${cur}* 2> /dev/null)" -- ${cur}) )
+    return 0
+}
+
+
+##########################
+
+
+function _yoda_config() {
+    local cur prev commands options command
+    COMPREPLY=()
+    cur="${COMP_WORDS[COMP_CWORD]}"
+    prev="${COMP_WORDS[COMP_CWORD-1]}"
+
+    opts="--help --version"
+    opts="$opts --prefix --includedir --libdir"
+    opts="$opts --cxxflags --libs"
+    opts="$opts -h"
+    if [[ ${cur} == -* ]] ; then
+        COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
+        if test -n "$COMPREPLY"; then
+            return 0
+        fi
+    fi
+
+    COMPREPLY=( $(compgen -W "$opts" -- ${cur}) )
+    if test -n "$COMPREPLY"; then
+        return 0
+    fi
+
+    return 0
+}
+
+
+complete -F _yoda_config yoda-config
+
+
+#############################
+
+
+function _yoda2aida() {
+    local cur prev commands options command
+    COMPREPLY=()
+    cur="${COMP_WORDS[COMP_CWORD]}"
+    prev="${COMP_WORDS[COMP_CWORD-1]}"
+
+    opts="--help -h"
+
+    if [[ ${cur} == -* ]] ; then
+        COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
+        if test -n "$COMPREPLY"; then
+            return 0
+        fi
+    fi
+
+    _filedir yoda
+    return 0
+}
+
+
+complete -F _yoda2aida -o default yoda2aida
+
+
+##############################
+
+
+function _yoda2flat() {
+    local cur prev commands options command
+    COMPREPLY=()
+    cur="${COMP_WORDS[COMP_CWORD]}"
+    prev="${COMP_WORDS[COMP_CWORD-1]}"
+
+    opts="--help -h"
+
+    if [[ ${cur} == -* ]] ; then
+        COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
+        if test -n "$COMPREPLY"; then
+            return 0
+        fi
+    fi
+
+    _filedir yoda
+    return 0
+}
+
+
+complete -F _yoda2flat -o default yoda2flat
+
+
+##############################
+
+
+function _aida2yoda() {
+    local cur prev commands options command
+    COMPREPLY=()
+    cur="${COMP_WORDS[COMP_CWORD]}"
+    prev="${COMP_WORDS[COMP_CWORD-1]}"
+
+    opts="--help -h"
+
+    if [[ ${cur} == -* ]] ; then
+        COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
+        if test -n "$COMPREPLY"; then
+            return 0
+        fi
+    fi
+
+    _filedir aida
+    return 0
+}
+
+
+complete -F _aida2yoda -o default aida2yoda
+
+
+##############################
+
+
+function _aida2flat() {
+    local cur prev commands options command
+    COMPREPLY=()
+    cur="${COMP_WORDS[COMP_CWORD]}"
+    prev="${COMP_WORDS[COMP_CWORD-1]}"
+
+    opts="--help -h"
+
+    if [[ ${cur} == -* ]] ; then
+        COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
+        if test -n "$COMPREPLY"; then
+            return 0
+        fi
+    fi
+
+    _filedir aida
+    return 0
+}
+
+
+complete -F _aida2flat -o default aida2flat

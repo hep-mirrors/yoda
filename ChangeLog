@@ -1,3 +1,7 @@
+2013-05-27  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Adding a yoda-completion file for bash.
+
 2013-05-17  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Mapping HistoBin1D.relErr in Python.

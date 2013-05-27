@@ -3,6 +3,7 @@ SUBDIRS = src include pyext tests bin
 
 EXTRA_FILES = main.dox
 
+
 ## Deal with the Doxygen stuff
 # TODO: Improve, without the Doxy performance penalty on every call of "make"
 if WITH_DOXYGEN
