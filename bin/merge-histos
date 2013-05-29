@@ -1,36 +1,30 @@
-#!/usr/bin/python
+#! /usr/bin/env python
 
-import yoda
-import optparse
-import cStringIO
+"""\
+%prog [-o outfile] yodafile...
 
-parser = optparse.OptionParser()
+Merge Analysis Objects from multiple YODA files.
+"""
+
+import yoda, optparse, operator, itertools
+
+parser = optparse.OptionParser(usage=__doc__)
+parser.add_option('-o', '--output', default='-', dest='OUTPUT_FILE')
 opts, filenames = parser.parse_args()
 
-class FileMerger(object):
-    def __init__(self):
-        self._objects = {}
+# TODO: move to util module
+def merge(objects, op=operator.iadd):
+    out_objects = {}
 
-    def merge(self, x):
-        existing = self._objects.get(x.path)
-
+    for ob in objects:
+        existing = out_objects.get(ob.path)
         if existing:
-            x += existing
+            op(ob, existing)
+        out_objects[ob.path] = ob
 
-        self._objects[x.path] = x
+    return out_objects
 
-    @property
-    def objects(self):
-        return self._objects.itervalues()
+analysisobjects_in = (yoda.readYODA(filename) for filename in filenames)
+analysisobjects_out = merge(itertools.chain(*analysisobjects_in))
 
-merger = FileMerger()
-
-for filename in filenames:
-    print filename
-    for i in yoda.readYODA(filename):
-        merger.merge(i)
-
-stringio = cStringIO.StringIO()
-yoda.writeYODA(merger.objects, stringio)
-stringio.seek(0)
-print stringio.read(),
+yoda.writeYODA(analysisobjects_out.values(), opts.OUTPUT_FILE)
