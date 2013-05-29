@@ -710,8 +710,11 @@ cdef extern from "YODA/Histo1D.h" namespace "YODA":
         void addBin(double, double) except+ err
         void addBins(vector[double] edges) except+ err
         void eraseBin(size_t index) except+ err
+
 #}}} Histo1D
 
+cdef extern from "merge.hh":
+    void Histo1D_iadd_Histo1D "cython_iadd" (Histo1D*, Histo1D*)
 
 # Histo2D {{{
 cdef extern from "YODA/Histo2D.h" namespace "YODA":

@@ -1,0 +1,36 @@
+#!/usr/bin/python
+
+import yoda
+import optparse
+import cStringIO
+
+parser = optparse.OptionParser()
+opts, filenames = parser.parse_args()
+
+class FileMerger(object):
+    def __init__(self):
+        self._objects = {}
+
+    def merge(self, x):
+        existing = self._objects.get(x.path)
+
+        if existing:
+            x += existing
+
+        self._objects[x.path] = x
+
+    @property
+    def objects(self):
+        return self._objects.itervalues()
+
+merger = FileMerger()
+
+for filename in filenames:
+    print filename
+    for i in yoda.readYODA(filename):
+        merger.merge(i)
+
+stringio = cStringIO.StringIO()
+yoda.writeYODA(merger.objects, stringio)
+stringio.seek(0)
+print stringio.read(),

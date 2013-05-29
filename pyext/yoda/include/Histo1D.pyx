@@ -164,3 +164,9 @@ cdef class Histo1D(AnalysisObject):
         cdef double a, b
         for a, b in tuples:
             self._Histo1D().addBin(a, b)
+
+    def __iadd__(Histo1D self, Histo1D other):
+        #deref(self._Histo1D()) += other._Histo1D()
+        c.Histo1D_iadd_Histo1D(self._Histo1D(),
+                               other._Histo1D())
+        return self
