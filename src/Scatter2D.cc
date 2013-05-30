@@ -112,8 +112,15 @@ namespace YODA {
       const double exminus = x - p1.xMin();
       const double explus  = p1.xMax() - x;
       //
-      const double y = p1.y() / p2.y();
-      const double ey = y * sqrt( sqr(p1.yErrAvg()/p1.y()) + sqr(p2.yErrAvg()/p2.y()) );
+      double y = 0;
+      double ey = 0;
+      if (p1.y() == 0 || p2.y() == 0) {
+        /// @TODO: find a nicer solution than setting the bin to zero
+        //throw LowStatsError("Requested division of empty bin");
+      } else {
+        y = p1.y() / p2.y();
+        ey = y * sqrt( sqr(p1.yErrAvg()/p1.y()) + sqr(p2.yErrAvg()/p2.y()) );
+      }
       /// Deal with +/- errors separately, inverted for the denominator contributions:
       /// @TODO: check correctness with different signed numerator and denominator.
       //const double eyplus = y * sqrt( sqr(p1.yErrPlus()/p1.y()) + sqr(p2.yErrMinus()/p2.y()) );

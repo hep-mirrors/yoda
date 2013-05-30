@@ -110,9 +110,16 @@ namespace YODA {
       const double eyminus = y - p1.yMin();
       const double eyplus  = p1.yMax() - y;
 
-      const double z = p1.z() / p2.z();
-      /// @todo Generally deal with +/- errors separately
-      const double ez = z * sqrt( sqr(p1.yErrAvg()/p1.z()) + sqr(p2.yErrAvg()/p2.z()) );
+      double z = 0;
+      double ez = 0;
+      if (p1.z() == 0 || p2.z() == 0) {
+        /// @TODO: find a nicer solution than setting the bin to zero
+        //throw LowStatsError("Requested division of empty bin");
+      } else {
+        z = p1.z() / p2.z();
+        /// @todo Generally deal with +/- errors separately
+        ez = z * sqrt( sqr(p1.yErrAvg()/p1.z()) + sqr(p2.yErrAvg()/p2.z()) );
+      }
       tmp.addPoint(x, y, z, exminus, explus, eyminus, eyplus, ez, ez);
     }
     assert(tmp.numPoints() == numer.numPoints());
