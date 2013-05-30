@@ -73,7 +73,7 @@ namespace YODA {
       const double y = p1.y() + p2.y();
       /// @todo Deal with +/- errors separately?
       const double ey = sqrt( sqr(p1.yErrAvg()) + sqr(p2.yErrAvg()) );
-      tmp.addPoint(x, p1.xErrMinus(), p1.xErrPlus(), y, ey, ey);
+      tmp.addPoint(x, y, p1.xErrMinus(), p1.xErrPlus(), ey, ey);
     }
     assert(tmp.numPoints() == first.numPoints());
     return tmp;
@@ -93,7 +93,7 @@ namespace YODA {
       const double y = p1.y() - p2.y();
       /// @todo Deal with +/- errors separately?
       const double ey = sqrt( sqr(p1.yErrAvg()) + sqr(p2.yErrAvg()) );
-      tmp.addPoint(x, p1.xErrMinus(), p1.xErrPlus(), y, ey, ey);
+      tmp.addPoint(x, y, p1.xErrMinus(), p1.xErrPlus(), ey, ey);
     }
     assert(tmp.numPoints() == first.numPoints());
     return tmp;
@@ -118,7 +118,7 @@ namespace YODA {
       /// @TODO: check correctness with different signed numerator and denominator.
       //const double eyplus = y * sqrt( sqr(p1.yErrPlus()/p1.y()) + sqr(p2.yErrMinus()/p2.y()) );
       //const double eyminus = y * sqrt( sqr(p1.yErrMinus()/p1.y()) + sqr(p2.yErrPlus()/p2.y()) );
-      tmp.addPoint(x, exminus, explus, y, ey, ey);
+      tmp.addPoint(x, y, exminus, explus, ey, ey);
     }
     assert(tmp.numPoints() == numer.numPoints());
     return tmp;

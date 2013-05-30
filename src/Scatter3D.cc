@@ -46,7 +46,7 @@ namespace YODA {
       const double z = bin.height();
       const double ez = bin.heightErr();
 
-      ret.addPoint(x, exminus, explus, y, eyminus, eyplus, z, ez, ez);
+      ret.addPoint(x, y, z, exminus, explus, eyminus, eyplus, ez, ez);
     }
 
     return ret;
@@ -82,7 +82,7 @@ namespace YODA {
         ez = 0.0;
       }
 
-      ret.addPoint(x, exminus, explus, y, eyminus, eyplus, z, ez, ez);
+      ret.addPoint(x, y, z, exminus, explus, eyminus, eyplus, ez, ez);
     }
 
     return ret;
@@ -113,8 +113,7 @@ namespace YODA {
       const double z = p1.z() / p2.z();
       /// @todo Generally deal with +/- errors separately
       const double ez = z * sqrt( sqr(p1.yErrAvg()/p1.z()) + sqr(p2.yErrAvg()/p2.z()) );
-      tmp.addPoint(x, exminus, explus,
-                   y, eyminus, eyplus, z, ez, ez);
+      tmp.addPoint(x, y, z, exminus, explus, eyminus, eyplus, ez, ez);
     }
     assert(tmp.numPoints() == numer.numPoints());
     return tmp;

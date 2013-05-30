@@ -1,5 +1,8 @@
 2013-05-30  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Fixing several nasty errors in argument ordering for
+	Point{1,2,3}D construction in Scatter addPoint functions.
+
 	* Adding abs(...) to the returned Dbn1D::variance(), to avoid
 	problems when negative weights produce negative variance. No, we
 	don't like this either: is there a more correct way?

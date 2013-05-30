@@ -125,7 +125,7 @@ namespace YODA {
              x.size() == exminus.size() && x.size() == explus.size() &&
              x.size() == eyminus.size() && x.size() == eyplus.size());
       for (size_t i = 0; i < x.size(); ++i) {
-        addPoint(Point2D(x[i], exminus[i], explus[i], y[i], eyminus[i], eyplus[i]));
+        addPoint(Point2D(x[i], y[i], exminus[i], explus[i], eyminus[i], eyplus[i]));
       }
     }
 
@@ -366,7 +366,6 @@ namespace YODA {
   inline Scatter2D operator / (const Scatter2D& numer, const Scatter2D& denom) {
     return divide(numer, denom);
   }
-
 
 
   //@}

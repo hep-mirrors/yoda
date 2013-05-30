@@ -102,7 +102,7 @@ namespace YODA {
         throw RangeError("There are either different amounts of points on x/y/z vectors or not every of these vectors has properly defined error vectors!");
 
       for (size_t i = 0; i < x.size(); ++i) {
-        addPoint(Point3D(x[i], exminus[i], explus[i], y[i], eyminus[i], eyplus[i], z[i], ezminus[i], ezplus[i]));
+        addPoint(Point3D(x[i], y[i], z[i], exminus[i], explus[i], eyminus[i], eyplus[i], ezminus[i], ezplus[i]));
       }
 
       std::sort(_points.begin(), _points.end());
@@ -187,7 +187,7 @@ namespace YODA {
     Scatter3D& addPoint(double x, double exminus, double explus,
                         double y, double eyminus, double eyplus,
                         double z, double ezminus, double ezplus) {
-      _points.push_back(Point3D(x, exminus, explus, y, eyminus, eyplus, z, ezminus, ezplus));
+      _points.push_back(Point3D(x, y, z, exminus, explus, eyminus, eyplus, ezminus, ezplus));
 
       return *this;
     }
