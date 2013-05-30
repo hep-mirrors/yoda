@@ -283,32 +283,7 @@ namespace YODA {
 
 
   Scatter3D divide(const Histo2D& numer, const Histo2D& denom) {
-    /// @todo Don't abuse equality operator -- test *axis* compatibility
-    if (numer != denom) throw GridError("The two histos are not equivalently binned!");
-    Scatter3D tmp;
-    for (size_t i = 0; i < numer.numBins(); ++i) {
-      const HistoBin2D& b1 = numer.bin(i);
-      const HistoBin2D& b2 = denom.binByCoord(b1.midpoint().first, b1.midpoint().second);
-      const HistoBin2D& bL = b1 + b2;
-      assert(fuzzyEquals(b1.midpoint().first, b2.midpoint().first));
-      assert(fuzzyEquals(b1.midpoint().second, b2.midpoint().second));
-
-      const double x = bL.focus().first/2;
-      const double y = bL.focus().second/2;
-
-      const double exminus = x - bL.xMin()/2;
-      const double explus = bL.xMax() - x;
-
-      const double eyminus = y - b1.yMin()/2;
-      const double eyplus = bL.yMax()/2 - y;
-
-      const double z = b1.height() / b2.height();
-      const double ez = z * sqrt( sqr(b1.heightErr()/b1.height()) + sqr(b2.heightErr()/b2.height()) );
-      tmp.addPoint(x, exminus, explus, y, eyminus, eyplus, z, ez, ez);
-    }
-
-    assert(tmp.numPoints() == numer.numBins());
-    return tmp;
+    return divide(mkScatter(numer), mkScatter(denom));
   }
 
 

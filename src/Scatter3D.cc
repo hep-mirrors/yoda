@@ -66,13 +66,18 @@ namespace YODA {
       assert(fuzzyEquals(p1.yMax(), p2.yMax()));
 
       const double x = (p1.x() + p2.x())/2.0;
+      const double exminus = x - p1.xMin();
+      const double explus  = p1.xMax() - x;
+
       const double y = (p1.y() + p2.y())/2.0;
-      //
+      const double eyminus = y - p1.yMin();
+      const double eyplus  = p1.yMax() - y;
+
       const double z = p1.z() / p2.z();
       /// @todo Generally deal with +/- errors separately
       const double ez = z * sqrt( sqr(p1.yErrAvg()/p1.z()) + sqr(p2.yErrAvg()/p2.z()) );
-      tmp.addPoint(x, p1.xErrMinus(), p1.xErrPlus(),
-                   y, p1.yErrMinus(), p1.yErrPlus(), z, ez, ez);
+      tmp.addPoint(x, exminus, explus,
+                   y, eyminus, eyplus, z, ez, ez);
     }
     assert(tmp.numPoints() == numer.numPoints());
     return tmp;

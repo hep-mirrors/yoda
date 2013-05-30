@@ -161,35 +161,9 @@ namespace YODA {
 
   /// Divide two profile histograms
   Scatter3D divide(const Profile2D& , const Profile2D& ) {
-    /// @todo TODO -- implement!
-
-    /// @todo Check that bins match
-    /// @todo Don't abuse equality operator -- test *axis* compatibility
+    /// @todo TODO -- implement (needs mkscatter in Scatter3D, then just divide the scatters)!
 
     Scatter3D tmp;
-    // for (size_t i = 0; i < numer.numBins(); ++i) {
-    //   const ProfileBin2D& b1 = numer.bin(i);
-    //   const ProfileBin2D& b2 = denom.bin(i);
-    //   const ProfileBin2D& bL = b1 + b2;
-
-    //   assert(fuzzyEquals(b1.focus().first, b2.focus().first));
-    //   assert(fuzzyEquals(b1.focus().second, b2.focus().second));
-
-    //   const double x = bL.focus().first/2;
-    //   const double y = bL.focus().second/2;
-    //   const double z = b1.mean()/b2.mean();
-
-    //   const double exminus = x - bL.xMin()/2;
-    //   const double explus = bL.xMax()/2 - x;
-
-    //   const double eyminus = y - bL.yMin()/2;
-    //   const double eyplus = bL.yMax()/2 - y;
-
-    //   const double ez = z * sqrt(sqr(b1.stdErr()/b1.mean()) + sqr(b2.stdErr()/b2.mean()));
-
-    //   tmp.addPoint(x, exminus, explus, y, eyminus, eyplus, z, ez, ez);
-    // }
-    // assert(tmp.numPoints() == numer.numBins());
     return tmp;
   }
 
