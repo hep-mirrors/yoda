@@ -47,8 +47,11 @@ namespace YODA {
     if (fabs(num) < 1E-10 && fabs(den) < 1E-10) {
       throw WeightError("Numerically unstable weights in width calculation");
     }
+    // The weighted variance as defined above
     const double var = num/den;
-    return var;
+    /// We take the modulus of the weighted variance since the expression above can be negative with weighted means
+    /// @todo Is this the correct approach? There is no information online other than "weights are non-negative"...
+    return fabs(var);
   }
 
 

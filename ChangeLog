@@ -1,5 +1,9 @@
 2013-05-30  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Adding abs(...) to the returned Dbn1D::variance(), to avoid
+	problems when negative weights produce negative variance. No, we
+	don't like this either: is there a more correct way?
+
 	* Fixing the efficiency(Histo1D, Histo1D) implementation,
 	cf. http://root.cern.ch/phpBB3/viewtopic.php?t=3753
 
