@@ -8,22 +8,12 @@
 namespace YODA {
 
 
-  void Dbn1D::fill(double val, double weight) {
-    _numFills += 1;
-    _sumW += weight;
-    //const double w2 = sign(weight) * weight*weight;
-    _sumW2 += weight*weight;
-    _sumWX += weight*val;
-    _sumWX2 += weight*val*val;
-  }
-
-
   double Dbn1D::mean() const {
     if (effNumEntries() == 0) {
       throw LowStatsError("Requested mean of a distribution with no net fill weights");
     }
     // This is ok, even for negative sum(w)
-    return _sumWX/_sumW;
+    return sumWX()/sumW();
   }
 
 
@@ -36,15 +26,15 @@ namespace YODA {
     } else if (fuzzyLessEquals(effNumEntries(), 1.0)) {
       throw LowStatsError("Requested width of a distribution with only one effective entry");
     }
-    const double num = _sumWX2*_sumW - _sumWX*_sumWX;
-    const double den = _sumW*_sumW - _sumW2;
+    const double num = sumWX2()*sumW() - sqr(sumWX());
+    const double den = sqr(sumW()) - sumW2();
     if (isZero(den)) {
       throw WeightError("Undefined weighted variance");
     }
     /// @todo Isn't this sensitive to the overall scale of the weights?
     /// Shouldn't it check if den is bigger then num by a set number of
     /// orders of magnitude and vice versa?
-    if (fabs(num) < 1E-10 && fabs(den) < 1E-10) {
+    if (fabs(num) < 1e-10 && fabs(den) < 1e-10) {
       throw WeightError("Numerically unstable weights in width calculation");
     }
     // The weighted variance as defined above
@@ -77,9 +67,7 @@ namespace YODA {
 
 
   Dbn1D& Dbn1D::add(const Dbn1D& d) {
-    _numFills += d._numFills;
-    _sumW     += d._sumW;
-    _sumW2    += d._sumW2;
+    _dbnW     += d._dbnW;
     _sumWX    += d._sumWX;
     _sumWX2   += d._sumWX2;
     return *this;
@@ -87,9 +75,7 @@ namespace YODA {
 
 
   Dbn1D& Dbn1D::subtract(const Dbn1D& d) {
-    _numFills += d._numFills; //< @todo Hmm, add or subtract?!?
-    _sumW     -= d._sumW;
-    _sumW2    -= d._sumW2;
+    _dbnW     -= d._dbnW;
     _sumWX    -= d._sumWX;
     _sumWX2   -= d._sumWX2;
     return *this;

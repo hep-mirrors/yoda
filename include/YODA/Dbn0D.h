@@ -40,11 +40,11 @@ namespace YODA {
     /// @brief Constructor to set a distribution with a pre-filled state.
     ///
     /// Principally designed for internal persistency use.
-    Dbn0D(unsigned long numEntries, double sumW, double sumW2) {
-      _numFills = numEntries;
-      _sumW = sumW;
-      _sumW2 = sumW2;
-    }
+    Dbn0D(unsigned long numEntries, double sumW, double sumW2)
+      : _numFills(numEntries),
+        _sumW(sumW),
+        _sumW2(sumW2)
+    { }
 
 
     /// Copy constructor
@@ -76,7 +76,11 @@ namespace YODA {
     /// @brief Contribute a weight @a weight.
     ///
     /// @todo Be careful about negative weights.
-    void fill(double weight=1.0);
+    void fill(double weight=1.0) {
+      _numFills += 1;
+      _sumW += weight;
+      _sumW2 += weight*weight;
+    }
 
 
     /// Reset the internal counters.
@@ -142,17 +146,37 @@ namespace YODA {
   protected:
 
     /// Add two dbns (internal, explicitly named version)
-    Dbn0D& add(const Dbn0D&);
+    Dbn0D& add(const Dbn0D& d) {
+      _numFills += d._numFills;
+      _sumW     += d._sumW;
+      _sumW2    += d._sumW2;
+      return *this;
+    }
 
     /// Subtract one dbn from another (internal, explicitly named version)
-    Dbn0D& subtract(const Dbn0D&);
+    Dbn0D& subtract(const Dbn0D& d) {
+      _numFills += d._numFills; //< @todo Hmm, add or subtract?!?
+      _sumW     -= d._sumW;
+      _sumW2    -= d._sumW2;
+      return *this;
+    }
 
 
   private:
 
+    /// @name Storage
+    //@{
+
+    /// Number of times fill() has been called on this object
     unsigned long _numFills;
+
+    /// Sum of weights
     double _sumW;
+
+    /// Sum of squared weights
     double _sumW2;
+
+    //@}
 
   };
 

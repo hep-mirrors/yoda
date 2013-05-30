@@ -1,6 +1,6 @@
 2013-05-31  Andy Buckley  <andy.buckley@cern.ch>
 
-	* Adding Dbn0D.
+	* Adding Dbn0D and using it to implement Dbn1D.
 
 2013-05-30  Andy Buckley  <andy.buckley@cern.ch>
 

@@ -6,6 +6,7 @@
 #ifndef YODA_Dbn1D_h
 #define YODA_Dbn1D_h
 
+#include "YODA/Dbn0D.h"
 #include "YODA/Exceptions.h"
 #include "YODA/Utils/MathUtils.h"
 #include <cmath>
@@ -39,22 +40,18 @@ namespace YODA {
     /// @brief Constructor to set a distribution with a pre-filled state.
     ///
     /// Principally designed for internal persistency use.
-    Dbn1D(unsigned long numEntries, double sumW, double sumW2, double sumWX, double sumWX2) {
-      _numFills = numEntries;
-      _sumW = sumW;
-      _sumW2 = sumW2;
-      _sumWX = sumWX;
-      _sumWX2 = sumWX2;
-    }
+    Dbn1D(unsigned long numEntries, double sumW, double sumW2, double sumWX, double sumWX2)
+      : _dbnW(numEntries, sumW, sumW2),
+        _sumWX(sumWX),
+        _sumWX2(sumWX2)
+    { }
 
 
     /// Copy constructor
     ///
     /// Sets all the parameters using the ones provided from an existing Dbn1D.
     Dbn1D(const Dbn1D& toCopy) {
-      _numFills = toCopy._numFills;
-      _sumW = toCopy._sumW;
-      _sumW2 = toCopy._sumW2;
+      _dbnW = toCopy._dbnW;
       _sumWX = toCopy._sumWX;
       _sumWX2 = toCopy._sumWX2;
     }
@@ -64,9 +61,7 @@ namespace YODA {
     ///
     /// Sets all the parameters using the ones provided from an existing Dbn1D.
     Dbn1D& operator=(const Dbn1D& toCopy) {
-      _numFills = toCopy._numFills;
-      _sumW = toCopy._sumW;
-      _sumW2 = toCopy._sumW2;
+      _dbnW = toCopy._dbnW;
       _sumWX = toCopy._sumWX;
       _sumWX2 = toCopy._sumWX2;
       return *this;
@@ -79,16 +74,16 @@ namespace YODA {
     //@{
 
     /// @brief Contribute a sample at @a val with weight @a weight.
-    ///
-    /// @todo Be careful about negative weights.
-    void fill(double val, double weight=1.0);
+    void fill(double val, double weight=1.0) {
+      _dbnW.fill(weight);
+      _sumWX += weight*val;
+      _sumWX2 += weight*val*val;
+    }
 
 
     /// Reset the internal counters.
     void reset() {
-      _numFills = 0;
-      _sumW = 0;
-      _sumW2 = 0;
+      _dbnW.reset();
       _sumWX = 0;
       _sumWX2 = 0;
     }
@@ -96,8 +91,7 @@ namespace YODA {
 
     /// Rescale as if all fill weights had been different by factor @a scalefactor.
     void scaleW(double scalefactor) {
-      _sumW *= scalefactor;
-      _sumW2 *= scalefactor*scalefactor;
+      _dbnW.scaleW(scalefactor);
       _sumWX *= scalefactor;
       _sumWX2 *= scalefactor;
     }
@@ -156,23 +150,22 @@ namespace YODA {
 
     /// Number of entries (number of times @c fill was called, ignoring weights)
     unsigned long numEntries() const {
-      return _numFills;
+      return _dbnW.numEntries();
     }
 
     /// Effective number of entries \f$ = (\sum w)^2 / \sum w^2 \f$
     double effNumEntries() const {
-      if (_sumW2 == 0) return 0;
-      return _sumW*_sumW / _sumW2;
+      return _dbnW.effNumEntries();
     }
 
     /// The sum of weights
     double sumW() const {
-      return _sumW;
+      return _dbnW.sumW();
     }
 
     /// The sum of weights squared
     double sumW2() const {
-      return _sumW2;
+      return _dbnW.sumW2();
     }
 
     /// The sum of x*weight
@@ -207,19 +200,27 @@ namespace YODA {
   protected:
 
     /// Add two dbns (internal, explicitly named version)
-    Dbn1D& add(const Dbn1D&);
+    Dbn1D& add(const Dbn1D& d);
 
     /// Subtract one dbn from another (internal, explicitly named version)
-    Dbn1D& subtract(const Dbn1D&);
+    Dbn1D& subtract(const Dbn1D& d);
 
 
   private:
 
-    unsigned long _numFills;
-    double _sumW;
-    double _sumW2;
+    /// @name Storage
+    //@{
+
+    /// The pure weight moments are stored in a 0D distribution
+    Dbn0D _dbnW;
+
+    /// The 1st order weighted x moment
     double _sumWX;
+
+    /// The 2nd order weighted x moment
     double _sumWX2;
+
+    //@}
 
   };
 
