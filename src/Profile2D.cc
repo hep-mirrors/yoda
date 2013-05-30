@@ -160,11 +160,8 @@ namespace YODA {
 
 
   /// Divide two profile histograms
-  Scatter3D divide(const Profile2D& , const Profile2D& ) {
-    /// @todo TODO -- implement (needs mkscatter in Scatter3D, then just divide the scatters)!
-
-    Scatter3D tmp;
-    return tmp;
+  Scatter3D divide(const Profile2D& numer, const Profile2D& denom) {
+    return divide(mkScatter(numer), mkScatter(denom));
   }
 
 }
