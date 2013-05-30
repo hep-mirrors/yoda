@@ -147,17 +147,20 @@ namespace YODA {
         throw UserError("Attempt to calculate an efficiency when the numerator is not a subset of the denominator");
 
       // If no entries on the denominator, set eff = 0 and move to the next bin
+      /// @todo Or mark/remove the invalid point?
       if (b_tot.effNumEntries() == 0) {
         point.setY(0.0);
         point.setYErr(0.0, 0.0);
         continue;
       }
 
-      // Calculate the values and errors, using numEntries rather than sumW
-      const double eff = b_acc.effNumEntries() / b_tot.effNumEntries();
-      const double ey = sqrt( b_acc.effNumEntries() * (1 - b_acc.effNumEntries()/b_tot.effNumEntries()) ) / b_tot.effNumEntries();
-      point.setY(eff);
-      point.setYErr(ey, ey);
+      // Calculate the values and errors
+      // const double eff = b_acc.effNumEntries() / b_tot.effNumEntries();
+      // const double ey = sqrt( b_acc.effNumEntries() * (1 - b_acc.effNumEntries()/b_tot.effNumEntries()) ) / b_tot.effNumEntries();
+      const double eff = b_acc.sumW() / b_tot.sumW(); //< Actually this is already calculated by the division...
+      const double ey = sqrt(abs( ((1-2*eff)*sqr(b_acc.areaErr()) + sqr(eff)*sqr(b_tot.areaErr())) / sqr(b_tot.sumW()) ));
+      // assert(point.y() == eff); //< @todo Correct? So we don't need to reset the eff on the next line?
+      point.setY(eff, ey);
     }
     return tmp;
   }
