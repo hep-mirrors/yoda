@@ -69,16 +69,18 @@ namespace YODA {
 
 
   /// Convert a ROOT 1D histogram (including TProfile) to a YODA Scatter2D
+  ///
+  /// @todo Add a bool flag for whether or not to divide y vals/errs by bin width.
   inline Scatter2D toScatter2D(const TH1& th1) {
     Scatter2D rtn;
     for (int i = 1; i <= th1.GetNbinsX(); ++i) {
       const double x = th1.GetBinCenter(i);
       const double exminus = x - th1.GetBinLowEdge(i);
       const double explus = th1.GetBinLowEdge(i+1) - x;
-      rtn.addPoint(
-          x, th1.GetBinContent(i),
-          exminus, explus,
-          th1.GetBinErrorLow(i), th1.GetBinErrorUp(i));
+      const double width = exminus + explus;
+      rtn.addPoint(x, th1.GetBinContent(i)/width,
+                   exminus, explus,
+                   th1.GetBinErrorLow(i)/width, th1.GetBinErrorUp(i)/width);
     }
     rtn.addAnnotation("XLabel", th1.GetXaxis()->GetTitle());
     rtn.addAnnotation("YLabel", th1.GetYaxis()->GetTitle());
