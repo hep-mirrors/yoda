@@ -184,9 +184,10 @@ namespace YODA {
       return *this;
     }
 
-    Scatter3D& addPoint(double x, double exminus, double explus,
-                        double y, double eyminus, double eyplus,
-                        double z, double ezminus, double ezplus) {
+    Scatter3D& addPoint(double x, double y, double z,
+                        double exminus, double explus,
+                        double eyminus, double eyplus,
+                        double ezminus, double ezplus) {
       _points.push_back(Point3D(x, y, z, exminus, explus, eyminus, eyplus, ezminus, ezplus));
 
       return *this;
