@@ -13,6 +13,8 @@
 #include "TH1.h"
 #include "TH2.h"
 #include "TProfile.h"
+#include "TGraphAsymmErrors.h"
+#include "TVectorF.h"
 
 namespace YODA {
 
@@ -69,14 +71,17 @@ namespace YODA {
   /// Convert a ROOT 1D histogram (including TProfile) to a YODA Scatter2D
   inline Scatter2D toScatter2D(const TH1& th1) {
     Scatter2D rtn;
-    for (int i = 1; i =< th1.GetNbinsX(); ++i) {
-      const double x = GetBinCenter(i);
-      const double exminus = x - GetBinLowEdge(i);
-      const double explus = GetBinLowEdge(i+1) - x;
-      rtn.addPoint(x, GetBinContent(i), exminus, explus, GetBinErrorLow(i), GetBinErrorUp(i));
+    for (int i = 1; i <= th1.GetNbinsX(); ++i) {
+      const double x = th1.GetBinCenter(i);
+      const double exminus = x - th1.GetBinLowEdge(i);
+      const double explus = th1.GetBinLowEdge(i+1) - x;
+      rtn.addPoint(
+          x, th1.GetBinContent(i),
+          exminus, explus,
+          th1.GetBinErrorLow(i), th1.GetBinErrorUp(i));
     }
-    rtn.addAnnotation("XLabel", th1.GetXaxis->GetTitle());
-    rtn.addAnnotation("YLabel", th1.GetYaxis->GetTitle());
+    rtn.addAnnotation("XLabel", th1.GetXaxis()->GetTitle());
+    rtn.addAnnotation("YLabel", th1.GetYaxis()->GetTitle());
     return rtn;
   }
 
@@ -106,17 +111,17 @@ namespace YODA {
     edges.reserve(h.numBins()+1);
     edges.push_back(h.bin(0).lowEdge());
     for (size_t i = 0; i < h.numBins(); ++i) {
-      HistoBin1D& b = h.bin(i);
+      const HistoBin1D& b = h.bin(i);
       if (!fuzzyEquals(edges.back(), b.lowEdge())) edges.push_back(b.lowEdge());
       if (!fuzzyEquals(edges.back(), b.highEdge())) edges.push_back(b.highEdge());
     }
     // Book ROOT histogram
-    TH1D rtn(h.name().c_str(), h.title().c_str(), edges.size()-1, &edges[0]);
+    TH1D rtn(h.path().c_str(), h.title().c_str(), edges.size()-1, &edges[0]);
     rtn.Sumw2();
     TArrayD& sumw2s = *rtn.GetSumw2();
     for (int i = 1; i <= rtn.GetNbinsX(); ++i) {
       try {
-        Bin1D& b = h.binByCoord(rtn.GetBinCenter(i)); // throws if in a gap
+        const HistoBin1D& b = h.binByCoord(rtn.GetBinCenter(i)); // throws if in a gap
         rtn.SetBinContent(i, b.sumW());
         sumw2s[i] = b.sumW2();
       } catch (const Exception& e) {  }
@@ -145,17 +150,17 @@ namespace YODA {
     edges.reserve(p.numBins()+1);
     edges.push_back(p.bin(0).lowEdge());
     for (size_t i = 0; i < p.numBins(); ++i) {
-      Bin1D& b = p.bin(i);
+      const ProfileBin1D& b = p.bin(i);
       if (!fuzzyEquals(edges.back(), b.lowEdge())) edges.push_back(b.lowEdge());
       if (!fuzzyEquals(edges.back(), b.highEdge())) edges.push_back(b.highEdge());
     }
     // Book ROOT histogram
-    TProfile rtn(p.name().c_str(), p.title().c_str(), edges.size()-1, &edges[0]);
+    TProfile rtn(p.path().c_str(), p.title().c_str(), edges.size()-1, &edges[0]);
     rtn.Sumw2();
     TArrayD& sumw2s = *rtn.GetSumw2();
     for (int i = 1; i <= rtn.GetNbinsX(); ++i) {
       try {
-        ProfileBin1D& b = p.binByCoord(rtn.GetBinCenter(i)); // throws if in a gap
+        const ProfileBin1D& b = p.binByCoord(rtn.GetBinCenter(i)); // throws if in a gap
         /// @todo This part is probably wrong -- also need to do something with GetW,
         ///   GetW2, GetB, GetB2, and/or GetBinSumw2? ROOT docs are 100% useless...
         rtn.SetBinContent(i, b.sumW());
@@ -182,7 +187,7 @@ namespace YODA {
     TVectorF exls(s.numPoints()), exhs(s.numPoints());
     TVectorF eyls(s.numPoints()), eyhs(s.numPoints());
     for (size_t i = 0; i < s.numPoints(); ++i) {
-      Point2D& p = s.bin(i);
+      const Point2D& p = s.point(i);
       xs[i] = p.x();
       ys[i] = p.y();
       exls[i] = p.xErrMinus();
@@ -192,7 +197,7 @@ namespace YODA {
     }
     // Make the ROOT object... mm, the constructors don't take name+title, unlike all this histos!
     TGraphAsymmErrors rtn(xs, ys, exls, exhs, eyls, eyhs);
-    rtn.SetName(s.name().c_str());
+    rtn.SetName(s.path().c_str());
     rtn.SetTitle(s.title().c_str());
     // Labels
     if (s.hasAnnotation("XLabel")) rtn.GetXaxis()->SetTitle(s.annotation("XLabel").c_str());
