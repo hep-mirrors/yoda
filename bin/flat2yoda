@@ -1,0 +1,32 @@
+#! /usr/bin/env python
+
+"""\
+%prog flatfile [yodafile]
+
+Convert a FLAT data file to the YODA data format.
+"""
+
+import yoda, os, sys, optparse
+
+parser = optparse.OptionParser(usage=__doc__)
+opts, args = parser.parse_args()
+
+INFILE = None
+OUTFILE = None
+
+if len(args) == 1:
+    INFILE = args[0]
+    if INFILE.endswith(".dat"):
+        OUTFILE = INFILE.replace(".dat", ".yoda")
+    else:
+        OUTFILE = INFILE + ".yoda"
+    OUTFILE = os.path.basename(OUTFILE)
+elif len(args) == 2:
+    INFILE = args[0]
+    OUTFILE = args[1]
+else:
+    sys.stderr.write("You must specify the FLAT and YODA file names\n")
+    sys.exit(1)
+
+analysisobjects = yoda.readFLAT(INFILE)
+yoda.writeYODA(analysisobjects, OUTFILE)
