@@ -66,6 +66,27 @@ def readYODA(file_or_filename):
     return _aobjects_to_list(&aobjects)
 
 
+def readFLAT(file_or_filename):
+    """
+    Read data objects from the provided FLAT-format file.
+    Returns a list of analysis objects
+    """
+    cdef c.istringstream iss
+    cdef vector[c.AnalysisObject*] aobjects
+
+    if hasattr(file_or_filename, 'read'):
+        s = file_or_filename.read()
+    else:
+        with open(file_or_filename) as f:
+            s = f.read()
+
+    _make_iss(iss, s)
+    c.ReaderFLAT_create().read(iss, aobjects)
+
+    # Not as expensive as it looks!
+    return _aobjects_to_list(&aobjects)
+
+
 def readAIDA(file_or_filename):
     """
     Read data objects from the provided AIDA-format file.

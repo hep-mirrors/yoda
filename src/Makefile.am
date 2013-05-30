@@ -7,6 +7,7 @@ libYODA_la_SOURCES = \
     Reader.cc \
     ReaderYODA.cc \
     ReaderAIDA.cc \
+    ReaderFLAT.cc \
     Writer.cc \
     WriterYODA.cc \
     WriterAIDA.cc \

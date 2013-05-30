@@ -1,3 +1,7 @@
+2013-05-29  Hendrik Hoeth  <hendrik.hoeth@cern.ch>
+
+	* Adding a reader for FLAT files and a flat2yoda converter
+
 2013-05-27  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Adding a yoda-completion file for bash.

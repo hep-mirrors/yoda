@@ -814,6 +814,9 @@ cdef extern from "YODA/Reader.h" namespace "YODA":
 cdef extern from "YODA/ReaderYODA.h" namespace "YODA":
     Reader& ReaderYODA_create "YODA::ReaderYODA::create" ()
 
+cdef extern from "YODA/ReaderFLAT.h" namespace "YODA":
+    Reader& ReaderFLAT_create "YODA::ReaderFLAT::create" ()
+
 cdef extern from "YODA/ReaderAIDA.h" namespace "YODA":
     Reader& ReaderAIDA_create "YODA::ReaderAIDA::create" ()
 

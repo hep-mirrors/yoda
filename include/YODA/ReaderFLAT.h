@@ -1,0 +1,234 @@
+// -*- C++ -*-
+//
+// This file is part of YODA -- Yet more Objects for Data Analysis
+// Copyright (C) 2008-2013 The YODA collaboration (see AUTHORS for details)
+//
+#ifndef YODA_READERFLAT_H
+#define YODA_READERFLAT_H
+
+#include "YODA/AnalysisObject.h"
+#include "YODA/Reader.h"
+#include <YODA/Scatter2D.h>
+#include <boost/spirit/include/qi.hpp>
+#include <boost/spirit/include/phoenix_operator.hpp>
+#include <boost/fusion/include/adapt_struct.hpp>
+
+namespace YODA {
+
+  using namespace boost::spirit;
+  using namespace boost::phoenix;
+
+
+  /// Persistency reader from YODA flat text data format.
+  class ReaderFLAT : public Reader {
+  public:
+
+    /// Singleton creation function
+    static Reader& create() {
+      static ReaderFLAT _instance;
+      return _instance;
+    }
+
+    void read(std::istream& stream, std::vector<AnalysisObject*>& aos) {
+      _readDoc(stream, aos);
+    }
+
+
+    // Hide from Doxygen until endcond
+    /// @cond
+
+
+  protected:
+
+    void _readDoc(std::istream& stream, std::vector<AnalysisObject*>& aos);
+
+  private:
+
+    void cleanup() {
+      _scatter2d.points.clear();
+
+      _annotations.clear();
+    }
+
+  public:
+
+    /// Private constructor, since it's a singleton.
+    /// @todo This is definitely not private!
+    ReaderFLAT() { }
+
+
+    // Here comes everything we need for the parser
+
+    /// Structs for the flat HISTOGRAM parser
+    /// The data for a flat HISTOGRAM bin
+    struct histogrampointsymmetric1d {
+      double xmin;
+      double xmax;
+      double y;
+      double ey;
+    };
+
+    struct histogrampointasymmetric1d {
+      double xmin;
+      double xmax;
+      double y;
+      double eyminus;
+      double eyplus;
+    };
+
+    /// Structs for the key-value pair parser (annotations)
+    struct keyval {
+      std::string key;
+      std::string val;
+    };
+
+
+    /// Annotations (common for all data types)
+    static std::map<std::string, std::string> _annotations;
+
+
+    /// All information for creating a Scatter2D from a flat HISTOGRAM
+    struct scatter2d {
+      std::vector<YODA::Point2D> points;
+    };
+    static scatter2d _scatter2d;
+
+
+    /// Functions to call from the parser
+
+
+    /// Filling a point
+    struct fillpoint {
+      void operator()(const histogrampointsymmetric1d p, qi::unused_type, qi::unused_type) const {
+        double x  = 0.5*(p.xmin+p.xmax);
+        double ex = 0.5*(p.xmax-p.xmin);
+        YODA::Point2D point(x, p.y, ex, ex, p.ey, p.ey);
+        _scatter2d.points.push_back(point);
+      }
+      void operator()(const histogrampointasymmetric1d p, qi::unused_type, qi::unused_type) const {
+        double x  = 0.5*(p.xmin+p.xmax);
+        double ex = 0.5*(p.xmax-p.xmin);
+        YODA::Point2D point(x, p.y, ex, ex, p.eyminus, p.eyplus);
+        _scatter2d.points.push_back(point);
+      }
+    };
+
+
+    /// Filling the annotations map
+    struct fillkeyval {
+      void operator()(const keyval m, qi::unused_type, qi::unused_type) const {
+        _annotations[m.key] = m.val;
+      }
+    };
+
+
+    /// A helper grammar for determining in which context we are.
+    /// bgroup and egroup are dynamic parsers. We add and remove
+    /// the "# BEGIN SOMETHING" and "# END SOMETHING" strings
+    /// dynamically.
+    static qi::symbols<char, int> bgroup;
+    static qi::symbols<char, int> egroup;
+    template <typename Iterator>
+    struct group_grammar : qi::grammar<Iterator, int()>
+    {
+      group_grammar() : group_grammar::base_type(start) {
+        start = begin | end;
+        begin = qi::eps [_val = 0]  >>
+                qi::lit("# BEGIN ") >>
+                bgroup  [_val += _1];
+        end   = qi::eps [_val = 0]  >>
+                qi::lit("# END ")   >>
+                egroup  [_val += _1];
+      }
+      qi::rule<Iterator, int()> start, begin, end;
+    };
+
+
+    /// The actual grammar for parsing the lines of a flat data file.
+    template <typename Iterator, typename Skipper>
+    struct yoda_grammar : qi::grammar<Iterator, Skipper>
+    {
+
+      yoda_grammar() : yoda_grammar::base_type(line) {
+
+        /// A line can be anything. Note that we need
+        /// to specify the long lines first, because the
+        /// first match wins.
+        /// In brackets we specify the functions that are
+        /// called in case the rule matches.
+        line = HistogramPointAsymmetric1D [fillpoint()] |
+               HistogramPointSymmetric1D [fillpoint()]  |
+               keyvaluepair[fillkeyval()]               |
+               comment;
+
+        // Histogram
+        HistogramPointAsymmetric1D %= double_ >> double_ >> double_ >> double_ >> double_;
+        HistogramPointSymmetric1D %= double_ >> double_ >> double_ >> double_;
+
+
+        /// Annotations.
+        /// The key is anyting up to the first equal sign, but
+        /// keys can't start with a number or a minus sign. The
+        /// value is anything after the equal sign.
+        key = !qi::char_("0-9-") >> *~qi::char_("=");
+        value = *~qi::char_("\n");
+        keyvaluepair %= key >> "=" >> value;
+
+        /// Lines starting with a "#" are comments.
+        comment = qi::lit("#") >> *~qi::char_("\n");
+      }
+
+      /// In the rules, the first template argument is the Iterator for the string,
+      /// the second one is the return type, and the last one is a "Skipper" for
+      /// ignoring whitespace. Note that the key/value pair doesn't ignore whitespace.
+      /// Most of the return values match our structs (like keyval, histo1dbin, etc.).
+      /// Those are used to directly fill the corresponding structs.
+      qi::rule<Iterator, Skipper> line, comment;
+      qi::rule<Iterator, std::string()> key, value;
+      qi::rule<Iterator, keyval(), Skipper> keyvaluepair;
+
+      qi::rule<Iterator, histogrampointsymmetric1d(), Skipper> HistogramPointSymmetric1D;
+      qi::rule<Iterator, histogrampointasymmetric1d(), Skipper> HistogramPointAsymmetric1D;
+    };
+
+
+    /// @endcond
+
+  };
+
+} // end of YODA namespace
+
+
+
+// Now we need to make boost aware of the structs we want to
+// fill directly from the parser. Boost wants this magic in
+// the global scope, that's why we have it outside the namespace.
+
+/// @cond PRIVATE
+
+BOOST_FUSION_ADAPT_STRUCT(
+  YODA::ReaderFLAT::histogrampointsymmetric1d,
+  (double, xmin)
+  (double, xmax)
+  (double, y)
+  (double, ey)
+)
+
+BOOST_FUSION_ADAPT_STRUCT(
+  YODA::ReaderFLAT::histogrampointasymmetric1d,
+  (double, xmin)
+  (double, xmax)
+  (double, y)
+  (double, eyminus)
+  (double, eyplus)
+)
+
+BOOST_FUSION_ADAPT_STRUCT(
+  YODA::ReaderFLAT::keyval,
+  (std::string, key)
+  (std::string, val)
+)
+
+/// @endcond
+
+#endif
