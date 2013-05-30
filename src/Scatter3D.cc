@@ -1,5 +1,6 @@
 #include "YODA/Scatter3D.h"
 #include "YODA/Histo2D.h"
+#include "YODA/Profile2D.h"
 #include "YODA/Exceptions.h"
 
 namespace YODA {
@@ -44,6 +45,42 @@ namespace YODA {
 
       const double z = bin.height();
       const double ez = bin.heightErr();
+
+      ret.addPoint(x, exminus, explus, y, eyminus, eyplus, z, ez, ez);
+    }
+
+    return ret;
+  }
+
+
+  Scatter3D mkScatter(const Profile2D& h) {
+    Scatter3D ret;
+    ret.setAnnotations(h.annotations());
+    ret.setAnnotation("Type", h.type());
+    for (size_t i = 0; i < h.numBins(); ++i) {
+      const ProfileBin2D& bin = h.bin(i);
+
+      const double x = bin.focus().first;
+      const double y = bin.focus().second;
+
+      const double exminus = x - bin.xMin();
+      const double explus = bin.xMax() - x;
+
+      const double eyminus = y - bin.yMin();
+      const double eyplus = bin.yMax() - y;
+
+      double z;
+      try {
+        z = bin.mean();
+      } catch (const LowStatsError& lse) {
+        z = 0.0;
+      }
+      double ez;
+      try {
+        ez = bin.stdErr();
+      } catch (const LowStatsError& lse) {
+        ez = 0.0;
+      }
 
       ret.addPoint(x, exminus, explus, y, eyminus, eyplus, z, ez, ez);
     }

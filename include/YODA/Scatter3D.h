@@ -15,6 +15,7 @@ namespace YODA {
 
   // Forward declarations
   class Histo2D;
+  class Profile2D;
 
 
   /// A very generic data type which is just a collection of 3D data points with errors
@@ -46,10 +47,10 @@ namespace YODA {
 
 
     /// Constructor from vectors of values with no errors
-    Scatter3D(const std::vector<double>& x, 
-	      const std::vector<double>& y, 
+    Scatter3D(const std::vector<double>& x,
+	      const std::vector<double>& y,
 	      const std::vector<double>& z,
-              const std::string& path="", 
+              const std::string& path="",
 	      const std::string& title="")
       : AnalysisObject("Scatter3D", path, title)
     {
@@ -273,8 +274,7 @@ namespace YODA {
   Scatter3D mkScatter(const Histo2D& h);
 
   /// Make a Scatter3D representation of a Profile2D
-  /// @todo Implement!
-  // Scatter3D mkScatter(const Profile2D& h);
+  Scatter3D mkScatter(const Profile2D& h);
 
   //@}
 
