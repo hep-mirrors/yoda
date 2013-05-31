@@ -25,7 +25,6 @@ namespace YODA {
 
   /// A  one-dimensional histogram.
   class Histo1D : public AnalysisObject {
-
   public:
 
     /// Convenience typedefs
@@ -36,7 +35,6 @@ namespace YODA {
 
     /// @name Constructors
     //@{
-
 
     /// Default constructor
     Histo1D(const std::string& path="", const std::string& title="")
@@ -298,6 +296,11 @@ namespace YODA {
     }
 
 
+    /// Get the number of fills
+    double numEntries() const { return totalDbn().numEntries(); }
+
+    /// Get the effective number of fills
+    double effNumEntries() const { return totalDbn().effNumEntries(); }
 
     /// Get sum of weights in histo
     double sumW(bool includeoverflows=true) const;

@@ -35,6 +35,7 @@ namespace YODA {
     typedef HistoBin2D Bin;
     typedef Axis::Outflows Outflows;
 
+
     /// @name Constructors
     //@{
 
@@ -339,6 +340,12 @@ namespace YODA {
     double integral(bool includeoverflows=true) const {
       return sumW(includeoverflows);
     }
+
+    /// Get the number of fills
+    double numEntries() const { return totalDbn().numEntries(); }
+
+    /// Get the effective number of fills
+    double effNumEntries() const { return totalDbn().effNumEntries(); }
 
     /// Get the sum of weights in histo
     double sumW(bool includeoverflows=true) const;
