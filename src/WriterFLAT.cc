@@ -39,6 +39,15 @@ namespace YODA {
   }
 
 
+  void WriterFLAT::writeCounter(std::ostream& os, const Counter& c) {
+    /// @todo Currently not supported
+    os << flush;
+    //Scatter1D tmp = mkScatter(c);
+    //tmp.setAnnotation("Type", "Counter");
+    //writeScatter1D(os, tmp);
+  }
+
+
   void WriterFLAT::writeHisto1D(std::ostream& os, const Histo1D& h) {
     Scatter2D tmp = mkScatter(h);
     tmp.setAnnotation("Type", "Histo1D");
