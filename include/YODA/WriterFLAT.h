@@ -38,11 +38,14 @@ namespace YODA {
     void writeHeader(std::ostream& stream);
     void writeFooter(std::ostream& stream);
 
+    void writeCounter(std::ostream& stream, const Counter& c);
     void writeHisto1D(std::ostream& stream, const Histo1D& h);
     void writeHisto2D(std::ostream& stream, const Histo2D& h);
     void writeProfile1D(std::ostream& stream, const Profile1D& p);
+    // void writeProfile2D(std::ostream& stream, const Profile2D& p);
+    // void writeScatter1D(std::ostream& stream, const Scatter1D& s);
     void writeScatter2D(std::ostream& stream, const Scatter2D& s);
-    //void writeScatter3D(std::ostream& stream, const Scatter3D& s);
+    // void writeScatter3D(std::ostream& stream, const Scatter3D& s);
 
 
   private:

@@ -39,6 +39,20 @@ namespace YODA {
   }
 
 
+  void WriterYODA::writeCounter(std::ostream& os, const Counter& c) {
+    ios_base::fmtflags oldflags = os.flags();
+    os << scientific << showpoint << setprecision(_precision);
+
+    os << "# BEGIN YODA_COUNTER " << c.path() << "\n";
+    _writeAnnotations(os, c);
+    os << "# sumW\t sumW2\t numEntries\n";
+    os << c.sumW()  << "\t" << c.sumW2() << "\t" << c.numEntries() << "\n";
+    os << "# END YODA_COUNTER\n\n";
+
+    os.flags(oldflags);
+  }
+
+
   void WriterYODA::writeHisto1D(std::ostream& os, const Histo1D& h) {
     ios_base::fmtflags oldflags = os.flags();
     os << scientific << showpoint << setprecision(_precision);

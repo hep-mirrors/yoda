@@ -32,6 +32,11 @@ namespace YODA {
   }
 
 
+  void WriterAIDA::writeCounter(std::ostream& os, const Counter&) {
+    os << endl << "<!-- COUNTER WRITING TO AIDA IS CURRENTLY UNSUPPORTED! -->" << endl << endl;
+  }
+
+
   void WriterAIDA::writeHisto1D(std::ostream& os, const Histo1D& h) {
     Scatter2D tmp = mkScatter(h);
     tmp.setAnnotation("Type", "Histo1D");
@@ -52,6 +57,19 @@ namespace YODA {
     tmp.setAnnotation("Type", "Profile1D");
     writeScatter2D(os, tmp);
   }
+
+
+  // void WriterAIDA::writeProfile2D(std::ostream& os, const Profile2D& p) {
+  //   os << endl << "<!-- PROFILE2D WRITING TO AIDA IS CURRENTLY UNSUPPORTED! -->" << endl << endl;
+  //   // Scatter3D tmp = mkScatter(p);
+  //   // tmp.setAnnotation("Type", "Profile2D");
+  //   // writeScatter3D(os, tmp);
+  // }
+
+
+  // void WriterAIDA::writeScatter1D(std::ostream& os, const Scatter1D& s) {
+  //   os << endl << "<!-- SCATTER1D WRITING TO AIDA IS CURRENTLY UNSUPPORTED! -->" << endl << endl;
+  // }
 
 
   void WriterAIDA::writeScatter2D(std::ostream& os, const Scatter2D& s) {
@@ -98,6 +116,11 @@ namespace YODA {
 
     os.flags(oldflags);
   }
+
+
+  // void WriterAIDA::writeScatter3D(std::ostream& os, const Scatter3D& s) {
+  //   os << endl << "<!-- SCATTER3D WRITING TO AIDA IS CURRENTLY UNSUPPORTED! -->" << endl << endl;
+  // }
 
 
 }

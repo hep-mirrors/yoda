@@ -63,6 +63,18 @@ namespace YODA {
   }
 
 
+  // void WriterFLAT::writeProfile2D(std::ostream& os, const Profile2D& h) {
+  //   /// @todo Currently not supported
+  //   os << flush;
+  // }
+
+
+  // void WriterFLAT::writeScatter1D(std::ostream& os, const Scatter1D& h) {
+  //   /// @todo Currently not supported
+  //   os << flush;
+  // }
+
+
   void WriterFLAT::writeScatter2D(std::ostream& os, const Scatter2D& s) {
     ios_base::fmtflags oldflags = os.flags();
     os << scientific << showpoint << setprecision(_precision);
