@@ -17,11 +17,20 @@ NOW
    Simple GoF measures, such as chi2 of a bin and of a histo (chained), for 1D
    and 2D Histos, Profiles and Scatters. Also KS (later)?
 
+* Use better error than sqrt(sumW2()) in HistoBin
+   Actually implement on Dbn0D? Should we have better separation of pure-w and wx**n?
+
 
 NEXT
 ----
 
-* Add Counter (a UI/persistency wrapper type on Dbn0D) (AB)
+* Support reading of Counter from YODA files
+
+* Map Counter in Cython
+
+* Map numEntries and effNumEntries to Profile1D/2D
+
+* Map Histo1D/2D and Profile1D/2D numEntries and effNumEntries in Cython
 
 * Rename/alias Axis as Binning
    This is just a better name for what it does. Expose it for use with arbitrary
@@ -29,7 +38,7 @@ NEXT
    types... again?) Separate "bin-lookup" types with and without overflow
    capability?
 
-* Add Scatter1D/Point1D and conversion from Counter
+* Add Scatter1D/Point1D and conversion/division/efficiency from Counter(s)
 
 * Complete 2D histogramming
 
