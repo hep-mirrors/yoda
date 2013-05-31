@@ -28,8 +28,6 @@ NEXT
 
 * Map Counter in Cython
 
-* Map numEntries and effNumEntries to Profile1D/2D
-
 * Map Histo1D/2D and Profile1D/2D numEntries and effNumEntries in Cython
 
 * Rename/alias Axis as Binning
