@@ -14,17 +14,26 @@ srcdir = os.path.abspath('@top_srcdir@/src')
 libdir = os.path.abspath("@top_builddir@/src/.libs")
 statics = os.path.join('yoda', 'errors.cpp')
 
+BASE_COMPILE_ARGS = \
+        "-I@prefix@/include @BOOST_CPPFLAGS@ @PYEXT_CXXFLAGS@".split()
+BASE_LINK_ARGS = ["-L@prefix@/lib"]
+
+# Dependencies used to trigger rebuild
+header_files = glob('../include/YODA/*.h') + glob('../include/YODA/Utils/*.h')
+core_depends = glob('yoda/include/*.pyx') + header_files
+
 ## A helper function (since we have two modules now...)
-def ext(name, depends=[], statics=[]):
+def ext(name, depends=[], statics=[],
+        extra_compile_args=[], extra_link_args=[]):
     return Extension(
         '%s.%s' % (PKGNAME, name),
         ['%s/%s.pyx' % (PKGNAME, name)] + statics,
         language='c++',
         depends=depends,
         include_dirs=[incdir, PKGNAME],
-        extra_compile_args= "-I@prefix@/include @BOOST_CPPFLAGS@ @PYEXT_CXXFLAGS@".split(),
+        extra_compile_args=BASE_COMPILE_ARGS + extra_compile_args,
         library_dirs=[libdir],
-        extra_link_args = ["-L@prefix@/lib"],
+        extra_link_args = BASE_LINK_ARGS + extra_link_args,
         libraries=['stdc++', 'YODA'])
 
 ## Make instantiations of Cython mapping templates for axes with different DBN types
@@ -38,11 +47,18 @@ make_templates('Axis2D_BIN2D_DBN',
 make_templates('Bin1D_DBN', DBN=('Dbn1D', 'Dbn2D'))
 make_templates('Bin2D_DBN', DBN=('Dbn2D', 'Dbn3D'))
 
+root_ext = ext('rootcompat', depends=core_depends,
+               extra_compile_args="-pthread -m64 -I/usr/include/root".split(),
+               extra_link_args= """-L/usr/lib/root -lGui -lCore -lCint -lRIO
+               -lNet -lHist -lGraf -lGraf3d -lGpad -lTree -lRint -lPostscript
+               -lMatrix -lPhysics -lMathCore -lThread -pthread -lm -ldl
+               -rdynamic -lPyROOT""".split())
 
-header_files = glob('../include/YODA/*.h') + glob('../include/YODA/Utils/*.h')
-
-extns = [ext('util'),
-         ext('core', statics=[statics], depends=glob('yoda/include/*.pyx') + header_files)]
+extns = [
+    ext('util'),
+    ext('core', statics=[statics], depends=core_depends),
+    # root_ext, # Enable building of root extension
+]
 
 setup(name = PKGNAME,
       ext_modules = extns,
