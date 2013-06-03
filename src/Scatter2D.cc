@@ -114,12 +114,16 @@ namespace YODA {
       //
       double y = 0;
       double ey = 0;
-      if (p1.y() == 0 || p2.y() == 0) {
-        /// @TODO: find a nicer solution than setting the bin to zero
-        //throw LowStatsError("Requested division of empty bin");
+      if (p2.y() == 0 || (p1.y() == 0 && p1.yErrAvg() != 0)) {
+        /// @todo Provide optional alt behaviours to fill with NaN or remove the invalid point or throw
+        /// @todo Don't throw here: set a flag and throw after all bins have been handled.
+        // throw LowStatsError("Requested division of empty bin");
       } else {
         y = p1.y() / p2.y();
-        ey = y * sqrt( sqr(p1.yErrAvg()/p1.y()) + sqr(p2.yErrAvg()/p2.y()) );
+        /// @todo Is this the exact error treatment for all (uncorrelated) cases? Behaviour around 0? +1 and -1 fills?
+        const double relerr_1 = p1.yErrAvg() != 0 ? p1.yErrAvg()/p1.y() : 0;
+        const double relerr_2 = p2.yErrAvg() != 0 ? p2.yErrAvg()/p2.y() : 0;
+        ey = y * sqrt(sqr(relerr_1) + sqr(relerr_2));
       }
       /// Deal with +/- errors separately, inverted for the denominator contributions:
       /// @TODO: check correctness with different signed numerator and denominator.

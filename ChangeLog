@@ -1,5 +1,10 @@
 2013-06-03  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Adding relErr functions to 1D and 2D histo and profile bins, and
+	being careful about div by zero.
+
+	* Improvements in error treatment in division (better handling of zeros).
+
 	* Renaming merge-histos to yodamerge and installing it (and
 	improving the usage string a bit).
 

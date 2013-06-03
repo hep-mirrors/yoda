@@ -147,7 +147,7 @@ namespace YODA {
         throw UserError("Attempt to calculate an efficiency when the numerator is not a subset of the denominator");
 
       // If no entries on the denominator, set eff = 0 and move to the next bin
-      /// @todo Or mark/remove the invalid point?
+      /// @todo Provide optional alt behaviours to fill with NaN or remove the invalid point
       if (b_tot.effNumEntries() == 0) {
         point.setY(0.0);
         point.setYErr(0.0, 0.0);
