@@ -105,11 +105,10 @@ namespace YODA {
       return volumeErr()/(widthX()*widthY());
     }
 
-    /// @todo Add relative error
-    // /// The relative size of the error (same for either area or height errors)
-    // double relErr() const {
-    //   return sqrt(sumW2()) / sumW();
-    // }
+    /// The relative size of the error (same for either volume or height errors)
+    double relErr() const {
+      return sumW2() != 0 ? sqrt(sumW2()) / sumW() : 0;
+    }
 
     //@}
 

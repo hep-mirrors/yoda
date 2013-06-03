@@ -90,28 +90,32 @@ namespace YODA {
     /// @name Bin content info
     //@{
 
+    /// The mean of the z distribution
     double mean() const {
       return _dbn.zMean();
     }
 
+    /// The std deviation of the z distribution about the mean
     double stdDev() const {
       return _dbn.zStdDev();
     }
 
+    /// The variance of the z distribution about the mean
     double variance() const {
       return _dbn.zVariance();
     }
 
+    /// The standard error on the mean
     double stdErr() const {
       return _dbn.zStdErr();
     }
 
-    /// @todo Add relative error
-    // /// The relative size of the error (same for either area or height errors)
-    // double relErr() const {
-    //   return sqrt(sumW2()) / sumW();
-    // }
+    /// The relative size of the error on the mean
+    double relErr() const {
+      return stdErr() != 0 ? stdErr() / mean() : 0;
+    }
 
+    /// The RMS of the z distribution
     double rms() const {
       return _dbn.zRMS();
     }
