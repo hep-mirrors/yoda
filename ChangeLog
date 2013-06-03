@@ -1,3 +1,8 @@
+2013-06-03  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Renaming merge-histos to yodamerge and installing it (and
+	improving the usage string a bit).
+
 2013-05-31  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Adding the Counter type, and ability to output it from the YODA writer.

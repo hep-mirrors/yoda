@@ -1,9 +1,15 @@
 #! /usr/bin/env python
 
 """\
-%prog [-o outfile] yodafile...
+%prog [-o outfile] <yodafile1> <yodafile2> ...
 
-Merge Analysis Objects from multiple YODA files.
+Merge analysis objects from multiple YODA files, combining the statistics of
+objects whose names are found in multiple files. May be used either to merge
+disjoint collections of data objects, or to combine multiple statistically
+independent runs of the same data objects into one high-statistics run.
+
+TODO:
+ * Use the generic yoda.read() and yoda.write() functions to do I/O to any format.
 """
 
 import yoda, optparse, operator, itertools
