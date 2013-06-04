@@ -37,8 +37,9 @@ def read(filename):
     """
     cdef c.istringstream iss
     cdef vector[c.AnalysisObject*] aobjects
-    with open(filename) as f:
-        s = f.read()
+    f = open(filename)
+    s = f.read()
+    f.close()
     _make_iss(iss, s)
     c.Reader_create(filename).read(iss, aobjects)
     # Not as expensive as it looks!
@@ -56,8 +57,9 @@ def readYODA(file_or_filename):
     if hasattr(file_or_filename, 'read'):
         s = file_or_filename.read()
     else:
-        with open(file_or_filename) as f:
-            s = f.read()
+        f = open(file_or_filename)
+        s = f.read()
+        f.close()
 
     _make_iss(iss, s)
     c.ReaderYODA_create().read(iss, aobjects)
@@ -77,8 +79,9 @@ def readFLAT(file_or_filename):
     if hasattr(file_or_filename, 'read'):
         s = file_or_filename.read()
     else:
-        with open(file_or_filename) as f:
-            s = f.read()
+        f = open(file_or_filename)
+        s = f.read()
+        f.close()
 
     _make_iss(iss, s)
     c.ReaderFLAT_create().read(iss, aobjects)
@@ -98,8 +101,9 @@ def readAIDA(file_or_filename):
     if hasattr(file_or_filename, 'read'):
         s = file_or_filename.read()
     else:
-        with open(file_or_filename) as f:
-            s = f.read()
+        f = open(file_or_filename)
+        s = f.read()
+        f.close()
 
     _make_iss(iss, s)
     c.ReaderAIDA_create().read(iss, aobjects)
@@ -134,8 +138,9 @@ def write(ana_objs, filename):
     if filename == "-":
         sys.stdout.write(oss.str().c_str())
     else:
-        with open(filename, 'w') as f:
-            f.write(oss.str().c_str())
+        f = open(filename, "w")
+        s = f.write(oss.str().c_str())
+        f.close()
 
 
 def writeYODA(ana_objs, file_or_filename):
@@ -163,8 +168,9 @@ def writeYODA(ana_objs, file_or_filename):
         if fname == "-":
             sys.stdout.write(oss.str().c_str())
         else:
-            with open(fname, 'w') as f:
-                f.write(oss.str().c_str())
+            f = open(fname, "w")
+            s = f.write(oss.str().c_str())
+            f.close()
 
 
 def writeFLAT(ana_objs, file_or_filename):
@@ -192,8 +198,9 @@ def writeFLAT(ana_objs, file_or_filename):
         if fname == "-":
             sys.stdout.write(oss.str().c_str())
         else:
-            with open(fname, 'w') as f:
-                f.write(oss.str().c_str())
+            f = open(fname, "w")
+            s = f.write(oss.str().c_str())
+            f.close()
 
 
 def writeAIDA(ana_objs, file_or_filename):
@@ -221,5 +228,6 @@ def writeAIDA(ana_objs, file_or_filename):
         if fname == "-":
             sys.stdout.write(oss.str().c_str())
         else:
-            with open(fname, 'w') as f:
-                f.write(oss.str().c_str())
+            f = open(fname, "w")
+            s = f.write(oss.str().c_str())
+            f.close()
