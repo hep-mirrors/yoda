@@ -1,0 +1,64 @@
+#! /usr/bin/env python
+
+"""\
+%prog [-o outfile] <yodafile1> <yodafile2>
+
+Compare analysis objects from multiple YODA data files.
+
+TODO:
+ * Use the generic yoda.read() and yoda.write() functions to do I/O to any format.
+"""
+
+import yoda
+import optparse, logging
+
+parser = optparse.OptionParser(usage=__doc__)
+parser.add_option('-o', '--output', default='-', dest='OUTPUT_FILE')
+parser.add_option('-t', '--tol', type=float, default=1e-5, dest='TOL', )
+opts, filenames = parser.parse_args()
+
+if len(filenames) != 2:
+    logging.error("Please supply TWO YODA files for comparison")
+
+## Get data objects
+aos1 = yoda.read(filenames[0])
+aos2 = yoda.read(filenames[1])
+
+## Check number of data objects in each file
+if len(aos1) != len(aos2):
+    logging.warning("Different numbers of data objects in %s and %s" % tuple(filenames[:2]))
+
+# TODO: Allow comparisons between Histo/Profile types and Scatters: call mkScatter before comparing
+
+## Get paths and create dicts
+# TODO: update Python mapping to return AO dicts, not lists (and dict literals aren't yet allowed, for bw compatibility)
+aodict1 = { ao.path : ao for ao in aos1 }
+aodict2 = { ao.path : ao for ao in aos2 }
+
+## Compare path lists
+if aodict1.keys() != aodict2.keys():
+    logging.warning("Different data object paths in %s and %s" % tuple(filenames[:2]))
+
+## A slightly tolerant numerical comparison function
+def is_equal(a, b):
+    if a == b:
+        return True
+    # TODO: Be careful with values on either side of zero. Add abs tolerance "epsilon" term?
+    return (float(a) - float(b))/(float(a) + float(b)) < opts.TOL
+
+## Compare each object pair
+for path in set(aodict1.keys() + aodict2.keys()):
+    ao1 = aodict1.get(path, None)
+    if ao1 is None:
+        logging.warning("Data object %s not found in %s" % (path, filenames[0]))
+        continue
+    ao2 = aodict2.get(path, None)
+    if ao1 is None:
+        logging.warning("Data object %s not found in %s" % (path, filenames[1]))
+        continue
+    #print type(ao1), type(ao2)
+    if type(ao1) != type(ao2):
+        logging.warning("Data objects %s have different types (%s and %s) in %s and %s" % \
+                        (path, str(type(ao1)), str(type(ao2)), filenames[0], filenames[1]))
+        continue
+    # TODO: Call mkScatter here (if they aren't already scatters) and compare their points
