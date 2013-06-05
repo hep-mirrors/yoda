@@ -96,17 +96,19 @@ namespace YODA {
       const Point3D& p1 = numer.point(i);
       const Point3D& p2 = denom.point(i);
 
-      assert(fuzzyEquals(p1.xMin(), p2.xMin()));
-      assert(fuzzyEquals(p1.xMax(), p2.xMax()));
-
-      assert(fuzzyEquals(p1.yMin(), p2.yMin()));
-      assert(fuzzyEquals(p1.yMax(), p2.yMax()));
-
-      const double x = (p1.x() + p2.x())/2.0;
+      // Assemble the x value and error
+      if (!fuzzyEquals(p1.xMin(), p2.xMin()) || !fuzzyEquals(p1.xMax(), p2.xMax()))
+        throw BinningError("Point x 'bins' are not equivalent");
+      // Use the midpoint of the "bin" for the new central x value, in the absence of better information
+      const double x = (p1.xMin() + p1.xMax()) / 2.0;
       const double exminus = x - p1.xMin();
       const double explus  = p1.xMax() - x;
 
-      const double y = (p1.y() + p2.y())/2.0;
+      // Assemble the y value and error
+      if (!fuzzyEquals(p1.yMin(), p2.yMin()) || !fuzzyEquals(p1.yMax(), p2.yMax()))
+        throw BinningError("Point x 'bins' are not equivalent");
+      // Use the midpoint of the "bin" for the new central x value, in the absence of better information
+      const double y = (p1.yMin() + p1.yMax()) / 2.0;
       const double eyminus = y - p1.yMin();
       const double eyplus  = p1.yMax() - y;
 
