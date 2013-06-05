@@ -72,16 +72,19 @@ namespace YODA {
 
     /// Copy constructor with optional new path
     /// @todo Don't copy the path?
+    /// @todo Also allow title setting from the constructor?
     Histo1D(const Histo1D& h, const std::string& path="");
 
 
     /// Constructor from a Scatter2D's binning, with optional new path
     /// @todo Don't copy the path?
+    /// @todo Also allow title setting from the constructor?
     Histo1D(const Scatter2D& s, const std::string& path="");
 
 
     /// Constructor from a Profile1D's binning, with optional new path
     /// @todo Don't copy the path?
+    /// @todo Also allow title setting from the constructor?
     Histo1D(const Profile1D& p, const std::string& path="");
 
 
@@ -281,7 +284,7 @@ namespace YODA {
 
     /// @brief Get the integrated area of the histogram between bins @a binindex1 and @a binindex2.
     ///
-    /// NB. The area of bin @a binindex2 is not included in the returned
+    /// @note The area of bin @a binindex2 is _not_ included in the returned
     /// value. To include the underflow and overflow areas, you should add them
     /// explicitly with the underflow() and overflow() methods.
     double integral(size_t binindex1, size_t binindex2) const {
@@ -290,11 +293,20 @@ namespace YODA {
       if (binindex2 > numBins()) throw RangeError("binindex2 is out of range");
       double rtn = 0;
       for (size_t i = binindex1; i < binindex2; ++i) {
-        rtn += bin(i).area();
+        rtn += bin(i).sumW();
       }
       return rtn;
     }
 
+    /// @brief Get the integrated area of the histogram up to bin @a binindex.
+    ///
+    /// @note The area of bin @a binindex is _not_ included in the returned
+    /// value. To not include the underflow, set includeunderflow=false.
+    double integral(size_t binindex, bool includeunderflow=true) const {
+      double rtn = includeunderflow ? underflow().sumW() : 0;
+      rtn += integral(0, binindex);
+      return rtn;
+    }
 
     /// Get the number of fills
     double numEntries() const { return totalDbn().numEntries(); }
@@ -411,10 +423,26 @@ namespace YODA {
 
   /// @brief Convert a Histo1D to a Scatter2D representing the integral of the histogram
   ///
-  /// NB. The integral histo errors are calculated as sqrt(binvalue), as if they
+  /// @note The integral histo errors are calculated as sqrt(binvalue), as if they
   /// are uncorrelated. This is not in general true for integral histograms, so if you
   /// need accurate errors you should explicitly monitor bin-to-bin correlations.
+  ///
+  /// The includeunderflow param chooses whether the underflow bin is included
+  /// in the integral numbers as an offset.
   Scatter2D toIntegralHisto(const Histo1D& h, bool includeunderflow=true);
+
+  /// @brief Convert a Histo1D to a Scatter2D, where each bin is a fraction of the total
+  ///
+  /// @note This sounds weird: let's explain a bit more! Sometimes we want to
+  /// take a histo h, make an integral histogram H from it, and then divide H by
+  /// the total integral of h, such that every bin in H represents the
+  /// cumulative efficiency of that bin as a fraction of the total. I.e. an
+  /// integral histo, scaled by 1/total_integral and with binomial errors.
+  ///
+  /// The includeunderflow param behaves as for toIntegral, and applies to both
+  /// the initial integration and the integral used for the scaling. The
+  /// includeoverflow param applies only to obtaining the scaling factor.
+  Scatter2D toIntegralEfficiencyHisto(const Histo1D& h, bool includeunderflow=true, bool includeoverflow=true);
 
   //@}
 

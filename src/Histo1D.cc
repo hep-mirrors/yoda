@@ -147,10 +147,10 @@ namespace YODA {
         throw UserError("Attempt to calculate an efficiency when the numerator is not a subset of the denominator");
 
       // If no entries on the denominator, set eff = 0 and move to the next bin
-      /// @todo Provide optional alt behaviours to fill with NaN or remove the invalid point
+      /// @todo Provide optional alt behaviours to fill with NaN or remove the invalid point, or...
+      /// @todo Or throw a LowStatsError exception if h.effNumEntries() == 0?
       if (b_tot.effNumEntries() == 0) {
-        point.setY(0.0);
-        point.setYErr(0.0, 0.0);
+        point.setY(0.0, 0.0);
         continue;
       }
 
@@ -174,11 +174,34 @@ namespace YODA {
     for (size_t i = 0; i < h.numBins(); ++i) {
       Point2D& point = tmp.point(i);
       integral += h.bin(i).sumW();
-      const double err = sqrt(integral);
-      point.setY(integral);
-      point.setYErr(err, err);
+      const double err = sqrt(integral); //< @todo Should be sqrt(sumW2)? Or more complex, cf. Simon etc.?
+      point.setY(integral, err);
     }
     return tmp;
+  }
+
+
+  Scatter2D toIntegralEfficiencyHisto(const Histo1D& h, bool includeunderflow, bool includeoverflow) {
+    Scatter2D rtn = toIntegralHisto(h, includeunderflow);
+    const double integral = h.integral() - (includeoverflow ? 0 : h.overflow().sumW());
+    /// @todo Should the total integral *error* be sqrt(sumW2)? Or more complex, cf. Simon etc.?
+    const double integral_err = sqrt(integral);
+
+    // If the integral is empty, the (integrated) efficiency values may as well all be zero, so return here
+    /// @todo Or throw a LowStatsError exception if h.effNumEntries() == 0?
+    /// @todo Provide optional alt behaviours
+    /// @todo Need to check that bins are all positive? Integral could be zero due to large +ve/-ve in different bins :O
+    if (integral == 0) return rtn;
+
+    // Normalize and compute binomial errors
+    foreach (Point2D& p, rtn.points()) {
+      const double eff = p.y() / integral;
+      /// @todo Should the total integral error be sqrt(sumW2)? Or more complex, cf. Simon etc.?
+      const double ey = sqrt(abs( ((1-2*eff)*sqr(p.y()/p.yErrAvg()) + sqr(eff)*sqr(integral_err)) / sqr(integral) ));
+      p.setY(eff, ey);
+    }
+
+    return rtn;
   }
 
 
