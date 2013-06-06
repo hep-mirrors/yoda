@@ -2,7 +2,10 @@ SUBDIRS = include
 EXTRA_DIST = \
     __init__.py \
     axis.pyx core.pyx declarations.pxd \
-    errors.cpp errors.hh util.pxd util.pyx
+    util.pxd util.pyx \
+    errors.cpp errors.hh \
+    pyroot_helpers.hh merge.hh \
+    rootcompat.pxd rootcompat.pyx
 
 clean-local:
 	@rm -rf core.cpp core.h util.cpp
