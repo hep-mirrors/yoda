@@ -13,12 +13,12 @@ namespace YODA {
 
 
   void Profile2D::fill(double x, double y, double z, double weight) {
-    if ( isnan(x) ) throw RangeError("X is NaN");
-    if ( isinf(x) ) throw RangeError("X is Inf");
-    if ( isnan(y) ) throw RangeError("Y is NaN");
-    if ( isinf(y) ) throw RangeError("Y is Inf");
-    if ( isnan(z) ) throw RangeError("Z is NaN");
-    if ( isinf(z) ) throw RangeError("Z is Inf");
+    if ( std::isnan(x) ) throw RangeError("X is NaN");
+    if ( std::isinf(x) ) throw RangeError("X is Inf");
+    if ( std::isnan(y) ) throw RangeError("Y is NaN");
+    if ( std::isinf(y) ) throw RangeError("Y is Inf");
+    if ( std::isnan(z) ) throw RangeError("Z is NaN");
+    if ( std::isinf(z) ) throw RangeError("Z is Inf");
     // Fill the overall distribution
     _axis.totalDbn().fill(x, y, z, weight);
     // Fill the bins and overflows
@@ -33,6 +33,12 @@ namespace YODA {
     }
     // Lock the axis now that a fill has happened
     _axis._setLock(true);
+  }
+
+
+  void Profile2D::fillBin(size_t i, double z, double weight) {
+    pair<double, double> mid = bin(i).midpoint();
+    fill(mid.first, mid.second, z, weight);
   }
 
 

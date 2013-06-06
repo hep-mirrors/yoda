@@ -118,6 +118,8 @@ namespace YODA {
     /// Fill histo by value and weight
     void fill(double x, double weight=1.0);
 
+    /// Fill histo bin i with the given weight
+    void fillBin(size_t i, double weight=1.0);
 
     /// @brief Reset the histogram.
     ///

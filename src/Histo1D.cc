@@ -15,20 +15,24 @@ namespace YODA {
 
 
   void Histo1D::fill(double x, double weight) {
-    if ( isnan(x) ) throw RangeError("X is NaN");
-    if ( isinf(x) ) throw RangeError("X is Inf");
+    if ( std::isnan(x) ) throw RangeError("X is NaN");
+    if ( std::isinf(x) ) throw RangeError("X is Inf");
     // Fill the overall distribution
     _axis.totalDbn().fill(x, weight);
     // Fill the bins and overflows
     try {
-      HistoBin1D& b = binAt(x);
-      b.fill(x, weight);
+      binAt(x).fill(x, weight);
     } catch (const RangeError& re) {
       if      (x <  _axis.xMin()) _axis.underflow().fill(x, weight);
       else if (x >= _axis.xMax()) _axis.overflow().fill(x, weight);
     }
     // Lock the axis now that a fill has happened
     _axis._setLock(true);
+  }
+
+
+  void Histo1D::fillBin(size_t i, double weight) {
+    fill(bin(i).midpoint(), weight);
   }
 
 

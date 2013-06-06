@@ -1,5 +1,9 @@
 2013-06-06  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Adding fillBin() methods to all 1D and 2D histos, and noting
+	that Bin types need a back-link to their axis to maintain
+	consistency.
+
 	* Release of version 1.0.1
 
 2013-06-05  Andy Buckley  <andy.buckley@cern.ch>

@@ -34,6 +34,12 @@ namespace YODA {
   }
 
 
+  void Histo2D::fillBin(size_t i, double weight) {
+    pair<double, double> mid = bin(i).midpoint();
+    fill(mid.first, mid.second, weight);
+  }
+
+
   double Histo2D::sumW(bool includeoverflows) const {
     if (includeoverflows) return _axis.totalDbn().sumW();
     double sumw = 0;
