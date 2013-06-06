@@ -68,12 +68,15 @@ namespace YODA {
       const Point2D& p2 = second.point(i);
       if (!fuzzyEquals(p1.xMin(), p2.xMin()) || !fuzzyEquals(p1.xMax(), p2.xMax()))
         throw BinningError("Point x 'bins' are not equivalent");
-      const double x = (p1.x() + p2.x())/2.0;
+      // Use the midpoint of the "bin" for the new central x value, in the absence of better information
+      const double x = (p1.xMin() + p1.xMax()) / 2.0;
+      const double exminus = x - p1.xMin();
+      const double explus  = p1.xMax() - x;
       //
       const double y = p1.y() + p2.y();
       /// @todo Deal with +/- errors separately?
       const double ey = sqrt( sqr(p1.yErrAvg()) + sqr(p2.yErrAvg()) );
-      tmp.addPoint(x, y, p1.xErrMinus(), p1.xErrPlus(), ey, ey);
+      tmp.addPoint(x, y, exminus, explus, ey, ey);
     }
     assert(tmp.numPoints() == first.numPoints());
     return tmp;
@@ -88,12 +91,15 @@ namespace YODA {
       const Point2D& p2 = second.point(i);
       if (!fuzzyEquals(p1.xMin(), p2.xMin()) || !fuzzyEquals(p1.xMax(), p2.xMax()))
         throw BinningError("Point x 'bins' are not equivalent");
-      const double x = (p1.x() + p2.x())/2.0;
+      // Use the midpoint of the "bin" for the new central x value, in the absence of better information
+      const double x = (p1.xMin() + p1.xMax()) / 2.0;
+      const double exminus = x - p1.xMin();
+      const double explus  = p1.xMax() - x;
       //
       const double y = p1.y() - p2.y();
       /// @todo Deal with +/- errors separately?
       const double ey = sqrt( sqr(p1.yErrAvg()) + sqr(p2.yErrAvg()) );
-      tmp.addPoint(x, y, p1.xErrMinus(), p1.xErrPlus(), ey, ey);
+      tmp.addPoint(x, y, exminus, explus, ey, ey);
     }
     assert(tmp.numPoints() == first.numPoints());
     return tmp;
