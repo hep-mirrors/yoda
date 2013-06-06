@@ -65,6 +65,7 @@ namespace YODA {
     //@{
 
     /// Fill histo by x and y values and weight.
+    /// @todo Need to also fill the totalDbn...
     void fill(double x, double y, double weight=1.0) {
       assert( _edges.first < _edges.second );
       assert( x >= _edges.first && x < _edges.second );
@@ -72,6 +73,7 @@ namespace YODA {
     }
 
     /// Fill histo with @a weight and y-value @c y at x = bin midpoint.
+    /// @todo Need to also fill the totalDbn...
     void fillBin(double y, double weight=1.0) {
       fill(midpoint(), y, weight);
     }

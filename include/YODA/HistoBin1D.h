@@ -67,6 +67,7 @@ namespace YODA {
     //@{
 
     /// Fill this bin with weight @a weight at position @a x.
+    /// @todo Need to also fill the totalDbn...
     void fill(double x, double weight=1.0) {
       assert( _edges.first < _edges.second );
       assert( x >= _edges.first && x < _edges.second );
@@ -74,6 +75,7 @@ namespace YODA {
     }
 
     /// Fill this bin with weight @a weight.
+    /// @todo Need to also fill the totalDbn...
     void fillBin(double weight=1.0) {
       fill(midpoint(), weight);
     }

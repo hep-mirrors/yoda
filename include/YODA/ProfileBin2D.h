@@ -63,17 +63,20 @@ namespace YODA {
     //@{
 
     /// Fill by x, y, z values and weight
+    /// @todo Need to also fill the totalDbn...
     void fill(double x, double y, double z, double weight=1.0) {
       assert(x >= xMin() && x <= xMax() && y >= yMin() && y <= yMax());
       _dbn.fill(x, y, z, weight);
     }
 
     /// A fill() function accepting the x,y coordinates as std::pair
+    /// @todo Need to also fill the totalDbn...
     void fill(std::pair<double,double> coords, double z, double weight=1.0) {
       _dbn.fill(coords.first, coords.second, z, weight);
     }
 
     /// Fill the bin at the midpoint with a given z value
+    /// @todo Need to also fill the totalDbn...
     void fillBin(double z, double weight=1.0){
       fill(midpoint(), z, weight);
     }
