@@ -31,7 +31,7 @@ cdef class Axis2D_${BIN2D}_${DBN}(util.Base):
     def outflow(self, ix, iy):
         return util.new_owned_cls(
             ${DBN}, new c.${DBN}(self._Axis2D().outflow(ix, iy)))
-    
+
     @property
     def edges(self):
         return util.XY(
@@ -42,7 +42,7 @@ cdef class Axis2D_${BIN2D}_${DBN}(util.Base):
     def reset(self):
         self._Axis2D().reset()
 
-    def binByCoord(self, x, y):
+    def binAt(self, x, y):
         cdef int ix = self._Axis2D().getBinIndex(x, y)
         if ix < 0:
             raise YodaExc_RangeError('No bin found!')

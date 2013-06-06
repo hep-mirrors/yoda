@@ -123,7 +123,7 @@ namespace YODA {
     TArrayD& sumw2s = *rtn.GetSumw2();
     for (int i = 1; i <= rtn.GetNbinsX(); ++i) {
       try {
-        const HistoBin1D& b = h.binByCoord(rtn.GetBinCenter(i)); // throws if in a gap
+        const HistoBin1D& b = h.binAt(rtn.GetBinCenter(i)); // throws if in a gap
         rtn.SetBinContent(i, b.sumW());
         sumw2s[i] = b.sumW2();
       } catch (const Exception& e) {  }
@@ -162,7 +162,7 @@ namespace YODA {
     TArrayD& sumw2s = *rtn.GetSumw2();
     for (int i = 1; i <= rtn.GetNbinsX(); ++i) {
       try {
-        const ProfileBin1D& b = p.binByCoord(rtn.GetBinCenter(i)); // throws if in a gap
+        const ProfileBin1D& b = p.binAt(rtn.GetBinCenter(i)); // throws if in a gap
         /// @todo This part is probably wrong -- also need to do something with GetW,
         ///   GetW2, GetB, GetB2, and/or GetBinSumw2? ROOT docs are 100% useless...
         rtn.SetBinContent(i, b.sumW());

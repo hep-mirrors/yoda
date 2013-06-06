@@ -48,7 +48,7 @@ cdef class Axis1D_${BIN1D}_${DBN}(util.Base):
     def mergeBins(self, a, b):
         self._Axis1D().mergeBins(a, b)
 
-    #def binByCoord(self, x):
+    #def binAt(self, x):
     #    return self[self._Axis1D().getBinIndex(x)]
 
     # BOILERPLATE STUFF

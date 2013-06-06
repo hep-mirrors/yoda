@@ -22,7 +22,7 @@ namespace YODA {
     _axis.totalDbn().fill(x, y, weight);
     // Fill the bins and overflows
     try {
-      ProfileBin1D& b = binByCoord(x);
+      ProfileBin1D& b = binAt(x);
       b.fill(x, y, weight);
     } catch (const RangeError& re) {
       if      (x <  _axis.xMin()) _axis.underflow().fill(x, y, weight);

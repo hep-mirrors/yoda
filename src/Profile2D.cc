@@ -23,7 +23,7 @@ namespace YODA {
     _axis.totalDbn().fill(x, y, z, weight);
     // Fill the bins and overflows
     try {
-      ProfileBin2D& b = binByCoord(x, y);
+      ProfileBin2D& b = binAt(x, y);
       b.fill(x, y, z, weight);
     } catch (const RangeError& re) {
       size_t ix(0), iy(0);
@@ -126,17 +126,17 @@ namespace YODA {
 
   /// A copy constructor with optional new path
   Profile2D::Profile2D(const Profile2D& p, const std::string& path)
-    : AnalysisObject("Profile2D", 
-		     (path.size() == 0) ? p.path() : path, 
-		     p, p.title()), 
+    : AnalysisObject("Profile2D",
+		     (path.size() == 0) ? p.path() : path,
+		     p, p.title()),
       _axis(p._axis)
   {  }
 
 
   /// Constructor from a Scatter3D's binning, with optional new path
   Profile2D::Profile2D(const Scatter3D& s, const std::string& path)
-    : AnalysisObject("Profile2D", 
-		     (path.size() == 0) ? s.path() : path, 
+    : AnalysisObject("Profile2D",
+		     (path.size() == 0) ? s.path() : path,
 		     s, s.title())
   {
     Bins bins;

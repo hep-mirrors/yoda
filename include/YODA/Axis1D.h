@@ -126,16 +126,22 @@ namespace YODA {
       return _bins[index];
     }
 
+    /// Returns an index of a bin at a given coord, -1 if no bin matches
+    int binIndexAt(double coord) const {
+      // Yes, this is robust even with an empty axis.
+      return _indexes[_binsearcher.index(coord)];
+    }
+
     /// Return a bin at a given coordinate (non-const)
-    BIN1D& binByCoord(double x) {
-      const long int index = getBinIndex(x);
+    BIN1D& binAt(double x) {
+      const int index = binIndexAt(x);
       if (index == -1) throw RangeError("There is no bin at the specified x");
       return bin(index);
     }
 
     /// Return a bin at a given coordinate (const)
-    const BIN1D& binByCoord(double x) const {
-      const long int index = getBinIndex(x);
+    const BIN1D& binAt(double x) const {
+      const long int index = binIndexAt(x);
       if (index == -1) throw RangeError("There is no bin at the specified x");
       return bin(index);
     }
@@ -177,12 +183,6 @@ namespace YODA {
 
     /// @name Modifiers and helpers
     //@{
-
-    /// Returns an index of a bin at a given coord, -1 if no bin matches
-    long getBinIndex(double coord) const {
-      // Yes, this is robust even with an empty axis.
-      return _indexes[_binsearcher.index(coord)];
-    }
 
     /// Reset all the bin statistics on the axis
     void reset() {

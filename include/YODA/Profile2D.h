@@ -249,26 +249,19 @@ namespace YODA {
       return _axis.bins()[index];
     }
 
+    /// Access a bin index by coordinate
+    int binIndexAt(double x, double y) {
+      return _axis.binIndexAt(x, y);
+    }
 
     /// Access a bin by coordinate (non-const)
-    ProfileBin2D& binByCoord(double x, double y) {
-      return _axis.binByCoord(x, y);
+    ProfileBin2D& binAt(double x, double y) {
+      return _axis.binAt(x, y);
     }
 
     /// Access a bin by coordinate (const)
-    const ProfileBin2D& binByCoord(double x, double y) const {
-      return _axis.binByCoord(x, y);
-    }
-
-
-    /// Return bin index (non-const version)
-    int findBinIndex(double coordX, double coordY) {
-      return _axis.getBinIndex(coordX, coordY);
-    }
-
-    /// Return bin index (const version)
-    int findBinIndex(double coordX, double coordY) const {
-      return _axis.getBinIndex(coordX, coordY);
+    const ProfileBin2D& binAt(double x, double y) const {
+      return _axis.binAt(x, y);
     }
 
 

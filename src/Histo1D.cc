@@ -21,7 +21,7 @@ namespace YODA {
     _axis.totalDbn().fill(x, weight);
     // Fill the bins and overflows
     try {
-      HistoBin1D& b = binByCoord(x);
+      HistoBin1D& b = binAt(x);
       b.fill(x, weight);
     } catch (const RangeError& re) {
       if      (x <  _axis.xMin()) _axis.underflow().fill(x, weight);

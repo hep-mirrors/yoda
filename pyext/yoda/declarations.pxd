@@ -595,8 +595,9 @@ cdef extern from "YODA/Profile1D.h" namespace "YODA":
         double highEdge() except+ err
 
         vector[ProfileBin1D] bins()
+        int binIndexAt(double x) except+ err
         ProfileBin1D bin(size_t ix) except+ err
-        ProfileBin1D binByCoord(double x) except+ err
+        ProfileBin1D binAt(double x) except+ err
 
         # The trick here is to treat these not as references.
         # I suppose when you think about it, it makes sense
@@ -647,9 +648,9 @@ cdef extern from "YODA/Profile2D.h" namespace "YODA":
         double highEdge() except+ err
 
         vector[ProfileBin2D] bins()
+        int binIndexAt(double x, double y) except+ err
         ProfileBin2D bin(size_t ix) except+ err
-        ProfileBin2D binByCoord(double x) except+ err
-        int findBinIndex(double, double)
+        ProfileBin2D binAt(double x, y) except+ err
 
         # The trick here is to treat these not as references.
         # I suppose when you think about it, it makes sense
@@ -697,8 +698,9 @@ cdef extern from "YODA/Histo1D.h" namespace "YODA":
         double highEdge() except+ err
 
         vector[HistoBin1D] &bins()
-        HistoBin1D &bin(size_t ix)
-        HistoBin1D binByCoord(double x) except+ err
+        int binIndexAt(double x) except+ err
+        HistoBin1D& bin(size_t ix)
+        HistoBin1D binAt(double x) except+ err
 
         # The trick here is to treat these not as references.
         # I suppose when you think about it, it makes sense
@@ -744,8 +746,9 @@ cdef extern from "YODA/Histo2D.h" namespace "YODA":
         size_t numBins() except+ err
 
         vector[HistoBin1D] bins()
+        int binIndexAt(double x, double y) except+ err
         HistoBin2D bin(size_t ix) except+ err
-        HistoBin2D binByCoord(double x) except+ err
+        HistoBin2D binAt(double x, double y) except+ err
 
         void addBins(vector[HistoBin2D]&)
 
@@ -769,7 +772,6 @@ cdef extern from "YODA/Histo2D.h" namespace "YODA":
         double highEdgeX() except+ err
         double highEdgeY() except+ err
 
-        int findBinIndex(double, double)
         size_t numBinsX()
         size_t numBinsY()
 

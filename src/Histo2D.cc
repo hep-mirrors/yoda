@@ -21,7 +21,7 @@ namespace YODA {
     _axis.totalDbn().fill(x, y, weight);
     // Fill the bins and overflows
     try {
-      HistoBin2D& b = binByCoord(x, y);
+      HistoBin2D& b = binAt(x, y);
       b.fill(x, y, weight);
     } catch (const RangeError& re) {
       size_t ix(0), iy(0);

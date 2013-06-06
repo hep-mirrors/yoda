@@ -204,14 +204,23 @@ namespace YODA {
     }
 
 
+    /// Access a bin index by coordinate
+    /// @todo Rename to binIndexAt
+    int binIndexAt(double x) {
+      return _axis.binIndexAt(x);
+    }
+
+
     /// Access a bin by coordinate (non-const version)
-    HistoBin1D& binByCoord(double x) {
-      return _axis.binByCoord(x);
+    /// @todo Rename to binAt
+    HistoBin1D& binAt(double x) {
+      return _axis.binAt(x);
     }
 
     /// Access a bin by coordinate (const version)
-    const HistoBin1D& binByCoord(double x) const {
-      return _axis.binByCoord(x);
+    /// @todo Rename to binAt
+    const HistoBin1D& binAt(double x) const {
+      return _axis.binAt(x);
     }
 
 
@@ -287,8 +296,10 @@ namespace YODA {
     /// @note The area of bin @a binindex2 is _not_ included in the returned
     /// value. To include the underflow and overflow areas, you should add them
     /// explicitly with the underflow() and overflow() methods.
+    ///
+    /// @todo Allow int bin index args for type compatibility with binIndexAt()?
     double integral(size_t binindex1, size_t binindex2) const {
-      assert(binindex1 > binindex2);
+      assert(binindex2 >= binindex1);
       if (binindex1 >= numBins()) throw RangeError("binindex1 is out of range");
       if (binindex2 > numBins()) throw RangeError("binindex2 is out of range");
       double rtn = 0;

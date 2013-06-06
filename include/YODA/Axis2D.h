@@ -369,16 +369,6 @@ namespace YODA {
     }
 
 
-    /// Get the bin index of the bin containing point (x, y).
-    ssize_t getBinIndex(double x, double y) const {
-      size_t xi = _binSearcherX.index(x) - 1;
-      size_t yi = _binSearcherY.index(y) - 1;
-      if (xi > _nx) return -1;
-      if (yi > _ny) return -1;
-
-      return _indexes[_index(_nx, xi, yi)];
-    }
-
     /// Access bin by index
     Bin& bin(size_t i) {
       return _bins[i];
@@ -389,16 +379,26 @@ namespace YODA {
       return _bins[i];
     }
 
+    /// Get the bin index of the bin containing point (x, y).
+    int binIndexAt(double x, double y) const {
+      size_t xi = _binSearcherX.index(x) - 1;
+      size_t yi = _binSearcherY.index(y) - 1;
+      if (xi > _nx) return -1;
+      if (yi > _ny) return -1;
+
+      return _indexes[_index(_nx, xi, yi)];
+    }
+
     /// Get the bin containing point (x, y).
-    Bin& binByCoord(double x, double y) {
-      const int ret = getBinIndex(x, y);
+    Bin& binAt(double x, double y) {
+      const int ret = binIndexAt(x, y);
       if (ret == -1) throw RangeError("No bin found!!");
       return bin(ret);
     }
 
     /// Get the bin containing point (x, y) (const).
-    const Bin& binByCoord(double x, double y) const {
-      const int ret = getBinIndex(x, y);
+    const Bin& binAt(double x, double y) const {
+      const int ret = binIndexAt(x, y);
       if (ret == -1) throw RangeError("No bin found!!");
       return bin(ret);
     }
@@ -559,6 +559,7 @@ namespace YODA {
 
   private:
 
+    /// @todo WTF?
     static size_t _index(size_t nx, size_t x, size_t y) {
       return y * nx + x;
     }

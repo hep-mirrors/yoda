@@ -11,7 +11,7 @@ cdef class Profile2D(AnalysisObject):
 
     def __init2(Profile2D self, char *path="", char *title=""):
         util.set_owned_ptr(
-            self, new c.Profile2D(string(path), string(title))) 
+            self, new c.Profile2D(string(path), string(title)))
 
     def __init7(Profile2D self,   nxbins, xlow, xupp,   nybins, ylow, yupp,
                 char *path="", char *title=""):
@@ -34,7 +34,7 @@ cdef class Profile2D(AnalysisObject):
         self._Profile2D().fill(x, y, z, weight)
 
     def bin_by_coord(self, x, y):
-        cdef int index = self._Profile2D().findBinIndex(x, y)
+        cdef int index = self._Profile2D().binIndexAt(x, y)
         print index
         return self[index]
 
@@ -81,7 +81,7 @@ cdef class Profile2D(AnalysisObject):
         return util.new_borrowed_cls(
             Dbn3D, new c.Dbn3D(self._Profile2D().outflow(ix, iy)), self)
 
-    
+
     #def integral(self, overflows=True):
     #    return self._Profile2D().integral(overflows)
 
