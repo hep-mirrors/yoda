@@ -52,7 +52,7 @@ int main() {
   MSG_GREEN("PASS");
 
   MSG_(PAD(70) << "Checking if it was added properly: ");
-  if (!fuzzyEquals(h.binByCoord(1).xMin(), 0) || !fuzzyEquals(h.binByCoord(1).xMax(),11)) {
+  if (!fuzzyEquals(h.binAt(1).xMin(), 0) || !fuzzyEquals(h.binAt(1).xMax(),11)) {
     MSG_RED("FAIL");
     return -1;
   }

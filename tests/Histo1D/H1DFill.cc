@@ -54,6 +54,23 @@ int main() {
   }
   MSG_GREEN("PASS");
 
+  MSG_(PAD(70) << "Checking bin index lookup: ");
+  const int i = h.binIndexAt(74);
+  if (i != 74) {
+    MSG_RED("FAIL");
+    return -1;
+  }
+  MSG_GREEN("PASS");
+
+  MSG_(PAD(70) << "Checking integral: ");
+  const double integral = h.integral((size_t) i);
+  MSG_BLUE(integral);
+  if (!fuzzyEquals(integral, 4)) {
+    MSG_RED("FAIL");
+    return -1;
+  }
+  MSG_GREEN("PASS");
+
   MSG_(PAD(70) << "Trying to fill the underflow: ");
   h.fill(-10,1);
   MSG_GREEN("PASS");
