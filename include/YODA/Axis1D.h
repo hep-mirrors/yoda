@@ -417,7 +417,7 @@ namespace YODA {
         double new_low  = currentBin.lowEdge();
         double reldiff = (new_low - last_high) / currentBin.width();
         double eps = 1.0e-10;
-        if( reldiff < -eps ) {
+        if ( reldiff < -eps ) {
           throw RangeError("Bin edges overlap");
         } else if ( reldiff > eps ) {
           indexes.push_back(-1);

@@ -433,7 +433,7 @@ namespace YODA {
     bool operator == (const Axis2D& other) const {
       if (numBins() != other.numBins())
         return false;
-      for(size_t i=0; i < numBins(); i++)
+      for (size_t i=0; i < numBins(); i++)
         if (!(fuzzyEquals(bin(i).lowEdgeX(), other.bin(i).lowEdgeX()) &&
               fuzzyEquals(bin(i).highEdgeX(), other.bin(i).highEdgeX()) &&
               fuzzyEquals(bin(i).lowEdgeY(), other.bin(i).lowEdgeY()) &&
@@ -525,7 +525,7 @@ namespace YODA {
       Utils::BinSearcher ySearcher(ycuts);
 
       // Iterate through bins and find out which
-      for(size_t i=0; i < bins.size(); i++) {
+      for (size_t i=0; i < bins.size(); i++) {
         Bin &bin = bins[i];
         size_t xiMin= xSearcher.index(bin.xMin()) - 1;
         size_t xiMax= xSearcher.index(bin.xMax()) - 1;
