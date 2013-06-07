@@ -341,9 +341,11 @@ namespace YODA {
 
     /// Check if two of the Axis have the same binning
     bool operator == (const Axis1D& other) const {
-      for(size_t i=0; i < numBins(); i++)
-        if (bin(i).lowEdge() != other.bin(i).lowEdge() ||
-            bin(i).highEdge() != other.bin(i).highEdge())
+      if (numBins() != other.numBins())
+        return false;
+      for (size_t i=0; i < numBins(); i++)
+        if (!(fuzzyEquals(bin(i).lowEdge(), other.bin(i).lowEdge()) &&
+              fuzzyEquals(bin(i).highEdge(), other.bin(i).highEdge())))
           return false;
 
       return true;
