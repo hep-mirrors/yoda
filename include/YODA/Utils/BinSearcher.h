@@ -12,6 +12,7 @@
 namespace YODA {
   namespace Utils {
 
+
     const size_t SEARCH_SIZE = 16;
     const size_t BISECT_LINEAR_THRESHOLD = 32;
 
@@ -178,7 +179,7 @@ namespace YODA {
 
       size_t estimate(const double x) const {
         double y = (*_est)(x);
-        size_t yi = (y < 0) ? 0 : y;
+        size_t yi = (size_t) (y < 0) ? 0 : y;
         return (yi > _max) ? _max : yi;
       }
 
@@ -210,7 +211,7 @@ namespace YODA {
 
       // Linear search in the forward direction
       size_t _linsearch_forward(double *arr, double key, size_t n) const {
-        for (size_t i=0; i<n; i++)
+        for (size_t i = 0; i < n; i++)
           if (arr[i] > key) return i;
         return n;
       }
@@ -218,16 +219,14 @@ namespace YODA {
       // Linear search in the backward direction
       size_t _linsearch_backward(double *arr, double key, size_t n) const {
         arr -= n;
-        for (size_t i=0; i < n; i++)
+        for (size_t i = 0; i < n; i++)
           if (arr[n - 1 - i] <= key) return i;
         return n;
       }
 
       // Bisection search, adapted from C++ std lib implementation
-      size_t _bisect(double *arr,
-                     const double key, size_t min, size_t max) const {
+      size_t _bisect(double *arr, const double key, size_t min, size_t max) const {
         size_t len = max - min;
-
         size_t middle;
         while (len > BISECT_LINEAR_THRESHOLD) {
           size_t half = len >> 1;
@@ -246,6 +245,8 @@ namespace YODA {
       boost::shared_array<double> _lows;
       size_t _max;
     };
+
+
   }
 }
 
