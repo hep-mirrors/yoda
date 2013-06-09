@@ -40,7 +40,7 @@ namespace YODA {
       }
 
       size_t operator() (double x) const {
-        return (size_t) _m * (x - _c);
+        return (size_t)(int) floor(_m * (x - _c));
       }
 
     protected:
@@ -179,7 +179,7 @@ namespace YODA {
 
       size_t estimate(const double x) const {
         double y = (*_est)(x);
-        size_t yi = (size_t) (y < 0) ? 0 : y;
+        size_t yi = (size_t)(int) floor((y < 0) ? 0 : y);
         return (yi > _max) ? _max : yi;
       }
 
