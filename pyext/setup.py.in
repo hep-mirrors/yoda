@@ -47,18 +47,22 @@ make_templates('Axis2D_BIN2D_DBN',
 make_templates('Bin1D_DBN', DBN=('Dbn1D', 'Dbn2D'))
 make_templates('Bin2D_DBN', DBN=('Dbn2D', 'Dbn3D'))
 
-root_ext = ext('rootcompat', depends=core_depends,
-               extra_compile_args="-pthread -m64 -I/usr/include/root".split(),
-               extra_link_args= """-L/usr/lib/root -lGui -lCore -lCint -lRIO
-               -lNet -lHist -lGraf -lGraf3d -lGpad -lTree -lRint -lPostscript
-               -lMatrix -lPhysics -lMathCore -lThread -pthread -lm -ldl
-               -rdynamic -lPyROOT""".split())
-
 extns = [
     ext('util'),
     ext('core', statics=[statics], depends=core_depends),
-    # root_ext, # Enable building of root extension
 ]
+
+## Enable building of ROOT extension if ROOT is present
+if os.environ.has_key("BUILD_ROOTCOMPAT"):
+    try:
+        # import ROOT
+        # TODO: Need to test for and use root-config in configure
+        root_ext = ext('rootcompat', depends=core_depends,
+                       extra_compile_args="@ROOT_CXXFLAGS@".split(),
+                       extra_link_args= """@ROOT_LDFLAGS@ @ROOT_LIBS@ -lPyROOT""".split())
+        extns.append(root_ext)
+    except:
+        pass
 
 setup(name = PKGNAME,
       ext_modules = extns,

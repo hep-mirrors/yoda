@@ -1,3 +1,10 @@
+2013-07-12  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Adding ROOT detection in configure and otherwise updating Dave's
+	rootcompat module so that it'll compile. There might be an
+	inconvenient ROOT version dependency in the signature of one of
+	the PyROOT API functions that is used as a shim :-(
+
 2013-06-17  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Adding yoda.m4 from James Robinson.

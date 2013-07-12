@@ -18,7 +18,7 @@ AC_DEFINE_UNQUOTED(YODA_BUGREPORT, "$PACKAGE_BUGREPORT", "YODA contact email add
 AC_CEDAR_OSX
 
 ## Set default compiler flags
-if test "x$CXXFLAGS" == "x"; then CXXFLAGS="-O3"; fi
+if test "x$CXXFLAGS" = "x"; then CXXFLAGS="-O3"; fi
 
 ## Make compiler error messages more readable if gfilt is installed.
 #AC_CEDAR_CXXFILTER
@@ -44,14 +44,40 @@ AC_CEDAR_CHECKCXXFLAG([-std=c++98], [AM_CXXFLAGS="$AM_CXXFLAGS -std=c++98"])
 
 ## Debug flag (default=none)
 AC_ARG_ENABLE([debug], [AC_HELP_STRING(--enable-debug, [build with debugging symbols  @<:@default=no@:>@])], [], [enable_debug=no])
-if test x$enable_debug == xyes; then
+if test x$enable_debug = xyes; then
   [AM_CXXFLAGS="$AM_CXXFLAGS -g"]
 fi
 
 
-## Build Doxygen if possible
-AC_PATH_PROG(DOXYGEN, doxygen)
-AM_CONDITIONAL(WITH_DOXYGEN, test "$DOXYGEN")
+## Required Boost C++ utility library
+BOOST_REQUIRE([1.47.0])
+BOOST_FOREACH
+BOOST_SMART_PTR
+BOOST_FIND_HEADER([boost/lexical_cast.hpp])
+BOOST_FIND_HEADER([boost/assign.hpp])
+BOOST_FIND_HEADER([boost/spirit/include/qi.hpp])
+BOOST_FIND_HEADER([boost/spirit/include/phoenix_operator.hpp])
+BOOST_FIND_HEADER([boost/fusion/include/adapt_struct.hpp])
+
+
+## Optional ROOT compatibility
+AC_ARG_ENABLE([ROOT], [AC_HELP_STRING(--disable-root, [build with ROOT interfacing @<:@default=yes@:>@])], [], [enable_root=yes])
+if test "x$enable_root" = "xyes"; then
+  AC_PATH_PROG(ROOTCONFIG, [root-config])
+  if test "x$ROOTCONFIG" = "x"; then
+    AC_MSG_WARN([root-config not found -- not building extra ROOT compatibility tools])
+    enable_root=no;
+  else
+    #AM_CXXFLAGS="$AM_CXXFLAGS -Wno-long-long"
+    ROOT_CXXFLAGS=`$ROOTCONFIG --cflags`
+    ROOT_LDFLAGS=`$ROOTCONFIG --ldflags`
+    ROOT_LIBS=`$ROOTCONFIG --libs`
+    AC_SUBST(ROOT_CXXFLAGS)
+    AC_SUBST(ROOT_LDFLAGS)
+    AC_SUBST(ROOT_LIBS)
+  fi
+fi
+AM_CONDITIONAL(ENABLE_ROOT, [test x$enable_root = xyes])
 
 
 ## Python extension
@@ -60,7 +86,7 @@ AC_ARG_ENABLE(pyext, [AC_HELP_STRING(--disable-pyext,
   [], [enable_pyext=yes])
 AZ_PYTHON_DEFAULT
 ## Basic Python checks
-if test x$enable_pyext == xyes; then
+if test x$enable_pyext = xyes; then
   AZ_PYTHON_PATH
   AZ_PYTHON_VERSION_ENSURE([2.4])
   PYTHON_VERSION=`$PYTHON -c "import sys; print '.'.join(map(str, sys.version_info@<:@:2@:>@));"`
@@ -85,49 +111,29 @@ if test x$enable_pyext == xyes; then
     enable_pyext=no
   fi
 fi
-## Cython checks (Probably need some help...)
+
+## Cython checks
 # TODO: "Tarball users" should ideally not need to have Cython installed
 if test x$enable_pyext == xyes; then
   AM_CHECK_CYTHON([0.18], [:], [:])
+  PYEXT_CXXFLAGS=
   if test x$CYTHON_FOUND != xyes; then
     AC_MSG_ERROR([Can't build Python extension since Cython >= 0.18 could not be found])
     enable_pyext=no
   else
     cython_compiler=$CXX
+    ## Set extra Python extension build flags (to cope with Cython output code oddities)
+    AC_CEDAR_CHECKCXXFLAG([-Wno-unused-but-set-variable], [PYEXT_CXXFLAGS="$PYEXT_CXXFLAGS -Wno-unused-but-set-variable"])
+    AC_CEDAR_CHECKCXXFLAG([-Wno-sign-compare], [PYEXT_CXXFLAGS="$PYEXT_CXXFLAGS -Wno-sign-compare"])
   fi
 fi
+
 ## Finish Python extension testing
 if test x$enable_pyext == xyes; then
+  AC_SUBST(PYEXT_CXXFLAGS)
   AC_MSG_NOTICE([All Python build checks successful: 'yoda' Python extension will be built])
 fi
 AM_CONDITIONAL(ENABLE_PYEXT, [test x$enable_pyext == xyes])
-
-## Set extra Python extension build flags (to cope with Cython output code oddities)
-PYEXT_CXXFLAGS=
-AC_CEDAR_CHECKCXXFLAG([-Wno-unused-but-set-variable], [PYEXT_CXXFLAGS="$PYEXT_CXXFLAGS -Wno-unused-but-set-variable"])
-AC_CEDAR_CHECKCXXFLAG([-Wno-sign-compare], [PYEXT_CXXFLAGS="$PYEXT_CXXFLAGS -Wno-sign-compare"])
-AC_SUBST(PYEXT_CXXFLAGS)
-
-
-## Optional ROOT analysis framework
-#AC_ARG_ENABLE([ROOT], [AC_HELP_STRING(--enable-root, [build with ROOT output @<:@default=yes@:>@])], [], [enable_root=yes])
-#if test "x$enable_root" != "xno"; then
-#  AC_SEARCH_ROOT([with_root=yes
-#    AM_CXXFLAGS="$AM_CXXFLAGS -Wno-long-long"
-#    AC_TEST_ROOT], [AC_MSG_WARN([ROOT functionalities not available])])
-#  AM_CONDITIONAL(WITH_ROOT, [test x$with_root == xyes])
-#fi
-
-
-## Boost C++ utility library
-BOOST_REQUIRE([1.47.0])
-BOOST_FOREACH
-BOOST_SMART_PTR
-BOOST_FIND_HEADER([boost/lexical_cast.hpp])
-BOOST_FIND_HEADER([boost/assign.hpp])
-BOOST_FIND_HEADER([boost/spirit/include/qi.hpp])
-BOOST_FIND_HEADER([boost/spirit/include/phoenix_operator.hpp])
-BOOST_FIND_HEADER([boost/fusion/include/adapt_struct.hpp])
 
 
 ## Extend and substitute the default build flags after lib testing
@@ -135,6 +141,11 @@ AM_CPPFLAGS="-I\$(top_srcdir)/include -I\$(top_builddir)/include"
 AM_CPPFLAGS="$AM_CPPFLAGS $BOOST_CPPFLAGS"
 AC_SUBST(AM_CPPFLAGS)
 AC_SUBST(AM_CXXFLAGS)
+
+
+## Build Doxygen if possible
+AC_PATH_PROG(DOXYGEN, doxygen)
+AM_CONDITIONAL(WITH_DOXYGEN, test "$DOXYGEN")
 
 
 ## Build file output
