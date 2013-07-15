@@ -10,8 +10,9 @@ def parse_x2y_args(args, xextn, yextn):
     if len(args) == 1:
         infile = args[0]
         if infile.endswith(xextn):
-            outfile = infile.replace(xextn, "")
-        outfile = infile + yextn
+            outfile = infile.replace(xextn, yextn)
+        else:
+            outfile = infile + yextn
         outfile = os.path.basename(outfile)
     elif len(args) == 2:
         infile = args[0]
