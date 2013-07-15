@@ -2,6 +2,7 @@
 .*\.(o|lo|Po|so|la)
 \.libs
 \.deps
+YODA-.*\.tar\.gz
 Makefile
 Makefile\.in
 Doxyfile
@@ -35,6 +36,7 @@ pyext/.*\.(pyc|pxi)
 pyext/yoda/core\.h
 pyext/yoda/core\.cpp
 pyext/yoda/util\.cpp
+pyext/yoda/rootcompat\.cpp
 pyext/.*/generated
 test-driver
 tests/.*\.(trs|log)
