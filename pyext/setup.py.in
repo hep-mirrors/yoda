@@ -12,7 +12,7 @@ import os.path
 incdir = os.path.abspath('@top_srcdir@/include')
 srcdir = os.path.abspath('@top_srcdir@/src')
 libdir = os.path.abspath("@top_builddir@/src/.libs")
-statics = os.path.join('yoda', 'errors.cpp')
+static_files = ['yoda/errors.cpp'] #, 'yoda/script_helpers.py']
 
 BASE_COMPILE_ARGS = \
         "-I@prefix@/include @BOOST_CPPFLAGS@ @PYEXT_CXXFLAGS@".split()
@@ -20,7 +20,7 @@ BASE_LINK_ARGS = ["-L@prefix@/lib"]
 
 # Dependencies used to trigger rebuild
 header_files = glob('../include/YODA/*.h') + glob('../include/YODA/Utils/*.h')
-core_depends = glob('yoda/include/*.pyx') + header_files
+core_depends = glob('yoda/include/*.pyx') + glob('yoda/*.py') + header_files
 
 ## A helper function (since we have two modules now...)
 def ext(name, depends=[], statics=[],
@@ -49,7 +49,7 @@ make_templates('Bin2D_DBN', DBN=('Dbn2D', 'Dbn3D'))
 
 extns = [
     ext('util'),
-    ext('core', statics=[statics], depends=core_depends),
+    ext('core', statics=static_files, depends=core_depends),
 ]
 
 ## Enable building of ROOT extension if ROOT is present

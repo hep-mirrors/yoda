@@ -12,3 +12,7 @@ uninstall-local:
 else
 EXTRA_DIST = yoda-completion
 endif
+
+if ENABLE_ROOT
+dist_bin_SCRIPTS += yoda2root
+endif

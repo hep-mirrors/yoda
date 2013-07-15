@@ -7,24 +7,12 @@ Convert a YODA data file to a 'flat', more human-readable data format.
 """
 
 import yoda, os, sys, optparse
+from yoda.script_helpers import parse_x2y_args
 
 parser = optparse.OptionParser(usage=__doc__)
 opts, args = parser.parse_args()
-
-INFILE = None
-OUTFILE = None
-
-if len(args) == 1:
-    INFILE = args[0]
-    if INFILE.endswith(".yoda"):
-        OUTFILE = INFILE.replace(".yoda", ".dat")
-    else:
-        OUTFILE = INFILE + ".dat"
-    OUTFILE = os.path.basename(OUTFILE)
-elif len(args) == 2:
-    INFILE = args[0]
-    OUTFILE = args[1]
-else:
+INFILE, OUTFILE = parse_x2y_args(args, ".yoda", ".dat")
+if not INFILE or not OUTFILE:
     sys.stderr.write("You must specify the YODA and FLAT file names\n")
     sys.exit(1)
 
