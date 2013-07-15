@@ -16,5 +16,10 @@ if not INFILE or not OUTFILE:
     sys.stderr.write("You must specify the YODA and ROOT file names\n")
     sys.exit(1)
 
+import ROOT
+of = ROOT.TFile(OUTFILE, "recreate")
 analysisobjects = yoda.readYODA(INFILE)
-# TODO: ROOT conversion and output
+rootobjects = [yoda.to_root(ao) for ao in analysisobjects]
+#print rootobjects
+of.Write()
+of.Close()
