@@ -15,6 +15,9 @@ config\.status
 config\.sub
 configure
 depcomp
+compile
+ar-lib
+\.dirstamp
 include/YODA/Config/BuildConfig\.h
 include/YODA/Config/DummyConfig\.h
 include/YODA/Config/DummyConfig\.h\.in
