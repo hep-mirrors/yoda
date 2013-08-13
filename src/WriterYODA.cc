@@ -59,8 +59,9 @@ namespace YODA {
 
     os << "# BEGIN YODA_HISTO1D " << h.path() << "\n";
     _writeAnnotations(os, h);
-    if ( h.totalDbn().numEntries() > 0 )
+    if ( h.totalDbn().effNumEntries() > 0 ) {
       os << "# Mean: " << h.mean() << "\n";
+    }
     os << "# Area: " << h.integral() << "\n";
     os << "# xlow\t xhigh\t sumw\t sumw2\t sumwx\t sumwx2\t numEntries\n";
     os << "Total   \tTotal   \t";
