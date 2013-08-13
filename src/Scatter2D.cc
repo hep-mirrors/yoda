@@ -67,7 +67,7 @@ namespace YODA {
       const Point2D& p1 = first.point(i);
       const Point2D& p2 = second.point(i);
       if (!fuzzyEquals(p1.xMin(), p2.xMin()) || !fuzzyEquals(p1.xMax(), p2.xMax()))
-        throw BinningError("Point x 'bins' are not equivalent");
+        throw BinningError("Point x 'bins' are not equivalent in " + first.path() + " + " + second.path());
       // Use the midpoint of the "bin" for the new central x value, in the absence of better information
       const double x = (p1.xMin() + p1.xMax()) / 2.0;
       const double exminus = x - p1.xMin();
@@ -90,7 +90,7 @@ namespace YODA {
       const Point2D& p1 = first.point(i);
       const Point2D& p2 = second.point(i);
       if (!fuzzyEquals(p1.xMin(), p2.xMin()) || !fuzzyEquals(p1.xMax(), p2.xMax()))
-        throw BinningError("Point x 'bins' are not equivalent");
+        throw BinningError("Point x 'bins' are not equivalent in " + first.path() + " - " + second.path());
       // Use the midpoint of the "bin" for the new central x value, in the absence of better information
       const double x = (p1.xMin() + p1.xMax()) / 2.0;
       const double exminus = x - p1.xMin();
@@ -115,7 +115,7 @@ namespace YODA {
 
       // Assemble the x value and error
       if (!fuzzyEquals(p1.xMin(), p2.xMin()) || !fuzzyEquals(p1.xMax(), p2.xMax()))
-        throw BinningError("Point x 'bins' are not equivalent");
+        throw BinningError("Point x 'bins' are not equivalent in " + numer.path() + " / " + denom.path());
       // Use the midpoint of the "bin" for the new central x value, in the absence of better information
       const double x = (p1.xMin() + p1.xMax()) / 2.0;
       const double exminus = x - p1.xMin();
