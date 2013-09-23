@@ -358,7 +358,23 @@ namespace YODA {
 
     /// Add another histogram to this
     Histo1D& operator += (const Histo1D& toAdd) {
-      _axis += toAdd._axis;
+
+      // Undo scaling of both histograms
+      double scaledBy = annotation<double>("ScaledBy", 1.0);
+      _axis.scaleW(1.0/scaledBy);
+
+      double toAddScaledBy = toAdd.annotation<double>("ScaledBy", 1.0);
+      Axis1D<HistoBin1D, Dbn1D> toAddAxis = toAdd._axis;
+      toAddAxis.scaleW(1.0/toAddScaledBy);
+
+      // Add
+      _axis += toAddAxis;
+
+      // Re-apply combined scaling
+      double newScaledBy = scaledBy*toAddScaledBy/(scaledBy+toAddScaledBy);
+      _axis.scaleW(newScaledBy);
+      setAnnotation("ScaledBy", newScaledBy);
+
       return *this;
     }
 
