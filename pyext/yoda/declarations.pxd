@@ -708,15 +708,22 @@ cdef extern from "YODA/Histo1D.h" namespace "YODA":
         Dbn1D &underflow()
         Dbn1D &overflow()
 
-        # NB, this is bugged and does not correctly report identical bins.
+        # TODO: BUG! This does not correctly report identical bins...
         void addBin(double, double) except+ err
         void addBins(vector[double] edges) except+ err
         void eraseBin(size_t index) except+ err
 
 #}}} Histo1D
 
+
 cdef extern from "merge.hh":
     void Histo1D_iadd_Histo1D "cython_iadd" (Histo1D*, Histo1D*)
+    void Histo1D_isub_Histo1D "cython_isub" (Histo1D*, Histo1D*)
+    # void Histo1D_imul_dbl "cython_imul_dbl" (Histo1D*, double)
+    # void Histo1D_idiv_dbl "cython_idiv_dbl" (Histo1D*, double)
+    Histo1D* Histo1D_add_Histo1D "cython_add" (Histo1D*, Histo1D*)
+    Histo1D* Histo1D_sub_Histo1D "cython_sub" (Histo1D*, Histo1D*)
+
 
 # Histo2D {{{
 cdef extern from "YODA/Histo2D.h" namespace "YODA":

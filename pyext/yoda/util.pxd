@@ -1,15 +1,12 @@
 # A base CppObject which prevents null pointer access
 cdef class Base:
-    """A base class which wraps a pointer"""
-    cdef void *_ptr
+    cdef void* _ptr
     cdef bint _deallocate
     cdef object _owner
 
-    cdef inline void *ptr(self) except NULL:
+    cdef inline void* ptr(self) except NULL:
         if self._ptr == NULL:
-            raise MemoryError('Null pointer referenced: '
-                              'perhaps the class is uninitialised.') 
-
+            raise MemoryError('Null pointer referenced: perhaps the class is uninitialised.')
         return self._ptr
 
 # Magic for setting pointers
@@ -49,7 +46,6 @@ cdef inline object new_borrowed_cls(object cls, void *ptr, object owner):
 cdef inline size_t pythonic_index(int i, size_t size) except? 0:
     if i < 0:
         i += size
-        
     if 0 <= i < size:
         return i
     else:

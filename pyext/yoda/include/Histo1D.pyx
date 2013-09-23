@@ -28,7 +28,7 @@ cdef class Histo1D(AnalysisObject):
     Histo1D(nbins, low, high, path="", title="")
     """
 
-    cdef inline c.Histo1D *_Histo1D(self) except NULL:
+    cdef inline c.Histo1D* _Histo1D(self) except NULL:
         return <c.Histo1D*> self.ptr()
 
     # There is a pythonic constructor here, and it looks a little like...
@@ -150,7 +150,6 @@ cdef class Histo1D(AnalysisObject):
         cdef vector[double] cedges
         for edge in edges:
             cedges.push_back(edge)
-
         if len(edges):
             self._Histo1D().addBins(cedges)
 
@@ -165,8 +164,39 @@ cdef class Histo1D(AnalysisObject):
         for a, b in tuples:
             self._Histo1D().addBin(a, b)
 
+
+    ## In-place special methods
+
     def __iadd__(Histo1D self, Histo1D other):
         #deref(self._Histo1D()) += other._Histo1D()
-        c.Histo1D_iadd_Histo1D(self._Histo1D(),
-                               other._Histo1D())
+        c.Histo1D_iadd_Histo1D(self._Histo1D(), other._Histo1D())
         return self
+    def __isub__(Histo1D self, Histo1D other):
+        c.Histo1D_isub_Histo1D(self._Histo1D(), other._Histo1D())
+        return self
+    # def __imul__(Histo1D self, double x):
+    #     c.Histo1D_imul_dbl(self._Histo1D(), x)
+    #     return self
+    # def __idiv__(Histo1D self, double x):
+    #     c.Histo1D_idiv_dbl(self._Histo1D(), x)
+    #     return self
+
+
+    ## Unbound special methods
+
+    def __add__(Histo1D self, Histo1D other):
+        h = Histo1D()
+        util.set_owned_ptr(h, c.Histo1D_add_Histo1D(self._Histo1D(), other._Histo1D()))
+        return h
+
+    def __sub__(Histo1D self, Histo1D other):
+        h = Histo1D()
+        util.set_owned_ptr(h, c.Histo1D_sub_Histo1D(self._Histo1D(), other._Histo1D()))
+        return h
+
+    # def __mul__(Histo1D self, double x):
+    #     h = c.Histo1D_mul_dbl(self._Histo1D(), x)
+    #     return h
+    # def __rmul__(Histo1D self, double x):
+    #     h = c.Histo1D_mul_dbl(self._Histo1D(), x)
+    #     return h

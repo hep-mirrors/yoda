@@ -1,3 +1,12 @@
+2013-09-23  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Adding more add and subtract special methods in Python.
+
+2013-09-22  Andy Buckley  <andy.buckley@cern.ch>
+
+	* mkScatter schanged to use histo midpoints rather than focuses by
+	default for the point x value.
+
 2013-08-14  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Version 1.0.2.

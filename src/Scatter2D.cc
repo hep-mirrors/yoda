@@ -11,9 +11,12 @@ namespace YODA {
     rtn.setAnnotations(h.annotations());
     rtn.setAnnotation("Type", h.type());
     foreach (const HistoBin1D& b, h.bins()) {
-      const double x = b.focus();
-      const double ex_m = b.focus() - b.lowEdge();
-      const double ex_p = b.highEdge() - b.focus();
+      // const double x = b.focus();
+      // const double ex_m = b.focus() - b.lowEdge();
+      // const double ex_p = b.highEdge() - b.focus();
+      const double x = b.midpoint();
+      const double ex_m = b.width()/2.0;
+      const double ex_p = b.width()/2.0;
       const double y = b.height();
       const double ey = b.heightErr();
       const Point2D pt(x, y, ex_m, ex_p, ey, ey);
@@ -30,9 +33,12 @@ namespace YODA {
     rtn.setAnnotations(p.annotations());
     rtn.setAnnotation("Type", p.type());
     foreach (const ProfileBin1D& b, p.bins()) {
-      const double x = b.focus();
-      const double ex_m = b.focus() - b.lowEdge();
-      const double ex_p = b.highEdge() - b.focus();
+      // const double x = b.focus();
+      // const double ex_m = b.focus() - b.lowEdge();
+      // const double ex_p = b.highEdge() - b.focus();
+      const double x = b.midpoint();
+      const double ex_m = b.width()/2.0;
+      const double ex_p = b.width()/2.0;
       double y;
       try {
         y = b.mean();
@@ -67,7 +73,7 @@ namespace YODA {
       const Point2D& p1 = first.point(i);
       const Point2D& p2 = second.point(i);
       if (!fuzzyEquals(p1.xMin(), p2.xMin()) || !fuzzyEquals(p1.xMax(), p2.xMax()))
-        throw BinningError("Point x 'bins' are not equivalent in " + first.path() + " + " + second.path());
+        throw BinningError("Point x binnings are not equivalent for " + first.path() + " + " + second.path());
       // Use the midpoint of the "bin" for the new central x value, in the absence of better information
       const double x = (p1.xMin() + p1.xMax()) / 2.0;
       const double exminus = x - p1.xMin();
@@ -90,7 +96,7 @@ namespace YODA {
       const Point2D& p1 = first.point(i);
       const Point2D& p2 = second.point(i);
       if (!fuzzyEquals(p1.xMin(), p2.xMin()) || !fuzzyEquals(p1.xMax(), p2.xMax()))
-        throw BinningError("Point x 'bins' are not equivalent in " + first.path() + " - " + second.path());
+        throw BinningError("Point x binnings are not equivalent in " + first.path() + " - " + second.path());
       // Use the midpoint of the "bin" for the new central x value, in the absence of better information
       const double x = (p1.xMin() + p1.xMax()) / 2.0;
       const double exminus = x - p1.xMin();
@@ -109,13 +115,27 @@ namespace YODA {
   // Divide two scatters
   Scatter2D divide(const Scatter2D& numer, const Scatter2D& denom) {
     Scatter2D tmp;
+
+    // for (size_t i = 0; i < numer.numPoints(); ++i) {
+    //   std::cout << numer.point(i).xMin() << " ";
+    //   std::cout << numer.point(i).xMax() << " ";
+    // }
+    // std::cout << std::endl;
+    // for (size_t i = 0; i < denom.numPoints(); ++i) {
+    //   std::cout << denom.point(i).xMin() << " ";
+    //   std::cout << denom.point(i).xMax() << " ";
+    // }
+    // std::cout << std::endl;
+
     for (size_t i = 0; i < numer.numPoints(); ++i) {
       const Point2D& p1 = numer.point(i);
       const Point2D& p2 = denom.point(i);
 
       // Assemble the x value and error
+      // std::cout << p1.xMin() << " vs " << p2.xMin() << " and " << p1.xMax() << " vs " << p2.xMax() << std::endl;
       if (!fuzzyEquals(p1.xMin(), p2.xMin()) || !fuzzyEquals(p1.xMax(), p2.xMax()))
-        throw BinningError("Point x 'bins' are not equivalent in " + numer.path() + " / " + denom.path());
+        throw BinningError("Point x binnings are not equivalent in " + numer.path() + " / " + denom.path());
+
       // Use the midpoint of the "bin" for the new central x value, in the absence of better information
       const double x = (p1.xMin() + p1.xMax()) / 2.0;
       const double exminus = x - p1.xMin();
