@@ -1,7 +1,6 @@
 cdef class Dbn1D(util.Base):
     """
     A 1D distribution 'counter', used and exposed by 1D histograms and their bins.
-
     """
 
     def __init__(self):
@@ -13,9 +12,8 @@ cdef class Dbn1D(util.Base):
     def fill(self, x, weight=1.0):
         """
         (float x, float weight=1.0) -> None
-        
+
         Fills the distribution with the given weight at given x.
-        
         """
         self._Dbn1D().fill(x, weight)
 
@@ -23,7 +21,8 @@ cdef class Dbn1D(util.Base):
         """
         () -> None
 
-        Reset the distribution counters to the unfilled state."""
+        Reset the distribution counters to the unfilled state.
+        """
         self._Dbn1D().reset()
 
 
@@ -31,8 +30,7 @@ cdef class Dbn1D(util.Base):
         """
         (x=1.0, w=1.0) -> None
 
-        Scale the Dbn's variables by the given factors
-
+        Scale the Dbn's variables by the given factors.
         """
         if x != 1.0:
             self._Dbn1D().scaleX(x)
@@ -113,4 +111,3 @@ cdef class Dbn1D(util.Base):
         cdef c.Dbn1D *p = self._Dbn1D()
         if self._deallocate:
             del p
-

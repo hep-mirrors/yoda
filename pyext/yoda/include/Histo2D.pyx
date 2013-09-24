@@ -13,7 +13,7 @@ cdef class Histo2D(AnalysisObject):
 
     def __init2(Histo2D self, char *path="", char *title=""):
         util.set_owned_ptr(
-            self, new c.Histo2D(string(path), string(title))) 
+            self, new c.Histo2D(string(path), string(title)))
 
     def __init7(Histo2D self,   nxbins, xlow, xupp,   nybins, ylow, yupp,
                 char *path="", char *title=""):
@@ -53,8 +53,11 @@ cdef class Histo2D(AnalysisObject):
         return util.new_owned_cls(Histo2D,
             new c.Histo2D(deref(self._Histo2D()), string(path)))
 
+    def __len__(self):
+        return self._Histo2D().bins().size()
+
     @property
-    def total_dbn(self):
+    def totalDbn(self):
         return util.new_owned_cls(
             Dbn2D,
             new c.Dbn2D(self._Histo2D().totalDbn()))
@@ -65,7 +68,7 @@ cdef class Histo2D(AnalysisObject):
             Dbn2D,
             new c.Dbn2D(self._Histo2D().outflow(ix, iy)))
 
-    def sum_w(self, overflows=True):
+    def sumW(self, overflows=True):
         return self._Histo2D().sumW(overflows)
 
     def mean(self, overflows=True):
@@ -78,12 +81,12 @@ cdef class Histo2D(AnalysisObject):
             self._Histo2D().xVariance(overflows),
             self._Histo2D().yVariance(overflows))
 
-    def std_dev(self, overflows=True):
+    def stdDev(self, overflows=True):
         return util.XY(
             self._Histo2D().xStdDev(overflows),
             self._Histo2D().yStdDev(overflows))
 
-    def std_err(self, overflows=True):
+    def stdErr(self, overflows=True):
         return util.XY(
             self._Histo2D().xStdErr(overflows),
             self._Histo2D().yStdErr(overflows))
@@ -91,15 +94,13 @@ cdef class Histo2D(AnalysisObject):
     def reset(self):
         self._Histo2D().reset()
 
-    def scale(self, w=1.0):
+    def scaleW(self, w):
         """
         (w=1.0) -> None
 
         Scale the given parameters
-
         """
-        if w != 1.0:
-            self._Histo2D().scaleW(w)
+        self._Histo2D().scaleW(w)
 
     def normalize(self, double normto, bint includeoverflows=True):
         self._Histo2D().normalize(normto, includeoverflows)
@@ -110,9 +111,13 @@ cdef class Histo2D(AnalysisObject):
     #def rebin(self, int n):
     #    self._Histo2D().rebin(n)
 
+    @property
+    def bins(self):
+        return list(self)
+
     def addBin(self, xlow, xhigh, ylow, yhigh):
         """Add a bin to the Histo2D"""
-        self._Histo2D().addBin(pair[double, double](xlow, xhigh), 
+        self._Histo2D().addBin(pair[double, double](xlow, xhigh),
                                pair[double, double](ylow, yhigh))
         return self
 
@@ -133,4 +138,3 @@ cdef class Histo2D(AnalysisObject):
     #        cedges.push_back(i)
     #    self._Histo2D().addBins(cedges)
     #    return self
-

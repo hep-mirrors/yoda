@@ -88,7 +88,6 @@ cdef class AnalysisObject(util.Base):
         """
         A human readable representation of this object as it would be
         stored in a YODA file.
-
         """
         f = StringIO()
         writeYODA([self], f)
@@ -99,7 +98,6 @@ cdef class AnalysisObject(util.Base):
         """
         Used for persistence and as a unique identifier. Must begin with
         a '/' if not the empty string.
-
         """
 
         def __get__(self):
@@ -114,7 +112,6 @@ cdef class AnalysisObject(util.Base):
 
         def __set__(self, char *title):
             self._AnalysisObject().setTitle(string(title))
-
 
     def __repr__(self):
         return "<%s '%s'>" % (self.__class__.__name__, self.path)

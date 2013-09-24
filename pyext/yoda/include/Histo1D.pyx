@@ -69,6 +69,11 @@ cdef class Histo1D(AnalysisObject):
         return util.new_borrowed_cls(
             HistoBin1D, & self._Histo1D().bin(i), self)
 
+    def __repr__(self):
+        return "<%s '%s' %d bins, sumw=%0.2e, xmean=%0.2e>" % \
+               (self.__class__.__name__, self.path,
+                len(self.bins), self.totalDbn.sumW, self.totalDbn.mean)
+
     def fill(self, x, weight=1.0):
         """
         (x, weight=1.0) -> None. Fill with given x and optional weight.
@@ -90,6 +95,7 @@ cdef class Histo1D(AnalysisObject):
         return util.new_owned_cls(Histo1D,
             new c.Histo1D(deref(self._Histo1D()), string(path)))
 
+    @property
     def bins(self):
         return list(self)
 
@@ -108,22 +114,19 @@ cdef class Histo1D(AnalysisObject):
     def reset(self):
         """
         Reset the histogram but leave the bin structure.
-
         """
         self._Histo1D().reset()
 
-    def scale(self, w=1.0):
+    def scaleW(self, w):
         """
-        (double w=1.0) -> None. Scale Histogram and its statistics as if all
+        (double w=1.0) -> None. Scale the histogram and its statistics as if all
         weights had been scaled by given factor.
-
         """
         self._Histo1D().scaleW(w)
 
     def normalize(self, normto=1.0, includeOverflows=True):
         """
         (normto=1.0, includeOverflows=False) -> None. Normalize the histogram.
-
         """
         self._Histo1D().normalize(normto, includeOverflows)
 
@@ -168,7 +171,6 @@ cdef class Histo1D(AnalysisObject):
     ## In-place special methods
 
     def __iadd__(Histo1D self, Histo1D other):
-        #deref(self._Histo1D()) += other._Histo1D()
         c.Histo1D_iadd_Histo1D(self._Histo1D(), other._Histo1D())
         return self
     def __isub__(Histo1D self, Histo1D other):
@@ -188,6 +190,22 @@ cdef class Histo1D(AnalysisObject):
         h = Histo1D()
         util.set_owned_ptr(h, c.Histo1D_add_Histo1D(self._Histo1D(), other._Histo1D()))
         return h
+
+    # TODO: Cython doesn't support type overloading for special functions?
+    # def __add__(Histo1D self, int x):
+    #     """
+    #     Special operator support to allow use of sum(histos) which starts from 0.
+    #     """
+    #     assert(x == 0)
+    #     return self
+
+    # TODO: Cython doesn't support type overloading for special functions?
+    # def __radd__(Histo1D self, int x):
+    #     """
+    #     Special operator support to allow use of sum(histos) which starts from 0.
+    #     """
+    #     assert(x == 0)
+    #     return self
 
     def __sub__(Histo1D self, Histo1D other):
         h = Histo1D()
