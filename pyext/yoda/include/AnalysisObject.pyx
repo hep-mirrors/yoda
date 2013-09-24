@@ -20,6 +20,7 @@ cdef class AnalysisObject(util.Base):
         if self._deallocate:
             del p
 
+    @property
     def annotations(self):
         """
         Key value pairs of metadata, returned as a Python dictionary.
@@ -47,7 +48,6 @@ cdef class AnalysisObject(util.Base):
             for (k, v) in E: AO[k] = v
         In either case, this is followed by:
             for k in F: AO[k] = F[k]
-
         """
         AO = self._AnalysisObject()
         if E is not None:
