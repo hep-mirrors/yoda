@@ -359,27 +359,32 @@ namespace YODA {
     /// Add another histogram to this
     Histo1D& operator += (const Histo1D& toAdd) {
 
-      // Undo scaling of both histograms
-      double scaledBy = annotation<double>("ScaledBy", 1.0);
-      _axis.scaleW(1.0/scaledBy);
+      // if (!hasAnnotation("ScaledBy") && !toAdd.hasAnnotation("ScaledBy")) {
+        _axis += toAdd._axis;
+      // } else {
+      //   // Undo scaling of both histograms
+      //   double scaledBy = annotation<double>("ScaledBy", 1.0);
+      //   _axis.scaleW(1.0/scaledBy);
 
-      double toAddScaledBy = toAdd.annotation<double>("ScaledBy", 1.0);
-      Axis1D<HistoBin1D, Dbn1D> toAddAxis = toAdd._axis;
-      toAddAxis.scaleW(1.0/toAddScaledBy);
+      //   double toAddScaledBy = toAdd.annotation<double>("ScaledBy", 1.0);
+      //   Axis1D<HistoBin1D, Dbn1D> toAddAxis = toAdd._axis;
+      //   toAddAxis.scaleW(1.0/toAddScaledBy);
 
-      // Add
-      _axis += toAddAxis;
+      //   _axis += toAddAxis;
 
-      // Re-apply combined scaling
-      double newScaledBy = scaledBy*toAddScaledBy/(scaledBy+toAddScaledBy);
-      _axis.scaleW(newScaledBy);
-      setAnnotation("ScaledBy", newScaledBy);
+      //   // Re-apply combined scaling
+      //   double newScaledBy = scaledBy*toAddScaledBy/(scaledBy+toAddScaledBy);
+      //   _axis.scaleW(newScaledBy);
+      //   setAnnotation("ScaledBy", newScaledBy);
+      // }
+      /// @todo What about if one histo sets ScaledBy, and the other doesn't?!? Aaaargh
 
       return *this;
     }
 
     /// Subtract another histogram from this
     Histo1D& operator -= (const Histo1D& toSubtract) {
+      /// @todo Need ScaledBy magic here, too?
       _axis -= toSubtract._axis;
       return *this;
     }
@@ -406,6 +411,7 @@ namespace YODA {
   /// Add two histograms
   inline Histo1D add(const Histo1D& first, const Histo1D& second) {
     Histo1D tmp = first;
+    if (first.path() != second.path()) tmp.setPath("");
     tmp += second;
     return tmp;
   }
@@ -420,6 +426,7 @@ namespace YODA {
   /// Subtract two histograms
   inline Histo1D subtract(const Histo1D& first, const Histo1D& second) {
     Histo1D tmp = first;
+    if (first.path() != second.path()) tmp.setPath("");
     tmp -= second;
     return tmp;
   }

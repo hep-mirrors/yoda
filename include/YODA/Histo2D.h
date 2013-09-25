@@ -464,6 +464,7 @@ namespace YODA {
   /// Add two histograms
   inline Histo2D add(const Histo2D& first, const Histo2D& second) {
     Histo2D tmp = first;
+    if (first.path() != second.path()) tmp.setPath("");
     tmp += second;
     return tmp;
   }
@@ -478,6 +479,7 @@ namespace YODA {
   /// Subtract two histograms
   inline Histo2D subtract(const Histo2D& first, const Histo2D& second) {
     Histo2D tmp = first;
+    if (first.path() != second.path()) tmp.setPath("");
     tmp -= second;
     return tmp;
   }

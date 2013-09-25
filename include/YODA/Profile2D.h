@@ -414,6 +414,7 @@ namespace YODA {
   /// Add two profile histograms
   inline Profile2D add(const Profile2D& first, const Profile2D& second) {
     Profile2D tmp = first;
+    if (first.path() != second.path()) tmp.setPath("");
     tmp += second;
     return tmp;
   }
@@ -426,6 +427,7 @@ namespace YODA {
   /// Subtract two profile histograms
   inline Profile2D subtract(const Profile2D& first, const Profile2D& second) {
     Profile2D tmp = first;
+    if (first.path() != second.path()) tmp.setPath("");
     tmp -= second;
     return tmp;
   }
@@ -448,4 +450,3 @@ namespace YODA {
 }
 
 #endif
-
