@@ -1,5 +1,9 @@
+#! /usr/bin/env python
+
 from string import Template
 from itertools import izip
+from os.path import join
+import os
 
 def product(*args, **kwds):
     # product('ABCD', 'xy') --> Ax Ay Bx By Cx Cy Dx Dy
@@ -14,18 +18,13 @@ def product(*args, **kwds):
 # A total mess. Uses python's string.Template to substitute values in various
 # templated C++ wrappers, as Cython has no support for templates (and fused
 # types are currently useless).
-
-import os.path
+# TODO: is the situation better now?
 INCLUDE_DIR = 'include'
-GENERATED_DIR = os.path.join(INCLUDE_DIR, 'generated')
-BASE_DIR = 'yoda'
-
-def path(path):
-    return os.path.join(BASE_DIR, path)
+GENERATED_DIR = join(INCLUDE_DIR, 'generated')
 
 # Try and make the template (output) directory
 try:
-    os.mkdir(path(GENERATED_DIR))
+    os.mkdir(GENERATED_DIR)
 except OSError:
     pass
 
@@ -34,20 +33,20 @@ GENERATED_HEADER = Template("""
 #################################################
 #############       WARNING      ################
 #################################################
-# This file has been automatically generated.   
+# This file has been automatically generated.
 # Any changes you make here will get overridden.
-# Instead, make your changes in 
+# Instead, make your changes in
 #               ${filename}.pyx
 #################################################
 
 """.lstrip())
 
 def make_templates(filename, *args, **kwargs):
-    individuals = args or [dict(izip(kwargs, line)) for line in 
+    individuals = args or [dict(izip(kwargs, line)) for line in
                            product(*kwargs.itervalues())]
 
-    full_filename = os.path.join(INCLUDE_DIR, filename + '.pyx')
-    f = open(path(full_filename))
+    full_filename = join(INCLUDE_DIR, filename + '.pyx')
+    f = open(full_filename)
     template = Template(f.read())
     f.close()
 
@@ -61,20 +60,31 @@ def make_templates(filename, *args, **kwargs):
     for a in individuals:
 
         newname = filename
-        for i, j in a.iteritems(): 
+        for i, j in a.iteritems():
             newname = newname.replace(i, j)
 
-        out_filename = os.path.join(GENERATED_DIR, newname + '.pyx')
-        f = open(path(out_filename), 'w')
+        out_filename = join(GENERATED_DIR, newname + '.pyx')
+        f = open(out_filename, 'w')
         f.write(GENERATED_HEADER.substitute(filename=filename))
         f.write(template.substitute(**a))
         f.close()
         includes.append(out_filename)
-        
-        inc_filename = os.path.join(INCLUDE_DIR, plain_name + '.pxi')
 
-        f = open(path(inc_filename), 'w')
+        inc_filename = join(INCLUDE_DIR, plain_name + '.pxi')
+
+        f = open(inc_filename, 'w')
         f.write(GENERATED_HEADER.substitute(filename=filename))
         f.write("\n".join('include "%s"' % i for i in includes))
         f.close()
 
+##############
+
+## Make instantiations of Cython mapping templates for axes with different DBN types
+make_templates('Axis1D_BIN1D_DBN',
+               dict(DBN='Dbn2D', BIN1D='ProfileBin1D'),
+               dict(DBN='Dbn1D', BIN1D='HistoBin1D'))
+make_templates('Axis2D_BIN2D_DBN',
+               dict(DBN='Dbn3D', BIN2D='ProfileBin2D'),
+               dict(DBN='Dbn2D', BIN2D='HistoBin2D'))
+make_templates('Bin1D_DBN', DBN=('Dbn1D', 'Dbn2D'))
+make_templates('Bin2D_DBN', DBN=('Dbn2D', 'Dbn3D'))

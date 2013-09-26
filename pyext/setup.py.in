@@ -14,8 +14,7 @@ srcdir = os.path.abspath('@top_srcdir@/src')
 libdir = os.path.abspath("@top_builddir@/src/.libs")
 static_files = ['yoda/errors.cpp'] #, 'yoda/script_helpers.py']
 
-BASE_COMPILE_ARGS = \
-        "-I@prefix@/include @BOOST_CPPFLAGS@ @PYEXT_CXXFLAGS@".split()
+BASE_COMPILE_ARGS = "-I@prefix@/include @BOOST_CPPFLAGS@ @PYEXT_CXXFLAGS@".split()
 BASE_LINK_ARGS = ["-L@prefix@/lib"]
 
 # Dependencies used to trigger rebuild
@@ -27,25 +26,14 @@ def ext(name, depends=[], statics=[],
         extra_compile_args=[], extra_link_args=[]):
     return Extension(
         '%s.%s' % (PKGNAME, name),
-        ['%s/%s.pyx' % (PKGNAME, name)] + statics,
-        language='c++',
+        ['%s/%s.cpp' % (PKGNAME, name)] + statics,
+        language='C++',
         depends=depends,
         include_dirs=[incdir, PKGNAME],
         extra_compile_args=BASE_COMPILE_ARGS + extra_compile_args,
         library_dirs=[libdir],
         extra_link_args = BASE_LINK_ARGS + extra_link_args,
         libraries=['stdc++', 'YODA'])
-
-## Make instantiations of Cython mapping templates for axes with different DBN types
-from template import make_templates
-make_templates('Axis1D_BIN1D_DBN',
-               dict(DBN='Dbn2D', BIN1D='ProfileBin1D'),
-               dict(DBN='Dbn1D', BIN1D='HistoBin1D'))
-make_templates('Axis2D_BIN2D_DBN',
-               dict(DBN='Dbn3D', BIN2D='ProfileBin2D'),
-               dict(DBN='Dbn2D', BIN2D='HistoBin2D'))
-make_templates('Bin1D_DBN', DBN=('Dbn1D', 'Dbn2D'))
-make_templates('Bin2D_DBN', DBN=('Dbn2D', 'Dbn3D'))
 
 extns = [
     ext('util'),

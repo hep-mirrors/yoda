@@ -1,6 +1,14 @@
 SUBDIRS = yoda
 EXTRA_DIST = template.py
 
+if WITH_CYTHON
+lhapdf.cpp: lhapdf.pyx clhapdf.pxd
+	cython lhapdf.pyx --cplus
+else
+lhapdf.cpp:
+	@echo "Not (re)generating lhapdf.cpp since Cython is not installed"
+endif
+
 if ENABLE_PYEXT
 PYEXT_ENV = CC="$(CC)" CXX="$(CXX)" ARCHFLAGS=""
 if ENABLE_ROOT
