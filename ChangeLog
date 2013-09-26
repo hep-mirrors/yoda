@@ -1,3 +1,7 @@
+2013-09-26  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Cython is no longer needed by tarball users.
+
 2013-09-25  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Unset path of returned histogram if those of the args to add()
