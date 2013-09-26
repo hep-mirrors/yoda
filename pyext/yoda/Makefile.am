@@ -14,9 +14,11 @@ EXTRA_DIST += \
 
 if WITH_CYTHON
 core.cpp: core.pyx util.pxd util.pyx declarations.pxd
-	./mktemplates && cython core.pyx --cplus
+	./mktemplates
+	cython core.pyx --cplus
 util.cpp: util.pxd util.pyx
-	./mktemplates && cython util.pyx --cplus
+	./mktemplates
+	cython util.pyx --cplus
 else
 core.cpp:
 	@echo "Not (re)generating core.cpp since Cython is not installed"

@@ -5,54 +5,48 @@ from distutils.extension import Extension
 from Cython.Distutils import build_ext
 from glob import glob
 
-PKGNAME = 'yoda'
-
 ## Extension definition
 import os.path
-incdir = os.path.abspath('@top_srcdir@/include')
-srcdir = os.path.abspath('@top_srcdir@/src')
+incdir = os.path.abspath("@top_srcdir@/include")
+srcdir = os.path.abspath("@top_srcdir@/src")
 libdir = os.path.abspath("@top_builddir@/src/.libs")
-static_files = ['yoda/errors.cpp'] #, 'yoda/script_helpers.py']
+static_files = ["yoda/errors.cpp"]
 
 BASE_COMPILE_ARGS = "-I@prefix@/include @BOOST_CPPFLAGS@ @PYEXT_CXXFLAGS@".split()
 BASE_LINK_ARGS = ["-L@prefix@/lib"]
 
 # Dependencies used to trigger rebuild
-header_files = glob('../include/YODA/*.h') + glob('../include/YODA/Utils/*.h')
-core_depends = glob('yoda/include/*.pyx') + glob('yoda/*.py') + header_files
+header_files = glob("../include/YODA/*.h") + glob("../include/YODA/Utils/*.h")
+core_depends = glob("yoda/include/*.pyx") + glob("yoda/*.py") + header_files
 
 ## A helper function (since we have two modules now...)
-def ext(name, depends=[], statics=[],
-        extra_compile_args=[], extra_link_args=[]):
+def ext(name, depends=[], statics=[], extra_compile_args=[], extra_link_args=[]):
     return Extension(
-        '%s.%s' % (PKGNAME, name),
-        ['%s/%s.cpp' % (PKGNAME, name)] + statics,
-        language='C++',
+        "%s.%s" % ("yoda", name),
+        ["%s/%s.cpp" % ("yoda", name)] + statics,
+        language="C++",
         depends=depends,
-        include_dirs=[incdir, PKGNAME],
+        include_dirs=[incdir, "yoda"],
         extra_compile_args=BASE_COMPILE_ARGS + extra_compile_args,
         library_dirs=[libdir],
         extra_link_args = BASE_LINK_ARGS + extra_link_args,
-        libraries=['stdc++', 'YODA'])
+        libraries=["stdc++", "YODA"])
 
-extns = [
-    ext('util'),
-    ext('core', statics=static_files, depends=core_depends),
-]
+extns = [ext("util"),  ext("core", statics=static_files, depends=core_depends)]
 
 ## Enable building of ROOT extension if ROOT is present
 if os.environ.has_key("BUILD_ROOTCOMPAT"):
     try:
         # import ROOT
         # TODO: Need to test for and use root-config in configure
-        root_ext = ext('rootcompat', depends=core_depends,
+        root_ext = ext("rootcompat", depends=core_depends,
                        extra_compile_args="@ROOT_CXXFLAGS@".split(),
                        extra_link_args= """@ROOT_LDFLAGS@ @ROOT_LIBS@ -lPyROOT""".split())
         extns.append(root_ext)
     except:
         pass
 
-setup(name = PKGNAME,
-      ext_modules = extns,
-      cmdclass = dict(build_ext=build_ext),
-      packages = [PKGNAME])
+setup(name="yoda",
+      ext_modules=extns,
+      cmdclass=dict(build_ext=build_ext),
+      packages=["yoda"])
