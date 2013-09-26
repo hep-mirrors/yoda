@@ -7,10 +7,11 @@ EXTRA_DIST = \
     errors.cpp errors.hh \
     pyroot_helpers.hh merge.hh \
     rootcompat.pxd rootcompat.pyx \
-    script_helpers.py \
+    script_helpers.py
 EXTRA_DIST += \
-    template.py \
+    mktemplates \
     core.cpp core.h util.cpp
+
 
 if WITH_CYTHON
 core.cpp: core.pyx util.pxd util.pyx declarations.pxd

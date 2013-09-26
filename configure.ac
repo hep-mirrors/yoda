@@ -136,8 +136,6 @@ fi
 AM_CONDITIONAL(WITH_CYTHON, [test x$CYTHON_FOUND = xyes])
 
 
-
-
 ## Extend and substitute the default build flags after lib testing
 AM_CPPFLAGS="-I\$(top_srcdir)/include -I\$(top_builddir)/include"
 AM_CPPFLAGS="$AM_CPPFLAGS $BOOST_CPPFLAGS"
