@@ -21,16 +21,42 @@ opts, filenames = parser.parse_args()
 # TODO: move to util module
 def merge(objects, op=operator.iadd):
     out_objects = {}
-
     for ob in objects:
         existing = out_objects.get(ob.path)
         if existing:
             op(ob, existing)
-        out_objects[ob.path] = ob
+        else:
+            out_objects[ob.path] = ob
 
     return out_objects
 
-analysisobjects_in = (yoda.readYODA(filename) for filename in filenames)
-analysisobjects_out = merge(itertools.chain(*analysisobjects_in))
+## Put the incoming objects into a dict from each path to a list of histos
+analysisobjects_in = {}
+for filename in filenames:
+    # TODO: also accept AIDA, ROOT, ... inputs?
+    aos = yoda.readYODA(filename)
+    for ao in aos:
+        analysisobjects_in.setdefault(ao.path, []).append(ao)
+
+analysisobjects_out = {}
+for p, aos in analysisobjects_in.iteritems():
+    ## Check that types match
+    print p, len(aos)
+    print tuple(type(ao) for ao in aos)
+    print all(type(ao) == type(aos[0]) for ao in aos)
+    ## Check whether normalizations match
+    normto = None
+    if hasattr(aos[0], "totalDbn"):
+        ## In the absence of better info, we use this as a heuristic to change the merging behaviour.
+        ## But what about if they are normed but to slightly different xsec estimates? Yuck. Need manual override
+        print tuple(ao.totalDbn.sumW for ao in aos)
+        if all(ao.totalDbn.sumW == aos[0].totalDbn.sumW for ao in aos):
+            normto = aos[0].totalDbn.sumW
+    # TODO: do a special unscale, store, add, renorm treatment if normto != None
+    for ao in aos:
+        if analysisobjects_out.has_key(p):
+            analysisobjects_out[p] = ao
+        # else:
+        #     analysisobjects_out[p] += ao
 
 yoda.writeYODA(analysisobjects_out.values(), opts.OUTPUT_FILE)
