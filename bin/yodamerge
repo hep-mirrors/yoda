@@ -54,9 +54,9 @@ for p, aos in analysisobjects_in.iteritems():
             normto = aos[0].totalDbn.sumW
     # TODO: do a special unscale, store, add, renorm treatment if normto != None
     for ao in aos:
-        if analysisobjects_out.has_key(p):
+        if not analysisobjects_out.has_key(p):
             analysisobjects_out[p] = ao
-        # else:
-        #     analysisobjects_out[p] += ao
+        elif hasattr(ao, "__iadd__"):
+            analysisobjects_out[p] += ao
 
 yoda.writeYODA(analysisobjects_out.values(), opts.OUTPUT_FILE)
