@@ -46,5 +46,7 @@ for p, aos in analysisobjects_in.iteritems():
             analysisobjects_out[p] = ao
         elif hasattr(ao, "__iadd__"):
             analysisobjects_out[p] += ao
+        else:
+            print "Analysis object %s of type %s cannot be merged" % (p, str(type(ao)))
 
 yoda.writeYODA(analysisobjects_out.values(), opts.OUTPUT_FILE)
