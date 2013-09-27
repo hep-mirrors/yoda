@@ -18,18 +18,6 @@ parser = optparse.OptionParser(usage=__doc__)
 parser.add_option('-o', '--output', default='-', dest='OUTPUT_FILE')
 opts, filenames = parser.parse_args()
 
-# TODO: move to util module
-def merge(objects, op=operator.iadd):
-    out_objects = {}
-    for ob in objects:
-        existing = out_objects.get(ob.path)
-        if existing:
-            op(ob, existing)
-        else:
-            out_objects[ob.path] = ob
-
-    return out_objects
-
 ## Put the incoming objects into a dict from each path to a list of histos
 analysisobjects_in = {}
 for filename in filenames:
