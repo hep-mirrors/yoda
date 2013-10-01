@@ -1,8 +1,9 @@
 .*~
 .*\.(o|lo|Po|so|la)
+.*\.(yoda|aida|dat|txt|root)
 \.libs
 \.deps
-YODA-.*\.tar\.gz
+YODA-.*\.tar\.(gz|bz2)
 Makefile
 Makefile\.in
 Doxyfile
@@ -60,3 +61,4 @@ tests/testscatter2Dcreate
 tests/testscatter2Dmodify
 tests/testsortedvector
 tests/testweights
+plots
