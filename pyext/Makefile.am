@@ -18,11 +18,11 @@ uninstall-local:
 
 clean-local:
 	$(PYEXT_ENV) $(PYTHON) setup.py clean --all
-	@rm -f $(builddir)/*.pyc
-	@rm -rf $(builddir)/build
-	@rm -rf dist
+	rm -f $(builddir)/*.pyc
+	rm -rf $(builddir)/build
+	rm -rf dist
 
 distclean-local:
-	@rm -rf yoda.egg-info
+	rm -rf yoda.egg-info
 
 endif

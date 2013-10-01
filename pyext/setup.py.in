@@ -2,7 +2,6 @@
 
 from distutils.core import setup
 from distutils.extension import Extension
-from Cython.Distutils import build_ext
 from glob import glob
 
 ## Extension definition
@@ -22,8 +21,8 @@ core_depends = glob("yoda/include/*.pyx") + glob("yoda/*.py") + header_files
 ## A helper function (since we have two modules now...)
 def ext(name, depends=[], statics=[], extra_compile_args=[], extra_link_args=[]):
     return Extension(
-        "%s.%s" % ("yoda", name),
-        ["%s/%s.cpp" % ("yoda", name)] + statics,
+        "yoda.%s" % name,
+        ["yoda/%s.cpp" % name] + statics,
         language="C++",
         depends=depends,
         include_dirs=[incdir, "yoda"],
@@ -48,5 +47,4 @@ if os.environ.has_key("BUILD_ROOTCOMPAT"):
 
 setup(name="yoda",
       ext_modules=extns,
-      cmdclass=dict(build_ext=build_ext),
       packages=["yoda"])

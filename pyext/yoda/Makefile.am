@@ -32,4 +32,4 @@ all-local: core.cpp util.cpp
 	@true
 
 clean-local:
-	@rm -rf core.cpp core.h util.cpp
+	rm -rf core.cpp core.h util.cpp
