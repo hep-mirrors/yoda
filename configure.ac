@@ -62,7 +62,8 @@ BOOST_FIND_HEADER([boost/fusion/include/adapt_struct.hpp])
 
 
 ## Optional ROOT compatibility
-AC_ARG_ENABLE([root], [AC_HELP_STRING(--enable-root, [build Python extension with ROOT interfacing @<:@default=yes@:>@])], [enable_root=yes], [])
+AC_ARG_ENABLE([root], [AC_HELP_STRING(--enable-root,
+  [build Python extension with ROOT interfacing @<:@default=yes@:>@])], [enable_root=yes], [])
 if test "x$enable_root" = "xyes"; then
   AC_PATH_PROG(ROOTCONFIG, [root-config])
   if test "x$ROOTCONFIG" = "x"; then
@@ -116,9 +117,9 @@ fi
 ## Finish Python extension testing
 if test x$enable_pyext == xyes; then
   ## Set extra Python extension build flags (to cope with Cython output code oddities)
-  cython_compiler=$CXX
   AC_CEDAR_CHECKCXXFLAG([-Wno-unused-but-set-variable], [PYEXT_CXXFLAGS="$PYEXT_CXXFLAGS -Wno-unused-but-set-variable"])
   AC_CEDAR_CHECKCXXFLAG([-Wno-sign-compare], [PYEXT_CXXFLAGS="$PYEXT_CXXFLAGS -Wno-sign-compare"])
+  AC_CEDAR_CHECKCXXFLAG([-Wno-strict-prototypes], [PYEXT_CXXFLAGS="$PYEXT_CXXFLAGS -Wno-strict-prototypes"])
   AC_SUBST(PYEXT_CXXFLAGS)
   AC_MSG_NOTICE([All Python build checks successful: 'yoda' Python extension will be built])
 fi
@@ -128,7 +129,6 @@ AM_CONDITIONAL(ENABLE_PYEXT, [test x$enable_pyext == xyes])
 ## Cython checks
 if test x$enable_pyext == xyes; then
   AM_CHECK_CYTHON([0.18], [:], [:])
-  PYEXT_CXXFLAGS=
   if test x$CYTHON_FOUND = xyes; then
     AC_MSG_NOTICE([Cython >= 0.18 found: Python extension source can be rebuilt (for developers)])
   fi

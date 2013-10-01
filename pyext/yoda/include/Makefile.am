@@ -21,3 +21,6 @@ EXTRA_DIST = \
     ProfileBin1D.pyx \
     ProfileBin2D.pyx \
     Scatter2D.pyx
+
+clean-local:
+	@rm -rf generated/*
