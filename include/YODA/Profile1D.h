@@ -290,12 +290,14 @@ namespace YODA {
 
     /// Add another profile to this one
     Profile1D& operator += (const Profile1D& toAdd) {
+      if (hasAnnotation("ScaledBy")) rmAnnotation("ScaledBy");
       _axis += toAdd._axis;
       return *this;
     }
 
     /// Subtract another profile from this one
     Profile1D& operator -= (const Profile1D& toSubtract) {
+      if (hasAnnotation("ScaledBy")) rmAnnotation("ScaledBy");
       _axis -= toSubtract._axis;
       return *this;
     }

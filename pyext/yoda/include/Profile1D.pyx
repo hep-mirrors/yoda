@@ -14,7 +14,7 @@ cdef class Profile1D(AnalysisObject):
 
     def __init2(self, char *path="", char *title=""):
         util.set_owned_ptr(
-            self, new c.Profile1D(string(path), string(title))) 
+            self, new c.Profile1D(string(path), string(title)))
 
     def __init5(self, size_t nbins, double lower, double upper,
                   char *path="", char *title=""):
@@ -85,3 +85,19 @@ cdef class Profile1D(AnalysisObject):
         self._Profile1D().addBins(cedges)
         return self
 
+
+    def __iadd__(Profile1D self, Profile1D other):
+        c.Profile1D_iadd_Profile1D(self._Profile1D(), other._Profile1D())
+        return self
+    def __isub__(Profile1D self, Profile1D other):
+        c.Profile1D_isub_Profile1D(self._Profile1D(), other._Profile1D())
+        return self
+
+    def __add__(Profile1D self, Profile1D other):
+        h = Profile1D()
+        util.set_owned_ptr(h, c.Profile1D_add_Profile1D(self._Profile1D(), other._Profile1D()))
+        return h
+    def __sub__(Profile1D self, Profile1D other):
+        h = Profile1D()
+        util.set_owned_ptr(h, c.Profile1D_sub_Profile1D(self._Profile1D(), other._Profile1D()))
+        return h

@@ -96,3 +96,14 @@ cdef class Scatter2D(AnalysisObject):
         fptr = (<c.dbl_dbl_fptr*><size_t>ctypes.addressof(callback))[0]
 
         c.Scatter2D_transformY(deref(self._Scatter2D()), fptr)
+
+
+
+    def __add__(Scatter2D self, Scatter2D other):
+        h = Scatter2D()
+        util.set_owned_ptr(h, c.Scatter2D_add_Scatter2D(self._Scatter2D(), other._Scatter2D()))
+        return h
+    def __sub__(Scatter2D self, Scatter2D other):
+        h = Scatter2D()
+        util.set_owned_ptr(h, c.Scatter2D_sub_Scatter2D(self._Scatter2D(), other._Scatter2D()))
+        return h

@@ -1,3 +1,8 @@
+2013-10-01  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Adding operator +, -, +=, -= Python mappings wherever possible
+	for Histo1/2D, Profile1/2D, and Scatter2D.
+
 2013-09-26  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Cython is no longer needed by tarball users.

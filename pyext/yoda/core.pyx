@@ -9,7 +9,7 @@ from libcpp.vector cimport vector
 from libcpp.pair cimport pair
 from libcpp.map cimport map
 
-# Pure python imports
+## Pure Python imports
 from itertools import repeat, imap
 from operator import attrgetter
 

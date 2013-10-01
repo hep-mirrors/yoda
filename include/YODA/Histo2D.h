@@ -394,14 +394,20 @@ namespace YODA {
     /// @name Adding and subtracting histograms
     //@{
 
-    /// Add another histogram to this one
+    /// @brief Add another histogram to this one
+    ///
+    /// @note Adding histograms will unset any ScaledBy attribute from prevous calls to scaleW or normalize.
     Histo2D& operator += (const Histo2D& toAdd) {
+      if (hasAnnotation("ScaledBy")) rmAnnotation("ScaledBy");
       _axis += toAdd._axis;
       return *this;
     }
 
-    /// Subtract another histogram from this one
+    /// @brief Subtract another histogram from this one
+    ///
+    /// @note Subtracting histograms will unset any ScaledBy attribute from prevous calls to scaleW or normalize.
     Histo2D& operator -= (const Histo2D& toSubtract) {
+      if (hasAnnotation("ScaledBy")) rmAnnotation("ScaledBy");
       _axis -= toSubtract._axis;
       return *this;
     }

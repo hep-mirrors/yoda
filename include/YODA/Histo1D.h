@@ -356,11 +356,16 @@ namespace YODA {
     /// @name Adding and subtracting histograms
     //@{
 
-    /// Add another histogram to this
+    /// @brief Add another histogram to this one
+    ///
+    /// @note Adding histograms will unset any ScaledBy attribute from prevous calls to scaleW or normalize.
     Histo1D& operator += (const Histo1D& toAdd) {
+      if (hasAnnotation("ScaledBy")) rmAnnotation("ScaledBy");
+      _axis += toAdd._axis;
+      return *this;
 
       // if (!hasAnnotation("ScaledBy") && !toAdd.hasAnnotation("ScaledBy")) {
-        _axis += toAdd._axis;
+      // _axis += toAdd._axis;
       // } else {
       //   // Undo scaling of both histograms
       //   double scaledBy = annotation<double>("ScaledBy", 1.0);
@@ -378,13 +383,14 @@ namespace YODA {
       //   setAnnotation("ScaledBy", newScaledBy);
       // }
       /// @todo What about if one histo sets ScaledBy, and the other doesn't?!? Aaaargh
-
-      return *this;
+      // return *this;
     }
 
-    /// Subtract another histogram from this
+    /// @brief Subtract another histogram from this one
+    ///
+    /// @note Subtracting histograms will unset any ScaledBy attribute from prevous calls to scaleW or normalize.
     Histo1D& operator -= (const Histo1D& toSubtract) {
-      /// @todo Need ScaledBy magic here, too?
+      if (hasAnnotation("ScaledBy")) rmAnnotation("ScaledBy");
       _axis -= toSubtract._axis;
       return *this;
     }

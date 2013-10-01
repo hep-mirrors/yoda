@@ -131,10 +131,18 @@ cdef class Histo2D(AnalysisObject):
         del v
 
 
-    # Need to look at all the possible things here...
-    #def addBins(self, edges):
-    #    cdef vector[double] cedges
-    #    for i in edges:
-    #        cedges.push_back(i)
-    #    self._Histo2D().addBins(cedges)
-    #    return self
+    def __iadd__(Histo2D self, Histo2D other):
+        c.Histo2D_iadd_Histo2D(self._Histo2D(), other._Histo2D())
+        return self
+    def __isub__(Histo2D self, Histo2D other):
+        c.Histo2D_isub_Histo2D(self._Histo2D(), other._Histo2D())
+        return self
+
+    def __add__(Histo2D self, Histo2D other):
+        h = Histo2D()
+        util.set_owned_ptr(h, c.Histo2D_add_Histo2D(self._Histo2D(), other._Histo2D()))
+        return h
+    def __sub__(Histo2D self, Histo2D other):
+        h = Histo2D()
+        util.set_owned_ptr(h, c.Histo2D_sub_Histo2D(self._Histo2D(), other._Histo2D()))
+        return h

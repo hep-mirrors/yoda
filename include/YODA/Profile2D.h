@@ -377,12 +377,14 @@ namespace YODA {
 
     /// Add another profile to this one
     Profile2D& operator += (const Profile2D& toAdd) {
+      if (hasAnnotation("ScaledBy")) rmAnnotation("ScaledBy");
       _axis += toAdd._axis;
       return *this;
     }
 
     /// Subtract another profile from this one
     Profile2D& operator -= (const Profile2D& toSubtract) {
+      if (hasAnnotation("ScaledBy")) rmAnnotation("ScaledBy");
       _axis -= toSubtract._axis;
       return *this;
     }

@@ -529,6 +529,11 @@ cdef extern from "YODA/Scatter2D.h" namespace "YODA":
 #}}} Scatter2D
 
 
+cdef extern from "merge.hh":
+    Scatter2D* Scatter2D_add_Scatter2D "cython_add" (Scatter2D*, Scatter2D*)
+    Scatter2D* Scatter2D_sub_Scatter2D "cython_sub" (Scatter2D*, Scatter2D*)
+
+
 # Scatter3D {{{
 cdef extern from "YODA/Scatter3D.h" namespace "YODA":
     cdef cppclass Scatter3D(AnalysisObject):
@@ -615,6 +620,15 @@ cdef extern from "YODA/Profile1D.h" namespace "YODA":
 #}}} Profile1D
 
 
+cdef extern from "merge.hh":
+    void Profile1D_iadd_Profile1D "cython_iadd" (Profile1D*, Profile1D*)
+    void Profile1D_isub_Profile1D "cython_isub" (Profile1D*, Profile1D*)
+    # void Profile1D_imul_dbl "cython_imul_dbl" (Profile1D*, double)
+    # void Profile1D_idiv_dbl "cython_idiv_dbl" (Profile1D*, double)
+    Profile1D* Profile1D_add_Profile1D "cython_add" (Profile1D*, Profile1D*)
+    Profile1D* Profile1D_sub_Profile1D "cython_sub" (Profile1D*, Profile1D*)
+
+
 # Profile2D {{{
 cdef extern from "YODA/Profile2D.h" namespace "YODA":
     cdef cppclass Profile2D(AnalysisObject):
@@ -666,6 +680,15 @@ cdef extern from "YODA/Profile2D.h" namespace "YODA":
         operator / (Profile2D)
 
 #}}} Profile2D
+
+
+cdef extern from "merge.hh":
+    void Profile2D_iadd_Profile2D "cython_iadd" (Profile2D*, Profile2D*)
+    void Profile2D_isub_Profile2D "cython_isub" (Profile2D*, Profile2D*)
+    # void Profile2D_imul_dbl "cython_imul_dbl" (Profile2D*, double)
+    # void Profile2D_idiv_dbl "cython_idiv_dbl" (Profile2D*, double)
+    Profile2D* Profile2D_add_Profile2D "cython_add" (Profile2D*, Profile2D*)
+    Profile2D* Profile2D_sub_Profile2D "cython_sub" (Profile2D*, Profile2D*)
 
 
 # Histo1D#{{{
@@ -801,6 +824,15 @@ cdef extern from "YODA/Histo2D.h" namespace "YODA":
         operator - (Histo2D)
         operator / (Histo2D)
 # Histo2D }}}
+
+
+cdef extern from "merge.hh":
+    void Histo2D_iadd_Histo2D "cython_iadd" (Histo2D*, Histo2D*)
+    void Histo2D_isub_Histo2D "cython_isub" (Histo2D*, Histo2D*)
+    # void Histo2D_imul_dbl "cython_imul_dbl" (Histo2D*, double)
+    # void Histo2D_idiv_dbl "cython_idiv_dbl" (Histo2D*, double)
+    Histo2D* Histo2D_add_Histo2D "cython_add" (Histo2D*, Histo2D*)
+    Histo2D* Histo2D_sub_Histo2D "cython_sub" (Histo2D*, Histo2D*)
 
 
 # Streams {{{

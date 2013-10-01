@@ -148,3 +148,19 @@ cdef class Profile2D(AnalysisObject):
         self._Profile2D().addBins(_xcuts, _ycuts)
         return self
 
+
+    def __iadd__(Profile2D self, Profile2D other):
+        c.Profile2D_iadd_Profile2D(self._Profile2D(), other._Profile2D())
+        return self
+    def __isub__(Profile2D self, Profile2D other):
+        c.Profile2D_isub_Profile2D(self._Profile2D(), other._Profile2D())
+        return self
+
+    def __add__(Profile2D self, Profile2D other):
+        h = Profile2D()
+        util.set_owned_ptr(h, c.Profile2D_add_Profile2D(self._Profile2D(), other._Profile2D()))
+        return h
+    def __sub__(Profile2D self, Profile2D other):
+        h = Profile2D()
+        util.set_owned_ptr(h, c.Profile2D_sub_Profile2D(self._Profile2D(), other._Profile2D()))
+        return h
