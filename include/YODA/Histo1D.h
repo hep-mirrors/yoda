@@ -444,6 +444,9 @@ namespace YODA {
   }
 
 
+  /// @todo Add multiply histograms -> Scatter2D
+
+
   /// Divide two histograms, with an uncorrelated error treatment
   Scatter2D divide(const Histo1D& numer, const Histo1D& denom);
 
@@ -454,14 +457,25 @@ namespace YODA {
   }
 
 
-  /// @todo Add divide functions/operators on pointers
+  /// @todo Add functions/operators on pointers
 
 
   /// @brief Calculate a histogrammed efficiency ratio of two histograms
   ///
-  /// Note that an efficiency is not the same thing as a standard division of two
-  /// histograms: the errors must be treated as correlated
+  /// @note The two histos must have _exactly_ the same binning.
+  ///
+  /// @note An efficiency is not the same thing as a standard division of two
+  /// histograms: the errors must be treated as correlated.
   Scatter2D efficiency(const Histo1D& accepted, const Histo1D& total);
+
+
+  /// @brief Calculate the asymmetry (a-b)/(a+b) of two histograms
+  ///
+  /// @note The two histos must have _exactly_ the same binning.
+  inline Scatter2D asymm(const Histo1D& a, const Histo1D& b) {
+    return (a-b) / (a+b);
+  }
+
 
   /// @brief Convert a Histo1D to a Scatter2D representing the integral of the histogram
   ///
@@ -473,7 +487,8 @@ namespace YODA {
   /// in the integral numbers as an offset.
   Scatter2D toIntegralHisto(const Histo1D& h, bool includeunderflow=true);
 
-  /// @brief Convert a Histo1D to a Scatter2D, where each bin is a fraction of the total
+
+  /// @brief Convert a Histo1D to a Scatter2D where each bin is a fraction of the total
   ///
   /// @note This sounds weird: let's explain a bit more! Sometimes we want to
   /// take a histo h, make an integral histogram H from it, and then divide H by

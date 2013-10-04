@@ -497,18 +497,39 @@ namespace YODA {
   }
 
 
-  /// @todo Multiply histograms?
+  /// @todo Add multiply histograms -> Scatter3D
 
 
-  /// @brief Divide two histograms
+  /// @brief Divide two histograms, with an uncorrelated error treatment
   ///
-  /// Keep in mind that for the following to work, two Histos must be _exactly_ the same.
+  /// @note The two histos must have _exactly_ the same binning.
   Scatter3D divide(const Histo2D& numer, const Histo2D& denom);
 
 
   /// Divide two histograms, with an uncorrelated error treatment
+  ///
+  /// @note The two histos must have _exactly_ the same binning.
   inline Scatter3D operator / (const Histo2D& numer, const Histo2D& denom) {
     return divide(numer, denom);
+  }
+
+
+  /// @brief Calculate a histogrammed efficiency ratio of two histograms
+  ///
+  /// @note The two histos must have _exactly_ the same binning.
+  ///
+  /// @note An efficiency is not the same thing as a standard division of two
+  /// histograms: the errors must be treated as correlated.
+  ///
+  /// @todo Implement!
+  // Scatter3D efficiency(const Histo2D& accepted, const Histo2D& total);
+
+
+  /// @brief Calculate the asymmetry (a-b)/(a+b) of two histograms
+  ///
+  /// @note The two histos must have _exactly_ the same binning.
+  inline Scatter3D asymm(const Histo2D& a, const Histo2D& b) {
+    return (a-b) / (a+b);
   }
 
   //@}

@@ -9,7 +9,7 @@ cdef class Histo1D(AnalysisObject):
 
     Rescaling of weights and/or the x axis is permitted in-place: the
     result is still a valid Histo1D. Binning-compatible 1D histograms
-    may be divided, resulting in a Scatter2D since further fulls would
+    may be divided, resulting in a Scatter2D since further fills would
     not be meaningful.
 
     Several sets of arguments are tried by the constructor in the
@@ -36,6 +36,7 @@ cdef class Histo1D(AnalysisObject):
     # ([edge], path="", title="")
     # ([bins], **kwargs)
 
+
     def __init__(self, *args, **kwargs):
         # Multimethod constructors are blatantly unpythonic. However,
         # doing something like the inbuilt collections do would be
@@ -44,20 +45,18 @@ cdef class Histo1D(AnalysisObject):
         # which has exactly the same semantics.
         util.try_loop([self.__init2, self.__init5, self.__init3], *args, **kwargs)
 
+    def __init2(self, char *path="", char *title=""):
+        util.set_owned_ptr(self, new c.Histo1D(string(path), string(title)))
+
+    def __init5(self, nbins, low, high, char *path="", char *title=""):
+        util.set_owned_ptr(self, new c.Histo1D(nbins, low, high, string(path), string(title)))
+
     def __init3(self, bins, char *path="", char *title=""):
         # Make an iterator over bins. We might as well make our code
         # general, as that increases pythonicity.
         self.__init2(path, title)
         self.addBins(bins)
 
-    def __init2(self, char *path="", char *title=""):
-        util.set_owned_ptr(
-            self, new c.Histo1D(string(path), string(title)))
-
-    def __init5(self, nbins, low, high, char *path="", char *title=""):
-        util.set_owned_ptr(
-            self, new c.Histo1D(
-                nbins, low, high, string(path), string(title)))
 
     def __len__(self):
         return self._Histo1D().numBins()
@@ -99,17 +98,46 @@ cdef class Histo1D(AnalysisObject):
     def bins(self):
         return list(self)
 
-    @property
-    def edges(self):
-        return util.Edges(self._Histo1D().lowEdge(),
-                          self._Histo1D().highEdge())
+    # @property
+    # def edges(self):
+    #     return util.Edges(self._Histo1D().lowEdge(),
+    #                       self._Histo1D().highEdge())
 
     @property
     def totalDbn(self):
         """The Dbn1D representing the total distribution."""
-        # TODO: Now does this actually involve a copy in Cython? We should find out!
-        return util.new_borrowed_cls(
-            Dbn1D, &self._Histo1D().totalDbn(), self)
+        return util.new_borrowed_cls(Dbn1D, &self._Histo1D().totalDbn(), self)
+
+    @property
+    def underflow(self):
+        """The Dbn1D representing the underflow distribution."""
+        return util.new_borrowed_cls(Dbn1D, &self._Histo1D().underflow(), self)
+
+    @property
+    def overflow(self):
+        """The Dbn1D representing the overflow distribution."""
+        return util.new_borrowed_cls(Dbn1D, &self._Histo1D().overflow(), self)
+
+    def integral(self, overflows=True):
+        return self._Histo1D().integral(overflows)
+
+    def sumW(self, overflows=True):
+        return self._Histo1D().sumW(overflows)
+
+    def sumW2(self, overflows=True):
+        return self._Histo1D().sumW2(overflows)
+
+    def mean(self, overflows=True):
+        return self._Histo1D().mean(overflows)
+
+    def variance(self, overflows=True):
+        return self._Histo1D().variance(overflows)
+
+    def stdDev(self, overflows=True):
+        return self._Histo1D().stdDev(overflows)
+
+    def stdErr(self, overflows=True):
+        return self._Histo1D().stdErr(overflows)
 
     def reset(self):
         """
@@ -119,20 +147,20 @@ cdef class Histo1D(AnalysisObject):
 
     def scaleW(self, w):
         """
-        (double w=1.0) -> None. Scale the histogram and its statistics as if all
+        (float) -> None. Scale the histogram and its statistics as if all
         weights had been scaled by given factor.
         """
         self._Histo1D().scaleW(w)
 
-    def normalize(self, normto=1.0, includeOverflows=True):
+    def normalize(self, normto=1.0, overflows=True):
         """
-        (normto=1.0, includeOverflows=False) -> None. Normalize the histogram.
+        (float, bool) -> None. Normalize the histogram.
         """
-        self._Histo1D().normalize(normto, includeOverflows)
+        self._Histo1D().normalize(normto, overflows)
 
-    def mergeBins(self, a, b):
-        """mergeBins(a, b) -> None. Merge bins from indices a through b."""
-        self._Histo1D().mergeBins(a, b)
+    def mergeBins(self, ia, ib):
+        """mergeBins(ia, ib) -> None. Merge bins from indices ia through ib."""
+        self._Histo1D().mergeBins(ia, ib)
 
     def rebin(self, n):
         """(n) -> None. Merge every nth bin."""

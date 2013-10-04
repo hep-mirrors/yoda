@@ -1,28 +1,55 @@
 #TODO tidy up when Axis2D is fixed
 
 cdef class Histo2D(AnalysisObject):
+    """
+    2D histogram. Complete histogramming is supported, including
+    uniform/regular binning, variable-width bininng, unbinned gaps in
+    the covered range, and outflows (under/overflows around all edges
+    and corners).
+
+    Rebinning by integer factors, or by explicit merging of contiguous bins is
+    also supported, but in development.
+
+    Rescaling of weights and/or the x axis is permitted in-place: the
+    result is still a valid Histo2D. Binning-compatible 1D histograms
+    may be divided, resulting in a Scatter3D since further fills would
+    not be meaningful.
+
+    Several sets of arguments are tried by the constructor in the
+    following order.
+
+    Histo2D(path="", title=""). Construct a histogram with optional path
+    and title but no bins.
+
+    Histo2D(nxbins, xlow, xhigh, nybins, ylow, yhigh, path="", title="").
+    Construct a histogram with nxbins on the x axis and nybins on the y
+    axis, distributed linearly between the respective low--high limits.
+    """
 
     cdef inline c.Histo2D *_Histo2D(self) except NULL:
         return <c.Histo2D*> self.ptr()
+
 
     def __init__(self, *args, **kwargs):
         if len(args) <= 2:
             self.__init2(*args, **kwargs)
         else:
-            self.__init7(*args, **kwargs)
+            self.__init8(*args, **kwargs)
 
     def __init2(Histo2D self, char *path="", char *title=""):
         util.set_owned_ptr(
             self, new c.Histo2D(string(path), string(title)))
 
-    def __init7(Histo2D self,   nxbins, xlow, xupp,   nybins, ylow, yupp,
-                char *path="", char *title=""):
+    # TODO: Add a constructor from iterators over x and y binnings
 
+    def __init8(Histo2D self,   nxbins, xlow, xupp,   nybins, ylow, yupp,
+                char* path="", char* title=""):
         util.set_owned_ptr(
             self, new c.Histo2D(
                 nxbins, xlow, xupp,
                 nybins, ylow, yupp,
                 string(path), string(title)))
+
 
     def __len__(self):
         return self._Histo2D().bins().size()
@@ -38,7 +65,7 @@ cdef class Histo2D(AnalysisObject):
     def fill(self, double x, double y, weight=1.0):
         self._Histo2D().fill(x, y, weight)
 
-    # Todo: amalgomate this with fill to take arbitrary iterators?
+    # TODO: amalgamate this with fill to take arbitrary iterators?
     def fill_many(self, xs, ys, weight=1.0):
         cdef double x, y
         try:
@@ -54,22 +81,23 @@ cdef class Histo2D(AnalysisObject):
             new c.Histo2D(deref(self._Histo2D()), string(path)))
 
     def __len__(self):
-        return self._Histo2D().bins().size()
+        return self._Histo2D().numBins()
 
     @property
     def totalDbn(self):
-        return util.new_owned_cls(
-            Dbn2D,
-            new c.Dbn2D(self._Histo2D().totalDbn()))
+        return util.new_borrowed_cls(Dbn2D, &self._Histo2D().totalDbn(), self)
 
-    def outflow(self, ix=0, iy=0):
-        # For now we do manual error detection, due to exceptions and references
-        return util.new_owned_cls(
-            Dbn2D,
-            new c.Dbn2D(self._Histo2D().outflow(ix, iy)))
+    def outflow(self, ix, iy):
+        return util.new_borrowed_cls(Dbn2D, &self._Histo2D().outflow(ix, iy), self)
+
+    def integral(self, overflows=True):
+        return self._Histo1D().integral(overflows)
 
     def sumW(self, overflows=True):
         return self._Histo2D().sumW(overflows)
+
+    def sumW2(self, overflows=True):
+        return self._Histo2D().sumW2(overflows)
 
     def mean(self, overflows=True):
         return util.XY(

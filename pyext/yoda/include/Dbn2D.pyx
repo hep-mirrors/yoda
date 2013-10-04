@@ -9,17 +9,20 @@ cdef class Dbn2D(util.Base):
     def __init__(self):
         util.set_owned_ptr(self, new c.Dbn2D())
 
+
     def copy(self):
         return util.new_owned_cls(Dbn2D, new c.Dbn2D(deref(self._Dbn2D())))
+
 
     def fill(self, x, y, weight=1.0):
         """
         (x, y, weight=1.0) -> None
 
         Fills the distribution with the given weight at given (x, y).
-        
+
         """
         self._Dbn2D().fill(x, y, weight)
+
 
     def reset(self):
         """
@@ -28,21 +31,37 @@ cdef class Dbn2D(util.Base):
         Reset the distribution counters to the unfilled state."""
         self._Dbn2D().reset()
 
-    def scale(self, x=1.0, y=1.0, w=1.0):
+    def scaleW(self, w):
         """
-        (x=1.0, y=1.0, w=1.0) -> None
+        (float) -> None
 
-        Scale Dbn2D's parameters
-
+        Scale the weights by the given factor.
         """
-        if x != 1.0 and y != 1.0:
-            self._Dbn2D().scaleXY(x, y)
-        elif x != 1.0:
-            self._Dbn2D().scaleX(x)
-        elif y != 1.0:
-            self._Dbn2D().scaleY(y)
-        if w != 1.0:
-            self._Dbn2D().scaleW(w)
+        self._Dbn2D().scaleW(w)
+
+    def scaleX(self, x):
+        """
+        (float) -> None
+
+        Scale the x dimension by the given factor.
+        """
+        self._Dbn2D().scaleX(x)
+
+    def scaleY(self, y):
+        """
+        (float) -> None
+
+        Scale the y dimension by the given factor.
+        """
+        self._Dbn2D().scaleY(y)
+
+    def scaleXY(self, x, y):
+        """
+        (float, float) -> None
+
+        Scale the x and y dimensions by the given factors.
+        """
+        self._Dbn2D().scaleXY(x, y)
 
     @property
     def mean(self):
@@ -133,4 +152,3 @@ cdef class Dbn2D(util.Base):
         cdef c.Dbn2D *p = self._Dbn2D()
         if self._deallocate:
             del p
-

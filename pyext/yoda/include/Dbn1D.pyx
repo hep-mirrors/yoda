@@ -6,8 +6,10 @@ cdef class Dbn1D(util.Base):
     def __init__(self):
         util.set_owned_ptr(self, new c.Dbn1D())
 
+
     def copy(self):
         return util.set_owned_ptr(self, new c.Dbn1D(deref(self._Dbn1D())))
+
 
     def fill(self, x, weight=1.0):
         """
@@ -26,41 +28,46 @@ cdef class Dbn1D(util.Base):
         self._Dbn1D().reset()
 
 
-    def scale(self, x=1.0, w=1.0):
+    def scaleW(self, w):
         """
-        (x=1.0, w=1.0) -> None
+        (float) -> None
 
-        Scale the Dbn's variables by the given factors.
+        Scale the weights by the given factor.
         """
-        if x != 1.0:
-            self._Dbn1D().scaleX(x)
-        if w != 1.0:
-            self._Dbn1D().scaleW(w)
+        self._Dbn1D().scaleW(w)
+
+    def scaleX(self, x):
+        """
+        (float) -> None
+
+        Scale the x dimension by the given factor.
+        """
+        self._Dbn1D().scaleX(x)
 
     @property
     def mean(self):
         """Weighted mean of x"""
-        return (self._Dbn1D().xMean())
+        return self._Dbn1D().xMean()
 
     @property
     def variance(self):
         """Weighted variance of x"""
-        return (self._Dbn1D().xVariance())
+        return self._Dbn1D().xVariance()
 
     @property
     def stdDev(self):
         """Weighted standard deviation of x"""
-        return (self._Dbn1D().xStdDev())
+        return self._Dbn1D().xStdDev()
 
     @property
     def stdErr(self):
         """Weighted standard error on <x>"""
-        return (self._Dbn1D().xStdErr())
+        return self._Dbn1D().xStdErr()
 
     @property
     def rms(self):
         """Weighted root mean squared (RMS) of x"""
-        return (self._Dbn1D().xRMS())
+        return self._Dbn1D().xRMS()
 
     @property
     def numEntries(self):

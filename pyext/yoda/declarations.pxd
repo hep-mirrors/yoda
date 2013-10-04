@@ -716,6 +716,7 @@ cdef extern from "YODA/Histo1D.h" namespace "YODA":
         void normalize(double normto, bool includeoverflows) except+ err
         void mergeBins(size_t, size_t) except+ err
         void rebin(int n) except+ err
+
         size_t numBins() except+ err
         double lowEdge() except+ err
         double highEdge() except+ err
@@ -725,17 +726,31 @@ cdef extern from "YODA/Histo1D.h" namespace "YODA":
         HistoBin1D& bin(size_t ix)
         HistoBin1D binAt(double x) except+ err
 
-        # The trick here is to treat these not as references.
-        # I suppose when you think about it, it makes sense
-        Dbn1D &totalDbn()
-        Dbn1D &underflow()
-        Dbn1D &overflow()
+        # TODO: Some Cython mapping problem?
+        Dbn1D& totalDbn()
+        Dbn1D& underflow()
+        Dbn1D& overflow()
+
+        # Whole histo data
+        double integral(bool)
+        double sumW(bool)
+        double sumW2(bool)
+        double mean(bool)
+        double variance(bool)
+        double stdDev(bool)
+        double stdErr(bool)
 
         # TODO: BUG! This does not correctly report identical bins...
         void addBin(double, double) except+ err
         void addBins(vector[double] edges) except+ err
         void eraseBin(size_t index) except+ err
 
+        # TODO: declare operators here like for Histo2D? How does that interact with what's below?
+        # operator == (Histo2D)
+        # operator != (Histo2D)
+        # operator + (Histo2D)
+        # operator - (Histo2D)
+        # operator / (Histo2D)
 #}}} Histo1D
 
 
@@ -784,12 +799,14 @@ cdef extern from "YODA/Histo2D.h" namespace "YODA":
 
         void addBin(pair[double, double], pair[double, double])
 
+        # TODO: Still some Cython mapping problem? Refs work ok on Histo1D
+        #
         # These must be treated as references or the semantics is wrong.
         # However, these can also throw exceptions! But the two cannot mix, or
         # Cython puts out rubbish C++. Since this *is* a reported 'major' bug,
         # we should expect it to be fixed sometime in the future.
-        Dbn2D totalDbn() except +err
-        Dbn2D outflow(int, int) except +err
+        Dbn2D& totalDbn() #except +err
+        Dbn2D& outflow(int, int) #except +err
 
         # Bin accessors
         #void addBin(double, double) except+ err

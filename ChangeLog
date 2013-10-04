@@ -1,5 +1,7 @@
 2013-10-04  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Cython mapping improvements.
+
 	* Adding some improved heuristics and a --normalize-all option to
 	yodamerge. Frank S is now happy again ;-)
 

@@ -4,11 +4,14 @@ cdef class Dbn3D(util.Base):
     1D profiles and their bins.
 
     """
+
     def __init__(self):
         util.set_owned_ptr(self, new c.Dbn3D())
 
+
     def copy(self):
         return util.new_owned_cls(Dbn3D, new c.Dbn3D(deref(self._Dbn3D())))
+
 
     def fill(self, x, y, z, weight=1.0):
         """
@@ -26,25 +29,45 @@ cdef class Dbn3D(util.Base):
         Reset the distribution counters to the unfilled state."""
         self._Dbn3D().reset()
 
-    def scale(self, x=1.0, y=1.0, z=1.0, w=1.0):
+    def scaleW(self, w):
         """
-        (x=1.0, y=1.0, z=1.0, w=1.0) -> None
+        (float) -> None
 
-        Scale Dbn3D's x, y, z and/or weight parameters.
-
+        Scale the weights by the given factor.
         """
-        if x != 1.0 and y != 1.0 and z != 1.0:
-            self._Dbn3D().scaleXYZ(x, y, z)
-        else:
-            if x != 1.0:
-                self._Dbn3D().scaleX(x)
-            if y != 1.0:
-                self._Dbn3D().scaleY(x)
-            if z != 1.0:
-                self._Dbn3D().scaleZ(x)
+        self._Dbn3D().scaleW(w)
 
-        if w != 1.0:
-            self._Dbn3D().scaleW(w)
+    def scaleX(self, x):
+        """
+        (float) -> None
+
+        Scale the x dimension by the given factor.
+        """
+        self._Dbn3D().scaleX(x)
+
+    def scaleY(self, y):
+        """
+        (float) -> None
+
+        Scale the y dimension by the given factor.
+        """
+        self._Dbn3D().scaleY(y)
+
+    def scaleZ(self, z):
+        """
+        (float) -> None
+
+        Scale the z dimension by the given factor.
+        """
+        self._Dbn3D().scaleZ(z)
+
+    def scaleXYZ(self, x, y, z):
+        """
+        (float, float, float) -> None
+
+        Scale the x, y and z dimensions by the given factors.
+        """
+        self._Dbn3D().scaleXYZ(x, y, z)
 
     @property
     def mean(self):
@@ -165,4 +188,3 @@ cdef class Dbn3D(util.Base):
         cdef c.Dbn3D *p = self._Dbn3D()
         if self._deallocate:
             del p
-
