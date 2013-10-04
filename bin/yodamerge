@@ -84,7 +84,7 @@ for p, aos in analysisobjects_in.iteritems():
     for ao in aos:
         ## Unscale first if normto != None
         if normto:
-            ao.scaleW(1/float(ao.annotations("ScaledBy")))
+            ao.scaleW(1/float(ao.annotations["ScaledBy"]))
         if not analysisobjects_out.has_key(p):
             analysisobjects_out[p] = ao
         elif hasattr(ao, "__iadd__"):
