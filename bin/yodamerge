@@ -51,6 +51,7 @@ import yoda, optparse, operator, itertools
 
 parser = optparse.OptionParser(usage=__doc__)
 parser.add_option('-o', '--output', default='-', dest='OUTPUT_FILE')
+parser.add_option('-N', '--normalize-all', action="store_true", default=False, dest='NORMALIZE_ALL')
 opts, filenames = parser.parse_args()
 
 ## Put the incoming objects into a dict from each path to a list of histos
@@ -73,12 +74,13 @@ for p, aos in analysisobjects_in.iteritems():
     normto = None
     if hasattr(aos[0], "totalDbn"):
         ## In the absence of better info, we use the norm as a heuristic to change the merging behaviour.
-        # TODO: But what about if they are normed but to slightly different xsec estimates? Yuck. Need manual override
         # print tuple(ao.totalDbn.sumW for ao in aos)
-        if all(ao.totalDbn.sumW == aos[0].totalDbn.sumW for ao in aos):
-            normto = aos[0].totalDbn.sumW
-        if normto:
+        if opts.NORMALIZE_ALL or \
+               all(ao.totalDbn.sumW == 0 or abs(ao.totalDbn.sumW - aos[0].totalDbn.sumW)/aos[0].totalDbn.sumW < 1e-3 for ao in aos):
+            ## Compute a target normalization from the 1/scalefactor-weighted norms of each run
             assert all(ao.annotations.has_key("ScaledBy") for ao in aos)
+            wtot = sum(1/float(ao.annotations["ScaledBy"]) for ao in aos)
+            normto = sum(ao.totalDbn.sumW / float(ao.annotations["ScaledBy"]) for ao in aos) / wtot
     for ao in aos:
         ## Unscale first if normto != None
         if normto:
