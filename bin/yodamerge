@@ -28,8 +28,10 @@ value will not trigger the appropriate treatment due to e.g. statistical
 fluctuations in each run's calculation of a cross-section used in the
 normalization. And anything more complex than a global scaling (e.g. calculation
 of a ratio or asymmetry) cannot be handled at all with a post-hoc scaling
-treatment. Please use this script as a template if you need to do something more
-specific.
+treatment. The -N/--normalize-all command line option will force all histograms
+to be treated as if they are normalized in the input, which can be useful if
+you know that all the output histograms are indeed of this nature.
+Please use this script as a template if you need to do something more specific.
 
 NOTE: there are many possible desired behaviours when merging runs, depending on
 the factors above as well as whether the files being merged are of homogeneous
@@ -44,7 +46,8 @@ merge data files in such complex ways, please use this script as a simple templa
 around which to write logic that satisfies your particular requirements.
 
 TODO:
- * Use the generic yoda.read() function?
+ * Use the generic yoda.read() function so we can use multiple formats? ROOT input
+   _could_ partially work, although won't include all statistical weights.
 """
 
 import yoda, optparse, operator, itertools

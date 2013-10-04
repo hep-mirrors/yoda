@@ -1,3 +1,8 @@
+2013-10-04  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Adding some improved heuristics and a --normalize-all option to
+	yodamerge. Frank S is now happy again ;-)
+
 2013-10-01  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Adding operator +, -, +=, -= Python mappings wherever possible
