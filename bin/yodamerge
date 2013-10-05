@@ -70,21 +70,22 @@ for p, aos in analysisobjects_in.iteritems():
     # print p, len(aos)
     ## Check that types match, and just output the first one if they don't
     if not all(type(ao) == type(aos[0]) for ao in aos):
-        print "Several types of analysis object found at path %s: cannot be merged"
+        print "WARNING: Several types of analysis object found at path %s: cannot be merged"
         analysisobjects_out[p] = aos[0]
         continue
     ## Check whether normalizations match
     normto = None
     if hasattr(aos[0], "totalDbn"):
         ## In the absence of better info, we use the norm as a heuristic to change the merging behaviour.
-        # print tuple(ao.totalDbn.sumW for ao in aos)
+        print tuple(ao.integral() for ao in aos)
         if opts.NORMALIZE_ALL or \
                all(ao.totalDbn.sumW == 0 or abs(ao.totalDbn.sumW - aos[0].totalDbn.sumW)/aos[0].totalDbn.sumW < 1e-3 for ao in aos):
-            ## Compute a target normalization from the 1/scalefactor-weighted norms of each run
-            assert all(ao.annotations.has_key("ScaledBy") for ao in aos)
-            wtot = sum(1/float(ao.annotations["ScaledBy"]) for ao in aos)
-            normto = sum(ao.totalDbn.sumW / float(ao.annotations["ScaledBy"]) for ao in aos) / wtot
-    for ao in aos:
+            ## Try to compute a target normalization from the 1/scalefactor-weighted norms of each run
+            if all(ao.annotations.has_key("ScaledBy") for ao in aos):
+                wtot = sum(1/float(ao.annotations["ScaledBy"]) for ao in aos)
+                normto = sum(ao.totalDbn.sumW / float(ao.annotations["ScaledBy"]) for ao in aos) / wtot
+            else:
+                print "WARNING: Abandoning normalized merge of path %s because not all inputs have ScaledBy attributes" % p
         ## Unscale first if normto != None
         if normto:
             ao.scaleW(1/float(ao.annotations["ScaledBy"]))
@@ -95,7 +96,7 @@ for p, aos in analysisobjects_in.iteritems():
         elif hasattr(ao, "__add__"):
             analysisobjects_out[p] = ao + analysisobjects_out[p]
         else:
-            print "Analysis object %s of type %s cannot be merged" % (p, str(type(ao)))
+            print "WARNING: Analysis object %s of type %s cannot be merged" % (p, str(type(ao)))
             break
     ## Renormalize after adding if normto != None
     if normto:
