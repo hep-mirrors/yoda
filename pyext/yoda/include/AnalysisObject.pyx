@@ -10,15 +10,18 @@ cdef void set_annotation(c.AnalysisObject *ana, char *k, char *v):
 # AnalysisObject is the base class of most of the user facing objects
 cdef class AnalysisObject(util.Base):
 
+
     # Pointer upcasting mechanism
     cdef inline c.AnalysisObject *_AnalysisObject(self) except NULL:
         return <c.AnalysisObject *> self.ptr()
+
 
     # Deallocator (only needed as a base class)
     def __dealloc__(self):
         p = self._AnalysisObject()
         if self._deallocate:
             del p
+
 
     @property
     def annotations(self):
@@ -34,6 +37,7 @@ cdef class AnalysisObject(util.Base):
             out_dict[deref(it).first.c_str()] = deref(it).second.c_str()
             preinc(it)
         return out_dict
+
 
     def updateAnnotations(self, E=None, **F):
         # TODO: Yuck!
@@ -64,24 +68,30 @@ cdef class AnalysisObject(util.Base):
             # TODO: reinstate with str cast: set_annotation(AO, k, str(F[k]))
             set_annotation(AO, k, F[k])
 
+
     # string annotation(string key) except+ err
     # string annotation(string key, string default) except+ err
+
 
     def setAnnotation(self, k, v):
         AO = self._AnalysisObject()
         set_annotation(AO, k, v)
 
+
     # def hasAnnotation(self, k):
     #     AO = self._AnalysisObject()
     #     return AO.hasAnnotation(string(k))
+
 
     # def rmAnnotation(self, k):
     #     AO = self._AnalysisObject()
     #     return AO.rmAnnotation(string(k))
 
+
     def clearAnnotations(self):
         AO = self._AnalysisObject()
         AO.clearAnnotations()
+
 
 
     def string(self):
@@ -93,6 +103,7 @@ cdef class AnalysisObject(util.Base):
         writeYODA([self], f)
         f.seek(0)
         return f.read().strip()
+
 
     property path:
         """
@@ -106,12 +117,14 @@ cdef class AnalysisObject(util.Base):
         def __set__(self, char *path):
             self._AnalysisObject().setPath(string(path))
 
+
     property title:
         def __get__(self):
             return self._AnalysisObject().title().c_str()
 
         def __set__(self, char *title):
             self._AnalysisObject().setTitle(string(title))
+
 
     def __repr__(self):
         return "<%s '%s'>" % (self.__class__.__name__, self.path)

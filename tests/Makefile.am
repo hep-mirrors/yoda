@@ -1,3 +1,8 @@
+EXTRA_DIST = \
+  pytest-unit \
+  pytest-basic \
+  pytest-operators
+
 check_PROGRAMS = \
   testweights \
   testhisto1Da testhisto1Db \
@@ -67,7 +72,9 @@ TESTS = \
   testscatter2Dcreate \
   testscatter2Dmodify \
   testhisto2Dcreate \
-  test-yoda-1.py
+  pytest-unit \
+  pytest-basic \
+  pytest-operators
 
 #  testhisto2De \
 #  testpoint3D    \

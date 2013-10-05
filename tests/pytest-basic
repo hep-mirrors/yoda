@@ -1,0 +1,18 @@
+#! /usr/bin/env python
+
+from yoda import *
+
+NUM_SAMPLES = 1000
+h = Histo1D(20, 0.0, 100.0, path="/foo", title="MyTitle")
+for i in range(NUM_SAMPLES):
+    exp = - (i-NUM_SAMPLES/2)**2 / float(NUM_SAMPLES/4)
+    val = 2.718 ** exp
+    h.fill(val);
+print h.mean(), "+-", h.stdDev()
+print h
+
+import numpy
+h = Histo1D(numpy.linspace(10, 100, num=19), path="/bar", title="Linearly spaced histo")
+#print h
+h = Histo1D(numpy.logspace(0, 6, num=21, base=2), path="/baz", title="Log-spaced histo")
+#print h

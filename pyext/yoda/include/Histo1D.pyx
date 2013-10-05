@@ -31,6 +31,7 @@ cdef class Histo1D(AnalysisObject):
     cdef inline c.Histo1D* _Histo1D(self) except NULL:
         return <c.Histo1D*> self.ptr()
 
+
     # There is a pythonic constructor here, and it looks a little like...
     # __init__(self, *args, **kwargs)
     # ([edge], path="", title="")
@@ -61,6 +62,7 @@ cdef class Histo1D(AnalysisObject):
     def __len__(self):
         return self._Histo1D().numBins()
 
+
     def __getitem__(self, py_ix):
         cdef size_t i = util.pythonic_index(
             py_ix, self._Histo1D().numBins())
@@ -68,10 +70,13 @@ cdef class Histo1D(AnalysisObject):
         return util.new_borrowed_cls(
             HistoBin1D, & self._Histo1D().bin(i), self)
 
+
     def __repr__(self):
+        xmean = self.mean() if self.sumW() else None
         return "<%s '%s' %d bins, sumw=%0.2e, xmean=%0.2e>" % \
                (self.__class__.__name__, self.path,
-                len(self.bins), self.totalDbn.sumW, self.totalDbn.mean)
+                len(self.bins), self.sumW(), xmean)
+
 
     def fill(self, x, weight=1.0):
         """
