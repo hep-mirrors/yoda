@@ -6,9 +6,6 @@ NOW
 
 * Python docstrings for Points, Dbns and Bins (AB)
 
-* Make Python interface test scripts (DM, AB)
-   Test Histo2D and Scatter2D from Python
-
 * Add copy assignment to both C++ and Cython (AB)
 
 * Add stdErr to HistoBinXD (AB)
