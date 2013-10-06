@@ -1,7 +1,8 @@
 EXTRA_DIST = \
   pytest-unit \
   pytest-basic \
-  pytest-operators
+  pytest-operators \
+  shtest-yoda2root
 
 check_PROGRAMS = \
   testweights \
@@ -59,10 +60,12 @@ TESTS_ENVIRONMENT = \
 
 TESTS = \
   testweights \
-  testhisto1Da testhisto1Db \
+  testhisto1Da \
+  testhisto1Db \
   testhisto2Da \
   testprofile1Da \
-  testindexedset testsortedvector \
+  testindexedset \
+  testsortedvector \
   testhisto1Dcreate \
   testhisto1Dfill \
   testhisto1Dmodify \
@@ -74,7 +77,8 @@ TESTS = \
   testhisto2Dcreate \
   pytest-unit \
   pytest-basic \
-  pytest-operators
+  pytest-operators \
+  shtest-yoda2root
 
 #  testhisto2De \
 #  testpoint3D    \
