@@ -77,8 +77,11 @@ TESTS = \
   testhisto2Dcreate \
   pytest-unit \
   pytest-basic \
-  pytest-operators \
-  shtest-yoda2root
+  pytest-operators
+
+if ENABLE_ROOT
+  TESTS += shtest-yoda2root
+endif
 
 #  testhisto2De \
 #  testpoint3D    \
