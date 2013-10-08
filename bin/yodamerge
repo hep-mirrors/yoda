@@ -86,9 +86,12 @@ for p, aos in analysisobjects_in.iteritems():
                 normto = sum(ao.totalDbn.sumW / float(ao.annotations["ScaledBy"]) for ao in aos) / wtot
             else:
                 print "WARNING: Abandoning normalized merge of path %s because not all inputs have ScaledBy attributes" % p
+    ## Loop over and combine all data objects for this path
+    for ao in aos:
         ## Unscale first if normto != None
         if normto:
             ao.scaleW(1/float(ao.annotations["ScaledBy"]))
+        ## Combine as far as supported by this data type
         if not analysisobjects_out.has_key(p):
             analysisobjects_out[p] = ao
         elif hasattr(ao, "__iadd__"):
@@ -98,7 +101,7 @@ for p, aos in analysisobjects_in.iteritems():
         else:
             print "WARNING: Analysis object %s of type %s cannot be merged" % (p, str(type(ao)))
             break
-    ## Renormalize after adding if normto != None
+    ## Re-normalize after adding if normto != None
     if normto:
         analysisobjects_out[p].normalize(normto)
 
