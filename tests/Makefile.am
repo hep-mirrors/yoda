@@ -2,6 +2,7 @@ EXTRA_DIST = \
   pytest-unit \
   pytest-basic \
   pytest-operators \
+  shtest-yodamerge \
   shtest-yoda2root
 
 check_PROGRAMS = \
@@ -77,7 +78,8 @@ TESTS = \
   testhisto2Dcreate \
   pytest-unit \
   pytest-basic \
-  pytest-operators
+  pytest-operators \
+  shtest-yodamerge
 
 if ENABLE_ROOT
   TESTS += shtest-yoda2root

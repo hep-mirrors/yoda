@@ -1,0 +1,3 @@
+#! /usr/bin/env bash
+
+yodamerge test1.yoda test2.yoda -o merged.yoda
