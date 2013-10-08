@@ -31,5 +31,5 @@ endif
 all-local: core.cpp util.cpp
 	@true
 
-clean-local:
+distclean-local:
 	rm -rf core.cpp core.h util.cpp

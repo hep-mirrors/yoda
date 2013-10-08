@@ -77,7 +77,7 @@ for p, aos in analysisobjects_in.iteritems():
     normto = None
     if hasattr(aos[0], "totalDbn"):
         ## In the absence of better info, we use the norm as a heuristic to change the merging behaviour.
-        print tuple(ao.integral() for ao in aos)
+        #print tuple(ao.integral() for ao in aos)
         if opts.NORMALIZE_ALL or \
                all(ao.totalDbn.sumW == 0 or abs(ao.totalDbn.sumW - aos[0].totalDbn.sumW)/aos[0].totalDbn.sumW < 1e-3 for ao in aos):
             ## Try to compute a target normalization from the 1/scalefactor-weighted norms of each run
