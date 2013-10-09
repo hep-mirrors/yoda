@@ -22,8 +22,9 @@ if test $# -eq 0 || test -n "$tmp"; then
     echo "  --prefix      : show the installation prefix (cf. autoconf)"
     echo "  --includedir  : show the path to the directory containing the YODA headers"
     echo "  --libdir      : show the path to the directory containing the YODA libraries"
+    echo "  --pythonpath  : show the path(s) to the directory containing YODA's Python package"
     echo
-    echo "  --cxxflags    : returns a '-I' string for insertion into CPPFLAGS"
+    echo "  --cppflags    : returns a '-I' string for insertion into CPPFLAGS"
     echo "  --libs        : returns a '-L/-l' string for insertion into LIBS or LIBADD"
     echo
     echo "  --version     : returns the YODA release version number"
@@ -41,6 +42,9 @@ test -n "$tmp" && OUT="$OUT @includedir@"
 
 tmp=$( echo "$*" | egrep -- '--\<libdir\>')
 test -n "$tmp" && OUT="$OUT @libdir@"
+
+tmp=$( echo "$*" | egrep -- '--\<pythonpath\>')
+test -n "$tmp" && OUT="$OUT @YODA_PYTHONPATH@"
 
 ## "Pre-rolled" build info
 tmp=$( echo "$*" | egrep -- '--\<cppflags|cxxflags\>')

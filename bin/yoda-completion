@@ -20,7 +20,7 @@ function _yoda_config() {
     prev="${COMP_WORDS[COMP_CWORD-1]}"
 
     opts="--help --version"
-    opts="$opts --prefix --includedir --libdir"
+    opts="$opts --prefix --includedir --libdir --pythonpath"
     opts="$opts --cxxflags --libs"
     opts="$opts -h"
     if [[ ${cur} == -* ]] ; then
@@ -97,6 +97,32 @@ complete -F _yoda2flat -o default yoda2flat
 ##############################
 
 
+function _yoda2root() {
+    local cur prev commands options command
+    COMPREPLY=()
+    cur="${COMP_WORDS[COMP_CWORD]}"
+    prev="${COMP_WORDS[COMP_CWORD-1]}"
+
+    opts="--help -h"
+
+    if [[ ${cur} == -* ]] ; then
+        COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
+        if test -n "$COMPREPLY"; then
+            return 0
+        fi
+    fi
+
+    _filedir yoda
+    return 0
+}
+
+
+complete -F _yoda2root -o default yoda2root
+
+
+##############################
+
+
 function _aida2yoda() {
     local cur prev commands options command
     COMPREPLY=()
@@ -144,3 +170,29 @@ function _aida2flat() {
 
 
 complete -F _aida2flat -o default aida2flat
+
+
+##############################
+
+
+function _yodamerge() {
+    local cur prev commands options command
+    COMPREPLY=()
+    cur="${COMP_WORDS[COMP_CWORD]}"
+    prev="${COMP_WORDS[COMP_CWORD-1]}"
+
+    opts="--help -h -o -n"
+
+    if [[ ${cur} == -* ]] ; then
+        COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
+        if test -n "$COMPREPLY"; then
+            return 0
+        fi
+    fi
+
+    _filedir yoda
+    return 0
+}
+
+
+complete -F _yodamerge -o default yodamerge
