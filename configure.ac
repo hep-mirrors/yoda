@@ -1,7 +1,7 @@
 ## Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.59)
-AC_INIT([YODA],[1.0.3],[yoda@projects.hepforge.org],[YODA])
+AC_INIT([YODA],[1.0.4],[yoda@projects.hepforge.org],[YODA])
 AM_INIT_AUTOMAKE([subdir-objects -Wall dist-bzip2])
 #AC_CONFIG_SRCDIR([src/Bin1D.cc])
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
@@ -91,7 +91,7 @@ AZ_PYTHON_DEFAULT
 ## Basic Python checks
 if test x$enable_pyext = xyes; then
   AZ_PYTHON_PATH
-  AZ_PYTHON_VERSION_ENSURE([2.4])
+  AZ_PYTHON_VERSION_ENSURE([2.5])
   PYTHON_VERSION=`$PYTHON -c "import sys; print '.'.join(map(str, sys.version_info@<:@:2@:>@));"`
   AC_SUBST(PYTHON_VERSION)
   YODA_PYTHONPATH=`$PYTHON -c "import distutils.sysconfig; print distutils.sysconfig.get_python_lib(prefix='$prefix', plat_specific=True);"`
