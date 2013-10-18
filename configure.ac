@@ -156,6 +156,7 @@ AC_CONFIG_FILES([src/Makefile src/tinyxml/Makefile])
 AC_CONFIG_FILES([tests/Makefile])
 AC_CONFIG_FILES([pyext/Makefile pyext/setup.py pyext/yoda/Makefile pyext/yoda/include/Makefile])
 AC_CONFIG_FILES([bin/Makefile bin/yoda-config])
+AC_CONFIG_FILES([yodaenv.sh])
 
 AC_OUTPUT
 

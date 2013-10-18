@@ -1,5 +1,7 @@
 2013-10-18  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Adding a yodaenv.sh sourceable script to help with environment setup.
+
 	* Remove Scatters from being handled by yodamerge by blocking the
 	__add__ method fallback.
 
