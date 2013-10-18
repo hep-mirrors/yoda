@@ -10,6 +10,8 @@
 	* Improvements to yoda-config and command-line completion, for the
 	Rivet 2.0.0 release.
 
+2013-10-09  Andy Buckley  <andy.buckley@cern.ch>
+
 	* Version 1.0.3 release.
 
 2013-10-04  Andy Buckley  <andy.buckley@cern.ch>
