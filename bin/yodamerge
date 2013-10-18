@@ -96,8 +96,8 @@ for p, aos in analysisobjects_in.iteritems():
             analysisobjects_out[p] = ao
         elif hasattr(ao, "__iadd__"):
             analysisobjects_out[p] += ao
-        elif hasattr(ao, "__add__"):
-            analysisobjects_out[p] = ao + analysisobjects_out[p]
+        # elif hasattr(ao, "__add__"):
+        #     analysisobjects_out[p] = ao + analysisobjects_out[p]
         else:
             print "WARNING: Analysis object %s of type %s cannot be merged" % (p, str(type(ao)))
             break

@@ -1,3 +1,8 @@
+2013-10-18  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Remove Scatters from being handled by yodamerge by blocking the
+	__add__ method fallback.
+
 2013-10-09  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Improvements to yoda-config and command-line completion, for the
