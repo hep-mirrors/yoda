@@ -72,18 +72,20 @@ namespace YODA {
 
     /// @brief Bin searcher
     ///
+    /// @author David Mallows
+    ///
     /// Handles low-level bin lookups using a hybrid algorithm that is
     /// considerably faster for regular (logarithmic or linear) and near-regular
     /// binnings. Comparable performance for irregular binnings.
-
-    // The reason this works is that linear search is faster than bisection
-    // search up to about 32-64 elements. So we make a guess, and we then do a
-    // linear search. If that fails, then we bisect on the remainder,
-    // terminating once bisection search has got the range down to about 32. So
-    // we actually pay for the fanciness of predicting the bin out of speeding
-    // up the bisection search by finishing it with a linear search. So in most
-    // cases, we get constant-time lookups regardless of the space.
-
+    ///
+    /// The reason this works is that linear search is faster than bisection
+    /// search up to about 32-64 elements. So we make a guess, and we then do a
+    /// linear search. If that fails, then we bisect on the remainder,
+    /// terminating once bisection search has got the range down to about 32. So
+    /// we actually pay for the fanciness of predicting the bin out of speeding
+    /// up the bisection search by finishing it with a linear search. So in most
+    /// cases, we get constant-time lookups regardless of the space.
+    ///
     class BinSearcher {
     public:
 
@@ -102,8 +104,7 @@ namespace YODA {
       BinSearcher(std::vector<double> &lows, bool log)
       {
         _updateLows(lows);
-        // Use an array for c-style hackery
-        // (Templates make no sense here)
+        // Use an array for C-style hackery (templates make no sense here)
         if (log) {
           _est.reset(new LogEstimator(lows.front(), lows.back(), lows.size() - 1));
         } else {
@@ -112,13 +113,13 @@ namespace YODA {
       }
 
       // Fully automatic constructor: give bins and it does the rest!
-      BinSearcher(std::vector<double> &lows)
+      BinSearcher(std::vector<double>& lows)
       {
         _updateLows(lows);
 
-        if (!lows.size())
+        if (!lows.size()) {
           _est.reset(new LinEstimator(0, 0, 0));
-        else {
+        } else {
           LinEstimator linEst(lows.front(), lows.back(), lows.size() - 1);
           LogEstimator logEst(lows.front(), lows.back(), lows.size() - 1);
 
@@ -132,8 +133,7 @@ namespace YODA {
             linsum += fabs(linEst(lows[i]) - i);
           }
 
-          // Use an array for c-style hackery
-          // (Templates make no sense here)
+          // Use an array for C-style hackery (templates make no sense here)
           double log_avg = logsum / lows.size();
           double lin_avg = linsum / lows.size();
 
@@ -142,13 +142,9 @@ namespace YODA {
           // around, as (nan < linsum) -> false always.
           // But (nan > linsum) -> false also.
           if (log_avg < lin_avg) {
-            _est.reset(
-                       new LogEstimator(
-                                        lows.front(), lows.back(), lows.size() - 1));
+            _est.reset(new LogEstimator(lows.front(), lows.back(), lows.size() - 1));
           } else {
-            _est.reset(
-                       new LinEstimator(
-                                        lows.front(), lows.back(), lows.size() - 1));
+            _est.reset(new LinEstimator(lows.front(), lows.back(), lows.size() - 1));
           }
         }
 
