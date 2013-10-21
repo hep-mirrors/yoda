@@ -1,3 +1,7 @@
+2013-10-21  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Removing unused internal iterator typedefs from Writer functions.
+
 2013-10-18  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Adding a yodaenv.sh sourceable script to help with environment setup.

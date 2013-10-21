@@ -50,13 +50,13 @@ namespace YODA {
     /// Write out a collection of objects @a objs to output stream @a stream.
     template <typename RANGE>
     void write(std::ostream& stream, const RANGE& aos) {
-      typedef typename boost::range_iterator<const RANGE>::type const_iterator;
+      //typedef typename boost::range_iterator<const RANGE>::type const_iterator;
       write(stream, boost::begin(aos), boost::end(aos));
     }
     /// Write out a collection of objects @a objs to file @a filename.
     template <typename RANGE>
     void write(const std::string& filename, const RANGE& aos) {
-      typedef typename boost::range_iterator<const RANGE>::type const_iterator;
+      //typedef typename boost::range_iterator<const RANGE>::type const_iterator;
       write(filename, boost::begin(aos), boost::end(aos));
     }
 
