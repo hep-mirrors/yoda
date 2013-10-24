@@ -22,9 +22,9 @@ namespace YODA {
     // sig2 = ( sum(wx**2) * sum(w) - sum(wx)**2 ) / ( sum(w)**2 - sum(w**2) )
     // see http://en.wikipedia.org/wiki/Weighted_mean
     if (effNumEntries() == 0) {
-      throw LowStatsError("Requested width of a distribution with no net fill weights");
+      throw LowStatsError("Requested variance of a distribution with no net fill weights");
     } else if (fuzzyLessEquals(effNumEntries(), 1.0)) {
-      throw LowStatsError("Requested width of a distribution with only one effective entry");
+      throw LowStatsError("Requested variance of a distribution with only one effective entry");
     }
     const double num = sumWX2()*sumW() - sqr(sumWX());
     const double den = sqr(sumW()) - sumW2();
