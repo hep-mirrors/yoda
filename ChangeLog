@@ -1,3 +1,7 @@
+2013-10-24  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Supporting zsh completion via bash completion compatibility.
+
 2013-10-21  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Removing unused internal iterator typedefs from Writer functions.

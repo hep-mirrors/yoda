@@ -1,6 +1,14 @@
 ## -*- sh -*-
 ## Analysis name completion for YODA scripts
 
+## Load bash completion compatibility if zsh is used
+if test -n "$ZSH_VERSION"; then
+    autoload bashcompinit
+    bashcompinit
+fi
+
+
+## Create a _filedir helper function if not already present
 (type _filedir &> /dev/null) || \
 function _filedir() {
     local cur prev commands options command
