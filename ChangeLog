@@ -1,5 +1,7 @@
 2013-10-24  Andy Buckley  <andy.buckley@cern.ch>
 
+	* YODA 1.0.4 release.
+
 	* Supporting zsh completion via bash completion compatibility.
 
 2013-10-21  Andy Buckley  <andy.buckley@cern.ch>
