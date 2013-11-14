@@ -39,6 +39,8 @@ LIB_SUFFIX=\\\"$shrext_cmds\\\"
 AC_SUBST([LIB_SUFFIX])
 
 ## Set default build flags
+AC_CEDAR_CHECKCXXFLAG([-std=c++11], [AM_CXXFLAGS="$AM_CXXFLAGS -std=c++11"],
+  AC_CEDAR_CHECKCXXFLAG([-std=c++0x], [AM_CXXFLAGS="$AM_CXXFLAGS -std=c++0x"]))
 AC_CEDAR_CHECKCXXFLAG([-pedantic], [AM_CXXFLAGS="$AM_CXXFLAGS -pedantic"])
 AC_CEDAR_CHECKCXXFLAG([-Wall], [AM_CXXFLAGS="$AM_CXXFLAGS -Wall -Wno-format"])
 AC_CEDAR_CHECKCXXFLAG([-std=c++98], [AM_CXXFLAGS="$AM_CXXFLAGS -std=c++98"])
