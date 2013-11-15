@@ -27,6 +27,28 @@ if test "x$CXXFLAGS" = "x"; then CXXFLAGS="-O3"; fi
 ## Checks for programs.
 AC_LANG(C++)
 AC_PROG_CXX
+
+dnl this block can go once we decide to have C++11 always on
+AC_MSG_CHECKING([whether to include C++11 flag for testing])
+AC_ARG_ENABLE(stdcxx11,
+        AC_HELP_STRING([--enable-stdcxx11],
+        [turn on C++11 flag (only for testing, do not use in production!)]),
+        [],
+        [enable_stdcxx11=no]
+        )
+
+dnl this block can go once we decide to have C++11 always on
+if test "x$enable_stdcxx11" = "xyes"; then
+AC_MSG_RESULT([yes])
+dnl remove the wrapper if block and "optional" once we decide to have C++11 always on
+AX_CXX_COMPILE_STDCXX_11([noext],[optional])
+if test "x$HAVE_CXX11" != "x1"; then
+AC_MSG_ERROR([compiler does not recognize requested c++11 option])
+fi
+else
+AC_MSG_RESULT([no])
+fi
+
 AC_PROG_INSTALL
 AC_PROG_LN_S
 AC_DISABLE_STATIC
@@ -42,7 +64,7 @@ AC_SUBST([LIB_SUFFIX])
 AX_CXX_COMPILE_STDCXX_11([noext],[optional])
 AC_CEDAR_CHECKCXXFLAG([-pedantic], [AM_CXXFLAGS="$AM_CXXFLAGS -pedantic"])
 AC_CEDAR_CHECKCXXFLAG([-Wall], [AM_CXXFLAGS="$AM_CXXFLAGS -Wall -Wno-format"])
-AC_CEDAR_CHECKCXXFLAG([-std=c++98], [AM_CXXFLAGS="$AM_CXXFLAGS -std=c++98"])
+dnl AC_CEDAR_CHECKCXXFLAG([-std=c++98], [AM_CXXFLAGS="$AM_CXXFLAGS -std=c++98"])
 
 ## Debug flag (default=none)
 AC_ARG_ENABLE([debug], [AC_HELP_STRING(--enable-debug, [build with debugging symbols  @<:@default=no@:>@])], [], [enable_debug=no])
