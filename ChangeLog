@@ -1,3 +1,7 @@
+2013-11-16  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Fix to build the Cython rootcompt extension .cpp on request.
+
 2013-11-14  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Adding flags for the C++11 or C++0x standard if supported, cf. Rivet.
