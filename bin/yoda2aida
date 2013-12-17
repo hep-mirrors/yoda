@@ -11,10 +11,11 @@ from yoda.script_helpers import parse_x2y_args
 
 parser = optparse.OptionParser(usage=__doc__)
 opts, args = parser.parse_args()
-INFILE, OUTFILE = parse_x2y_args(args, ".yoda", ".aida")
-if not INFILE or not OUTFILE:
+in_out = parse_x2y_args(args, ".yoda", ".aida")
+if not in_out:
     sys.stderr.write("You must specify the YODA and AIDA file names\n")
     sys.exit(1)
 
-analysisobjects = yoda.readYODA(INFILE)
-yoda.writeAIDA(analysisobjects, OUTFILE)
+for i, o in in_out:
+    analysisobjects = yoda.readYODA(i)
+    yoda.writeAIDA(analysisobjects, o)
