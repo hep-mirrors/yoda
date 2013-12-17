@@ -86,7 +86,7 @@ BOOST_FIND_HEADER([boost/fusion/include/adapt_struct.hpp])
 
 ## Optional ROOT compatibility
 AC_ARG_ENABLE([root], [AC_HELP_STRING(--enable-root,
-  [build Python extension with ROOT interfacing @<:@default=yes@:>@])], [enable_root=yes], [])
+  [build Python extension with ROOT interfacing @<:@default=no@:>@])], [enable_root=yes], [])
 if test "x$enable_root" = "xyes"; then
   AC_PATH_PROG(ROOTCONFIG, [root-config])
   if test "x$ROOTCONFIG" = "x"; then
@@ -104,7 +104,11 @@ if test "x$enable_root" = "xyes"; then
   fi
 fi
 AM_CONDITIONAL(ENABLE_ROOT, [test x$enable_root = xyes])
-
+if test x$enable_root = xyes; then
+  AC_MSG_NOTICE([Building extra ROOT compatibility tools])
+else
+  AC_MSG_NOTICE([Not building extra ROOT compatibility tools])
+fi
 
 ## Python extension
 AC_ARG_ENABLE(pyext, [AC_HELP_STRING(--disable-pyext,
