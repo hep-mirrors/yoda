@@ -3,7 +3,8 @@ EXTRA_DIST = \
   pytest-basic \
   pytest-operators \
   shtest-yodamerge \
-  shtest-yoda2root
+  shtest-yoda2root \
+  test1.yoda test2.yoda
 
 check_PROGRAMS = \
   testweights \
