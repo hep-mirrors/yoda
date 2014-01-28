@@ -99,14 +99,17 @@ cdef class Histo1D(AnalysisObject):
         """
         self._Histo1D().fill(x, weight)
 
-    # TODO: HACK HACK HACK HACK HACK
-    def fill_many(self, xs, weight=1.0):
-        """
-        (x, weight=1.0) -> None. Fill with given x and optional weight.
+    def fillBin(self, size_t i, weight=1.0):
+        self._Histo1D().fillBin(i, weight)
 
-        """
-        for x in xs:
-            self._Histo1D().fill(x, weight)
+    # # TODO: HACK HACK HACK HACK HACK
+    # def fill_many(self, xs, weight=1.0):
+    #     """
+    #     (x, weight=1.0) -> None. Fill with given x and optional weight.
+
+    #     """
+    #     for x in xs:
+    #         self._Histo1D().fill(x, weight)
 
 
     @property

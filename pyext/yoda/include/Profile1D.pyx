@@ -48,6 +48,11 @@ cdef class Profile1D(AnalysisObject):
     def fill(self, x, y, weight=1.0):
         self._Profile1D().fill(x, y, weight)
 
+    def fillBin(self, size_t i, double y, weight=1.0):
+        self._Profile1D().fillBin(i, y, weight)
+
+    # def fill_many(self, xs, ys, zs, ws=None):
+    #     ...
 
     @property
     def totalDbn(self):

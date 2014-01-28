@@ -77,16 +77,19 @@ cdef class Histo2D(AnalysisObject):
     def fill(self, double x, double y, weight=1.0):
         self._Histo2D().fill(x, y, weight)
 
-    # TODO: amalgamate this with fill to take arbitrary iterators?
-    def fill_many(self, xs, ys, weight=1.0):
-        cdef double x, y
-        try:
-            while True:
-                x = next(xs)
-                y = next(ys)
-                self._Histo2D().fill(x, y, weight)
-        except StopIteration:
-            pass
+    def fillBin(self, size_t i, weight=1.0):
+        self._Histo2D().fillBin(i, weight)
+
+    # # TODO: amalgamate this with fill to take arbitrary iterators?
+    # def fill_many(self, xs, ys, weight=1.0):
+    #     cdef double x, y
+    #     try:
+    #         while True:
+    #             x = next(xs)
+    #             y = next(ys)
+    #             self._Histo2D().fill(x, y, weight)
+    #     except StopIteration:
+    #         pass
 
 
     @property
@@ -142,6 +145,9 @@ cdef class Histo2D(AnalysisObject):
         self._Histo2D().scaleW(w)
 
     def normalize(self, double normto, bint includeoverflows=True):
+        """
+        (float, bool) -> None. Normalize the histogram.
+        """
         self._Histo2D().normalize(normto, includeoverflows)
 
 

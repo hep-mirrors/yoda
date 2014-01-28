@@ -37,45 +37,49 @@ cdef class Profile2D(AnalysisObject):
                 len(self.bins), self.sumW())
 
 
-    def fill(self, double x, double y, double z, double weight=1.0):
-        self._Profile2D().fill(x, y, z, weight)
-
-    def fill_many(self, xs, ys, zs, ws=None):
-        cdef double x, y, z, w
-        cdef c.Profile2D *p = self._Profile2D()
-
-        itx = iter(xs)
-        ity = iter(ys)
-        itz = iter(zs)
-        if ws:
-            itw = iter(ws)
-            while True:
-                try:
-                    x = next(itx, None)
-                    y = next(ity, None)
-                    z = next(itz, None)
-                    w = next(itw, None)
-                except TypeError:
-                    break
-                else:
-                    p.fill(x, y, z, w)
-        else:
-            while True:
-                try:
-                    x = next(itx, None)
-                    y = next(ity, None)
-                    z = next(itz, None)
-                except TypeError:
-                    break
-                else:
-                    p.fill(x, y, z, 1.0)
-
     def reset(self):
         self._Profile2D().reset()
 
     def copy(self, char *path=""):
         return util.new_owned_cls(Profile2D,
             new c.Profile2D(deref(self._Profile2D()), string(path)))
+
+
+    def fill(self, double x, double y, double z, double weight=1.0):
+        self._Profile2D().fill(x, y, z, weight)
+
+    def fillBin(self, size_t i, double y, weight=1.0):
+        self._Profile2D().fillBin(i, y, weight)
+
+    # def fill_many(self, xs, ys, zs, ws=None):
+    #     cdef double x, y, z, w
+    #     cdef c.Profile2D *p = self._Profile2D()
+
+    #     itx = iter(xs)
+    #     ity = iter(ys)
+    #     itz = iter(zs)
+    #     if ws:
+    #         itw = iter(ws)
+    #         while True:
+    #             try:
+    #                 x = next(itx, None)
+    #                 y = next(ity, None)
+    #                 z = next(itz, None)
+    #                 w = next(itw, None)
+    #             except TypeError:
+    #                 break
+    #             else:
+    #                 p.fill(x, y, z, w)
+    #     else:
+    #         while True:
+    #             try:
+    #                 x = next(itx, None)
+    #                 y = next(ity, None)
+    #                 z = next(itz, None)
+    #             except TypeError:
+    #                 break
+    #             else:
+    #                 p.fill(x, y, z, 1.0)
 
 
     @property

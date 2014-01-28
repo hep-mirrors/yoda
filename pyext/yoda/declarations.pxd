@@ -583,11 +583,10 @@ cdef extern from "YODA/Profile1D.h" namespace "YODA":
         #Profile1D(Histo1D p, string path)
 
         void fill(double x, double y, double weight) except+ err
-
+        void fillBin(size_t i, double y, double weight) except+ err
         void reset() except+ err
 
         void scaleW(double s) except+ err
-
         void mergeBins(size_t, size_t) except+ err
         void rebin(int n) except+ err
 
@@ -647,11 +646,10 @@ cdef extern from "YODA/Profile2D.h" namespace "YODA":
         #Profile2D(Histo2D p, string path)
 
         void fill(double x, double y, double z, double weight) except+ err
-
+        void fillBin(size_t i, double z, double weight) except+ err
         void reset() except+ err
 
         void scaleW(double s) except+ err
-
         #void mergeBins(size_t, size_t) except+ err
         #void rebin(int n) except+ err
 
@@ -714,6 +712,7 @@ cdef extern from "YODA/Histo1D.h" namespace "YODA":
         #Histo1D(Scatter2D p, string path)
 
         void fill(double x, double weight) except+ err
+        void fillBin(size_t i, double weight) except+ err
         void reset() except+ err
 
         void scaleW(double s) except+ err
@@ -786,6 +785,7 @@ cdef extern from "YODA/Histo2D.h" namespace "YODA":
         #Histo2D(Scatter2D p, string path)
 
         void fill(double x, double y, double weight) except+ err
+        void fillBin(size_t i, double weight) except+ err
         void reset() except+ err
 
         void scaleW(double scalefactor) except+ err
