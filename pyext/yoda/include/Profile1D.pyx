@@ -22,6 +22,7 @@ cdef class Profile1D(AnalysisObject):
             self, new c.Profile1D(
                 nbins, lower, upper, string(path), string(title)))
 
+
     def __len__(self):
         return self._Profile1D().bins().size()
 
@@ -31,14 +32,22 @@ cdef class Profile1D(AnalysisObject):
             ProfileBin1D, & self._Profile1D().bins().at(i), self)
 
     def __repr__(self):
-        return "<Profile1D at %x>" % id(self)
+        return "<%s '%s' %d bins, sumw=%0.2g>" % \
+               (self.__class__.__name__, self.path,
+                len(self.bins), self.sumW())
 
-    def fill(self, x, y, weight=1.0):
-        self._Profile1D().fill(x, y, weight)
+
+    def reset(self):
+        self._Profile1D().reset()
 
     def copy(self, char *path=""):
         return util.new_owned_cls(Profile1D,
             new c.Profile1D(deref(self._Profile1D()), string(path)))
+
+
+    def fill(self, x, y, weight=1.0):
+        self._Profile1D().fill(x, y, weight)
+
 
     @property
     def totalDbn(self):
@@ -55,8 +64,19 @@ cdef class Profile1D(AnalysisObject):
         return util.new_borrowed_cls(
             Dbn2D, &self._Profile1D().overflow(), self)
 
-    def reset(self):
-        self._Profile1D().reset()
+
+    def numEntries(self): # add overflows arg
+        return self._Profile1D().numEntries()
+
+    def effNumEntries(self): # add overflows arg
+        return self._Profile1D().effNumEntries()
+
+    def sumW(self, overflows=True):
+        return self._Profile1D().sumW(overflows)
+
+    def sumW2(self, overflows=True):
+        return self._Profile1D().sumW2(overflows)
+
 
     def scale(self, double w=1.0):
         """
@@ -66,11 +86,10 @@ cdef class Profile1D(AnalysisObject):
         if w != 1.0:
             self._Profile1D().scaleW(w)
 
-    def mergeBins(self, size_t a, size_t b):
-        self._Profile1D().mergeBins(a, b)
 
-    def rebin(self, int n):
-        self._Profile1D().rebin(n)
+    @property
+    def bins(self):
+        return list(self)
 
     def addBin(self, low, high):
         """Add a bin to the Profile1D"""
@@ -84,6 +103,12 @@ cdef class Profile1D(AnalysisObject):
             cedges.push_back(i)
         self._Profile1D().addBins(cedges)
         return self
+
+    def mergeBins(self, size_t a, size_t b):
+        self._Profile1D().mergeBins(a, b)
+
+    def rebin(self, int n):
+        self._Profile1D().rebin(n)
 
 
     def __iadd__(Profile1D self, Profile1D other):

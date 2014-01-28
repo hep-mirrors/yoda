@@ -53,6 +53,7 @@ cdef class Histo2D(AnalysisObject):
 
     def __len__(self):
         return self._Histo2D().bins().size()
+        # return self._Histo2D().numBins()
 
     def __getitem__(self, py_ix):
         cdef size_t i = util.pythonic_index(py_ix, self._Histo2D().bins().size())
@@ -60,7 +61,18 @@ cdef class Histo2D(AnalysisObject):
             HistoBin2D, & self._Histo2D().bins().at(i), self)
 
     def __repr__(self):
-        return "Histo2D"
+        return "<%s '%s' %d bins, sumw=%.2g>" % \
+               (self.__class__.__name__, self.path,
+                len(self.bins), self.sumW())
+
+
+    def reset(self):
+        self._Histo2D().reset()
+
+    def copy(self, char *path=""):
+        return util.new_owned_cls(Histo2D,
+            new c.Histo2D(deref(self._Histo2D()), string(path)))
+
 
     def fill(self, double x, double y, weight=1.0):
         self._Histo2D().fill(x, y, weight)
@@ -76,12 +88,6 @@ cdef class Histo2D(AnalysisObject):
         except StopIteration:
             pass
 
-    def copy(self, char *path=""):
-        return util.new_owned_cls(Histo2D,
-            new c.Histo2D(deref(self._Histo2D()), string(path)))
-
-    def __len__(self):
-        return self._Histo2D().numBins()
 
     @property
     def totalDbn(self):
@@ -90,8 +96,15 @@ cdef class Histo2D(AnalysisObject):
     def outflow(self, ix, iy):
         return util.new_borrowed_cls(Dbn2D, &self._Histo2D().outflow(ix, iy), self)
 
+
     def integral(self, overflows=True):
-        return self._Histo1D().integral(overflows)
+        return self._Histo2D().integral(overflows)
+
+    def numEntries(self): # add overflows arg
+        return self._Histo2D().numEntries()
+
+    def effNumEntries(self): # add overflows arg
+        return self._Histo2D().effNumEntries()
 
     def sumW(self, overflows=True):
         return self._Histo2D().sumW(overflows)
@@ -119,8 +132,6 @@ cdef class Histo2D(AnalysisObject):
             self._Histo2D().xStdErr(overflows),
             self._Histo2D().yStdErr(overflows))
 
-    def reset(self):
-        self._Histo2D().reset()
 
     def scaleW(self, w):
         """
@@ -133,11 +144,6 @@ cdef class Histo2D(AnalysisObject):
     def normalize(self, double normto, bint includeoverflows=True):
         self._Histo2D().normalize(normto, includeoverflows)
 
-    #def mergeBins(self, size_t a, size_t b):
-    #    self._Histo2D().mergeBins(a, b)
-
-    #def rebin(self, int n):
-    #    self._Histo2D().rebin(n)
 
     @property
     def bins(self):
@@ -157,6 +163,12 @@ cdef class Histo2D(AnalysisObject):
 
         self._Histo2D().addBins(deref(v))
         del v
+
+    #def mergeBins(self, size_t a, size_t b):
+    #    self._Histo2D().mergeBins(a, b)
+
+    #def rebin(self, int n):
+    #    self._Histo2D().rebin(n)
 
 
     def __iadd__(Histo2D self, Histo2D other):

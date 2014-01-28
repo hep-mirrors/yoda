@@ -610,6 +610,8 @@ cdef extern from "YODA/Profile1D.h" namespace "YODA":
         Dbn2D &underflow()
         Dbn2D &overflow()
 
+        double numEntries() # @todo Add bool arg
+        double effNumEntries() # @todo Add bool arg
         double sumW(bool)
         double sumW2(bool)
 
@@ -672,6 +674,8 @@ cdef extern from "YODA/Profile2D.h" namespace "YODA":
         Dbn3D totalDbn() except+ err
         Dbn3D outflow(int, int) except+ err
 
+        double numEntries() # @todo Add bool arg
+        double effNumEntries() # @todo Add bool arg
         double sumW(bool)
         double sumW2(bool)
 
@@ -733,6 +737,8 @@ cdef extern from "YODA/Histo1D.h" namespace "YODA":
 
         # Whole histo data
         double integral(bool)
+        double numEntries() # @todo Add bool arg
+        double effNumEntries() # @todo Add bool arg
         double sumW(bool)
         double sumW2(bool)
         double mean(bool)
@@ -824,6 +830,8 @@ cdef extern from "YODA/Histo2D.h" namespace "YODA":
 
         # Whole histo data
         double integral(bool)
+        double numEntries() # @todo Add bool arg
+        double effNumEntries() # @todo Add bool arg
         double sumW(bool)
         double sumW2(bool)
         double xMean(bool)

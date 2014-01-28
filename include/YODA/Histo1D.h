@@ -322,9 +322,11 @@ namespace YODA {
     }
 
     /// Get the number of fills
+    /// @todo Add an includeoverflows argument
     double numEntries() const { return totalDbn().numEntries(); }
 
     /// Get the effective number of fills
+    /// @todo Add an includeoverflows argument
     double effNumEntries() const { return totalDbn().effNumEntries(); }
 
     /// Get sum of weights in histo

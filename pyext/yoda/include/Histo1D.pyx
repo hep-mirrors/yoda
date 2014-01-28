@@ -72,10 +72,24 @@ cdef class Histo1D(AnalysisObject):
 
 
     def __repr__(self):
-        xmean = self.mean() if self.sumW() else None
-        return "<%s '%s' %d bins, sumw=%0.2e, xmean=%0.2e>" % \
+        xmean = None
+        if self.sumW() != 0:
+            xmean = "%0.2e" % self.mean()
+        return "<%s '%s' %d bins, sumw=%0.2g, xmean=%s>" % \
                (self.__class__.__name__, self.path,
                 len(self.bins), self.sumW(), xmean)
+
+
+    def reset(self):
+        """
+        Reset the histogram but leave the bin structure.
+        """
+        self._Histo1D().reset()
+
+    def copy(self, char *path=""):
+        """(path="") -> Histo1D. Clone this Histo1D with optional new path."""
+        return util.new_owned_cls(Histo1D,
+            new c.Histo1D(deref(self._Histo1D()), string(path)))
 
 
     def fill(self, x, weight=1.0):
@@ -94,19 +108,6 @@ cdef class Histo1D(AnalysisObject):
         for x in xs:
             self._Histo1D().fill(x, weight)
 
-    def copy(self, char *path=""):
-        """(path="") -> Histo1D. Clone this Histo1D with optional new path."""
-        return util.new_owned_cls(Histo1D,
-            new c.Histo1D(deref(self._Histo1D()), string(path)))
-
-    @property
-    def bins(self):
-        return list(self)
-
-    # @property
-    # def edges(self):
-    #     return util.Edges(self._Histo1D().lowEdge(),
-    #                       self._Histo1D().highEdge())
 
     @property
     def totalDbn(self):
@@ -123,8 +124,15 @@ cdef class Histo1D(AnalysisObject):
         """The Dbn1D representing the overflow distribution."""
         return util.new_borrowed_cls(Dbn1D, &self._Histo1D().overflow(), self)
 
+
     def integral(self, overflows=True):
         return self._Histo1D().integral(overflows)
+
+    def numEntries(self): # add overflows arg
+        return self._Histo1D().numEntries()
+
+    def effNumEntries(self): # add overflows arg
+        return self._Histo1D().effNumEntries()
 
     def sumW(self, overflows=True):
         return self._Histo1D().sumW(overflows)
@@ -144,11 +152,6 @@ cdef class Histo1D(AnalysisObject):
     def stdErr(self, overflows=True):
         return self._Histo1D().stdErr(overflows)
 
-    def reset(self):
-        """
-        Reset the histogram but leave the bin structure.
-        """
-        self._Histo1D().reset()
 
     def scaleW(self, w):
         """
@@ -162,6 +165,16 @@ cdef class Histo1D(AnalysisObject):
         (float, bool) -> None. Normalize the histogram.
         """
         self._Histo1D().normalize(normto, overflows)
+
+
+    @property
+    def bins(self):
+        return list(self)
+
+    # @property
+    # def edges(self):
+    #     return util.Edges(self._Histo1D().lowEdge(),
+    #                       self._Histo1D().highEdge())
 
     def mergeBins(self, ia, ib):
         """mergeBins(ia, ib) -> None. Merge bins from indices ia through ib."""
