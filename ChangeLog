@@ -1,5 +1,9 @@
 2014-01-28  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Fixed yodamerge default output file name treatment.
+
+	* Avoid computing an unrecoverable error in Histo1D.__repr__
+
 	* Clean-ups and API improvements in Python IO functions.
 
 	* Adding more sumW,W2 and (eff)NumEntries attrs to Python objects.

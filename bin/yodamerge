@@ -62,8 +62,8 @@ analysisobjects_in = {}
 for filename in filenames:
     # TODO: also accept AIDA, ROOT, ... inputs?
     aos = yoda.readYODA(filename)
-    for ao in aos:
-        analysisobjects_in.setdefault(ao.path, []).append(ao)
+    for aopath, ao in aos.iteritems():
+        analysisobjects_in.setdefault(aopath, []).append(ao)
 
 analysisobjects_out = {}
 for p, aos in analysisobjects_in.iteritems():
@@ -105,4 +105,5 @@ for p, aos in analysisobjects_in.iteritems():
     if normto:
         analysisobjects_out[p].normalize(normto)
 
-yoda.write(analysisobjects_out.values(), opts.OUTPUT_FILE)
+## Write output
+yoda.writeYODA(analysisobjects_out, opts.OUTPUT_FILE)
