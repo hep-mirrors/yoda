@@ -1,7 +1,7 @@
 ## Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.59)
-AC_INIT([YODA],[1.0.4],[yoda@projects.hepforge.org],[YODA])
+AC_INIT([YODA],[1.0.5a0],[yoda@projects.hepforge.org],[YODA])
 AM_INIT_AUTOMAKE([subdir-objects -Wall dist-bzip2])
 #AC_CONFIG_SRCDIR([src/Bin1D.cc])
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
@@ -27,27 +27,7 @@ if test "x$CXXFLAGS" = "x"; then CXXFLAGS="-O3"; fi
 ## Checks for programs.
 AC_LANG(C++)
 AC_PROG_CXX
-
-dnl this block can go once we decide to have C++11 always on
-AC_MSG_CHECKING([whether to include C++11 flag for testing])
-AC_ARG_ENABLE(stdcxx11,
-        AC_HELP_STRING([--enable-stdcxx11],
-        [turn on C++11 flag (only for testing, do not use in production!)]),
-        [],
-        [enable_stdcxx11=no]
-        )
-
-dnl this block can go once we decide to have C++11 always on
-if test "x$enable_stdcxx11" = "xyes"; then
-AC_MSG_RESULT([yes])
-dnl remove the wrapper if block and "optional" once we decide to have C++11 always on
-AX_CXX_COMPILE_STDCXX_11([noext],[optional])
-if test "x$HAVE_CXX11" != "x1"; then
-AC_MSG_ERROR([compiler does not recognize requested c++11 option])
-fi
-else
-AC_MSG_RESULT([no])
-fi
+# TODO: reinstate when mandatory: AX_CXX_COMPILE_STDCXX_11([noext],[optional])
 
 AC_PROG_INSTALL
 AC_PROG_LN_S
