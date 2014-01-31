@@ -18,17 +18,43 @@ cdef class Bin2D_${DBN}(Bin):
             self.scaleW(w)
 
     @property
+    def xMin(self):
+        """Low edge in x."""
+        return self._Bin2D().xMin()
+
+    @property
+    def xMax(self):
+        """High edge in x."""
+        return self._Bin2D().xMax()
+
+    @property
+    def yMin(self):
+        """Low edge in y."""
+        return self._Bin2D().yMin()
+
+    @property
+    def yMax(self):
+        """High edge in y."""
+        return self._Bin2D().yMax()
+
+    @property
     def edges(self):
-        """The lower and upper edges."""
+        """
+        The lower and upper edges.
+
+        TODO: Do this in Python, minimise the intelligence in Cython.
+        """
         cdef pair[double, double] x = self._Bin2D().xedges()
         cdef pair[double, double] y = self._Bin2D().yedges()
         return util.XY(util.Edges(x.first, x.second),
                   util.Edges(y.first, y.second))
 
+
     @property
     def widths(self):
         """The widths of this bin in the x- and y-dimensions."""
-        return util.XY(self._Bin2D().widthX(), self._Bin2D().widthY())
+        return util.XY(self._Bin2D().xWidth(), self._Bin2D().yWidth())
+
 
     @property
     def focus(self):
@@ -37,62 +63,108 @@ cdef class Bin2D_${DBN}(Bin):
         return util.XY(f.first, f.second)
 
     @property
+    def xMid(self):
+        """Geometric centre of the bin in x"""
+        return self._Bin2D().xMid()
+
+    @property
+    def yMid(self):
+        """Geometric centre of the bin in y"""
+        return self._Bin2D().yMid()
+
+    @property
     def midpoint(self):
+        """Geometric centre of the bin"""
         cdef pair[double, double] f = self._Bin2D().midpoint()
         return util.XY(f.first, f.second)
+
+
+    @property
+    def xMean(self):
+        return self._Bin2D().xMean()
+
+    @property
+    def yMean(self):
+        return self._Bin2D().xMean()
 
     @property
     def mean(self):
         return util.XY(self._Bin2D().xMean(), self._Bin2D().yMean())
 
     @property
-    def std_dev(self):
+    def xStdDev(self):
+        return self._Bin2D().xStdDev()
+
+    @property
+    def yStdDev(self):
+        return self._Bin2D().yStdDev()
+
+    @property
+    def stdDev(self):
         return util.XY(self._Bin2D().xStdDev(), self._Bin2D().yStdDev())
 
     @property
-    def std_err(self):
+    def xStdErr(self):
+        return self._Bin2D().xStdErr()
+
+    @property
+    def yStdErr(self):
+        return self._Bin2D().yStdErr()
+
+    @property
+    def stdErr(self):
         return util.XY(self._Bin2D().xStdErr(), self._Bin2D().yStdErr())
+
+    @property
+    def xRMS(self):
+        return self._Bin2D().xRMS()
+
+    @property
+    def yRMS(self):
+        return self._Bin2D().yRMS()
 
     @property
     def rms(self):
         return util.XY(self._Bin2D().xRMS(), self._Bin2D().yRMS())
 
+
     # Raw statistics #
     ##################
+
     @property
-    def count(self):
+    def numEntries(self):
         return self._Bin2D().numEntries()
 
     @property
-    def effective_count(self):
+    def effNumEntries(self):
         return self._Bin2D().effNumEntries()
 
     @property
-    def sum_w(self):
+    def sumW(self):
         return self._Bin2D().sumW()
 
     @property
-    def sum_w2(self):
+    def sumW2(self):
         return self._Bin2D().sumW2()
 
     @property
-    def sum_wx(self):
+    def sumWX(self):
         return self._Bin2D().sumWX()
 
     @property
-    def sum_wy(self):
+    def sumWY(self):
         return self._Bin2D().sumWY()
 
     @property
-    def sum_wxy(self):
+    def sumWXY(self):
         return self._Bin2D().sumWXY()
 
     @property
-    def sum_wx2(self):
+    def sumWX2(self):
         return self._Bin2D().sumWX2()
 
     @property
-    def sum_wy2(self):
+    def sumWY2(self):
         return self._Bin2D().sumWY2()
 
     #def merge(Bin2D_${DBN} self, Bin2D_${DBN} other):
@@ -111,6 +183,6 @@ cdef class Bin2D_${DBN}(Bin):
         return util.new_owned_cls(
             Bin2D_${DBN},
             new c.Bin2D_${DBN}(deref(self._Bin2D()) - deref(other._Bin2D())))
-    
+
     cdef inline c.Bin2D_${DBN} *_Bin2D(self) except NULL:
         return <c.Bin2D_${DBN} *> self.ptr()

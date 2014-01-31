@@ -319,8 +319,17 @@ cdef extern from "YODA/Bin2D.h" namespace "YODA":
         pair[double, double] xedges() except+ err
         pair[double, double] yedges() except+ err
 
-        double widthX() except+ err
-        double widthY() except+ err
+        double xMin() except+ err
+        double yMin() except+ err
+
+        double xMax() except+ err
+        double yMax() except+ err
+
+        double xMid() except+ err
+        double yMid() except+ err
+
+        double xWidth() except+ err
+        double yWidth() except+ err
 
         pair[double, double] focus() except+ err
         pair[double, double] midpoint() except+ err

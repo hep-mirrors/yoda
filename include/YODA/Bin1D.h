@@ -151,6 +151,10 @@ namespace YODA {
     double midpoint() const {
       return ( _edges.second + _edges.first ) / 2;
     }
+    /// Synonym for midpoint
+    double xMid() const {
+      return midpoint();
+    }
 
     //@}
 

@@ -100,12 +100,12 @@ namespace YODA {
 
     /// The height of a bin
     double height() const {
-      return volume()/(widthX()*widthY());
+      return volume()/(xWidth()*yWidth());
     }
 
     /// Error on height
     double heightErr() const {
-      return volumeErr()/(widthX()*widthY());
+      return volumeErr()/(xWidth()*yWidth());
     }
 
     /// The relative size of the error (same for either volume or height errors)

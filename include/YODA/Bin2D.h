@@ -147,8 +147,13 @@ namespace YODA {
       return _xedges;
     }
 
+    /// Middle of the bin in x
+    double xMid() const {
+      return (xMax() + xMin())/2.0;
+    }
+
     /// Width of the bin in x
-    double widthX() const {
+    double xWidth() const {
       return xMax() - xMin();
     }
 
@@ -177,10 +182,16 @@ namespace YODA {
       return _yedges;
     }
 
+    /// Middle of the bin in y
+    double yMid() const {
+      return (yMax() + yMin())/2.0;
+    }
+
     /// Width of the bin in y
-    double widthY() const {
+    double yWidth() const {
       return yMax() - yMin();
     }
+
 
     /// The mean position in the bin, or the midpoint if that is not available.
     std::pair<double, double> focus() const {
@@ -191,9 +202,10 @@ namespace YODA {
       }
     }
 
+
     /// Geometric centre of the bin, i.e. high+low/2.0
     std::pair<double, double> midpoint() const {
-      return std::make_pair((xMax() + xMin())/2, (yMax() + yMin())/2);
+      return std::make_pair(xMid(), yMid());
     }
 
     //@}
@@ -376,10 +388,10 @@ namespace YODA {
     }
 
     /// Test whether this bin would fit inside the given area.
-    bool fitsInside(std::pair<double, double> xrange, 
+    bool fitsInside(std::pair<double, double> xrange,
                     std::pair<double, double> yrange) const
     {
-      return (lowEdgeX() >= xrange.first && 
+      return (lowEdgeX() >= xrange.first &&
               lowEdgeY() >= yrange.first &&
               highEdgeX() < xrange.second &&
               highEdgeY() < yrange.second);

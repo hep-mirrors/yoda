@@ -22,10 +22,29 @@ cdef class Bin1D_${DBN}(Bin):
             self._Bin1D().scaleX(x)
 
     @property
+    def lowEdge(self):
+        """The lower bin edge."""
+        return self._Bin1D().lowEdge()
+
+    @property
+    def xMin(self):
+        """Synonym for lowEdge."""
+        return self.lowEdge
+
+    @property
+    def highEdge(self):
+        """The upper bin edge."""
+        return self._Bin1D().highEdge()
+
+    @property
+    def xMax(self):
+        """Synonym for highEdge."""
+        return self.highEdge
+
+    @property
     def edges(self):
         """The lower and upper edges."""
-        return util.Edges(self._Bin1D().lowEdge(),
-                          self._Bin1D().highEdge())
+        return (self.lowEdge, self.highEdge)
 
     @property
     def width(self):
@@ -38,7 +57,7 @@ cdef class Bin1D_${DBN}(Bin):
         The focus of the bin. If the bin has been filled, then this
         is the mean fill on this bin. If the bin has not been filled,
         then the focus is the midpoint of the bin.
-        
+
         """
         return self._Bin1D().focus()
 
@@ -46,6 +65,11 @@ cdef class Bin1D_${DBN}(Bin):
     def midpoint(self):
         """The point half-way between the two bin edges."""
         return self._Bin1D().midpoint()
+
+    @property
+    def xMid(self):
+        """Synonym for midpoint."""
+        return self.midpoint
 
     @property
     def mean(self):
@@ -64,7 +88,7 @@ cdef class Bin1D_${DBN}(Bin):
     def stdErr(self):
         """
         The standard error of the x-values that have filled the bin.
-        
+
         """
         return self._Bin1D().xStdErr()
 
@@ -91,7 +115,7 @@ cdef class Bin1D_${DBN}(Bin):
     @property
     def effNumEntries(self):
         """
-        The effective number of entries in the bin. 
+        The effective number of entries in the bin.
 
         s.effNumEntries <==> (s.sumW ** 2) / s.sumW2
 
@@ -135,7 +159,7 @@ cdef class Bin1D_${DBN}(Bin):
         merge(other) -> Bin1D_${DBN}. Merge this bin with another of the
         same type. Only directly adjacent bins, i.e. those sharing a
         common edge, can be merged.
-        
+
         """
         self._Bin1D().merge(deref(other._Bin1D()))
         return self
@@ -152,6 +176,6 @@ cdef class Bin1D_${DBN}(Bin):
         return util.new_owned_cls(
             Bin1D_${DBN},
             new c.Bin1D_${DBN}(deref(self._Bin1D()) - deref(other._Bin1D())))
-    
+
     cdef inline c.Bin1D_${DBN} *_Bin1D(self) except NULL:
         return <c.Bin1D_${DBN} *> self.ptr()
