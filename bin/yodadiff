@@ -21,19 +21,14 @@ if len(filenames) != 2:
     logging.error("Please supply TWO YODA files for comparison")
 
 ## Get data objects
-aos1 = yoda.read(filenames[0])
-aos2 = yoda.read(filenames[1])
+aodict1 = yoda.read(filenames[0])
+aodict2 = yoda.read(filenames[1])
 
 ## Check number of data objects in each file
-if len(aos1) != len(aos2):
+if len(aodict1) != len(aodict2):
     logging.warning("Different numbers of data objects in %s and %s" % tuple(filenames[:2]))
 
 # TODO: Allow comparisons between Histo/Profile types and Scatters: call mkScatter before comparing
-
-## Get paths and create dicts
-# TODO: update Python mapping to return AO dicts, not lists (and dict literals aren't yet allowed, for bw compatibility)
-aodict1 = { ao.path : ao for ao in aos1 }
-aodict2 = { ao.path : ao for ao in aos2 }
 
 ## Compare path lists
 if aodict1.keys() != aodict2.keys():

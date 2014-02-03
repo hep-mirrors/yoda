@@ -163,6 +163,8 @@ namespace YODA {
       }
     }
 
+    /// @todo Add scaleX, scaleY
+
     //@}
 
 
@@ -414,6 +416,9 @@ namespace YODA {
       p.setYMax(newymax);
     }
   }
+
+
+  /// @todo Add external scale, scaleX, scaleY functions
 
 
   /// Exchange the x and y axes (operates in-place on @a s)

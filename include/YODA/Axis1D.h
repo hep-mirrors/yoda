@@ -396,7 +396,7 @@ namespace YODA {
     //
     /// The bin searcher is purely for searching, and is generated from
     /// the bins list only.
-    void _updateAxis(Bins &bins) {
+    void _updateAxis(Bins& bins) {
       // Ensure that axis is not locked
       if (_locked) {
         throw LockError("Attempting to update a locked axis");
@@ -408,18 +408,18 @@ namespace YODA {
       // Sort the bins
       std::sort(bins.begin(), bins.end());
 
-      // Keep a lag of the last high edge
+      // Keep a note of the last high edge
       double last_high = -std::numeric_limits<double>::infinity();
 
-      for (size_t i=0; i < bins.size(); i++) {
-        Bin &currentBin = bins[i];
-
-        double new_low  = currentBin.lowEdge();
-        double reldiff = (new_low - last_high) / currentBin.width();
-        double eps = 1.0e-10;
-        if ( reldiff < -eps ) {
-          throw RangeError("Bin edges overlap");
-        } else if ( reldiff > eps ) {
+      for (size_t i = 0; i < bins.size(); ++i) {
+        Bin& currentBin = bins[i];
+        const double new_low  = currentBin.lowEdge();
+        const double reldiff = (new_low - last_high) / currentBin.width();
+        if (reldiff < -1e-3) {
+          std::stringstream ss;
+          ss << "Bin edges overlap: " << last_high << " -> " << new_low;
+          throw RangeError(ss.str());
+        } else if (reldiff > 1e-3) {
           indexes.push_back(-1);
           edgeCuts.push_back(new_low);
         }
