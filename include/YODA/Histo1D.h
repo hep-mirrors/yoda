@@ -101,16 +101,13 @@ namespace YODA {
 
     /// Assignment operator
     Histo1D& operator = (const Histo1D& h1) {
-      setPath(h1.path());
-      setTitle(h1.title());
+      AnalysisObject::operator = (h1); //< AO treatment of paths etc.
       _axis = h1._axis;
       return *this;
     }
 
     //@}
 
-
-  public:
 
     /// @name Modifiers
     //@{

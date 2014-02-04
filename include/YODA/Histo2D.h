@@ -75,6 +75,14 @@ namespace YODA {
     Histo2D(const Histo2D& h, const std::string& path="");
 
 
+    /// Assignment operator
+    Histo2D& operator = (const Histo2D& h2) {
+      AnalysisObject::operator = (h2); //< AO treatment of paths etc.
+      _axis = h2._axis;
+      return *this;
+    }
+
+
     /// @todo Add binning constructors from Scatter3D and Profile2D?
 
     // /// A constructor from a Scatter3D's binning, with optional new path

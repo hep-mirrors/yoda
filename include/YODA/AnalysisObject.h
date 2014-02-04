@@ -45,8 +45,21 @@ namespace YODA {
       setTitle(title);
     }
 
+    // /// Default copy constructor
+    // AnalysisObject(const AnalysisObject& ao) {
+    //   if (ao.path().length() > 0) setPath(ao.path());
+    //   if (ao.title().length() > 0) setTitle(ao.title());
+    // }
+
     /// Default destructor
     virtual ~AnalysisObject() { }
+
+    /// Default copy assignment operator
+    virtual AnalysisObject& operator = (const AnalysisObject& ao) {
+      if (ao.path().length() > 0) setPath(ao.path());
+      if (ao.title().length() > 0) setTitle(ao.title());
+      return *this;
+    }
 
     /// Reset this analysis object
     virtual void reset() = 0;

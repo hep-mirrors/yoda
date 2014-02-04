@@ -139,8 +139,7 @@ namespace YODA {
 
     /// Assignment operator
     Scatter2D& operator = (const Scatter2D& s2) {
-      setPath(s2.path());
-      setTitle(s2.title());
+      AnalysisObject::operator = (s2); //< AO treatment of paths etc.
       _points = s2._points;
       return *this;
     }

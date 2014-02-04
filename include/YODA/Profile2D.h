@@ -92,10 +92,9 @@ namespace YODA {
 
 
     /// Assignment operator
-    Profile2D& operator = (const Profile2D& p1) {
-      setPath(p1.path());
-      setTitle(p1.title());
-      _axis = p1._axis;
+    Profile2D& operator = (const Profile2D& p2) {
+      AnalysisObject::operator = (p2); //< AO treatment of paths etc.
+      _axis = p2._axis;
       return *this;
     }
 

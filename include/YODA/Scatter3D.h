@@ -110,10 +110,17 @@ namespace YODA {
 
 
     /// Copy constructor
-    Scatter3D(const Scatter3D& s, const std::string& path="")
-      : AnalysisObject("Scatter3D", (path.size() == 0) ? s.path() : path, s, s.title())
+    Scatter3D(const Scatter3D& s3, const std::string& path="")
+      : AnalysisObject("Scatter3D", (path.size() == 0) ? s3.path() : path, s3, s3.title())
     {
-      _points = s._points;
+      _points = s3._points;
+    }
+
+    /// Assignment operator
+    Scatter3D& operator = (const Scatter3D& s3) {
+      AnalysisObject::operator = (s3); //< AO treatment of paths etc.
+      _points = s3._points;
+      return *this;
     }
 
     //@}

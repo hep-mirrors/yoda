@@ -20,7 +20,7 @@ import ROOT
 for i, o in in_out:
     of = ROOT.TFile(o, "recreate")
     analysisobjects = yoda.readYODA(i)
-    rootobjects = [yoda.to_root(ao) for ao in analysisobjects]
+    rootobjects = [yoda.to_root(ao) for ao in analysisobjects.values()]
     #print rootobjects
     of.Write()
     of.Close()
