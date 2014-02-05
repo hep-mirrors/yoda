@@ -46,5 +46,6 @@ if os.environ.has_key("BUILD_ROOTCOMPAT"):
         pass
 
 setup(name="yoda",
+      version="@PACKAGE_VERSION@",
       ext_modules=extns,
       packages=["yoda"])
