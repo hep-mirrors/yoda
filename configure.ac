@@ -2,8 +2,18 @@
 
 AC_PREREQ(2.59)
 AC_INIT([YODA],[1.0.5],[yoda@projects.hepforge.org],[YODA])
-AM_INIT_AUTOMAKE([subdir-objects -Wall dist-bzip2])
+
+## Check and block installation into the src/build dir
+if test "$prefix" = "$PWD"; then
+  AC_MSG_ERROR([Installation into the build directory is not supported: use a different --prefix argument])
+fi
+## Force default prefix to have a path value rather than NONE
+if test "$prefix" = "NONE"; then
+   prefix=/usr/local
+fi
+
 #AC_CONFIG_SRCDIR([src/Bin1D.cc])
+AM_INIT_AUTOMAKE([subdir-objects -Wall dist-bzip2])
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 m4_ifdef([AM_PROG_AR], [AM_PROG_AR])
 AC_CONFIG_MACRO_DIR([m4])

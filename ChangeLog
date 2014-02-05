@@ -1,6 +1,16 @@
+2014-02-05  Andy Buckley  <andy.buckley@cern.ch>
+
+	* 1.0.5 release.
+
+	*
+
+	* Protect against invalid prefix value if the --prefix configure option is unused.
+
 2014-02-04  Andy Buckley  <andy.buckley@cern.ch>
 
-	* Adding copy assignment operators where missing, based on an implementation in AnalysisObject which only copies rvalue paths and titles if they are non-null.
+	* Adding copy assignment operators where missing, based on an
+	implementation in AnalysisObject which only copies rvalue paths
+	and titles if they are non-null.
 
 2014-02-03  Andy Buckley  <andy.buckley@cern.ch>
 
