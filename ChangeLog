@@ -2,7 +2,9 @@
 
 	* 1.0.5 release.
 
-	*
+	* Adding patches to ReaderFLAT and ReaderYODA use of Boost Spirit
+	which reduce the Boost version requirement from 1.47 ->
+	1.41. Thanks to Andrii Verbytskyi for the patch.
 
 	* Protect against invalid prefix value if the --prefix configure option is unused.
 

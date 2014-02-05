@@ -85,7 +85,7 @@ fi
 
 
 ## Required Boost C++ utility library
-BOOST_REQUIRE([1.47.0])
+BOOST_REQUIRE([1.41.0])
 BOOST_FOREACH
 BOOST_SMART_PTR
 BOOST_FIND_HEADER([boost/lexical_cast.hpp])

@@ -52,7 +52,9 @@ namespace YODA {
       // First check if we found a "# BEGIN ..." or "# END ..." line.
       // This marks a context change.
       int newcontext = 0;
-      if (qi::parse(s.begin(), s.end(), group_parser, newcontext)) {
+      // if (qi::parse(s.begin(), s.end(), group_parser, newcontext)) { //< Only supported in Boost 1.47+
+      std::string::iterator it1 = s.begin();
+      if (qi::parse(it1, s.end(), group_parser, newcontext)) { //< End patch
         context = newcontext;
         if (context > 0) {
           // We are inside a group now, so we are looking for the corresponding
@@ -81,9 +83,13 @@ namespace YODA {
         case 5:  // we are inside YODA_SCATTER1D
         case 6:  // we are inside YODA_SCATTER2D
         case 7:  // we are inside YODA_SCATTER3D
-          if (! qi::phrase_parse(s.begin(), s.end(), yoda_parser, ascii::space) ) {
-            std::cerr << "failed parsing this line:\n" << s << std::endl;
-          }
+          // if (! qi::phrase_parse(s.begin(), s.end(), yoda_parser, ascii::space) ) { //< Only supported in Boost 1.47+
+          { //< Why the explicit scoping? Added by supplied patch from Andrii Verbytskyi
+            std::string::iterator it2 = s.begin();
+            if (! qi::phrase_parse(it2, s.end(), yoda_parser, ascii::space) ) { //< End patch
+              std::cerr << "failed parsing this line:\n" << s << std::endl;
+            }
+          } //< End patch scoping
           break;
         case -1: // we left YODA_HISTO1D
           if (contextchange) {
