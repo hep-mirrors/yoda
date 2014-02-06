@@ -1,6 +1,8 @@
-2014-02-05  Andy Buckley  <andy.buckley@cern.ch>
+2014-02-06  Andy Buckley  <andy.buckley@cern.ch>
 
-	* 1.0.5 release.
+	* 1.0.5 release!
+
+2014-02-05  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Adding patches to ReaderFLAT and ReaderYODA use of Boost Spirit
 	which reduce the Boost version requirement from 1.47 ->
