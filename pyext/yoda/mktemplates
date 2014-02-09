@@ -48,6 +48,9 @@ def make_templates(filename, *args, **kwargs):
     plain_name = plain_name.rstrip('_')
     #print plain_name
 
+    if not os.path.exists("generated"):
+        os.makedir("generated")
+
     includes = []
     for a in individuals:
         newname = filename

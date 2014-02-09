@@ -1,3 +1,8 @@
+2014-02-09  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Adding explicit include/generated dir creation to Python
+	extension build (thanks to Christian Johnson for the bug report).
+
 2014-02-06  Andy Buckley  <andy.buckley@cern.ch>
 
 	* 1.0.5 release!
