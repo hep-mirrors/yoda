@@ -49,7 +49,7 @@ def make_templates(filename, *args, **kwargs):
     #print plain_name
 
     if not os.path.exists("generated"):
-        os.makedir("generated")
+        os.mkdir("generated")
 
     includes = []
     for a in individuals:
