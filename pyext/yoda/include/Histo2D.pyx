@@ -162,13 +162,9 @@ cdef class Histo2D(AnalysisObject):
         return self
 
     def addBins(self, bounds):
-        v = new vector[HistoBin2D]()
-
         for xlow, xhigh, ylow, yhigh in bounds:
-            v.push_back(HistoBin2D(xlow, xhigh, ylow, yhigh))
-
-        self._Histo2D().addBins(deref(v))
-        del v
+            self._Histo2D().addBin(pair[double, double](xlow, xhigh),
+                                   pair[double, double](ylow, yhigh))
 
     #def mergeBins(self, size_t a, size_t b):
     #    self._Histo2D().mergeBins(a, b)
