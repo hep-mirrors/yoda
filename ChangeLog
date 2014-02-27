@@ -1,5 +1,9 @@
 2014-02-27  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Adding the generated pyext/yoda/rootcompat.cpp to the tarball
+	and sorting out the ROOT/Cython interface conditionals a bit more
+	sanely. Thanks to Oldrich Kepka for the bug report.
+
 	* Protecting yodamerge against input histograms with zero
 	integrals (thanks to Christian Bierlich for the bug report).
 
