@@ -1,3 +1,9 @@
+2014-02-27  Leif Lönnblad  <Leif.Lonnblad@thep.lu.se>
+
+	* minor modifications to BinSearcher to avoid NaN's. The NaN's
+	were treated correctly before, but better to avoid them all
+	together.
+
 2014-02-27  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Adding the generated pyext/yoda/rootcompat.cpp to the tarball
