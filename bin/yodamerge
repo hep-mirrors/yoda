@@ -73,22 +73,30 @@ for p, aos in analysisobjects_in.iteritems():
         print "WARNING: Several types of analysis object found at path %s: cannot be merged"
         analysisobjects_out[p] = aos[0]
         continue
-    ## Check whether normalizations match
+    ## Check whether normalizations match (possible for histograms via the sumW/integral attrs)
+    ## In the absence of better info, we use the norm as a heuristic to change the merging behaviour
+    # TODO: What about empty histograms which couldn't be normalized?
     normto = None
-    if hasattr(aos[0], "totalDbn"):
-        ## In the absence of better info, we use the norm as a heuristic to change the merging behaviour.
-        #print tuple(ao.integral() for ao in aos)
-        if opts.NORMALIZE_ALL or \
-               all(ao.totalDbn.sumW == 0 or abs(ao.totalDbn.sumW - aos[0].totalDbn.sumW)/aos[0].totalDbn.sumW < 1e-3 for ao in aos):
-            ## Try to compute a target normalization from the 1/scalefactor-weighted norms of each run
-            if all(ao.annotations.has_key("ScaledBy") for ao in aos):
-                wtot = sum(1/float(ao.annotations["ScaledBy"]) for ao in aos)
-                normto = sum(ao.totalDbn.sumW / float(ao.annotations["ScaledBy"]) for ao in aos) / wtot
-            else:
+    if all(hasattr(ao, "sumW") for ao in aos):
+        ## Check that there are some non-empty input histograms
+        nonzero_sumws = [ao.sumW for ao in aos if ao.sumW != 0]
+        sumw_ref = nonzero_sumws[0] if nonzero_sumws else None
+        ## Use the first non-empty histogram (if there is one) as a reference for norm comparisons
+        norm_tolerance = 1e-3
+        same_norms = sumw_ref and all(abs(ao.sumW/sumw_ref - 1) < norm_tolerance for ao in aos)
+        ## Set the normto flag if possible (either because norms match or user-forced)
+        if same_norms or opts.NORMALIZE_ALL:
+            if not all(ao.annotations.has_key("ScaledBy") for ao in aos):
                 print "WARNING: Abandoning normalized merge of path %s because not all inputs have ScaledBy attributes" % p
+            else:
+                ## Try to compute a target normalization from the 1/scalefactor-weighted norms of each run
+                wtot = sum(1/float(ao.annotations["ScaledBy"]) for ao in aos)
+                normto = sum(ao.sumW / float(ao.annotations["ScaledBy"]) for ao in aos) / wtot
+
     ## Loop over and combine all data objects for this path
     for ao in aos:
         ## Unscale first if normto != None
+        # TODO: Move this into the normto calculation above?
         if normto:
             ao.scaleW(1/float(ao.annotations["ScaledBy"]))
         ## Combine as far as supported by this data type
@@ -96,8 +104,6 @@ for p, aos in analysisobjects_in.iteritems():
             analysisobjects_out[p] = ao
         elif hasattr(ao, "__iadd__"):
             analysisobjects_out[p] += ao
-        # elif hasattr(ao, "__add__"):
-        #     analysisobjects_out[p] = ao + analysisobjects_out[p]
         else:
             print "WARNING: Analysis object %s of type %s cannot be merged" % (p, str(type(ao)))
             break
