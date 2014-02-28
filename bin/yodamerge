@@ -79,11 +79,11 @@ for p, aos in analysisobjects_in.iteritems():
     normto = None
     if all(hasattr(ao, "sumW") for ao in aos):
         ## Check that there are some non-empty input histograms
-        nonzero_sumws = [ao.sumW for ao in aos if ao.sumW != 0]
+        nonzero_sumws = [ao.sumW() for ao in aos if ao.sumW() != 0]
         sumw_ref = nonzero_sumws[0] if nonzero_sumws else None
         ## Use the first non-empty histogram (if there is one) as a reference for norm comparisons
         norm_tolerance = 1e-3
-        same_norms = sumw_ref and all(abs(ao.sumW/sumw_ref - 1) < norm_tolerance for ao in aos)
+        same_norms = sumw_ref and all(abs(ao.sumW()/sumw_ref - 1) < norm_tolerance for ao in aos)
         ## Set the normto flag if possible (either because norms match or user-forced)
         if same_norms or opts.NORMALIZE_ALL:
             if not all(ao.annotations.has_key("ScaledBy") for ao in aos):
@@ -91,7 +91,7 @@ for p, aos in analysisobjects_in.iteritems():
             else:
                 ## Try to compute a target normalization from the 1/scalefactor-weighted norms of each run
                 wtot = sum(1/float(ao.annotations["ScaledBy"]) for ao in aos)
-                normto = sum(ao.sumW / float(ao.annotations["ScaledBy"]) for ao in aos) / wtot
+                normto = sum(ao.sumW() / float(ao.annotations["ScaledBy"]) for ao in aos) / wtot
 
     ## Loop over and combine all data objects for this path
     for ao in aos:
