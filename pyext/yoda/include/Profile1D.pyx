@@ -93,6 +93,10 @@ cdef class Profile1D(AnalysisObject):
 
 
     @property
+    def numBins(self):
+        return self._Profile1D().numBins()
+
+    @property
     def bins(self):
         return list(self)
 

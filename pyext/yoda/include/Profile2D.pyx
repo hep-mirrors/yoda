@@ -81,7 +81,6 @@ cdef class Profile2D(AnalysisObject):
     #             else:
     #                 p.fill(x, y, z, 1.0)
 
-
     @property
     def totalDbn(self):
         return util.new_borrowed_cls(
@@ -136,6 +135,10 @@ cdef class Profile2D(AnalysisObject):
     #    if w != 1.0:
     #        self._Profile2D().scaleW(w)
 
+
+    @property
+    def numBins(self):
+        return self._Profile2D().numBins()
 
     @property
     def bins(self):

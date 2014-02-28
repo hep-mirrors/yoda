@@ -111,7 +111,6 @@ cdef class Histo1D(AnalysisObject):
     #     for x in xs:
     #         self._Histo1D().fill(x, weight)
 
-
     @property
     def totalDbn(self):
         """The Dbn1D representing the total distribution."""
@@ -169,6 +168,10 @@ cdef class Histo1D(AnalysisObject):
         """
         self._Histo1D().normalize(normto, overflows)
 
+
+    @property
+    def numBins(self):
+        return self._Histo1D().numBins()
 
     @property
     def bins(self):

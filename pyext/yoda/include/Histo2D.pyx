@@ -91,7 +91,6 @@ cdef class Histo2D(AnalysisObject):
     #     except StopIteration:
     #         pass
 
-
     @property
     def totalDbn(self):
         return util.new_borrowed_cls(Dbn2D, &self._Histo2D().totalDbn(), self)
@@ -150,6 +149,10 @@ cdef class Histo2D(AnalysisObject):
         """
         self._Histo2D().normalize(normto, includeoverflows)
 
+
+    @property
+    def numBins(self):
+        return self._Histo2D().numBins()
 
     @property
     def bins(self):

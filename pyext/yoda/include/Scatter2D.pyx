@@ -30,11 +30,24 @@ cdef class Scatter2D(AnalysisObject):
         return util.new_borrowed_cls(
             Point2D, & self._Scatter2D().point(i), self)
 
+    def __repr__(self):
+        return "<%s '%s' %d points>" % \
+               (self.__class__.__name__, self.path,
+                len(self.points))
+
+
+    ## TODO: Not in C++... make consistent
     def copy(self, char *path=""):
         """(path="") -> Scatter2D. Clone this Scatter2D with optional new path."""
         return util.new_owned_cls(Scatter2D,
             new c.Scatter2D(deref(self._Scatter2D()), string(path)))
 
+
+    @property
+    def numPoints(self):
+        return self._Scatter2D().numPoints()
+
+    @property
     def points(self):
         return list(self)
 
