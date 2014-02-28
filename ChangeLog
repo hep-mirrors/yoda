@@ -1,6 +1,10 @@
+2014-02-28  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Adding mapping of the mkScatter functions into Python (as methods on Histo1D and Profile1D rather than the original free functions, at least for now: some Python type-identifying boilerplate is needed to make a single mkScatter function work in Python)
+
 2014-02-27  Leif Lönnblad  <Leif.Lonnblad@thep.lu.se>
 
-	* minor modifications to BinSearcher to avoid NaN's. The NaN's
+	* Minor modifications to BinSearcher to avoid NaN's. The NaN's
 	were treated correctly before, but better to avoid them all
 	together.
 

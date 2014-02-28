@@ -33,9 +33,9 @@ cdef class Histo1D(AnalysisObject):
 
 
     # There is a pythonic constructor here, and it looks a little like...
-    # __init__(self, *args, **kwargs)
-    # ([edge], path="", title="")
-    # ([bins], **kwargs)
+    #   __init__(self, *args, **kwargs)
+    #   ([edge], path="", title="")
+    #   ([bins], **kwargs)
 
 
     def __init__(self, *args, **kwargs):
@@ -64,11 +64,8 @@ cdef class Histo1D(AnalysisObject):
 
 
     def __getitem__(self, py_ix):
-        cdef size_t i = util.pythonic_index(
-            py_ix, self._Histo1D().numBins())
-
-        return util.new_borrowed_cls(
-            HistoBin1D, & self._Histo1D().bin(i), self)
+        cdef size_t i = util.pythonic_index(py_ix, self._Histo1D().numBins())
+        return util.new_borrowed_cls(HistoBin1D, & self._Histo1D().bin(i), self)
 
 
     def __repr__(self):
@@ -86,6 +83,7 @@ cdef class Histo1D(AnalysisObject):
         """
         self._Histo1D().reset()
 
+
     def copy(self, char *path=""):
         """(path="") -> Histo1D. Clone this Histo1D with optional new path."""
         return util.new_owned_cls(Histo1D,
@@ -99,8 +97,10 @@ cdef class Histo1D(AnalysisObject):
         """
         self._Histo1D().fill(x, weight)
 
+
     def fillBin(self, size_t i, weight=1.0):
         self._Histo1D().fillBin(i, weight)
+
 
     # # TODO: HACK HACK HACK HACK HACK
     # def fill_many(self, xs, weight=1.0):
@@ -215,6 +215,12 @@ cdef class Histo1D(AnalysisObject):
         cdef double a, b
         for a, b in tuples:
             self._Histo1D().addBin(a, b)
+
+
+    def mkScatter(self):
+        "Convert this Histo1D to a Scatter2D"
+        cdef c.Scatter2D s2 = c.mkScatter_Histo1D(deref(self._Histo1D()))
+        return util.new_owned_cls(Scatter2D, new c.Scatter2D(s2, s2.path()))
 
 
     ## In-place special methods

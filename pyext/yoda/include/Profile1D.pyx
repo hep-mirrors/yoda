@@ -2,11 +2,11 @@
 #TODO: introduce better constructors
 
 cdef class Profile1D(AnalysisObject):
-    cdef inline c.Profile1D *_Profile1D(self) except NULL:
+    cdef inline c.Profile1D* _Profile1D(self) except NULL:
         return <c.Profile1D*> self.ptr()
 
     def __init__(self, *args, **kwargs):
-        #TODO: convert to the new-style Profile1D
+        # TODO: convert to the new-style Profile1D
         if len(args) <= 2:
             self.__init2(*args)
         elif len(args) >= 3:
@@ -114,6 +114,13 @@ cdef class Profile1D(AnalysisObject):
 
     def rebin(self, int n):
         self._Profile1D().rebin(n)
+
+
+    def mkScatter(self):
+        "Convert this Profile1D to a Scatter2D"
+        cdef c.Scatter2D s2 = c.mkScatter_Profile1D(deref(self._Profile1D()))
+        return util.new_owned_cls(Scatter2D, new c.Scatter2D(s2, s2.path()))
+
 
 
     def __iadd__(Profile1D self, Profile1D other):
