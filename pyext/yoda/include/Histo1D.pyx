@@ -1,49 +1,37 @@
 
 cdef class Histo1D(AnalysisObject):
     """
-    1D histogram. Complete histogramming is supported, including
-    uniform/regular binning, variable-width bininng, unbinned gaps in
-    the covered range, and under/overflows. Rebinning by integer
-    factors, or by explicit merging of contiguous bins is also
-    supported.
+    1D histogram, with distinction between bin areas and heights.
 
-    Rescaling of weights and/or the x axis is permitted in-place: the
-    result is still a valid Histo1D. Binning-compatible 1D histograms
-    may be divided, resulting in a Scatter2D since further fills would
-    not be meaningful.
+    Complete histogram binning is supported, including uniform/regular binning,
+    variable-width binning, unbinned gaps in the covered range, and
+    under/overflows. Rebinning by integer factors, or by explicit merging of
+    contiguous bins is also supported.
+
+    Rescaling of weights and/or the x axis is permitted in-place: the result is
+    still a valid Histo1D. Binning-compatible 1D histograms may be divided,
+    resulting in a Scatter2D since further fills would not be meaningful.
 
     Several sets of arguments are tried by the constructor in the
     following order.
 
-    Histo1D(path="", title=""). Construct a histogram with optional path
-    and title but no bins.
+    Histo1D(path="", title="").
+      Construct a histogram with optional path and title but no bins.
 
-    Histo1D(B, path="", title=""). Construct a histogram from an
-    iterator of bins, B.
-
-    Histo1D(E, path="", title=""). Construct a histogram from an
-    iterator of edges, E.
-
-    Should this constructor fail, then
     Histo1D(nbins, low, high, path="", title="")
+      Construct a histogram with optional path and title, and nbins bins
+      uniformly distributed between low and high.
+
+    Histo1D(B, path="", title="").
+      Construct a histogram with optional path and title, from an
+      iterator of bins, B.
     """
 
     cdef inline c.Histo1D* _Histo1D(self) except NULL:
         return <c.Histo1D*> self.ptr()
 
 
-    # There is a pythonic constructor here, and it looks a little like...
-    #   __init__(self, *args, **kwargs)
-    #   ([edge], path="", title="")
-    #   ([bins], **kwargs)
-
-
     def __init__(self, *args, **kwargs):
-        # Multimethod constructors are blatantly unpythonic. However,
-        # doing something like the inbuilt collections do would be
-        # really neat. So we will use an iterable of bins in place of
-        # the "from other type" constructors, and have a copy() method
-        # which has exactly the same semantics.
         util.try_loop([self.__init2, self.__init5, self.__init3], *args, **kwargs)
 
     def __init2(self, char *path="", char *title=""):
@@ -53,19 +41,16 @@ cdef class Histo1D(AnalysisObject):
         util.set_owned_ptr(self, new c.Histo1D(nbins, low, high, string(path), string(title)))
 
     def __init3(self, bins, char *path="", char *title=""):
-        # Make an iterator over bins. We might as well make our code
-        # general, as that increases pythonicity.
         self.__init2(path, title)
         self.addBins(bins)
 
 
-    def __len__(self):
-        return self._Histo1D().numBins()
+    # def __len__(self):
+    #     return self._Histo1D().numBins()
 
-
-    def __getitem__(self, py_ix):
-        cdef size_t i = util.pythonic_index(py_ix, self._Histo1D().numBins())
-        return util.new_borrowed_cls(HistoBin1D, & self._Histo1D().bin(i), self)
+    # def __getitem__(self, py_ix):
+    #     cdef size_t i = util.pythonic_index(py_ix, self._Histo1D().numBins())
+    #     return util.new_borrowed_cls(HistoBin1D, & self._Histo1D().bin(i), self)
 
 
     def __repr__(self):
@@ -78,38 +63,29 @@ cdef class Histo1D(AnalysisObject):
 
 
     def reset(self):
-        """
+        """None -> None.
         Reset the histogram but leave the bin structure.
         """
         self._Histo1D().reset()
 
 
-    def copy(self, char *path=""):
-        """(path="") -> Histo1D. Clone this Histo1D with optional new path."""
-        return util.new_owned_cls(Histo1D,
-            new c.Histo1D(deref(self._Histo1D()), string(path)))
+    def clone(self):
+        """None -> Histo1D.
+        Clone this Histo1D with optional new path."""
+        return util.new_owned_cls(Histo1D, self._Histo1D().newclone())
 
 
     def fill(self, x, weight=1.0):
-        """
-        (x, weight=1.0) -> None. Fill with given x and optional weight.
-
-        """
+        """(x,[w]) -> None.
+        Fill with given x value and optional weight."""
         self._Histo1D().fill(x, weight)
 
 
-    def fillBin(self, size_t i, weight=1.0):
-        self._Histo1D().fillBin(i, weight)
+    def fillBin(self, size_t ix, weight=1.0):
+        """(ix,[w]) -> None.
+        Fill bin ix and optional weight."""
+        self._Histo1D().fillBin(ix, weight)
 
-
-    # # TODO: HACK HACK HACK HACK HACK
-    # def fill_many(self, xs, weight=1.0):
-    #     """
-    #     (x, weight=1.0) -> None. Fill with given x and optional weight.
-
-    #     """
-    #     for x in xs:
-    #         self._Histo1D().fill(x, weight)
 
     @property
     def totalDbn(self):
@@ -128,53 +104,61 @@ cdef class Histo1D(AnalysisObject):
 
 
     def integral(self, overflows=True):
+        """Histogram integral, optionally excluding the overflows."""
         return self._Histo1D().integral(overflows)
 
     def numEntries(self): # add overflows arg
+        """Number of times this histogram was filled."""
         return self._Histo1D().numEntries()
 
     def effNumEntries(self): # add overflows arg
+        """Effective number of times this histogram was filled, computed from weights."""
         return self._Histo1D().effNumEntries()
 
     def sumW(self, overflows=True):
+        """Sum of weights filled into this histogram, optionally excluding the overflows."""
         return self._Histo1D().sumW(overflows)
 
     def sumW2(self, overflows=True):
+        """Sum of weights filled into this histogram, optionally excluding the overflows."""
         return self._Histo1D().sumW2(overflows)
 
     def mean(self, overflows=True):
+        """Mean x of the histogram, optionally excluding the overflows."""
         return self._Histo1D().mean(overflows)
 
     def variance(self, overflows=True):
+        """Variance in x of the histogram, optionally excluding the overflows."""
         return self._Histo1D().variance(overflows)
 
     def stdDev(self, overflows=True):
+        """Standard deviation in x of the histogram, optionally excluding the overflows."""
         return self._Histo1D().stdDev(overflows)
 
     def stdErr(self, overflows=True):
+        """Standard error on the mean x of the histogram, optionally excluding the overflows."""
         return self._Histo1D().stdErr(overflows)
 
 
     def scaleW(self, w):
-        """
-        (float) -> None. Scale the histogram and its statistics as if all
-        weights had been scaled by given factor.
-        """
+        """ (float) -> None.
+        Rescale the weights in this histogram by the factor w."""
         self._Histo1D().scaleW(w)
 
     def normalize(self, normto=1.0, overflows=True):
-        """
-        (float, bool) -> None. Normalize the histogram.
-        """
+        """ (float, bool) -> None.
+        Normalize the histogram."""
         self._Histo1D().normalize(normto, overflows)
 
 
     @property
     def numBins(self):
+        """Number of bins (not including overflows)."""
         return self._Histo1D().numBins()
 
     @property
     def bins(self):
+        """Access the ordered bins list."""
         return list(self)
 
     # @property
@@ -183,15 +167,18 @@ cdef class Histo1D(AnalysisObject):
     #                       self._Histo1D().highEdge())
 
     def mergeBins(self, ia, ib):
-        """mergeBins(ia, ib) -> None. Merge bins from indices ia through ib."""
+        """mergeBins(ia, ib) -> None.
+        Merge bins from indices ia through ib."""
         self._Histo1D().mergeBins(ia, ib)
 
     def rebin(self, n):
-        """(n) -> None. Merge every nth bin."""
+        """(n) -> None.
+        Merge every group of n bins together."""
         self._Histo1D().rebin(n)
 
     def addBin(self, low, high):
-        """(low, high) -> None. Add a bin."""
+        """(low, high) -> None.
+        Add a bin."""
         self._Histo1D().addBin(low, high)
 
     def addBins(self, edges_or_bins):
@@ -221,9 +208,11 @@ cdef class Histo1D(AnalysisObject):
 
 
     def mkScatter(self):
-        "Convert this Histo1D to a Scatter2D"
+        """None -> Scatter2D.
+        Convert this Histo1D to a Scatter2D, with y representing bin heights
+        (not sumW) and height errors."""
         cdef c.Scatter2D s2 = c.mkScatter_Histo1D(deref(self._Histo1D()))
-        return util.new_owned_cls(Scatter2D, new c.Scatter2D(s2, s2.path()))
+        return util.new_owned_cls(Scatter2D, s2.newclone())
 
 
     ## In-place special methods
@@ -231,12 +220,15 @@ cdef class Histo1D(AnalysisObject):
     def __iadd__(Histo1D self, Histo1D other):
         c.Histo1D_iadd_Histo1D(self._Histo1D(), other._Histo1D())
         return self
+
     def __isub__(Histo1D self, Histo1D other):
         c.Histo1D_isub_Histo1D(self._Histo1D(), other._Histo1D())
         return self
+
     # def __imul__(Histo1D self, double x):
     #     c.Histo1D_imul_dbl(self._Histo1D(), x)
     #     return self
+
     # def __idiv__(Histo1D self, double x):
     #     c.Histo1D_idiv_dbl(self._Histo1D(), x)
     #     return self

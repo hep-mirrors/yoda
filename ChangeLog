@@ -1,5 +1,8 @@
 2014-03-06  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Better documentation and consistency of Histo and Profile Python
+	wrappers, and removing some inappropriate attributes.
+
 	* Adding clone() and newclone() functions to all analysis object classes.
 
 2014-02-28  Andy Buckley  <andy.buckley@cern.ch>

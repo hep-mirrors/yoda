@@ -100,62 +100,69 @@ cdef class Histo2D(AnalysisObject):
 
 
     def integral(self, overflows=True):
+        """Histogram integral, optionally excluding the overflows."""
         return self._Histo2D().integral(overflows)
 
     def numEntries(self): # add overflows arg
+        """Number of times this histogram was filled."""
         return self._Histo2D().numEntries()
 
     def effNumEntries(self): # add overflows arg
+        """Effective number of times this histogram was filled, computed from weights."""
         return self._Histo2D().effNumEntries()
 
     def sumW(self, overflows=True):
+        """Sum of weights filled into this histogram."""
         return self._Histo2D().sumW(overflows)
 
     def sumW2(self, overflows=True):
+        """Sum of squared weights filled into this histogram."""
         return self._Histo2D().sumW2(overflows)
 
     def mean(self, overflows=True):
+        """Mean (x,y) of the histogram, optionally excluding the overflows."""
         return util.XY(
             self._Histo2D().xMean(overflows),
             self._Histo2D().yMean(overflows))
 
     def variance(self, overflows=True):
+        """Variances in (x,y) of the histogram, optionally excluding the overflows."""
         return util.XY(
             self._Histo2D().xVariance(overflows),
             self._Histo2D().yVariance(overflows))
 
     def stdDev(self, overflows=True):
+        """Standard deviations in (x,y) of the histogram, optionally excluding the overflows."""
         return util.XY(
             self._Histo2D().xStdDev(overflows),
             self._Histo2D().yStdDev(overflows))
 
     def stdErr(self, overflows=True):
+        """Standard errors on the mean (x,y) of the histogram, optionally excluding the overflows."""
         return util.XY(
             self._Histo2D().xStdErr(overflows),
             self._Histo2D().yStdErr(overflows))
 
 
     def scaleW(self, w):
-        """
-        (w=1.0) -> None
-
-        Scale the given parameters
-        """
+        """ (float) -> None.
+        Rescale the weights in this histogram by the factor w."""
         self._Histo2D().scaleW(w)
 
     def normalize(self, double normto, bint includeoverflows=True):
-        """
-        (float, bool) -> None. Normalize the histogram.
-        """
+        """ (float, bool) -> None.
+        Normalize the histogram."""
         self._Histo2D().normalize(normto, includeoverflows)
 
 
     @property
     def numBins(self):
+        """Number of bins (not including overflows)."""
         return self._Histo2D().numBins()
 
     @property
     def bins(self):
+        """Access the ordered bins list."""
         return list(self)
 
     def addBin(self, xlow, xhigh, ylow, yhigh):
@@ -169,11 +176,18 @@ cdef class Histo2D(AnalysisObject):
             self._Histo2D().addBin(pair[double, double](xlow, xhigh),
                                    pair[double, double](ylow, yhigh))
 
-    #def mergeBins(self, size_t a, size_t b):
-    #    self._Histo2D().mergeBins(a, b)
+    # def mergeBins(self, size_t a, size_t b):
+    #     self._Histo2D().mergeBins(a, b)
 
-    #def rebin(self, int n):
-    #    self._Histo2D().rebin(n)
+    # def rebin(self, int n):
+    #     self._Histo2D().rebin(n)
+
+
+    def mkScatter(self):
+        "Convert this Histo2D to a Scatter3D"
+        raise Exception("TODO: Not yet implemented!")
+        # cdef c.Scatter2D s2 = c.mkScatter_Profile1D(deref(self._Profile1D()))
+        # return util.new_owned_cls(Scatter2D, s2.newclone())
 
 
     def __iadd__(Histo2D self, Histo2D other):

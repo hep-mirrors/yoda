@@ -95,53 +95,36 @@ cdef class Profile2D(AnalysisObject):
     #    return self._Profile2D().integral(overflows)
 
     def numEntries(self): # add overflows arg
+        """Number of times this histogram was filled."""
         return self._Profile2D().numEntries()
 
     def effNumEntries(self): # add overflows arg
+        """Effective number of times this histogram was filled, computed from weights."""
         return self._Profile2D().effNumEntries()
 
     def sumW(self, overflows=True):
+        """Sum of weights filled into this histogram."""
         return self._Profile2D().sumW(overflows)
 
     def sumW2(self, overflows=True):
+        """Sum of squared weights filled into this histogram."""
         return self._Profile2D().sumW2(overflows)
 
-    #def mean(self, overflows=True):
-    #    return XY(
-    #        self._Profile2D().xMean(overflows),
-    #        self._Profile2D().yMean(overflows))
 
-    #def variance(self, overflows=True):
-    #    return XY(
-    #        self._Profile2D().xVariance(overflows),
-    #        self._Profile2D().yVariance(overflows))
-
-    #def std_dev(self, overflows=True):
-    #    return XY(
-    #        self._Profile2D().xStdDev(overflows),
-    #        self._Profile2D().yStdDev(overflows))
-
-    #def std_err(self, overflows=True):
-    #    return XY(
-    #        self._Profile2D().xStdErr(overflows),
-    #        self._Profile2D().yStdErr(overflows))
-
-
-    #def scale(self, double w=1.0):
-    #    """
-    #    (w=1.0) -> None
-
-    #    """
-    #    if w != 1.0:
-    #        self._Profile2D().scaleW(w)
+    def scaleW(self, w):
+        """ (float) -> None.
+        Rescale the weights in this histogram by the factor w."""
+        self._Profile2D().scaleW(w)
 
 
     @property
     def numBins(self):
+        """Number of bins (not including overflows)."""
         return self._Profile2D().numBins()
 
     @property
     def bins(self):
+        """Access the ordered bins list."""
         return list(self)
 
     def bin_by_coord(self, x, y):
@@ -166,14 +149,19 @@ cdef class Profile2D(AnalysisObject):
         self._Profile2D().addBins(_xcuts, _ycuts)
         return self
 
-    #def merge_bins(self, size_t a, size_t b):
-    #    self._Profile2D().mergeBins(a, b)
 
-    # NOTE: Cython 0.17 will be bringing automatic conversion between python and
-    # C++ -- will be very nice here.
+    # def mergeBins(self, size_t a, size_t b):
+    #     self._Profile2D().mergeBins(a, b)
 
-    #def rebin(self, int n):
-    #    self._Profile2D().rebin(n)
+    # def rebin(self, int n):
+    #     self._Profile2D().rebin(n)
+
+
+    def mkScatter(self):
+        "Convert this Profile2D to a Scatter3D"
+        raise Exception("TODO: Not yet implemented!")
+        # cdef c.Scatter2D s2 = c.mkScatter_Profile1D(deref(self._Profile1D()))
+        # return util.new_owned_cls(Scatter2D, s2.newclone())
 
 
     def __iadd__(Profile2D self, Profile2D other):
