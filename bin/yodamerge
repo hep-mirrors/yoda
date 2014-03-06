@@ -69,10 +69,7 @@ for fa in fileargs:
             sys.stderr.write("Error processing arg '%s' with file:scale format\n" % fa)
     aos = yoda.read(filename)
     for aopath, ao in aos.iteritems():
-        if hasattr(ao, "scaleW") and scale != 1.0:
-            ao.scaleW(scale)
-        elif type(ao) is yoda.Scatter2D:
-            ao.scale(1.0, scale)
+        ao.setAnnotation("yodamerge_scale", scale)
         analysisobjects_in.setdefault(aopath, []).append(ao)
 
 analysisobjects_out = {}
@@ -102,6 +99,13 @@ for p, aos in analysisobjects_in.iteritems():
                 ## Try to compute a target normalization from the 1/scalefactor-weighted norms of each run
                 wtot = sum(1/float(ao.annotations["ScaledBy"]) for ao in aos)
                 normto = sum(ao.sumW() / float(ao.annotations["ScaledBy"]) for ao in aos) / wtot
+        ## Now that the normalization identifying heuristic is done, apply requested scaling
+        scale = float(ao.annotation("yodamerge_scale"))
+        if hasattr(ao, "scaleW") and scale != 1.0:
+            ao.scaleW(scale)
+        elif type(ao) is yoda.Scatter2D:
+            ao.scale(1.0, scale)
+        scale = ao.rmAnnotation("yodamerge_scale")
 
     ## Loop over and combine all data objects for this path
     for ao in aos:

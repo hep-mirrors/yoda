@@ -1,20 +1,13 @@
-from cython.operator cimport dereference as deref, preincrement as preinc
-from cStringIO import StringIO
 
-# Useful helper function to avoid hoops in Cython's type system
-# TODO: Necessary?
-cdef void set_annotation(c.AnalysisObject *ana, char *k, char *v):
-    ana.setAnnotation(string(k), string(v))
-
-
-# AnalysisObject is the base class of most of the user facing objects
 cdef class AnalysisObject(util.Base):
-
+    """
+    AnalysisObject is the base class of the main user-facing objects, such as
+    the Histo, Profile and Scatter classes.
+    """
 
     # Pointer upcasting mechanism
     cdef inline c.AnalysisObject *_AnalysisObject(self) except NULL:
         return <c.AnalysisObject *> self.ptr()
-
 
     # Deallocator (only needed as a base class)
     def __dealloc__(self):
@@ -23,13 +16,13 @@ cdef class AnalysisObject(util.Base):
             del p
 
 
+    # TODO: use a proxy object so that this could also be *modified* as a dict... or hide
     @property
     def annotations(self):
-        """
+        """() -> dict
         Key value pairs of metadata, returned as a Python dictionary.
-
-        """
-        # TODO: It would be best if this was returned by reference so that it could also be *modified* as a dict
+        Note that this is read-only: changes to the dict will not be stored."""
+        from cython.operator cimport dereference as deref, preincrement as preinc
         ana = self._AnalysisObject().annotations()
         it = ana.begin()
         out_dict = {}
@@ -39,68 +32,65 @@ cdef class AnalysisObject(util.Base):
         return out_dict
 
 
-    def updateAnnotations(self, E=None, **F):
-        # TODO: Yuck!
-        """
-        AO.update([E, ]**F) -> None.  Update annotations of AO from
-        dict/iterable E and F. Has the same semantics as Python's
-        dict.update(...).
+    # # TODO: Yuck! Get rid of this
+    # def updateAnnotations(self, E=None, **F):
+    #     """
+    #     AO.update([E, ]**F) -> None.  Update annotations of AO from
+    #     dict/iterable E and F. Has the same semantics as Python's
+    #     dict.update(...).
 
-        If E present and has a .keys() method:
-            for k in E: AO[k] = E[k]
-        If E present and lacks .keys() method:
-            for (k, v) in E: AO[k] = v
-        In either case, this is followed by:
-            for k in F: AO[k] = F[k]
-        """
-        AO = self._AnalysisObject()
-        if E is not None:
-            if hasattr(E, 'keys'):
-                for k in E:
-                    # TODO: reinstate with str cast: set_annotation(AO, k, str(E[k]))
-                    set_annotation(AO, k, E[k])
-            else:
-                for k, v in E:
-                    # TODO: reinstate with str cast: set_annotation(AO, k, str(v))
-                    set_annotation(AO, k, v)
-
-        for k in F:
-            # TODO: reinstate with str cast: set_annotation(AO, k, str(F[k]))
-            set_annotation(AO, k, F[k])
-
-
-    # string annotation(string key) except+ err
-    # string annotation(string key, string default) except+ err
-
-
-    def setAnnotation(self, k, v):
-        AO = self._AnalysisObject()
-        set_annotation(AO, k, v)
-
-
-    # def hasAnnotation(self, k):
+    #     If E present and has a .keys() method:
+    #         for k in E: AO[k] = E[k]
+    #     If E present and lacks .keys() method:
+    #         for (k, v) in E: AO[k] = v
+    #     In either case, this is followed by:
+    #         for k in F: AO[k] = F[k]
+    #     """
     #     AO = self._AnalysisObject()
-    #     return AO.hasAnnotation(string(k))
+    #     if E is not None:
+    #         if hasattr(E, 'keys'):
+    #             for k in E:
+    #                 # TODO: reinstate with str cast: set_annotation(AO, k, str(E[k]))
+    #                 set_annotation(AO, k, E[k])
+    #         else:
+    #             for k, v in E:
+    #                 # TODO: reinstate with str cast: set_annotation(AO, k, str(v))
+    #                 set_annotation(AO, k, v)
+
+    #     for k in F:
+    #         # TODO: reinstate with str cast: set_annotation(AO, k, str(F[k]))
+    #         set_annotation(AO, k, F[k])
 
 
-    # def rmAnnotation(self, k):
-    #     AO = self._AnalysisObject()
-    #     return AO.rmAnnotation(string(k))
+    def annotation(self, string k, default=None):
+        """Get annotation k from this object (falling back to default if not set)."""
+        try:
+            return util._autotype(self._AnalysisObject().annotation(string(k)))
+        except:
+            return default
 
+    def setAnnotation(self, string k, v):
+        """Set annotation k on this object."""
+        self._AnalysisObject().setAnnotation(k, util._autostr(v))
+
+    def hasAnnotation(self, string k):
+        """Check if this object has annotation k."""
+        return self._AnalysisObject().hasAnnotation(string(k))
+
+    def rmAnnotation(self, string k):
+        """Remove annotation k from this object."""
+        self._AnalysisObject().rmAnnotation(string(k))
 
     def clearAnnotations(self):
-        AO = self._AnalysisObject()
-        AO.clearAnnotations()
+        """Clear the annotations dictionary."""
+        self._AnalysisObject().clearAnnotations()
 
 
-
-    def string(self):
-        """
-        A human readable representation of this object as it would be
-        stored in a YODA file.
-        """
+    def dump(self):
+        """A human readable representation of this object."""
+        from cStringIO import StringIO
         f = StringIO()
-        writeYODA([self], f)
+        writeFLAT([self], f)
         f.seek(0)
         return f.read().strip()
 
@@ -110,7 +100,6 @@ cdef class AnalysisObject(util.Base):
         Used for persistence and as a unique identifier. Must begin with
         a '/' if not the empty string.
         """
-
         def __get__(self):
             return self._AnalysisObject().path().c_str()
 
@@ -119,6 +108,9 @@ cdef class AnalysisObject(util.Base):
 
 
     property title:
+        """
+        Convenient access to the histogram title (optional).
+        """
         def __get__(self):
             return self._AnalysisObject().title().c_str()
 

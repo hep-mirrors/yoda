@@ -1,8 +1,32 @@
-#from collections import namedtuple
+# from collections import namedtuple
 from operator import itemgetter
+
+def _autotype(var):
+    """Automatically convert strings to numerical types if possible."""
+    if type(var) is not str:
+        return var
+    if var.isdigit() or (var.startswith("-") and var[1:].isdigit()):
+        return int(var)
+    try:
+        f = float(var)
+        return f
+    except ValueError:
+        return var
+
+def _autostr(var, precision=8):
+    """Automatically format numerical types as the right sort of string."""
+    if type(var) is float:
+        return ("% ." + str(precision) + "e") % var
+    elif not hasattr(var, "__iter__"):
+        return str(var)
+    else:
+        return ",".join(_autostr(subval) for subval in var)
+
+
 
 cdef class Base:
     pass
+
 
 def try_loop(fs, *args, char *_msg='Invalid arguments', **kwargs):
     for f in fs:
@@ -11,10 +35,10 @@ def try_loop(fs, *args, char *_msg='Invalid arguments', **kwargs):
             return
         except TypeError:
             pass
-
     raise TypeError(_msg)
 
 
+# TODO: remove
 class Edges(tuple):
     'Edges(low, high)'
 
@@ -105,7 +129,8 @@ class Errors(tuple):
 
 #Edges = namedtuple('Edges', ('low', 'high'))
 #Errors = namedtuple('Errors', ('minus', 'plus'))
-#XY = namedtuple('XY', ('x', 'y'))
+
+
 class XY(tuple):
     'XY(x, y)'
 

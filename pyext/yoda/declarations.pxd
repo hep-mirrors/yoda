@@ -477,11 +477,10 @@ cdef extern from "YODA/AnalysisObject.h" namespace "YODA":
                        AnalysisObject ao,
                        string title) except+ err
         AnalysisObject()
-        # AnalysisObject* newclone() except+ err
+        #AnalysisObject* newclone() except+ err
 
         # Annotations
         map[string, string] annotations() except+ err
-
         bool hasAnnotation(string key) except+ err
         string annotation(string key) except+ err
         string annotation(string key, string default) except+ err
