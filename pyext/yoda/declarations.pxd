@@ -548,6 +548,8 @@ cdef extern from "YODA/Scatter2D.h" namespace "YODA":
         Scatter2D combineWith(Scatter2D)
         Scatter2D combineWith(vector[Scatter2D])
 
+        void scale(double, double)
+
     void Scatter2D_transformX "YODA::transformX" (Scatter2D&, dbl_dbl_fptr)
     void Scatter2D_transformY "YODA::transformY" (Scatter2D&, dbl_dbl_fptr)
 

@@ -89,6 +89,11 @@ cdef class Scatter2D(AnalysisObject):
             self._Scatter2D().combineWith(deref(other._Scatter2D()))
 
 
+    def scale(self, ax, ay):
+        """(float,float) -> None
+        Scale the x values and errors of the points in this scatter by factors ax, ay."""
+        self._Scatter2D().scale(ax, ay)
+
     def transformX(self, f):
         """(fn) -> None
         Transform the x values and errors of the points in this scatter by function f."""

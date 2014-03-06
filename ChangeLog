@@ -1,5 +1,7 @@
 2014-03-06  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Adding rescaling arguments to yodamerge (and scale function to Python Scatter2D).
+
 	* Better documentation and consistency of Histo and Profile Python
 	wrappers, and removing some inappropriate attributes.
 

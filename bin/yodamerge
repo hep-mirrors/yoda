@@ -50,19 +50,29 @@ TODO:
    _could_ partially work, although won't include all statistical weights.
 """
 
-import yoda, optparse, operator, itertools
+import yoda, optparse, operator, itertools, sys
 
 parser = optparse.OptionParser(usage=__doc__)
 parser.add_option('-o', '--output', default='-', dest='OUTPUT_FILE')
 parser.add_option('-N', '--normalize-all', action="store_true", default=False, dest='NORMALIZE_ALL')
-opts, filenames = parser.parse_args()
+opts, fileargs = parser.parse_args()
 
-## Put the incoming objects into a dict from each path to a list of histos
+## Put the incoming objects into a dict from each path to a list of histos and scalings
 analysisobjects_in = {}
-for filename in filenames:
-    # TODO: also accept AIDA, ROOT, ... inputs?
-    aos = yoda.readYODA(filename)
+for fa in fileargs:
+    filename, scale = fa, 1.0
+    if ":" in fa:
+        try:
+            filename, scale = fa.rsplit(":", 1)
+            scale = float(scale)
+        except:
+            sys.stderr.write("Error processing arg '%s' with file:scale format\n" % fa)
+    aos = yoda.read(filename)
     for aopath, ao in aos.iteritems():
+        if hasattr(ao, "scaleW") and scale != 1.0:
+            ao.scaleW(scale)
+        elif type(ao) is yoda.Scatter2D:
+            ao.scale(1.0, scale)
         analysisobjects_in.setdefault(aopath, []).append(ao)
 
 analysisobjects_out = {}
