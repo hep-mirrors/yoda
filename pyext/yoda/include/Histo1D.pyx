@@ -64,14 +64,13 @@ cdef class Histo1D(AnalysisObject):
 
     def reset(self):
         """None -> None.
-        Reset the histogram but leave the bin structure.
-        """
+        Reset the histogram but leave the bin structure."""
         self._Histo1D().reset()
 
 
     def clone(self):
         """None -> Histo1D.
-        Clone this Histo1D with optional new path."""
+        Clone this Histo1D."""
         return util.new_owned_cls(Histo1D, self._Histo1D().newclone())
 
 
@@ -89,54 +88,66 @@ cdef class Histo1D(AnalysisObject):
 
     @property
     def totalDbn(self):
-        """The Dbn1D representing the total distribution."""
+        """None -> Dbn1D
+        The Dbn1D representing the total distribution."""
         return util.new_borrowed_cls(Dbn1D, &self._Histo1D().totalDbn(), self)
 
     @property
     def underflow(self):
-        """The Dbn1D representing the underflow distribution."""
+        """None -> Dbn1D
+        The Dbn1D representing the underflow distribution."""
         return util.new_borrowed_cls(Dbn1D, &self._Histo1D().underflow(), self)
 
     @property
     def overflow(self):
-        """The Dbn1D representing the overflow distribution."""
+        """None -> Dbn1D
+        The Dbn1D representing the overflow distribution."""
         return util.new_borrowed_cls(Dbn1D, &self._Histo1D().overflow(), self)
 
 
     def integral(self, overflows=True):
-        """Histogram integral, optionally excluding the overflows."""
+        """([bool]) -> float
+        Histogram integral, optionally excluding the overflows."""
         return self._Histo1D().integral(overflows)
 
     def numEntries(self): # add overflows arg
-        """Number of times this histogram was filled."""
+        """None -> int
+        Number of times this histogram was filled."""
         return self._Histo1D().numEntries()
 
     def effNumEntries(self): # add overflows arg
-        """Effective number of times this histogram was filled, computed from weights."""
+        """None -> float
+        Effective number of times this histogram was filled, computed from weights."""
         return self._Histo1D().effNumEntries()
 
     def sumW(self, overflows=True):
-        """Sum of weights filled into this histogram, optionally excluding the overflows."""
+        """([bool]) -> float
+        Sum of weights filled into this histogram, optionally excluding the overflows."""
         return self._Histo1D().sumW(overflows)
 
     def sumW2(self, overflows=True):
-        """Sum of weights filled into this histogram, optionally excluding the overflows."""
+        """([bool]) -> float
+        Sum of weights filled into this histogram, optionally excluding the overflows."""
         return self._Histo1D().sumW2(overflows)
 
     def mean(self, overflows=True):
-        """Mean x of the histogram, optionally excluding the overflows."""
+        """([bool]) -> float
+        Mean x of the histogram, optionally excluding the overflows."""
         return self._Histo1D().mean(overflows)
 
     def variance(self, overflows=True):
-        """Variance in x of the histogram, optionally excluding the overflows."""
+        """([bool]) -> float
+        Variance in x of the histogram, optionally excluding the overflows."""
         return self._Histo1D().variance(overflows)
 
     def stdDev(self, overflows=True):
-        """Standard deviation in x of the histogram, optionally excluding the overflows."""
+        """([bool]) -> float
+        Standard deviation in x of the histogram, optionally excluding the overflows."""
         return self._Histo1D().stdDev(overflows)
 
     def stdErr(self, overflows=True):
-        """Standard error on the mean x of the histogram, optionally excluding the overflows."""
+        """([bool]) -> float
+        Standard error on the mean x of the histogram, optionally excluding the overflows."""
         return self._Histo1D().stdErr(overflows)
 
 
@@ -153,7 +164,8 @@ cdef class Histo1D(AnalysisObject):
 
     @property
     def numBins(self):
-        """Number of bins (not including overflows)."""
+        """() -> int
+        Number of bins (not including overflows)."""
         return self._Histo1D().numBins()
 
     @property
@@ -182,6 +194,8 @@ cdef class Histo1D(AnalysisObject):
         self._Histo1D().addBin(low, high)
 
     def addBins(self, edges_or_bins):
+        """Add several bins."""
+        # TODO: simplify / make consistent
         arg = list(edges_or_bins)
         util.try_loop([self.__addBins_edges,
                        self.__addBins_tuples,

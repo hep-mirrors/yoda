@@ -1,10 +1,17 @@
-#TODO: Tidy up + docstrings etc.
-
-
 cdef class Scatter2D(AnalysisObject):
     """
-    2D Scatter plot.
+    2D scatter plot, i.e. a collection of Point2D objects with positions and errors.
 
+    Constructor calling idioms:
+
+    Scatter2D(path="", title="")
+      Create a new empty scatter, with optional path and title.
+
+    Scatter2D(points, path="", title=""):
+      Create a new empty scatter from an iterable of points, with optional path
+      and title.
+
+    TODO: more documentation!
     """
 
     cdef inline c.Scatter2D* _Scatter2D(self) except NULL:
@@ -20,42 +27,38 @@ cdef class Scatter2D(AnalysisObject):
         self.__init_2(path, title)
         self.addPoints(points)
 
-    def __len__(self):
-        return self._Scatter2D().numPoints()
 
-    def __getitem__(self, py_ix):
-        cdef size_t i = util.pythonic_index(
-            py_ix, self._Scatter2D().numPoints())
+    # def __len__(self):
+    #     return self._Scatter2D().numPoints()
 
-        return util.new_borrowed_cls(
-            Point2D, & self._Scatter2D().point(i), self)
+    # def __getitem__(self, py_ix):
+    #     cdef size_t i = util.pythonic_index(py_ix, self._Scatter2D().numPoints())
+    #     return util.new_borrowed_cls(Point2D, & self._Scatter2D().point(i), self)
 
     def __repr__(self):
         return "<%s '%s' %d points>" % \
-               (self.__class__.__name__, self.path,
-                len(self.points))
+               (self.__class__.__name__, self.path, len(self.points))
 
 
-    ## TODO: Not in C++... make consistent
-    def copy(self, char *path=""):
-        """(path="") -> Scatter2D. Clone this Scatter2D with optional new path."""
-        return util.new_owned_cls(Scatter2D,
-            new c.Scatter2D(deref(self._Scatter2D()), string(path)))
+    def clone(self):
+        """() -> Scatter2D.
+        Clone this Scatter2D."""
+        return util.new_owned_cls(Scatter2D, self._Scatter2D().newclone())
 
 
     @property
     def numPoints(self):
+        """() -> int
+        Number of points in this scatter."""
         return self._Scatter2D().numPoints()
 
     @property
     def points(self):
+        """Access the ordered list of points."""
         return list(self)
 
-    def addPoints(self, iterable):
-        for row in iterable:
-            self.addPoint(*row)
-
     def addPoint(self, *args, **kwargs):
+        """Add a new point."""
         try:
             self.__addPoint_point(*args, **kwargs)
         except TypeError:
@@ -67,10 +70,16 @@ cdef class Scatter2D(AnalysisObject):
     def __addPoint_point(self, Point2D p):
         self._Scatter2D().addPoint(p._Point2D()[0])
 
+    def addPoints(self, iterable):
+        """Add several new points."""
+        for row in iterable:
+            self.addPoint(*row)
+
     def combineWith(self, others):
+        """Try to add points from other Scatter2Ds into this one."""
         cdef Scatter2D other
         try:
-            # Can we type it as a scatter2D?
+            # Can we type it as a Scatter2D?
             other = others
         except TypeError:
             # Could be an iterable...
@@ -81,6 +90,8 @@ cdef class Scatter2D(AnalysisObject):
 
 
     def transformX(self, f):
+        """(fn) -> None
+        Transform the x values and errors of the points in this scatter by function f."""
         # Import ctypes here (rather than at module import) so that Python 2.4
         # users don't need ctypes to use the rest of the library.
         import ctypes
@@ -92,6 +103,8 @@ cdef class Scatter2D(AnalysisObject):
         c.Scatter2D_transformX(deref(self._Scatter2D()), fptr)
 
     def transformY(self, f):
+        """(fn) -> None
+        Transform the y values and errors of the points in this scatter by function f."""
         # Import ctypes here (rather than at module import) so that Python 2.4
         # users don't need ctypes to use the rest of the library.
         import ctypes

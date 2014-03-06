@@ -1,11 +1,10 @@
-#TODO tidy up when Axis2D is fixed
-
 cdef class Histo2D(AnalysisObject):
     """
-    2D histogram. Complete histogramming is supported, including
-    uniform/regular binning, variable-width bininng, unbinned gaps in
-    the covered range, and outflows (under/overflows around all edges
-    and corners).
+    2D histogram.
+
+    Complete histogramming is supported, including uniform/regular binning,
+    variable-width bininng, unbinned gaps in the covered range, and outflows
+    (under/overflows around all edges and corners).
 
     Rebinning by integer factors, or by explicit merging of contiguous bins is
     also supported, but in development.
@@ -18,12 +17,12 @@ cdef class Histo2D(AnalysisObject):
     Several sets of arguments are tried by the constructor in the
     following order.
 
-    Histo2D(path="", title=""). Construct a histogram with optional path
-    and title but no bins.
+    Histo2D(path="", title="").
+      Construct a histogram with optional path and title but no bins.
 
     Histo2D(nxbins, xlow, xhigh, nybins, ylow, yhigh, path="", title="").
-    Construct a histogram with nxbins on the x axis and nybins on the y
-    axis, distributed linearly between the respective low--high limits.
+      Construct a histogram with nxbins on the x axis and nybins on the y
+      axis, distributed linearly between the respective low--high limits.
     """
 
     cdef inline c.Histo2D *_Histo2D(self) except NULL:
@@ -31,34 +30,25 @@ cdef class Histo2D(AnalysisObject):
 
 
     def __init__(self, *args, **kwargs):
-        if len(args) <= 2:
-            self.__init2(*args, **kwargs)
-        else:
-            self.__init8(*args, **kwargs)
+        util.try_loop([self.__init2, self.__init8], *args, **kwargs)
 
     def __init2(Histo2D self, char *path="", char *title=""):
-        util.set_owned_ptr(
-            self, new c.Histo2D(string(path), string(title)))
+        util.set_owned_ptr(self, new c.Histo2D(string(path), string(title)))
 
     # TODO: Add a constructor from iterators over x and y binnings
 
-    def __init8(Histo2D self,   nxbins, xlow, xupp,   nybins, ylow, yupp,
-                char* path="", char* title=""):
-        util.set_owned_ptr(
-            self, new c.Histo2D(
-                nxbins, xlow, xupp,
-                nybins, ylow, yupp,
-                string(path), string(title)))
+    def __init8(Histo2D self, nxbins, xlow, xupp,  nybins, ylow, yupp,  char* path="", char* title=""):
+        util.set_owned_ptr(self, new c.Histo2D(nxbins, xlow, xupp, nybins, ylow, yupp,
+                                               string(path), string(title)))
 
 
-    def __len__(self):
-        return self._Histo2D().bins().size()
-        # return self._Histo2D().numBins()
+    # def __len__(self):
+    #     return self._Histo2D().numBins()
 
-    def __getitem__(self, py_ix):
-        cdef size_t i = util.pythonic_index(py_ix, self._Histo2D().bins().size())
-        return util.new_borrowed_cls(
-            HistoBin2D, & self._Histo2D().bins().at(i), self)
+    # def __getitem__(self, py_ix):
+    #     cdef size_t i = util.pythonic_index(py_ix, self._Histo2D().numBins())
+    #     return util.new_borrowed_cls(
+    #         HistoBin2D, & self._Histo2D().bins().at(i), self)
 
     def __repr__(self):
         return "<%s '%s' %d bins, sumw=%.2g>" % \
@@ -67,97 +57,108 @@ cdef class Histo2D(AnalysisObject):
 
 
     def reset(self):
+        """None -> None.
+        Reset the histogram but leave the bin structure."""
         self._Histo2D().reset()
 
-    def copy(self, char *path=""):
-        return util.new_owned_cls(Histo2D,
-            new c.Histo2D(deref(self._Histo2D()), string(path)))
+    def clone(self):
+        """None -> Histo2D.
+        Clone this Profile2D."""
+        return util.new_owned_cls(Histo2D, self._Histo2D().newclone())
 
 
     def fill(self, double x, double y, weight=1.0):
+        """(x,y,[w]) -> None.
+        Fill with given x,y values and optional weight."""
         self._Histo2D().fill(x, y, weight)
 
     def fillBin(self, size_t i, weight=1.0):
+        """(i,[w]) -> None.
+        Fill bin i and optional weight."""
         self._Histo2D().fillBin(i, weight)
 
-    # # TODO: amalgamate this with fill to take arbitrary iterators?
-    # def fill_many(self, xs, ys, weight=1.0):
-    #     cdef double x, y
-    #     try:
-    #         while True:
-    #             x = next(xs)
-    #             y = next(ys)
-    #             self._Histo2D().fill(x, y, weight)
-    #     except StopIteration:
-    #         pass
 
     @property
     def totalDbn(self):
+        """() -> Dbn2D
+        The Dbn2D representing the total distribution."""
         return util.new_borrowed_cls(Dbn2D, &self._Histo2D().totalDbn(), self)
 
     def outflow(self, ix, iy):
+        """(ix,iy) -> Dbn2D
+        The Dbn2D representing the ix,iy outflow distribution."""
         return util.new_borrowed_cls(Dbn2D, &self._Histo2D().outflow(ix, iy), self)
 
 
     def integral(self, overflows=True):
-        """Histogram integral, optionally excluding the overflows."""
+        """([bool]) -> float
+        Histogram integral, optionally excluding the overflows."""
         return self._Histo2D().integral(overflows)
 
     def numEntries(self): # add overflows arg
-        """Number of times this histogram was filled."""
+        """() -> int
+        Number of times this histogram was filled."""
         return self._Histo2D().numEntries()
 
     def effNumEntries(self): # add overflows arg
-        """Effective number of times this histogram was filled, computed from weights."""
+        """() -> float
+        Effective number of times this histogram was filled, computed from weights."""
         return self._Histo2D().effNumEntries()
 
     def sumW(self, overflows=True):
-        """Sum of weights filled into this histogram."""
+        """([bool]) -> float
+        Sum of weights filled into this histogram."""
         return self._Histo2D().sumW(overflows)
 
     def sumW2(self, overflows=True):
-        """Sum of squared weights filled into this histogram."""
+        """([bool]) -> float
+        Sum of squared weights filled into this histogram."""
         return self._Histo2D().sumW2(overflows)
 
     def mean(self, overflows=True):
-        """Mean (x,y) of the histogram, optionally excluding the overflows."""
+        """([bool]) -> (float,float)
+        Mean (x,y) of the histogram, optionally excluding the overflows."""
         return util.XY(
             self._Histo2D().xMean(overflows),
             self._Histo2D().yMean(overflows))
 
     def variance(self, overflows=True):
-        """Variances in (x,y) of the histogram, optionally excluding the overflows."""
+        """([bool]) -> (float,float)
+        Variances in (x,y) of the histogram, optionally excluding the overflows."""
         return util.XY(
             self._Histo2D().xVariance(overflows),
             self._Histo2D().yVariance(overflows))
 
     def stdDev(self, overflows=True):
-        """Standard deviations in (x,y) of the histogram, optionally excluding the overflows."""
+        """([bool]) -> (float,float)
+        Standard deviations in (x,y) of the histogram, optionally excluding the overflows."""
         return util.XY(
             self._Histo2D().xStdDev(overflows),
             self._Histo2D().yStdDev(overflows))
 
     def stdErr(self, overflows=True):
-        """Standard errors on the mean (x,y) of the histogram, optionally excluding the overflows."""
+        """([bool]) -> (float,float)
+        Standard errors on the mean (x,y) of the histogram, optionally excluding the overflows."""
         return util.XY(
             self._Histo2D().xStdErr(overflows),
             self._Histo2D().yStdErr(overflows))
 
 
     def scaleW(self, w):
-        """ (float) -> None.
+        """(float) -> None.
         Rescale the weights in this histogram by the factor w."""
         self._Histo2D().scaleW(w)
 
     def normalize(self, double normto, bint includeoverflows=True):
-        """ (float, bool) -> None.
+        """(float, bool) -> None.
         Normalize the histogram."""
         self._Histo2D().normalize(normto, includeoverflows)
 
 
     @property
     def numBins(self):
-        """Number of bins (not including overflows)."""
+        """() -> int
+        Number of bins (not including overflows)."""
         return self._Histo2D().numBins()
 
     @property
@@ -166,12 +167,14 @@ cdef class Histo2D(AnalysisObject):
         return list(self)
 
     def addBin(self, xlow, xhigh, ylow, yhigh):
-        """Add a bin to the Histo2D"""
+        """Add a bin."""
         self._Histo2D().addBin(pair[double, double](xlow, xhigh),
                                pair[double, double](ylow, yhigh))
         return self
 
     def addBins(self, bounds):
+        """Add several bins."""
+        # TODO: simplify / make consistent
         for xlow, xhigh, ylow, yhigh in bounds:
             self._Histo2D().addBin(pair[double, double](xlow, xhigh),
                                    pair[double, double](ylow, yhigh))
@@ -184,7 +187,9 @@ cdef class Histo2D(AnalysisObject):
 
 
     def mkScatter(self):
-        "Convert this Histo2D to a Scatter3D"
+        """None -> Scatter3D.
+        Convert this Histo2D to a Scatter3D, with y representing bin heights
+        (not sumW) and height errors."""
         raise Exception("TODO: Not yet implemented!")
         # cdef c.Scatter2D s2 = c.mkScatter_Profile1D(deref(self._Profile1D()))
         # return util.new_owned_cls(Scatter2D, s2.newclone())

@@ -71,13 +71,13 @@ cdef class Profile1D(AnalysisObject):
 
     def clone(self):
         """None -> Profile1D.
-        Clone this Profile1D with optional new path."""
+        Clone this Profile1D."""
         return util.new_owned_cls(Profile1D, self._Profile1D().newclone())
 
 
     def fill(self, x, y, weight=1.0):
         """(x,y,[w]) -> None.
-        Fill with given x, y values and optional weight."""
+        Fill with given x & y values and optional weight."""
         self._Profile1D().fill(x, y, weight)
 
     def fillBin(self, size_t ix, double y, weight=1.0):
@@ -88,37 +88,44 @@ cdef class Profile1D(AnalysisObject):
 
     @property
     def totalDbn(self):
-        """The Dbn2D representing the total distribution."""
+        """() -> Dbn2D
+        The Dbn2D representing the total distribution."""
         return util.new_borrowed_cls(
             Dbn2D, &self._Profile1D().totalDbn(), self)
 
     @property
     def underflow(self):
-        """The Dbn2D representing the underflow distribution."""
+        """() -> Dbn2D
+        The Dbn2D representing the underflow distribution."""
         return util.new_borrowed_cls(
             Dbn2D, &self._Profile1D().underflow(), self)
 
     @property
     def overflow(self):
-        """The Dbn2D representing the overflow distribution."""
+        """() -> Dbn2D
+        The Dbn2D representing the overflow distribution."""
         return util.new_borrowed_cls(
             Dbn2D, &self._Profile1D().overflow(), self)
 
 
     def numEntries(self): # add overflows arg
-        """Number of times this histogram was filled."""
+        """([bool]) -> int
+        Number of times this histogram was filled."""
         return self._Profile1D().numEntries()
 
     def effNumEntries(self): # add overflows arg
-        """Effective number of times this histogram was filled, computed from weights."""
+        """([bool]) -> float
+        Effective number of times this histogram was filled, computed from weights."""
         return self._Profile1D().effNumEntries()
 
     def sumW(self, overflows=True):
-        """Sum of weights filled into this histogram."""
+        """([bool]) -> float
+        Sum of weights filled into this histogram."""
         return self._Profile1D().sumW(overflows)
 
     def sumW2(self, overflows=True):
-        """Sum of weights filled into this histogram."""
+        """([bool]) -> float
+        Sum of weights filled into this histogram."""
         return self._Profile1D().sumW2(overflows)
 
 
@@ -130,7 +137,8 @@ cdef class Profile1D(AnalysisObject):
 
     @property
     def numBins(self):
-        """Number of bins (not including overflows)."""
+        """() -> int
+        Number of bins (not including overflows)."""
         return self._Profile1D().numBins()
 
     @property
@@ -139,11 +147,13 @@ cdef class Profile1D(AnalysisObject):
         return list(self)
 
     def addBin(self, low, high):
-        """Add a bin to the Profile1D"""
+        """Add a bin."""
         self._Profile1D().addBin(low, high)
         return self
 
     def addBins(self, edges):
+        """Add several bins."""
+        # TODO: simplify / make consistent
         cdef vector[double] cedges
         for i in edges:
             cedges.push_back(i)
