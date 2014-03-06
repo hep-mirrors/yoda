@@ -98,6 +98,16 @@ namespace YODA {
       return *this;
     }
 
+    /// Make a copy on the stack
+    Profile2D clone() const {
+      return Profile2D(*this);
+    }
+
+    /// Make a copy on the heap, via 'new'
+    Profile2D* newclone() const {
+      return new Profile2D(*this);
+    }
+
     //@}
 
 

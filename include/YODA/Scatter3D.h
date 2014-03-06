@@ -123,6 +123,16 @@ namespace YODA {
       return *this;
     }
 
+    /// Make a copy on the stack
+    Scatter3D clone() const {
+      return Scatter3D(*this);
+    }
+
+    /// Make a copy on the heap, via 'new'
+    Scatter3D* newclone() const {
+      return new Scatter3D(*this);
+    }
+
     //@}
 
 

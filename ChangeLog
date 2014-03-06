@@ -1,3 +1,7 @@
+2014-03-06  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Adding clone() and newclone() functions to all analysis object classes.
+
 2014-02-28  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Cython mapping improvements, esp. adding numPoints/numBins

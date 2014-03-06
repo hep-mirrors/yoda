@@ -75,14 +75,6 @@ namespace YODA {
     Histo2D(const Histo2D& h, const std::string& path="");
 
 
-    /// Assignment operator
-    Histo2D& operator = (const Histo2D& h2) {
-      AnalysisObject::operator = (h2); //< AO treatment of paths etc.
-      _axis = h2._axis;
-      return *this;
-    }
-
-
     /// @todo Add binning constructors from Scatter3D and Profile2D?
 
     // /// A constructor from a Scatter3D's binning, with optional new path
@@ -102,6 +94,25 @@ namespace YODA {
       : AnalysisObject("Histo2D", path, title),
         _axis(bins, totalDbn, outflows)
     { }
+
+
+    /// Assignment operator
+    Histo2D& operator = (const Histo2D& h2) {
+      AnalysisObject::operator = (h2); //< AO treatment of paths etc.
+      _axis = h2._axis;
+      return *this;
+    }
+
+
+    /// Make a copy on the stack
+    Histo2D clone() const {
+      return Histo2D(*this);
+    }
+
+    /// Make a copy on the heap, via 'new'
+    Histo2D* newclone() const {
+      return new Histo2D(*this);
+    }
 
     //@}
 
@@ -434,20 +445,20 @@ namespace YODA {
     // /// @name Slicing operators
     // //@{
 
-    // /// @brief Create a Histo1D for the bin slice parallel to the x axis at the specified y coordinate
+    // /// @brief Create a Histo2D for the bin slice parallel to the x axis at the specified y coordinate
     // ///
     // /// Note that the created histogram will not have correctly filled underflow and overflow bins.
     // /// @todo It's not really *at* the specified y coord: it's for the corresponding bin row.
     // /// @todo Change the name!
-    // Histo1D cutterX(double atY, const std::string& path="", const std::string& title="");
+    // Histo2D cutterX(double atY, const std::string& path="", const std::string& title="");
 
 
-    // /// @brief Create a Histo1D for the bin slice parallel to the y axis at the specified x coordinate
+    // /// @brief Create a Histo2D for the bin slice parallel to the y axis at the specified x coordinate
     // ///
     // /// Note that the created histogram will not have correctly filled underflow and overflow bins.
     // /// @todo It's not really *at* the specified x coord: it's for the corresponding bin row.
     // /// @todo Change the name!
-    // Histo1D cutterY(double atX, const std::string& path="", const std::string& title="");
+    // Histo2D cutterY(double atX, const std::string& path="", const std::string& title="");
 
 
     // /// X-wise Profile1D creator from Histo2D

@@ -54,6 +54,16 @@ namespace YODA {
       return *this;
     }
 
+    /// Make a copy on the stack
+    Counter clone() const {
+      return Counter(*this);
+    }
+
+    /// Make a copy on the heap, via 'new'
+    Counter* newclone() const {
+      return new Counter(*this);
+    }
+
     //@}
 
 

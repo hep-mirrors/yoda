@@ -106,17 +106,21 @@ namespace YODA {
       return *this;
     }
 
+    /// Make a copy on the stack
+    Histo1D clone() const {
+      return Histo1D(*this);
+    }
+
+    /// Make a copy on the heap, via 'new'
+    Histo1D* newclone() const {
+      return new Histo1D(*this);
+    }
+
     //@}
 
 
     /// @name Modifiers
     //@{
-
-    /// Fill histo by value and weight
-    void fill(double x, double weight=1.0);
-
-    /// Fill histo bin i with the given weight
-    void fillBin(size_t i, double weight=1.0);
 
     /// @brief Reset the histogram.
     ///
@@ -124,6 +128,12 @@ namespace YODA {
     virtual void reset() {
       _axis.reset();
     }
+
+    /// Fill histo by value and weight
+    void fill(double x, double weight=1.0);
+
+    /// Fill histo bin i with the given weight
+    void fillBin(size_t i, double weight=1.0);
 
 
     /// Rescale as if all fill weights had been different by factor @a scalefactor.

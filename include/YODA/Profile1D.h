@@ -100,6 +100,16 @@ namespace YODA {
       return *this;
     }
 
+    /// Make a copy on the stack
+    Profile1D clone() const {
+      return Profile1D(*this);
+    }
+
+    /// Make a copy on the heap, via 'new'
+    Profile1D* newclone() const {
+      return new Profile1D(*this);
+    }
+
     //@}
 
 

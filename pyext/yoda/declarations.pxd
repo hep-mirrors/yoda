@@ -477,6 +477,7 @@ cdef extern from "YODA/AnalysisObject.h" namespace "YODA":
                        AnalysisObject ao,
                        string title) except+ err
         AnalysisObject()
+        # AnalysisObject* newclone() except+ err
 
         # Annotations
         map[string, string] annotations() except+ err
@@ -528,6 +529,10 @@ cdef extern from "YODA/Scatter2D.h" namespace "YODA":
 
         Scatter2D(Scatter2D p, string path)
 
+        Scatter2D clone() except+ err
+        Scatter2D* newclone() except+ err
+
+
         void reset() except+ err
 
         size_t numPoints() except+ err
@@ -573,6 +578,10 @@ cdef extern from "YODA/Scatter3D.h" namespace "YODA":
 
         Scatter3D(Scatter3D p, string path)
 
+        Scatter3D clone() except+ err
+        Scatter3D* newclone() except+ err
+
+
         void reset() except+ err
 
         size_t numPoints() except+ err
@@ -614,9 +623,14 @@ cdef extern from "YODA/Profile1D.h" namespace "YODA":
 
         #Profile1D(Histo1D p, string path)
 
+        Profile1D clone() except+ err
+        Profile1D* newclone() except+ err
+
+
+        void reset() except+ err
+
         void fill(double x, double y, double weight) except+ err
         void fillBin(size_t i, double y, double weight) except+ err
-        void reset() except+ err
 
         void scaleW(double s) except+ err
         void mergeBins(size_t, size_t) except+ err
@@ -686,9 +700,14 @@ cdef extern from "YODA/Profile2D.h" namespace "YODA":
 
         #Profile2D(Histo2D p, string path)
 
+        Profile2D clone() except+ err
+        Profile2D* newclone() except+ err
+
+
+        void reset() except+ err
+
         void fill(double x, double y, double z, double weight) except+ err
         void fillBin(size_t i, double z, double weight) except+ err
-        void reset() except+ err
 
         void scaleW(double s) except+ err
         #void mergeBins(size_t, size_t) except+ err
@@ -760,9 +779,14 @@ cdef extern from "YODA/Histo1D.h" namespace "YODA":
 
         #Histo1D(Scatter2D p, string path)
 
+        Histo1D clone() except+ err
+        Histo1D* newclone() except+ err
+
+
+        void reset() except+ err
+
         void fill(double x, double weight) except+ err
         void fillBin(size_t i, double weight) except+ err
-        void reset() except+ err
 
         void scaleW(double s) except+ err
         void normalize(double normto, bool includeoverflows) except+ err
@@ -839,9 +863,14 @@ cdef extern from "YODA/Histo2D.h" namespace "YODA":
         #Histo2D(Profile1D p, string path)
         #Histo2D(Scatter2D p, string path)
 
+        Histo2D clone() except+ err
+        Histo2D* newclone() except+ err
+
+
+        void reset() except+ err
+
         void fill(double x, double y, double weight) except+ err
         void fillBin(size_t i, double weight) except+ err
-        void reset() except+ err
 
         void scaleW(double scalefactor) except+ err
         void normalize(double normto, bool includeoverflows) except+ err

@@ -61,13 +61,22 @@ namespace YODA {
       return *this;
     }
 
+    /// Make a copy on the heap, via 'new'
+    virtual AnalysisObject* newclone() const = 0;
+
+    //@}
+
+
+
+    /// @name Modifiers
+    //@{
+
     /// Reset this analysis object
     virtual void reset() = 0;
 
     //@}
 
 
-  public:
 
     ///@name Annotations
     //@{

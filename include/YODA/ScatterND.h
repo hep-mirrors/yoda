@@ -103,6 +103,16 @@ namespace YODA {
       return *this;
     }
 
+    /// Make a copy on the stack
+    Scatter<N> clone() const {
+      return Scatter<N>(*this);
+    }
+
+    /// Make a copy on the heap, via 'new'
+    Scatter<N>* newclone() const {
+      return new Scatter<N>(*this);
+    }
+
     //@}
 
 
