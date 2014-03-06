@@ -45,12 +45,12 @@ cdef class Histo1D(AnalysisObject):
         self.addBins(bins)
 
 
-    # def __len__(self):
-    #     return self._Histo1D().numBins()
+    def __len__(self):
+        return self._Histo1D().numBins()
 
-    # def __getitem__(self, py_ix):
-    #     cdef size_t i = util.pythonic_index(py_ix, self._Histo1D().numBins())
-    #     return util.new_borrowed_cls(HistoBin1D, & self._Histo1D().bin(i), self)
+    def __getitem__(self, py_ix):
+        cdef size_t i = util.pythonic_index(py_ix, self._Histo1D().numBins())
+        return util.new_borrowed_cls(HistoBin1D, & self._Histo1D().bin(i), self)
 
 
     def __repr__(self):

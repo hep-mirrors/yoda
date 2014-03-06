@@ -28,12 +28,12 @@ cdef class Scatter2D(AnalysisObject):
         self.addPoints(points)
 
 
-    # def __len__(self):
-    #     return self._Scatter2D().numPoints()
+    def __len__(self):
+        return self._Scatter2D().numPoints()
 
-    # def __getitem__(self, py_ix):
-    #     cdef size_t i = util.pythonic_index(py_ix, self._Scatter2D().numPoints())
-    #     return util.new_borrowed_cls(Point2D, & self._Scatter2D().point(i), self)
+    def __getitem__(self, py_ix):
+        cdef size_t i = util.pythonic_index(py_ix, self._Scatter2D().numPoints())
+        return util.new_borrowed_cls(Point2D, & self._Scatter2D().point(i), self)
 
     def __repr__(self):
         return "<%s '%s' %d points>" % \

@@ -42,13 +42,12 @@ cdef class Profile2D(AnalysisObject):
                                                  string(path), string(title)))
 
 
-    # def __len__(self):
-    #     return self._Profile2D().numBins()
+    def __len__(self):
+        return self._Profile2D().numBins()
 
-    # def __getitem__(self, py_ix):
-    #     cdef size_t i = util.pythonic_index(py_ix, self._Profile2D().numBins())
-    #     return util.new_borrowed_cls(
-    #         ProfileBin2D, & self._Profile2D().bins().at(i), self)
+    def __getitem__(self, py_ix):
+        cdef size_t i = util.pythonic_index(py_ix, self._Profile2D().numBins())
+        return util.new_borrowed_cls(ProfileBin2D, & self._Profile2D().bins().at(i), self)
 
     def __repr__(self):
         return "<%s '%s' %d bins, sumw=%0.2g>" % \

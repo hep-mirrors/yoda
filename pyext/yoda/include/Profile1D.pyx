@@ -49,13 +49,12 @@ cdef class Profile1D(AnalysisObject):
         self.addBins(bins)
 
 
-    # def __len__(self):
-    #     return self._Profile1D().bins().size()
+    def __len__(self):
+        return self._Profile1D().bins().size()
 
-    # def __getitem__(self, py_ix):
-    #     cdef size_t i = util.pythonic_index(py_ix, self._Profile1D().bins().size())
-    #     return util.new_borrowed_cls(
-    #         ProfileBin1D, & self._Profile1D().bins().at(i), self)
+    def __getitem__(self, py_ix):
+        cdef size_t i = util.pythonic_index(py_ix, self._Profile1D().bins().size())
+        return util.new_borrowed_cls(ProfileBin1D, & self._Profile1D().bins().at(i), self)
 
 
     def __repr__(self):
