@@ -1,3 +1,7 @@
+2014-03-10  Andy Buckley  <andy.buckley@cern.ch>
+
+	* YODA 1.0.6 release.
+
 2014-03-06  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Improvements to AnalysisObject annotation handling in Python.
