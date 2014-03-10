@@ -1,15 +1,19 @@
 #! /usr/bin/env python
 
 """\
-%prog [-o outfile] <yodafile1> <yodafile2> ...
+%prog [-o outfile] <yodafile1>[:<scale1>] <yodafile2>[:<scale1>] ...
+  e.g. %prog run1.yoda run2.yoda run3.yoda  (unweighted merging of three runs)
+    or %prog run1.yoda:2.0 run2.yoda:3.142  (weighted merging of two runs)
 
 Merge analysis objects from multiple YODA files, combining the statistics of
 objects whose names are found in multiple files. May be used either to merge
 disjoint collections of data objects, or to combine multiple statistically
-independent runs of the same data objects into one high-statistics run.
+independent runs of the same data objects into one high-statistics run. Optional
+scaling parameters may be given to rescale the weights of the objects on a
+per-file basis before merging.
 
 By default the output is written to stdout since we can't guess what would be
-a good automatic filename choice! Us the -o option to provide an output filename.
+a good automatic filename choice! Use the -o option to provide an output filename.
 
 If all the input histograms with a particular path are found to have the same
 normalization, and they have ScaledBy attributes indicating that a histogram
@@ -17,7 +21,8 @@ weight scaling has been applied in producing the input histograms, each
 histogram in that group will be first unscaled by their appropriate factor, then
 merged, and then re-normalized to the target value. Otherwise the weights from
 each histogram copy will be directly added together with no attempt to guess an
-appropriate normalization.
+appropriate normalization. The normalization guesses (and they are guesses --
+see below) are made *before* application of the per-file scaling arguments.
 
 IMPORTANT: note from the above that this script can't work out what to do
 re. scaling and normalization of output histograms from the input data files
@@ -40,14 +45,11 @@ to add a large number of optional command-line parameters to this script, to
 handle these cases. Experience from Rivet 1.x suggests that this is a bad idea:
 if a problem is of programmatic complexity then a command-line interface which
 attempts to solve it in general is doomed to both failure and unusability. Hence
-we will NOT add extra arguments for extra per-file scaling factors, path pattern
-matching behaviours, identifying 'types' of run, etc., etc.: if you need to
-merge data files in such complex ways, please use this script as a simple template
-around which to write logic that satisfies your particular requirements.
-
-TODO:
- * Use the generic yoda.read() function so we can use multiple formats? ROOT input
-   _could_ partially work, although won't include all statistical weights.
+we will NOT add extra arguments for applying different merging weights or
+strategies based on analysis object path regexes, auto-identifying 'types' of
+run, etc., etc.: if you need to merge data files in such complex ways, please
+use this script as a template around which to write logic that satisfies your
+particular requirements.
 """
 
 import yoda, optparse, operator, itertools, sys
