@@ -3,11 +3,13 @@ cdef inline pair[double, double] read_symmetric(object val) except *:
         a, b = val
     except TypeError:
         a = b = val
-
     return pair[double, double](a, b)
+
 
 cdef inline object read_error_pair(pair[double, double] es):
     return util.Errors(es.first, es.second)
+
+
 
 cdef class Point2D(util.Base):
     """
@@ -22,8 +24,7 @@ cdef class Point2D(util.Base):
         self.yErrs = yerrs
 
     def copy(self):
-        return util.new_owned_cls(Point2D,
-                                  new c.Point2D(deref(self._Point2D())))
+        return util.new_owned_cls(Point2D, new c.Point2D(deref(self._Point2D())))
 
 
     property x:
@@ -33,7 +34,7 @@ cdef class Point2D(util.Base):
 
         def __set__(self, x):
             self._Point2D().setX(x)
-            
+
 
     property y:
         """y coordinate"""
@@ -44,6 +45,7 @@ cdef class Point2D(util.Base):
             self._Point2D().setY(y)
 
 
+    # TODO: remove!
     property coords:
         """x and y coordinates as a tuple"""
         def __get__(self):
@@ -53,18 +55,21 @@ cdef class Point2D(util.Base):
             self.x, self.y = val
 
 
+    # TODO: remove!
     property xRange:
         """The minimum and maximum points within the x errors"""
         def __get__(self):
             return util.Edges(self._Point2D().xMin(),
                               self._Point2D().xMax())
 
+    # TODO: remove!
     property yRange:
         """The minimum and maximum points within the y errors"""
         def __get__(self):
             return util.Edges(self._Point2D().yMin(),
                               self._Point2D().yMax())
 
+    # TODO: remove!
     property ranges:
         """The x- and y-ranges"""
         def __get__(self):
@@ -119,7 +124,7 @@ cdef class Point2D(util.Base):
         return '<Point2D(%g, %g)>' % self.coords
 
     def __richcmp__(Point2D self, Point2D other, int op):
-        if op == 0: 
+        if op == 0:
             return deref(self._Point2D()) < deref(other._Point2D())
         elif op == 1:
             return deref(self._Point2D()) <= deref(other._Point2D())
@@ -140,4 +145,3 @@ cdef class Point2D(util.Base):
         cdef c.Point2D *p = self._Point2D()
         if self._deallocate:
             del p
-
