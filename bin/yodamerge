@@ -157,18 +157,17 @@ for p, aos in analysisobjects_in.iteritems():
         for ao in aos:
             ao.scaleW(1/float(ao.annotations["ScaledBy"]))
 
-    ## Now that the normalization-identifying heuristic is done, apply requested scalings
-    scale = None
+    ## Now that the normalization-identifying heuristic is done, apply user scalings
+    ## NB. For histos only: we assume that scatters should be treated like ratios / normalized histos
     for ao in aos:
-        scale = float(ao.annotation("yodamerge_scale"))
-        if hasattr(ao, "scaleW") and scale != 1.0:
+        if hasattr(ao, "scaleW"):
+            scale = float(ao.annotation("yodamerge_scale"))
             ao.scaleW(scale)
-        elif type(ao) is yoda.Scatter2D:
-            ao.scale(1.0, scale)
-        ao.rmAnnotation("yodamerge_scale")
 
     ## Make a copy of the (scaled & unnormalized) first object as the basis for the output
     ao_out = aos[0].clone()
+    ao_out.rmAnnotation("yodamerge_scale")
+
 
     ## Merge for histograms (including weights, normalization, and user scaling)
     if hasattr(ao_out, "__iadd__"):
@@ -180,21 +179,28 @@ for p, aos in analysisobjects_in.iteritems():
     ## Merge for Scatter2D (assuming equal run sizes, and applying user scaling)
     elif type(ao_out) is yoda.Scatter2D:
         msg = "WARNING: Scatter2D %s merge assumes equal run sizes" % p
-        if scale is not None:
+        if any(float(ao.annotation("yodamerge_scale")) != 1.0 for ao in aos):
              msg += " (+ user scaling)"
         print msg
-        nao = float(len(aos))
         npoints = len(ao_out.points)
         for i in xrange(npoints):
-            y_i = sum(ao.points[i].y for ao in aos) / nao
-            eyp_i = math.sqrt(sum(ao.points[i].yErrs[0]**2 for ao in aos)) / nao
-            eym_i = math.sqrt(sum(ao.points[i].yErrs[1]**2 for ao in aos)) / nao
+            y_i = eyp_i = eym_i = scalesum = 0.0
+            for ao in aos:
+                scale = float(ao.annotation("yodamerge_scale"))
+                scalesum += scale
+                y_i += scale * ao.points[i].y
+                eyp_i += (scale * ao.points[i].yErrs[0])**2
+                eym_i += (scale * ao.points[i].yErrs[1])**2
+            y_i /= scalesum
+            eyp_i = math.sqrt(eyp_i) / scalesum
+            eym_i = math.sqrt(eym_i) / scalesum
             ao_out.points[i].y = y_i
             ao_out.points[i].yErrs = (eyp_i, eym_i)
 
     ## Other data types (just warn, and write out the first object)
     else:
         print "WARNING: Analysis object %s of type %s cannot be merged" % (p, str(type(ao)))
+
 
     ## Put the output AO into the output dict
     analysisobjects_out[p] = ao_out
