@@ -1,3 +1,9 @@
+2014-04-13  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Rationalising (and fixing?) the yodamerge logic re. user &
+	normalization scalings, and making way for a Scatter2D merging
+	heuristic.
+
 2014-03-10  Andy Buckley  <andy.buckley@cern.ch>
 
 	* YODA 1.0.6 release.
