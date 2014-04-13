@@ -1,5 +1,7 @@
 2014-04-13  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Adding and installing a pkg-config data file for YODA.
+
 	* Rationalising (and fixing?) the yodamerge logic re. user &
 	normalization scalings, and making way for a Scatter2D merging
 	heuristic.

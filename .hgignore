@@ -4,7 +4,8 @@
 \.libs$
 \.deps$
 ^YODA-.*\.tar\.(gz|bz2)$
-yodaenv.sh$
+^yoda.pc$
+^yodaenv.sh$
 Makefile$
 Makefile\.in$
 Doxyfile$

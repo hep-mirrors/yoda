@@ -3,6 +3,8 @@ SUBDIRS = src include pyext tests bin
 
 EXTRA_FILES = main.dox
 
+pkgconfigdir = $(libdir)/pkgconfig
+dist_pkgconfig_DATA = yoda.pc
 
 ## Deal with the Doxygen stuff
 # TODO: Improve, without the Doxy performance penalty on every call of "make"
