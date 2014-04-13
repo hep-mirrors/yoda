@@ -1,5 +1,9 @@
 2014-04-13  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Adding an assumed-equal-run-size, ratio-like merging heuristic
+	for Scatter2Ds to yodamerge, and renaming the --normalize-all flag
+	to --assume-normalized.
+
 	* Adding and installing a pkg-config data file for YODA.
 
 	* Rationalising (and fixing?) the yodamerge logic re. user &

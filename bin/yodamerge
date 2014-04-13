@@ -102,7 +102,7 @@ See the source of this script (e.g. use 'less `which %prog`) for more discussion
 # particular requirements.
 
 
-import yoda, optparse, operator, itertools, sys
+import yoda, optparse, sys, math
 
 parser = optparse.OptionParser(usage=__doc__)
 parser.add_option('-o', '--output', default='-', dest='OUTPUT_FILE')
@@ -158,24 +158,41 @@ for p, aos in analysisobjects_in.iteritems():
             ao.scaleW(1/float(ao.annotations["ScaledBy"]))
 
     ## Now that the normalization-identifying heuristic is done, apply requested scalings
+    scale = None
     for ao in aos:
         scale = float(ao.annotation("yodamerge_scale"))
         if hasattr(ao, "scaleW") and scale != 1.0:
             ao.scaleW(scale)
         elif type(ao) is yoda.Scatter2D:
             ao.scale(1.0, scale)
-        scale = ao.rmAnnotation("yodamerge_scale")
+        ao.rmAnnotation("yodamerge_scale")
 
-    ## Make a copy of the (scaled & unnormalized) first object, then combine the others into it
+    ## Make a copy of the (scaled & unnormalized) first object as the basis for the output
     ao_out = aos[0].clone()
+
+    ## Merge for histograms (including weights, normalization, and user scaling)
     if hasattr(ao_out, "__iadd__"):
         for ao in aos[1:]:
             ao_out += ao
         if normto:
             ao_out.normalize(normto)
+
+    ## Merge for Scatter2D (assuming equal run sizes, and applying user scaling)
     elif type(ao_out) is yoda.Scatter2D:
-        print "WARNING: Scatter2D %s (i.e. a histogram ratio or similar) cannot be merged" % (p)
-        # TODO: merge scatters assuming equal run sizes, and applying scaling
+        msg = "WARNING: Scatter2D %s merge assumes equal run sizes" % p
+        if scale is not None:
+             msg += " (+ user scaling)"
+        print msg
+        nao = float(len(aos))
+        npoints = len(ao_out.points)
+        for i in xrange(npoints):
+            y_i = sum(ao.points[i].y for ao in aos) / nao
+            eyp_i = math.sqrt(sum(ao.points[i].yErrs[0]**2 for ao in aos)) / nao
+            eym_i = math.sqrt(sum(ao.points[i].yErrs[1]**2 for ao in aos)) / nao
+            ao_out.points[i].y = y_i
+            ao_out.points[i].yErrs = (eyp_i, eym_i)
+
+    ## Other data types (just warn, and write out the first object)
     else:
         print "WARNING: Analysis object %s of type %s cannot be merged" % (p, str(type(ao)))
 
