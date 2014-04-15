@@ -17,7 +17,45 @@ namespace YODA {
   ReaderYODA::histo1d ReaderYODA::_histo1d;
   ReaderYODA::profile1d ReaderYODA::_profile1d;
   ReaderYODA::scatter2d ReaderYODA::_scatter2d;
-  std::map<std::string, std::string> ReaderYODA::_annotations;
+  map<string, string> ReaderYODA::_annotations;
+
+
+  namespace {
+
+    // Portable version of getline taken from
+    // http://stackoverflow.com/questions/6089231/getting-std-ifstream-to-handle-lf-cr-and-crlf
+    istream& safe_getline(istream& is, string& t) {
+      t.clear();
+
+      // The characters in the stream are read one-by-one using a std::streambuf.
+      // That is faster than reading them one-by-one using the std::istream.
+      // Code that uses streambuf this way must be guarded by a sentry object.
+      // The sentry object performs various tasks,
+      // such as thread synchronization and updating the stream state.
+      istream::sentry se(is, true);
+      streambuf* sb = is.rdbuf();
+
+      for (;;) {
+        int c = sb->sbumpc();
+        switch (c) {
+        case '\n':
+          return is;
+        case '\r':
+          if (sb->sgetc() == '\n')
+            sb->sbumpc();
+          return is;
+        case EOF:
+          // Also handle the case when the last line has no line ending
+          if (t.empty())
+            is.setstate(ios::eofbit);
+          return is;
+        default:
+          t += (char)c;
+        }
+      }
+    }
+
+  }
 
 
   void ReaderYODA::_readDoc(std::istream& stream, vector<AnalysisObject*>& aos) {
@@ -48,7 +86,7 @@ namespace YODA {
     int context = 0;
     bool contextchange = false;
     std::string s;
-    while (getline(stream, s)) {
+    while (safe_getline(stream, s)) {
       // First check if we found a "# BEGIN ..." or "# END ..." line.
       // This marks a context change.
       int newcontext = 0;

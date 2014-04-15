@@ -1,3 +1,8 @@
+2014-04-15  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Adding a more portable version of getline to be used in the YODA
+	file parsing to avoid falling over on DOS-produced input files.
+
 2014-04-14  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Adding the namespace protection workaround for Boost described
