@@ -11,7 +11,7 @@ def parse_x2y_args(args, xextn, yextn):
     infiles = []
     outfiles = []
     ## If there are two args and the second has the right output extension, treat as in-, out-names
-    if len(args) == 2 and args[1].endswith(yextn):
+    if len(args) == 2 and (args[1].endswith(yextn) or args[1] == "-"):
         infiles = [args[0]]
         outfiles = [args[1]]
     ## Otherwise treat as a list of in-names and generate default out-names

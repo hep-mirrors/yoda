@@ -1,3 +1,9 @@
+2014-04-16  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Add special case handling for 2-arg use of x2y scripts where the
+	second arg is -, for stdin. This will be treated as writing out to
+	stdout, not converting two files one of which is stdin.
+
 2014-04-15  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Adding a more portable version of getline to be used in the YODA
