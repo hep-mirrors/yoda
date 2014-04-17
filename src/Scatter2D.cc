@@ -8,8 +8,9 @@ namespace YODA {
   /// Make a Scatter2D representation of a Histo1D
   Scatter2D mkScatter(const Histo1D& h) {
     Scatter2D rtn;
-    rtn.setAnnotations(h.annotations());
-    rtn.setAnnotation("Type", h.type());
+    foreach (const std::string& a, h.annotations())
+      rtn.setAnnotation(a, h.annotation(a));
+    rtn.setAnnotation("Type", h.type()); // might override the copied ones
     foreach (const HistoBin1D& b, h.bins()) {
       // const double x = b.focus();
       // const double ex_m = b.focus() - b.lowEdge();
@@ -30,7 +31,8 @@ namespace YODA {
   /// Make a Scatter2D representation of a Profile1D
   Scatter2D mkScatter(const Profile1D& p) {
     Scatter2D rtn;
-    rtn.setAnnotations(p.annotations());
+    foreach (const std::string& a, p.annotations())
+      rtn.setAnnotation(a, p.annotation(a));
     rtn.setAnnotation("Type", p.type());
     foreach (const ProfileBin1D& b, p.bins()) {
       // const double x = b.focus();

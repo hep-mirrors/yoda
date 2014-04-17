@@ -90,10 +90,10 @@ namespace YODA {
     os << "    <dimension dim=\"0\" title=\"\" />\n";
     os << "    <dimension dim=\"1\" title=\"\" />\n";
     os << "    <annotation>\n";
-    typedef pair<string,string> sspair;
-    foreach (const sspair& kv, s.annotations()) {
-      os << "      <item key=\"" << Utils::encodeForXML(kv.first)
-         << "\" value=\"" << Utils::encodeForXML(kv.second) << "\" />\n";
+    foreach (const string& a, s.annotations()) {
+      if (a.empty()) continue;
+      os << "      <item key=\"" << Utils::encodeForXML(a)
+         << "\" value=\"" << Utils::encodeForXML(s.annotation(a)) << "\" />\n";
     }
     if (!s.hasAnnotation("Type")) {
       os << "      <item key=\"Type\" value=\"Scatter2D\" />\n";

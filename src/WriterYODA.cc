@@ -30,11 +30,10 @@ namespace YODA {
 
   void WriterYODA::_writeAnnotations(std::ostream& os, const AnalysisObject& ao) {
     os << scientific << setprecision(_precision);
-    typedef pair<string,string> sspair;
-    foreach (const sspair& kv, ao.annotations()) {
-      if (kv.first.empty() || kv.second.empty()) continue; // <- good idea?
+    foreach (const string& a, ao.annotations()) {
+      if (a.empty()) continue;
       /// @todo Should write out floating point annotations as scientific notation...
-      os << kv.first << "=" << kv.second << "\n";
+      os << a << "=" << ao.annotation(a) << "\n";
     }
   }
 

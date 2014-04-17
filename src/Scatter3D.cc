@@ -28,9 +28,10 @@ namespace YODA {
 
 
   Scatter3D mkScatter(const Histo2D& h) {
-    Scatter3D ret;
-    ret.setAnnotations(h.annotations());
-    ret.setAnnotation("Type", h.type());
+    Scatter3D rtn;
+    foreach (const std::string& a, h.annotations())
+      rtn.setAnnotation(a, h.annotation(a));
+    rtn.setAnnotation("Type", h.type());
     for (size_t i = 0; i < h.numBins(); ++i) {
       const HistoBin2D& bin = h.bin(i);
 
@@ -46,17 +47,18 @@ namespace YODA {
       const double z = bin.height();
       const double ez = bin.heightErr();
 
-      ret.addPoint(x, y, z, exminus, explus, eyminus, eyplus, ez, ez);
+      rtn.addPoint(x, y, z, exminus, explus, eyminus, eyplus, ez, ez);
     }
 
-    return ret;
+    return rtn;
   }
 
 
   Scatter3D mkScatter(const Profile2D& h) {
-    Scatter3D ret;
-    ret.setAnnotations(h.annotations());
-    ret.setAnnotation("Type", h.type());
+    Scatter3D rtn;
+    foreach (const std::string& a, h.annotations())
+      rtn.setAnnotation(a, h.annotation(a));
+    rtn.setAnnotation("Type", h.type());
     for (size_t i = 0; i < h.numBins(); ++i) {
       const ProfileBin2D& bin = h.bin(i);
 
@@ -82,10 +84,10 @@ namespace YODA {
         ez = 0.0;
       }
 
-      ret.addPoint(x, y, z, exminus, explus, eyminus, eyplus, ez, ez);
+      rtn.addPoint(x, y, z, exminus, explus, eyminus, eyplus, ez, ez);
     }
 
-    return ret;
+    return rtn;
   }
 
 

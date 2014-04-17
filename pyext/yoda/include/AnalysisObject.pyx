@@ -16,20 +16,19 @@ cdef class AnalysisObject(util.Base):
             del p
 
 
-    # TODO: use a proxy object so that this could also be *modified* as a dict... or hide
     @property
     def annotations(self):
-        """() -> dict
-        Key value pairs of metadata, returned as a Python dictionary.
-        Note that this is read-only: changes to the dict will not be stored."""
-        from cython.operator cimport dereference as deref, preincrement as preinc
-        ana = self._AnalysisObject().annotations()
-        it = ana.begin()
-        out_dict = {}
-        while it != ana.end():
-            out_dict[deref(it).first.c_str()] = deref(it).second.c_str()
-            preinc(it)
-        return out_dict
+        """() -> list[str]
+        A list of all annotation/metadata keys."""
+        return self._AnalysisObject().annotations()
+        # from cython.operator cimport dereference as deref, preincrement as preinc
+        # ana = self._AnalysisObject().annotations()
+        # it = ana.begin()
+        # out_dict = {}
+        # while it != ana.end():
+        #     out_dict[deref(it).first.c_str()] = deref(it).second.c_str()
+        #     preinc(it)
+        # return out_dict
 
 
     # # TODO: Yuck! Get rid of this

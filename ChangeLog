@@ -1,3 +1,9 @@
+2014-04-17  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Change AnalysisObject::annotations to return the list of
+	annotation keys rather than the map, since the previous behaviour
+	mapped very badly into Python.
+
 2014-04-16  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Add special case handling for 2-arg use of x2y scripts where the
