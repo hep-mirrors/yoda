@@ -1,0 +1,52 @@
+#! /usr/bin/env python
+
+"""\
+%prog <cmds>
+
+Make and fill a YODA histogram from plain text file/stream input.
+
+TODO:
+ * Everything!
+ * Create data object in response to mode (default = hist)
+ * Minimal unique cmd shortcut finding
+ * How to determine bin range in advance?... must need two passes??
+ * Parse data files: 1-4 cols for different modes
+"""
+
+import yoda, optparse, sys, math
+
+parser = optparse.OptionParser(usage=__doc__)
+#parser.add_option('-o', '--output', default='-', dest='OUTPUT_FILE')
+opts, args = parser.parse_args()
+
+class Binning:
+    def __init__(self, nbins, low, high, measure="LIN"):
+        self.nbins = nbins
+        self.low = low
+        self.high = high
+        self.measure = measure
+
+# TODO: break args into cmds, as a dict[str] -> [args]
+cmds = args
+# i = 1
+# while i < len(cmds):
+#     i += 1
+
+
+MODE = cmds[0]
+XBINNING = None
+YBINNING = None
+if MODE == "hist" or "prof":
+    XBINNING = Binning(*cmds[1:4])
+    # TODO: scan the rest of the cmds for xmeas to set
+    # TODO: Use exposed yoda.linspace & yoda.logspace
+# elif MODE == "hist2" or "prof2":
+#     XBINNING = Binning(*cmds[1:4])
+#     YBINNING = Binning(*cmds[4:7])
+else:
+    raise Exception("Unknown histogramming mode: " + MODE)
+
+
+
+## Write output
+yoda.writeYODA(analysisobjects_out, opts.OUTPUT_FILE)
