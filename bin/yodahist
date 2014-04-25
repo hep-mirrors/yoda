@@ -6,11 +6,12 @@
 Make and fill a YODA histogram from plain text file/stream input.
 
 TODO:
- * Everything!
- * Create data object in response to mode (default = hist)
  * Minimal unique cmd shortcut finding
  * How to determine bin range in advance?... must need two passes??
- * Parse data files: 1-4 cols for different modes
+ * More cmds: nx lx ux xedges etc. etc.
+ * Add plotting later: palette linecolor linestyle legend ticks ... plotconf
+ * Multiple datasets / histos?
+ * Data column spec & using eval to do math manipulations
 """
 
 import yoda, optparse, sys, math
