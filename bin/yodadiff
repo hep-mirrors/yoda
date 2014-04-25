@@ -1,12 +1,9 @@
 #! /usr/bin/env python
 
 """\
-%prog [-o outfile] <yodafile1> <yodafile2>
+%prog [-o outfile] <datafile1> <datafile2>
 
-Compare analysis objects between two YODA data files.
-
-TODO:
- * Use the generic yoda.read() and yoda.write() functions to do I/O to any format.
+Compare analysis objects between two YODA-readable data files.
 """
 
 import yoda, sys, optparse
