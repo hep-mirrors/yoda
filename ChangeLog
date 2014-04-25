@@ -1,3 +1,7 @@
+2014-04-25  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Mapping linspace, logspace and a few stat functions into Python.
+
 2014-04-24  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Fixes, script installation, and detailed numerical comparisons

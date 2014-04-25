@@ -14,6 +14,20 @@ ctypedef map[string, string] Annotations
 ctypedef double (*dbl_dbl_fptr) (double)
 
 
+# Math utils {{{
+cdef extern from "YODA/Utils/MathUtils.h" namespace "YODA":
+    # bool isZero(double a, double tolerance)
+    # bool fuzzyEquals(double a, double b, double tolerance)
+    # bool fuzzyGtrEquals(double a, double b, double tolerance)
+    # bool fuzzyLessEquals(double a, double b, double tolerance)
+    vector[double] linspace(size_t nbins, double start, double end)
+    vector[double] logspace(size_t nbins, double start, double end)
+    int index_between(double&, vector[double]& binedges)
+    double mean(vector[int]& sample)
+    double covariance(vector[int]& sample1, vector[int]& sample2)
+    double correlation(vector[int]& sample1, vector[int]& sample2)
+
+# }}}
 
 
 # Dbn1D {{{
