@@ -21,32 +21,109 @@ opts, args = parser.parse_args()
 
 class Binning:
     def __init__(self, nbins, low, high, measure="LIN"):
-        self.nbins = nbins
-        self.low = low
-        self.high = high
-        self.measure = measure
+        self.nbins = int(nbins)
+        self.low = float(low)
+        self.high = float(high)
+        self.measure = str(measure)
 
-# TODO: break args into cmds, as a dict[str] -> [args]
-cmds = args
-# i = 1
-# while i < len(cmds):
-#     i += 1
+    def binedges(self):
+        if self.nbins <= 0:
+            raise Exception("Your histogram must have at least one bin!")
+        if self.measure == "LIN":
+            return yoda.linspace(self.nbins, self.low, self.high)
+        elif self.measure == "LOG":
+            if self.low <= 0 or self.high <= 0:
+                raise Exception("Can't have a zero or negative logarithmic bin distribution")
+            return yoda.logspace(self.nbins, self.low, self.high)
+        else:
+            raise Exception("Unknown histogram bin measure: " + self.measure)
 
 
-MODE = cmds[0]
+## Copy the args: we're going to modify them
+tmpargs = list(args)
+
+## First arg must be the run mode, so we deal with that first
+MODE = tmpargs[0].lower()
+del tmpargs[0]
 XBINNING = None
 YBINNING = None
-if MODE == "hist" or "prof":
-    XBINNING = Binning(*cmds[1:4])
-    # TODO: scan the rest of the cmds for xmeas to set
-    # TODO: Use exposed yoda.linspace & yoda.logspace
-# elif MODE == "hist2" or "prof2":
-#     XBINNING = Binning(*cmds[1:4])
-#     YBINNING = Binning(*cmds[4:7])
+if MODE in ["hist", "prof", "hist1", "prof1"]:
+    XBINNING = Binning(*tmpargs[:3])
+    del tmpargs[:3]
+# elif MODE in ["hist2", "prof2"]:
+#     XBINNING = Binning(*tmpargs[:3])
+#     del tmpargs[:3]
+#     YBINNING = Binning(*tmpargs[:3])
+#     del tmpargs[:3]
 else:
     raise Exception("Unknown histogramming mode: " + MODE)
 
+## Break remaining args into cmds, as a dict[cmd] -> [cmdargs]
+cmds = {}
+while tmpargs:
+    cmd = tmpargs[0].lower()
+    ## Single-arg commands
+    if cmd in ["path", "title", "xlabel", "ylabel", "logx", "logy",
+               "xlogbins",
+               "show", "out"]:
+        cmds[cmd] = tmpargs[1]
+        del tmpargs[:2]
+    else:
+        sys.stderr.write("ERROR: unknown command '%s'\n" % cmd)
+        sys.exit(1)
 
+def tobool(s):
+    if type(s) is str:
+        assert len(s) != 0
+        if s.lower() in ["false", "off", "no", "0"]:
+            return False
+        elif s.lower() in ["true", "on", "yes", "1"]:
+            return True
+    return bool(s)
+
+## Apply a log(x) binning measure if needed
+XBINNING.measure = "LOG" if tobool(cmds.get("xlogbins")) else "LIN"
+
+## Choose the output file
+OUTPUT = cmds.get("out", "hist.yoda")
+
+## Make the histo object
+h = None
+if MODE in ["hist", "hist1"]:
+    h = yoda.Histo1D(XBINNING.binedges())
+elif MODE in ["prof", "prof1"]:
+    h = yoda.Profile1D(XBINNING.binedges())
+# TODO: 2D histos and profiles
+else:
+    raise Exception("Unknown histogramming mode: " + MODE)
+
+## Set more annotations, etc.
+h.path = cmds.get("path", "/hist1")
+if "title" in cmds:
+    h.title = cmds.get("title", "")
+if "xlabel" in cmds:
+    h.setAnnotation("XLabel", cmds.get("xlabel", ""))
+if "ylabel" in cmds:
+    h.setAnnotation("YLabel", cmds.get("ylabel", ""))
+if "logx" in cmds:
+    h.setAnnotation("LogX", int(tobool(cmds.get("logx"))) )
+if "logy" in cmds:
+    h.setAnnotation("LogY", int(tobool(cmds.get("logy"))) )
+
+## Read the input and fill the histo
+# TODO: also support reading from a named file?
+for l in sys.stdin:
+    vals = [float(x) for x in l.strip().split()]
+    if MODE in ["hist", "hist1"]:
+        assert len(vals) in [1,2]
+    elif MODE in ["prof", "prof1"]:
+        assert len(vals) in [2,3]
+    # TODO: 2D histos and profiles
+    h.fill(*vals)
+
+## Show the histogram on the terminal
+if tobool(cmds.get("show")):
+    print h.dump()
 
 ## Write output
-yoda.writeYODA(analysisobjects_out, opts.OUTPUT_FILE)
+yoda.write([h], OUTPUT)
