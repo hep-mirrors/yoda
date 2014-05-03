@@ -111,6 +111,17 @@ namespace YODA {
         }
       }
 
+
+      /// @todo Finish and use this macro
+      // #define _READERYODA_APPLY_ANNOTATIONS() {
+      //     std::pair<std::string, std::string> pss;  // to make boost's foreach happy
+      // foreach (pss, _annotations)
+      //   ao->setAnnotation(pss.first, pss.second);
+      // aos.push_back(ao);
+      // cleanup();
+      // contextchange = false; }
+
+
       // Depending on the context, we either want to parse the line as data,
       // or to write out what we parsed so far (when leaving a group).
       switch (context) {
@@ -121,46 +132,64 @@ namespace YODA {
         case 5:  // we are inside YODA_SCATTER1D
         case 6:  // we are inside YODA_SCATTER2D
         case 7:  // we are inside YODA_SCATTER3D
-          // if (! qi::phrase_parse(s.begin(), s.end(), yoda_parser, ascii::space) ) { //< Only supported in Boost 1.47+
-          { //< Why the explicit scoping? Added by supplied patch from Andrii Verbytskyi
+          {
+            // if (! qi::phrase_parse(s.begin(), s.end(), yoda_parser, ascii::space) ) { //< Only supported in Boost 1.47+
             std::string::iterator it2 = s.begin();
-            if (! qi::phrase_parse(it2, s.end(), yoda_parser, ascii::space) ) { //< End patch
+            if (! qi::phrase_parse(it2, s.end(), yoda_parser, ascii::space) )
               std::cerr << "failed parsing this line:\n" << s << std::endl;
-            }
-          } //< End patch scoping
+          }
           break;
         case -1: // we left YODA_HISTO1D
           if (contextchange) {
-            YODA::Histo1D* h = new YODA::Histo1D(_histo1d.bins, _histo1d.dbn_tot, _histo1d.dbn_uflow, _histo1d.dbn_oflow);
-            std::pair <std::string, std::string> pss;  // to make boost's foreach happy
-            foreach (pss, _annotations) {
-              h->setAnnotation(pss.first, pss.second);
-            }
-            aos.push_back(h);
+            YODA::AnalysisObject* ao = new YODA::Histo1D(_histo1d.bins, _histo1d.dbn_tot, _histo1d.dbn_uflow, _histo1d.dbn_oflow);
+            std::pair<std::string, std::string> pss;  // to make boost's foreach happy
+            foreach (pss, _annotations)
+              ao->setAnnotation(pss.first, pss.second);
+            aos.push_back(ao);
+            cleanup();
+            contextchange = false;
+          }
+          break;
+        case -2: // we left YODA_HISTO2D
+          if (contextchange) {
+            YODA::AnalysisObject* ao = new YODA::Histo2D(_histo2d.bins, _histo2d.dbn_tot, _histo2d.dbn_oflow);
+            std::pair<std::string, std::string> pss;  // to make boost's foreach happy
+            foreach (pss, _annotations)
+              ao->setAnnotation(pss.first, pss.second);
+            aos.push_back(ao);
             cleanup();
             contextchange = false;
           }
           break;
         case -3: // we left YODA_PROFILE1D
           if (contextchange) {
-            YODA::Profile1D* h = new YODA::Profile1D(_profile1d.bins, _profile1d.dbn_tot, _profile1d.dbn_uflow, _profile1d.dbn_oflow);
+            YODA::AnalysisObject* ao = new YODA::Profile1D(_profile1d.bins, _profile1d.dbn_tot, _profile1d.dbn_uflow, _profile1d.dbn_oflow);
             std::pair <std::string, std::string> pss;  // to make boost's foreach happy
-            foreach (pss, _annotations) {
-              h->setAnnotation(pss.first, pss.second);
-            }
-            aos.push_back(h);
+            foreach (pss, _annotations)
+              ao->setAnnotation(pss.first, pss.second);
+            aos.push_back(ao);
+            cleanup();
+            contextchange = false;
+          }
+          break;
+        case -4: // we left YODA_PROFILE2D
+          if (contextchange) {
+            YODA::AnalysisObject* ao = new YODA::Profile2D(_profile2d.bins, _profile2d.dbn_tot, _profile2d.dbn_oflow);
+            std::pair <std::string, std::string> pss;  // to make boost's foreach happy
+            foreach (pss, _annotations)
+              ao->setAnnotation(pss.first, pss.second);
+            aos.push_back(ao);
             cleanup();
             contextchange = false;
           }
           break;
         case -6: // we left YODA_SCATTER2D
           if (contextchange) {
-            YODA::Scatter2D* h = new YODA::Scatter2D(_scatter2d.points);
+            YODA::AnalysisObject* ao = new YODA::Scatter2D(_scatter2d.points);
             std::pair <std::string, std::string> pss;  // to make boost's foreach happy
-            foreach (pss, _annotations) {
-              h->setAnnotation(pss.first, pss.second);
-            }
-            aos.push_back(h);
+            foreach (pss, _annotations)
+              ao->setAnnotation(pss.first, pss.second);
+            aos.push_back(ao);
             cleanup();
             contextchange = false;
           }

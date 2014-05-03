@@ -9,7 +9,9 @@
 #include "YODA/AnalysisObject.h"
 #include "YODA/Reader.h"
 #include <YODA/Histo1D.h>
+#include <YODA/Histo2D.h>
 #include <YODA/Profile1D.h>
+#include <YODA/Profile2D.h>
 #include <YODA/Scatter2D.h>
 #include <boost/spirit/include/qi.hpp>
 #include <boost/spirit/include/phoenix_operator.hpp>
@@ -52,10 +54,18 @@ namespace YODA {
       _histo1d.dbn_uflow.reset();
       _histo1d.dbn_oflow.reset();
 
+      _histo2d.bins.clear();
+      _histo2d.dbn_tot.reset();
+      //_histo2d.dbn_oflow.reset();
+
       _profile1d.bins.clear();
       _profile1d.dbn_tot.reset();
       _profile1d.dbn_uflow.reset();
       _profile1d.dbn_oflow.reset();
+
+      _profile2d.bins.clear();
+      _profile2d.dbn_tot.reset();
+      //_profile2d.dbn_oflow.reset();
 
       _scatter2d.points.clear();
 
@@ -71,8 +81,7 @@ namespace YODA {
 
     // Here comes everything we need for the parser
 
-    /// Structs for the Histo1D parser
-    /// The data for Dbn1D
+    /// The data for the Dbn1D in Histo1D
     struct histo1ddbn {
       double sumW;
       double sumW2;
@@ -81,15 +90,7 @@ namespace YODA {
       unsigned long numFills;
     };
 
-    /// A Histo1D bin
-    struct histo1dbin {
-      double lowedge;
-      double highedge;
-      histo1ddbn dbn;
-    };
-
-    /// Structs for the Profile1D parser
-    /// The data for Dbn2D (except sumWXY)
+    /// The data for the Dbn2D in Profile1D (except sumWXY, since unused by profiles)
     struct profile1ddbn {
       double sumW;
       double sumW2;
@@ -100,15 +101,68 @@ namespace YODA {
       unsigned long numFills;
     };
 
+    /// The data for the Dbn2D in Histo2D
+    struct histo2ddbn {
+      double sumW;
+      double sumW2;
+      double sumWX;
+      double sumWX2;
+      double sumWY;
+      double sumWY2;
+      double sumWXY;
+      unsigned long numFills;
+    };
+
+    /// The data for Dbn3D in Profile2D
+    struct profile2ddbn {
+      double sumW;
+      double sumW2;
+      double sumWX;
+      double sumWX2;
+      double sumWY;
+      double sumWY2;
+      double sumWZ;
+      double sumWZ2;
+      double sumWXY;
+      double sumWXZ;
+      double sumWYZ;
+      unsigned long numFills;
+    };
+
+
+    /// A Histo1D bin
+    struct histo1dbin {
+      double xlow;
+      double xhigh;
+      histo1ddbn dbn;
+    };
+
+    /// A Histo2D bin
+    struct histo2dbin {
+      double xlow;
+      double xhigh;
+      double ylow;
+      double yhigh;
+      histo2ddbn dbn;
+    };
+
     /// A Profile1D bin
     struct profile1dbin {
-      double lowedge;
-      double highedge;
+      double xlow;
+      double xhigh;
       profile1ddbn dbn;
     };
 
-    /// Structs for the Scatter2D parser
-    /// The data for ScatterPoint2D
+    /// A Profile2D bin
+    struct profile2dbin {
+      double xlow;
+      double xhigh;
+      double ylow;
+      double yhigh;
+      profile2ddbn dbn;
+    };
+
+    /// The data for Point2D
     struct scatterpoint2d {
       double x;
       double exminus;
@@ -118,13 +172,12 @@ namespace YODA {
       double eyplus;
     };
 
+
     /// Structs for the key-value pair parser (annotations)
     struct keyval {
       std::string key;
       std::string val;
     };
-
-
     /// Annotations (common for all data types)
     static std::map<std::string, std::string> _annotations;
 
@@ -138,6 +191,13 @@ namespace YODA {
     };
     static histo1d _histo1d;
 
+    /// All information for creating a Histo2D
+    struct histo2d {
+      std::vector<YODA::HistoBin2D> bins;
+      YODA::Dbn2D dbn_tot;
+      std::vector<YODA::Dbn2D> dbn_oflow;
+    };
+    static histo2d _histo2d;
 
     /// All information for creating a Profile1D
     struct profile1d {
@@ -148,6 +208,13 @@ namespace YODA {
     };
     static profile1d _profile1d;
 
+    /// All information for creating a Profile2D
+    struct profile2d {
+      std::vector<YODA::ProfileBin2D> bins;
+      YODA::Dbn3D dbn_tot;
+      std::vector<YODA::Dbn3D> dbn_oflow;
+    };
+    static profile2d _profile2d;
 
     /// All information for creating a Scatter2D
     struct scatter2d {
@@ -156,14 +223,28 @@ namespace YODA {
     static scatter2d _scatter2d;
 
 
+    /// @todo Add Counter persistency
+
+
     /// Functions to call from the parser
     /// Filling the dbn_tot
     struct filltotaldbn {
       void operator()(const histo1ddbn dbn, qi::unused_type, qi::unused_type) const {
-        _histo1d.dbn_tot = YODA::Dbn1D(dbn.numFills, dbn.sumW, dbn.sumW2, dbn.sumWX, dbn.sumWX2);
+        _histo1d.dbn_tot = YODA::Dbn1D(dbn.numFills, dbn.sumW, dbn.sumW2,
+                                       dbn.sumWX, dbn.sumWX2);
       }
       void operator()(const profile1ddbn dbn, qi::unused_type, qi::unused_type) const {
-        _profile1d.dbn_tot = YODA::Dbn2D(dbn.numFills, dbn.sumW, dbn.sumW2, dbn.sumWX, dbn.sumWX2, dbn.sumWY, dbn.sumWY2, 0.0);
+        _profile1d.dbn_tot = YODA::Dbn2D(dbn.numFills, dbn.sumW, dbn.sumW2,
+                                         dbn.sumWX, dbn.sumWX2, dbn.sumWY, dbn.sumWY2, 0.0);
+      }
+      void operator()(const histo2ddbn dbn, qi::unused_type, qi::unused_type) const {
+        _histo2d.dbn_tot = YODA::Dbn2D(dbn.numFills, dbn.sumW, dbn.sumW2,
+                                       dbn.sumWX, dbn.sumWX2, dbn.sumWY, dbn.sumWY2, dbn.sumWXY);
+      }
+      void operator()(const profile2ddbn dbn, qi::unused_type, qi::unused_type) const {
+        _profile2d.dbn_tot = YODA::Dbn3D(dbn.numFills, dbn.sumW, dbn.sumW2,
+                                         dbn.sumWX, dbn.sumWX2, dbn.sumWY, dbn.sumWY2, dbn.sumWZ, dbn.sumWZ2,
+                                         0.0, 0.0, 0.0);
       }
     };
 
@@ -193,22 +274,40 @@ namespace YODA {
     /// Filling a bin
     struct fillbin {
       void operator()(const histo1dbin b, qi::unused_type, qi::unused_type) const {
-        YODA::HistoBin1D bin(std::make_pair(b.lowedge, b.highedge), YODA::Dbn1D(b.dbn.numFills, b.dbn.sumW, b.dbn.sumW2, b.dbn.sumWX, b.dbn.sumWX2));
+        YODA::HistoBin1D bin(std::make_pair(b.xlow, b.xhigh),
+                             YODA::Dbn1D(b.dbn.numFills, b.dbn.sumW, b.dbn.sumW2, b.dbn.sumWX, b.dbn.sumWX2));
         _histo1d.bins.push_back(bin);
       }
       void operator()(const profile1dbin b, qi::unused_type, qi::unused_type) const {
-        YODA::ProfileBin1D bin(std::make_pair(b.lowedge, b.highedge), YODA::Dbn2D(b.dbn.numFills, b.dbn.sumW, b.dbn.sumW2, b.dbn.sumWX, b.dbn.sumWX2, b.dbn.sumWY, b.dbn.sumWY2, 0.0));
+        YODA::ProfileBin1D bin(std::make_pair(b.xlow, b.xhigh),
+                               YODA::Dbn2D(b.dbn.numFills, b.dbn.sumW, b.dbn.sumW2,
+                                           b.dbn.sumWX, b.dbn.sumWX2, b.dbn.sumWY, b.dbn.sumWY2, 0.0));
         _profile1d.bins.push_back(bin);
+      }
+      void operator()(const histo2dbin b, qi::unused_type, qi::unused_type) const {
+        YODA::HistoBin2D bin(std::make_pair(b.xlow, b.xhigh), std::make_pair(b.ylow, b.yhigh),
+                             YODA::Dbn2D(b.dbn.numFills, b.dbn.sumW, b.dbn.sumW2,
+                                         b.dbn.sumWX, b.dbn.sumWX2, b.dbn.sumWY, b.dbn.sumWY2, b.dbn.sumWXY));
+        _histo2d.bins.push_back(bin);
+      }
+      void operator()(const profile2dbin b, qi::unused_type, qi::unused_type) const {
+        YODA::ProfileBin2D bin(std::make_pair(b.xlow, b.xhigh), std::make_pair(b.xlow, b.xhigh),
+                               YODA::Dbn3D(b.dbn.numFills, b.dbn.sumW, b.dbn.sumW2,
+                                           b.dbn.sumWX, b.dbn.sumWX2, b.dbn.sumWY, b.dbn.sumWY2, b.dbn.sumWZ, b.dbn.sumWZ2,
+                                           0.0, 0.0, 0.0));
+        _profile2d.bins.push_back(bin);
       }
     };
 
 
     /// Filling a point
     struct fillpoint {
+      // @todo Add Point1D
       void operator()(const scatterpoint2d p, qi::unused_type, qi::unused_type) const {
         YODA::Point2D point(p.x, p.y, p.exminus, p.explus, p.eyminus, p.eyplus);
         _scatter2d.points.push_back(point);
       }
+      // @todo Add Point3D
     };
 
 
@@ -244,8 +343,7 @@ namespace YODA {
 
     /// The actual grammar for parsing the lines of a flat data file.
     template <typename Iterator, typename Skipper>
-    struct yoda_grammar : qi::grammar<Iterator, Skipper>
-    {
+    struct yoda_grammar : qi::grammar<Iterator, Skipper> {
 
       yoda_grammar() : yoda_grammar::base_type(line) {
 
@@ -254,17 +352,24 @@ namespace YODA {
         /// first match wins.
         /// In brackets we specify the functions that are
         /// called in case the rule matches.
-        line = Profile1Dbin[fillbin()]         |
-               Profile1Dtotal[filltotaldbn()]  |
-               Profile1Duflow[filluflowdbn()]  |
-               Profile1Doflow[filloflowdbn()]  |
-               Histo1Dbin[fillbin()]           |
-               Histo1Dtotal[filltotaldbn()]    |
-               Histo1Duflow[filluflowdbn()]    |
-               Histo1Doflow[filloflowdbn()]    |
-               ScatterPoint2D[fillpoint()]     |
-               keyvaluepair[fillkeyval()]      |
-               comment;
+        line = \
+          Profile2Dbin[fillbin()]         |
+          Profile2Dtotal[filltotaldbn()]  |
+          //Profile2Doflow[filloflowdbn()]  |
+          Histo2Dbin[fillbin()]           |
+          Histo2Dtotal[filltotaldbn()]    |
+          //Histo2Doflow[filloflowdbn()]    |
+          Profile1Dbin[fillbin()]         |
+          Profile1Dtotal[filltotaldbn()]  |
+          Profile1Duflow[filluflowdbn()]  |
+          Profile1Doflow[filloflowdbn()]  |
+          Histo1Dbin[fillbin()]           |
+          Histo1Dtotal[filltotaldbn()]    |
+          Histo1Duflow[filluflowdbn()]    |
+          Histo1Doflow[filloflowdbn()]    |
+          ScatterPoint2D[fillpoint()]     |
+          keyvaluepair[fillkeyval()]      |
+          comment;
 
         /// Match the strings "Underflow", "Overflow" and "Total"
         underflow = qi::lit("Underflow");
@@ -280,6 +385,11 @@ namespace YODA {
         Histo1Ddbn = double_ >> double_ >> double_ >> double_ >> ulong_;
 
         // Histo2D
+        /// Regular bins, total statistics, outflows.
+        Histo2Dbin   %= double_   >> double_   >> double_    >> double_   >> Histo2Ddbn;
+        Histo2Dtotal %= total     >> total     >> Histo2Ddbn;
+        //Histo2Doflow %= overflow  >> overflow  >> Histo2Ddbn;
+        Histo2Ddbn = double_ >> double_ >> double_ >> double_ >> double_ >> double_ >> double_ >> ulong_;
 
         // Profile1D
         /// Regular bins, total statistics, underflow or overflow.
@@ -290,43 +400,59 @@ namespace YODA {
         Profile1Ddbn = double_ >> double_ >> double_ >> double_ >> double_ >> double_ >> ulong_;
 
         // Profile2D
+        /// Regular bins, total statistics, outflows.
+        Profile2Dbin   %= double_   >> double_   >> double_    >> double_   >> Profile2Ddbn;
+        Profile2Dtotal %= total     >> total     >> Profile2Ddbn;
+        //Profile2Doflow %= overflow  >> overflow  >> Profile2Ddbn;
+        Profile2Ddbn = double_ >> double_ >> double_ >> double_ >> double_ >> double_ >> double_ >> double_ >> ulong_;
 
         // Scatter1D
+        /// @todo Implement
 
         // Scatter2D
         ScatterPoint2D %= double_ >> double_ >> double_ >> double_ >> double_ >> double_;
 
         // Scatter3D
+        /// @todo Implement
 
 
         /// Annotations.
-        /// The key is anyting up to the first equal sign, but
+        /// The key is anything up to the first equal sign, but
         /// keys can't start with a number or a minus sign. The
         /// value is anything after the equal sign.
         key = !qi::char_("0-9-") >> *~qi::char_("=");
-        value = *~qi::char_("\n");
+        value = *~qi::char_("\n"); //< DOS/Unix line return safe?
         keyvaluepair %= key >> "=" >> value;
 
         /// Lines starting with a "#" are comments.
-        comment = qi::lit("#") >> *~qi::char_("\n");
+        comment = qi::lit("#") >> *~qi::char_("\n"); //< DOS/Unix line return safe?
       }
 
       /// In the rules, the first template argument is the Iterator for the string,
       /// the second one is the return type, and the last one is a "Skipper" for
       /// ignoring whitespace. Note that the key/value pair doesn't ignore whitespace.
       /// Most of the return values match our structs (like keyval, histo1dbin, etc.).
-      /// Those are used to directly fill the corresponding structs.
+      /// Those are used to directly fill the corresponding data structs.
       qi::rule<Iterator, Skipper> line, total, underflow, overflow, comment;
       qi::rule<Iterator, std::string()> key, value;
       qi::rule<Iterator, keyval(), Skipper> keyvaluepair;
 
+      /// @todo Add Counter
+
       qi::rule<Iterator, histo1dbin(), Skipper> Histo1Dbin;
       qi::rule<Iterator, histo1ddbn(), Skipper> Histo1Ddbn, Histo1Dtotal, Histo1Duflow, Histo1Doflow;
+
+      qi::rule<Iterator, histo2dbin(), Skipper> Histo2Dbin;
+      qi::rule<Iterator, histo2ddbn(), Skipper> Histo2Ddbn, Histo2Dtotal; //, Histo2Doflow;
 
       qi::rule<Iterator, profile1dbin(), Skipper> Profile1Dbin;
       qi::rule<Iterator, profile1ddbn(), Skipper> Profile1Ddbn, Profile1Dtotal, Profile1Duflow, Profile1Doflow;
 
+      qi::rule<Iterator, profile2dbin(), Skipper> Profile2Dbin;
+      qi::rule<Iterator, profile2ddbn(), Skipper> Profile2Ddbn, Profile2Dtotal; //, Profile2Doflow;
+
       qi::rule<Iterator, scatterpoint2d(), Skipper> ScatterPoint2D;
+
     };
 
 
@@ -355,10 +481,33 @@ BOOST_FUSION_ADAPT_STRUCT(
 
 BOOST_FUSION_ADAPT_STRUCT(
   YODA::ReaderYODA::histo1dbin,
-  (double, lowedge)
-  (double, highedge)
+  (double, xlow)
+  (double, xhigh)
   (YODA::ReaderYODA::histo1ddbn, dbn)
 )
+
+
+BOOST_FUSION_ADAPT_STRUCT(
+  YODA::ReaderYODA::histo2ddbn,
+  (double, sumW)
+  (double, sumW2)
+  (double, sumWX)
+  (double, sumWX2)
+  (double, sumWY)
+  (double, sumWY2)
+  (double, sumWXY)
+  (unsigned long, numFills)
+)
+
+BOOST_FUSION_ADAPT_STRUCT(
+  YODA::ReaderYODA::histo2dbin,
+  (double, xlow)
+  (double, xhigh)
+  (double, ylow)
+  (double, yhigh)
+  (YODA::ReaderYODA::histo2ddbn, dbn)
+)
+
 
 BOOST_FUSION_ADAPT_STRUCT(
   YODA::ReaderYODA::profile1ddbn,
@@ -373,10 +522,34 @@ BOOST_FUSION_ADAPT_STRUCT(
 
 BOOST_FUSION_ADAPT_STRUCT(
   YODA::ReaderYODA::profile1dbin,
-  (double, lowedge)
-  (double, highedge)
+  (double, xlow)
+  (double, xhigh)
   (YODA::ReaderYODA::profile1ddbn, dbn)
 )
+
+
+BOOST_FUSION_ADAPT_STRUCT(
+  YODA::ReaderYODA::profile2ddbn,
+  (double, sumW)
+  (double, sumW2)
+  (double, sumWX)
+  (double, sumWX2)
+  (double, sumWY)
+  (double, sumWY2)
+  (double, sumWZ)
+  (double, sumWZ2)
+  (unsigned long, numFills)
+)
+
+BOOST_FUSION_ADAPT_STRUCT(
+  YODA::ReaderYODA::profile2dbin,
+  (double, xlow)
+  (double, xhigh)
+  (double, ylow)
+  (double, yhigh)
+  (YODA::ReaderYODA::profile2ddbn, dbn)
+)
+
 
 BOOST_FUSION_ADAPT_STRUCT(
   YODA::ReaderYODA::scatterpoint2d,
@@ -387,6 +560,7 @@ BOOST_FUSION_ADAPT_STRUCT(
   (double, eyminus)
   (double, eyplus)
 )
+
 
 BOOST_FUSION_ADAPT_STRUCT(
   YODA::ReaderYODA::keyval,

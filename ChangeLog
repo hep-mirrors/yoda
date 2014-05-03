@@ -1,3 +1,8 @@
+2014-05-03  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Adding YODA reader functionality for Histo2D and Profile2D, but
+	without outflows support yet.
+
 2014-04-25  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Adding simple command line yodahist script for quick 1D
