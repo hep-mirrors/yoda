@@ -8,6 +8,7 @@
 #include "YODA/Histo1D.h"
 #include "YODA/Histo2D.h"
 #include "YODA/Profile1D.h"
+#include "YODA/Profile2D.h"
 #include "YODA/Scatter2D.h"
 
 #include <iostream>
@@ -96,29 +97,36 @@ namespace YODA {
     if ( h.totalDbn().numEntries() > 0 )
       os << "# Mean: (" << h.xMean() << ", " << h.yMean() << ")\n";
     os << "# Area: " << h.integral() << "\n";
-    os << "# xlow\t xhigh\t ylow\t yhigh\t sumw\t sumw2\t sumwx\t sumwx2\t sumwy\t sumwy2\t numEntries\n";
+    os << "# xlow\t xhigh\t ylow\t yhigh\t sumw\t sumw2\t sumwx\t sumwx2\t sumwy\t sumwy2\t sumwxy\t numEntries\n";
+    // Total distribution
+    const Dbn2D& td = h.totalDbn();
     os << "Total   \tTotal   \t";
-    os << h.totalDbn().sumW()  << "\t" << h.totalDbn().sumW2()  << "\t";
-    os << h.totalDbn().sumWX() << "\t" << h.totalDbn().sumWX2() << "\t";
-    os << h.totalDbn().sumWY() << "\t" << h.totalDbn().sumWY2() << "\t";
-    os << h.totalDbn().numEntries() << "\n";
+    os << td.sumW()   << "\t" << td.sumW2()  << "\t";
+    os << td.sumWX()  << "\t" << td.sumWX2() << "\t";
+    os << td.sumWY()  << "\t" << td.sumWY2() << "\t";
+    os << td.sumWXY() << "\t";
+    os << td.numEntries() << "\n";
+    // Outflows
     for (int ix = -1; ix <= 1; ++ix) {
       for (int iy = -1; iy <= 1; ++iy) {
         if (ix == 0 && iy == 0) continue;
         os << "Outflow\t" << ix << ":" << iy << "\t";
         const Dbn2D& d = h.outflow(ix, iy);
-        os << d.sumW()  << "\t" << d.sumW2()  << "\t";
-        os << d.sumWX() << "\t" << d.sumWX2() << "\t";
-        os << d.sumWY() << "\t" << d.sumWY2() << "\t";
+        os << d.sumW()   << "\t" << d.sumW2()  << "\t";
+        os << d.sumWX()  << "\t" << d.sumWX2() << "\t";
+        os << d.sumWY()  << "\t" << d.sumWY2() << "\t";
+        os << d.sumWXY() << "\t";
         os << d.numEntries() << "\n";
       }
     }
+    // Bins
     foreach (const HistoBin2D& b, h.bins()) {
       os << b.lowEdgeX() << "\t" << b.highEdgeX() << "\t";
       os << b.lowEdgeY() << "\t" << b.highEdgeY() << "\t";
-      os << b.sumW()    << "\t" << b.sumW2()    << "\t";
-      os << b.sumWX()   << "\t" << b.sumWX2()   << "\t";
-      os << b.sumWY()   << "\t" << b.sumWY2()   << "\t";
+      os << b.sumW()     << "\t" << b.sumW2()     << "\t";
+      os << b.sumWX()    << "\t" << b.sumWX2()    << "\t";
+      os << b.sumWY()    << "\t" << b.sumWY2()    << "\t";
+      os << b.sumWXY()   << "\t";
       os << b.numEntries() << "\n";
     }
     os << "# END YODA_HISTO2D\n\n";
@@ -162,14 +170,82 @@ namespace YODA {
   }
 
 
+  void WriterYODA::writeProfile2D(std::ostream& os, const Profile2D& h) {
+    ios_base::fmtflags oldflags = os.flags();
+    os << scientific << showpoint << setprecision(_precision);
+
+    os << "# BEGIN YODA_PROFILE2D " << h.path() << "\n";
+    _writeAnnotations(os, h);
+    os << "# xlow\t xhigh\t ylow\t yhigh\t sumw\t sumw2\t sumwx\t sumwx2\t sumwy\t sumwy2\t sumwz\t sumwz2\t sumwxy\t numEntries\n";
+    // Total distribution
+    const Dbn3D& td = h.totalDbn();
+    os << "Total   \tTotal   \t";
+    os << td.sumW()   << "\t" << td.sumW2()  << "\t";
+    os << td.sumWX()  << "\t" << td.sumWX2() << "\t";
+    os << td.sumWY()  << "\t" << td.sumWY2() << "\t";
+    os << td.sumWZ()  << "\t" << td.sumWZ2() << "\t";
+    os << td.sumWXY() << "\t"; // << td.sumWXZ() << "\t" << td.sumWYZ() << "\t";
+    os << td.numEntries() << "\n";
+    // Outflows
+    for (int ix = -1; ix <= 1; ++ix) {
+      for (int iy = -1; iy <= 1; ++iy) {
+        if (ix == 0 && iy == 0) continue;
+        os << "Outflow\t" << ix << ":" << iy << "\t";
+        const Dbn3D& d = h.outflow(ix, iy);
+        os << d.sumW()   << "\t" << d.sumW2()  << "\t";
+        os << d.sumWX()  << "\t" << d.sumWX2() << "\t";
+        os << d.sumWY()  << "\t" << d.sumWY2() << "\t";
+        os << d.sumWZ()  << "\t" << d.sumWZ2() << "\t";
+        os << d.sumWXY() << "\t"; // << d.sumWXZ() << "\t" << d.sumWYZ() << "\t";
+        os << d.numEntries() << "\n";
+      }
+    }
+    // Bins
+    foreach (const ProfileBin2D& b, h.bins()) {
+      os << b.lowEdgeX() << "\t" << b.highEdgeX() << "\t";
+      os << b.lowEdgeY() << "\t" << b.highEdgeY() << "\t";
+      os << b.sumW()     << "\t" << b.sumW2()     << "\t";
+      os << b.sumWX()    << "\t" << b.sumWX2()    << "\t";
+      os << b.sumWY()    << "\t" << b.sumWY2()    << "\t";
+      os << b.sumWZ()    << "\t" << b.sumWZ2()    << "\t";
+      os << b.sumWXY()   << "\t"; // << b.sumWXZ()    << "\t" << b.sumWYZ() << "\t";
+      os << b.numEntries() << "\n";
+    }
+    os << "# END YODA_PROFILE2D\n\n";
+
+    os.flags(oldflags);
+  }
+
+
+  /*
+    void WriterYODA::writeScatter1D(std::ostream& os, const Scatter1D& s) {
+    ios_base::fmtflags oldflags = os.flags();
+      os << scientific << showpoint << setprecision(_precision);
+
+      os << "# BEGIN YODA_SCATTER1D " << s.path() << "\n";
+      _writeAnnotations(os, s);
+      os << "# xval\t xerr-\t xerr+\n";
+      foreach (Point1D pt, s.points()) {
+        os << pt.x() << "\t" << pt.xErrMinus() << "\t" << pt.xErrMinus() << "\t";
+      }
+      os << "# END YODA_SCATTER1D\n";
+
+      os << flush;
+      os.flags(oldflags);
+    }
+  */
+
+
   void WriterYODA::writeScatter2D(std::ostream& os, const Scatter2D& s) {
     ios_base::fmtflags oldflags = os.flags();
     os << scientific << showpoint << setprecision(_precision);
 
     os << "# BEGIN YODA_SCATTER2D " << s.path() << "\n";
     _writeAnnotations(os, s);
+    /// @todo Change ordering to {vals} {errs} {errs} ...
     os << "# xval\t xerr-\t xerr+\t yval\t yerr-\t yerr+\n";
     foreach (Point2D pt, s.points()) {
+      /// @todo Change ordering to {vals} {errs} {errs} ...
       os << pt.x() << "\t" << pt.xErrMinus() << "\t" << pt.xErrPlus() << "\t";
       os << pt.y() << "\t" << pt.yErrMinus() << "\t" << pt.yErrPlus() << "\n";
     }
@@ -180,23 +256,27 @@ namespace YODA {
   }
 
 
-  /*void WriterYODA::writeScatter3D(std::ostream& os, const Scatter3D& s) {
-    ios_base::fmtflags oldflags = os.flags();
-    os << scientific << showpoint << setprecision(_precision);
+  /*
+    void WriterYODA::writeScatter3D(std::ostream& os, const Scatter3D& s) {
+      ios_base::fmtflags oldflags = os.flags();
+      os << scientific << showpoint << setprecision(_precision);
 
-    os << "# BEGIN YODA_SCATTER3D " << s.path() << "\n";
-    _writeAnnotations(os, s);
-    os << "# xval\t xerr-\t xerr+\t yval\t yerr-\t yerr+\t zval\t zerr-\t zerr+\n";
-    foreach (Point3D pt, s.points()) {
-      os << pt.x() << "\t" << pt.xErrMinus() << "\t" << pt.xErrMinus() << "\t";
-      os << pt.y() << "\t" << pt.yErrMinus() << "\t" << pt.yErrMinus() << "\t";
-      os << pt.z() << "\t" << pt.zErrMinus() << "\t" << pt.zErrMinus() << "\n";
+      os << "# BEGIN YODA_SCATTER3D " << s.path() << "\n";
+      _writeAnnotations(os, s);
+      /// @todo Change ordering to {vals} {errs} {errs} ...
+      os << "# xval\t xerr-\t xerr+\t yval\t yerr-\t yerr+\t zval\t zerr-\t zerr+\n";
+      foreach (Point3D pt, s.points()) {
+        /// @todo Change ordering to {vals} {errs} {errs} ...
+        os << pt.x() << "\t" << pt.xErrMinus() << "\t" << pt.xErrMinus() << "\t";
+        os << pt.y() << "\t" << pt.yErrMinus() << "\t" << pt.yErrMinus() << "\t";
+        os << pt.z() << "\t" << pt.zErrMinus() << "\t" << pt.zErrMinus() << "\n";
+      }
+      os << "# END YODA_SCATTER3D\n";
+
+      os << flush;
+      os.flags(oldflags);
     }
-    os << "# END YODA_SCATTER2D\n";
-
-    os << flush;
-    os.flags(oldflags);
-  }*/
+  */
 
 
 }

@@ -98,6 +98,7 @@ namespace YODA {
       double sumWX2;
       double sumWY;
       double sumWY2;
+      // double sumWXY;
       unsigned long numFills;
     };
 
@@ -113,7 +114,7 @@ namespace YODA {
       unsigned long numFills;
     };
 
-    /// The data for Dbn3D in Profile2D
+    /// The data for Dbn3D in Profile2D (except sumWXZ and sumYZ, since unused by profiles)
     struct profile2ddbn {
       double sumW;
       double sumW2;
@@ -124,8 +125,8 @@ namespace YODA {
       double sumWZ;
       double sumWZ2;
       double sumWXY;
-      double sumWXZ;
-      double sumWYZ;
+      // double sumWXZ;
+      // double sumWYZ;
       unsigned long numFills;
     };
 
@@ -244,7 +245,7 @@ namespace YODA {
       void operator()(const profile2ddbn dbn, qi::unused_type, qi::unused_type) const {
         _profile2d.dbn_tot = YODA::Dbn3D(dbn.numFills, dbn.sumW, dbn.sumW2,
                                          dbn.sumWX, dbn.sumWX2, dbn.sumWY, dbn.sumWY2, dbn.sumWZ, dbn.sumWZ2,
-                                         0.0, 0.0, 0.0);
+                                         dbn.sumWXY, 0.0, 0.0);
       }
     };
 
@@ -353,21 +354,23 @@ namespace YODA {
         /// In brackets we specify the functions that are
         /// called in case the rule matches.
         line = \
-          Profile2Dbin[fillbin()]         |
-          Profile2Dtotal[filltotaldbn()]  |
-          //Profile2Doflow[filloflowdbn()]  |
-          Histo2Dbin[fillbin()]           |
-          Histo2Dtotal[filltotaldbn()]    |
-          //Histo2Doflow[filloflowdbn()]    |
-          Profile1Dbin[fillbin()]         |
-          Profile1Dtotal[filltotaldbn()]  |
-          Profile1Duflow[filluflowdbn()]  |
-          Profile1Doflow[filloflowdbn()]  |
-          Histo1Dbin[fillbin()]           |
-          Histo1Dtotal[filltotaldbn()]    |
-          Histo1Duflow[filluflowdbn()]    |
-          Histo1Doflow[filloflowdbn()]    |
-          ScatterPoint2D[fillpoint()]     |
+          Profile2Dbin[fillbin()]         | // w w2 x1 x2 y1 y2 wx wx2 wy wy2 wz wz2 wxy n = 14
+          Profile2Dtotal[filltotaldbn()]  | // "
+          //Profile2Doflow[filloflowdbn()]| // "
+          Histo2Dbin[fillbin()]           | // w w2 x1 x2 y1 y2 wx wx2 wy wy2 wxy n = 12
+          Histo2Dtotal[filltotaldbn()]    | // "
+          //Histo2Doflow[filloflowdbn()]  | // "
+          Profile1Dbin[fillbin()]         | // w w2 x1 x2 wx wx2 wy wy2 n = 9
+          Profile1Dtotal[filltotaldbn()]  | // "
+          Profile1Duflow[filluflowdbn()]  | // "
+          Profile1Doflow[filloflowdbn()]  | // "
+          Histo1Dbin[fillbin()]           | // w w2 x1 x2 wx wx2 n = 7
+          Histo1Dtotal[filltotaldbn()]    | // "
+          Histo1Duflow[filluflowdbn()]    | // "
+          Histo1Doflow[filloflowdbn()]    | // "
+          //ScatterPoint3D[fillpoint()]   | // x y z ex- ex+ ey- ey+ ez- ez+ = 9 (+ arbitrarily more sets of errors as 6 doubles... and names?)
+          ScatterPoint2D[fillpoint()]     | // x y ex- ex+ ey- ey+ = 6 (+ arbitrarily more sets of errors as 4 doubles... and names?)
+          //ScatterPoint1D[fillpoint()]   | // x ex- ex+ = 3 (+ arbitrarily more sets of errors as 2 doubles... and names?)
           keyvaluepair[fillkeyval()]      |
           comment;
 
@@ -404,16 +407,16 @@ namespace YODA {
         Profile2Dbin   %= double_   >> double_   >> double_    >> double_   >> Profile2Ddbn;
         Profile2Dtotal %= total     >> total     >> Profile2Ddbn;
         //Profile2Doflow %= overflow  >> overflow  >> Profile2Ddbn;
-        Profile2Ddbn = double_ >> double_ >> double_ >> double_ >> double_ >> double_ >> double_ >> double_ >> ulong_;
+        Profile2Ddbn = double_ >> double_ >> double_ >> double_ >> double_ >> double_ >> double_ >> double_ >> double_ >> ulong_;
 
         // Scatter1D
-        /// @todo Implement
+        // ScatterPoint1D %= double_ >> double_ >> double_;
 
         // Scatter2D
         ScatterPoint2D %= double_ >> double_ >> double_ >> double_ >> double_ >> double_;
 
         // Scatter3D
-        /// @todo Implement
+        // ScatterPoint2D %= double_ >> double_ >> double_ >> double_ >> double_ >> double_ >> double_ >> double_ >> double_;
 
 
         /// Annotations.
@@ -551,6 +554,7 @@ BOOST_FUSION_ADAPT_STRUCT(
 )
 
 
+/// @todo Change ordering to {vals} {errs}
 BOOST_FUSION_ADAPT_STRUCT(
   YODA::ReaderYODA::scatterpoint2d,
   (double, x)

@@ -1,3 +1,8 @@
+2014-05-06  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Add Profile2D YODA format writing, note need for Scatter format
+	change, add sumXY storage to both 2D histo types.
+
 2014-05-03  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Adding YODA reader functionality for Histo2D and Profile2D, but
