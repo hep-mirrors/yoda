@@ -12,9 +12,12 @@ using namespace std;
 
 namespace YODA {
 
+  // Static initializations
   qi::symbols<char, int> ReaderYODA::bgroup;
   qi::symbols<char, int> ReaderYODA::egroup;
   ReaderYODA::histo1d ReaderYODA::_histo1d;
+  ReaderYODA::histo2d ReaderYODA::_histo2d;
+  ReaderYODA::profile2d ReaderYODA::_profile2d;
   ReaderYODA::profile1d ReaderYODA::_profile1d;
   ReaderYODA::scatter2d ReaderYODA::_scatter2d;
   map<string, string> ReaderYODA::_annotations;
