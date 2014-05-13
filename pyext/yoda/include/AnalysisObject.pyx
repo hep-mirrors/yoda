@@ -17,49 +17,15 @@ cdef class AnalysisObject(util.Base):
 
 
     @property
+    def type(self):
+        return self._AnalysisObject().type()
+
+
+    @property
     def annotations(self):
         """() -> list[str]
         A list of all annotation/metadata keys."""
         return self._AnalysisObject().annotations()
-        # from cython.operator cimport dereference as deref, preincrement as preinc
-        # ana = self._AnalysisObject().annotations()
-        # it = ana.begin()
-        # out_dict = {}
-        # while it != ana.end():
-        #     out_dict[deref(it).first.c_str()] = deref(it).second.c_str()
-        #     preinc(it)
-        # return out_dict
-
-
-    # # TODO: Yuck! Get rid of this
-    # def updateAnnotations(self, E=None, **F):
-    #     """
-    #     AO.update([E, ]**F) -> None.  Update annotations of AO from
-    #     dict/iterable E and F. Has the same semantics as Python's
-    #     dict.update(...).
-
-    #     If E present and has a .keys() method:
-    #         for k in E: AO[k] = E[k]
-    #     If E present and lacks .keys() method:
-    #         for (k, v) in E: AO[k] = v
-    #     In either case, this is followed by:
-    #         for k in F: AO[k] = F[k]
-    #     """
-    #     AO = self._AnalysisObject()
-    #     if E is not None:
-    #         if hasattr(E, 'keys'):
-    #             for k in E:
-    #                 # TODO: reinstate with str cast: set_annotation(AO, k, str(E[k]))
-    #                 set_annotation(AO, k, E[k])
-    #         else:
-    #             for k, v in E:
-    #                 # TODO: reinstate with str cast: set_annotation(AO, k, str(v))
-    #                 set_annotation(AO, k, v)
-
-    #     for k in F:
-    #         # TODO: reinstate with str cast: set_annotation(AO, k, str(F[k]))
-    #         set_annotation(AO, k, F[k])
-
 
     def annotation(self, string k, default=None):
         """Get annotation k from this object (falling back to default if not set)."""

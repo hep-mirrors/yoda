@@ -1,3 +1,8 @@
+2014-05-13  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Add the AnalysisObject::type() method back in Python (even
+	though type(ao) is more Pythonic, this may be useful)
+
 2014-05-06  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Add Profile2D YODA format writing, note need for Scatter format

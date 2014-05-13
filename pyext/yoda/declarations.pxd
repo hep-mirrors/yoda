@@ -493,7 +493,10 @@ cdef extern from "YODA/AnalysisObject.h" namespace "YODA":
         AnalysisObject()
         #AnalysisObject* newclone() except+ err
 
-        # Annotations
+        ## String used in automatic type determination
+        string type() except +err
+
+        ## Annotations
         vector[string] annotations() except+ err
         bool hasAnnotation(string key) except+ err
         string annotation(string key) except+ err
@@ -502,12 +505,11 @@ cdef extern from "YODA/AnalysisObject.h" namespace "YODA":
         void rmAnnotation(string name) except+ err
         void clearAnnotations() except+ err
 
-        # Standard annotations
+        ## Standard annotations
         string title() except+ err
         void setTitle(string title) except+ err
         string path() except+ err
         void setPath(string title) except+ err
-        string type() except +err
 # }}} AnalysisObject
 
 
