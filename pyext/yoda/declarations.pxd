@@ -681,6 +681,8 @@ cdef extern from "YODA/Profile1D.h" namespace "YODA":
         operator - (Profile1D)
         operator / (Profile1D)
 
+    Scatter2D Profile1D_div_Profile1D "divide" (const Profile1D&, const Profile1D&) except+ err
+
 #}}} Profile1D
 
 cdef extern from "merge.hh":
@@ -690,6 +692,7 @@ cdef extern from "merge.hh":
     # void Profile1D_idiv_dbl "cython_idiv_dbl" (Profile1D*, double)
     Profile1D* Profile1D_add_Profile1D "cython_add" (Profile1D*, Profile1D*)
     Profile1D* Profile1D_sub_Profile1D "cython_sub" (Profile1D*, Profile1D*)
+    Profile1D* Profile1D_div_Profile1D "cython_sub" (Profile1D*, Profile1D*)
 
 cdef extern from "YODA/Scatter2D.h" namespace "YODA":
     Scatter2D mkScatter_Profile1D "YODA::mkScatter" (const Profile1D&)
@@ -767,7 +770,11 @@ cdef extern from "merge.hh":
     # void Profile2D_idiv_dbl "cython_idiv_dbl" (Profile2D*, double)
     Profile2D* Profile2D_add_Profile2D "cython_add" (Profile2D*, Profile2D*)
     Profile2D* Profile2D_sub_Profile2D "cython_sub" (Profile2D*, Profile2D*)
+    Profile2D* Profile2D_div_Profile2D "cython_div" (Profile2D*, Profile2D*)
 
+# TODO:
+# cdef extern from "YODA/Scatter3D.h" namespace "YODA":
+#     Scatter3D mkScatter_Profile2D "YODA::mkScatter" (const Profile2D&)
 
 
 
@@ -835,17 +842,21 @@ cdef extern from "YODA/Histo1D.h" namespace "YODA":
         double stdDev(bool)
         double stdErr(bool)
 
-        # TODO: BUG! This does not correctly report identical bins...
+        # TODO: BUG! This does not correctly report identical bins... ???? AB
         void addBin(double, double) except+ err
         void addBins(vector[double] edges) except+ err
         void eraseBin(size_t index) except+ err
 
-        # TODO: declare operators here like for Histo2D? How does that interact with what's below?
-        # operator == (Histo2D)
-        # operator != (Histo2D)
-        # operator + (Histo2D)
-        # operator - (Histo2D)
-        # operator / (Histo2D)
+        # operator == (Histo1D)
+        # operator != (Histo1D)
+        operator + (Histo1D)
+        operator - (Histo1D)
+        operator / (Histo1D)
+
+    Scatter2D Histo1D_toIntegral "toIntegralHisto" (const Histo1D& h, bool includeunderflow) except+ err
+    Scatter2D Histo1D_toIntegralEff "toIntegralEfficiencyHisto" (const Histo1D& h, bool includeunderflow, bool includeoverflow) except+ err
+    Scatter2D Histo1D_div_Histo1D "divide" (const Histo1D&, const Histo1D&) except+ err
+    Scatter2D Histo1D_eff_Histo1D "efficiency" (const Histo1D&, const Histo1D&) except+ err
 #}}} Histo1D
 
 cdef extern from "merge.hh":
@@ -855,6 +866,7 @@ cdef extern from "merge.hh":
     # void Histo1D_idiv_dbl "cython_idiv_dbl" (Histo1D*, double)
     Histo1D* Histo1D_add_Histo1D "cython_add" (Histo1D*, Histo1D*)
     Histo1D* Histo1D_sub_Histo1D "cython_sub" (Histo1D*, Histo1D*)
+    Histo1D* Histo1D_div_Histo1D "cython_div" (Histo1D*, Histo1D*)
 
 cdef extern from "YODA/Scatter2D.h" namespace "YODA":
     Scatter2D mkScatter_Histo1D "YODA::mkScatter" (const Histo1D&)
@@ -944,8 +956,8 @@ cdef extern from "YODA/Histo2D.h" namespace "YODA":
         double xStdErr(bool)
         double yStdErr(bool)
 
-        operator == (Histo2D)
-        operator != (Histo2D)
+        # operator == (Histo2D)
+        # operator != (Histo2D)
         operator + (Histo2D)
         operator - (Histo2D)
         operator / (Histo2D)
@@ -958,7 +970,11 @@ cdef extern from "merge.hh":
     # void Histo2D_idiv_dbl "cython_idiv_dbl" (Histo2D*, double)
     Histo2D* Histo2D_add_Histo2D "cython_add" (Histo2D*, Histo2D*)
     Histo2D* Histo2D_sub_Histo2D "cython_sub" (Histo2D*, Histo2D*)
+    Histo2D* Histo2D_div_Histo2D "cython_div" (Histo2D*, Histo2D*)
 
+# TODO:
+# cdef extern from "YODA/Scatter3D.h" namespace "YODA":
+#     Scatter3D mkScatter_Histo2D "YODA::mkScatter" (const Histo2D&)
 
 
 

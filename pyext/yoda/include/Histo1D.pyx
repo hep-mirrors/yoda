@@ -229,6 +229,34 @@ cdef class Histo1D(AnalysisObject):
         return util.new_owned_cls(Scatter2D, s2.newclone())
 
 
+    def toIntegral(self, efficiency=False, includeunderflow=True, includeoverflow=True):
+        """None -> Scatter2D.
+        Convert this Histo1D to a Scatter2D representing an integral (i.e. cumulative)
+        histogram constructed from this differential one.
+
+        The efficiency argument is used to construct an 'efficiency integral' histogram
+        and the includeXXXflow bools determine whether under and overflows are included
+        in computing the (efficiency) integral.
+        """
+        cdef c.Scatter2D s2
+        if not efficiency:
+            s2 = c.Histo1D_toIntegral(deref(self._Histo1D()), includeunderflow)
+        else:
+            s2 = c.Histo1D_toIntegralEff(deref(self._Histo1D()), includeunderflow, includeoverflow)
+        return util.new_owned_cls(Scatter2D, s2.newclone())
+
+
+    def divide(self, Histo1D h1, efficiency=False):
+        # if type(h1) is not Histo1D:
+        #     raise ValueError("Histograms must be of the same type to be divided")
+        cdef c.Scatter2D s2
+        if not efficiency:
+            s2 = c.Histo1D_div_Histo1D(deref(self._Histo1D()), deref(h1._Histo1D()))
+        else:
+            s2 = c.Histo1D_eff_Histo1D(deref(self._Histo1D()), deref(h1._Histo1D()))
+        return util.new_owned_cls(Scatter2D, s2.newclone())
+
+
     ## In-place special methods
 
     def __iadd__(Histo1D self, Histo1D other):
@@ -282,3 +310,8 @@ cdef class Histo1D(AnalysisObject):
     # def __rmul__(Histo1D self, double x):
     #     h = c.Histo1D_mul_dbl(self._Histo1D(), x)
     #     return h
+
+    def __div__(Histo1D self, Histo1D other):
+        h = Histo1D()
+        util.set_owned_ptr(h, c.Histo1D_div_Histo1D(self._Histo1D(), other._Histo1D()))
+        return h

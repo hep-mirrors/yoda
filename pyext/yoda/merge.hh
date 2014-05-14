@@ -21,3 +21,7 @@ template<class T> T* cython_add(T* a, T* b) {
 template<class T> T* cython_sub(T* a, T* b) {
   return new T(*a - *b);
 }
+
+template<class T> T* cython_div(T* a, T* b) {
+  return new T(*a / *b);
+}

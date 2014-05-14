@@ -1,3 +1,9 @@
+2014-05-14  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Mapping the divide and efficiency functions into the Python
+	interface as class methods, including the __div__ special
+	function.
+
 2014-05-13  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Add the AnalysisObject::type() method back in Python (even

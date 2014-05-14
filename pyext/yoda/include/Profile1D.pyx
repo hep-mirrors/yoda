@@ -177,6 +177,9 @@ cdef class Profile1D(AnalysisObject):
         cdef c.Scatter2D s2 = c.mkScatter_Profile1D(deref(self._Profile1D()))
         return util.new_owned_cls(Scatter2D, s2.newclone())
 
+    def divide(self, Profile1D h1):
+        cdef c.Scatter2D s2 = c.Profile1D_div_Profile1D(deref(self._Profile1D()), deref(h1._Profile1D()))
+        return util.new_owned_cls(Scatter2D, s2.newclone())
 
 
     def __iadd__(Profile1D self, Profile1D other):
@@ -193,4 +196,9 @@ cdef class Profile1D(AnalysisObject):
     def __sub__(Profile1D self, Profile1D other):
         h = Profile1D()
         util.set_owned_ptr(h, c.Profile1D_sub_Profile1D(self._Profile1D(), other._Profile1D()))
+        return h
+
+    def __div__(Profile1D self, Profile1D other):
+        h = Profile1D()
+        util.set_owned_ptr(h, c.Profile1D_div_Profile1D(self._Profile1D(), other._Profile1D()))
         return h
