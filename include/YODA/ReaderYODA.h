@@ -56,7 +56,8 @@ namespace YODA {
 
       _histo2d.bins.clear();
       _histo2d.dbn_tot.reset();
-      //_histo2d.dbn_oflow.reset();
+      /// @todo For now just create 8 fake entries: needs to be greatly generalised for final form
+      _histo2d.dbns_oflow.resize(8);
 
       _profile1d.bins.clear();
       _profile1d.dbn_tot.reset();
@@ -65,7 +66,8 @@ namespace YODA {
 
       _profile2d.bins.clear();
       _profile2d.dbn_tot.reset();
-      //_profile2d.dbn_oflow.reset();
+      /// @todo For now just create 8 fake entries: needs to be greatly generalised for final form
+      _profile2d.dbns_oflow.resize(8);
 
       _scatter2d.points.clear();
 
@@ -196,7 +198,7 @@ namespace YODA {
     struct histo2d {
       std::vector<YODA::HistoBin2D> bins;
       YODA::Dbn2D dbn_tot;
-      std::vector<YODA::Dbn2D> dbn_oflow;
+      std::vector<YODA::Dbn2D> dbns_oflow;
     };
     static histo2d _histo2d;
 
@@ -213,7 +215,7 @@ namespace YODA {
     struct profile2d {
       std::vector<YODA::ProfileBin2D> bins;
       YODA::Dbn3D dbn_tot;
-      std::vector<YODA::Dbn3D> dbn_oflow;
+      std::vector<YODA::Dbn3D> dbns_oflow;
     };
     static profile2d _profile2d;
 

@@ -155,7 +155,9 @@ namespace YODA {
           break;
         case -2: // we left YODA_HISTO2D
           if (contextchange) {
-            YODA::AnalysisObject* ao = new YODA::Histo2D(_histo2d.bins, _histo2d.dbn_tot, _histo2d.dbn_oflow);
+            /// @todo For now just create 8 fake entries: needs to be greatly generalised for final form
+            _histo2d.dbns_oflow.clear(); _histo2d.dbns_oflow.resize(8);
+            YODA::AnalysisObject* ao = new YODA::Histo2D(_histo2d.bins, _histo2d.dbn_tot, _histo2d.dbns_oflow);
             std::pair<std::string, std::string> pss;  // to make boost's foreach happy
             foreach (pss, _annotations)
               ao->setAnnotation(pss.first, pss.second);
@@ -177,7 +179,9 @@ namespace YODA {
           break;
         case -4: // we left YODA_PROFILE2D
           if (contextchange) {
-            YODA::AnalysisObject* ao = new YODA::Profile2D(_profile2d.bins, _profile2d.dbn_tot, _profile2d.dbn_oflow);
+            /// @todo For now just create 8 fake entries: needs to be greatly generalised for final form
+            _profile2d.dbns_oflow.clear(); _profile2d.dbns_oflow.resize(8);
+            YODA::AnalysisObject* ao = new YODA::Profile2D(_profile2d.bins, _profile2d.dbn_tot, _profile2d.dbns_oflow);
             std::pair <std::string, std::string> pss;  // to make boost's foreach happy
             foreach (pss, _annotations)
               ao->setAnnotation(pss.first, pss.second);

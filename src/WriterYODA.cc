@@ -107,18 +107,20 @@ namespace YODA {
     os << td.sumWXY() << "\t";
     os << td.numEntries() << "\n";
     // Outflows
-    for (int ix = -1; ix <= 1; ++ix) {
-      for (int iy = -1; iy <= 1; ++iy) {
-        if (ix == 0 && iy == 0) continue;
-        os << "Outflow\t" << ix << ":" << iy << "\t";
-        const Dbn2D& d = h.outflow(ix, iy);
-        os << d.sumW()   << "\t" << d.sumW2()  << "\t";
-        os << d.sumWX()  << "\t" << d.sumWX2() << "\t";
-        os << d.sumWY()  << "\t" << d.sumWY2() << "\t";
-        os << d.sumWXY() << "\t";
-        os << d.numEntries() << "\n";
-      }
-    }
+    /// @todo Disabled for now, reinstate with a *full* set of outflow info to allow marginalisation
+    os << "# Outflow persistency not currently supported until API is stable\n";
+    // for (int ix = -1; ix <= 1; ++ix) {
+    //   for (int iy = -1; iy <= 1; ++iy) {
+    //     if (ix == 0 && iy == 0) continue;
+    //     os << "Outflow\t" << ix << ":" << iy << "\t";
+    //     const Dbn2D& d = h.outflow(ix, iy);
+    //     os << d.sumW()   << "\t" << d.sumW2()  << "\t";
+    //     os << d.sumWX()  << "\t" << d.sumWX2() << "\t";
+    //     os << d.sumWY()  << "\t" << d.sumWY2() << "\t";
+    //     os << d.sumWXY() << "\t";
+    //     os << d.numEntries() << "\n";
+    //   }
+    // }
     // Bins
     foreach (const HistoBin2D& b, h.bins()) {
       os << b.lowEdgeX() << "\t" << b.highEdgeX() << "\t";
@@ -187,19 +189,21 @@ namespace YODA {
     os << td.sumWXY() << "\t"; // << td.sumWXZ() << "\t" << td.sumWYZ() << "\t";
     os << td.numEntries() << "\n";
     // Outflows
-    for (int ix = -1; ix <= 1; ++ix) {
-      for (int iy = -1; iy <= 1; ++iy) {
-        if (ix == 0 && iy == 0) continue;
-        os << "Outflow\t" << ix << ":" << iy << "\t";
-        const Dbn3D& d = h.outflow(ix, iy);
-        os << d.sumW()   << "\t" << d.sumW2()  << "\t";
-        os << d.sumWX()  << "\t" << d.sumWX2() << "\t";
-        os << d.sumWY()  << "\t" << d.sumWY2() << "\t";
-        os << d.sumWZ()  << "\t" << d.sumWZ2() << "\t";
-        os << d.sumWXY() << "\t"; // << d.sumWXZ() << "\t" << d.sumWYZ() << "\t";
-        os << d.numEntries() << "\n";
-      }
-    }
+    /// @todo Disabled for now, reinstate with a *full* set of outflow info to allow marginalisation
+    os << "# Outflow persistency not currently supported until API is stable\n";
+    // for (int ix = -1; ix <= 1; ++ix) {
+    //   for (int iy = -1; iy <= 1; ++iy) {
+    //     if (ix == 0 && iy == 0) continue;
+    //     os << "Outflow\t" << ix << ":" << iy << "\t";
+    //     const Dbn3D& d = h.outflow(ix, iy);
+    //     os << d.sumW()   << "\t" << d.sumW2()  << "\t";
+    //     os << d.sumWX()  << "\t" << d.sumWX2() << "\t";
+    //     os << d.sumWY()  << "\t" << d.sumWY2() << "\t";
+    //     os << d.sumWZ()  << "\t" << d.sumWZ2() << "\t";
+    //     os << d.sumWXY() << "\t"; // << d.sumWXZ() << "\t" << d.sumWYZ() << "\t";
+    //     os << d.numEntries() << "\n";
+    //   }
+    // }
     // Bins
     foreach (const ProfileBin2D& b, h.bins()) {
       os << b.lowEdgeX() << "\t" << b.highEdgeX() << "\t";
