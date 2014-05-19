@@ -4,6 +4,7 @@
 // Copyright (C) 2008-2014 The YODA collaboration (see AUTHORS for details)
 //
 #include "YODA/Histo2D.h"
+#include "YODA/Profile2D.h"
 #include "YODA/Scatter3D.h"
 #include <cmath>
 
@@ -134,28 +135,28 @@ namespace YODA {
   { }
 
 
-  // /// Constructor from a Scatter3D's binning, with optional new path
-  // Histo2D::Histo2D(const Scatter3D& s, const std::string& path)
-  //   : AnalysisObject("Histo2D", (path.size() == 0) ? s.path() : path, s, s.title())
-  // {
-  //   std::vector<HistoBin2D> bins;
-  //   foreach (const Scatter3D::Point& p, s.points()) {
-  //     bins.push_back(HistoBin2D(p.xMin(), p.xMax(), p.yMin(), p.yMax()));
-  //   }
-  //   _axis = Histo2DAxis(bins);
-  // }
+  /// Constructor from a Scatter3D's binning, with optional new path
+  Histo2D::Histo2D(const Scatter3D& s, const std::string& path)
+    : AnalysisObject("Histo2D", (path.size() == 0) ? s.path() : path, s, s.title())
+  {
+    std::vector<HistoBin2D> bins;
+    foreach (const Scatter3D::Point& p, s.points()) {
+      bins.push_back(HistoBin2D(p.xMin(), p.xMax(), p.yMin(), p.yMax()));
+    }
+    _axis = Histo2DAxis(bins);
+  }
 
 
-  // /// Constructor from a Profile2D's binning, with optional new path
-  // Histo2D::Histo2D(const Profile2D& p, const std::string& path)
-  //   : AnalysisObject("Histo2D", (path.size() == 0) ? p.path() : path, p, p.title())
-  // {
-  //   std::vector<HistoBin2D> bins;
-  //   foreach (const ProfileBin2D& b, p.bins()) {
-  //     bins.push_back(HistoBin2D(b.xMin(), b.xMax(), b.yMin(), b.yMax()));
-  //   }
-  //   _axis = Histo2DAxis(bins);
-  // }
+  /// Constructor from a Profile2D's binning, with optional new path
+  Histo2D::Histo2D(const Profile2D& p, const std::string& path)
+    : AnalysisObject("Histo2D", (path.size() == 0) ? p.path() : path, p, p.title())
+  {
+    std::vector<HistoBin2D> bins;
+    foreach (const ProfileBin2D& b, p.bins()) {
+      bins.push_back(HistoBin2D(b.xMin(), b.xMax(), b.yMin(), b.yMax()));
+    }
+    _axis = Histo2DAxis(bins);
+  }
 
 
   ////////////////////////////////////

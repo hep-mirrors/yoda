@@ -57,7 +57,7 @@ namespace YODA {
       os << "# Mean: " << h.mean() << "\n";
     }
     os << "# Area: " << h.integral() << "\n";
-    os << "# xlow\t xhigh\t sumw\t sumw2\t sumwx\t sumwx2\t numEntries\n";
+    os << "# ID\t ID\t sumw\t sumw2\t sumwx\t sumwx2\t numEntries\n";
     os << "Total   \tTotal   \t";
     os << h.totalDbn().sumW()  << "\t" << h.totalDbn().sumW2()  << "\t";
     os << h.totalDbn().sumWX() << "\t" << h.totalDbn().sumWX2() << "\t";
@@ -70,6 +70,7 @@ namespace YODA {
     os << h.overflow().sumW()  << "\t" << h.overflow().sumW2()  << "\t";
     os << h.overflow().sumWX() << "\t" << h.overflow().sumWX2() << "\t";
     os << h.overflow().numEntries() << "\n";
+    os << "# xlow\t xhigh\t sumw\t sumw2\t sumwx\t sumwx2\t numEntries\n";
     foreach (const HistoBin1D& b, h.bins()) {
       os << b.lowEdge() << "\t" << b.highEdge() << "\t";
       os << b.sumW()    << "\t" << b.sumW2()    << "\t";
@@ -90,8 +91,8 @@ namespace YODA {
     _writeAnnotations(os, h);
     if ( h.totalDbn().numEntries() > 0 )
       os << "# Mean: (" << h.xMean() << ", " << h.yMean() << ")\n";
-    os << "# Area: " << h.integral() << "\n";
-    os << "# xlow\t xhigh\t ylow\t yhigh\t sumw\t sumw2\t sumwx\t sumwx2\t sumwy\t sumwy2\t sumwxy\t numEntries\n";
+    os << "# Volume: " << h.integral() << "\n";
+    os << "# ID\t ID\t sumw\t sumw2\t sumwx\t sumwx2\t sumwy\t sumwy2\t sumwxy\t numEntries\n";
     // Total distribution
     const Dbn2D& td = h.totalDbn();
     os << "Total   \tTotal   \t";
@@ -102,7 +103,7 @@ namespace YODA {
     os << td.numEntries() << "\n";
     // Outflows
     /// @todo Disabled for now, reinstate with a *full* set of outflow info to allow marginalisation
-    os << "# Outflow persistency not currently supported until API is stable\n";
+    os << "# 2D outflow persistency not currently supported until API is stable\n";
     // for (int ix = -1; ix <= 1; ++ix) {
     //   for (int iy = -1; iy <= 1; ++iy) {
     //     if (ix == 0 && iy == 0) continue;
@@ -116,6 +117,7 @@ namespace YODA {
     //   }
     // }
     // Bins
+    os << "# xlow\t xhigh\t ylow\t yhigh\t sumw\t sumw2\t sumwx\t sumwx2\t sumwy\t sumwy2\t sumwxy\t numEntries\n";
     foreach (const HistoBin2D& b, h.bins()) {
       os << b.lowEdgeX() << "\t" << b.highEdgeX() << "\t";
       os << b.lowEdgeY() << "\t" << b.highEdgeY() << "\t";
@@ -137,7 +139,7 @@ namespace YODA {
 
     os << "# BEGIN YODA_PROFILE1D " << p.path() << "\n";
     _writeAnnotations(os, p);
-    os << "# xlow\t xhigh\t sumw\t sumw2\t sumwx\t sumwx2\t sumwy\t sumwy2\t numEntries\n";
+    os << "# ID\t ID\t sumw\t sumw2\t sumwx\t sumwx2\t sumwy\t sumwy2\t numEntries\n";
     os << "Total   \tTotal   \t";
     os << p.totalDbn().sumW()  << "\t" << p.totalDbn().sumW2()  << "\t";
     os << p.totalDbn().sumWX() << "\t" << p.totalDbn().sumWX2() << "\t";
@@ -153,6 +155,7 @@ namespace YODA {
     os << p.overflow().sumWX() << "\t" << p.overflow().sumWX2() << "\t";
     os << p.overflow().sumWY() << "\t" << p.overflow().sumWY2() << "\t";
     os << p.overflow().numEntries() << "\n";
+    os << "# xlow\t xhigh\t sumw\t sumw2\t sumwx\t sumwx2\t sumwy\t sumwy2\t numEntries\n";
     foreach (const ProfileBin1D& b, p.bins()) {
       os << b.lowEdge() << "\t" << b.highEdge() << "\t";
       os << b.sumW()    << "\t" << b.sumW2()    << "\t";
@@ -172,7 +175,7 @@ namespace YODA {
 
     os << "# BEGIN YODA_PROFILE2D " << h.path() << "\n";
     _writeAnnotations(os, h);
-    os << "# xlow\t xhigh\t ylow\t yhigh\t sumw\t sumw2\t sumwx\t sumwx2\t sumwy\t sumwy2\t sumwz\t sumwz2\t sumwxy\t numEntries\n";
+    os << "# sumw\t sumw2\t sumwx\t sumwx2\t sumwy\t sumwy2\t sumwz\t sumwz2\t sumwxy\t numEntries\n";
     // Total distribution
     const Dbn3D& td = h.totalDbn();
     os << "Total   \tTotal   \t";
@@ -184,7 +187,7 @@ namespace YODA {
     os << td.numEntries() << "\n";
     // Outflows
     /// @todo Disabled for now, reinstate with a *full* set of outflow info to allow marginalisation
-    os << "# Outflow persistency not currently supported until API is stable\n";
+    os << "# 2D outflow persistency not currently supported until API is stable\n";
     // for (int ix = -1; ix <= 1; ++ix) {
     //   for (int iy = -1; iy <= 1; ++iy) {
     //     if (ix == 0 && iy == 0) continue;
@@ -199,6 +202,7 @@ namespace YODA {
     //   }
     // }
     // Bins
+    os << "# xlow\t xhigh\t ylow\t yhigh\t sumw\t sumw2\t sumwx\t sumwx2\t sumwy\t sumwy2\t sumwz\t sumwz2\t sumwxy\t numEntries\n";
     foreach (const ProfileBin2D& b, h.bins()) {
       os << b.lowEdgeX() << "\t" << b.highEdgeX() << "\t";
       os << b.lowEdgeY() << "\t" << b.highEdgeY() << "\t";

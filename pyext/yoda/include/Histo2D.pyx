@@ -35,11 +35,10 @@ cdef class Histo2D(AnalysisObject):
     def __init2(Histo2D self, char *path="", char *title=""):
         util.set_owned_ptr(self, new c.Histo2D(string(path), string(title)))
 
+    def __init8(Histo2D self, nxbins, xlow, xhigh,  nybins, ylow, yhigh,  char* path="", char* title=""):
+        util.set_owned_ptr(self, new c.Histo2D(nxbins, xlow, xhigh,  nybins, ylow, yhigh,  string(path), string(title)))
+
     # TODO: Add a constructor from iterators over x and y binnings
-
-    def __init8(Histo2D self, nxbins, xlow, xupp,  nybins, ylow, yupp,  char* path="", char* title=""):
-        util.set_owned_ptr(self, new c.Histo2D(nxbins, xlow, xupp, nybins, ylow, yupp, string(path), string(title)))
-
 
     def __len__(self):
         return self._Histo2D().numBins()

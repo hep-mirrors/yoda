@@ -14,5 +14,5 @@ print p
 
 yoda.write([h,p], "h2d.yoda")
 aos = yoda.read("h2d.yoda")
-for ao in aos:
+for p, ao in aos.iteritems():
     print ao

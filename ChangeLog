@@ -1,12 +1,12 @@
 2014-05-19  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Typo fixes in Profile2D YODA-format parsing: 2D histo tests now pass!
+
 	* Adding Python tests for Histo2D and Profile2D.
 
 	* Adding a YODA/Predicates.h header and using it in Axis2D bin edge construction.
 
 	* Enabling Profile2D writing in various Writers, and a bit of IO code tidying.
-
-	* Increasing default YODA format precision to 8.
 
 2014-05-17  Andy Buckley  <andy.buckley@cern.ch>
 

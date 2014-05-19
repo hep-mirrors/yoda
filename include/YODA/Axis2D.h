@@ -94,8 +94,10 @@ namespace YODA {
 
     void reset() {
       _dbn.reset();
+      /// @todo Change to reset outflows in vectors according to binnings (unless we also keep these 8)
       _outflows.assign(8, DBN());
     }
+
 
     /// Get the number of bins.
     size_t numBins() const {
@@ -333,36 +335,30 @@ namespace YODA {
     }
 
     /// Add a vector of pre-made bins
-    void addBins(const Bins &bins) {
+    void addBins(const Bins& bins) {
       if (bins.size() == 0) return;
-
       _checkUnlocked();
 
       Bins newBins(_bins);
-
-      foreach(const Bin &b, bins) {
-        newBins.push_back(b);
-      }
+      foreach(const Bin& b, bins) newBins.push_back(b);
 
       _updateAxis(newBins);
     }
 
 
     /// Add a contiguous set of bins to an axis, via their list of edges
-    void addBins(const std::vector<double> &xcuts,
-                 const std::vector<double> &ycuts) {
-      if (xcuts.size() == 0) return;
-      if (ycuts.size() == 0) return;
-
+    void addBins(const std::vector<double>& xedges, const std::vector<double>& yedges) {
+      if (xedges.size() == 0) return;
+      if (yedges.size() == 0) return;
       _checkUnlocked();
 
       Bins newBins(_bins);
-
-      for (size_t xi=0; xi < xcuts.size() - 1; xi++) {
-        for (size_t yi=0; yi < ycuts.size() - 1; yi++) {
-          newBins.push_back(Bin(
-                std::make_pair(xcuts[xi], xcuts[xi+1]),
-                std::make_pair(ycuts[yi], ycuts[yi+1])));
+      for (size_t xi = 0; xi < xedges.size()-1; xi++) {
+        for (size_t yi = 0; yi < yedges.size()-1; yi++) {
+          const std::pair<double,double> xx = std::make_pair(xedges[xi], xedges[xi+1]);
+          const std::pair<double,double> yy = std::make_pair(yedges[yi], yedges[yi+1]);
+          // std::cout << "New bin with edges: [(" << xx.first << "," << xx.second << "), " << yy.first << "," << yy.second << ")]" << std::endl;
+          newBins.push_back(Bin(xx, yy));
         }
       }
 
@@ -432,15 +428,13 @@ namespace YODA {
     // similar method?)
 
     bool operator == (const Axis2D& other) const {
-      if (numBins() != other.numBins())
-        return false;
-      for (size_t i=0; i < numBins(); i++)
+      if (numBins() != other.numBins()) return false;
+      for (size_t i = 0; i < numBins(); i++)
         if (!(fuzzyEquals(bin(i).lowEdgeX(), other.bin(i).lowEdgeX()) &&
               fuzzyEquals(bin(i).highEdgeX(), other.bin(i).highEdgeX()) &&
               fuzzyEquals(bin(i).lowEdgeY(), other.bin(i).lowEdgeY()) &&
               fuzzyEquals(bin(i).highEdgeY(), other.bin(i).highEdgeY())))
           return false;
-
       return true;
     }
 
@@ -484,7 +478,6 @@ namespace YODA {
 
 
     void _updateAxis(Bins& bins) {
-
       // Deal with the case that there are no bins supplied (who called that?!)
       if (bins.size() == 0) {
         _binSearcherX = Utils::BinSearcher();
@@ -498,20 +491,20 @@ namespace YODA {
       // Sort the bins
       std::sort(bins.begin(), bins.end());
 
-      // Create the cuts
-      std::vector<double> xcuts, ycuts, xwidths, ywidths;
-      foreach (Bin &bin, bins) {
-        xcuts.push_back(bin.xMin());
-        xcuts.push_back(bin.xMax());
+      // Create the edges
+      std::vector<double> xedges, yedges, xwidths, ywidths;
+      foreach (const Bin& bin, bins) {
+        xedges.push_back(bin.xMin());
+        xedges.push_back(bin.xMax());
         xwidths.push_back(bin.xWidth());
-        ycuts.push_back(bin.yMin());
-        ycuts.push_back(bin.yMax());
+        yedges.push_back(bin.yMin());
+        yedges.push_back(bin.yMax());
         ywidths.push_back(bin.yWidth());
       }
 
-      // Sort the cuts and widths
-      std::sort(xcuts.begin(), xcuts.end());
-      std::sort(ycuts.begin(), ycuts.end());
+      // Sort the edges and widths
+      std::sort(xedges.begin(), xedges.end());
+      std::sort(yedges.begin(), yedges.end());
       std::sort(xwidths.begin(), xwidths.end());
       std::sort(ywidths.begin(), ywidths.end());
 
@@ -520,31 +513,34 @@ namespace YODA {
       const double medianywidth = ywidths[ (ywidths.size()-1)/2 ];
 
       // Uniqueify the bin edges in the x- and y-cut vectors, with some numerical fuzziness
-      xcuts.resize(std::unique(xcuts.begin(), xcuts.end(), CmpFloats(1e-3, medianxwidth)) - xcuts.begin());
-      ycuts.resize(std::unique(ycuts.begin(), ycuts.end(), CmpFloats(1e-3, medianywidth)) - ycuts.begin());
+      xedges.resize(std::unique(xedges.begin(), xedges.end(), CmpFloats(1e-3, medianxwidth)) - xedges.begin());
+      yedges.resize(std::unique(yedges.begin(), yedges.end(), CmpFloats(1e-3, medianywidth)) - yedges.begin());
 
-      size_t nx = xcuts.size();
-      size_t ny = ycuts.size();
-      size_t N = nx * ny;
-      std::cout << "Unique Axis2D edge list sizes: nx = " << nx << ", ny = " << ny << ", ntot = " << N << std::endl;
+      const size_t nx = xedges.size();
+      const size_t ny = yedges.size();
+      const size_t N = nx * ny;
+      //std::cout << "Unique Axis2D edge list sizes: nx = " << nx << ", ny = " << ny << std::endl;
+      assert(bins.size() <= (nx-1)*(ny-1) && "Input bins vector size must agree with computed number of unique bins");
 
       // Create a sea of indices, starting with an all-gaps configuration
       std::vector<ssize_t> indexes(N, -1);
 
       // Iterate through bins and find out which
-      Utils::BinSearcher xSearcher(xcuts);
-      Utils::BinSearcher ySearcher(ycuts);
+      Utils::BinSearcher xSearcher(xedges);
+      Utils::BinSearcher ySearcher(yedges);
       for (size_t i = 0; i < bins.size(); ++i) {
         Bin& bin = bins[i];
 
-        std::cout << "Bin #" << i << " edges: "
-                  << "[(" << bin.xMin() << "," << bin.xMax() << "), "
-                  << "(" << bin.yMin() << "," << bin.yMax() << ")] ";
+        // std::cout << "Bin #" << i << " edges: "
+        //           << "[(" << bin.xMin() << "," << bin.xMax() << "), "
+        //           << "(" << bin.yMin() << "," << bin.yMax() << ")] " << std::endl;
 
         const size_t xiMin= xSearcher.index(bin.xMin()) - 1;
         const size_t xiMax= xSearcher.index(bin.xMax()) - 1;
         const size_t yiMin = ySearcher.index(bin.yMin()) - 1;
         const size_t yiMax = ySearcher.index(bin.yMax()) - 1;
+
+        // std::cout << "Sub-bin range indices: x = " << xiMin << ".." << xiMax << ", y = " << yiMin << ".." << yiMax << std::endl;
 
         // Loop over sub-bins in the edge list and assign indices / detect overlaps
         for (size_t xi = xiMin; xi < xiMax; xi++) {
@@ -567,8 +563,8 @@ namespace YODA {
       _nx = nx;
       _ny = ny;
 
-      _xRange = std::make_pair(xcuts.front(), xcuts.back());
-      _yRange = std::make_pair(ycuts.front(), ycuts.back());
+      _xRange = std::make_pair(xedges.front(), xedges.back());
+      _yRange = std::make_pair(yedges.front(), yedges.back());
 
       _indexes = indexes;
       _bins = bins;
@@ -580,7 +576,7 @@ namespace YODA {
 
   private:
 
-    /// @todo WTF?
+    /// Definition of global bin ID in terms of x and y bin IDs
     static size_t _index(size_t nx, size_t x, size_t y) {
       return y * nx + x;
     }

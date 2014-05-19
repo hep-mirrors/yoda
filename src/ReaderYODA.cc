@@ -16,7 +16,6 @@
 #include "YODA/Scatter2D.h"
 // #include "YODA/Scatter3D.h"
 
-
 #include <iostream>
 using namespace std;
 
@@ -71,12 +70,12 @@ namespace YODA {
   }
 
 
-  void ReaderYODA::_readDoc(std::istream& stream, vector<AnalysisObject*>& aos) {
+  void ReaderYODA::_readDoc(istream& stream, vector<AnalysisObject*>& aos) {
 
     // These are the context groups we know. We need
     // that map to dynamically change the parser depending
     // on what we read in.
-    std::map<int, std::string> groups;
+    map<int, string> groups;
     groups[1] = "YODA_HISTO1D";
     groups[2] = "YODA_HISTO2D";
     groups[3] = "YODA_PROFILE1D";
@@ -86,25 +85,25 @@ namespace YODA {
     groups[7] = "YODA_SCATTER3D";
 
     // Initialize the group parser
-    std::pair <int, std::string> pis;  // To make boost's foreach happy
+    pair <int, string> pis;  // To make boost's foreach happy
     foreach(pis, groups) {
       bgroup.add(pis.second, pis.first);
     }
 
     // The grammars for content (yoda) and context (group)
-    yoda_grammar<std::string::iterator, ascii::space_type> yoda_parser;
-    group_grammar<std::string::iterator> group_parser;
+    yoda_grammar<string::iterator, ascii::space_type> yoda_parser;
+    group_grammar<string::iterator> group_parser;
 
     // Now loop over all lines of the input file
     int context = 0;
     bool contextchange = false;
-    std::string s;
+    string s;
     while (safe_getline(stream, s)) {
       // First check if we found a "# BEGIN ..." or "# END ..." line.
       // This marks a context change.
       int newcontext = 0;
       // if (qi::parse(s.begin(), s.end(), group_parser, newcontext)) { //< Only supported in Boost 1.47+
-      std::string::iterator it1 = s.begin();
+      string::iterator it1 = s.begin();
       if (qi::parse(it1, s.end(), group_parser, newcontext)) { //< End patch
         context = newcontext;
         if (context > 0) {
@@ -127,7 +126,7 @@ namespace YODA {
 
       /// @todo Finish and use this macro
       // #define _READERYODA_APPLY_ANNOTATIONS() {
-      //     std::pair<std::string, std::string> pss;  // to make boost's foreach happy
+      //     pair<string, string> pss;  // to make boost's foreach happy
       // foreach (pss, _annotations)
       //   ao->setAnnotation(pss.first, pss.second);
       // aos.push_back(ao);
@@ -147,15 +146,15 @@ namespace YODA {
         case 7:  // we are inside YODA_SCATTER3D
           {
             // if (! qi::phrase_parse(s.begin(), s.end(), yoda_parser, ascii::space) ) { //< Only supported in Boost 1.47+
-            std::string::iterator it2 = s.begin();
+            string::iterator it2 = s.begin();
             if (! qi::phrase_parse(it2, s.end(), yoda_parser, ascii::space) )
-              std::cerr << "failed parsing this line:\n" << s << std::endl;
+              cerr << "failed parsing this line:\n" << s << endl;
           }
           break;
         case -1: // we left YODA_HISTO1D
           if (contextchange) {
             YODA::AnalysisObject* ao = new YODA::Histo1D(_histo1d.bins, _histo1d.dbn_tot, _histo1d.dbn_uflow, _histo1d.dbn_oflow);
-            std::pair<std::string, std::string> pss;  // to make boost's foreach happy
+            pair<string, string> pss;  // to make boost's foreach happy
             foreach (pss, _annotations)
               ao->setAnnotation(pss.first, pss.second);
             aos.push_back(ao);
@@ -168,7 +167,7 @@ namespace YODA {
             /// @todo For now just create 8 fake entries: needs to be greatly generalised for final form
             _histo2d.dbns_oflow.clear(); _histo2d.dbns_oflow.resize(8);
             YODA::AnalysisObject* ao = new YODA::Histo2D(_histo2d.bins, _histo2d.dbn_tot, _histo2d.dbns_oflow);
-            std::pair<std::string, std::string> pss;  // to make boost's foreach happy
+            pair<string, string> pss;  // to make boost's foreach happy
             foreach (pss, _annotations)
               ao->setAnnotation(pss.first, pss.second);
             aos.push_back(ao);
@@ -179,7 +178,7 @@ namespace YODA {
         case -3: // we left YODA_PROFILE1D
           if (contextchange) {
             YODA::AnalysisObject* ao = new YODA::Profile1D(_profile1d.bins, _profile1d.dbn_tot, _profile1d.dbn_uflow, _profile1d.dbn_oflow);
-            std::pair <std::string, std::string> pss;  // to make boost's foreach happy
+            pair<string, string> pss;  // to make boost's foreach happy
             foreach (pss, _annotations)
               ao->setAnnotation(pss.first, pss.second);
             aos.push_back(ao);
@@ -192,7 +191,7 @@ namespace YODA {
             /// @todo For now just create 8 fake entries: needs to be greatly generalised for final form
             _profile2d.dbns_oflow.clear(); _profile2d.dbns_oflow.resize(8);
             YODA::AnalysisObject* ao = new YODA::Profile2D(_profile2d.bins, _profile2d.dbn_tot, _profile2d.dbns_oflow);
-            std::pair <std::string, std::string> pss;  // to make boost's foreach happy
+            pair<string, string> pss;  // to make boost's foreach happy
             foreach (pss, _annotations)
               ao->setAnnotation(pss.first, pss.second);
             aos.push_back(ao);
@@ -200,10 +199,11 @@ namespace YODA {
             contextchange = false;
           }
           break;
+        // case -5: // we left YODA_SCATTER1D
         case -6: // we left YODA_SCATTER2D
           if (contextchange) {
             YODA::AnalysisObject* ao = new YODA::Scatter2D(_scatter2d.points);
-            std::pair <std::string, std::string> pss;  // to make boost's foreach happy
+            pair<string, string> pss;  // to make boost's foreach happy
             foreach (pss, _annotations)
               ao->setAnnotation(pss.first, pss.second);
             aos.push_back(ao);
@@ -211,6 +211,7 @@ namespace YODA {
             contextchange = false;
           }
           break;
+        // case -7: // we left YODA_SCATTER3D
       }
     }
   }

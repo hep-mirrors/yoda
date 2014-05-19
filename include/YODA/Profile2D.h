@@ -52,7 +52,7 @@ namespace YODA {
               size_t nbinsY, double lowerY, double upperY,
               const std::string& path="", const std::string& title="")
       : AnalysisObject("Profile2D", path, title),
-        _axis(nbinsX, std::make_pair(lowerX, upperX), nbinsY, std::make_pair(lowerY, upperY))
+        _axis(nbinsX, std::make_pair(lowerX, upperX),  nbinsY, std::make_pair(lowerY, upperY))
     { }
 
 
@@ -81,7 +81,9 @@ namespace YODA {
     /// Constructor from a Histo2D's binning, with optional new path
     Profile2D(const Histo2D& h, const std::string& path="");
 
-    /// A state setting constructor
+    /// @brief State-setting constructor
+    ///
+    /// Mainly intended for internal persistency use.
     Profile2D(const std::vector<ProfileBin2D>& bins,
               const Dbn3D& totalDbn,
               const Outflows& outflows,
@@ -97,6 +99,7 @@ namespace YODA {
       _axis = p2._axis;
       return *this;
     }
+
 
     /// Make a copy on the stack
     Profile2D clone() const {

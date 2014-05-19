@@ -274,6 +274,9 @@ namespace YODA {
     };
 
 
+    /// @todo Add filling 2D outflows
+
+
     /// Filling a bin
     struct fillbin {
       void operator()(const histo1dbin b, qi::unused_type, qi::unused_type) const {
@@ -294,10 +297,10 @@ namespace YODA {
         _histo2d.bins.push_back(bin);
       }
       void operator()(const profile2dbin b, qi::unused_type, qi::unused_type) const {
-        YODA::ProfileBin2D bin(std::make_pair(b.xlow, b.xhigh), std::make_pair(b.xlow, b.xhigh),
+        YODA::ProfileBin2D bin(std::make_pair(b.xlow, b.xhigh), std::make_pair(b.ylow, b.yhigh),
                                YODA::Dbn3D(b.dbn.numFills, b.dbn.sumW, b.dbn.sumW2,
                                            b.dbn.sumWX, b.dbn.sumWX2, b.dbn.sumWY, b.dbn.sumWY2, b.dbn.sumWZ, b.dbn.sumWZ2,
-                                           0.0, 0.0, 0.0));
+                                           b.dbn.sumWXY, 0.0, 0.0));
         _profile2d.bins.push_back(bin);
       }
     };
@@ -350,26 +353,27 @@ namespace YODA {
 
       yoda_grammar() : yoda_grammar::base_type(line) {
 
-        /// A line can be anything. Note that we need
-        /// to specify the long lines first, because the
-        /// first match wins.
-        /// In brackets we specify the functions that are
-        /// called in case the rule matches.
+        /// @note A line can be anything. Note that we need to specify the long
+        /// lines first, because the first match wins.
+        /// @todo Refactor so that only the appropriate content lines can match in each type-block.
+
+        // In brackets we specify the functions that are called if the rule matches.
         line = \
-          Profile2Dbin[fillbin()]         | // w w2 x1 x2 y1 y2 wx wx2 wy wy2 wz wz2 wxy n = 14
+          Profile2Dbin[fillbin()]         | // w w2 x1 x2 y1 y2 wx wx2 wy wy2 wz wz2 wxy n = 14 nums
           Profile2Dtotal[filltotaldbn()]  | // "
           //Profile2Doflow[filloflowdbn()]| // "
-          Histo2Dbin[fillbin()]           | // w w2 x1 x2 y1 y2 wx wx2 wy wy2 wxy n = 12
+          Histo2Dbin[fillbin()]           | // w w2 x1 x2 y1 y2 wx wx2 wy wy2 wxy n = 12 nums
           Histo2Dtotal[filltotaldbn()]    | // "
           //Histo2Doflow[filloflowdbn()]  | // "
-          Profile1Dbin[fillbin()]         | // w w2 x1 x2 wx wx2 wy wy2 n = 9
+          Profile1Dbin[fillbin()]         | // w w2 x1 x2 wx wx2 wy wy2 n = 9 nums
           Profile1Dtotal[filltotaldbn()]  | // "
           Profile1Duflow[filluflowdbn()]  | // "
           Profile1Doflow[filloflowdbn()]  | // "
-          Histo1Dbin[fillbin()]           | // w w2 x1 x2 wx wx2 n = 7
+          Histo1Dbin[fillbin()]           | // w w2 x1 x2 wx wx2 n = 7 nums
           Histo1Dtotal[filltotaldbn()]    | // "
           Histo1Duflow[filluflowdbn()]    | // "
           Histo1Doflow[filloflowdbn()]    | // "
+          /// @todo Note clash of ScatterPoint3D with Profile1Dbin: need "scoped" content line parsing
           //ScatterPoint3D[fillpoint()]   | // x y z ex- ex+ ey- ey+ ez- ez+ = 9 (+ arbitrarily more sets of errors as 6 doubles... and names?)
           ScatterPoint2D[fillpoint()]     | // x y ex- ex+ ey- ey+ = 6 (+ arbitrarily more sets of errors as 4 doubles... and names?)
           //ScatterPoint1D[fillpoint()]   | // x ex- ex+ = 3 (+ arbitrarily more sets of errors as 2 doubles... and names?)
@@ -456,7 +460,11 @@ namespace YODA {
       qi::rule<Iterator, profile2dbin(), Skipper> Profile2Dbin;
       qi::rule<Iterator, profile2ddbn(), Skipper> Profile2Ddbn, Profile2Dtotal; //, Profile2Doflow;
 
+      /// @todo Add ScatterPoint1D
+
       qi::rule<Iterator, scatterpoint2d(), Skipper> ScatterPoint2D;
+
+      /// @todo Add ScatterPoint3D
 
     };
 
@@ -543,6 +551,7 @@ BOOST_FUSION_ADAPT_STRUCT(
   (double, sumWY2)
   (double, sumWZ)
   (double, sumWZ2)
+  (double, sumWXY)
   (unsigned long, numFills)
 )
 
