@@ -22,7 +22,7 @@ namespace YODA {
     bool operator () (const double& a, const double& b) {
       const double div = (_refscale == 0) ? 0.5*(std::abs(a)+std::abs(b)) : _refscale;
       const double dev = (b-a)/div;
-      std::cout << "CmpFloats: " << a << " vs. " << b << " -> dev = " << dev << std::endl;
+      // std::cout << "CmpFloats: " << a << " vs. " << b << " -> dev = " << dev << std::endl;
       return std::abs(dev) < _tol;
     }
     double _tol, _refscale;
