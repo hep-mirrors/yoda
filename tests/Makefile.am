@@ -79,7 +79,8 @@ TESTS = \
   testscatter2Dmodify \
   testhisto2Dcreate \
   pytest-unit \
-  pytest-basic \
+  pytest-h1d \
+  pytest-h2d \
   pytest-operators \
   shtest-yodamerge
 
