@@ -57,7 +57,6 @@ namespace YODA {
   void WriterFLAT::writeHisto2D(std::ostream& os, const Histo2D& h) {
     /// @todo Currently not supported
     os << flush;
-
     //Scatter3D tmp = mkScatter(h);
     //tmp.setAnnotation("Type", "Histo2D");
     //writeScatter3D(os, tmp);
@@ -71,10 +70,13 @@ namespace YODA {
   }
 
 
-  // void WriterFLAT::writeProfile2D(std::ostream& os, const Profile2D& h) {
-  //   /// @todo Currently not supported
-  //   os << flush;
-  // }
+  void WriterFLAT::writeProfile2D(std::ostream& os, const Profile2D& h) {
+    /// @todo Currently not supported
+    os << flush;
+    //Scatter3D tmp = mkScatter(h);
+    //tmp.setAnnotation("Type", "Histo2D");
+    //writeScatter3D(os, tmp);
+  }
 
 
   // void WriterFLAT::writeScatter1D(std::ostream& os, const Scatter1D& h) {

@@ -1,6 +1,7 @@
 EXTRA_DIST = \
   pytest-unit \
-  pytest-basic \
+  pytest-h1d \
+  pytest-h2d \
   pytest-operators \
   shtest-yodamerge \
   shtest-yoda2root \

@@ -7,6 +7,16 @@
 #include "YODA/Utils/StringUtils.h"
 #include "YODA/Exceptions.h"
 
+#include "YODA/Counter.h"
+#include "YODA/Histo1D.h"
+#include "YODA/Histo2D.h"
+#include "YODA/Profile1D.h"
+#include "YODA/Profile2D.h"
+// #include "YODA/Scatter1D.h"
+#include "YODA/Scatter2D.h"
+// #include "YODA/Scatter3D.h"
+
+
 #include <iostream>
 using namespace std;
 

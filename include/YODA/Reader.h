@@ -7,9 +7,6 @@
 #define YODA_Reader_h
 
 #include "YODA/AnalysisObject.h"
-#include "YODA/Histo1D.h"
-#include "YODA/Profile1D.h"
-#include "YODA/Scatter2D.h"
 #include <string>
 #include <fstream>
 #include <vector>

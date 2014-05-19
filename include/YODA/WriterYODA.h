@@ -24,7 +24,7 @@ namespace YODA {
     /// Singleton creation function
     static Writer& create() {
       static WriterYODA _instance;
-      _instance.setPrecision(6);
+      _instance.setPrecision(8);
       return _instance;
     }
 

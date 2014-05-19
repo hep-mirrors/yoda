@@ -5,12 +5,6 @@
 //
 #include "YODA/WriterYODA.h"
 
-#include "YODA/Histo1D.h"
-#include "YODA/Histo2D.h"
-#include "YODA/Profile1D.h"
-#include "YODA/Profile2D.h"
-#include "YODA/Scatter2D.h"
-
 #include <iostream>
 #include <iomanip>
 

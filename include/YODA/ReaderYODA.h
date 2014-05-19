@@ -387,14 +387,14 @@ namespace YODA {
         Histo1Dtotal %= total     >> total     >> Histo1Ddbn;
         Histo1Duflow %= underflow >> underflow >> Histo1Ddbn;
         Histo1Doflow %= overflow  >> overflow  >> Histo1Ddbn;
-        Histo1Ddbn = double_ >> double_ >> double_ >> double_ >> ulong_;
+        Histo1Ddbn = (double_ >> double_) >> (double_ >> double_) >> ulong_;
 
         // Histo2D
         /// Regular bins, total statistics, outflows.
         Histo2Dbin   %= double_   >> double_   >> double_    >> double_   >> Histo2Ddbn;
         Histo2Dtotal %= total     >> total     >> Histo2Ddbn;
         //Histo2Doflow %= overflow  >> overflow  >> Histo2Ddbn;
-        Histo2Ddbn = double_ >> double_ >> double_ >> double_ >> double_ >> double_ >> double_ >> ulong_;
+        Histo2Ddbn = (double_ >> double_) >> (double_ >> double_) >> (double_ >> double_) >> double_ >> ulong_;
 
         // Profile1D
         /// Regular bins, total statistics, underflow or overflow.
@@ -402,14 +402,14 @@ namespace YODA {
         Profile1Dtotal %= total     >> total     >> Profile1Ddbn;
         Profile1Duflow %= underflow >> underflow >> Profile1Ddbn;
         Profile1Doflow %= overflow  >> overflow  >> Profile1Ddbn;
-        Profile1Ddbn = double_ >> double_ >> double_ >> double_ >> double_ >> double_ >> ulong_;
+        Profile1Ddbn = (double_ >> double_) >> (double_ >> double_) >> (double_ >> double_) >> ulong_;
 
         // Profile2D
         /// Regular bins, total statistics, outflows.
         Profile2Dbin   %= double_   >> double_   >> double_    >> double_   >> Profile2Ddbn;
         Profile2Dtotal %= total     >> total     >> Profile2Ddbn;
         //Profile2Doflow %= overflow  >> overflow  >> Profile2Ddbn;
-        Profile2Ddbn = double_ >> double_ >> double_ >> double_ >> double_ >> double_ >> double_ >> double_ >> double_ >> ulong_;
+        Profile2Ddbn = (double_ >> double_) >> (double_ >> double_) >> (double_ >> double_) >> (double_ >> double_) >> double_ >> ulong_;
 
         // Scatter1D
         // ScatterPoint1D %= double_ >> double_ >> double_;

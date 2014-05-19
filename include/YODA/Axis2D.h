@@ -5,6 +5,7 @@
 #include "YODA/Exceptions.h"
 #include "YODA/Bin.h"
 #include "YODA/Utils/MathUtils.h"
+#include "YODA/Utils/Predicates.h"
 #include "YODA/Utils/BinSearcher.h"
 #include <limits>
 
@@ -481,8 +482,10 @@ namespace YODA {
         throw LockError("Attempting to update a locked axis");
     }
 
-    void _updateAxis(Bins &bins) {
 
+    void _updateAxis(Bins& bins) {
+
+      // Deal with the case that there are no bins supplied (who called that?!)
       if (bins.size() == 0) {
         _binSearcherX = Utils::BinSearcher();
         _binSearcherY = Utils::BinSearcher();
@@ -496,50 +499,66 @@ namespace YODA {
       std::sort(bins.begin(), bins.end());
 
       // Create the cuts
-      std::vector<double> xcuts, ycuts;
+      std::vector<double> xcuts, ycuts, xwidths, ywidths;
       foreach (Bin &bin, bins) {
         xcuts.push_back(bin.xMin());
         xcuts.push_back(bin.xMax());
+        xwidths.push_back(bin.xWidth());
         ycuts.push_back(bin.yMin());
         ycuts.push_back(bin.yMax());
+        ywidths.push_back(bin.yWidth());
       }
 
-      // Sort the cuts
+      // Sort the cuts and widths
       std::sort(xcuts.begin(), xcuts.end());
       std::sort(ycuts.begin(), ycuts.end());
+      std::sort(xwidths.begin(), xwidths.end());
+      std::sort(ywidths.begin(), ywidths.end());
 
-      // Get unique elements in x- and y-cuts
-      // @todo -- fuzzy equality
-      xcuts.resize(std::unique(xcuts.begin(), xcuts.end()) - xcuts.begin());
-      ycuts.resize(std::unique(ycuts.begin(), ycuts.end()) - ycuts.begin());
+      // Obtain the median widths as a typical scale for uniqueness comparisons
+      const double medianxwidth = xwidths[ (xwidths.size()-1)/2 ];
+      const double medianywidth = ywidths[ (ywidths.size()-1)/2 ];
+
+      // Uniqueify the bin edges in the x- and y-cut vectors, with some numerical fuzziness
+      xcuts.resize(std::unique(xcuts.begin(), xcuts.end(), CmpFloats(1e-3, medianxwidth)) - xcuts.begin());
+      ycuts.resize(std::unique(ycuts.begin(), ycuts.end(), CmpFloats(1e-3, medianywidth)) - ycuts.begin());
 
       size_t nx = xcuts.size();
       size_t ny = ycuts.size();
       size_t N = nx * ny;
+      std::cout << "Unique Axis2D edge list sizes: nx = " << nx << ", ny = " << ny << ", ntot = " << N << std::endl;
 
-      // Create a sea of gaps
+      // Create a sea of indices, starting with an all-gaps configuration
       std::vector<ssize_t> indexes(N, -1);
 
-      // Create two BinSearchers
+      // Iterate through bins and find out which
       Utils::BinSearcher xSearcher(xcuts);
       Utils::BinSearcher ySearcher(ycuts);
+      for (size_t i = 0; i < bins.size(); ++i) {
+        Bin& bin = bins[i];
 
-      // Iterate through bins and find out which
-      for (size_t i=0; i < bins.size(); i++) {
-        Bin &bin = bins[i];
-        size_t xiMin= xSearcher.index(bin.xMin()) - 1;
-        size_t xiMax= xSearcher.index(bin.xMax()) - 1;
+        std::cout << "Bin #" << i << " edges: "
+                  << "[(" << bin.xMin() << "," << bin.xMax() << "), "
+                  << "(" << bin.yMin() << "," << bin.yMax() << ")] ";
 
-        size_t yiMin = ySearcher.index(bin.yMin()) - 1;
-        size_t yiMax = ySearcher.index(bin.yMax()) - 1;
+        const size_t xiMin= xSearcher.index(bin.xMin()) - 1;
+        const size_t xiMax= xSearcher.index(bin.xMax()) - 1;
+        const size_t yiMin = ySearcher.index(bin.yMin()) - 1;
+        const size_t yiMax = ySearcher.index(bin.yMax()) - 1;
 
+        // Loop over sub-bins in the edge list and assign indices / detect overlaps
         for (size_t xi = xiMin; xi < xiMax; xi++) {
           for (size_t yi = yiMin; yi < yiMax; yi++) {
-            size_t ix = _index(nx, xi, yi);
-            if (indexes[ix] != -1)
-              throw RangeError("Bin edges overlap!");
-            else
-              indexes[ix] = i;
+            const size_t ii = _index(nx, xi, yi);
+            if (indexes[ii] != -1) {
+              std::stringstream ss;
+              ss << "Bin edges overlap! Bin #" << i << " with edges "
+                 << "[(" << bin.xMin() << "," << bin.xMax() << "), "
+                 << "(" << bin.yMin() << "," << bin.yMax() << ")] "
+                 << "overlaps bin #" << indexes[ii] << " in sub-bin #" << ii;
+              throw RangeError(ss.str());
+            }
+            indexes[ii] = i;
           }
         }
       }

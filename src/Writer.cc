@@ -52,8 +52,8 @@ namespace YODA {
       writeHisto2D(stream, dynamic_cast<const Histo2D&>(ao));
     } else if (aotype == "Profile1D") {
       writeProfile1D(stream, dynamic_cast<const Profile1D&>(ao));
-    // } else if (aotype == "Profile2D") {
-    //   writeProfile2D(stream, dynamic_cast<const Profile2D&>(ao));
+    } else if (aotype == "Profile2D") {
+      writeProfile2D(stream, dynamic_cast<const Profile2D&>(ao));
     // } else if (aotype == "Scatter1D") {
     //   writeScatter1D(stream, dynamic_cast<const Scatter1D&>(ao));
     } else if (aotype == "Scatter2D") {
