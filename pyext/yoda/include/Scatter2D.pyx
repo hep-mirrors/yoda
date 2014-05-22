@@ -54,8 +54,16 @@ cdef class Scatter2D(AnalysisObject):
 
     @property
     def points(self):
-        """Access the ordered list of points."""
-        return list(self)
+        """Access the ordered list of points.
+        NOTE: this list is currently a read-only copy of the real bin list... do not modify"""
+        return list(self)  #< TODO: How does this work?
+        # TODO: how to allow modification of points in the returned list?
+        # return self._Scatter2D().points()
+
+    def point(self, size_t i):
+        """Access the i'th point."""
+        return util.new_borrowed_cls(Point2D, & self._Scatter2D().point(i), self)
+
 
     def addPoint(self, *args, **kwargs):
         """Add a new point."""

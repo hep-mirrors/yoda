@@ -1,5 +1,7 @@
 2014-05-22  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Improvements to Profile2D and Point2D interfaces in Python.
+
 	* Add a single-file at a time yodacnv multi-format converter
 	script (thanks to Andrii Verbytskyi for the suggestion).
 

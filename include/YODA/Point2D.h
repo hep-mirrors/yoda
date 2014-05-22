@@ -107,8 +107,16 @@ namespace YODA {
     /// Set y value
     void setY(double y) { _y = y; }
 
-    // /// Set x and y values
-    // void setXY(double x, double y) { setX(x); setY(y); }
+    /// @todo Uniform "coords" accessor across all Scatters: returning fixed-size tuple?
+
+    /// Get x,y value pair
+    std::pair<double,double> xy() const { return std::make_pair(_x, _y); }
+
+    /// Set x and y values
+    void setXY(double x, double y) { setX(x); setY(y); }
+
+    /// Set x and y values
+    void setXY(std::pair<double,double> xy) { setX(xy.first); setY(xy.second); }
 
     //@}
 
@@ -164,26 +172,30 @@ namespace YODA {
     }
 
     /// Get value minus negative x-error
+    /// @todo Remove (or extend) when multiple errors are supported
     double xMin() const {
       return _x - _ex.first;
     }
 
     /// Get value plus positive x-error
+    /// @todo Remove (or extend) when multiple errors are supported
     double xMax() const {
       return _x + _ex.second;
     }
 
-    /// Set negative x-error via the xMin position
-    void setXMin(double xmin) {
-      if (xmin > x()) throw UserError("Attempted to set an xmin > x");
-      setXErrMinus(x() - xmin);
-    }
+    // /// Set negative x-error via the xMin position
+    // /// @todo Remove when multiple errors are supported
+    // void setXMin(double xmin) {
+    //   if (xmin > x()) throw UserError("Attempted to set an xmin > x");
+    //   setXErrMinus(x() - xmin);
+    // }
 
-    /// Set positive x-error via the xMax position
-    void setXMax(double xmax) {
-      if (xmax < x()) throw UserError("Attempted to set an xmax < x");
-      setXErrPlus(xmax - x());
-    }
+    // /// Set positive x-error via the xMax position
+    // /// @todo Remove when multiple errors are supported
+    // void setXMax(double xmax) {
+    //   if (xmax < x()) throw UserError("Attempted to set an xmax < x");
+    //   setXErrPlus(xmax - x());
+    // }
 
     //@}
 
@@ -239,26 +251,30 @@ namespace YODA {
     }
 
     /// Get value minus negative y-error
+    /// @todo Remove (or extend) when multiple errors are supported
     double yMin() const {
       return _y - _ey.first;
     }
 
     /// Get value plus positive y-error
+    /// @todo Remove (or extend) when multiple errors are supported
     double yMax() const {
       return _y + _ey.second;
     }
 
-    /// Set negative y-error via the yMin position
-    void setYMin(double ymin) {
-      if (ymin > y()) throw UserError("Attempted to set an ymin > y");
-      setYErrMinus(y() - ymin);
-    }
+    // /// Set negative y-error via the yMin position
+    // /// @todo Remove when multiple errors are supported
+    // void setYMin(double ymin) {
+    //   if (ymin > y()) throw UserError("Attempted to set an ymin > y");
+    //   setYErrMinus(y() - ymin);
+    // }
 
-    /// Set positive y-error via the yMax position
-    void setYMax(double ymax) {
-      if (ymax < y()) throw UserError("Attempted to set an ymax < y");
-      setYErrPlus(ymax - y());
-    }
+    // /// Set positive y-error via the yMax position
+    // /// @todo Remove when multiple errors are supported
+    // void setYMax(double ymax) {
+    //   if (ymax < y()) throw UserError("Attempted to set an ymax < y");
+    //   setYErrPlus(ymax - y());
+    // }
 
     //@}
 

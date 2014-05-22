@@ -17,6 +17,15 @@ cdef class Point2D(util.Base):
 
     """
 
+    cdef c.Point2D *_Point2D(self) except NULL:
+        return <c.Point2D *> self.ptr()
+
+    def __dealloc__(self):
+        cdef c.Point2D *p = self._Point2D()
+        if self._deallocate:
+            del p
+
+
     def __init__(self, x=0, y=0, xerrs=0, yerrs=0):
         util.set_owned_ptr(self, new c.Point2D())
         self.coords = x, y
@@ -26,61 +35,57 @@ cdef class Point2D(util.Base):
     def copy(self):
         return util.new_owned_cls(Point2D, new c.Point2D(deref(self._Point2D())))
 
+    # TODO: add clone() as mapping to (not yet existing) C++ newclone()?
+
 
     property x:
         """x coordinate"""
         def __get__(self):
             return self._Point2D().x()
-
         def __set__(self, x):
             self._Point2D().setX(x)
-
 
     property y:
         """y coordinate"""
         def __get__(self):
             return self._Point2D().y()
-
         def __set__(self, y):
             self._Point2D().setY(y)
 
 
-    # TODO: remove!
-    property coords:
+    property xy:
         """x and y coordinates as a tuple"""
         def __get__(self):
-            return util.XY(self.x, self.y)
-
+            # return util.XY(self.x, self.y)
+            return util.XY(self.xy)
         def __set__(self, val):
-            self.x, self.y = val
+            # self.x, self.y = val
+            self.setXY(val)
 
 
-    # TODO: remove!
-    property xRange:
-        """The minimum and maximum points within the x errors"""
-        def __get__(self):
-            return util.Edges(self._Point2D().xMin(),
-                              self._Point2D().xMax())
+    # # TODO: remove!
+    # property xRange:
+    #     """The minimum and maximum points within the x errors"""
+    #     def __get__(self):
+    #         return util.Edges(self._Point2D().xMin(), self._Point2D().xMax())
 
-    # TODO: remove!
-    property yRange:
-        """The minimum and maximum points within the y errors"""
-        def __get__(self):
-            return util.Edges(self._Point2D().yMin(),
-                              self._Point2D().yMax())
+    # # TODO: remove!
+    # property yRange:
+    #     """The minimum and maximum points within the y errors"""
+    #     def __get__(self):
+    #         return util.Edges(self._Point2D().yMin(), self._Point2D().yMax())
 
-    # TODO: remove!
-    property ranges:
-        """The x- and y-ranges"""
-        def __get__(self):
-            return util.XY(self.xRange, self.yRange)
+    # # TODO: remove!
+    # property ranges:
+    #     """The x- and y-ranges"""
+    #     def __get__(self):
+    #         return util.XY(self.xRange, self.yRange)
 
 
     property xErrs:
         """The x errors"""
         def __get__(self):
             return read_error_pair(self._Point2D().xErrs())
-
         def __set__(self, val):
             self._Point2D().setXErr(read_symmetric(val))
 
@@ -89,19 +94,17 @@ cdef class Point2D(util.Base):
         """The y errors"""
         def __get__(self):
             return read_error_pair(self._Point2D().yErrs())
-
         def __set__(self, val):
             self._Point2D().setYErr(read_symmetric(val))
 
 
-    property errs:
-        """The x and y errors as a tuple"""
-        def __get__(self):
-            return util.XY(self.xErrs, self.yErrs)
-
-        def __set__(self, val):
-            self.xErrs, self.yErrs = val
-
+    # TODO: add to C++ and reinstate
+    # property errs:
+    #     """The x and y errors as a tuple"""
+    #     def __get__(self):
+    #         return util.XY(self.xErrs, self.yErrs)
+    #     def __set__(self, val):
+    #         self.xErrs, self.yErrs = val
 
     property xErrAvg:
         def __get__(self):
@@ -111,12 +114,11 @@ cdef class Point2D(util.Base):
         def __get__(self):
             return self.yErrAvg()
 
+
     def scale(self, x=1.0, y=1.0):
         """
         (x=1.0, y=1.0) -> None
-
         Scale the Point's variables by the given factors.
-
         """
         self._Point2D().scale(x, y)
 
@@ -136,12 +138,3 @@ cdef class Point2D(util.Base):
             return deref(self._Point2D()) > deref(other._Point2D())
         elif op == 5:
             return deref(self._Point2D()) >= deref(other._Point2D())
-
-    # Magic stuff
-    cdef c.Point2D *_Point2D(self) except NULL:
-        return <c.Point2D *> self.ptr()
-
-    def __dealloc__(self):
-        cdef c.Point2D *p = self._Point2D()
-        if self._deallocate:
-            del p

@@ -43,6 +43,7 @@ cdef inline object new_borrowed_cls(object cls, void *ptr, object owner):
     set_borrowed_ptr(obj, ptr, owner)
     return obj
 
+# Translation utility to allow use of 'Pythonic' negative indices
 cdef inline size_t pythonic_index(int i, size_t size) except? 0:
     if i < 0:
         i += size

@@ -400,8 +400,9 @@ namespace YODA {
       const double newxmax = std::max(fx_xmin, fx_xmax);
       // Set new point x values
       p.setX(newx);
-      p.setXMin(newxmin);
-      p.setXMax(newxmax);
+      /// @todo Be careful about transforms which could switch around min and max errors, or send both in the same direction!
+      p.setXErrMinus(newx - newxmin);
+      p.setXErrPlus(newxmax - newx);
     }
   }
 
@@ -421,8 +422,9 @@ namespace YODA {
       const double newymax = std::max(fy_ymin, fy_ymax);
       // Set new point y values
       p.setY(newy);
-      p.setYMin(newymin);
-      p.setYMax(newymax);
+      /// @todo Be careful about transforms which could switch around min and max errors, or send both in the same direction!
+      p.setYErrMinus(newy - newymin);
+      p.setYErrPlus(newymax - newy);
     }
   }
 
@@ -442,10 +444,11 @@ namespace YODA {
       const double newymax = p.xMax();
       p.setX(newx);
       p.setY(newy);
-      p.setXMin(newxmin);
-      p.setXMax(newxmax);
-      p.setYMin(newymin);
-      p.setYMax(newymax);
+      /// @todo Be careful about transforms which could switch around min and max errors, or send both in the same direction!
+      p.setXErrMinus(newx - newxmin);
+      p.setXErrPlus(newxmax - newx);
+      p.setYErrMinus(newy - newymin);
+      p.setYErrPlus(newymax - newy);
     }
   }
 

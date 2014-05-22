@@ -195,6 +195,9 @@ cdef extern from "YODA/Point2D.h" namespace "YODA":
         double y() except+ err
         void setX(double x) except+ err
         void setY(double y) except+ err
+        pair[double,double] xy() except+ err
+        void setXY(pair[double,double] xy) except+ err
+
         double xErrAvg() except+ err
         double yErrAvg() except+ err
         pair[double,double] xErrs() except+ err
@@ -205,6 +208,7 @@ cdef extern from "YODA/Point2D.h" namespace "YODA":
         double xMax() except+ err
         double yMin() except+ err
         double yMax() except+ err
+
         void scale(double x, double y) except+ err
         bool operator == (Point2D) except+ err
         bool operator != (Point2D b) except+ err
@@ -551,12 +555,12 @@ cdef extern from "YODA/Scatter2D.h" namespace "YODA":
         void reset() except+ err
 
         size_t numPoints() except+ err
+        vector[Point2D]& points()
         Point2D& point(size_t index)
 
         Scatter2D addPoint(Point2D&)
         Scatter2D addPoint(double, double)
-        Scatter2D addPoint(double, double,
-                            pair[double, double], pair[double, double]) except+ err
+        Scatter2D addPoint(double, double, pair[double, double], pair[double, double]) except+ err
 
         Scatter2D addPoints(sortedvector[Point2D])
 
