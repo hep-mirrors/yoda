@@ -6,11 +6,11 @@
 Make and fill a YODA histogram from plain text file/stream input.
 
 TODO:
+ * Also allow explicit lists of bin edges as parseable strings on command line?
  * Minimal unique cmd shortcut finding
  * How to determine bin range in advance?... must need two passes??
- * More cmds: nx lx ux xedges etc. etc.
- * Add plotting later: palette linecolor linestyle legend ticks ... plotconf
- * Multiple datasets / histos?
+ * Add plotting later: plot params nx lx ux palette linecolor linestyle legend ticks on this or yodaplot interface?
+ * Multiple datasets / histos? How???
  * Data column spec & using eval to do math manipulations
 """
 
@@ -87,6 +87,7 @@ else:
 
 
 ## Now process binning instructions
+# TODO: Also allow explicit lists of bin edges as parseable strings?
 del tmpargs[0]
 XBINNING = None
 YBINNING = None
