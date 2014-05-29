@@ -14,7 +14,9 @@ TODO:
  * Data column spec & using eval to do math manipulations
 """
 
-import yoda, optparse, sys, math
+import yoda
+import optparse, sys
+import math, numbers
 
 parser = optparse.OptionParser(usage=__doc__)
 #parser.add_option('-o', '--output', default='-', dest='OUTPUT_FILE')
@@ -22,10 +24,14 @@ opts, args = parser.parse_args()
 
 class Binning:
     def __init__(self, nbins, low, high, measure="LIN"):
-        self.nbins = int(nbins)
-        self.low = float(low)
-        self.high = float(high)
-        self.measure = str(measure)
+        try:
+            self.nbins = int(nbins)
+            self.low = float(low)
+            self.high = float(high)
+            self.measure = str(measure)
+        except:
+            raise Exception("Couldn't construct a binning from arguments: " +
+                            ", ".join([str(nbins), str(low), str(high)]) + " and " +str(measure))
 
     def binedges(self):
         if self.nbins <= 0:
@@ -39,39 +45,82 @@ class Binning:
         else:
             raise Exception("Unknown histogram bin measure: " + self.measure)
 
+    @classmethod
+    def checkargs(cls, args):
+        """Check that there are enough args in a sequence to be passed to the Binning
+        constructor and that the types of the first three are suitable."""
+        if len(args) < 3:
+            return False
+        try:
+            n = int(args[0])
+            if n < 1:
+                return False
+            l = float(args[1])
+            h = float(args[2])
+        except:
+            return False
+        return True
+
+
+def error(msg, rtncode=1):
+    "A convenient way to exit with a standard error message format"
+    sys.stderr.write("ERROR: " + msg + "\n")
+    sys.exit(rtncode)
+
 
 ## Copy the args: we're going to modify them
 tmpargs = list(args)
 
-## First arg must be the run mode, so we deal with that first
+
+## First arg must be the run mode, so we detect and normalize that first
 MODE = tmpargs[0].lower()
+if MODE in ["h", "h1", "hist", "hist1"]:
+    MODE = "hist1"
+elif MODE in ["p", "p1", "prof", "prof1"]:
+    MODE = "prof1"
+elif MODE in ["h2", "hist2"]:
+    MODE = "hist2"
+elif MODE in ["p2", "prof2"]:
+    MODE = "prof2"
+else:
+    raise Exception("Unknown histogramming mode: " + MODE)
+
+
+## Now process binning instructions
 del tmpargs[0]
 XBINNING = None
 YBINNING = None
-if MODE in ["hist", "prof", "hist1", "prof1"]:
+if MODE in ["hist1", "prof1"]:
+    if not Binning.checkargs(tmpargs):
+        error("1D histograms need 3 numeric binning arguments: nbins, lowedge, highedge")
     XBINNING = Binning(*tmpargs[:3])
     del tmpargs[:3]
-# elif MODE in ["hist2", "prof2"]:
-#     XBINNING = Binning(*tmpargs[:3])
-#     del tmpargs[:3]
-#     YBINNING = Binning(*tmpargs[:3])
-#     del tmpargs[:3]
-else:
-    raise Exception("Unknown histogramming mode: " + MODE)
+elif MODE in ["hist2", "prof2"]:
+    if len(tmpargs) < 6 or not Binning.checkargs(tmpargs) or not Binning.checkargs(tmpargs[3:]):
+        error("2D histograms need 2 x 3 numeric binning arguments: nbins, lowedge, highedge for each of the x and y directions in turn")
+    XBINNING = Binning(*tmpargs[:3])
+    del tmpargs[:3]
+    YBINNING = Binning(*tmpargs[:3])
+    del tmpargs[:3]
+
 
 ## Break remaining args into cmds, as a dict[cmd] -> [cmdargs]
 cmds = {}
 while tmpargs:
     cmd = tmpargs[0].lower()
-    ## Single-arg commands
-    if cmd in ["path", "title", "xlabel", "ylabel", "logx", "logy",
-               "xlogbins",
-               "show", "out"]:
-        cmds[cmd] = tmpargs[1]
-        del tmpargs[:2]
-    else:
-        sys.stderr.write("ERROR: unknown command '%s'\n" % cmd)
-        sys.exit(1)
+    cmds[cmd] = tmpargs[1]
+    del tmpargs[:2]
+    # TODO: For now all commands take single-value arguments... maybe this will always be the case?
+    # TODO: We avoid enforcing specific allowed commands for now.
+    # ## Single-arg commands
+    # if cmd in ["path", "title", "xlabel", "ylabel", "logx", "logy",
+    #            "xlogbins", "ylogbins",
+    #            "show", "in", "out"]:
+    #     cmds[cmd] = tmpargs[1]
+    #     del tmpargs[:2]
+    # else:
+    #     error("unknown command '%s'\n" % cmd)
+# print cmds
 
 def tobool(s):
     if type(s) is str:
@@ -82,21 +131,25 @@ def tobool(s):
             return True
     return bool(s)
 
-## Apply a log(x) binning measure if needed
+## Apply log binning measure(s) if needed
 XBINNING.measure = "LOG" if tobool(cmds.get("xlogbins")) else "LIN"
+if YBINNING:
+    YBINNING.measure = "LOG" if tobool(cmds.get("ylogbins")) else "LIN"
 
-## Choose the output file
-OUTPUT = cmds.get("out", "hist.yoda")
 
 ## Make the histo object
 h = None
-if MODE in ["hist", "hist1"]:
+if MODE == "hist1":
     h = yoda.Histo1D(XBINNING.binedges())
-elif MODE in ["prof", "prof1"]:
+elif MODE == "prof1":
     h = yoda.Profile1D(XBINNING.binedges())
-# TODO: 2D histos and profiles
+elif MODE == "hist2":
+    h = yoda.Histo2D(XBINNING.binedges(), YBINNING.binedges())
+elif MODE == "prof2":
+    h = yoda.Profile2D(XBINNING.binedges(), YBINNING.binedges())
 else:
     raise Exception("Unknown histogramming mode: " + MODE)
+
 
 ## Set more annotations, etc.
 h.path = cmds.get("path", "/hist1")
@@ -111,20 +164,32 @@ if "logx" in cmds:
 if "logy" in cmds:
     h.setAnnotation("LogY", int(tobool(cmds.get("logy"))) )
 
+
 ## Read the input and fill the histo
-# TODO: also support reading from a named file?
-for l in sys.stdin:
-    vals = [float(x) for x in l.strip().split()]
-    if MODE in ["hist", "hist1"]:
+INPUT = cmds.get("in", "-")
+import fileinput
+for line in fileinput.input(INPUT):
+    vals = [float(x) for x in line.strip().split()]
+    if MODE == "hist1":
         assert len(vals) in [1,2]
-    elif MODE in ["prof", "prof1"]:
+    elif MODE in ["prof1", "hist2"]:
         assert len(vals) in [2,3]
-    # TODO: 2D histos and profiles
+    elif MODE == "prof2":
+        assert len(vals) in [3,4]
     h.fill(*vals)
+
 
 ## Show the histogram on the terminal
 if tobool(cmds.get("show")):
-    print h.dump()
+    if MODE in ["hist2", "prof2"]:
+        print "'show' not available for 2D histograms"
+    else:
+        yoda.writeFLAT([h], "-")
 
-## Write output
-yoda.write([h], OUTPUT)
+
+## Write output to the chosen output file (including - for stdout)
+OUTPUT = cmds.get("out", "hist.yoda")
+if OUTPUT == "-":
+    yoda.writeYODA([h], OUTPUT)
+else:
+    yoda.write([h], OUTPUT)

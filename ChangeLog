@@ -1,3 +1,10 @@
+2014-05-29  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Improvements to the yodahist script, including support for 2D
+	histograms and input files.
+
+	* Adding bin edges constructors for all 1D and 2D histos in Python.
+
 2014-05-22  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Improvements to Profile2D and Point2D interfaces in Python.
