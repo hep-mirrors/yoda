@@ -32,12 +32,16 @@ cdef class Profile2D(AnalysisObject):
 
 
     def __init__(self, *args, **kwargs):
-        util.try_loop([self.__init2, self.__init7], *args, **kwargs)
+        util.try_loop([self.__init2, self.__init4, self.__init8], *args, **kwargs)
 
     def __init2(Profile2D self, char *path="", char *title=""):
         util.set_owned_ptr(self, new c.Profile2D(string(path), string(title)))
 
-    def __init7(Profile2D self, nxbins, xlow, xhigh,  nybins, ylow, yhigh,  char *path="", char *title=""):
+    def __init4(Profile2D self, xedges,  yedges,  char* path="", char* title=""):
+        # TODO: Do some type-checking and allow iterables of ProfileBin2D as well?
+        util.set_owned_ptr(self, new c.Profile2D(xedges, yedges, string(path), string(title)))
+
+    def __init8(Profile2D self, nxbins, xlow, xhigh,  nybins, ylow, yhigh,  char *path="", char *title=""):
         util.set_owned_ptr(self, new c.Profile2D(nxbins, xlow, xhigh,  nybins, ylow, yhigh,  string(path), string(title)))
 
 

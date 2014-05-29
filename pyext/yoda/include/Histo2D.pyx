@@ -30,15 +30,18 @@ cdef class Histo2D(AnalysisObject):
 
 
     def __init__(self, *args, **kwargs):
-        util.try_loop([self.__init2, self.__init8], *args, **kwargs)
+        util.try_loop([self.__init2, self.__init4, self.__init8], *args, **kwargs)
 
     def __init2(Histo2D self, char *path="", char *title=""):
         util.set_owned_ptr(self, new c.Histo2D(string(path), string(title)))
 
+    def __init4(Histo2D self, xedges,  yedges,  char* path="", char* title=""):
+        # TODO: Do some type-checking and allow iterables of HistoBin2D as well?
+        util.set_owned_ptr(self, new c.Histo2D(xedges, yedges, string(path), string(title)))
+
     def __init8(Histo2D self, nxbins, xlow, xhigh,  nybins, ylow, yhigh,  char* path="", char* title=""):
         util.set_owned_ptr(self, new c.Histo2D(nxbins, xlow, xhigh,  nybins, ylow, yhigh,  string(path), string(title)))
 
-    # TODO: Add a constructor from iterators over x and y binnings
 
     def __len__(self):
         return self._Histo2D().numBins()

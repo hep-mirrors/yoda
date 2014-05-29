@@ -37,12 +37,22 @@ cdef class Histo1D(AnalysisObject):
     def __init2(self, char *path="", char *title=""):
         util.set_owned_ptr(self, new c.Histo1D(string(path), string(title)))
 
+    # TODO: Is Cython clever enough that we can make 3a and 3b versions and let it do the type inference?
+    def __init3(self, bins_or_edges, char *path="", char *title=""):
+        # TODO: Do this type-checking better
+        cdef vector[double] edges
+        try:
+            ## If float conversions work for all elements, it's a list of edges:
+            edges = list(float(x) for x in bins_or_edges)
+            util.set_owned_ptr(self, new c.Histo1D(edges, string(path), string(title)))
+        except:
+            ## Assume it's a list of HistoBin1D
+            bins = bins_or_edges
+            self.__init2(path, title)
+            self.addBins(bins)
+
     def __init5(self, nbins, low, high, char *path="", char *title=""):
         util.set_owned_ptr(self, new c.Histo1D(nbins, low, high, string(path), string(title)))
-
-    def __init3(self, bins, char *path="", char *title=""):
-        self.__init2(path, title)
-        self.addBins(bins)
 
 
     def __len__(self):
