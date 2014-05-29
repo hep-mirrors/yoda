@@ -1,3 +1,7 @@
+2014-05-30  Holger Schulz  <hschulz@physik.hu-berlin.de>
+
+        * Some basic (FLAT) write-out capability for 2D histos
+
 2014-05-29  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Improvements to the yodahist script, including support for 2D

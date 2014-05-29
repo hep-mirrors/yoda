@@ -55,11 +55,10 @@ namespace YODA {
 
 
   void WriterFLAT::writeHisto2D(std::ostream& os, const Histo2D& h) {
-    /// @todo Currently not supported
-    os << flush;
-    //Scatter3D tmp = mkScatter(h);
-    //tmp.setAnnotation("Type", "Histo2D");
-    //writeScatter3D(os, tmp);
+    //os << flush;
+    Scatter3D tmp = mkScatter(h);
+    tmp.setAnnotation("Type", "Histo2D");
+    writeScatter3D(os, tmp, true);
   }
 
 
@@ -103,23 +102,34 @@ namespace YODA {
   }
 
 
-  /*void WriterFLAT::writeScatter3D(std::ostream& os, const Scatter3D& s) {
+  void WriterFLAT::writeScatter3D(std::ostream& os, const Scatter3D& s, bool asHist2D) {
     ios_base::fmtflags oldflags = os.flags();
     os << scientific << showpoint << setprecision(_precision);
 
-    os << "# BEGIN YODA_SCATTER3D " << s.path() << "\n";
+    os << "# BEGIN YODA_SCATTER3D " << s.path() << "\n"; // HS: change this for asHist2D=true?
     _writeAnnotations(os, s);
-    os << "# xval\t xerr-\t xerr+\t yval\t yerr-\t yerr+\t zval\t zerr-\t zerr+\n";
-    foreach (Point3D pt, s.points()) {
-      os << pt.x() << "\t" << pt.xErrMinus() << "\t" << pt.xErrMinus() << "\t";
-      os << pt.y() << "\t" << pt.yErrMinus() << "\t" << pt.yErrMinus() << "\t";
-      os << pt.z() << "\t" << pt.zErrMinus() << "\t" << pt.zErrMinus() << "\n";
+
+    if (asHist2D) { // Extension of what writeScatter2D does
+    os << "# xlow\t xhigh\t ylow\t yhigh\t val\t errminus\t errplus\n";
+      foreach (Point3D pt, s.points()) {
+        os << pt.x()-pt.xErrMinus() << "\t" << pt.x()+pt.xErrPlus() << "\t";
+        os << pt.y()-pt.yErrMinus() << "\t" << pt.y()+pt.yErrPlus() << "\t";
+        os << pt.z() << "\t" << pt.zErrMinus() << "\t" << pt.zErrPlus() << "\n";
+      }
     }
-    os << "# END YODA_SCATTER2D\n";
+    else {
+      os << "# xval\t xerr-\t xerr+\t yval\t yerr-\t yerr+\t zval\t zerr-\t zerr+\n";
+      foreach (Point3D pt, s.points()) {
+        os << pt.x() << "\t" << pt.xErrMinus() << "\t" << pt.xErrMinus() << "\t";
+        os << pt.y() << "\t" << pt.yErrMinus() << "\t" << pt.yErrMinus() << "\t";
+        os << pt.z() << "\t" << pt.zErrMinus() << "\t" << pt.zErrMinus() << "\n";
+      }
+    }
+    os << "# END YODA_SCATTER3D\n";
 
     os << flush;
     os.flags(oldflags);
-  }*/
+  }
 
 
 }
