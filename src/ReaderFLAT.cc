@@ -78,8 +78,8 @@ namespace YODA {
     groups[3] = "HISTO2D";
 
     // Initialize the group parser
-    pair <int, string> pis;  // To make boost's foreach happy
-    foreach(pis, groups) {
+    pair <int, string> pis;  // To make boost's BOOST_FOREACH happy
+    BOOST_FOREACH(pis, groups) {
       bgroup.add(pis.second, pis.first);
     }
 
@@ -110,7 +110,7 @@ namespace YODA {
           // We are outside a group, so we are looking for any BEGIN and ignore
           // all ENDs
           egroup.remove(groups[-context]);
-          foreach(pis, groups) {
+          BOOST_FOREACH(pis, groups) {
             bgroup.add(pis.second, pis.first);
           }
           contextchange = true;
@@ -145,8 +145,8 @@ namespace YODA {
             } else {
               throw YODA::ReadError("No data points found in flat histogram reading!");
             }
-            pair<string, string> pss; // to make boost's foreach happy
-            foreach (pss, _annotations) ao->setAnnotation(pss.first, pss.second);
+            pair<string, string> pss; // to make boost's BOOST_FOREACH happy
+            BOOST_FOREACH (pss, _annotations) ao->setAnnotation(pss.first, pss.second);
             aos.push_back(ao);
             cleanup();
             contextchange = false;

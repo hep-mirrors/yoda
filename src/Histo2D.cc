@@ -44,7 +44,7 @@ namespace YODA {
   double Histo2D::sumW(bool includeoverflows) const {
     if (includeoverflows) return _axis.totalDbn().sumW();
     double sumw = 0;
-    foreach (const HistoBin2D& b, bins()) sumw += b.sumW();
+    BOOST_FOREACH (const HistoBin2D& b, bins()) sumw += b.sumW();
     return sumw;
   }
 
@@ -52,7 +52,7 @@ namespace YODA {
   double Histo2D::sumW2(bool includeoverflows) const {
     if (includeoverflows) return _axis.totalDbn().sumW2();
     double sumw2 = 0;
-    foreach (const HistoBin2D& b, bins()) sumw2 += b.sumW2();
+    BOOST_FOREACH (const HistoBin2D& b, bins()) sumw2 += b.sumW2();
     return sumw2;
   }
 
@@ -60,7 +60,7 @@ namespace YODA {
   double Histo2D::xMean(bool includeoverflows) const {
     if (includeoverflows) return _axis.totalDbn().xMean();
     double sumwx = 0;
-    foreach (const HistoBin2D& b, bins()) sumwx += b.sumWX();
+    BOOST_FOREACH (const HistoBin2D& b, bins()) sumwx += b.sumWX();
     return sumwx/sumW();
   }
 
@@ -68,7 +68,7 @@ namespace YODA {
   double Histo2D::yMean(bool includeoverflows) const {
     if (includeoverflows) return _axis.totalDbn().yMean();
     double sumwy = 0;
-    foreach (const HistoBin2D& b, bins()) sumwy += b.sumWY();
+    BOOST_FOREACH (const HistoBin2D& b, bins()) sumwy += b.sumWY();
     return sumwy/sumW();
   }
 
@@ -140,7 +140,7 @@ namespace YODA {
     : AnalysisObject("Histo2D", (path.size() == 0) ? s.path() : path, s, s.title())
   {
     std::vector<HistoBin2D> bins;
-    foreach (const Scatter3D::Point& p, s.points()) {
+    BOOST_FOREACH (const Scatter3D::Point& p, s.points()) {
       bins.push_back(HistoBin2D(p.xMin(), p.xMax(), p.yMin(), p.yMax()));
     }
     _axis = Histo2DAxis(bins);
@@ -152,7 +152,7 @@ namespace YODA {
     : AnalysisObject("Histo2D", (path.size() == 0) ? p.path() : path, p, p.title())
   {
     std::vector<HistoBin2D> bins;
-    foreach (const ProfileBin2D& b, p.bins()) {
+    BOOST_FOREACH (const ProfileBin2D& b, p.bins()) {
       bins.push_back(HistoBin2D(b.xMin(), b.xMax(), b.yMin(), b.yMax()));
     }
     _axis = Histo2DAxis(bins);

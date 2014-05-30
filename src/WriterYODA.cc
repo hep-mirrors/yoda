@@ -25,7 +25,7 @@ namespace YODA {
 
   void WriterYODA::_writeAnnotations(std::ostream& os, const AnalysisObject& ao) {
     os << scientific << setprecision(_precision);
-    foreach (const string& a, ao.annotations()) {
+    BOOST_FOREACH (const string& a, ao.annotations()) {
       if (a.empty()) continue;
       /// @todo Should write out floating point annotations as scientific notation...
       os << a << "=" << ao.annotation(a) << "\n";
@@ -71,7 +71,7 @@ namespace YODA {
     os << h.overflow().sumWX() << "\t" << h.overflow().sumWX2() << "\t";
     os << h.overflow().numEntries() << "\n";
     os << "# xlow\t xhigh\t sumw\t sumw2\t sumwx\t sumwx2\t numEntries\n";
-    foreach (const HistoBin1D& b, h.bins()) {
+    BOOST_FOREACH (const HistoBin1D& b, h.bins()) {
       os << b.lowEdge() << "\t" << b.highEdge() << "\t";
       os << b.sumW()    << "\t" << b.sumW2()    << "\t";
       os << b.sumWX()   << "\t" << b.sumWX2()   << "\t";
@@ -118,7 +118,7 @@ namespace YODA {
     // }
     // Bins
     os << "# xlow\t xhigh\t ylow\t yhigh\t sumw\t sumw2\t sumwx\t sumwx2\t sumwy\t sumwy2\t sumwxy\t numEntries\n";
-    foreach (const HistoBin2D& b, h.bins()) {
+    BOOST_FOREACH (const HistoBin2D& b, h.bins()) {
       os << b.lowEdgeX() << "\t" << b.highEdgeX() << "\t";
       os << b.lowEdgeY() << "\t" << b.highEdgeY() << "\t";
       os << b.sumW()     << "\t" << b.sumW2()     << "\t";
@@ -156,7 +156,7 @@ namespace YODA {
     os << p.overflow().sumWY() << "\t" << p.overflow().sumWY2() << "\t";
     os << p.overflow().numEntries() << "\n";
     os << "# xlow\t xhigh\t sumw\t sumw2\t sumwx\t sumwx2\t sumwy\t sumwy2\t numEntries\n";
-    foreach (const ProfileBin1D& b, p.bins()) {
+    BOOST_FOREACH (const ProfileBin1D& b, p.bins()) {
       os << b.lowEdge() << "\t" << b.highEdge() << "\t";
       os << b.sumW()    << "\t" << b.sumW2()    << "\t";
       os << b.sumWX()   << "\t" << b.sumWX2()   << "\t";
@@ -203,7 +203,7 @@ namespace YODA {
     // }
     // Bins
     os << "# xlow\t xhigh\t ylow\t yhigh\t sumw\t sumw2\t sumwx\t sumwx2\t sumwy\t sumwy2\t sumwz\t sumwz2\t sumwxy\t numEntries\n";
-    foreach (const ProfileBin2D& b, h.bins()) {
+    BOOST_FOREACH (const ProfileBin2D& b, h.bins()) {
       os << b.lowEdgeX() << "\t" << b.highEdgeX() << "\t";
       os << b.lowEdgeY() << "\t" << b.highEdgeY() << "\t";
       os << b.sumW()     << "\t" << b.sumW2()     << "\t";
@@ -227,7 +227,7 @@ namespace YODA {
       os << "# BEGIN YODA_SCATTER1D " << s.path() << "\n";
       _writeAnnotations(os, s);
       os << "# xval\t xerr-\t xerr+\n";
-      foreach (Point1D pt, s.points()) {
+      BOOST_FOREACH (Point1D pt, s.points()) {
         os << pt.x() << "\t" << pt.xErrMinus() << "\t" << pt.xErrMinus() << "\t";
       }
       os << "# END YODA_SCATTER1D\n";
@@ -246,7 +246,7 @@ namespace YODA {
     _writeAnnotations(os, s);
     /// @todo Change ordering to {vals} {errs} {errs} ...
     os << "# xval\t xerr-\t xerr+\t yval\t yerr-\t yerr+\n";
-    foreach (Point2D pt, s.points()) {
+    BOOST_FOREACH (Point2D pt, s.points()) {
       /// @todo Change ordering to {vals} {errs} {errs} ...
       os << pt.x() << "\t" << pt.xErrMinus() << "\t" << pt.xErrPlus() << "\t";
       os << pt.y() << "\t" << pt.yErrMinus() << "\t" << pt.yErrPlus() << "\n";
@@ -266,7 +266,7 @@ namespace YODA {
     _writeAnnotations(os, s);
     /// @todo Change ordering to {vals} {errs} {errs} ...
     os << "# xval\t xerr-\t xerr+\t yval\t yerr-\t yerr+\t zval\t zerr-\t zerr+\n";
-    foreach (Point3D pt, s.points()) {
+    BOOST_FOREACH (Point3D pt, s.points()) {
       /// @todo Change ordering to {vals} {errs} {errs} ...
       os << pt.x() << "\t" << pt.xErrMinus() << "\t" << pt.xErrMinus() << "\t";
       os << pt.y() << "\t" << pt.yErrMinus() << "\t" << pt.yErrMinus() << "\t";

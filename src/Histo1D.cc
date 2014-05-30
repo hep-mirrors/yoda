@@ -43,7 +43,7 @@ namespace YODA {
   double Histo1D::sumW(bool includeoverflows) const {
     if (includeoverflows) return _axis.totalDbn().sumW();
     double sumw = 0;
-    foreach (const Bin& b, bins()) {
+    BOOST_FOREACH (const Bin& b, bins()) {
       sumw += b.sumW();
     }
     return sumw;
@@ -53,7 +53,7 @@ namespace YODA {
   double Histo1D::sumW2(bool includeoverflows) const {
     if (includeoverflows) return _axis.totalDbn().sumW2();
     double sumw2 = 0;
-    foreach (const Bin& b, bins()) {
+    BOOST_FOREACH (const Bin& b, bins()) {
       sumw2 += b.sumW2();
     }
     return sumw2;
@@ -64,7 +64,7 @@ namespace YODA {
     if (includeoverflows) return _axis.totalDbn().mean();
     double sumwx = 0;
     double sumw  = 0;
-    foreach (const Bin& b, bins()) {
+    BOOST_FOREACH (const Bin& b, bins()) {
       sumwx += b.sumWX();
       sumw  += b.sumW();
     }
@@ -79,7 +79,7 @@ namespace YODA {
     if (includeoverflows) return _axis.totalDbn().variance();
     double sigma2 = 0;
     const double mean = this->mean();
-    foreach (const HistoBin1D& b, bins()) {
+    BOOST_FOREACH (const HistoBin1D& b, bins()) {
       const double diff = b.focus() - mean;
       sigma2 += diff * diff * b.sumW();
     }
@@ -110,7 +110,7 @@ namespace YODA {
     : AnalysisObject("Histo1D", (path.size() == 0) ? s.path() : path, s, s.title())
   {
     std::vector<HistoBin1D> bins;
-    foreach (const Scatter2D::Point& p, s.points()) {
+    BOOST_FOREACH (const Scatter2D::Point& p, s.points()) {
       bins.push_back(HistoBin1D(p.xMin(), p.xMax()));
     }
     _axis = Histo1DAxis(bins);
@@ -122,7 +122,7 @@ namespace YODA {
     : AnalysisObject("Histo1D", (path.size() == 0) ? p.path() : path, p, p.title())
   {
     std::vector<HistoBin1D> bins;
-    foreach (const ProfileBin1D& b, p.bins()) {
+    BOOST_FOREACH (const ProfileBin1D& b, p.bins()) {
       bins.push_back(HistoBin1D(b.xMin(), b.xMax()));
     }
     _axis = Histo1DAxis(bins);
@@ -198,7 +198,7 @@ namespace YODA {
     if (integral == 0) return rtn;
 
     // Normalize and compute binomial errors
-    foreach (Point2D& p, rtn.points()) {
+    BOOST_FOREACH (Point2D& p, rtn.points()) {
       const double eff = p.y() / integral;
       /// @todo Should the total integral error be sqrt(sumW2)? Or more complex, cf. Simon etc.?
       const double ey = sqrt(abs( ((1-2*eff)*sqr(p.y()/p.yErrAvg()) + sqr(eff)*sqr(integral_err)) / sqr(integral) ));

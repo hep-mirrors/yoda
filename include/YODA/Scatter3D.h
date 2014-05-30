@@ -211,7 +211,7 @@ namespace YODA {
     }
 
     Scatter3D& addPoints(Points pts) {
-      foreach (const Point3D& pt, pts) {
+      BOOST_FOREACH (const Point3D& pt, pts) {
         addPoint(pt);
       }
       std::sort(_points.begin(), _points.end());
@@ -232,7 +232,7 @@ namespace YODA {
     /// @todo Better name?
     /// @todo Convert to accept a Range or generic
     Scatter3D& combineWith(const std::vector<Scatter3D>& others) {
-      foreach (const Scatter3D& s, others) {
+      BOOST_FOREACH (const Scatter3D& s, others) {
         combineWith(s);
       }
       return *this;

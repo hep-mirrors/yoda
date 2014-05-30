@@ -29,7 +29,7 @@ int main() {
   for (int i = 0; i < 4; ++i) {
     if (i > 0) h.rebin(2);
     MSG("Histo (rebinning #" << i << ", num bins = " << h.numBins() << ")");
-    foreach (const HistoBin1D& b, h.bins()) {
+    BOOST_FOREACH (const HistoBin1D& b, h.bins()) {
       const int numElements = static_cast<int>(round(20 * b.height()/maxHeight));
       MSG(string().insert(0, numElements, '=') << "  " << RED(b.height()));
     }

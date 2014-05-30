@@ -189,7 +189,7 @@ namespace YODA {
       _dbn.reset();
       _underflow.reset();
       _overflow.reset();
-      foreach(Bin& bin, _bins) bin.reset();
+      BOOST_FOREACH(Bin& bin, _bins) bin.reset();
       _locked = false;
     }
 
@@ -279,7 +279,7 @@ namespace YODA {
 
     void addBins(const Bins &bins) {
       Bins newBins(_bins);
-      foreach(const Bin &b, bins) {
+      BOOST_FOREACH(const Bin &b, bins) {
         newBins.push_back(b);
       }
       _updateAxis(newBins);

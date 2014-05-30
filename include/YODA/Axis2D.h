@@ -179,9 +179,9 @@ namespace YODA {
     /// their respective factors.
     void scaleXY(double sx, double sy) {
       _dbn.scaleXY(sx, sy);
-      foreach (DBN &dbn, _outflows)
+      BOOST_FOREACH (DBN &dbn, _outflows)
         dbn.scaleXY(sx, sy);
-      foreach (Bin &bin, _bins)
+      BOOST_FOREACH (Bin &bin, _bins)
         bin.scaleXY(sx, sy);
       _updateAxis(_bins);
     }
@@ -191,9 +191,9 @@ namespace YODA {
     /// scalefactor.
     void scaleW(double scaleFactor) {
       _dbn.scaleW(scaleFactor);
-      foreach (DBN &dbn, _outflows)
+      BOOST_FOREACH (DBN &dbn, _outflows)
         dbn.scaleW(scaleFactor);
-      foreach (Bin &bin, _bins)
+      BOOST_FOREACH (Bin &bin, _bins)
         bin.scaleW(scaleFactor);
       _updateAxis(_bins);
     }
@@ -340,7 +340,7 @@ namespace YODA {
       _checkUnlocked();
 
       Bins newBins(_bins);
-      foreach(const Bin& b, bins) newBins.push_back(b);
+      BOOST_FOREACH(const Bin& b, bins) newBins.push_back(b);
 
       _updateAxis(newBins);
     }
@@ -493,7 +493,7 @@ namespace YODA {
 
       // Create the edges
       std::vector<double> xedges, yedges, xwidths, ywidths;
-      foreach (const Bin& bin, bins) {
+      BOOST_FOREACH (const Bin& bin, bins) {
         xedges.push_back(bin.xMin());
         xedges.push_back(bin.xMax());
         xwidths.push_back(bin.xWidth());

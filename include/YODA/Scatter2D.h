@@ -266,7 +266,7 @@ namespace YODA {
 
     /// Insert a collection of new points
     Scatter2D& addPoints(Points pts) {
-      foreach (const Point2D& pt, pts) {
+      BOOST_FOREACH (const Point2D& pt, pts) {
         addPoint(pt);
       }
       return *this;
@@ -287,7 +287,7 @@ namespace YODA {
     /// @todo Better name?
     /// @todo Convert to accept a Range or generic
     Scatter2D& combineWith(const std::vector<Scatter2D>& others) {
-      foreach (const Scatter2D& s, others) {
+      BOOST_FOREACH (const Scatter2D& s, others) {
         combineWith(s);
       }
       return *this;

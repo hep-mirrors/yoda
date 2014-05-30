@@ -87,8 +87,8 @@ namespace YODA {
     //groups[8] = "YODA_COUNTER";
 
     // Initialize the group parser
-    pair <int, string> pis;  // To make boost's foreach happy
-    foreach(pis, groups) {
+    pair <int, string> pis;  // To make boost's BOOST_FOREACH happy
+    BOOST_FOREACH(pis, groups) {
       bgroup.add(pis.second, pis.first);
     }
 
@@ -118,7 +118,7 @@ namespace YODA {
           // We are outside a group, so we are looking for any BEGIN and ignore
           // all ENDs
           egroup.remove(groups[-context]);
-          foreach(pis, groups) {
+          BOOST_FOREACH(pis, groups) {
             bgroup.add(pis.second, pis.first);
           }
           contextchange = true;
@@ -128,8 +128,8 @@ namespace YODA {
 
       /// @todo Finish and use this macro
       // #define _READERYODA_APPLY_ANNOTATIONS() {
-      //     pair<string, string> pss;  // to make boost's foreach happy
-      // foreach (pss, _annotations)
+      //     pair<string, string> pss;  // to make boost's BOOST_FOREACH happy
+      // BOOST_FOREACH (pss, _annotations)
       //   ao->setAnnotation(pss.first, pss.second);
       // aos.push_back(ao);
       // cleanup();
@@ -156,8 +156,8 @@ namespace YODA {
         case -1: // we left YODA_HISTO1D
           if (contextchange) {
             YODA::AnalysisObject* ao = new YODA::Histo1D(_histo1d.bins, _histo1d.dbn_tot, _histo1d.dbn_uflow, _histo1d.dbn_oflow);
-            pair<string, string> pss;  // to make boost's foreach happy
-            foreach (pss, _annotations)
+            pair<string, string> pss;  // to make boost's BOOST_FOREACH happy
+            BOOST_FOREACH (pss, _annotations)
               ao->setAnnotation(pss.first, pss.second);
             aos.push_back(ao);
             cleanup();
@@ -169,8 +169,8 @@ namespace YODA {
             /// @todo For now just create 8 fake entries: needs to be greatly generalised for final form
             _histo2d.dbns_oflow.clear(); _histo2d.dbns_oflow.resize(8);
             YODA::AnalysisObject* ao = new YODA::Histo2D(_histo2d.bins, _histo2d.dbn_tot, _histo2d.dbns_oflow);
-            pair<string, string> pss;  // to make boost's foreach happy
-            foreach (pss, _annotations)
+            pair<string, string> pss;  // to make boost's BOOST_FOREACH happy
+            BOOST_FOREACH (pss, _annotations)
               ao->setAnnotation(pss.first, pss.second);
             aos.push_back(ao);
             cleanup();
@@ -180,8 +180,8 @@ namespace YODA {
         case -3: // we left YODA_PROFILE1D
           if (contextchange) {
             YODA::AnalysisObject* ao = new YODA::Profile1D(_profile1d.bins, _profile1d.dbn_tot, _profile1d.dbn_uflow, _profile1d.dbn_oflow);
-            pair<string, string> pss;  // to make boost's foreach happy
-            foreach (pss, _annotations)
+            pair<string, string> pss;  // to make boost's BOOST_FOREACH happy
+            BOOST_FOREACH (pss, _annotations)
               ao->setAnnotation(pss.first, pss.second);
             aos.push_back(ao);
             cleanup();
@@ -193,8 +193,8 @@ namespace YODA {
             /// @todo For now just create 8 fake entries: needs to be greatly generalised for final form
             _profile2d.dbns_oflow.clear(); _profile2d.dbns_oflow.resize(8);
             YODA::AnalysisObject* ao = new YODA::Profile2D(_profile2d.bins, _profile2d.dbn_tot, _profile2d.dbns_oflow);
-            pair<string, string> pss;  // to make boost's foreach happy
-            foreach (pss, _annotations)
+            pair<string, string> pss;  // to make boost's BOOST_FOREACH happy
+            BOOST_FOREACH (pss, _annotations)
               ao->setAnnotation(pss.first, pss.second);
             aos.push_back(ao);
             cleanup();
@@ -205,8 +205,8 @@ namespace YODA {
         case -6: // we left YODA_SCATTER2D
           if (contextchange) {
             YODA::AnalysisObject* ao = new YODA::Scatter2D(_scatter2d.points);
-            pair<string, string> pss;  // to make boost's foreach happy
-            foreach (pss, _annotations)
+            pair<string, string> pss;  // to make boost's BOOST_FOREACH happy
+            BOOST_FOREACH (pss, _annotations)
               ao->setAnnotation(pss.first, pss.second);
             aos.push_back(ao);
             cleanup();

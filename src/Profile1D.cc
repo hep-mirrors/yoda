@@ -40,7 +40,7 @@ namespace YODA {
   double Profile1D::sumW(bool includeoverflows) const {
     if (includeoverflows) return _axis.totalDbn().sumW();
     double sumw = 0;
-    foreach (const ProfileBin1D& b, bins()) {
+    BOOST_FOREACH (const ProfileBin1D& b, bins()) {
       sumw += b.sumW();
     }
     return sumw;
@@ -50,7 +50,7 @@ namespace YODA {
   double Profile1D::sumW2(bool includeoverflows) const {
     if (includeoverflows) return _axis.totalDbn().sumW2();
     double sumw2 = 0;
-    foreach (const ProfileBin1D& b, bins()) {
+    BOOST_FOREACH (const ProfileBin1D& b, bins()) {
       sumw2 += b.sumW2();
     }
     return sumw2;
@@ -73,7 +73,7 @@ namespace YODA {
     : AnalysisObject("Profile1D", (path.size() == 0) ? s.path() : path, s, s.title())
   {
     std::vector<ProfileBin1D> bins;
-    foreach (const Scatter2D::Point& p, s.points()) {
+    BOOST_FOREACH (const Scatter2D::Point& p, s.points()) {
       bins.push_back(ProfileBin1D(p.xMin(), p.xMax()));
     }
     _axis = Profile1DAxis(bins);
@@ -85,7 +85,7 @@ namespace YODA {
     : AnalysisObject("Profile1D", (path.size() == 0) ? h.path() : path, h, h.title())
   {
     Bins bins;
-    foreach (const Histo1D::Bin& b, h.bins()) {
+    BOOST_FOREACH (const Histo1D::Bin& b, h.bins()) {
       bins.push_back(ProfileBin1D(b.xMin(), b.xMax()));
     }
     _axis = Profile1DAxis(bins);

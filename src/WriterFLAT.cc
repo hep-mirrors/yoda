@@ -34,7 +34,7 @@ namespace YODA {
 
   void WriterFLAT::_writeAnnotations(std::ostream& os, const AnalysisObject& ao) {
     os << scientific << setprecision(_precision);
-    foreach (const string& a, ao.annotations()) {
+    BOOST_FOREACH (const string& a, ao.annotations()) {
       if (a.empty()) continue;
       if (a == "Type") continue;
       /// @todo Should write out floating point annotations as scientific notation...
@@ -96,7 +96,7 @@ namespace YODA {
     os << "# BEGIN HISTOGRAM " << s.path() << "\n";
     _writeAnnotations(os, s);
     os << "# xlow\t xhigh\t val\t errminus\t errplus\n";
-    foreach (Point2D pt, s.points()) {
+    BOOST_FOREACH (Point2D pt, s.points()) {
       os << pt.x()-pt.xErrMinus() << "\t" << pt.x()+pt.xErrPlus() << "\t";
       os << pt.y() << "\t" << pt.yErrMinus() << "\t" << pt.yErrPlus() << "\n";
     }
@@ -120,7 +120,7 @@ namespace YODA {
 
     // if (asHist2D) { // Extension of what writeScatter2D does
     os << "# xlow\t xhigh\t ylow\t yhigh\t val\t errminus\t errplus\n";
-      foreach (Point3D pt, s.points()) {
+      BOOST_FOREACH (Point3D pt, s.points()) {
         os << pt.x()-pt.xErrMinus() << "\t" << pt.x()+pt.xErrPlus() << "\t";
         os << pt.y()-pt.yErrMinus() << "\t" << pt.y()+pt.yErrPlus() << "\t";
         os << pt.z() << "\t" << pt.zErrMinus() << "\t" << pt.zErrPlus() << "\n";
@@ -128,7 +128,7 @@ namespace YODA {
 
     // } else { // What writerYODA should do... let's just put this in there (generalised for multiple errs).
     //   os << "# xval\t xerr-\t xerr+\t yval\t yerr-\t yerr+\t zval\t zerr-\t zerr+\n";
-    //   foreach (Point3D pt, s.points()) {
+    //   BOOST_FOREACH (Point3D pt, s.points()) {
     //     os << pt.x() << "\t" << pt.xErrMinus() << "\t" << pt.xErrMinus() << "\t";
     //     os << pt.y() << "\t" << pt.yErrMinus() << "\t" << pt.yErrMinus() << "\t";
     //     os << pt.z() << "\t" << pt.zErrMinus() << "\t" << pt.zErrMinus() << "\n";

@@ -126,7 +126,7 @@ namespace YODA {
 
     /// Scaling
     void scale(const NdVal& scales) {
-      foreach (Point<N>& p, _points) {
+      BOOST_FOREACH (Point<N>& p, _points) {
         p.scale(scales);
       }
     }
@@ -193,7 +193,7 @@ namespace YODA {
 
     /// Insert a collection of new points
     Scatter<N>& addPoints(Points pts) {
-      foreach (const Point<N>& pt, pts) {
+      BOOST_FOREACH (const Point<N>& pt, pts) {
         addPoint(pt);
       }
       return *this;
@@ -213,7 +213,7 @@ namespace YODA {
 
     /// @todo Better name?
     Scatter<N>& combineWith(const std::vector< Scatter<N> >& others) {
-      foreach (const Scatter<N>& s, others) {
+      BOOST_FOREACH (const Scatter<N>& s, others) {
         combineWith(s);
       }
       return *this;
