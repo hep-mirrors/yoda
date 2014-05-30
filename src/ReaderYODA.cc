@@ -34,6 +34,7 @@ namespace YODA {
 
   namespace {
 
+    /// @todo Move to Utils?
     // Portable version of getline taken from
     // http://stackoverflow.com/questions/6089231/getting-std-ifstream-to-handle-lf-cr-and-crlf
     istream& safe_getline(istream& is, string& t) {
@@ -83,6 +84,7 @@ namespace YODA {
     groups[5] = "YODA_SCATTER1D";
     groups[6] = "YODA_SCATTER2D";
     groups[7] = "YODA_SCATTER3D";
+    //groups[8] = "YODA_COUNTER";
 
     // Initialize the group parser
     pair <int, string> pis;  // To make boost's foreach happy

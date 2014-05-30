@@ -14,7 +14,7 @@
 #include "YODA/Profile2D.h"
 // #include "YODA/Scatter1D.h"
 #include "YODA/Scatter2D.h"
-// #include "YODA/Scatter3D.h"
+#include "YODA/Scatter3D.h"
 
 #include <iostream>
 using namespace std;
@@ -24,37 +24,79 @@ namespace YODA {
   qi::symbols<char, int> ReaderFLAT::bgroup;
   qi::symbols<char, int> ReaderFLAT::egroup;
   ReaderFLAT::scatter2d ReaderFLAT::_scatter2d;
-  std::map<std::string, std::string> ReaderFLAT::_annotations;
+  ReaderFLAT::scatter3d ReaderFLAT::_scatter3d;
+  map<string, string> ReaderFLAT::_annotations;
 
 
-  void ReaderFLAT::_readDoc(std::istream& stream, vector<AnalysisObject*>& aos) {
+  namespace {
+
+    /// @todo Move to Utils?
+    // Portable version of getline taken from
+    // http://stackoverflow.com/questions/6089231/getting-std-ifstream-to-handle-lf-cr-and-crlf
+    istream& safe_getline(istream& is, string& t) {
+      t.clear();
+
+      // The characters in the stream are read one-by-one using a streambuf.
+      // That is faster than reading them one-by-one using the istream.
+      // Code that uses streambuf this way must be guarded by a sentry object.
+      // The sentry object performs various tasks,
+      // such as thread synchronization and updating the stream state.
+      istream::sentry se(is, true);
+      streambuf* sb = is.rdbuf();
+
+      for (;;) {
+        int c = sb->sbumpc();
+        switch (c) {
+        case '\n':
+          return is;
+        case '\r':
+          if (sb->sgetc() == '\n')
+            sb->sbumpc();
+          return is;
+        case EOF:
+          // Also handle the case when the last line has no line ending
+          if (t.empty())
+            is.setstate(ios::eofbit);
+          return is;
+        default:
+          t += (char)c;
+        }
+      }
+    }
+
+  }
+
+
+  void ReaderFLAT::_readDoc(istream& stream, vector<AnalysisObject*>& aos) {
 
     // These are the context groups we know. We need
     // that map to dynamically change the parser depending
     // on what we read in.
-    std::map<int, std::string> groups;
+    map<int, string> groups;
     groups[1] = "HISTOGRAM";
+    groups[2] = "HISTO1D";
+    groups[3] = "HISTO2D";
 
     // Initialize the group parser
-    std::pair <int, std::string> pis;  // To make boost's foreach happy
+    pair <int, string> pis;  // To make boost's foreach happy
     foreach(pis, groups) {
       bgroup.add(pis.second, pis.first);
     }
 
-    // The grammars for content (yoda) and context (group)
-    yoda_grammar<std::string::iterator, ascii::space_type> yoda_parser;
-    group_grammar<std::string::iterator> group_parser;
+    // The grammars for content (data) and context (group)
+    data_grammar<string::iterator, ascii::space_type> data_parser;
+    group_grammar<string::iterator> group_parser;
 
     // Now loop over all lines of the input file
     int context = 0;
     bool contextchange = false;
-    std::string s;
-    while (getline(stream, s)) {
+    string s;
+    while (safe_getline(stream, s)) {
       // First check if we found a "# BEGIN ..." or "# END ..." line.
       // This marks a context change.
       int newcontext = 0;
       // if (qi::parse(s.begin(), s.end(), group_parser, newcontext)) { //< Only supported in Boost 1.47+
-      std::string::iterator it1 = s.begin();
+      string::iterator it1 = s.begin();
       if (qi::parse(it1, s.end(), group_parser, newcontext)) { //< End patch
 
         context = newcontext;
@@ -79,22 +121,33 @@ namespace YODA {
       // or to write out what we parsed so far (when leaving a group).
       switch (context) {
         case 1:  // we are inside HISTOGRAM
-          // if (! qi::phrase_parse(s.begin(), s.end(), yoda_parser, ascii::space) ) { //< Only supported in Boost 1.47+
+        case 2:  // we are inside HISTO1D
+        case 3:  // we are inside HISTO2D
+          // if (! qi::phrase_parse(s.begin(), s.end(), data_parser, ascii::space) ) { //< Only supported in Boost 1.47+
           { //< Why the explicit scoping? Added by supplied patch from Andrii Verbytskyi
-            std::string::iterator it2 = s.begin();
-            if (! qi::phrase_parse(it2, s.end(), yoda_parser, ascii::space) ) { //< End patch
-              std::cerr << "failed parsing this line:\n" << s << std::endl;
+            string::iterator it2 = s.begin();
+            if (! qi::phrase_parse(it2, s.end(), data_parser, ascii::space) ) { //< End patch
+              cerr << "failed parsing this line:\n" << s << endl;
             }
           } //< End patch scoping
           break;
         case -1: // we left HISTOGRAM
+        case -2:  // we left HISTO1D
+        case -3:  // we left HISTO2D
           if (contextchange) {
-            YODA::Scatter2D* h = new YODA::Scatter2D(_scatter2d.points);
-            std::pair <std::string, std::string> pss;  // to make boost's foreach happy
-            foreach (pss, _annotations) {
-              h->setAnnotation(pss.first, pss.second);
+            YODA::AnalysisObject* ao = 0;
+            if (!_scatter2d.points.empty()) {
+              // cout << "S2D" << endl;
+              ao = new YODA::Scatter2D(_scatter2d.points);
+            } else if (!_scatter3d.points.empty()) {
+              // cout << "S3D" << endl;
+              ao = new YODA::Scatter3D(_scatter3d.points);
+            } else {
+              throw YODA::ReadError("No data points found in flat histogram reading!");
             }
-            aos.push_back(h);
+            pair<string, string> pss; // to make boost's foreach happy
+            foreach (pss, _annotations) ao->setAnnotation(pss.first, pss.second);
+            aos.push_back(ao);
             cleanup();
             contextchange = false;
           }

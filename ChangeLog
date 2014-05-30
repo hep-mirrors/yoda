@@ -1,3 +1,9 @@
+2014-05-30  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Adding pytest-p1d and pytest-p2d tests, and FLAT writing/reading in pytests.
+
+	* Tweaking WriterFLAT and adding ReaderFLAT functionality for 2D histos and profiles.
+
 2014-05-30  Holger Schulz  <hschulz@physik.hu-berlin.de>
 
         * Some basic (FLAT) write-out capability for 2D histos

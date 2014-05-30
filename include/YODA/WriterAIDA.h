@@ -45,7 +45,7 @@ namespace YODA {
     void writeProfile2D(std::ostream& stream, const Profile2D& p);
     // void writeScatter1D(std::ostream& stream, const Scatter1D& s);
     void writeScatter2D(std::ostream& stream, const Scatter2D& s);
-    // void writeScatter3D(std::ostream& stream, const Scatter3D& s);
+    void writeScatter3D(std::ostream& stream, const Scatter3D& s);
 
 
   private:

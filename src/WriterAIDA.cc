@@ -113,9 +113,9 @@ namespace YODA {
   }
 
 
-  // void WriterAIDA::writeScatter3D(std::ostream& os, const Scatter3D& s) {
-  //   os << endl << "<!-- SCATTER3D WRITING TO AIDA IS CURRENTLY UNSUPPORTED! -->" << endl << endl;
-  // }
+  void WriterAIDA::writeScatter3D(std::ostream& os, const Scatter3D& s) {
+    os << endl << "<!-- SCATTER3D WRITING TO AIDA IS CURRENTLY UNSUPPORTED! -->" << endl << endl;
+  }
 
 
 }

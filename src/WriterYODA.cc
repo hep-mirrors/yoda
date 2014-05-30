@@ -258,27 +258,25 @@ namespace YODA {
   }
 
 
-  /*
-    void WriterYODA::writeScatter3D(std::ostream& os, const Scatter3D& s) {
-      ios_base::fmtflags oldflags = os.flags();
-      os << scientific << showpoint << setprecision(_precision);
+  void WriterYODA::writeScatter3D(std::ostream& os, const Scatter3D& s) {
+    ios_base::fmtflags oldflags = os.flags();
+    os << scientific << showpoint << setprecision(_precision);
 
-      os << "# BEGIN YODA_SCATTER3D " << s.path() << "\n";
-      _writeAnnotations(os, s);
+    os << "# BEGIN YODA_SCATTER3D " << s.path() << "\n";
+    _writeAnnotations(os, s);
+    /// @todo Change ordering to {vals} {errs} {errs} ...
+    os << "# xval\t xerr-\t xerr+\t yval\t yerr-\t yerr+\t zval\t zerr-\t zerr+\n";
+    foreach (Point3D pt, s.points()) {
       /// @todo Change ordering to {vals} {errs} {errs} ...
-      os << "# xval\t xerr-\t xerr+\t yval\t yerr-\t yerr+\t zval\t zerr-\t zerr+\n";
-      foreach (Point3D pt, s.points()) {
-        /// @todo Change ordering to {vals} {errs} {errs} ...
-        os << pt.x() << "\t" << pt.xErrMinus() << "\t" << pt.xErrMinus() << "\t";
-        os << pt.y() << "\t" << pt.yErrMinus() << "\t" << pt.yErrMinus() << "\t";
-        os << pt.z() << "\t" << pt.zErrMinus() << "\t" << pt.zErrMinus() << "\n";
-      }
-      os << "# END YODA_SCATTER3D\n";
-
-      os << flush;
-      os.flags(oldflags);
+      os << pt.x() << "\t" << pt.xErrMinus() << "\t" << pt.xErrMinus() << "\t";
+      os << pt.y() << "\t" << pt.yErrMinus() << "\t" << pt.yErrMinus() << "\t";
+      os << pt.z() << "\t" << pt.zErrMinus() << "\t" << pt.zErrMinus() << "\n";
     }
-  */
+    os << "# END YODA_SCATTER3D\n\n";
+
+    os << flush;
+    os.flags(oldflags);
+  }
 
 
 }

@@ -14,7 +14,7 @@
 #include "YODA/Profile2D.h"
 // #include "YODA/Scatter1D.h"
 #include "YODA/Scatter2D.h"
-// #include "YODA/Scatter3D.h"
+#include "YODA/Scatter3D.h"
 
 #include "boost/range.hpp"
 
@@ -114,7 +114,7 @@ namespace YODA {
     virtual void writeProfile2D(std::ostream& os, const Profile2D& p) = 0;
     // virtual void writeScatter1D(std::ostream& os, const Scatter1D& s) = 0;
     virtual void writeScatter2D(std::ostream& os, const Scatter2D& s) = 0;
-    // virtual void writeScatter3D(std::ostream& os, const Scatter3D& s) = 0;
+    virtual void writeScatter3D(std::ostream& os, const Scatter3D& s) = 0;
 
     /// Output precision
     int _precision;

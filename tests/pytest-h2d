@@ -7,12 +7,12 @@ for _ in xrange(100):
     h.fill(random.gauss(5, 3), random.gauss(5, 2))
 print h
 
-p = yoda.Profile2D(5,0.,10., 5,0.,10., "/bar")
-for _ in xrange(100):
-    p.fill(random.gauss(5, 3), random.gauss(5, 2), random.gauss(10, 0.5))
-print p
-
-yoda.write([h,p], "h2d.yoda")
+yoda.write([h], "h2d.yoda")
 aos = yoda.read("h2d.yoda")
-for p, ao in aos.iteritems():
+for _, ao in aos.iteritems():
     print ao
+
+yoda.write([h], "h2d.dat")
+# aos = yoda.read("h2d.dat")
+# for _, ao in aos.iteritems():
+#     print ao

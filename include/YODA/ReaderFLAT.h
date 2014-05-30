@@ -9,6 +9,7 @@
 #include "YODA/AnalysisObject.h"
 #include "YODA/Reader.h"
 #include <YODA/Scatter2D.h>
+#include <YODA/Scatter3D.h>
 #include <boost/spirit/include/qi.hpp>
 #include <boost/spirit/include/phoenix_operator.hpp>
 #include <boost/fusion/include/adapt_struct.hpp>
@@ -37,7 +38,6 @@ namespace YODA {
     // Hide from Doxygen until endcond
     /// @cond
 
-
   protected:
 
     void _readDoc(std::istream& stream, std::vector<AnalysisObject*>& aos);
@@ -46,7 +46,7 @@ namespace YODA {
 
     void cleanup() {
       _scatter2d.points.clear();
-
+      _scatter3d.points.clear();
       _annotations.clear();
     }
 
@@ -76,6 +76,25 @@ namespace YODA {
       double eyplus;
     };
 
+    struct histogrampointsymmetric2d {
+      double xmin;
+      double xmax;
+      double ymin;
+      double ymax;
+      double z;
+      double ez;
+    };
+
+    struct histogrampointasymmetric2d {
+      double xmin;
+      double xmax;
+      double ymin;
+      double ymax;
+      double z;
+      double ezminus;
+      double ezplus;
+    };
+
     /// Structs for the key-value pair parser (annotations)
     struct keyval {
       std::string key;
@@ -94,11 +113,19 @@ namespace YODA {
     static scatter2d _scatter2d;
 
 
+    /// All information for creating a Scatter3D from a flat HISTOGRAM
+    struct scatter3d {
+      std::vector<YODA::Point3D> points;
+    };
+    static scatter3d _scatter3d;
+
+
     /// Functions to call from the parser
 
 
     /// Filling a point
     struct fillpoint {
+      // 1D
       void operator()(const histogrampointsymmetric1d p, qi::unused_type, qi::unused_type) const {
         double x  = 0.5*(p.xmin+p.xmax);
         double ex = 0.5*(p.xmax-p.xmin);
@@ -110,6 +137,23 @@ namespace YODA {
         double ex = 0.5*(p.xmax-p.xmin);
         YODA::Point2D point(x, p.y, ex, ex, p.eyminus, p.eyplus);
         _scatter2d.points.push_back(point);
+      }
+      // 2D
+      void operator()(const histogrampointsymmetric2d p, qi::unused_type, qi::unused_type) const {
+        double x  = 0.5*(p.xmin+p.xmax);
+        double ex = 0.5*(p.xmax-p.xmin);
+        double y  = 0.5*(p.ymin+p.ymax);
+        double ey = 0.5*(p.ymax-p.ymin);
+        YODA::Point3D point(x, y, p.z, ex, ex, ey, ey, p.ez, p.ez);
+        _scatter3d.points.push_back(point);
+      }
+      void operator()(const histogrampointasymmetric2d p, qi::unused_type, qi::unused_type) const {
+        double x  = 0.5*(p.xmin+p.xmax);
+        double ex = 0.5*(p.xmax-p.xmin);
+        double y  = 0.5*(p.ymin+p.ymax);
+        double ey = 0.5*(p.ymax-p.ymin);
+        YODA::Point3D point(x, y, p.z, ex, ex, ey, ey, p.ezminus, p.ezplus);
+        _scatter3d.points.push_back(point);
       }
     };
 
@@ -146,24 +190,28 @@ namespace YODA {
 
     /// The actual grammar for parsing the lines of a flat data file.
     template <typename Iterator, typename Skipper>
-    struct yoda_grammar : qi::grammar<Iterator, Skipper>
+    struct data_grammar : qi::grammar<Iterator, Skipper>
     {
 
-      yoda_grammar() : yoda_grammar::base_type(line) {
+      data_grammar() : data_grammar::base_type(line) {
 
         /// A line can be anything. Note that we need
         /// to specify the long lines first, because the
         /// first match wins.
         /// In brackets we specify the functions that are
         /// called in case the rule matches.
-        line = HistogramPointAsymmetric1D [fillpoint()] |
+        line = HistogramPointAsymmetric2D [fillpoint()] |
+               HistogramPointSymmetric2D [fillpoint()]  |
+               HistogramPointAsymmetric1D [fillpoint()] |
                HistogramPointSymmetric1D [fillpoint()]  |
                keyvaluepair[fillkeyval()]               |
                comment;
 
         // Histogram
-        HistogramPointAsymmetric1D %= double_ >> double_ >> double_ >> double_ >> double_;
-        HistogramPointSymmetric1D %= double_ >> double_ >> double_ >> double_;
+        HistogramPointAsymmetric2D %= double_ >> double_ >>   double_ >> double_ >>   double_ >> double_ >> double_;
+        HistogramPointSymmetric2D  %= double_ >> double_ >>   double_ >> double_ >>   double_ >> double_;
+        HistogramPointAsymmetric1D %= double_ >> double_ >>   double_ >> double_ >> double_;
+        HistogramPointSymmetric1D  %= double_ >> double_ >>   double_ >> double_;
 
 
         /// Annotations.
@@ -187,6 +235,8 @@ namespace YODA {
       qi::rule<Iterator, std::string()> key, value;
       qi::rule<Iterator, keyval(), Skipper> keyvaluepair;
 
+      qi::rule<Iterator, histogrampointsymmetric2d(), Skipper> HistogramPointSymmetric2D;
+      qi::rule<Iterator, histogrampointasymmetric2d(), Skipper> HistogramPointAsymmetric2D;
       qi::rule<Iterator, histogrampointsymmetric1d(), Skipper> HistogramPointSymmetric1D;
       qi::rule<Iterator, histogrampointasymmetric1d(), Skipper> HistogramPointAsymmetric1D;
     };
@@ -221,6 +271,27 @@ BOOST_FUSION_ADAPT_STRUCT(
   (double, y)
   (double, eyminus)
   (double, eyplus)
+)
+
+BOOST_FUSION_ADAPT_STRUCT(
+  YODA::ReaderFLAT::histogrampointsymmetric2d,
+  (double, xmin)
+  (double, xmax)
+  (double, ymin)
+  (double, ymax)
+  (double, z)
+  (double, ez)
+)
+
+BOOST_FUSION_ADAPT_STRUCT(
+  YODA::ReaderFLAT::histogrampointasymmetric2d,
+  (double, xmin)
+  (double, xmax)
+  (double, ymin)
+  (double, ymax)
+  (double, z)
+  (double, ezminus)
+  (double, ezplus)
 )
 
 BOOST_FUSION_ADAPT_STRUCT(
