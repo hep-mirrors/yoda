@@ -1,3 +1,7 @@
+2014-06-02  Andy Buckley  <andy.buckley@cern.ch>
+
+	* YODA 1.0.7 release.
+
 2014-05-30  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Removing 'foreach' macro definition and using raw BOOST_FOREACH instead until C++11 is allowed.
