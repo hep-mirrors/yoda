@@ -413,6 +413,15 @@ cdef extern from "YODA/ProfileBin1D.h" namespace "YODA":
 
 # }}} ProfileBin1D
 
+cdef extern from "merge.hh":
+    void ProfileBin1D_iadd_ProfileBin1D "cython_iadd" (ProfileBin1D*, ProfileBin1D*)
+    void ProfileBin1D_isub_ProfileBin1D "cython_isub" (ProfileBin1D*, ProfileBin1D*)
+    # void ProfileBin1D_imul_dbl "cython_imul_dbl" (ProfileBin1D*, double)
+    # void ProfileBin1D_idiv_dbl "cython_idiv_dbl" (ProfileBin1D*, double)
+    ProfileBin1D* ProfileBin1D_add_ProfileBin1D "cython_add" (ProfileBin1D*, ProfileBin1D*)
+    ProfileBin1D* ProfileBin1D_sub_ProfileBin1D "cython_sub" (ProfileBin1D*, ProfileBin1D*)
+    ProfileBin1D* ProfileBin1D_div_ProfileBin1D "cython_sub" (ProfileBin1D*, ProfileBin1D*)
+
 
 # ProfileBin2D {{{
 cdef extern from "YODA/ProfileBin2D.h" namespace "YODA":
@@ -455,6 +464,15 @@ cdef extern from "YODA/HistoBin1D.h" namespace "YODA":
         HistoBin1D operator-(HistoBin1D) except +err
 
 #}}} HistoBin1D
+
+cdef extern from "merge.hh":
+    void HistoBin1D_iadd_HistoBin1D "cython_iadd" (HistoBin1D*, HistoBin1D*)
+    void HistoBin1D_isub_HistoBin1D "cython_isub" (HistoBin1D*, HistoBin1D*)
+    # void HistoBin1D_imul_dbl "cython_imul_dbl" (HistoBin1D*, double)
+    # void HistoBin1D_idiv_dbl "cython_idiv_dbl" (HistoBin1D*, double)
+    HistoBin1D* HistoBin1D_add_HistoBin1D "cython_add" (HistoBin1D*, HistoBin1D*)
+    HistoBin1D* HistoBin1D_sub_HistoBin1D "cython_sub" (HistoBin1D*, HistoBin1D*)
+    HistoBin1D* HistoBin1D_div_HistoBin1D "cython_sub" (HistoBin1D*, HistoBin1D*)
 
 
 # HistoBin2D {{{
