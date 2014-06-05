@@ -692,7 +692,7 @@ cdef extern from "merge.hh":
     # void Profile1D_idiv_dbl "cython_idiv_dbl" (Profile1D*, double)
     Profile1D* Profile1D_add_Profile1D "cython_add" (Profile1D*, Profile1D*)
     Profile1D* Profile1D_sub_Profile1D "cython_sub" (Profile1D*, Profile1D*)
-    Profile1D* Profile1D_div_Profile1D "cython_sub" (Profile1D*, Profile1D*)
+    Profile1D* Profile1D_div_Profile1D "cython_div" (Profile1D*, Profile1D*)
 
 cdef extern from "YODA/Scatter2D.h" namespace "YODA":
     Scatter2D mkScatter_Profile1D "YODA::mkScatter" (const Profile1D&)
