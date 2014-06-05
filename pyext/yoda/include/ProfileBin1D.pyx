@@ -78,6 +78,13 @@ cdef class ProfileBin1D(Bin1D_Dbn2D):
                 deref(a._ProfileBin1D()) +
                 deref(b._ProfileBin1D())))
 
+    def __iadd__(ProfileBin1D self, ProfileBin1D other):
+        c.ProfileBin1D_iadd_ProfileBin1D(self._ProfileBin1D(), other._ProfileBin1D())
+        return self
+    def __isub__(ProfileBin1D self, ProfileBin1D other):
+        c.ProfileBin1D_isub_ProfileBin1D(self._ProfileBin1D(), other._ProfileBin1D())
+        return self
+
     def __sub__(ProfileBin1D a, ProfileBin1D b):
         return util.new_owned_cls(
             ProfileBin1D,

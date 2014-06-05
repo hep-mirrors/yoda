@@ -20,9 +20,10 @@ namespace YODA {
   Writer& mkWriter(const std::string& name) {
     const size_t lastdot = name.find_last_of(".");
     const string fmt = boost::to_lower_copy((lastdot == std::string::npos) ? name : name.substr(lastdot+1));
+    // cout << "File extension: " << fmt << endl;
     if (fmt == "yoda") return WriterYODA::create();
     if (fmt == "aida") return WriterAIDA::create();
-    if (fmt == "flat") return WriterFLAT::create();
+    if (fmt == "dat" || fmt == "flat") return WriterFLAT::create();
     throw UserError("Format cannot be identified from string '" + name + "'");
   }
 
@@ -36,6 +37,7 @@ namespace YODA {
 
   void Writer::write(const std::string& filename, const AnalysisObject& ao) {
     ofstream outstream;
+    // cout << "Opening " << filename << " for writing" << endl;
     outstream.open(filename.c_str());
     write(outstream, ao);
     outstream.close();
@@ -52,14 +54,14 @@ namespace YODA {
       writeHisto2D(stream, dynamic_cast<const Histo2D&>(ao));
     } else if (aotype == "Profile1D") {
       writeProfile1D(stream, dynamic_cast<const Profile1D&>(ao));
-    // } else if (aotype == "Profile2D") {
-    //   writeProfile2D(stream, dynamic_cast<const Profile2D&>(ao));
+    } else if (aotype == "Profile2D") {
+      writeProfile2D(stream, dynamic_cast<const Profile2D&>(ao));
     // } else if (aotype == "Scatter1D") {
     //   writeScatter1D(stream, dynamic_cast<const Scatter1D&>(ao));
     } else if (aotype == "Scatter2D") {
       writeScatter2D(stream, dynamic_cast<const Scatter2D&>(ao));
-    // } else if (aotype == "Scatter3D") {
-    //   writeScatter3D(stream, dynamic_cast<const Scatter3D&>(ao));
+    } else if (aotype == "Scatter3D") {
+      writeScatter3D(stream, dynamic_cast<const Scatter3D&>(ao));
     } else {
       ostringstream oss;
       oss << "Unrecognised analysis object type " << aotype << " in Writer::write";

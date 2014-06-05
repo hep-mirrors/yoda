@@ -195,6 +195,9 @@ cdef extern from "YODA/Point2D.h" namespace "YODA":
         double y() except+ err
         void setX(double x) except+ err
         void setY(double y) except+ err
+        pair[double,double] xy() except+ err
+        void setXY(pair[double,double] xy) except+ err
+
         double xErrAvg() except+ err
         double yErrAvg() except+ err
         pair[double,double] xErrs() except+ err
@@ -205,6 +208,7 @@ cdef extern from "YODA/Point2D.h" namespace "YODA":
         double xMax() except+ err
         double yMin() except+ err
         double yMax() except+ err
+
         void scale(double x, double y) except+ err
         bool operator == (Point2D) except+ err
         bool operator != (Point2D b) except+ err
@@ -409,6 +413,15 @@ cdef extern from "YODA/ProfileBin1D.h" namespace "YODA":
 
 # }}} ProfileBin1D
 
+cdef extern from "merge.hh":
+    void ProfileBin1D_iadd_ProfileBin1D "cython_iadd" (ProfileBin1D*, ProfileBin1D*)
+    void ProfileBin1D_isub_ProfileBin1D "cython_isub" (ProfileBin1D*, ProfileBin1D*)
+    # void ProfileBin1D_imul_dbl "cython_imul_dbl" (ProfileBin1D*, double)
+    # void ProfileBin1D_idiv_dbl "cython_idiv_dbl" (ProfileBin1D*, double)
+    ProfileBin1D* ProfileBin1D_add_ProfileBin1D "cython_add" (ProfileBin1D*, ProfileBin1D*)
+    ProfileBin1D* ProfileBin1D_sub_ProfileBin1D "cython_sub" (ProfileBin1D*, ProfileBin1D*)
+    ProfileBin1D* ProfileBin1D_div_ProfileBin1D "cython_div" (ProfileBin1D*, ProfileBin1D*)
+
 
 # ProfileBin2D {{{
 cdef extern from "YODA/ProfileBin2D.h" namespace "YODA":
@@ -451,6 +464,15 @@ cdef extern from "YODA/HistoBin1D.h" namespace "YODA":
         HistoBin1D operator-(HistoBin1D) except +err
 
 #}}} HistoBin1D
+
+cdef extern from "merge.hh":
+    void HistoBin1D_iadd_HistoBin1D "cython_iadd" (HistoBin1D*, HistoBin1D*)
+    void HistoBin1D_isub_HistoBin1D "cython_isub" (HistoBin1D*, HistoBin1D*)
+    # void HistoBin1D_imul_dbl "cython_imul_dbl" (HistoBin1D*, double)
+    # void HistoBin1D_idiv_dbl "cython_idiv_dbl" (HistoBin1D*, double)
+    HistoBin1D* HistoBin1D_add_HistoBin1D "cython_add" (HistoBin1D*, HistoBin1D*)
+    HistoBin1D* HistoBin1D_sub_HistoBin1D "cython_sub" (HistoBin1D*, HistoBin1D*)
+    HistoBin1D* HistoBin1D_div_HistoBin1D "cython_div" (HistoBin1D*, HistoBin1D*)
 
 
 # HistoBin2D {{{
@@ -551,12 +573,12 @@ cdef extern from "YODA/Scatter2D.h" namespace "YODA":
         void reset() except+ err
 
         size_t numPoints() except+ err
+        vector[Point2D]& points()
         Point2D& point(size_t index)
 
         Scatter2D addPoint(Point2D&)
         Scatter2D addPoint(double, double)
-        Scatter2D addPoint(double, double,
-                            pair[double, double], pair[double, double]) except+ err
+        Scatter2D addPoint(double, double, pair[double, double], pair[double, double]) except+ err
 
         Scatter2D addPoints(sortedvector[Point2D])
 

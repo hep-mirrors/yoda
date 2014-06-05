@@ -56,7 +56,8 @@ namespace YODA {
 
       _histo2d.bins.clear();
       _histo2d.dbn_tot.reset();
-      //_histo2d.dbn_oflow.reset();
+      /// @todo For now just create 8 fake entries: needs to be greatly generalised for final form
+      _histo2d.dbns_oflow.resize(8);
 
       _profile1d.bins.clear();
       _profile1d.dbn_tot.reset();
@@ -65,7 +66,8 @@ namespace YODA {
 
       _profile2d.bins.clear();
       _profile2d.dbn_tot.reset();
-      //_profile2d.dbn_oflow.reset();
+      /// @todo For now just create 8 fake entries: needs to be greatly generalised for final form
+      _profile2d.dbns_oflow.resize(8);
 
       _scatter2d.points.clear();
 
@@ -196,7 +198,7 @@ namespace YODA {
     struct histo2d {
       std::vector<YODA::HistoBin2D> bins;
       YODA::Dbn2D dbn_tot;
-      std::vector<YODA::Dbn2D> dbn_oflow;
+      std::vector<YODA::Dbn2D> dbns_oflow;
     };
     static histo2d _histo2d;
 
@@ -213,7 +215,7 @@ namespace YODA {
     struct profile2d {
       std::vector<YODA::ProfileBin2D> bins;
       YODA::Dbn3D dbn_tot;
-      std::vector<YODA::Dbn3D> dbn_oflow;
+      std::vector<YODA::Dbn3D> dbns_oflow;
     };
     static profile2d _profile2d;
 
@@ -272,6 +274,9 @@ namespace YODA {
     };
 
 
+    /// @todo Add filling 2D outflows
+
+
     /// Filling a bin
     struct fillbin {
       void operator()(const histo1dbin b, qi::unused_type, qi::unused_type) const {
@@ -292,10 +297,10 @@ namespace YODA {
         _histo2d.bins.push_back(bin);
       }
       void operator()(const profile2dbin b, qi::unused_type, qi::unused_type) const {
-        YODA::ProfileBin2D bin(std::make_pair(b.xlow, b.xhigh), std::make_pair(b.xlow, b.xhigh),
+        YODA::ProfileBin2D bin(std::make_pair(b.xlow, b.xhigh), std::make_pair(b.ylow, b.yhigh),
                                YODA::Dbn3D(b.dbn.numFills, b.dbn.sumW, b.dbn.sumW2,
                                            b.dbn.sumWX, b.dbn.sumWX2, b.dbn.sumWY, b.dbn.sumWY2, b.dbn.sumWZ, b.dbn.sumWZ2,
-                                           0.0, 0.0, 0.0));
+                                           b.dbn.sumWXY, 0.0, 0.0));
         _profile2d.bins.push_back(bin);
       }
     };
@@ -348,26 +353,27 @@ namespace YODA {
 
       yoda_grammar() : yoda_grammar::base_type(line) {
 
-        /// A line can be anything. Note that we need
-        /// to specify the long lines first, because the
-        /// first match wins.
-        /// In brackets we specify the functions that are
-        /// called in case the rule matches.
+        /// @note A line can be anything. Note that we need to specify the long
+        /// lines first, because the first match wins.
+        /// @todo Refactor so that only the appropriate content lines can match in each type-block.
+
+        // In brackets we specify the functions that are called if the rule matches.
         line = \
-          Profile2Dbin[fillbin()]         | // w w2 x1 x2 y1 y2 wx wx2 wy wy2 wz wz2 wxy n = 14
+          Profile2Dbin[fillbin()]         | // w w2 x1 x2 y1 y2 wx wx2 wy wy2 wz wz2 wxy n = 14 nums
           Profile2Dtotal[filltotaldbn()]  | // "
           //Profile2Doflow[filloflowdbn()]| // "
-          Histo2Dbin[fillbin()]           | // w w2 x1 x2 y1 y2 wx wx2 wy wy2 wxy n = 12
+          Histo2Dbin[fillbin()]           | // w w2 x1 x2 y1 y2 wx wx2 wy wy2 wxy n = 12 nums
           Histo2Dtotal[filltotaldbn()]    | // "
           //Histo2Doflow[filloflowdbn()]  | // "
-          Profile1Dbin[fillbin()]         | // w w2 x1 x2 wx wx2 wy wy2 n = 9
+          Profile1Dbin[fillbin()]         | // w w2 x1 x2 wx wx2 wy wy2 n = 9 nums
           Profile1Dtotal[filltotaldbn()]  | // "
           Profile1Duflow[filluflowdbn()]  | // "
           Profile1Doflow[filloflowdbn()]  | // "
-          Histo1Dbin[fillbin()]           | // w w2 x1 x2 wx wx2 n = 7
+          Histo1Dbin[fillbin()]           | // w w2 x1 x2 wx wx2 n = 7 nums
           Histo1Dtotal[filltotaldbn()]    | // "
           Histo1Duflow[filluflowdbn()]    | // "
           Histo1Doflow[filloflowdbn()]    | // "
+          /// @todo Note clash of ScatterPoint3D with Profile1Dbin: need "scoped" content line parsing
           //ScatterPoint3D[fillpoint()]   | // x y z ex- ex+ ey- ey+ ez- ez+ = 9 (+ arbitrarily more sets of errors as 6 doubles... and names?)
           ScatterPoint2D[fillpoint()]     | // x y ex- ex+ ey- ey+ = 6 (+ arbitrarily more sets of errors as 4 doubles... and names?)
           //ScatterPoint1D[fillpoint()]   | // x ex- ex+ = 3 (+ arbitrarily more sets of errors as 2 doubles... and names?)
@@ -385,14 +391,14 @@ namespace YODA {
         Histo1Dtotal %= total     >> total     >> Histo1Ddbn;
         Histo1Duflow %= underflow >> underflow >> Histo1Ddbn;
         Histo1Doflow %= overflow  >> overflow  >> Histo1Ddbn;
-        Histo1Ddbn = double_ >> double_ >> double_ >> double_ >> ulong_;
+        Histo1Ddbn = (double_ >> double_) >> (double_ >> double_) >> ulong_;
 
         // Histo2D
         /// Regular bins, total statistics, outflows.
         Histo2Dbin   %= double_   >> double_   >> double_    >> double_   >> Histo2Ddbn;
         Histo2Dtotal %= total     >> total     >> Histo2Ddbn;
         //Histo2Doflow %= overflow  >> overflow  >> Histo2Ddbn;
-        Histo2Ddbn = double_ >> double_ >> double_ >> double_ >> double_ >> double_ >> double_ >> ulong_;
+        Histo2Ddbn = (double_ >> double_) >> (double_ >> double_) >> (double_ >> double_) >> double_ >> ulong_;
 
         // Profile1D
         /// Regular bins, total statistics, underflow or overflow.
@@ -400,14 +406,14 @@ namespace YODA {
         Profile1Dtotal %= total     >> total     >> Profile1Ddbn;
         Profile1Duflow %= underflow >> underflow >> Profile1Ddbn;
         Profile1Doflow %= overflow  >> overflow  >> Profile1Ddbn;
-        Profile1Ddbn = double_ >> double_ >> double_ >> double_ >> double_ >> double_ >> ulong_;
+        Profile1Ddbn = (double_ >> double_) >> (double_ >> double_) >> (double_ >> double_) >> ulong_;
 
         // Profile2D
         /// Regular bins, total statistics, outflows.
         Profile2Dbin   %= double_   >> double_   >> double_    >> double_   >> Profile2Ddbn;
         Profile2Dtotal %= total     >> total     >> Profile2Ddbn;
         //Profile2Doflow %= overflow  >> overflow  >> Profile2Ddbn;
-        Profile2Ddbn = double_ >> double_ >> double_ >> double_ >> double_ >> double_ >> double_ >> double_ >> double_ >> ulong_;
+        Profile2Ddbn = (double_ >> double_) >> (double_ >> double_) >> (double_ >> double_) >> (double_ >> double_) >> double_ >> ulong_;
 
         // Scatter1D
         // ScatterPoint1D %= double_ >> double_ >> double_;
@@ -454,7 +460,11 @@ namespace YODA {
       qi::rule<Iterator, profile2dbin(), Skipper> Profile2Dbin;
       qi::rule<Iterator, profile2ddbn(), Skipper> Profile2Ddbn, Profile2Dtotal; //, Profile2Doflow;
 
+      /// @todo Add ScatterPoint1D
+
       qi::rule<Iterator, scatterpoint2d(), Skipper> ScatterPoint2D;
+
+      /// @todo Add ScatterPoint3D
 
     };
 
@@ -541,6 +551,7 @@ BOOST_FUSION_ADAPT_STRUCT(
   (double, sumWY2)
   (double, sumWZ)
   (double, sumWZ2)
+  (double, sumWXY)
   (unsigned long, numFills)
 )
 

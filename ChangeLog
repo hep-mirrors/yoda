@@ -1,3 +1,53 @@
+2014-06-04  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Fix silly typos in yodamerge which somehow made it past "make check" testing :-(
+
+2014-06-02  Andy Buckley  <andy.buckley@cern.ch>
+
+	* YODA 1.0.7 release.
+
+2014-05-30  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Removing 'foreach' macro definition and using raw BOOST_FOREACH instead until C++11 is allowed.
+
+	* Adding pytest-p1d and pytest-p2d tests, and FLAT writing/reading in pytests.
+
+	* Tweaking WriterFLAT and adding ReaderFLAT functionality for 2D histos and profiles.
+
+2014-05-30  Holger Schulz  <hschulz@physik.hu-berlin.de>
+
+        * Some basic (FLAT) write-out capability for 2D histos
+
+2014-05-29  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Improvements to the yodahist script, including support for 2D
+	histograms and input files.
+
+	* Adding bin edges constructors for all 1D and 2D histos in Python.
+
+2014-05-22  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Improvements to Profile2D and Point2D interfaces in Python.
+
+	* Add a single-file at a time yodacnv multi-format converter
+	script (thanks to Andrii Verbytskyi for the suggestion).
+
+2014-05-19  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Typo fixes in Profile2D YODA-format parsing: 2D histo tests now pass!
+
+	* Adding Python tests for Histo2D and Profile2D.
+
+	* Adding a YODA/Predicates.h header and using it in Axis2D bin edge construction.
+
+	* Enabling Profile2D writing in various Writers, and a bit of IO code tidying.
+
+2014-05-17  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Disable writing out of Histo2D and Profile2D outflows for now,
+	while they are redesigned, and get 2D I/O working for the in-range
+	part.
+
 2014-05-14  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Mapping the divide and efficiency functions into the Python

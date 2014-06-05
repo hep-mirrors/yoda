@@ -74,6 +74,12 @@ cdef class HistoBin1D(Bin1D_Dbn1D):
         """
         return self._HistoBin1D().relErr()
 
+    def __iadd__(HistoBin1D self, HistoBin1D other):
+        c.HistoBin1D_iadd_HistoBin1D(self._HistoBin1D(), other._HistoBin1D())
+        return self
+    def __isub__(HistoBin1D self, HistoBin1D other):
+        c.HistoBin1D_isub_HistoBin1D(self._HistoBin1D(), other._HistoBin1D())
+        return self
 
     def __add__(HistoBin1D a, HistoBin1D b):
         return util.new_owned_cls(

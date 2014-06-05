@@ -1,3 +1,8 @@
+// -*- C++ -*-
+//
+// This file is part of YODA -- Yet more Objects for Data Analysis
+// Copyright (C) 2008-2014 The YODA collaboration (see AUTHORS for details)
+//
 #ifndef YODA_ARRAY_H
 #define YODA_ARRAY_H
 

@@ -1,3 +1,8 @@
+// -*- C++ -*-
+//
+// This file is part of YODA -- Yet more Objects for Data Analysis
+// Copyright (C) 2008-2014 The YODA collaboration (see AUTHORS for details)
+//
 #ifndef YODA_CACHEDVECTOR_H
 #define YODA_CACHEDVECTOR_H
 
@@ -18,10 +23,10 @@ namespace YODA {
             //We will see if the following will work:
             void regenCache(){
                 _cache.clear();
-                for(size_t i=0; i < this->size(); i++) 
+                for(size_t i=0; i < this->size(); i++)
                     _cache.insert(std::make_pair(this->at(i).first, i));
             }
-            
+
             //Cache ended as a public function since rewriting lowerBound() is pointless
             std::map<double, size_t> _cache;
         };

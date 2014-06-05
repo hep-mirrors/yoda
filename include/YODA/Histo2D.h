@@ -20,6 +20,7 @@ namespace YODA {
 
   // Forward declaration
   class Profile2D;
+  class Scatter3D;
 
   /// Convenience typedef
   typedef Axis2D<HistoBin2D, Dbn2D> Histo2DAxis;
@@ -51,7 +52,7 @@ namespace YODA {
             size_t nbinsY, double lowerY, double upperY,
             const std::string& path="", const std::string& title="")
       : AnalysisObject("Histo2D", path, title),
-        _axis(nbinsX, std::make_pair(lowerX, upperX), nbinsY, std::make_pair(lowerY, upperY))
+        _axis(nbinsX, std::make_pair(lowerX, upperX),  nbinsY, std::make_pair(lowerY, upperY))
     { }
 
 
@@ -74,15 +75,11 @@ namespace YODA {
     /// Copy constructor with optional new path
     Histo2D(const Histo2D& h, const std::string& path="");
 
+    /// A constructor from a Scatter3D's binning, with optional new path
+    Histo2D(const Scatter3D& s, const std::string& path="");
 
-    /// @todo Add binning constructors from Scatter3D and Profile2D?
-
-    // /// A constructor from a Scatter3D's binning, with optional new path
-    // Histo2D(const Scatter3D& s, const std::string& path="");
-
-    // /// Constructor from a Profile2D's binning, with optional new path
-    // Histo2D(const Profile2D& h, const std::string& path="");
-
+    /// Constructor from a Profile2D's binning, with optional new path
+    Histo2D(const Profile2D& h, const std::string& path="");
 
     /// @brief State-setting constructor
     ///

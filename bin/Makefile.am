@@ -1,6 +1,6 @@
 dist_bin_SCRIPTS = yoda-config \
-  yoda2aida yoda2flat aida2yoda aida2flat flat2yoda \
-  yodamerge yodadiff yodahist
+  yodacnv yodamerge yodadiff yodahist \
+  yoda2aida yoda2flat aida2yoda aida2flat flat2yoda
 
 ## bash completion
 if ENABLE_PYEXT

@@ -1,4 +1,3 @@
-
 cdef class Profile2D(AnalysisObject):
     """
     2D profile histogram, used to measure mean values of a z variable, binned in x and y.
@@ -31,15 +30,20 @@ cdef class Profile2D(AnalysisObject):
     cdef inline c.Profile2D *_Profile2D(self) except NULL:
         return <c.Profile2D*> self.ptr()
 
+
     def __init__(self, *args, **kwargs):
-        util.try_loop([self.__init2, self.__init7], *args, **kwargs)
+        util.try_loop([self.__init2, self.__init4, self.__init8], *args, **kwargs)
 
     def __init2(Profile2D self, char *path="", char *title=""):
         util.set_owned_ptr(self, new c.Profile2D(string(path), string(title)))
 
-    def __init7(Profile2D self, nxbins, xlow, xupp,  nybins, ylow, yupp,  char *path="", char *title=""):
-        util.set_owned_ptr(self, new c.Profile2D(nxbins, xlow, xupp, nybins, ylow, yupp,
-                                                 string(path), string(title)))
+    def __init4(Profile2D self, xedges,  yedges,  char* path="", char* title=""):
+        # TODO: Do some type-checking and allow iterables of ProfileBin2D as well?
+        util.set_owned_ptr(self, new c.Profile2D(xedges, yedges, string(path), string(title)))
+
+    def __init8(Profile2D self, nxbins, xlow, xhigh,  nybins, ylow, yhigh,  char *path="", char *title=""):
+        util.set_owned_ptr(self, new c.Profile2D(nxbins, xlow, xhigh,  nybins, ylow, yhigh,  string(path), string(title)))
+
 
 
     def __len__(self):
@@ -72,7 +76,7 @@ cdef class Profile2D(AnalysisObject):
         self._Profile2D().fill(x, y, z, weight)
 
     def fillBin(self, size_t i, double z, weight=1.0):
-        """(i,z[w]) -> None.
+        """(i,z,[w]) -> None.
         Fill bin i with value z and optional weight."""
         self._Profile2D().fillBin(i, z, weight)
 

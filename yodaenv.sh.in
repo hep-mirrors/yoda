@@ -4,10 +4,10 @@ exec_prefix=@exec_prefix@
 datarootdir=@datarootdir@
 
 export PATH="$exec_prefix/bin:$PATH"
-export @LIBPATHVARNAME@="@libdir@:@YAML_CPPLIBPATH@:$@LIBPATHVARNAME@"
+export @LIBPATHVARNAME@="@libdir@:$@LIBPATHVARNAME@"
 export PYTHONPATH="@YODA_PYTHONPATH@:$PYTHONPATH"
 
-# TODO: unset these when YODA provides TeX-based plotting functionality
+# TODO: unset these (and rm from Rivet) when YODA provides TeX-based plotting functionality
 # export TEXMFHOME="@datadir@/Rivet/texmf:$TEXMFHOME"
 # export HOMETEXMF="@datadir@/Rivet/texmf:$HOMETEXMF"
 # export TEXMFCNF="@datadir@/Rivet/texmf/cnf:$TEXMFCNF"

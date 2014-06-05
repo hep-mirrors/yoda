@@ -5,10 +5,14 @@
 //
 #include "YODA/WriterFLAT.h"
 
+//#include "YODA/Counter.h"
 #include "YODA/Histo1D.h"
 #include "YODA/Histo2D.h"
 #include "YODA/Profile1D.h"
+#include "YODA/Profile2D.h"
+//#include "YODA/Scatter1D.h"
 #include "YODA/Scatter2D.h"
+#include "YODA/Scatter3D.h"
 
 #include <iostream>
 #include <iomanip>
@@ -30,8 +34,9 @@ namespace YODA {
 
   void WriterFLAT::_writeAnnotations(std::ostream& os, const AnalysisObject& ao) {
     os << scientific << setprecision(_precision);
-    foreach (const string& a, ao.annotations()) {
+    BOOST_FOREACH (const string& a, ao.annotations()) {
       if (a.empty()) continue;
+      if (a == "Type") continue;
       /// @todo Should write out floating point annotations as scientific notation...
       os << a << "=" << ao.annotation(a) << "\n";
     }
@@ -55,12 +60,9 @@ namespace YODA {
 
 
   void WriterFLAT::writeHisto2D(std::ostream& os, const Histo2D& h) {
-    /// @todo Currently not supported
-    os << flush;
-
-    //Scatter3D tmp = mkScatter(h);
-    //tmp.setAnnotation("Type", "Histo2D");
-    //writeScatter3D(os, tmp);
+    Scatter3D tmp = mkScatter(h);
+    tmp.setAnnotation("Type", "Histo2D");
+    writeScatter3D(os, tmp);
   }
 
 
@@ -71,10 +73,13 @@ namespace YODA {
   }
 
 
-  // void WriterFLAT::writeProfile2D(std::ostream& os, const Profile2D& h) {
-  //   /// @todo Currently not supported
-  //   os << flush;
-  // }
+  void WriterFLAT::writeProfile2D(std::ostream& os, const Profile2D& h) {
+    Scatter3D tmp = mkScatter(h);
+    tmp.setAnnotation("Type", "Profile2D");
+    writeScatter3D(os, tmp);
+  }
+
+
 
 
   // void WriterFLAT::writeScatter1D(std::ostream& os, const Scatter1D& h) {
@@ -87,13 +92,15 @@ namespace YODA {
     ios_base::fmtflags oldflags = os.flags();
     os << scientific << showpoint << setprecision(_precision);
 
+    /// @todo Write as HISTO1D in future
     os << "# BEGIN HISTOGRAM " << s.path() << "\n";
     _writeAnnotations(os, s);
     os << "# xlow\t xhigh\t val\t errminus\t errplus\n";
-    foreach (Point2D pt, s.points()) {
+    BOOST_FOREACH (Point2D pt, s.points()) {
       os << pt.x()-pt.xErrMinus() << "\t" << pt.x()+pt.xErrPlus() << "\t";
       os << pt.y() << "\t" << pt.yErrMinus() << "\t" << pt.yErrPlus() << "\n";
     }
+    /// @todo Write as HISTO1D in future
     os << "# END HISTOGRAM\n\n";
 
     os << flush;
@@ -101,23 +108,39 @@ namespace YODA {
   }
 
 
-  /*void WriterFLAT::writeScatter3D(std::ostream& os, const Scatter3D& s) {
+  void WriterFLAT::writeScatter3D(std::ostream& os, const Scatter3D& s) { // , bool asHist2D) {
     ios_base::fmtflags oldflags = os.flags();
     os << scientific << showpoint << setprecision(_precision);
 
-    os << "# BEGIN YODA_SCATTER3D " << s.path() << "\n";
+    /// @todo Alternative format to allow writing as unbinned scatters?
+    /// Need same for Scatter2D if so... I think better to use YODA format for that
+    /// @todo Write as HISTO2D in future
+    os << "# BEGIN HISTOGRAM " << s.path() << "\n";
     _writeAnnotations(os, s);
-    os << "# xval\t xerr-\t xerr+\t yval\t yerr-\t yerr+\t zval\t zerr-\t zerr+\n";
-    foreach (Point3D pt, s.points()) {
-      os << pt.x() << "\t" << pt.xErrMinus() << "\t" << pt.xErrMinus() << "\t";
-      os << pt.y() << "\t" << pt.yErrMinus() << "\t" << pt.yErrMinus() << "\t";
-      os << pt.z() << "\t" << pt.zErrMinus() << "\t" << pt.zErrMinus() << "\n";
-    }
-    os << "# END YODA_SCATTER2D\n";
+
+    // if (asHist2D) { // Extension of what writeScatter2D does
+    os << "# xlow\t xhigh\t ylow\t yhigh\t val\t errminus\t errplus\n";
+      BOOST_FOREACH (Point3D pt, s.points()) {
+        os << pt.x()-pt.xErrMinus() << "\t" << pt.x()+pt.xErrPlus() << "\t";
+        os << pt.y()-pt.yErrMinus() << "\t" << pt.y()+pt.yErrPlus() << "\t";
+        os << pt.z() << "\t" << pt.zErrMinus() << "\t" << pt.zErrPlus() << "\n";
+      }
+
+    // } else { // What writerYODA should do... let's just put this in there (generalised for multiple errs).
+    //   os << "# xval\t xerr-\t xerr+\t yval\t yerr-\t yerr+\t zval\t zerr-\t zerr+\n";
+    //   BOOST_FOREACH (Point3D pt, s.points()) {
+    //     os << pt.x() << "\t" << pt.xErrMinus() << "\t" << pt.xErrMinus() << "\t";
+    //     os << pt.y() << "\t" << pt.yErrMinus() << "\t" << pt.yErrMinus() << "\t";
+    //     os << pt.z() << "\t" << pt.zErrMinus() << "\t" << pt.zErrMinus() << "\n";
+    //   }
+    // }
+
+    /// @todo Write as HISTO2D in future
+    os << "# END HISTOGRAM\n\n";
 
     os << flush;
     os.flags(oldflags);
-  }*/
+  }
 
 
 }

@@ -6,11 +6,6 @@
 #include "YODA/WriterAIDA.h"
 #include "YODA/Utils/StringUtils.h"
 
-#include "YODA/Histo1D.h"
-#include "YODA/Histo2D.h"
-#include "YODA/Profile1D.h"
-#include "YODA/Scatter2D.h"
-
 #include <iostream>
 #include <iomanip>
 
@@ -59,12 +54,12 @@ namespace YODA {
   }
 
 
-  // void WriterAIDA::writeProfile2D(std::ostream& os, const Profile2D& p) {
-  //   os << endl << "<!-- PROFILE2D WRITING TO AIDA IS CURRENTLY UNSUPPORTED! -->" << endl << endl;
-  //   // Scatter3D tmp = mkScatter(p);
-  //   // tmp.setAnnotation("Type", "Profile2D");
-  //   // writeScatter3D(os, tmp);
-  // }
+  void WriterAIDA::writeProfile2D(std::ostream& os, const Profile2D& p) {
+    os << endl << "<!-- PROFILE2D WRITING TO AIDA IS CURRENTLY UNSUPPORTED! -->" << endl << endl;
+    // Scatter3D tmp = mkScatter(p);
+    // tmp.setAnnotation("Type", "Profile2D");
+    // writeScatter3D(os, tmp);
+  }
 
 
   // void WriterAIDA::writeScatter1D(std::ostream& os, const Scatter1D& s) {
@@ -90,7 +85,7 @@ namespace YODA {
     os << "    <dimension dim=\"0\" title=\"\" />\n";
     os << "    <dimension dim=\"1\" title=\"\" />\n";
     os << "    <annotation>\n";
-    foreach (const string& a, s.annotations()) {
+    BOOST_FOREACH (const string& a, s.annotations()) {
       if (a.empty()) continue;
       os << "      <item key=\"" << Utils::encodeForXML(a)
          << "\" value=\"" << Utils::encodeForXML(s.annotation(a)) << "\" />\n";
@@ -99,7 +94,7 @@ namespace YODA {
       os << "      <item key=\"Type\" value=\"Scatter2D\" />\n";
     }
     os << "    </annotation>\n";
-    foreach (Point2D pt, s.points()) {
+    BOOST_FOREACH (Point2D pt, s.points()) {
       os << "    <dataPoint>\n";
       os << "      <measurement value=\"" << pt.x()
 	 << "\" errorPlus=\"" << pt.xErrPlus()
@@ -118,9 +113,9 @@ namespace YODA {
   }
 
 
-  // void WriterAIDA::writeScatter3D(std::ostream& os, const Scatter3D& s) {
-  //   os << endl << "<!-- SCATTER3D WRITING TO AIDA IS CURRENTLY UNSUPPORTED! -->" << endl << endl;
-  // }
+  void WriterAIDA::writeScatter3D(std::ostream& os, const Scatter3D& s) {
+    os << endl << "<!-- SCATTER3D WRITING TO AIDA IS CURRENTLY UNSUPPORTED! -->" << endl << endl;
+  }
 
 
 }

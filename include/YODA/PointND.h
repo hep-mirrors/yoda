@@ -138,7 +138,7 @@ namespace YODA {
       for (size_t i = 0; i < N; ++i) {
         _pos[i] *= scales[i];
       }
-      foreach (Error<N>& e, errs()) {
+      BOOST_FOREACH (Error<N>& e, errs()) {
         e.scale(scales);
       }
     }
@@ -149,7 +149,7 @@ namespace YODA {
     //   for (size_t i = 0; i < N; ++i) {
     //     _pos = trf.transform(_pos);
     //   }
-    //   foreach (Error e, errs()) {
+    //   BOOST_FOREACH (Error e, errs()) {
     //     rf.transformErrs(_pos, e);
     //   }
     // }

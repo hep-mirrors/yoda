@@ -1,7 +1,7 @@
 ## Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.59)
-AC_INIT([YODA],[1.0.6],[yoda@projects.hepforge.org],[YODA])
+AC_INIT([YODA],[1.0.7],[yoda@projects.hepforge.org],[YODA])
 
 ## Check and block installation into the src/build dir
 if test "$prefix" = "$PWD"; then
@@ -78,10 +78,11 @@ AC_CEDAR_CHECKCXXFLAG([-Wall], [AM_CXXFLAGS="$AM_CXXFLAGS -Wall -Wno-format"])
 dnl AC_CEDAR_CHECKCXXFLAG([-std=c++98], [AM_CXXFLAGS="$AM_CXXFLAGS -std=c++98"])
 
 ## Debug flag (default=none)
-AC_ARG_ENABLE([debug], [AC_HELP_STRING(--enable-debug, [build with debugging symbols  @<:@default=no@:>@])], [], [enable_debug=no])
-if test x$enable_debug = xyes; then
-  [AM_CXXFLAGS="$AM_CXXFLAGS -g"]
-fi
+dnl autotools default is -g -O2 : --enable-debug doesn't work (anymore)
+dnl AC_ARG_ENABLE([debug], [AC_HELP_STRING(--enable-debug, [build with debugging symbols  @<:@default=no@:>@])], [], [enable_debug=no])
+dnl if test x$enable_debug = xyes; then
+dnl   [AM_CXXFLAGS="$AM_CXXFLAGS -g"]
+dnl fi
 
 
 ## Required Boost C++ utility library

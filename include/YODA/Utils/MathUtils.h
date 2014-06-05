@@ -1,6 +1,12 @@
 // -*- C++ -*-
+//
+// This file is part of YODA -- Yet more Objects for Data Analysis
+// Copyright (C) 2008-2014 The YODA collaboration (see AUTHORS for details)
+//
 #ifndef YODA_MathUtils_H
 #define YODA_MathUtils_H
+
+/// @todo Add SFINAE math type stuff (see Rivet) and add inrange() and inrange_closed_closed() etc. aliases cf. MCUtils
 
 #include <YODA/Config/BuildConfig.h>
 

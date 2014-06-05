@@ -139,12 +139,12 @@ for p, aos in analysisobjects_in.iteritems():
         same_norms = sumw_ref and all(abs(ao.sumW()/sumw_ref - 1) < 1e-3 for ao in aos)
         ## Set the normto flag if possible (either because norms match or user-forced)
         if same_norms or opts.ASSUME_NORMALIZED:
-            if not all(ao.annotations.has_key("ScaledBy") for ao in aos):
+            if not all("ScaledBy" in ao.annotations for ao in aos):
                 print "WARNING: Abandoning normalized merge of path %s because not all inputs have ScaledBy attributes" % p
             else:
                 ## Try to compute a target normalization from the 1/scalefactor-weighted norms of each run
-                wtot = sum(1/float(ao.annotations["ScaledBy"]) for ao in aos)
-                normto = sum(ao.sumW() / float(ao.annotations["ScaledBy"]) for ao in aos) / wtot
+                wtot = sum(1/float(ao.annotation("ScaledBy")) for ao in aos)
+                normto = sum(ao.sumW() / float(ao.annotation("ScaledBy")) for ao in aos) / wtot
 
     ## Check that types match, and just output the first one if they don't
     if not all(type(ao) is type(aos[0]) for ao in aos[1:]):
@@ -155,7 +155,7 @@ for p, aos in analysisobjects_in.iteritems():
     ## If target should be normalized, undo the normalization scaling now
     if normto:
         for ao in aos:
-            ao.scaleW(1/float(ao.annotations["ScaledBy"]))
+            ao.scaleW(1/float(ao.annotation("ScaledBy")))
 
     ## Now that the normalization-identifying heuristic is done, apply user scalings
     ## NB. For histos only: we assume that scatters should be treated like ratios / normalized histos

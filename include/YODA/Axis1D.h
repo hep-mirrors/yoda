@@ -189,7 +189,7 @@ namespace YODA {
       _dbn.reset();
       _underflow.reset();
       _overflow.reset();
-      foreach(Bin& bin, _bins) bin.reset();
+      BOOST_FOREACH(Bin& bin, _bins) bin.reset();
       _locked = false;
     }
 
@@ -279,7 +279,7 @@ namespace YODA {
 
     void addBins(const Bins &bins) {
       Bins newBins(_bins);
-      foreach(const Bin &b, bins) {
+      BOOST_FOREACH(const Bin &b, bins) {
         newBins.push_back(b);
       }
       _updateAxis(newBins);
@@ -411,15 +411,16 @@ namespace YODA {
       // Keep a note of the last high edge
       double last_high = -std::numeric_limits<double>::infinity();
 
+      // Check for overlaps
       for (size_t i = 0; i < bins.size(); ++i) {
         Bin& currentBin = bins[i];
         const double new_low  = currentBin.lowEdge();
         const double reldiff = (new_low - last_high) / currentBin.width();
-        if (reldiff < -1e-3) {
+        if (reldiff < -1e-3) { //< @note If there is a "large" negative gap (i.e. overlap), throw an exception
           std::stringstream ss;
           ss << "Bin edges overlap: " << last_high << " -> " << new_low;
           throw RangeError(ss.str());
-        } else if (reldiff > 1e-3) {
+        } else if (reldiff > 1e-3) { //< @note If there is a "large" positive gap, create a bin gap
           indexes.push_back(-1);
           edgeCuts.push_back(new_low);
         }

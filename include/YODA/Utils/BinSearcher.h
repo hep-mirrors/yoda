@@ -1,3 +1,8 @@
+// -*- C++ -*-
+//
+// This file is part of YODA -- Yet more Objects for Data Analysis
+// Copyright (C) 2008-2014 The YODA collaboration (see AUTHORS for details)
+//
 #ifndef YODA_BINSEARCHER_H
 #define YODA_BINSEARCHER_H
 
@@ -119,8 +124,8 @@ namespace YODA {
 
         if (!lows.size()) {
           _est.reset(new LinEstimator(0, 0, 0));
-	} else if ( lows.front() <= 0.0 ) {
-	  _est.reset(new LinEstimator(lows.front(), lows.back(), lows.size() - 1));
+        } else if ( lows.front() <= 0.0 ) {
+          _est.reset(new LinEstimator(lows.front(), lows.back(), lows.size() - 1));
         } else {
           LinEstimator linEst(lows.front(), lows.back(), lows.size() - 1);
           LogEstimator logEst(lows.front(), lows.back(), lows.size() - 1);
@@ -177,7 +182,7 @@ namespace YODA {
 
       size_t estimate(const double x) const {
         double y = (*_est)(x);
-	if ( y > double(_max) ) return _max;
+        if ( y > double(_max) ) return _max;
         size_t yi = (size_t)(int) floor((y < 0) ? 0 : y);
         return (yi > _max) ? _max : yi;
       }

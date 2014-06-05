@@ -5,12 +5,6 @@
 //
 #include "YODA/WriterYODA.h"
 
-#include "YODA/Histo1D.h"
-#include "YODA/Histo2D.h"
-#include "YODA/Profile1D.h"
-#include "YODA/Profile2D.h"
-#include "YODA/Scatter2D.h"
-
 #include <iostream>
 #include <iomanip>
 
@@ -31,7 +25,7 @@ namespace YODA {
 
   void WriterYODA::_writeAnnotations(std::ostream& os, const AnalysisObject& ao) {
     os << scientific << setprecision(_precision);
-    foreach (const string& a, ao.annotations()) {
+    BOOST_FOREACH (const string& a, ao.annotations()) {
       if (a.empty()) continue;
       /// @todo Should write out floating point annotations as scientific notation...
       os << a << "=" << ao.annotation(a) << "\n";
@@ -63,7 +57,7 @@ namespace YODA {
       os << "# Mean: " << h.mean() << "\n";
     }
     os << "# Area: " << h.integral() << "\n";
-    os << "# xlow\t xhigh\t sumw\t sumw2\t sumwx\t sumwx2\t numEntries\n";
+    os << "# ID\t ID\t sumw\t sumw2\t sumwx\t sumwx2\t numEntries\n";
     os << "Total   \tTotal   \t";
     os << h.totalDbn().sumW()  << "\t" << h.totalDbn().sumW2()  << "\t";
     os << h.totalDbn().sumWX() << "\t" << h.totalDbn().sumWX2() << "\t";
@@ -76,7 +70,8 @@ namespace YODA {
     os << h.overflow().sumW()  << "\t" << h.overflow().sumW2()  << "\t";
     os << h.overflow().sumWX() << "\t" << h.overflow().sumWX2() << "\t";
     os << h.overflow().numEntries() << "\n";
-    foreach (const HistoBin1D& b, h.bins()) {
+    os << "# xlow\t xhigh\t sumw\t sumw2\t sumwx\t sumwx2\t numEntries\n";
+    BOOST_FOREACH (const HistoBin1D& b, h.bins()) {
       os << b.lowEdge() << "\t" << b.highEdge() << "\t";
       os << b.sumW()    << "\t" << b.sumW2()    << "\t";
       os << b.sumWX()   << "\t" << b.sumWX2()   << "\t";
@@ -96,8 +91,8 @@ namespace YODA {
     _writeAnnotations(os, h);
     if ( h.totalDbn().numEntries() > 0 )
       os << "# Mean: (" << h.xMean() << ", " << h.yMean() << ")\n";
-    os << "# Area: " << h.integral() << "\n";
-    os << "# xlow\t xhigh\t ylow\t yhigh\t sumw\t sumw2\t sumwx\t sumwx2\t sumwy\t sumwy2\t sumwxy\t numEntries\n";
+    os << "# Volume: " << h.integral() << "\n";
+    os << "# ID\t ID\t sumw\t sumw2\t sumwx\t sumwx2\t sumwy\t sumwy2\t sumwxy\t numEntries\n";
     // Total distribution
     const Dbn2D& td = h.totalDbn();
     os << "Total   \tTotal   \t";
@@ -107,20 +102,23 @@ namespace YODA {
     os << td.sumWXY() << "\t";
     os << td.numEntries() << "\n";
     // Outflows
-    for (int ix = -1; ix <= 1; ++ix) {
-      for (int iy = -1; iy <= 1; ++iy) {
-        if (ix == 0 && iy == 0) continue;
-        os << "Outflow\t" << ix << ":" << iy << "\t";
-        const Dbn2D& d = h.outflow(ix, iy);
-        os << d.sumW()   << "\t" << d.sumW2()  << "\t";
-        os << d.sumWX()  << "\t" << d.sumWX2() << "\t";
-        os << d.sumWY()  << "\t" << d.sumWY2() << "\t";
-        os << d.sumWXY() << "\t";
-        os << d.numEntries() << "\n";
-      }
-    }
+    /// @todo Disabled for now, reinstate with a *full* set of outflow info to allow marginalisation
+    os << "# 2D outflow persistency not currently supported until API is stable\n";
+    // for (int ix = -1; ix <= 1; ++ix) {
+    //   for (int iy = -1; iy <= 1; ++iy) {
+    //     if (ix == 0 && iy == 0) continue;
+    //     os << "Outflow\t" << ix << ":" << iy << "\t";
+    //     const Dbn2D& d = h.outflow(ix, iy);
+    //     os << d.sumW()   << "\t" << d.sumW2()  << "\t";
+    //     os << d.sumWX()  << "\t" << d.sumWX2() << "\t";
+    //     os << d.sumWY()  << "\t" << d.sumWY2() << "\t";
+    //     os << d.sumWXY() << "\t";
+    //     os << d.numEntries() << "\n";
+    //   }
+    // }
     // Bins
-    foreach (const HistoBin2D& b, h.bins()) {
+    os << "# xlow\t xhigh\t ylow\t yhigh\t sumw\t sumw2\t sumwx\t sumwx2\t sumwy\t sumwy2\t sumwxy\t numEntries\n";
+    BOOST_FOREACH (const HistoBin2D& b, h.bins()) {
       os << b.lowEdgeX() << "\t" << b.highEdgeX() << "\t";
       os << b.lowEdgeY() << "\t" << b.highEdgeY() << "\t";
       os << b.sumW()     << "\t" << b.sumW2()     << "\t";
@@ -141,7 +139,7 @@ namespace YODA {
 
     os << "# BEGIN YODA_PROFILE1D " << p.path() << "\n";
     _writeAnnotations(os, p);
-    os << "# xlow\t xhigh\t sumw\t sumw2\t sumwx\t sumwx2\t sumwy\t sumwy2\t numEntries\n";
+    os << "# ID\t ID\t sumw\t sumw2\t sumwx\t sumwx2\t sumwy\t sumwy2\t numEntries\n";
     os << "Total   \tTotal   \t";
     os << p.totalDbn().sumW()  << "\t" << p.totalDbn().sumW2()  << "\t";
     os << p.totalDbn().sumWX() << "\t" << p.totalDbn().sumWX2() << "\t";
@@ -157,7 +155,8 @@ namespace YODA {
     os << p.overflow().sumWX() << "\t" << p.overflow().sumWX2() << "\t";
     os << p.overflow().sumWY() << "\t" << p.overflow().sumWY2() << "\t";
     os << p.overflow().numEntries() << "\n";
-    foreach (const ProfileBin1D& b, p.bins()) {
+    os << "# xlow\t xhigh\t sumw\t sumw2\t sumwx\t sumwx2\t sumwy\t sumwy2\t numEntries\n";
+    BOOST_FOREACH (const ProfileBin1D& b, p.bins()) {
       os << b.lowEdge() << "\t" << b.highEdge() << "\t";
       os << b.sumW()    << "\t" << b.sumW2()    << "\t";
       os << b.sumWX()   << "\t" << b.sumWX2()   << "\t";
@@ -176,7 +175,7 @@ namespace YODA {
 
     os << "# BEGIN YODA_PROFILE2D " << h.path() << "\n";
     _writeAnnotations(os, h);
-    os << "# xlow\t xhigh\t ylow\t yhigh\t sumw\t sumw2\t sumwx\t sumwx2\t sumwy\t sumwy2\t sumwz\t sumwz2\t sumwxy\t numEntries\n";
+    os << "# sumw\t sumw2\t sumwx\t sumwx2\t sumwy\t sumwy2\t sumwz\t sumwz2\t sumwxy\t numEntries\n";
     // Total distribution
     const Dbn3D& td = h.totalDbn();
     os << "Total   \tTotal   \t";
@@ -187,21 +186,24 @@ namespace YODA {
     os << td.sumWXY() << "\t"; // << td.sumWXZ() << "\t" << td.sumWYZ() << "\t";
     os << td.numEntries() << "\n";
     // Outflows
-    for (int ix = -1; ix <= 1; ++ix) {
-      for (int iy = -1; iy <= 1; ++iy) {
-        if (ix == 0 && iy == 0) continue;
-        os << "Outflow\t" << ix << ":" << iy << "\t";
-        const Dbn3D& d = h.outflow(ix, iy);
-        os << d.sumW()   << "\t" << d.sumW2()  << "\t";
-        os << d.sumWX()  << "\t" << d.sumWX2() << "\t";
-        os << d.sumWY()  << "\t" << d.sumWY2() << "\t";
-        os << d.sumWZ()  << "\t" << d.sumWZ2() << "\t";
-        os << d.sumWXY() << "\t"; // << d.sumWXZ() << "\t" << d.sumWYZ() << "\t";
-        os << d.numEntries() << "\n";
-      }
-    }
+    /// @todo Disabled for now, reinstate with a *full* set of outflow info to allow marginalisation
+    os << "# 2D outflow persistency not currently supported until API is stable\n";
+    // for (int ix = -1; ix <= 1; ++ix) {
+    //   for (int iy = -1; iy <= 1; ++iy) {
+    //     if (ix == 0 && iy == 0) continue;
+    //     os << "Outflow\t" << ix << ":" << iy << "\t";
+    //     const Dbn3D& d = h.outflow(ix, iy);
+    //     os << d.sumW()   << "\t" << d.sumW2()  << "\t";
+    //     os << d.sumWX()  << "\t" << d.sumWX2() << "\t";
+    //     os << d.sumWY()  << "\t" << d.sumWY2() << "\t";
+    //     os << d.sumWZ()  << "\t" << d.sumWZ2() << "\t";
+    //     os << d.sumWXY() << "\t"; // << d.sumWXZ() << "\t" << d.sumWYZ() << "\t";
+    //     os << d.numEntries() << "\n";
+    //   }
+    // }
     // Bins
-    foreach (const ProfileBin2D& b, h.bins()) {
+    os << "# xlow\t xhigh\t ylow\t yhigh\t sumw\t sumw2\t sumwx\t sumwx2\t sumwy\t sumwy2\t sumwz\t sumwz2\t sumwxy\t numEntries\n";
+    BOOST_FOREACH (const ProfileBin2D& b, h.bins()) {
       os << b.lowEdgeX() << "\t" << b.highEdgeX() << "\t";
       os << b.lowEdgeY() << "\t" << b.highEdgeY() << "\t";
       os << b.sumW()     << "\t" << b.sumW2()     << "\t";
@@ -225,7 +227,7 @@ namespace YODA {
       os << "# BEGIN YODA_SCATTER1D " << s.path() << "\n";
       _writeAnnotations(os, s);
       os << "# xval\t xerr-\t xerr+\n";
-      foreach (Point1D pt, s.points()) {
+      BOOST_FOREACH (Point1D pt, s.points()) {
         os << pt.x() << "\t" << pt.xErrMinus() << "\t" << pt.xErrMinus() << "\t";
       }
       os << "# END YODA_SCATTER1D\n";
@@ -244,7 +246,7 @@ namespace YODA {
     _writeAnnotations(os, s);
     /// @todo Change ordering to {vals} {errs} {errs} ...
     os << "# xval\t xerr-\t xerr+\t yval\t yerr-\t yerr+\n";
-    foreach (Point2D pt, s.points()) {
+    BOOST_FOREACH (Point2D pt, s.points()) {
       /// @todo Change ordering to {vals} {errs} {errs} ...
       os << pt.x() << "\t" << pt.xErrMinus() << "\t" << pt.xErrPlus() << "\t";
       os << pt.y() << "\t" << pt.yErrMinus() << "\t" << pt.yErrPlus() << "\n";
@@ -256,27 +258,25 @@ namespace YODA {
   }
 
 
-  /*
-    void WriterYODA::writeScatter3D(std::ostream& os, const Scatter3D& s) {
-      ios_base::fmtflags oldflags = os.flags();
-      os << scientific << showpoint << setprecision(_precision);
+  void WriterYODA::writeScatter3D(std::ostream& os, const Scatter3D& s) {
+    ios_base::fmtflags oldflags = os.flags();
+    os << scientific << showpoint << setprecision(_precision);
 
-      os << "# BEGIN YODA_SCATTER3D " << s.path() << "\n";
-      _writeAnnotations(os, s);
+    os << "# BEGIN YODA_SCATTER3D " << s.path() << "\n";
+    _writeAnnotations(os, s);
+    /// @todo Change ordering to {vals} {errs} {errs} ...
+    os << "# xval\t xerr-\t xerr+\t yval\t yerr-\t yerr+\t zval\t zerr-\t zerr+\n";
+    BOOST_FOREACH (Point3D pt, s.points()) {
       /// @todo Change ordering to {vals} {errs} {errs} ...
-      os << "# xval\t xerr-\t xerr+\t yval\t yerr-\t yerr+\t zval\t zerr-\t zerr+\n";
-      foreach (Point3D pt, s.points()) {
-        /// @todo Change ordering to {vals} {errs} {errs} ...
-        os << pt.x() << "\t" << pt.xErrMinus() << "\t" << pt.xErrMinus() << "\t";
-        os << pt.y() << "\t" << pt.yErrMinus() << "\t" << pt.yErrMinus() << "\t";
-        os << pt.z() << "\t" << pt.zErrMinus() << "\t" << pt.zErrMinus() << "\n";
-      }
-      os << "# END YODA_SCATTER3D\n";
-
-      os << flush;
-      os.flags(oldflags);
+      os << pt.x() << "\t" << pt.xErrMinus() << "\t" << pt.xErrMinus() << "\t";
+      os << pt.y() << "\t" << pt.yErrMinus() << "\t" << pt.yErrMinus() << "\t";
+      os << pt.z() << "\t" << pt.zErrMinus() << "\t" << pt.zErrMinus() << "\n";
     }
-  */
+    os << "# END YODA_SCATTER3D\n\n";
+
+    os << flush;
+    os.flags(oldflags);
+  }
 
 
 }
