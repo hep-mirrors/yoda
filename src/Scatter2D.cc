@@ -158,7 +158,7 @@ namespace YODA {
         ey = y * sqrt(sqr(relerr_1) + sqr(relerr_2));
       }
       /// Deal with +/- errors separately, inverted for the denominator contributions:
-      /// @TODO: check correctness with different signed numerator and denominator.
+      /// @todo check correctness with different signed numerator and denominator.
       //const double eyplus = y * sqrt( sqr(p1.yErrPlus()/p1.y()) + sqr(p2.yErrMinus()/p2.y()) );
       //const double eyminus = y * sqrt( sqr(p1.yErrMinus()/p1.y()) + sqr(p2.yErrPlus()/p2.y()) );
       tmp.addPoint(x, y, exminus, explus, ey, ey);

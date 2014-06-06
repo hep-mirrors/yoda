@@ -117,7 +117,7 @@ namespace YODA {
       double z = 0;
       double ez = 0;
       if (p1.z() == 0 || p2.z() == 0) {
-        /// @TODO: find a nicer solution than setting the bin to zero
+        /// @todo find a nicer solution than setting the bin to zero
         //throw LowStatsError("Requested division of empty bin");
       } else {
         z = p1.z() / p2.z();
