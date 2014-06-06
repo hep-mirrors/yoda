@@ -1,6 +1,8 @@
 2014-06-06  Andy Buckley  <andy.buckley@cern.ch>
 
-	* YODA 1.1.0 release. Middle version number change to reflect API hanges w.r.t 1.0.6.
+	* YODA 1.1.0 release. Middle version number change to reflect API changes w.r.t 1.0.6.
+
+	* Adding unit tests against ref data for yodamerge in make check.
 
 2014-06-04  Andy Buckley  <andy.buckley@cern.ch>
 

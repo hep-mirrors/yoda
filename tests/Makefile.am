@@ -7,7 +7,8 @@ EXTRA_DIST = \
   pytest-operators \
   shtest-yodamerge \
   shtest-yoda2root \
-  test1.yoda test2.yoda
+  test1.yoda test2.yoda \
+  merged12-ref.yoda merged12pi-ref.yoda
 
 check_PROGRAMS = \
   testweights \
