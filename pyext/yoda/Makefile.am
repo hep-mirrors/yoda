@@ -77,5 +77,27 @@ rootcompat.cpp: util.pxd rootcompat.pxd rootcompat.pyx
 endif
 
 
+
+
+## fixes for out-of-source builds, especially "make distcheck"
+
+all-local: fix-out-of-source
+
+FIXSOURCES = $(EXTRA_DIST) 
+
+fix-out-of-source: $(FIXSOURCES)
+	echo "" > $@
+	for i in $^; do \
+	  orig="$$i"; \
+	  build="$$(basename $$i)"; \
+	  if [ ! -e $${build} ]; then cp $${orig} $${build}; \
+	  echo $${build} >> $@; fi \
+	done
+	touch $@
+
+clean-local: fix-out-of-source
+	[ -e $< ] && [ -n "$$(cat $<)" ] && rm -f $$(cat $<)
+	rm -f $<
+
 distclean-local:
 	rm -f core.cpp core.h util.cpp rootcompat.cpp include/generated/*

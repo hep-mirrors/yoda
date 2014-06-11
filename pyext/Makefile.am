@@ -1,4 +1,4 @@
-SUBDIRS = yoda .
+SUBDIRS = yoda
 
 if ENABLE_PYEXT
 PYEXT_ENV = CC="$(CC)" CXX="$(CXX)" CXXFLAGS="$(PYEXT_CXXFLAGS)" ARCHFLAGS=""
@@ -16,14 +16,14 @@ install-exec-local:
 
 uninstall-local:
 	rm -rf $(DESTDIR)$(YODA_PYTHONPATH)/yoda
+	rm -f $(DESTDIR)$(YODA_PYTHONPATH)/yoda-$(VERSION)-py$(PYTHON_VERSION).egg-info
 
 clean-local:
-	$(PYEXT_ENV) $(PYTHON) setup.py clean --all
 	rm -f $(builddir)/*.pyc
 	rm -rf $(builddir)/build
 	rm -rf dist
 
 distclean-local:
-	rm -rf yoda.egg-info
+	rm -f yoda.egg-info
 
 endif

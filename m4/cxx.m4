@@ -30,7 +30,8 @@ AC_DEFUN([AC_CEDAR_CHECKCXXFLAG], [
   AC_LANG_CONFTEST([AC_LANG_PROGRAM([],[return 0;])])
   flag_ok=no
   #$CXX $1 conftest.cpp >&5 2>/dev/null && flag_ok=yes
-  stat_string=`$CXX $1 conftest.cpp 2>&1 1>&5` ; test -z "$stat_string" && flag_ok=yes
+  stat_string=`$CXX $1 conftest.cpp -o yoda-configure.tmp 2>&1 1>&5` ; test -z "$stat_string" && flag_ok=yes
+  rm -f yoda-configure.tmp
   AC_MSG_RESULT([$flag_ok])
   if test x$flag_ok = xyes; then 
     true

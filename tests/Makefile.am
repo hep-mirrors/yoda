@@ -62,7 +62,8 @@ TESTS_ENVIRONMENT = \
   LD_LIBRARY_PATH=$(top_builddir)/src:$(top_builddir)/src/.libs:$(LD_LIBRARY_PATH) \
   DYLD_LIBRARY_PATH=$(top_builddir)/src:$(top_builddir)/src/.libs:$(DYLD_LIBRARY_PATH) \
   PYTHONPATH=$(top_builddir)/pyext/build:$(PYTHONPATH) \
-  PATH=$(top_builddir)/bin:$(PATH)
+  PATH=$(top_builddir)/bin:$(top_srcdir)/bin:$(PATH) \
+  YODA_TESTS_SRC=$(srcdir)
 
 TESTS = \
   testweights \
@@ -92,6 +93,10 @@ TESTS = \
 if ENABLE_ROOT
   TESTS += shtest-yoda2root
 endif
+
+CLEANFILES = \
+  merged12.yoda p2d.dat test.aida h2d.yoda h1d.dat p2d.yoda merged12pi.yoda \
+  h1d.yoda h2d.dat
 
 #  testhisto2De \
 #  testpoint3D    \
