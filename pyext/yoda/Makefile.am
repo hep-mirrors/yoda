@@ -87,6 +87,7 @@ FIXSOURCES = $(EXTRA_DIST)
 
 fix-out-of-source: $(FIXSOURCES)
 	rm -f $@
+	mkdir -p include
 	for i in $^; do \
 	  orig="$$i"; \
 	  build="$$(basename $$i)"; \
