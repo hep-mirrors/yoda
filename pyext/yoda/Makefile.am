@@ -64,14 +64,9 @@ endif
 ## Always include rootcompat.cpp in the dist... only developers should be building dist tarballs
 EXTRA_DIST += rootcompat.cpp
 
-if ! ENABLE_ROOT
-all-local: core.cpp util.cpp
-	@true
-
-else
-
 all-local: core.cpp util.cpp rootcompat.cpp
 	@true
+
 if WITH_CYTHON
 rootcompat.cpp: util.pxd rootcompat.pxd rootcompat.pyx
 	./mktemplates
@@ -79,7 +74,6 @@ rootcompat.cpp: util.pxd rootcompat.pxd rootcompat.pyx
 else
 rootcompat.cpp: util.pxd rootcompat.pxd rootcompat.pyx
 	@echo "Not (re)generating rootcompat.cpp since Cython is not installed"
-endif
 endif
 
 
