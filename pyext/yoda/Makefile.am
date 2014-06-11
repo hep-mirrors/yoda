@@ -42,11 +42,11 @@ EXTRA_DIST += \
 
 
 if WITH_CYTHON
-core.cpp: $(CYTHON_SRC)
+core.cpp core.h: $(CYTHON_SRC)
 	./mktemplates
 	cython core.pyx --cplus
 else
-core.cpp: $(CYTHON_SRC)
+core.cpp core.h: $(CYTHON_SRC)
 	@echo "Not (re)generating core.cpp since Cython is not installed"
 endif
 
