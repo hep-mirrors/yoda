@@ -1,3 +1,7 @@
+2014-06-10  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Fix use of the install command for bash completion installation on Macs.
+
 2014-06-06  Andy Buckley  <andy.buckley@cern.ch>
 
 	* YODA 1.1.0 release. Middle version number change to reflect API changes w.r.t 1.0.6.
