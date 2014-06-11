@@ -86,17 +86,18 @@ all-local: fix-out-of-source
 FIXSOURCES = $(EXTRA_DIST) 
 
 fix-out-of-source: $(FIXSOURCES)
-	echo "" > $@
+	rm -f $@
 	for i in $^; do \
 	  orig="$$i"; \
 	  build="$$(basename $$i)"; \
+	  if [[ "$${orig}" == *include* ]]; then build="include/$${build}"; fi; \
 	  if [ ! -e $${build} ]; then cp $${orig} $${build}; \
-	  echo $${build} >> $@; fi \
+	  echo $${build} >> $@; fi; \
 	done
 	touch $@
 
 clean-local: fix-out-of-source
-	[ -e $< ] && [ -n "$$(cat $<)" ] && rm -f $$(cat $<)
+	if [ -e $< ]; then if [ -n "$$(cat $<)" ]; then rm -f $$(cat $<); fi; fi
 	rm -f $<
 
 distclean-local:
