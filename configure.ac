@@ -78,11 +78,10 @@ AC_CEDAR_CHECKCXXFLAG([-Wall], [AM_CXXFLAGS="$AM_CXXFLAGS -Wall -Wno-format"])
 dnl AC_CEDAR_CHECKCXXFLAG([-std=c++98], [AM_CXXFLAGS="$AM_CXXFLAGS -std=c++98"])
 
 ## Debug flag (default=none)
-dnl autotools default is -g -O2 : --enable-debug doesn't work (anymore)
-dnl AC_ARG_ENABLE([debug], [AC_HELP_STRING(--enable-debug, [build with debugging symbols  @<:@default=no@:>@])], [], [enable_debug=no])
-dnl if test x$enable_debug = xyes; then
-dnl   [AM_CXXFLAGS="$AM_CXXFLAGS -g"]
-dnl fi
+AC_ARG_ENABLE([debug], [AC_HELP_STRING(--enable-debug, [build with debugging symbols  @<:@default=no@:>@])], [], [enable_debug=no])
+if test x$enable_debug = xyes; then
+  [AM_CXXFLAGS="$AM_CXXFLAGS -g"]
+fi
 
 
 ## Required Boost C++ utility library
