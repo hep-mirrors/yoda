@@ -1,3 +1,7 @@
+2014-06-13  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Adding yodals script to list data file contents.
+
 2014-06-11  David Grellscheid  <David.Grellscheid@durham.ac.uk>
 
 	* pyext/yoda/Makefile.am: 'make distcheck' and out-of-source
