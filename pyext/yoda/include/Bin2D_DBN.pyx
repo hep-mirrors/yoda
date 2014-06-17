@@ -133,7 +133,7 @@ cdef class Bin2D_${DBN}(Bin):
 
     @property
     def numEntries(self):
-        return self._Bin2D().numEntries()
+        return int(self._Bin2D().numEntries())
 
     @property
     def effNumEntries(self):

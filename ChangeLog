@@ -1,3 +1,7 @@
+2014-06-17  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Adding explicit int cast in Python wrapping of numEntries functions.
+
 2014-06-13  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Adding yodals script to list data file contents.

@@ -98,7 +98,7 @@ cdef class Profile2D(AnalysisObject):
     def numEntries(self): # add overflows arg
         """() -> int
         Number of times this histogram was filled."""
-        return self._Profile2D().numEntries()
+        return int(self._Profile2D().numEntries())
 
     def effNumEntries(self): # add overflows arg
         """() -> float

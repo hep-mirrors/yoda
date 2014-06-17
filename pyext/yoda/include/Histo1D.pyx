@@ -123,7 +123,7 @@ cdef class Histo1D(AnalysisObject):
     def numEntries(self): # add overflows arg
         """None -> int
         Number of times this histogram was filled."""
-        return self._Histo1D().numEntries()
+        return int(self._Histo1D().numEntries())
 
     def effNumEntries(self): # add overflows arg
         """None -> float
