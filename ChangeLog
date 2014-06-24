@@ -1,3 +1,8 @@
+2014-06-24  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Don't complain about merge assumptions if there is only one
+	object with that path name to be 'merged'
+
 2014-06-17  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Adding explicit int cast in Python wrapping of numEntries functions.
