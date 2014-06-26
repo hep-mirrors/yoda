@@ -65,7 +65,6 @@ namespace YODA {
     /// Fill by x, y, z values and weight
     /// @todo Need to also fill the totalDbn...
     void fill(double x, double y, double z, double weight=1.0) {
-      assert(x >= xMin() && x <= xMax() && y >= yMin() && y <= yMax());
       _dbn.fill(x, y, z, weight);
     }
 

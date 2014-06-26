@@ -446,7 +446,7 @@ namespace YODA {
 
     /// Check if there are any gaps in the axis' binning between bin indices @a from and @a to, inclusive.
     bool _gapInRange(size_t from, size_t to) const {
-      assert(from < numBins() && to < numBins() && from < to);
+      assert(to < numBins() && from < to);
       if (from == to) return false;
 
       const size_t from_ix = _binsearcher.index(bin(from).lowEdge());

@@ -244,7 +244,6 @@ namespace YODA {
   /// Make a list of @a nbins + 1 values equally spaced between @a start and @a end inclusive.
   inline std::vector<double> linspace(size_t nbins, double start, double end) {
     assert(end >= start);
-    assert(nbins > 0);
     std::vector<double> rtn;
     const double interval = (end-start)/static_cast<double>(nbins);
     double edge = start;
@@ -261,7 +260,6 @@ namespace YODA {
   inline std::vector<double> logspace(size_t nbins, double start, double end) {
     assert(end >= start);
     assert(start > 0);
-    assert(nbins > 0);
     const double logstart = std::log(start);
     const double logend = std::log(end);
     const std::vector<double> logvals = linspace(nbins, logstart, logend);

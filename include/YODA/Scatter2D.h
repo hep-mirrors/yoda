@@ -203,14 +203,12 @@ namespace YODA {
 
     /// Get a reference to the point with index @a index
     Point2D& point(size_t index) {
-      assert(index < numPoints());
       return _points.at(index);
     }
 
 
     /// Get the point with index @a index (const version)
     const Point2D& point(size_t index) const {
-      assert(index < numPoints());
       return _points.at(index);
     }
 
