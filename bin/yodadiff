@@ -31,6 +31,9 @@ elif aodict1.keys() != aodict2.keys():
 def eq(a, b):
     if a == b:
         return True
+    from math import isnan
+    if isnan(a) and isnan(b):
+        return True
     ## Type-check: be a bit careful re. int vs. float
     if type(a) is not type(b) and not all(type(x) in (int, float) for x in (a,b)):
         return False
@@ -66,8 +69,12 @@ for path in sorted(set(aodict1.keys() + aodict2.keys())):
               (path, str(type(ao1)), str(type(ao2)), filenames[0], filenames[1])
         continue
     ## Compare the numbers of points/bins
-    s1 = ao1.mkScatter() if type(ao1) is not yoda.Scatter2D else ao1
-    s2 = ao2.mkScatter() if type(ao2) is not yoda.Scatter2D else ao2
+    # TODO: Fix the mapping so the exception can be caught in Python
+    try:
+        s1 = ao1.mkScatter() if type(ao1) is not yoda.Scatter2D else ao1
+        s2 = ao2.mkScatter() if type(ao2) is not yoda.Scatter2D else ao2
+    except yoda.WeightError:
+        print "WARNING! Could not create a '%s' scatter for comparison" % path
     if s1.numPoints != s2.numPoints:
         print "Warning: data objects with path '%s' have different numbers of points (%d and %d) in %s and %s" % \
               (path, s1.numPoints, s2.numPoints, filenames[0], filenames[1])

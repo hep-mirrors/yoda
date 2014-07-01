@@ -1,5 +1,7 @@
 2014-07-01  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Add exception translation to the mkScatter functions.
+
 	* Add -m/-M match/unmatch options to yodacnv -- useful for
 	filtering histogram file contents in a YODA->YODA conversion.
 
