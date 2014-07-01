@@ -73,8 +73,8 @@ for path in sorted(set(aodict1.keys() + aodict2.keys())):
     try:
         s1 = ao1.mkScatter() if type(ao1) is not yoda.Scatter2D else ao1
         s2 = ao2.mkScatter() if type(ao2) is not yoda.Scatter2D else ao2
-    except yoda.WeightError:
-        print "WARNING! Could not create a '%s' scatter for comparison" % path
+    except Exception, e:
+        print "WARNING! Could not create a '%s' scatter for comparison (%s)" % (path, type(e).__name__)
     if s1.numPoints != s2.numPoints:
         print "Warning: data objects with path '%s' have different numbers of points (%d and %d) in %s and %s" % \
               (path, s1.numPoints, s2.numPoints, filenames[0], filenames[1])
