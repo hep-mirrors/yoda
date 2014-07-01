@@ -1,3 +1,8 @@
+2014-07-01  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Add -m/-M match/unmatch options to yodacnv -- useful for
+	filtering histogram file contents in a YODA->YODA conversion.
+
 2014-06-24  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Don't complain about merge assumptions if there is only one
