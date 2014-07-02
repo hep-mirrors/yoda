@@ -2,6 +2,8 @@
 
 namespace YODA {
 
+  /// @todo Finish and make like the other scatters
+
 
   /// A collection of 1D data points with errors
   class Scatter1D : public Scatter<1> {
@@ -26,6 +28,32 @@ namespace YODA {
     {  }
 
   };
+
+
+  /// Make a Scatter2D representation of a Counter
+  Scatter1D mkScatter(const Histo1D& h) {
+    Scatter2D rtn;
+    BOOST_FOREACH (const std::string& a, h.annotations())
+      rtn.setAnnotation(a, h.annotation(a));
+    rtn.setAnnotation("Type", h.type()); // might override the copied ones
+    BOOST_FOREACH (const HistoBin1D& b, h.bins()) {
+      // const double x = b.focus();
+      // const double ex_m = b.focus() - b.lowEdge();
+      // const double ex_p = b.highEdge() - b.focus();
+      const double x = b.midpoint();
+      const double ex_m = b.width()/2.0;
+      const double ex_p = b.width()/2.0;
+      const double y = b.height();
+      const double ey = b.heightErr();
+      const Point2D pt(x, y, ex_m, ex_p, ey, ey);
+      rtn.addPoint(pt);
+    }
+    assert(h.numBins() == rtn.numPoints());
+    return rtn;
+  }
+
+
+  /// @todo mkScatter from a vector of Counters?
 
 
   void test() {

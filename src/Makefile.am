@@ -17,9 +17,10 @@ libYODA_la_SOURCES = \
     Histo2D.cc \
     Profile1D.cc \
     Profile2D.cc \
-    Scatter1D.cc \
     Scatter2D.cc \
     Scatter3D.cc
+
+#    Scatter1D.cc
 
 libYODA_la_LDFLAGS = -avoid-version
 libYODA_la_LIBADD = tinyxml/libtinyxml.la

@@ -1,3 +1,10 @@
+2014-07-02  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Set y value and/or error to 0 in mkScatter(Histo1D) if an
+	exception is thrown when calculating the appropriate values. Need
+	an optional param to control this error handling behaviour between
+	set-zero and skip-bin?
+
 2014-07-01  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Add exception translation to the mkScatter functions.
