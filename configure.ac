@@ -94,6 +94,7 @@ BOOST_FIND_HEADER([boost/spirit/include/qi.hpp])
 BOOST_FIND_HEADER([boost/spirit/include/phoenix_operator.hpp])
 BOOST_FIND_HEADER([boost/fusion/include/adapt_struct.hpp])
 
+BOOST_BUG_IN_FOREACH
 
 ## Optional ROOT compatibility
 AC_ARG_ENABLE([root], [AC_HELP_STRING(--enable-root,
