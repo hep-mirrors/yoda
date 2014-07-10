@@ -66,7 +66,11 @@ cdef class Scatter2D(AnalysisObject):
 
 
     def addPoint(self, *args, **kwargs):
-        """Add a new point."""
+        """Add a new point.
+
+        Provide either a single yoda.Point2D object, or the
+        four args: x, y, xerrs=0, yerrs=0.
+        """
         try:
             self.__addPoint_point(*args, **kwargs)
         except TypeError:
@@ -95,6 +99,14 @@ cdef class Scatter2D(AnalysisObject):
                 self._Scatter2D().combineWith(deref(other._Scatter2D()))
         else:
             self._Scatter2D().combineWith(deref(other._Scatter2D()))
+
+
+    def mkScatter(self):
+        """None -> Scatter2D.
+        Make a new Scatter2D. Exists to allow mkScatter calls on any AnalysisObject,
+        even if it already is a scatter."""
+        cdef c.Scatter2D s2 = c.mkScatter_Scatter2D(deref(self._Scatter2D()))
+        return util.new_owned_cls(Scatter2D, s2.newclone())
 
 
     def scale(self, ax, ay):

@@ -1,3 +1,10 @@
+2014-07-10  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Add mkScatter(Scatter2D) and mkScatter(Scatter3D) functions and
+	Python mappings: this allows all AOs to be used as args to
+	mkScatter(...) without needing to check if they already are
+	scatters.
+
 2014-07-02  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Set y value and/or error to 0 in mkScatter(Histo1D) if an
