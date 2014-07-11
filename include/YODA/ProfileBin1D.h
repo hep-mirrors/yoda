@@ -67,8 +67,6 @@ namespace YODA {
     /// Fill histo by x and y values and weight.
     /// @todo Need to also fill the totalDbn...
     void fill(double x, double y, double weight=1.0) {
-      assert( _edges.first < _edges.second );
-      assert( x >= _edges.first && x < _edges.second );
       _dbn.fill(x, y, weight);
     }
 

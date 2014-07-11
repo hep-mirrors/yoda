@@ -131,7 +131,7 @@ for p, aos in analysisobjects_in.iteritems():
     ## In the absence of better info, we use the norm as a heuristic to change the merging behaviour
     # TODO: Could we just test for a ScaledBy attribute?
     normto = None
-    if all(hasattr(ao, "sumW") for ao in aos):
+    if len(aos) > 1 and all(hasattr(ao, "sumW") for ao in aos):
         ## Check that there are some non-empty input histograms
         nonzero_sumws = [ao.sumW() for ao in aos if ao.sumW() != 0]
         sumw_ref = nonzero_sumws[0] if nonzero_sumws else None
@@ -181,7 +181,8 @@ for p, aos in analysisobjects_in.iteritems():
         msg = "WARNING: Scatter2D %s merge assumes equal run sizes" % p
         if any(float(ao.annotation("yodamerge_scale")) != 1.0 for ao in aos):
              msg += " (+ user scaling)"
-        print msg
+        if len(aos) > 1:
+            print msg
         npoints = len(ao_out.points)
         for i in xrange(npoints):
             y_i = eyp_i = eym_i = scalesum = 0.0

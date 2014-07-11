@@ -110,7 +110,7 @@ cdef class Bin1D_${DBN}(Bin):
         The number of entries that have filled the bin.
 
         """
-        return self._Bin1D().numEntries()
+        return int(self._Bin1D().numEntries())
 
     @property
     def effNumEntries(self):

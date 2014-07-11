@@ -18,8 +18,18 @@ namespace YODA {
       const double x = b.midpoint();
       const double ex_m = b.width()/2.0;
       const double ex_p = b.width()/2.0;
-      const double y = b.height();
-      const double ey = b.heightErr();
+      double y;
+      try {
+        y = b.height();
+      } catch (const Exception&) { // LowStatsError or WeightError
+        y = 0;
+      }
+      double ey;
+      try {
+        ey = b.heightErr();
+      } catch (const Exception&) { // LowStatsError or WeightError
+        ey = 0;
+      }
       const Point2D pt(x, y, ex_m, ex_p, ey, ey);
       rtn.addPoint(pt);
     }
@@ -44,13 +54,13 @@ namespace YODA {
       double y;
       try {
         y = b.mean();
-      } catch (const LowStatsError& lse) {
+      } catch (const Exception&) { // LowStatsError or WeightError
         y = 0.0;
       }
       double ey;
       try {
         ey = b.stdErr();
-      } catch (const LowStatsError& lse) {
+      } catch (const Exception&) { // LowStatsError or WeightError
         ey = 0.0;
       }
       const Point2D pt(x, y, ex_m, ex_p, ey, ey);

@@ -1,3 +1,37 @@
+2014-07-10  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Add mkScatter(Scatter2D) and mkScatter(Scatter3D) functions and
+	Python mappings: this allows all AOs to be used as args to
+	mkScatter(...) without needing to check if they already are
+	scatters.
+
+2014-07-02  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Set y value and/or error to 0 in mkScatter(Histo1D) if an
+	exception is thrown when calculating the appropriate values. Need
+	an optional param to control this error handling behaviour between
+	set-zero and skip-bin?
+
+2014-07-01  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Add exception translation to the mkScatter functions.
+
+	* Add -m/-M match/unmatch options to yodacnv -- useful for
+	filtering histogram file contents in a YODA->YODA conversion.
+
+2014-06-24  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Don't complain about merge assumptions if there is only one
+	object with that path name to be 'merged'
+
+2014-06-17  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Adding explicit int cast in Python wrapping of numEntries functions.
+
+2014-06-13  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Adding yodals script to list data file contents.
+
 2014-06-11  David Grellscheid  <David.Grellscheid@durham.ac.uk>
 
 	* pyext/yoda/Makefile.am: 'make distcheck' and out-of-source

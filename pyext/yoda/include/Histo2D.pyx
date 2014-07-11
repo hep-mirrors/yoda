@@ -98,7 +98,7 @@ cdef class Histo2D(AnalysisObject):
     def numEntries(self): # add overflows arg
         """() -> int
         Number of times this histogram was filled."""
-        return self._Histo2D().numEntries()
+        return int(self._Histo2D().numEntries())
 
     def effNumEntries(self): # add overflows arg
         """() -> float

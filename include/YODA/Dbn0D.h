@@ -157,7 +157,7 @@ namespace YODA {
     Dbn0D& subtract(const Dbn0D& d) {
       _numFills += d._numFills; //< @todo Hmm, add or subtract?!?
       _sumW     -= d._sumW;
-      _sumW2    -= d._sumW2;
+      _sumW2    += d._sumW2;
       return *this;
     }
 

@@ -292,7 +292,13 @@ namespace YODA {
   Scatter3D mkScatter(const Histo2D& h);
 
   /// Make a Scatter3D representation of a Profile2D
-  Scatter3D mkScatter(const Profile2D& h);
+  Scatter3D mkScatter(const Profile2D& p);
+
+  /// Make a Scatter3D representation of... erm, a Scatter3D!
+  /// @note Mainly exists to allow mkScatter to be called on any AnalysisObject type
+  inline Scatter3D mkScatter(const Scatter3D& s) {
+    return Scatter3D(s);
+  }
 
   //@}
 

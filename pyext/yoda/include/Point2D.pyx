@@ -28,7 +28,9 @@ cdef class Point2D(util.Base):
 
     def __init__(self, x=0, y=0, xerrs=0, yerrs=0):
         util.set_owned_ptr(self, new c.Point2D())
-        self.coords = x, y
+        self.x = x
+        self.y = y
+        #self.coords = x, y
         self.xErrs = xerrs
         self.yErrs = yerrs
 
@@ -123,7 +125,7 @@ cdef class Point2D(util.Base):
         self._Point2D().scale(x, y)
 
     def __repr__(self):
-        return '<Point2D(%g, %g)>' % self.coords
+        return '<Point2D(x=%g, y=%g)>' % (self.x, self.y)
 
     def __richcmp__(Point2D self, Point2D other, int op):
         if op == 0:

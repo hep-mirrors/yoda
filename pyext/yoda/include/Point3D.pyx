@@ -97,7 +97,7 @@ cdef class Point3D(util.Base):
         return 'Point3D(%g, %g)' % self.xy
 
     def __richcmp__(Point3D self, Point3D other, int op):
-        if op == 0: 
+        if op == 0:
             return deref(self._Point3D()) < deref(other._Point3D())
         elif op == 1:
             return deref(self._Point3D()) <= deref(other._Point3D())

@@ -58,4 +58,4 @@ void translate_yoda_error() {
   } catch (...) {
     PyErr_SetString(PyExc_RuntimeError, "Unknown exception");
   }
-} 
+}
