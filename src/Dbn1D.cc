@@ -28,15 +28,16 @@ namespace YODA {
     }
     const double num = sumWX2()*sumW() - sqr(sumWX());
     const double den = sqr(sumW()) - sumW2();
-    if (isZero(den)) {
+    if (den==0.) {
+      std::cerr << "testing is this the problem ??? " << num << " " << den << "\n";
       throw WeightError("Undefined weighted variance");
     }
     /// @todo Isn't this sensitive to the overall scale of the weights?
     /// Shouldn't it check if den is bigger then num by a set number of
     /// orders of magnitude and vice versa?
-    if (fabs(num) < 1e-10 && fabs(den) < 1e-10) {
-      throw WeightError("Numerically unstable weights in width calculation");
-    }
+    // if (fabs(num) < 1e-10 && fabs(den) < 1e-10) {
+    //   throw WeightError("Numerically unstable weights in width calculation");
+    // }
     // The weighted variance as defined above
     const double var = num/den;
     /// We take the modulus of the weighted variance since the expression above can be negative with weighted means
