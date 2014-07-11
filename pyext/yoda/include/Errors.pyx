@@ -23,9 +23,9 @@ cdef public:
     object YodaExc_LogicError = PyErr_NewException(
         "yoda.LogicError", YodaExc_Exception, <object> NULL)
     object YodaExc_LowStatsError = PyErr_NewException(
-        "yoda.WeightError", YodaExc_Exception, <object> NULL)
-    object YodaExc_WeightError = PyErr_NewException(
         "yoda.LowStatsError", YodaExc_Exception, <object> NULL)
+    object YodaExc_WeightError = PyErr_NewException(
+        "yoda.WeightError", YodaExc_Exception, <object> NULL)
     object YodaExc_AnnotationError = PyErr_NewException(
         "yoda.AnnotationError", YodaExc_Exception, <object> NULL)
     object YodaExc_ReadError = PyErr_NewException(
