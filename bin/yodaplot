@@ -63,7 +63,7 @@ re_unmatch = re.compile(opts.UNMATCH) if opts.UNMATCH else None
 for infile in args:
     import yoda, os
     basename = os.path.splitext(os.path.basename(infile))[0] if infile != "-" else "plots"
-    aos = yoda.read(infile)
+    aos = yoda.read(infile) if infile != "-" else yoda.readYODA(infile)
     names = []
     bodies = []
     for path, ao in sorted(aos.iteritems()):
