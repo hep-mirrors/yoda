@@ -1,3 +1,7 @@
+2014-07-12  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Add yodaplot script for basic plotting, using pgfplots as a backend.
+
 2014-07-10  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Add mkScatter(Scatter2D) and mkScatter(Scatter3D) functions and

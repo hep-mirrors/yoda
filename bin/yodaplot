@@ -1,0 +1,114 @@
+#! /usr/bin/env python
+
+"""\
+%prog <yodafile1> [<yodafile2> ...]
+
+Make plot files from YODA histograms
+
+PROTOTYPE VERSION! INTERFACE AND BEHAVIOUR WILL CHANGE!
+
+
+Perform basic plotting of data objects stored in YODA-readable data files, using
+the LaTeX pgfplots package as a backend. May develop into something more fully
+fledged, with support for PLOT, FUNCTION, etc. objects in YODA files, but we're
+being cautious about that since we don't want to get stuck with a turkey.
+
+TODO:
+ * decide on automatic lin vs. log axis (include zero/-ve?)
+ * work out automatic legend placement by displayed density of points
+ * line colours and styling
+ * ratio plots and plot grids
+ * axis labels at _ends_ of axes
+ * error bands
+ * tick label format
+ * style control from .plot files, command line, and PLOT sections
+ * histogram comparison
+ * function (sampling with uniform display density), stack, labels, ...
+ * speed up (batch processing, threading, etc.)
+"""
+
+import optparse
+op = optparse.OptionParser(usage=__doc__)
+op.add_option("-s", "--split", dest="SPLIT", action="store_true", default=False)
+# op.add_option("-f", "--format")
+op.add_option("-m", "--match", dest="MATCH", default=None)
+op.add_option("-M", "--unmatch", dest="UNMATCH", default=None)
+opts, args = op.parse_args()
+
+head = \
+r"""\documentclass[multi=tikzpicture,border=2mm]{standalone}
+\usepackage[T1]{fontenc}
+
+\usepackage{underscore}
+\usepackage{url}
+\usepackage{microtype}
+
+\usepackage{mathpazo}
+
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{every axis/.append style={thick,tick style={thick,black}, error bars/error bar style={thick}}}
+
+\begin{document}%
+"""
+
+foot = \
+r"""\end{document}
+"""
+
+import re
+re_match = re.compile(opts.MATCH) if opts.MATCH else None
+re_unmatch = re.compile(opts.UNMATCH) if opts.UNMATCH else None
+
+for infile in args:
+    import yoda, os
+    basename = os.path.splitext(os.path.basename(infile))[0] if infile != "-" else "plots"
+    aos = yoda.read(infile)
+    names = []
+    bodies = []
+    for path, ao in sorted(aos.iteritems()):
+        if (re_match and not re_match.match(path)) or (re_unmatch and re_unmatch.match(path)):
+            continue
+        s = ao.mkScatter()
+        xmin = min(p.x - p.xErrs[0] for p in s.points)
+        xmax = max(p.x + p.xErrs[1] for p in s.points)
+        axistype = "axis" #"semilogxaxis" "semilogyaxis" "loglogaxis"
+        body = "\\begin{tikzpicture}\n"
+        body += "  \\begin{{{ax}}}[title={t}, xlabel={{{x}}}, ylabel={{{y}}}, legend style={{draw=none}}, enlarge x limits=false]\n".format(ax=axistype, t=ao.path, x="$x$", y="$y$")
+
+        if ao.path.startswith("/REF"):
+            body += "    \\addplot[color=black, very thick, only marks, mark=*, mark options={scale=0.8}, error bars/.cd, error mark=, x dir=both, x explicit, y dir=both, y explicit] coordinates {\n"
+        else:
+            body += "    \\addplot[color=red, const plot mark mid] coordinates {\n"
+
+        for p in s.points:
+            body += "      ({x:g},{y:g}) -= ({ex[0]:g},{ey[0]:g}) += ({ex[1]:g},{ey[1]:g})\n".format(x=p.x, y=p.y, ex=p.xErrs, ey=p.yErrs)
+        body += "    };\n"
+        body += "  \\addlegendentry{{{label}}}%\n".format(label=basename)
+        body += "  \\end{{{ax}}}%\n".format(ax=axistype)
+        body += "\\end{tikzpicture}%\n"
+        name = ao.path.replace("/", "_").lstrip("_")
+        names.append(name)
+        bodies.append(body)
+
+    ## Make TeX and PDF files in a temporary directory
+    import tempfile, subprocess, shutil, glob
+    rundir = os.getcwd()
+    tmpdir = tempfile.mkdtemp(".yodaplot")
+    os.chdir(tmpdir)
+    texname = basename + ".tex"
+    pdfname = basename + ".pdf"
+    with open(texname, "w") as f:
+        f.write(head + "".join(bodies) + foot)
+    shutil.copy(texname, rundir)
+    subprocess.check_call(["pdflatex", texname])
+    if not opts.SPLIT:
+        shutil.copy(pdfname, rundir)
+    else:
+        subprocess.check_call(["pdftk", pdfname, "burst"])
+        for i, n in enumerate(names, start=1):
+            subpdfname = basename + "_" + n + ".pdf"
+            shutil.copy("pg_{:04d}.pdf".format(i), os.path.join(rundir, subpdfname))
+
+    os.chdir(tmpdir)
+    shutil.rmtree(tmpdir)
