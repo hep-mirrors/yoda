@@ -14,7 +14,6 @@ cdef inline object read_error_pair(pair[double, double] es):
 cdef class Point2D(util.Base):
     """
     A 2D point with errors, used by the Scatter2D class.
-
     """
 
     cdef c.Point2D *_Point2D(self) except NULL:
@@ -54,7 +53,6 @@ cdef class Point2D(util.Base):
         def __set__(self, y):
             self._Point2D().setY(y)
 
-
     property xy:
         """x and y coordinates as a tuple"""
         def __get__(self):
@@ -63,7 +61,6 @@ cdef class Point2D(util.Base):
         def __set__(self, val):
             # self.x, self.y = val
             self.setXY(val)
-
 
     # # TODO: remove!
     # property xRange:
@@ -82,7 +79,6 @@ cdef class Point2D(util.Base):
     #     """The x- and y-ranges"""
     #     def __get__(self):
     #         return util.XY(self.xRange, self.yRange)
-
 
     property xErrs:
         """The x errors"""
@@ -110,17 +106,17 @@ cdef class Point2D(util.Base):
 
     property xErrAvg:
         def __get__(self):
-            return self.xErrAvg()
+            return self._Point2D().xErrAvg()
 
     property yErrAvg:
         def __get__(self):
-            return self.yErrAvg()
+            return self._Point2D().yErrAvg()
 
 
     def scale(self, x=1.0, y=1.0):
         """
         (x=1.0, y=1.0) -> None
-        Scale the Point's variables by the given factors.
+        Scale the point coordinates by the given factors.
         """
         self._Point2D().scale(x, y)
 

@@ -298,9 +298,6 @@ namespace YODA {
 
     Points _points;
 
-    /// @todo Needed? Isn't this now stored on AnalysisObject?
-    std::string _myaotype;
-
   };
 
 
