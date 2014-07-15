@@ -125,7 +125,7 @@ namespace YODA {
 
   /// Returns a number floored at the nth decimal place.
   inline double approx(double a, int n = 5) {
-    double roundTo = pow(10,n);
+    double roundTo = pow(10.0,n);
     a *= roundTo;
     a = floor(a);
     return a/roundTo;
