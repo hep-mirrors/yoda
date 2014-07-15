@@ -14,6 +14,7 @@ fledged, with support for PLOT, FUNCTION, etc. objects in YODA files, but we're
 being cautious about that since we don't want to get stuck with a turkey.
 
 TODO:
+ * style control from .plot files and PLOT sections
  * decide on automatic lin vs. log axis (include zero/-ve?)
  * work out automatic legend placement by displayed density of points
  * line colours and styling
@@ -21,7 +22,6 @@ TODO:
  * axis labels at _ends_ of axes
  * error bands
  * tick label format
- * style control from .plot files, command line, and PLOT sections
  * histogram comparison
  * function (sampling with uniform display density), stack, labels, ...
  * speed up (batch processing, threading, etc.)
@@ -47,6 +47,7 @@ r"""\documentclass[multi=tikzpicture,border=2mm]{standalone}
 
 \usepackage{tikz}
 \usepackage{pgfplots}
+% TODO: use siunitx for number typesetting?
 \pgfplotsset{every axis/.append style={thick,tick style={thick,black}, error bars/error bar style={thick}}}
 
 \begin{document}%
@@ -60,7 +61,16 @@ import re
 re_match = re.compile(opts.MATCH) if opts.MATCH else None
 re_unmatch = re.compile(opts.UNMATCH) if opts.UNMATCH else None
 
-for infile in args:
+for arg in args:
+
+    ## Separate filename and style overrides from each arg
+    infile = arg
+    argstyles = {"LineColor":"red", "LineStyle":"solid"}
+    if ":" in arg:
+        tmp = arg.split(":")
+        infile = tmp[0]
+        argstyles = dict(s.split("=") if "=" in s else ("Title", s) for s in tmp[1:])
+
     import yoda, os
     basename = os.path.splitext(os.path.basename(infile))[0] if infile != "-" else "plots"
     aos = yoda.read(infile) if infile != "-" else yoda.readYODA(infile)
@@ -69,24 +79,60 @@ for infile in args:
     for path, ao in sorted(aos.iteritems()):
         if (re_match and not re_match.match(path)) or (re_unmatch and re_unmatch.match(path)):
             continue
-        s = ao.mkScatter()
-        xmin = min(p.x - p.xErrs[0] for p in s.points)
-        xmax = max(p.x + p.xErrs[1] for p in s.points)
-        axistype = "axis" #"semilogxaxis" "semilogyaxis" "loglogaxis"
-        body = "\\begin{tikzpicture}\n"
-        body += "  \\begin{{{ax}}}[title={t}, xlabel={{{x}}}, ylabel={{{y}}}, legend style={{draw=none}}, enlarge x limits=false]\n".format(ax=axistype, t=ao.path, x="$x$", y="$y$")
 
-        if ao.path.startswith("/REF"):
-            body += "    \\addplot[color=black, very thick, only marks, mark=*, mark options={scale=0.8}, error bars/.cd, error mark=, x dir=both, x explicit, y dir=both, y explicit] coordinates {\n"
+        s = ao.mkScatter()
+        aostyles = {ann : ao.annotation(ann) for ann in ao.annotations}
+        aostyles.update(argstyles)
+
+        body = "\\begin{tikzpicture}\n"
+        ## TODO: dynamically determine default axis types based on distribution of points
+        # xmin = min(p.x - p.xErrs[0] for p in s.points)
+        # xmax = max(p.x + p.xErrs[1] for p in s.points)
+        ## TODO: want a symlog axis option like matplotlib offers...
+        axistypeidx = 2*int(ao.annotation("LogX", False)) + int(ao.annotation("LogY", False))
+        axistype = ("axis", "semilogyaxis", "semilogxaxis", "loglogaxis")[axistypeidx]
+        body += "  \\begin{%s}[" % axistype
+        if ao.hasAnnotation("Title"):
+            body += "title={%s}, " % ao.annotation("Title")
+        if ao.hasAnnotation("XLabel"):
+            body += "xlabel={%s}, " % ao.annotation("XLabel")
+        if ao.hasAnnotation("YLabel"):
+            body += "ylabel={%s}, " % ao.annotation("YLabel")
+        body += "legend style={draw=none}, "
+        body += "enlarge x limits=false]\n"
+
+        isref = ao.path.startswith("/REF")
+        aostyles.setdefault("LineColor", "black" if isref else "red")
+        aostyles.setdefault("LineWidth", "very thick" if isref else "thick")
+        aostyles.setdefault("LineStyle", "none" if isref else "solid")
+        aostyles.setdefault("Marker", "*" if isref else "none")
+        aostyles.setdefault("MarkerScale", 0.8)
+        aostyles.setdefault("ErrorBars", isref)
+        aostyles.setdefault("Legend", True)
+
+        body += "    \\addplot["
+        body += "color=%s, " % aostyles["LineColor"]
+        body += "%s, " % aostyles["LineWidth"]
+        if aostyles["LineStyle"] == "none":
+            body += "only marks, "
         else:
-            body += "    \\addplot[color=red, const plot mark mid] coordinates {\n"
+            body += "const plot mark mid, %s" % aostyles["LineStyle"]
+        if aostyles["Marker"] != "none":
+            body += "mark=%s, mark options={scale=%g}, " % (aostyles["Marker"], aostyles["MarkerScale"])
+        if aostyles["ErrorBars"]:
+            body += "error bars/.cd, error mark=, x dir=both, x explicit, y dir=both, y explicit"
+        body += "] coordinates {\n"
+        # body += "    \\addplot[color=black, very thick, only marks, mark=*, mark options={scale=0.8}, error bars/.cd, error mark=, x dir=both, x explicit, y dir=both, y explicit] coordinates {\n"
+        # body += "    \\addplot[color=red, const plot mark mid] coordinates {\n"
 
         for p in s.points:
             body += "      ({x:g},{y:g}) -= ({ex[0]:g},{ey[0]:g}) += ({ex[1]:g},{ey[1]:g})\n".format(x=p.x, y=p.y, ex=p.xErrs, ey=p.yErrs)
         body += "    };\n"
-        body += "  \\addlegendentry{{{label}}}%\n".format(label=basename)
-        body += "  \\end{{{ax}}}%\n".format(ax=axistype)
+        if aostyles["Legend"]:
+            body += "  \\addlegendentry{%s}%%\n" % basename
+        body += "  \\end{%s}%%\n" % axistype
         body += "\\end{tikzpicture}%\n"
+
         name = ao.path.replace("/", "_").lstrip("_")
         names.append(name)
         bodies.append(body)

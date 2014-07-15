@@ -1,3 +1,8 @@
+2014-07-15  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Add parsing of yodaplot styles from command line args and
+	analysis object annotations.
+
 2014-07-12  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Fix infinite recursions in Python wrappers for Point2D and
