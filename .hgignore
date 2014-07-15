@@ -64,3 +64,4 @@ Doxyfile$
 ^tests/testweights$
 ^plots$
 ^a.out$
+^test[^/]+$
