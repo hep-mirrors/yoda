@@ -1,5 +1,8 @@
 2014-07-15  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Add auto-parsing of yes/no/on/off/true/false as bools in the
+	Python ao.annotation() function.
+
 	* Add parsing of yodaplot styles from command line args and
 	analysis object annotations.
 
