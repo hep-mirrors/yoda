@@ -1,10 +1,15 @@
 # from collections import namedtuple
 from operator import itemgetter
 
-def _autotype(var):
+def _autotype(var, autobool=True):
     """Automatically convert strings to numerical types if possible."""
     if type(var) is not str:
         return var
+    if autobool:
+        if var.lower() in ("yes", "true", "on"):
+            return True
+        if var.lower() in ("no", "false", "off"):
+            return False
     if var.isdigit() or (var.startswith("-") and var[1:].isdigit()):
         return int(var)
     try:
