@@ -88,11 +88,12 @@ cdef class Profile2D(AnalysisObject):
         return util.new_borrowed_cls(
             Dbn3D, new c.Dbn3D(self._Profile2D().totalDbn()), self)
 
-    def outflow(self, ix, iy):
-        """(ix,iy) -> Dbn3D
-        The Dbn3D representing the ix,iy outflow distribution."""
-        return util.new_borrowed_cls(
-            Dbn3D, new c.Dbn3D(self._Profile2D().outflow(ix, iy)), self)
+    # TODO: reinstate
+    # def outflow(self, ix, iy):
+    #     """(ix,iy) -> Dbn3D
+    #     The Dbn3D representing the ix,iy outflow distribution."""
+    #     return util.new_borrowed_cls(
+    #         Dbn3D, new c.Dbn3D(self._Profile2D().outflow(ix, iy)), self)
 
 
     def numEntries(self): # add overflows arg

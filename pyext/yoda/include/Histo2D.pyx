@@ -84,10 +84,11 @@ cdef class Histo2D(AnalysisObject):
         The Dbn2D representing the total distribution."""
         return util.new_borrowed_cls(Dbn2D, &self._Histo2D().totalDbn(), self)
 
-    def outflow(self, ix, iy):
-        """(ix,iy) -> Dbn2D
-        The Dbn2D representing the ix,iy outflow distribution."""
-        return util.new_borrowed_cls(Dbn2D, &self._Histo2D().outflow(ix, iy), self)
+    # TODO: reinstate
+    # def outflow(self, ix, iy):
+    #     """(ix,iy) -> Dbn2D
+    #     The Dbn2D representing the ix,iy outflow distribution."""
+    #     return util.new_borrowed_cls(Dbn2D, &self._Histo2D().outflow(ix, iy), self)
 
 
     def integral(self, overflows=True):

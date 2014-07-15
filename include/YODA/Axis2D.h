@@ -17,7 +17,7 @@ namespace YODA {
   /// @brief 2D bin container
   ///
   /// This class handles most of the low-level operations on an axis of bins
-  /// arranged in a 2D line (including gaps).
+  /// arranged in a 2D grid (including gaps).
   template <typename BIN2D, typename DBN>
   class Axis2D {
   public:
@@ -31,14 +31,15 @@ namespace YODA {
     /// A vector containing 2D bins. Not used for searching.
     typedef typename std::vector<Bin> Bins;
 
-    // Distinguishing between cuts and pairs is useful
-    typedef std::vector<double> EdgeCuts;
+    // Distinguishing between single edges and edge pairs (and pairs of pairs) is useful
+    typedef std::vector<double> Edges;
     typedef std::pair<double, double> EdgePair1D;
     typedef std::pair<EdgePair1D, EdgePair1D> EdgePair2D;
     typedef std::vector<EdgePair2D> EdgePair2Ds;
 
-    // Ordered in some arbitrary way: see outflow(int, int)
-    typedef std::vector<DBN> Outflows;
+    // Outflow distribution lists: see outflow(int, int)
+    typedef std::vector<DBN> Outflow;
+    typedef std::vector<Outflow> Outflows;
 
     //@}
 
@@ -53,8 +54,7 @@ namespace YODA {
     }
 
     /// A constructor with specified x and y axis bin cuts.
-    Axis2D(const EdgeCuts &xedges,
-           const EdgeCuts &yedges)
+    Axis2D(const Edges& xedges, const Edges& yedges)
       : _locked(false)
     {
       addBins(xedges, yedges);
@@ -83,7 +83,7 @@ namespace YODA {
            const DBN& totalDbn,
            const Outflows& outflows)
       : _dbn(totalDbn), _outflows(outflows),
-      _locked(false) // Does this make sense?
+        _locked(false) // Does this make sense?
     {
       if (_outflows.size() != 8) {
         throw Exception("Axis2D outflow containers must have exactly 8 elements");
@@ -94,8 +94,7 @@ namespace YODA {
 
     void reset() {
       _dbn.reset();
-      /// @todo Change to reset outflows in vectors according to binnings (unless we also keep these 8)
-      _outflows.assign(8, DBN());
+      _outflows.assign(8, Outflow());
     }
 
 
@@ -123,44 +122,24 @@ namespace YODA {
     /// @name Statistics accessor functions
     //@{
 
-    /// Get the outflow by x-index and y-index -- e.g. (+1, -1) is outside by
-    /// being greater than the greatest x-edge and less than the lowest y-edge.
-    DBN& outflow(int ix, int iy) {
-      // Lookup table for mapping. This is necessary as there is no
-      // numerical way to skip the eighth item. This also allows for
-      // arbitrary orderings.
-      const static unsigned char outflowMapping[9] = {0, 1, 2, 3, 8, 4, 5, 6, 7};
-      ++ix;
-      ++iy;
-      if (ix > 2 || iy > 2)
-        throw UserError(
-            "Outflow index out of range: valid indices are -1, 0, 1");
-      // Find the real index
-      size_t realindex = outflowMapping[3 * ix + iy];
-      // Check we're not using the invalid index
-      if (realindex == 8) {
-        throw UserError("(0, 0) is not a valid outflow index");
-      }
-      return _outflows[realindex];
+    /// @brief Get the outflow by x-index and y-index (non-const version)
+    ///
+    /// Indices are -1 = below range, 0 = in range, +1 = above range, e.g. (+1,
+    /// -1) is in the "bottom right" position by being greater than the greatest
+    /// x-edge and less than the lowest y-edge.
+    ///
+    Outflow& outflow(int ix, int iy) {
+      return _outflows[_outflowIndex(ix, iy)];
     }
 
-    /// Get the outflow by x-index and y-index -- e.g. (+1, -1) is outside by
-    /// being greater than the greatest x-edge and less than the lowest y-edge.
-    /// (const version)
-    const DBN& outflow(int ix, int iy) const {
-      const static unsigned char outflowMapping[9] = {0, 1, 2, 3, 8, 4, 5, 6, 7};
-      ++ix;
-      ++iy;
-      if (ix > 2 || iy > 2)
-        throw UserError(
-            "Outflow index out of range: valid indices are -1, 0, 1");
-      // Find the real index
-      size_t realindex = outflowMapping[3 * ix + iy];
-      // Check we're not using the invalid index
-      if (realindex == 8) {
-        throw UserError("(0, 0) is not a valid outflow index");
-      }
-      return _outflows[realindex];
+    /// @brief Get the outflow by x-index and y-index (const version)
+    ///
+    /// Indices are -1 = below range, 0 = in range, +1 = above range, e.g. (+1,
+    /// -1) is in the "bottom right" position by being greater than the greatest
+    /// x-edge and less than the lowest y-edge.
+    ///
+    const Outflow& outflow(int ix, int iy) const {
+      return _outflows[_outflowIndex(ix, iy)];
     }
 
     /// Scale each bin as if the entire x-axis had been scaled by this
@@ -179,10 +158,9 @@ namespace YODA {
     /// their respective factors.
     void scaleXY(double sx, double sy) {
       _dbn.scaleXY(sx, sy);
-      BOOST_FOREACH (DBN &dbn, _outflows)
-        dbn.scaleXY(sx, sy);
-      BOOST_FOREACH (Bin &bin, _bins)
-        bin.scaleXY(sx, sy);
+      BOOST_FOREACH (Outflow& outflow, _outflows)
+        BOOST_FOREACH (DBN& dbn, outflow) dbn.scaleXY(sx, sy);
+      BOOST_FOREACH (Bin& bin, _bins) bin.scaleXY(sx, sy);
       _updateAxis(_bins);
     }
 
@@ -191,10 +169,9 @@ namespace YODA {
     /// scalefactor.
     void scaleW(double scaleFactor) {
       _dbn.scaleW(scaleFactor);
-      BOOST_FOREACH (DBN &dbn, _outflows)
-        dbn.scaleW(scaleFactor);
-      BOOST_FOREACH (Bin &bin, _bins)
-        bin.scaleW(scaleFactor);
+      BOOST_FOREACH (Outflow& outflow, _outflows)
+        BOOST_FOREACH (DBN& dbn, outflow) dbn.scaleW(scaleFactor);
+      BOOST_FOREACH (Bin &bin, _bins) bin.scaleW(scaleFactor);
       _updateAxis(_bins);
     }
 
@@ -219,12 +196,11 @@ namespace YODA {
       if (from >= numBins())
         throw RangeError("Final bin index is out of range");
 
-      Bin &fromBin = bin(from);
-      Bin &toBin = bin(to);
+      Bin& fromBin = bin(from);
+      Bin& toBin = bin(to);
 
-      eraseBins(
-          std::make_pair(fromBin.xMin(), toBin.xMax()),
-          std::make_pair(fromBin.yMin(), toBin.yMax()));
+      eraseBins(std::make_pair(fromBin.xMin(), toBin.xMax()),
+                std::make_pair(fromBin.yMin(), toBin.yMax()));
     }
 
     /// Erase bins in an x- and y-range. Any bins which lie entirely within the
@@ -268,17 +244,28 @@ namespace YODA {
       _update(newBins);
     }
 
-    //@todo
-    bool _gapInRange(size_t from, size_t to) {
-      Bin &toBin = bin(to);
-      Bin &fromBin = bin(from);
-      return true;
+
+    /// Rebin with the same rebinning factor @a n in x and y
+    void rebin(unsigned int n) {
+      rebinXY(n, n);
     }
 
-
-    //@todo
-    void rebin(size_t n) {
+    /// Rebin with separate rebinning factors @a nx, @a ny in x and y
+    void rebinXY(unsigned int nx, unsigned int ny) {
+      rebinX(nx);
+      rebinY(ny);
     }
+
+    /// Rebin in x by factor @a nx
+    void rebinX(unsigned int nx) {
+      /// @todo WRITE THIS!
+    }
+
+    /// Rebin in y by factor @a ny
+    void rebinY(unsigned int ny) {
+      /// @todo WRITE THIS!
+    }
+
 
     /// Set the axis lock state
     void _setLock(bool locked) {
@@ -344,7 +331,6 @@ namespace YODA {
 
       _updateAxis(newBins);
     }
-
 
     /// Add a contiguous set of bins to an axis, via their list of edges
     void addBins(const std::vector<double>& xedges, const std::vector<double>& yedges) {
@@ -421,12 +407,12 @@ namespace YODA {
       return _bins;
     }
 
-    /// Equality operator (on binning only)
 
+    /// Equality operator (on binning only)
+    /// @todo Change as discussed below if we expose the Axis classes for direct use
     // (DM: Doesn't this break the semantics of equality?  As it's used only
     // rarely, isn't there a real case for having a "binningsCompatible" or
     // similar method?)
-
     bool operator == (const Axis2D& other) const {
       if (numBins() != other.numBins()) return false;
       for (size_t i = 0; i < numBins(); i++)
@@ -443,6 +429,7 @@ namespace YODA {
       return ! operator == (other);
     }
 
+
     /// Addition operator
     Axis2D<BIN2D, DBN>& operator += (const Axis2D<BIN2D, DBN>& toAdd) {
       if (*this != toAdd) {
@@ -454,7 +441,6 @@ namespace YODA {
       _dbn += toAdd._dbn;
       return *this;
     }
-
 
     /// Subtraction operator
     Axis2D<BIN2D, DBN>& operator -= (const Axis2D<BIN2D, DBN>& toSubtract) {
@@ -468,12 +454,22 @@ namespace YODA {
       return *this;
     }
 
+
   private:
 
     void _checkUnlocked(void) {
       // Ensure that axis is not locked
       if (_locked)
         throw LockError("Attempting to update a locked axis");
+    }
+
+
+    /// Detect if there is a binning gap in the given bin index range
+    /// @todo WRITE THIS!
+    bool _gapInRange(size_t from, size_t to) {
+      Bin& toBin = bin(to);
+      Bin& fromBin = bin(from);
+      return true;
     }
 
 
@@ -574,12 +570,28 @@ namespace YODA {
     }
 
 
-  private:
-
     /// Definition of global bin ID in terms of x and y bin IDs
     static size_t _index(size_t nx, size_t x, size_t y) {
       return y * nx + x;
     }
+
+    /// @brief Get the outflow array index by x-index and y-index
+    ///
+    /// Indices are -1 = below range, 0 = in range, +1 = above range, e.g. (+1,
+    /// -1) is in the "bottom right" position by being greater than the greatest
+    /// x-edge and less than the lowest y-edge.
+    static size_t _outflowIndex(int ix, int iy) {
+      if (ix == 0 || iy == 0)
+        throw UserError("The in-range (0,0) index pair is not a valid outflow specifier");
+      ix += 1;
+      iy += 1;
+      if (ix > 2 || iy > 2)
+        throw UserError("Outflow index out of range: valid indices are -1, 0, 1");
+      size_t rtn = 3*ix + iy; // uncorrected for (0,0) index offset
+      if (rtn > 4) rtn -= 1; // offset correction (note that raw rtn == 4 is not possible)
+      return rtn;
+    }
+
 
     /// @name Data structures
     //@{
@@ -591,16 +603,16 @@ namespace YODA {
     DBN _dbn;
 
     // Outflows
-    std::vector<DBN> _outflows;
+    Outflows _outflows;
 
     // Binsearcher, for searching bins
     Utils::BinSearcher _binSearcherX;
     Utils::BinSearcher _binSearcherY;
 
-    std::pair<double, double> _xRange;
-    std::pair<double, double> _yRange;
+    EdgePair1D _xRange;
+    EdgePair1D _yRange;
 
-    // Mapping from binsearcher indices to bin indices (allowing gaps)
+    // Mapping from bin-searcher indices to bin indices (allowing gaps)
     std::vector<ssize_t> _indexes;
 
     // Necessary for bounds checking and indexing

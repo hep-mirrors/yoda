@@ -172,7 +172,7 @@ namespace YODA {
     /// @brief Bins addition operator
     ///
     /// Add multiple bins from edge cuts without resetting
-    void addBins(const Axis::EdgeCuts &xcuts, const Axis::EdgeCuts &ycuts) {
+    void addBins(const Axis::Edges &xcuts, const Axis::Edges &ycuts) {
       _axis.addBins(xcuts, ycuts);
     }
 
@@ -308,21 +308,21 @@ namespace YODA {
     }
 
 
-    /// @brief Access an outflow (non-const)
-    ///
-    /// Two indices are used, for x and y: -1 = underflow, 0 = in-range, and +1 = overflow.
-    /// (0,0) is not a valid overflow index pair, since it is in range for both x and y.
-    Dbn3D& outflow(int ix, int iy) {
-      return _axis.outflow(ix, iy);
-    }
+    // /// @brief Access an outflow (non-const)
+    // ///
+    // /// Two indices are used, for x and y: -1 = underflow, 0 = in-range, and +1 = overflow.
+    // /// (0,0) is not a valid overflow index pair, since it is in range for both x and y.
+    // Dbn3D& outflow(int ix, int iy) {
+    //   return _axis.outflow(ix, iy);
+    // }
 
-    /// @brief Access an outflow (const)
-    ///
-    /// Two indices are used, for x and y: -1 = underflow, 0 = in-range, and +1 = overflow.
-    /// (0,0) is not a valid overflow index pair, since it is in range for both x and y.
-    const Dbn3D& outflow(int ix, int iy) const {
-      return _axis.outflow(ix, iy);
-    }
+    // /// @brief Access an outflow (const)
+    // ///
+    // /// Two indices are used, for x and y: -1 = underflow, 0 = in-range, and +1 = overflow.
+    // /// (0,0) is not a valid overflow index pair, since it is in range for both x and y.
+    // const Dbn3D& outflow(int ix, int iy) const {
+    //   return _axis.outflow(ix, iy);
+    // }
 
     //@}
 

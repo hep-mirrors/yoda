@@ -781,7 +781,7 @@ cdef extern from "YODA/Profile2D.h" namespace "YODA":
         # I suppose when you think about it, it makes sense
         # -- Cython is a code generator
         Dbn3D totalDbn() except +err
-        Dbn3D outflow(int, int) except +err
+        # TODO: reinstate Dbn3D outflow(int, int) except +err
 
         double numEntries() # @todo Add bool arg
         double effNumEntries() # @todo Add bool arg
@@ -956,7 +956,7 @@ cdef extern from "YODA/Histo2D.h" namespace "YODA":
         # Cython puts out rubbish C++. Since this *is* a reported 'major' bug,
         # we should expect it to be fixed sometime in the future.
         Dbn2D& totalDbn() #except +err
-        Dbn2D& outflow(int, int) #except +err
+        # TODO: reinstate Dbn2D& outflow(int, int) #except +err
 
         # Bin accessors
         #void addBin(double, double) except +err
@@ -1081,7 +1081,6 @@ cdef extern from "YODA/Axis1D.h" namespace "YODA":
 # Axis1D }}}
 
 
-
 # Axis2D {{{
 cdef extern from "YODA/Axis2D.h" namespace "YODA":
     cdef cppclass Axis2D[BIN2D, DBN]:
@@ -1099,7 +1098,7 @@ cdef extern from "YODA/Axis2D.h" namespace "YODA":
         long getBinIndex(double, double)
         void reset()
         DBN& totalDbn()
-        DBN& outflow(int, int)
+        # TODO: reinstate DBN& outflow(int, int)
         void eraseBin(size_t index) except +err
         void mergeBins(size_t, size_t) except +err
 # Axis2D }}}

@@ -28,7 +28,7 @@ namespace YODA {
       size_t ix(0), iy(0);
       if (x <  _axis.xMin()) ix = -1; else if (x >= _axis.xMax()) ix = 1;
       if (y <  _axis.yMin()) iy = -1; else if (y >= _axis.yMax()) iy = 1;
-      _axis.outflow(ix, iy).fill(x, y, weight);
+      /// @todo Reinstate! With outflow axis bin lookup _axis.outflow(ix, iy).fill(x, y, weight);
     }
     // Lock the axis now that a fill has happened
     _axis._setLock(true);

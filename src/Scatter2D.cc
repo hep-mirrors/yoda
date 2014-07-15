@@ -156,7 +156,7 @@ namespace YODA {
       // Assemble the y value and error
       double y = 0;
       double ey = 0;
-      if (p2.y() == 0 || (p1.y() == 0 && p1.yErrAvg() != 0)) {
+      if (p2.y() == 0 || (p1.y() == 0 && p1.yErrAvg() != 0)) { //< @todo Why only if p1.yErrAvg() != 0, if p1.y == 0?
         /// @todo Provide optional alt behaviours to fill with NaN or remove the invalid point or throw
         /// @todo Don't throw here: set a flag and throw after all bins have been handled.
         // throw LowStatsError("Requested division of empty bin");

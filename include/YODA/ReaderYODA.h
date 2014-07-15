@@ -198,7 +198,7 @@ namespace YODA {
     struct histo2d {
       std::vector<YODA::HistoBin2D> bins;
       YODA::Dbn2D dbn_tot;
-      std::vector<YODA::Dbn2D> dbns_oflow;
+      std::vector< std::vector<YODA::Dbn2D> > dbns_oflow;
     };
     static histo2d _histo2d;
 
@@ -215,7 +215,7 @@ namespace YODA {
     struct profile2d {
       std::vector<YODA::ProfileBin2D> bins;
       YODA::Dbn3D dbn_tot;
-      std::vector<YODA::Dbn3D> dbns_oflow;
+      std::vector< std::vector<YODA::Dbn3D> > dbns_oflow;
     };
     static profile2d _profile2d;
 
