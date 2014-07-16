@@ -33,5 +33,6 @@ aos = yoda.read("h1d.dat")
 for _, ao in aos.iteritems():
     print ao
 
-s2 = yoda.mkScatter(p1)
-s2 = p1.mkScatter()
+s = yoda.mkScatter(p1)
+s = p1.mkScatter()
+s2 = s.mkScatter()

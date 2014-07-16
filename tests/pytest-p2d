@@ -17,5 +17,6 @@ yoda.write([p], "p2d.dat")
 # for _, ao in aos.iteritems():
 #     print ao
 
-s3 = yoda.mkScatter(p)
-s3 = p.mkScatter()
+s = yoda.mkScatter(p)
+s = p.mkScatter()
+s2 = s.mkScatter()
