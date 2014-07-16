@@ -14,6 +14,7 @@ cdef class Scatter2D(AnalysisObject):
     TODO: more documentation!
     """
 
+    # TODO: replace with e.g. self.tptr() [typed ptr]
     cdef inline c.Scatter2D* _Scatter2D(self) except NULL:
         return <c.Scatter2D*> self.ptr()
 
@@ -57,12 +58,12 @@ cdef class Scatter2D(AnalysisObject):
 
     def point(self, size_t i):
         """Access the i'th point."""
-        return util.new_borrowed_cls(Point2D, & self._Scatter2D().point(i), self)
+        return util.new_borrowed_cls(Point2D, &self._Scatter2D().point(i), self)
 
     # TODO: remove?
-    def __getitem__(self, py_ix):
-        cdef size_t i = util.pythonic_index(py_ix, self._Scatter2D().numPoints())
-        return util.new_borrowed_cls(Point2D, & self._Scatter2D().point(i), self)
+    # def __getitem__(self, py_ix):
+    #     cdef size_t i = util.pythonic_index(py_ix, self._Scatter2D().numPoints())
+    #     return util.new_borrowed_cls(Point2D, &self._Scatter2D().point(i), self)
 
 
     def addPoint(self, *args, **kwargs):
@@ -139,12 +140,8 @@ cdef class Scatter2D(AnalysisObject):
 
     # TODO: remove?
     def __add__(Scatter2D self, Scatter2D other):
-        h = Scatter2D()
-        util.set_owned_ptr(h, c.Scatter2D_add_Scatter2D(self._Scatter2D(), other._Scatter2D()))
-        return h
+        return util.new_owned_cls(Scatter2D, c.Scatter2D_add_Scatter2D(self._Scatter2D(), other._Scatter2D()))
 
     # TODO: remove?
     def __sub__(Scatter2D self, Scatter2D other):
-        h = Scatter2D()
-        util.set_owned_ptr(h, c.Scatter2D_sub_Scatter2D(self._Scatter2D(), other._Scatter2D()))
-        return h
+        return util.new_owned_cls(Scatter2D, c.Scatter2D_sub_Scatter2D(self._Scatter2D(), other._Scatter2D()))

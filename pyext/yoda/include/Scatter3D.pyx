@@ -48,20 +48,21 @@ cdef class Scatter3D(AnalysisObject):
 
     @property
     def points(self):
-        """Access the ordered list of points.
-        NOTE: this list is currently a read-only copy of the real bin list... do not modify"""
-        return list(self)  #< TODO: How does this work?
-        # TODO: how to allow modification of points in the returned list?
-        # return self._Scatter3D().points()
+        """Access the ordered list of points."""
+        # NOTE: this list is currently a read-only copy of the real bin list... do not modify"""
+        # return list(self)  #< TODO: How does this work?
+        # # TODO: how to allow modification of points in the returned list?
+        # # return self._Scatter3D().points()
+        return [self.point(i) for i in xrange(self.numPoints)]
 
     def point(self, size_t i):
         """Access the i'th point."""
-        return util.new_borrowed_cls(Point3D, & self._Scatter3D().point(i), self)
+        return util.new_borrowed_cls(Point3D, &self._Scatter3D().point(i), self)
 
     # TODO: remove?
-    def __getitem__(self, py_ix):
-        cdef size_t i = util.pythonic_index(py_ix, self._Scatter3D().numPoints())
-        return util.new_borrowed_cls(Point3D, & self._Scatter3D().point(i), self)
+    # def __getitem__(self, py_ix):
+    #     cdef size_t i = util.pythonic_index(py_ix, self._Scatter3D().numPoints())
+    #     return util.new_borrowed_cls(Point3D, &self._Scatter3D().point(i), self)
 
 
     def addPoint(self, *args, **kwargs):
@@ -148,13 +149,9 @@ cdef class Scatter3D(AnalysisObject):
 
 
     # TODO: remove?
-    # def __add__(Scatter3D self, Scatter3D other):
-    #     h = Scatter3D()
-    #     util.set_owned_ptr(h, c.Scatter3D_add_Scatter3D(self._Scatter3D(), other._Scatter3D()))
-    #     return h
+    def __add__(Scatter3D self, Scatter3D other):
+        return util.new_owned_cls(Scatter3D, c.Scatter3D_add_Scatter3D(self._Scatter3D(), other._Scatter3D()))
 
     # TODO: remove?
-    # def __sub__(Scatter3D self, Scatter3D other):
-    #     h = Scatter3D()
-    #     util.set_owned_ptr(h, c.Scatter3D_sub_Scatter3D(self._Scatter3D(), other._Scatter3D()))
-    #     return h
+    def __sub__(Scatter3D self, Scatter3D other):
+        return util.new_owned_cls(Scatter3D, c.Scatter3D_sub_Scatter3D(self._Scatter3D(), other._Scatter3D()))
