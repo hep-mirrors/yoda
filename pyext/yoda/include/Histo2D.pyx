@@ -191,9 +191,8 @@ cdef class Histo2D(AnalysisObject):
         """None -> Scatter3D.
         Convert this Histo2D to a Scatter3D, with y representing bin heights
         (not sumW) and height errors."""
-        raise Exception("TODO: Not yet implemented!")
-        # cdef c.Scatter2D s2 = c.mkScatter_Profile1D(deref(self._Profile1D()))
-        # return util.new_owned_cls(Scatter2D, s2.newclone())
+        cdef c.Scatter3D s3 = c.mkScatter_Histo2D(deref(self._Histo2D()))
+        return util.new_owned_cls(Scatter3D, s3.newclone())
 
 
     def __iadd__(Histo2D self, Histo2D other):

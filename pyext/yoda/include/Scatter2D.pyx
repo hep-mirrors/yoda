@@ -27,23 +27,13 @@ cdef class Scatter2D(AnalysisObject):
         self.__init_2(path, title)
         self.addPoints(points)
 
-
-    def __len__(self):
-        return self._Scatter2D().numPoints()
-
-    def __getitem__(self, py_ix):
-        cdef size_t i = util.pythonic_index(py_ix, self._Scatter2D().numPoints())
-        return util.new_borrowed_cls(Point2D, & self._Scatter2D().point(i), self)
-
-    def __repr__(self):
-        return "<%s '%s' %d points>" % \
-               (self.__class__.__name__, self.path, len(self.points))
-
-
     def clone(self):
         """() -> Scatter2D.
         Clone this Scatter2D."""
         return util.new_owned_cls(Scatter2D, self._Scatter2D().newclone())
+
+    def __repr__(self):
+        return "<%s '%s' %d points>" % (self.__class__.__name__, self.path, len(self.points))
 
 
     @property
@@ -52,16 +42,26 @@ cdef class Scatter2D(AnalysisObject):
         Number of points in this scatter."""
         return self._Scatter2D().numPoints()
 
+    def __len__(self):
+        return self.numPoints
+
+
     @property
     def points(self):
-        """Access the ordered list of points.
-        NOTE: this list is currently a read-only copy of the real bin list... do not modify"""
-        return list(self)  #< TODO: How does this work?
+        """Access the ordered list of points."""
+        #NOTE: this list is currently a read-only copy of the real bin list... do not modify"""
+        #return list(self)  #< TODO: How does this work?
         # TODO: how to allow modification of points in the returned list?
-        # return self._Scatter2D().points()
+        #cdef vector[c.Point2D] pts = self._Scatter2D().points()
+        return [self.point(i) for i in xrange(self.numPoints)]
 
     def point(self, size_t i):
         """Access the i'th point."""
+        return util.new_borrowed_cls(Point2D, & self._Scatter2D().point(i), self)
+
+    # TODO: remove?
+    def __getitem__(self, py_ix):
+        cdef size_t i = util.pythonic_index(py_ix, self._Scatter2D().numPoints())
         return util.new_borrowed_cls(Point2D, & self._Scatter2D().point(i), self)
 
 
@@ -111,14 +111,12 @@ cdef class Scatter2D(AnalysisObject):
 
     def scale(self, ax, ay):
         """(float,float) -> None
-        Scale the x values and errors of the points in this scatter by factors ax, ay."""
+        Scale the values and errors of the points in this scatter by factors ax, ay."""
         self._Scatter2D().scale(ax, ay)
 
     def transformX(self, f):
         """(fn) -> None
         Transform the x values and errors of the points in this scatter by function f."""
-        # Import ctypes here (rather than at module import) so that Python 2.4
-        # users don't need ctypes to use the rest of the library.
         import ctypes
         try:
             callback = ctypes.CFUNCTYPE(ctypes.c_double, ctypes.c_double)(f)
@@ -130,8 +128,6 @@ cdef class Scatter2D(AnalysisObject):
     def transformY(self, f):
         """(fn) -> None
         Transform the y values and errors of the points in this scatter by function f."""
-        # Import ctypes here (rather than at module import) so that Python 2.4
-        # users don't need ctypes to use the rest of the library.
         import ctypes
         try:
             callback = ctypes.CFUNCTYPE(ctypes.c_double, ctypes.c_double)(f)
@@ -141,11 +137,13 @@ cdef class Scatter2D(AnalysisObject):
         c.Scatter2D_transformY(deref(self._Scatter2D()), fptr)
 
 
+    # TODO: remove?
     def __add__(Scatter2D self, Scatter2D other):
         h = Scatter2D()
         util.set_owned_ptr(h, c.Scatter2D_add_Scatter2D(self._Scatter2D(), other._Scatter2D()))
         return h
 
+    # TODO: remove?
     def __sub__(Scatter2D self, Scatter2D other):
         h = Scatter2D()
         util.set_owned_ptr(h, c.Scatter2D_sub_Scatter2D(self._Scatter2D(), other._Scatter2D()))

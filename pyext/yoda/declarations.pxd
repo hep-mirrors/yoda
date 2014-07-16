@@ -557,8 +557,8 @@ cdef extern from "YODA/Scatter2D.h" namespace "YODA":
         Scatter2D(string path, string title) except +err
 
         Scatter2D(sortedvector[Point2D],
-                string path,
-                string title) except +err
+                  string path,
+                  string title) except +err
 
         Scatter2D(vector[double], vector[double],
                   vector[pair[double, double]],
@@ -573,17 +573,19 @@ cdef extern from "YODA/Scatter2D.h" namespace "YODA":
         void reset() except +err
 
         size_t numPoints() except +err
-        vector[Point2D]& points()
-        Point2D& point(size_t index)
+        # TODO: have to ignore exception handling on ref-returning methods until Cython bug is fixed
+        vector[Point2D]& points() #except +err
+        Point2D& point(size_t index) #except +err
 
-        Scatter2D addPoint(Point2D&)
-        Scatter2D addPoint(double, double)
-        Scatter2D addPoint(double, double, pair[double, double], pair[double, double]) except +err
+        # TODO: return void rather than self?
+        Scatter2D addPoint(Point2D&) #except +err
+        Scatter2D addPoint(double, double) #except +err
+        Scatter2D addPoint(double, double, pair[double, double], pair[double, double]) #except +err
 
-        Scatter2D addPoints(sortedvector[Point2D])
+        Scatter2D addPoints(sortedvector[Point2D]&) #except +err
 
-        Scatter2D combineWith(Scatter2D)
-        Scatter2D combineWith(vector[Scatter2D])
+        Scatter2D combineWith(Scatter2D&) #except +err
+        Scatter2D combineWith(vector[Scatter2D]&) #except +err
 
         void scale(double, double)
 
@@ -609,8 +611,8 @@ cdef extern from "YODA/Scatter3D.h" namespace "YODA":
         Scatter3D(string path, string title) except +err
 
         Scatter3D(sortedvector[Point3D],
-                string path,
-                string title) except +err
+                  string path,
+                  string title) except +err
 
         Scatter3D(vector[double], vector[double],
                   vector[pair[double, double]],
@@ -626,25 +628,34 @@ cdef extern from "YODA/Scatter3D.h" namespace "YODA":
         void reset() except +err
 
         size_t numPoints() except +err
-        sortedvector[Point3D] points() except +err
-        Point3D point(size_t index) except +err
+        # TODO: have to ignore exception handling on ref-returning methods until Cython bug is fixed
+        sortedvector[Point3D]& points() #except +err
+        Point3D& point(size_t index) #except +err
 
-        Scatter3D addPoint(Point3D)
-        Scatter3D addPoint(double, double,
-                            pair[double, double], pair[double, double]) except +err
+        # TODO: return void rather than self?
+        Scatter3D& addPoint(Point3D&) #except +err
+        Scatter3D& addPoint(double, double, double) #except +err
+        Scatter3D& addPoint(double, double, double, pair[double, double], pair[double, double], pair[double, double]) #except +err
 
-        Scatter3D addPoints(sortedvector[Point3D])
+        Scatter3D& addPoints(sortedvector[Point3D]&) #except +err
 
-        Scatter3D combineWith(Scatter3D)
-        Scatter3D combineWith(vector[Scatter3D])
+        Scatter3D& combineWith(Scatter3D&) #except +err
+        Scatter3D& combineWith(vector[Scatter3D]&) #except +err
+
+        void scale(double, double, double)
+
+    void Scatter3D_transformX "YODA::transformX" (Scatter3D&, dbl_dbl_fptr)
+    void Scatter3D_transformY "YODA::transformY" (Scatter3D&, dbl_dbl_fptr)
+    void Scatter3D_transformZ "YODA::transformZ" (Scatter3D&, dbl_dbl_fptr)
+
 #}}} Scatter3D
 
 # cdef extern from "merge.hh":
 #     Scatter3D* Scatter3D_add_Scatter3D "cython_add" (Scatter3D*, Scatter3D*)
 #     Scatter3D* Scatter3D_sub_Scatter3D "cython_sub" (Scatter3D*, Scatter3D*)
 
-# cdef extern from "YODA/Scatter3D.h" namespace "YODA":
-#     Scatter3D mkScatter_Scatter3D "YODA::mkScatter" (const Scatter3D&) except +err
+cdef extern from "YODA/Scatter3D.h" namespace "YODA":
+    Scatter3D mkScatter_Scatter3D "YODA::mkScatter" (const Scatter3D&) except +err
 
 
 
@@ -803,9 +814,8 @@ cdef extern from "merge.hh":
     Profile2D* Profile2D_sub_Profile2D "cython_sub" (Profile2D*, Profile2D*)
     Profile2D* Profile2D_div_Profile2D "cython_div" (Profile2D*, Profile2D*)
 
-# TODO:
-# cdef extern from "YODA/Scatter3D.h" namespace "YODA":
-#     Scatter3D mkScatter_Profile2D "YODA::mkScatter" (const Profile2D&) except +err
+cdef extern from "YODA/Scatter3D.h" namespace "YODA":
+    Scatter3D mkScatter_Profile2D "YODA::mkScatter" (const Profile2D&) except +err
 
 
 
@@ -1003,9 +1013,8 @@ cdef extern from "merge.hh":
     Histo2D* Histo2D_sub_Histo2D "cython_sub" (Histo2D*, Histo2D*)
     Histo2D* Histo2D_div_Histo2D "cython_div" (Histo2D*, Histo2D*)
 
-# TODO:
-# cdef extern from "YODA/Scatter3D.h" namespace "YODA":
-#     Scatter3D mkScatter_Histo2D "YODA::mkScatter" (const Histo2D&) except +err
+cdef extern from "YODA/Scatter3D.h" namespace "YODA":
+    Scatter3D mkScatter_Histo2D "YODA::mkScatter" (const Histo2D&) except +err
 
 
 

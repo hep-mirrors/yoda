@@ -1,3 +1,9 @@
+2014-07-16  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Improve Scatter2D/3D C++ and Python interfaces.
+
+	* Add Scatter3D Python mapping.
+
 2014-07-15  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Add auto-parsing of yes/no/on/off/true/false as bools in the

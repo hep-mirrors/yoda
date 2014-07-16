@@ -32,7 +32,8 @@ CYTHON_SRC = \
     include/Profile2D.pyx \
     include/ProfileBin1D.pyx \
     include/ProfileBin2D.pyx \
-    include/Scatter2D.pyx
+    include/Scatter2D.pyx \
+    include/Scatter3D.pyx
 
 
 EXTRA_DIST += \
@@ -83,7 +84,7 @@ endif
 
 all-local: fix-out-of-source
 
-FIXSOURCES = $(EXTRA_DIST) 
+FIXSOURCES = $(EXTRA_DIST)
 
 fix-out-of-source: $(FIXSOURCES)
 	rm -f $@

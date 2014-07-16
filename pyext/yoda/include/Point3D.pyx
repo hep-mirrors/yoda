@@ -86,11 +86,7 @@ cdef class Point3D(util.Base):
         self._Point3D().scale(x, y, z)
 
     def __repr__(self):
-        return '<Point3D(x=%g, y=%g)>' % (
-            self.x, self.y, self.xerrs, self.yerrs)
-
-    # def __str__(self):
-    #     return 'Point3D(%g, %g)' % self.xy
+        return '<Point3D(x=%g, y=%g, z=%g)>' % (self.x, self.y, self.z)
 
     def __richcmp__(Point3D self, Point3D other, int op):
         if op == 0:

@@ -341,6 +341,80 @@ namespace YODA {
   //@}
 
 
+  /// @name Transforming operations on Scatter2D
+  //@{
+
+  /// @brief Apply transformation fx(x) to all values and error positions (operates in-place on @a s)
+  ///
+  /// fx should be a function which takes double x -> double newx
+  template<typename FNX>
+  inline void transformX(Scatter3D& s, FNX fx) {
+    for (size_t i = 0; i < s.numPoints(); ++i) {
+      Point3D& p = s.point(i);
+      const double newx = fx(p.x());
+      const double fx_xmin = fx(p.xMin());
+      const double fx_xmax = fx(p.xMax());
+      // Deal with possible inversions of min/max ordering under the transformation
+      const double newxmin = std::min(fx_xmin, fx_xmax);
+      const double newxmax = std::max(fx_xmin, fx_xmax);
+      // Set new point x values
+      p.setX(newx);
+      /// @todo Be careful about transforms which could switch around min and max errors, or send both in the same direction!
+      p.setXErrMinus(newx - newxmin);
+      p.setXErrPlus(newxmax - newx);
+    }
+  }
+
+
+  /// @brief Apply transformation fy(y) to all values and error positions (operates in-place on @a s)
+  ///
+  /// fy should be a function which takes double y -> double newy
+  template<typename FNY>
+  inline void transformY(Scatter3D& s, FNY fy) {
+    for (size_t i = 0; i < s.numPoints(); ++i) {
+      Point3D& p = s.point(i);
+      const double newy = fy(p.y());
+      const double fy_ymin = fy(p.yMin());
+      const double fy_ymax = fy(p.yMax());
+      // Deal with possible inversions of min/max ordering under the transformation
+      const double newymin = std::min(fy_ymin, fy_ymax);
+      const double newymax = std::max(fy_ymin, fy_ymax);
+      // Set new point y values
+      p.setY(newy);
+      /// @todo Be careful about transforms which could switch around min and max errors, or send both in the same direction!
+      p.setYErrMinus(newy - newymin);
+      p.setYErrPlus(newymax - newy);
+    }
+  }
+
+
+  /// @brief Apply transformation fz(z) to all values and error positions (operates in-place on @a s)
+  ///
+  /// fz should be a function which takes double z -> double newz
+  template<typename FNZ>
+  inline void transformZ(Scatter3D& s, FNZ fz) {
+    for (size_t i = 0; i < s.numPoints(); ++i) {
+      Point3D& p = s.point(i);
+      const double newz = fz(p.z());
+      const double fz_zmin = fz(p.zMin());
+      const double fz_zmax = fz(p.zMax());
+      // Deal with possible inversions of min/max ordering under the transformation
+      const double newzmin = std::min(fz_zmin, fz_zmax);
+      const double newzmax = std::max(fz_zmin, fz_zmax);
+      // Set new point z values
+      p.setZ(newz);
+      /// @todo Be careful about transforms which could switch around min and max errors, or send both in the same direction!
+      p.setZErrMinus(newz - newzmin);
+      p.setZErrPlus(newzmax - newz);
+    }
+  }
+
+
+  /// @todo Add external scale, scaleX, scaleY, scaleZ functions
+
+  //@}
+
+
 }
 
 #endif

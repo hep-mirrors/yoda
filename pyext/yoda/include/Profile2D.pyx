@@ -170,9 +170,8 @@ cdef class Profile2D(AnalysisObject):
         """None -> Scatter3D.
         Convert this Profile2D to a Scatter3D, with z representing
         mean bin y values and their standard errors."""
-        raise Exception("TODO: Not yet implemented!")
-        # cdef c.Scatter2D s2 = c.mkScatter_Profile1D(deref(self._Profile1D()))
-        # return util.new_owned_cls(Scatter2D, s2.newclone())
+        cdef c.Scatter3D s3 = c.mkScatter_Profile2D(deref(self._Profile2D()))
+        return util.new_owned_cls(Scatter3D, s3.newclone())
 
 
     def __iadd__(Profile2D self, Profile2D other):

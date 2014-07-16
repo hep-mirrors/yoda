@@ -107,6 +107,17 @@ namespace YODA {
     /// Set z value
     void setZ(double z) { _z = z;}
 
+    /// @todo Uniform "coords" accessor across all Scatters: returning fixed-size tuple?
+
+    // /// Get x,y,z value tuple
+    // triple<double,double,double> xyz() const { return std::triple(_x, _y, _z); }
+
+    /// Set x, y and z values
+    void setXYZ(double x, double y, double z) { setX(x); setY(y); setZ(z); }
+
+    // /// Set x and y values
+    // void setXY(triple<double,double,double> xyz) { setX(xy.first); setY(xy.second); setZ(xy.third); }
+
     //@}
 
 
@@ -133,21 +144,31 @@ namespace YODA {
       return (_ex.first + _ex.second)/2.0;
     }
 
+    /// Set negative x error
+    void setXErrMinus(double exminus) {
+      _ex.first = exminus;
+    }
+
+    /// Set positive x error
+    void setXErrPlus(double explus) {
+      _ex.second = explus;
+    }
+
     /// Set symmetric x error
     void setXErr(double ex) {
-      _ex.first = ex;
-      _ex.second = ex;
+      setXErrMinus(ex);
+      setXErrPlus(ex);
+    }
+
+    /// Set asymmetric x error
+    void setXErr(double exminus, double explus) {
+      setXErrMinus(exminus);
+      setXErrPlus(explus);
     }
 
     /// Set asymmetric x error
     void setXErr(std::pair<double,double> ex) {
       _ex = ex;
-    }
-
-    /// Set asymmetric x error
-    void setXErr(double exminus, double explus) {
-      _ex.first = exminus;
-      _ex.second = explus;
     }
 
     /// Get value minus negative x-error
@@ -186,21 +207,31 @@ namespace YODA {
       return (_ey.first + _ey.second)/2.0;
     }
 
+    /// Set negative y error
+    void setYErrMinus(double eyminus) {
+      _ey.first = eyminus;
+    }
+
+    /// Set positive y error
+    void setYErrPlus(double eyplus) {
+      _ey.second = eyplus;
+    }
+
     /// Set symmetric y error
     void setYErr(double ey) {
-      _ey.first = ey;
-      _ey.second = ey;
+      setYErrMinus(ey);
+      setYErrPlus(ey);
+    }
+
+    /// Set asymmetric y error
+    void setYErr(double eyminus, double eyplus) {
+      setYErrMinus(eyminus);
+      setYErrPlus(eyplus);
     }
 
     /// Set asymmetric y error
     void setYErr(std::pair<double,double> ey) {
       _ey = ey;
-    }
-
-    /// Set asymmetric y error
-    void setYErr(double eyminus, double eyplus) {
-      _ey.first = eyminus;
-      _ey.second = eyplus;
     }
 
     /// Get value minus negative y-error
@@ -239,21 +270,31 @@ namespace YODA {
       return (_ez.first + _ez.second)/2.0;
     }
 
+    /// Set negative z error
+    void setZErrMinus(double ezminus) {
+      _ez.first = ezminus;
+    }
+
+    /// Set positive z error
+    void setZErrPlus(double ezplus) {
+      _ez.second = ezplus;
+    }
+
     /// Set symmetric z error
     void setZErr(double ez) {
-      _ez.first = ez;
-      _ez.second = ez;
+      setZErrMinus(ez);
+      setZErrPlus(ez);
+    }
+
+    /// Set asymmetric z error
+    void setZErr(double ezminus, double ezplus) {
+      setZErrMinus(ezminus);
+      setZErrPlus(ezplus);
     }
 
     /// Set asymmetric z error
     void setZErr(std::pair<double,double> ez) {
       _ez = ez;
-    }
-
-    /// Set asymmetric z error
-    void setZErr(double ezminus, double ezplus) {
-      _ez.first = ezminus;
-      _ez.second = ezplus;
     }
 
     /// Get value minus negative z-error
