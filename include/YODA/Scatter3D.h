@@ -8,6 +8,9 @@
 
 #include "YODA/AnalysisObject.h"
 #include "YODA/Point3D.h"
+#include "YODA/Utils/sortedvector.h"
+#include <vector>
+#include <string>
 #include <utility>
 
 namespace YODA {
@@ -24,7 +27,7 @@ namespace YODA {
 
     /// Types of the native Point3D collection
     typedef Point3D Point;
-    typedef std::vector<Point3D> Points;
+    typedef Utils::sortedvector<Point3D> Points;
 
 
     /// @name Constructors
@@ -157,24 +160,34 @@ namespace YODA {
     /// @name Point accessors
     //@{
 
+    /// Number of points in the scatter
     size_t numPoints() const {
       return _points.size();
     }
 
 
+    /// Get the collection of points (non-const)
+    Points& points() {
+      return _points;
+    }
+
+
+    /// Get the collection of points (const)
     const Points& points() const {
       return _points;
     }
 
 
+    /// Get a reference to the point with index @a index
     Point3D& point(size_t index) {
-      if(index >= numPoints()) throw RangeError("There is no point with such index!");
+      if (index >= numPoints()) throw RangeError("There is no point with this index");
       return _points.at(index);
     }
 
 
+    /// Get the point with index @a index (const version)
     const Point3D& point(size_t index) const {
-      if(index >= numPoints()) throw RangeError("There is no point with such index!");
+      if (index >= numPoints()) throw RangeError("There is no point with such index!");
       return _points.at(index);
     }
 
@@ -184,58 +197,56 @@ namespace YODA {
     /// @name Point inserters
     //@{
 
-    Scatter3D& addPoint(const Point3D& pt) {
-      _points.push_back(pt);
-      return *this;
+    /// Insert a new point
+    void addPoint(const Point3D& pt) {
+      _points.insert(pt);
     }
 
-    Scatter3D& addPoint(double x, double y, double z) {
-      _points.push_back(Point3D(x, y, z));
-      return *this;
+    /// Insert a new point, defined as the x/y/z value triplet and no errors
+    void addPoint(double x, double y, double z) {
+      _points.insert(Point3D(x, y, z));
     }
 
-    Scatter3D& addPoint(double x, double y, double z,
-                        std::pair<double,double> ex, std::pair<double,double> ey, std::pair<double,double> ez) {
-      _points.push_back(Point3D(x, y, z, ex, ey, ez));
-
-      return *this;
+    /// Insert a new point, defined as the x/y/z value triplet and symmetric errors
+    void addPoint(double x, double y, double z,
+                  double ex, double ey, double ez) {
+      _points.insert(Point3D(x, y, z, ex, ey, ez));
     }
 
-    Scatter3D& addPoint(double x, double y, double z,
-                        double exminus, double explus,
-                        double eyminus, double eyplus,
-                        double ezminus, double ezplus) {
-      _points.push_back(Point3D(x, y, z, exminus, explus, eyminus, eyplus, ezminus, ezplus));
-
-      return *this;
+    /// Insert a new point, defined as the x/y/z value triplet and asymmetric error pairs
+    void addPoint(double x, double y, double z,
+                  const std::pair<double,double>& ex, const std::pair<double,double>& ey, const std::pair<double,double>& ez) {
+      _points.insert(Point3D(x, y, z, ex, ey, ez));
     }
 
-    Scatter3D& addPoints(Points pts) {
-      BOOST_FOREACH (const Point3D& pt, pts) {
-        addPoint(pt);
-      }
-      std::sort(_points.begin(), _points.end());
+    /// Insert a new point, defined as the x/y/z value triplet and asymmetric errors
+    void addPoint(double x, double y, double z,
+                  double exminus, double explus,
+                  double eyminus, double eyplus,
+                  double ezminus, double ezplus) {
+      _points.insert(Point3D(x, y, z, exminus, explus, eyminus, eyplus, ezminus, ezplus));
+    }
 
-      return *this;
+    /// Insert a collection of new points
+    void addPoints(const Points& pts) {
+      BOOST_FOREACH (const Point3D& pt, pts) addPoint(pt);
     }
 
     //@}
 
 
     /// @todo Better name?
-    Scatter3D& combineWith(const Scatter3D& other) {
+    void combineWith(const Scatter3D& other) {
       addPoints(other.points());
-      return *this;
+      //return *this;
     }
 
 
     /// @todo Better name?
     /// @todo Convert to accept a Range or generic
-    Scatter3D& combineWith(const std::vector<Scatter3D>& others) {
-      BOOST_FOREACH (const Scatter3D& s, others) {
-        combineWith(s);
-      }
-      return *this;
+    void combineWith(const std::vector<Scatter3D>& others) {
+      BOOST_FOREACH (const Scatter3D& s, others) combineWith(s);
+      //return *this;
     }
 
 
@@ -254,9 +265,6 @@ namespace YODA {
 
     Points _points;
 
-    /// @todo Needed? Isn't this now stored on AnalysisObject?
-    std::string _myaotype;
-
   };
 
 
@@ -270,12 +278,9 @@ namespace YODA {
     return rtn;
   }
 
-
   inline Scatter3D combine(const std::vector<Scatter3D>& scatters) {
     Scatter3D rtn;
-    for (std::vector<Scatter3D>::const_iterator s = scatters.begin(); s != scatters.end(); ++s) {
-      rtn.combineWith(*s);
-    }
+    rtn.combineWith(scatters);
     return rtn;
   }
 
@@ -307,6 +312,7 @@ namespace YODA {
 
 
   /// @name Combining scatters: global operators, assuming aligned points
+  /// @todo This "1D histo-like behaviour" breaks the x/y/z symmetry... is there another way?
   //@{
 
   /// Add two scatters

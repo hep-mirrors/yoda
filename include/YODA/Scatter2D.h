@@ -10,7 +10,6 @@
 #include "YODA/Point2D.h"
 #include "YODA/Utils/sortedvector.h"
 #include <vector>
-#include <set>
 #include <string>
 #include <utility>
 
@@ -201,14 +200,16 @@ namespace YODA {
     }
 
 
-    /// Get a reference to the point with index @a index
+    /// Get a reference to the point with index @a index (non-const)
     Point2D& point(size_t index) {
+      if (index >= numPoints()) throw RangeError("There is no point with this index");
       return _points.at(index);
     }
 
 
-    /// Get the point with index @a index (const version)
+    /// Get a reference to the point with index @a index (const)
     const Point2D& point(size_t index) const {
+      if (index >= numPoints()) throw RangeError("There is no point with this index");
       return _points.at(index);
     }
 
@@ -219,55 +220,37 @@ namespace YODA {
     //@{
 
     /// Insert a new point
-    Scatter2D& addPoint(const Point2D& pt) {
+    void addPoint(const Point2D& pt) {
       _points.insert(pt);
-      return *this;
     }
 
-    /// Insert a new point, defined as the x/y value pair
-    Scatter2D& addPoint(double x, double y) {
+    /// Insert a new point, defined as the x/y value pair and no errors
+    void addPoint(double x, double y) {
       _points.insert(Point2D(x, y));
-      return *this;
     }
 
     /// Insert a new point, defined as the x/y value pair and symmetric errors
-    Scatter2D& addPoint(double x, double y, double ex, double ey) {
+    void addPoint(double x, double y,
+                  double ex, double ey) {
       _points.insert(Point2D(x, y, ex, ey));
-      return *this;
     }
 
-    // /// Insert a new point, defined as the x/y value pair and mixed errors
-    // Scatter2D& addPoint(double x, double y, std::pair<double,double> ex, double ey) {
-    //   _points.insert(Point2D(x, y, ex, ey));
-    //   return *this;
-    // }
-
-    // /// Insert a new point, defined as the x/y value pair and mixed errors
-    // Scatter2D& addPoint(double x, double y, double ex, std::pair<double,double> ey) {
-    //   _points.insert(Point2D(x, y, ex, ey));
-    //   return *this;
-    // }
-
-    /// Insert a new point, defined as the x/y value pair and asymmetric errors
-    Scatter2D& addPoint(double x, double y, std::pair<double,double> ex, std::pair<double,double> ey) {
+    /// Insert a new point, defined as the x/y value pair and asymmetric error pairs
+    void addPoint(double x, double y,
+                  const std::pair<double,double>& ex, const std::pair<double,double>& ey) {
       _points.insert(Point2D(x, y, ex, ey));
-      return *this;
     }
 
     /// Insert a new point, defined as the x/y value pair and asymmetric errors
-    Scatter2D& addPoint(double x, double y,
-                        double exminus, double explus,
-                        double eyminus, double eyplus) {
+    void addPoint(double x, double y,
+                  double exminus, double explus,
+                  double eyminus, double eyplus) {
       _points.insert(Point2D(x, y, exminus, explus, eyminus, eyplus));
-      return *this;
     }
 
     /// Insert a collection of new points
-    Scatter2D& addPoints(Points pts) {
-      BOOST_FOREACH (const Point2D& pt, pts) {
-        addPoint(pt);
-      }
-      return *this;
+    void addPoints(const Points& pts) {
+      BOOST_FOREACH (const Point2D& pt, pts) addPoint(pt);
     }
 
     //@}
@@ -276,22 +259,31 @@ namespace YODA {
     /// @name Combining sets of scatter points
     //@{
 
-    /// @todo Better name?
-    Scatter2D& combineWith(const Scatter2D& other) {
+    /// @todo Better name? Make this the add operation?
+    void combineWith(const Scatter2D& other) {
       addPoints(other.points());
-      return *this;
+      //return *this;
     }
 
-    /// @todo Better name?
-    /// @todo Convert to accept a Range or generic
-    Scatter2D& combineWith(const std::vector<Scatter2D>& others) {
-      BOOST_FOREACH (const Scatter2D& s, others) {
-        combineWith(s);
-      }
-      return *this;
+    /// @todo Better name? Make this the add operation?
+    /// @todo Convert/extend to accept a Range or generic
+    void combineWith(const std::vector<Scatter2D>& others) {
+      BOOST_FOREACH (const Scatter2D& s, others) combineWith(s);
+      //return *this;
     }
 
     //@}
+
+
+    /// Equality operator
+    bool operator == (const Scatter2D& other) {
+      return _points == other._points;
+    }
+
+    /// Non-equality operator
+    bool operator != (const Scatter2D& other) {
+      return ! operator == (other);
+    }
 
 
   private:
@@ -310,13 +302,9 @@ namespace YODA {
     return rtn;
   }
 
-
-  inline Scatter2D combine(const std::vector< Scatter2D >& scatters) {
+  inline Scatter2D combine(const std::vector<Scatter2D>& scatters) {
     Scatter2D rtn;
-    for (std::vector<Scatter2D>::const_iterator s = scatters.begin();
-         s != scatters.end(); ++s) {
-      rtn.combineWith(*s);
-    }
+    rtn.combineWith(scatters);
     return rtn;
   }
 
@@ -348,6 +336,7 @@ namespace YODA {
 
 
   /// @name Combining scatters: global operators, assuming aligned points
+  /// @todo This "1D histo-like behaviour" breaks the x/y symmetry... is there another way?
   //@{
 
   /// Add two scatters
@@ -378,7 +367,6 @@ namespace YODA {
   inline Scatter2D operator / (const Scatter2D& numer, const Scatter2D& denom) {
     return divide(numer, denom);
   }
-
 
   //@}
 

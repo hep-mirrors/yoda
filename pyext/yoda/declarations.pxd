@@ -577,15 +577,15 @@ cdef extern from "YODA/Scatter2D.h" namespace "YODA":
         vector[Point2D]& points() #except +err
         Point2D& point(size_t index) #except +err
 
-        # TODO: return void rather than self?
-        Scatter2D& addPoint(Point2D&) #except +err
-        Scatter2D& addPoint(double, double) #except +err
-        Scatter2D& addPoint(double, double, pair[double, double]&, pair[double, double]&) #except +err
+        void addPoint(const Point2D&) #except +err
+        void addPoint(double, double) #except +err
+        void addPoint(double, double,
+                      const pair[double, double]&, const pair[double, double]&) #except +err
 
-        Scatter2D& addPoints(sortedvector[Point2D]&) #except +err
+        void addPoints(const sortedvector[Point2D]&) #except +err
 
-        Scatter2D& combineWith(Scatter2D&) #except +err
-        Scatter2D& combineWith(vector[Scatter2D]&) #except +err
+        void combineWith(const Scatter2D&) #except +err
+        void combineWith(const vector[Scatter2D]&) #except +err
 
         void scale(double, double)
 
@@ -632,15 +632,15 @@ cdef extern from "YODA/Scatter3D.h" namespace "YODA":
         sortedvector[Point3D]& points() #except +err
         Point3D& point(size_t index) #except +err
 
-        # TODO: return void rather than self?
-        Scatter3D& addPoint(Point3D&) #except +err
-        Scatter3D& addPoint(double, double, double) #except +err
-        Scatter3D& addPoint(double, double, double, pair[double, double]&, pair[double, double]&, pair[double, double]&) #except +err
+        void addPoint(const Point3D&) #except +err
+        void addPoint(double, double, double) #except +err
+        void addPoint(double, double, double,
+                      const pair[double, double]&, const pair[double, double]&, const pair[double, double]&) #except +err
 
-        Scatter3D& addPoints(sortedvector[Point3D]&) #except +err
+        void addPoints(const sortedvector[Point3D]&) #except +err
 
-        Scatter3D& combineWith(Scatter3D&) #except +err
-        Scatter3D& combineWith(vector[Scatter3D]&) #except +err
+        void combineWith(const Scatter3D&) #except +err
+        void combineWith(const vector[Scatter3D]&) #except +err
 
         void scale(double, double, double)
 
@@ -765,6 +765,7 @@ cdef extern from "YODA/Profile2D.h" namespace "YODA":
         Profile2D clone() except +err
         Profile2D* newclone() except +err
 
+        # TODO: add missing functions and enable refs + exceptions when Cython allows
 
         void reset() except +err
 
@@ -772,28 +773,34 @@ cdef extern from "YODA/Profile2D.h" namespace "YODA":
         void fillBin(size_t i, double z, double weight) except +err
 
         void scaleW(double s) except +err
-        #void mergeBins(size_t, size_t) except +err
-        #void rebin(int n) except +err
+        void scaleXY(double, double)
 
-        void addBin(pair[double, double], pair[double, double]) except +err
-        void addBins(vector[double], vector[double]) except +err
-        # void eraseBin(size_t index) except +err
+        # void mergeBins(size_t, size_t) except +err
+        # void rebin(int n) except +err
 
         size_t numBins() except +err
-        double lowEdge() except +err
-        double highEdge() except +err
+        size_t numBinsX() except +err
+        size_t numBinsY() except +err
 
-        vector[ProfileBin2D] bins()
+        vector[ProfileBin2D]& bins() #except +err
         int binIndexAt(double x, double y) except +err
-        ProfileBin2D bin(size_t ix) except +err
-        ProfileBin2D binAt(double x, y) except +err
+        ProfileBin2D& bin(size_t ix) #except +err
+        ProfileBin2D& binAt(double x, y) #except +err
 
-        # The trick here is to treat these not as references.
-        # I suppose when you think about it, it makes sense
-        # -- Cython is a code generator
-        Dbn3D totalDbn() except +err
-        # TODO: reinstate Dbn3D outflow(int, int) except +err
+        void addBin(const pair[double, double]&, const pair[double, double]&) except +err
+        void addBins(const vector[double]&, const vector[double]&) except +err
+        # void eraseBin(size_t index) except +err
 
+        double lowEdgeX() except +err
+        double lowEdgeY() except +err
+        double highEdgeX() except +err
+        double highEdgeY() except +err
+        # TODO: add xMin, xMax, yMin, yMax
+
+        # Dbn3D& outflow(int, int) #except +err
+
+        # Whole histo data
+        Dbn3D& totalDbn() #except +err
         double numEntries() # @todo Add bool arg
         double effNumEntries() # @todo Add bool arg
         double sumW(bool)
@@ -937,52 +944,46 @@ cdef extern from "YODA/Histo2D.h" namespace "YODA":
         Histo2D* newclone() except +err
 
 
+        # TODO: add missing functions and enable refs + exceptions when Cython allows
+
         void reset() except +err
 
         void fill(double x, double y, double weight) except +err
         void fillBin(size_t i, double weight) except +err
 
-        void scaleW(double scalefactor) except +err
         void normalize(double normto, bool includeoverflows) except +err
+
+        void scaleW(double scalefactor) except +err
         void scaleXY(double, double)
 
-        void mergeBins(size_t, size_t) except +err
-        void rebin(int n) except +err
+        # void mergeBins(size_t, size_t) except +err
+        # void rebin(int n) except +err
+
         size_t numBins() except +err
+        size_t numBinsX() except +err
+        size_t numBinsY() except +err
 
-        vector[HistoBin1D] bins()
+        vector[HistoBin1D]& bins() #except +err
         int binIndexAt(double x, double y) except +err
-        HistoBin2D bin(size_t ix) except +err
-        HistoBin2D binAt(double x, double y) except +err
+        HistoBin2D& bin(size_t ix) #except +err
+        HistoBin2D& binAt(double x, double y) #except +err
 
-        void addBins(vector[HistoBin2D]&)
-
-        void addBin(pair[double, double], pair[double, double])
-
-        # TODO: Still some Cython mapping problem? Refs work ok on Histo1D
-        #
-        # These must be treated as references or the semantics is wrong.
-        # However, these can also throw exceptions! But the two cannot mix, or
-        # Cython puts out rubbish C++. Since this *is* a reported 'major' bug,
-        # we should expect it to be fixed sometime in the future.
-        Dbn2D& totalDbn() #except +err
-        # TODO: reinstate Dbn2D& outflow(int, int) #except +err
-
-        # Bin accessors
-        #void addBin(double, double) except +err
-        #void addBins(vector[double] edges) except +err
-        void eraseBin(size_t index) except +err
+        void addBin(const pair[double, double]&, const pair[double, double]&)
+        void addBins(const vector[HistoBin2D]&)
+        void addBin(double, double) except +err
+        void addBins(const vector[double]& edges) except +err
+        # void eraseBin(size_t index) except +err
 
         double lowEdgeX() except +err
         double lowEdgeY() except +err
-
         double highEdgeX() except +err
         double highEdgeY() except +err
+        # TODO: add xMin, xMax, yMin, yMax
 
-        size_t numBinsX()
-        size_t numBinsY()
+        # Dbn2D& outflow(int, int) #except +err
 
         # Whole histo data
+        Dbn2D& totalDbn() #except +err
         double integral(bool)
         double numEntries() # @todo Add bool arg
         double effNumEntries() # @todo Add bool arg

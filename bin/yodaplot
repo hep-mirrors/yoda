@@ -30,7 +30,7 @@ TODO:
 import optparse
 op = optparse.OptionParser(usage=__doc__)
 op.add_option("-s", "--split", dest="SPLIT", action="store_true", default=False)
-# op.add_option("-f", "--format")
+op.add_option("-f", "--format", dest="FORMAT", default="pdf")
 op.add_option("-m", "--match", dest="MATCH", default=None)
 op.add_option("-M", "--unmatch", dest="UNMATCH", default=None)
 opts, args = op.parse_args()
@@ -110,26 +110,37 @@ for arg in args:
         aostyles.setdefault("ErrorBars", isref)
         aostyles.setdefault("Legend", True)
 
-        body += "    \\addplot["
-        body += "color=%s, " % aostyles["LineColor"]
-        body += "%s, " % aostyles["LineWidth"]
-        if aostyles["LineStyle"] == "none":
-            body += "only marks, "
-        else:
-            body += "const plot mark mid, %s" % aostyles["LineStyle"]
-        if aostyles["Marker"] != "none":
-            body += "mark=%s, mark options={scale=%g}, " % (aostyles["Marker"], aostyles["MarkerScale"])
-        if aostyles["ErrorBars"]:
-            body += "error bars/.cd, error mark=, x dir=both, x explicit, y dir=both, y explicit"
-        body += "] coordinates {\n"
-        # body += "    \\addplot[color=black, very thick, only marks, mark=*, mark options={scale=0.8}, error bars/.cd, error mark=, x dir=both, x explicit, y dir=both, y explicit] coordinates {\n"
-        # body += "    \\addplot[color=red, const plot mark mid] coordinates {\n"
+        if type(s) is yoda.Scatter2D:
+            body += "    \\addplot["
+            body += "color=%s, " % aostyles["LineColor"]
+            body += "%s, " % aostyles["LineWidth"]
+            if aostyles["LineStyle"] == "none":
+                body += "only marks, "
+            else:
+                body += "const plot mark mid, %s" % aostyles["LineStyle"]
+            if aostyles["Marker"] != "none":
+                body += "mark=%s, mark options={scale=%g}, " % (aostyles["Marker"], aostyles["MarkerScale"])
+            if aostyles["ErrorBars"]:
+                body += "error bars/.cd, error mark=, x dir=both, x explicit, y dir=both, y explicit"
+            body += "] coordinates {\n"
+            # body += "    \\addplot[color=black, very thick, only marks, mark=*, mark options={scale=0.8}, error bars/.cd, error mark=, x dir=both, x explicit, y dir=both, y explicit] coordinates {\n"
+            # body += "    \\addplot[color=red, const plot mark mid] coordinates {\n"
+            for p in s.points:
+                body += "      ({x:g}, {y:g}) -= ({ex[0]:g}, {ey[0]:g}) += ({ex[1]:g}, {ey[1]:g})\n".format(x=p.x, y=p.y, ex=p.xErrs, ey=p.yErrs)
+            body += "    };\n"
 
-        for p in s.points:
-            body += "      ({x:g},{y:g}) -= ({ex[0]:g},{ey[0]:g}) += ({ex[1]:g},{ey[1]:g})\n".format(x=p.x, y=p.y, ex=p.xErrs, ey=p.yErrs)
-        body += "    };\n"
+        elif type(s) is yoda.Scatter3D:
+            body += "    \\addplot3["
+            body += "mesh/row=%d, " % ao.numBinsX
+            body += "surf, "
+            body += "] coordinates {\n"
+            for p in s.points:
+                body += "      ({x:g}, {y:g}, {z:g})\n".format(x=p.x, y=p.y, z=p.z)
+            body += "    };\n"
+
         if aostyles["Legend"]:
             body += "  \\addlegendentry{%s}%%\n" % basename
+
         body += "  \\end{%s}%%\n" % axistype
         body += "\\end{tikzpicture}%\n"
 
@@ -137,24 +148,31 @@ for arg in args:
         names.append(name)
         bodies.append(body)
 
+
     ## Make TeX and PDF files in a temporary directory
     import tempfile, subprocess, shutil, glob
     rundir = os.getcwd()
     tmpdir = tempfile.mkdtemp(".yodaplot")
     os.chdir(tmpdir)
+
+    ## Make LaTeX source
     texname = basename + ".tex"
-    pdfname = basename + ".pdf"
     with open(texname, "w") as f:
         f.write(head + "".join(bodies) + foot)
-    shutil.copy(texname, rundir)
-    subprocess.check_call(["pdflatex", texname])
-    if not opts.SPLIT:
-        shutil.copy(pdfname, rundir)
-    else:
-        subprocess.check_call(["pdftk", pdfname, "burst"])
-        for i, n in enumerate(names, start=1):
-            subpdfname = basename + "_" + n + ".pdf"
-            shutil.copy("pg_{:04d}.pdf".format(i), os.path.join(rundir, subpdfname))
+    if "TEX" in opts.FORMAT.upper():
+        shutil.copy(texname, rundir)
+
+    ## Make PDF via pdflatex
+    pdfname = basename + ".pdf"
+    if "PDF" in opts.FORMAT.upper():
+        subprocess.check_call(["pdflatex", texname])
+        if not opts.SPLIT:
+            shutil.copy(pdfname, rundir)
+        else:
+            subprocess.check_call(["pdftk", pdfname, "burst"])
+            for i, n in enumerate(names, start=1):
+                subpdfname = basename + "_" + n + ".pdf"
+                shutil.copy("pg_{:04d}.pdf".format(i), os.path.join(rundir, subpdfname))
 
     os.chdir(tmpdir)
     shutil.rmtree(tmpdir)

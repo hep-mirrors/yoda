@@ -43,12 +43,9 @@ cdef class Histo2D(AnalysisObject):
         util.set_owned_ptr(self, new c.Histo2D(nxbins, xlow, xhigh,  nybins, ylow, yhigh,  string(path), string(title)))
 
 
-    def __len__(self):
-        return self._Histo2D().numBins()
-
-    def __getitem__(self, py_ix):
-        cdef size_t i = util.pythonic_index(py_ix, self._Histo2D().numBins())
-        return util.new_borrowed_cls(HistoBin2D, & self._Histo2D().bins().at(i), self)
+    # def __getitem__(self, py_ix):
+    #     cdef size_t i = util.pythonic_index(py_ix, self._Histo2D().numBins())
+    #     return util.new_borrowed_cls(HistoBin2D, & self._Histo2D().bins().at(i), self)
 
     def __repr__(self):
         return "<%s '%s' %d bins, sumw=%.2g>" % \
@@ -161,6 +158,23 @@ cdef class Histo2D(AnalysisObject):
         """() -> int
         Number of bins (not including overflows)."""
         return self._Histo2D().numBins()
+
+    def __len__(self):
+        return self.numBins
+
+    @property
+    def numBinsX(self):
+        """() -> int
+        Number of bins (edges) along the x axis."""
+        return self._Histo2D().numBinsX()
+
+    @property
+    def numBinsY(self):
+        """() -> int
+        Number of bins (edges) along the y axis."""
+        return self._Histo2D().numBinsY()
+
+
 
     @property
     def bins(self):

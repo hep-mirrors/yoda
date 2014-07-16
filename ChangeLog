@@ -1,5 +1,9 @@
 2014-07-16  Andy Buckley  <andy.buckley@cern.ch>
 
+	* More Scatter and 2D histo interface improvement.
+
+	* Remove 'return *this' from Scatter2D/3D add and combine methods.
+
 	* Add unit test checks for 1D and 2D mkScatter functions.
 
 	* Improve Scatter2D/3D C++ and Python interfaces.

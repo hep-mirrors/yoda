@@ -142,14 +142,12 @@ namespace YODA {
       return _outflows[_outflowIndex(ix, iy)];
     }
 
-    /// Scale each bin as if the entire x-axis had been scaled by this
-    /// factor.
+    /// Scale each bin as if the entire x-axis had been scaled by this factor.
     void scaleX(double xscale) {
       scaleXY(xscale, 1.0);
     }
 
-    /// Scale each bin as if the entire y-axis had been scaled by this
-    /// factor.
+    /// Scale each bin as if the entire y-axis had been scaled by this factor.
     void scaleY(double yscale) {
       scaleXY(1.0, yscale);
     }
@@ -167,11 +165,11 @@ namespace YODA {
 
     /// Rescale as if all fill weights had been different by factor @a
     /// scalefactor.
-    void scaleW(double scaleFactor) {
-      _dbn.scaleW(scaleFactor);
+    void scaleW(double scalefactor) {
+      _dbn.scaleW(scalefactor);
       BOOST_FOREACH (Outflow& outflow, _outflows)
-        BOOST_FOREACH (DBN& dbn, outflow) dbn.scaleW(scaleFactor);
-      BOOST_FOREACH (Bin &bin, _bins) bin.scaleW(scaleFactor);
+        BOOST_FOREACH (DBN& dbn, outflow) dbn.scaleW(scalefactor);
+      BOOST_FOREACH (Bin &bin, _bins) bin.scaleW(scalefactor);
       _updateAxis(_bins);
     }
 
@@ -188,9 +186,9 @@ namespace YODA {
       _updateAxis(_bins);
     }
 
+
     /// Erase a rectangle of bins.
-    void eraseBins(const size_t from, const size_t to)
-    {
+    void eraseBins(const size_t from, const size_t to) {
       if (from >= numBins())
         throw RangeError("Initial bin index is out of range");
       if (from >= numBins())
@@ -206,11 +204,11 @@ namespace YODA {
     /// Erase bins in an x- and y-range. Any bins which lie entirely within the
     /// region are deleted. If any part of the bin lies outside this
     /// range, the bin remains, so this has similar behaviour to select
-    /// tools in vector graphics gui packages.
-
-    // todo: any ideas on how to test this?
-    void eraseBins(const std::pair<double, double> xrange,
-                   const std::pair<double, double> yrange)
+    /// tools in vector graphics GUI packages.
+    ///
+    /// @todo How to test this?
+    void eraseBins(const std::pair<double, double>& xrange,
+                   const std::pair<double, double>& yrange)
     {
       size_t xiLow = _binSearcherX.index(xrange.first) - 1;
       size_t xiHigh = _binSearcherX.index(xrange.second) - 1;
@@ -218,14 +216,14 @@ namespace YODA {
       size_t yiLow = _binSearcherY.index(yrange.first) - 1;
       size_t yiHigh = _binSearcherY.index(yrange.second) - 1;
 
+      /// @todo Beware the specialisation problems with vector<bool>...
       std::vector<bool> deleteMask(numBins(), false);
 
       for (size_t yi = yiLow; yi < yiHigh; yi++) {
         for (size_t xi = xiLow; xi < xiHigh; xi++) {
           ssize_t i = _indexes[_index(_nx, xi, yi)];
           if (i == -1 || deleteMask[i]) continue;
-          if (bin(i).fitsInside(xrange, yrange))
-            deleteMask[i] = true;
+          if (bin(i).fitsInside(xrange, yrange)) deleteMask[i] = true;
         }
       }
 
@@ -233,14 +231,13 @@ namespace YODA {
       eraseBins(deleteMask);
     }
 
+
     /// Erase using a vector<bool>, where true represents that a bin
     /// will be deleted, and false means it will be kept.
-    void eraseBins(const std::vector<bool> deleteMask) {
+    void eraseBins(const std::vector<bool>& deleteMask) {
       Bins newBins;
       for (size_t i = 0; i < numBins(); i++)
-        if (!deleteMask[i])
-          newBins.push_back(bins(i));
-
+        if (!deleteMask[i]) newBins.push_back(bins(i));
       _update(newBins);
     }
 
@@ -316,7 +313,7 @@ namespace YODA {
     /// Add a bin, providing its x- and y- edge ranges
     void addBin(EdgePair1D xrange, EdgePair1D yrange) {
       _checkUnlocked();
-      Bins newBins(_bins);
+      Bins newBins = _bins;
       newBins.push_back(Bin(xrange, yrange));
       _updateAxis(newBins);
     }
@@ -326,11 +323,12 @@ namespace YODA {
       if (bins.size() == 0) return;
       _checkUnlocked();
 
-      Bins newBins(_bins);
+      Bins newBins = _bins;
       BOOST_FOREACH(const Bin& b, bins) newBins.push_back(b);
 
       _updateAxis(newBins);
     }
+
 
     /// Add a contiguous set of bins to an axis, via their list of edges
     void addBins(const std::vector<double>& xedges, const std::vector<double>& yedges) {
@@ -338,7 +336,7 @@ namespace YODA {
       if (yedges.size() == 0) return;
       _checkUnlocked();
 
-      Bins newBins(_bins);
+      Bins newBins = _bins;
       for (size_t xi = 0; xi < xedges.size()-1; xi++) {
         for (size_t yi = 0; yi < yedges.size()-1; yi++) {
           const std::pair<double,double> xx = std::make_pair(xedges[xi], xedges[xi+1]);
@@ -385,6 +383,7 @@ namespace YODA {
       if (ret == -1) throw RangeError("No bin found!!");
       return bin(ret);
     }
+
 
     /// Return the total distribution (non-const)
     DBN& totalDbn() {
