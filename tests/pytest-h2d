@@ -16,3 +16,6 @@ yoda.write([h], "h2d.dat")
 # aos = yoda.read("h2d.dat")
 # for _, ao in aos.iteritems():
 #     print ao
+
+s3 = yoda.mkScatter(h)
+s3 = h.mkScatter()

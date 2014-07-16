@@ -32,3 +32,6 @@ yoda.writeFLAT([p1,p2,p3], "h1d.dat")
 aos = yoda.read("h1d.dat")
 for _, ao in aos.iteritems():
     print ao
+
+s2 = yoda.mkScatter(p1)
+s2 = p1.mkScatter()

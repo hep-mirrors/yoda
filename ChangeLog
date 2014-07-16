@@ -1,5 +1,7 @@
 2014-07-16  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Add unit test checks for 1D and 2D mkScatter functions.
+
 	* Improve Scatter2D/3D C++ and Python interfaces.
 
 	* Add Scatter3D Python mapping.
