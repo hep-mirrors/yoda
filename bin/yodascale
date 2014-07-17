@@ -1,0 +1,126 @@
+#! /usr/bin/env python
+
+"""\
+Usage: %prog <yodafile1> [<yodafile2> ...] -r <yodareffile_or_dir> [-r ...]
+
+Rescale YODA histograms to match a reference file
+
+Example:
+  %prog run1.yoda run2.yoda -r refdir/ -r reffile.yoda
+  rescale histograms in run1 and run2 to ref files (including all
+  .yoda found in refdir, and writes out to run{1,2}-rescaled.yoda)
+
+TODO:
+ * add detailed scaling control with pattern match + bin/var range files/args
+ * allow command-line use of same scaling spec args
+"""
+
+
+## Parse command line args
+import optparse
+parser = optparse.OptionParser(usage=__doc__)
+# TODO: how to look up ref histos?
+parser.add_option("-r", "--ref", dest="REFS", action="append", default=[],
+                  help="File or folder with reference histos")
+# parser.add_option("--mode", dest="MODE", default="norm",
+#                   help="Shortcuts for modes. Allowed values: norm|normfirst|multiply")
+# parser.add_option("-f", "--specfile", dest="SPECFILE", default=None,
+#                   help="Specify a file with histogram path patterns (and bin ranges) that are to be normalised.")
+# parser.add_option("-i", "--in-place", dest="IN_PLACE", default=False, action="store_true",
+#                   help="Overwrite input file rather than making input-rescaled.yoda")
+opts, args = parser.parse_args()
+
+
+## Parse spec file
+# TODO
+
+
+## Read reference histograms
+import yoda, os, glob
+reffiles = []
+for r in opts.REFS:
+    if os.path.isdir(r):
+        reffiles += glob.glob( os.path.join(r, "*.yoda") ) #< TODO: Add a yoda.util function for finding files that it can read
+    elif r.endswith(".yoda"):
+        reffiles.append(r)
+aos_ref = {}
+for r in reffiles:
+    aos = yoda.read(r)
+    for aopath, ao in aos.iteritems():
+        # TODO: what to do about the REF prefix? Squash or insist? Squash for now...
+        if aopath.startswith("/REF/"):
+            aopath = aopath.replace("/REF", "", 1) # NB. ao.path is unchanged
+        aos_ref[aopath] = ao
+#print "DEBUG: %d reference histos" % len(refaos)
+
+
+## Loop over input files for rescaling
+for infile in args:
+    aos_out = {}
+    aos_in = yoda.read(infile)
+    for aopath, ao in aos_in.iteritems():
+        ## Default is to write out the unrescaled AO if no match is found
+        aos_out[aopath] = ao
+
+        # TODO: what to do about the REF prefix? Squash or reject? Reject (no rescaling) for now...
+        if aopath.startswith("/REF/"):
+            print "DEBUG: not rescaling REF object '%s'" % aopath
+            continue
+
+        # TODO: Find the mode of operation for this path
+
+        ## Check for an equivalent ref object
+        # TODO: not needed in MULTIPLY mode
+        if not aos_ref.has_key(aopath):
+            print "WARNING: no reference histogram found for '%s'" % aopath
+            continue
+        aoref = aos_ref[aopath]
+
+        # TODO: check binning compatibility (between types... hmm, check via equiv scatters?)
+        # TODO: need a function on Scatter for this? Or would break symmetry? (including 3D scatters)
+
+        ## Work out rescaling factor
+        # TODO: depends on mode and types. Histo/Profile have outflows, Scatters do not
+        # TODO: provide a mode to only do rescales on Histos, not Profiles and Scatters?
+        # TODO: ranges (index or val) from spec file. Need syntax for 2D ranges
+        # TODO: assume full integral for now, but ignore overflows
+        # TODO: check that the Scatter type attribute matches the non-Scatter type
+        ## Note that we are assuming that it is the Scatter y (or z) axis that is to be rescaled
+        try:
+            s = ao.mkScatter()
+            sref = aoref.mkScatter()
+        except: # in YODA 1.2.0 Scatters will also have mkScatter methods, so this won't be needed
+            s = ao
+            sref = aoref
+        if type(s) is not type(sref):
+            print "WARNING: type mismatch between Scatter reps of '%s'. Are input and ref histos of same dimension?" % aopath
+            continue
+
+        ## Work out normalisations
+        # TODO: Are these at all appropriate (with width factor?) for profiles? Need an "ignore width" mode flag?
+        if type(s) is yoda.Scatter2D:
+            # TODO: need Point2D.xWidth etc.? -- this approach probably isn't good if there's more than one xerr (but what *do* we do then?)
+            norm = sum(p.y * sum(p.xErrs) for p in s.points)
+            refnorm = sum(p.y * sum(p.xErrs) for p in sref.points)
+        elif type(s) is yoda.Scatter3D:
+            # TODO: need Point3D.xWidth etc.? -- this approach probably isn't good if there's more than one xerr (but what *do* we do then?)
+            norm = sum(p.z * sum(p.xErrs) * sum(p.yErrs) for p in s.points)
+            refnorm = sum(p.z * sum(p.xErrs) * sum(p.yErrs) for p in sref.points)
+        sf = refnorm / norm
+        print "INFO: '%s' rescaled by factor %.3g" % (aopath, sf)
+
+        ## Rescale
+        # TODO: should apply scaling to original type or to the scatter?
+        if type(s) is yoda.Scatter2D:
+            s.scale(1,sf)
+        elif type(s) is yoda.Scatter3D:
+            s.scale(1,1,sf)
+
+        ## Store rescaled result
+        # TODO: should apply scaling to original type or to the scatter?
+        aos_out[aopath] = s
+
+    infileparts = os.path.splitext( os.path.basename(infile) )
+    # TODO: control output name(s)
+    outfile = infileparts[0] + "-rescaled.yoda"
+    yoda.write(aos_out, outfile)

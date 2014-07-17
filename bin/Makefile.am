@@ -3,9 +3,8 @@ dist_bin_SCRIPTS = yoda-config
 if ENABLE_PYEXT
 
 dist_bin_SCRIPTS += \
-  yodacnv yodamerge yodadiff yodals yodahist yodaplot \
+  yodacnv yodamerge yodadiff yodals yodahist yodaplot yodascale \
   yoda2aida yoda2flat aida2yoda aida2flat flat2yoda
-  # add yodascale with detailed scaling control from "Prof observable weight"-format files/args
 
 ## bash completion
 dist_pkgdata_DATA = yoda-completion

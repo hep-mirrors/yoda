@@ -1,3 +1,9 @@
+2014-07-17  Andy Buckley  <andy.buckley@cern.ch>
+
+	* A few more improvements on Point2D/3D, adding x,y,zMin/Max function mappings.
+
+	* Add first version of a yodascale script, based on code from Simone Amoroso.
+
 2014-07-16  Andy Buckley  <andy.buckley@cern.ch>
 
 	* More Scatter and 2D histo interface improvement.
