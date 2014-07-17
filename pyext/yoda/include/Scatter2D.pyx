@@ -50,10 +50,6 @@ cdef class Scatter2D(AnalysisObject):
     @property
     def points(self):
         """Access the ordered list of points."""
-        #NOTE: this list is currently a read-only copy of the real bin list... do not modify"""
-        #return list(self)  #< TODO: How does this work?
-        # TODO: how to allow modification of points in the returned list?
-        #cdef vector[c.Point2D] pts = self._Scatter2D().points()
         return [self.point(i) for i in xrange(self.numPoints)]
 
     def point(self, size_t i):

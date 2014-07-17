@@ -3,7 +3,7 @@
 """\
 %prog <datafile1> [<datafile2> ...]
 
-List the contents of YODA-readable data files.
+List the contents of YODA-readable data files (sorted by path name).
 """
 
 import yoda, sys, optparse

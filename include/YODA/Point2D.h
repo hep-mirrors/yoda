@@ -332,7 +332,7 @@ namespace YODA {
     void scale(double scaleX, double scaleY) {
       setX(x()*scaleX);
       setY(y()*scaleY);
-
+      //
       setXErr(xErrMinus()*scaleX, xErrPlus()*scaleX);
       setYErr(yErrMinus()*scaleY, yErrPlus()*scaleY);
     }

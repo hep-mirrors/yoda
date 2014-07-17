@@ -1,5 +1,7 @@
 2014-07-17  Andy Buckley  <andy.buckley@cern.ch>
 
+	* yodascale now writes out rescaled histograms and profiles rather than scatters.
+
 	* A few more improvements on Point2D/3D, adding x,y,zMin/Max function mappings.
 
 	* Add first version of a yodascale script, based on code from Simone Amoroso.

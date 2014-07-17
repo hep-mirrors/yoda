@@ -22,6 +22,8 @@ parser = optparse.OptionParser(usage=__doc__)
 # TODO: how to look up ref histos?
 parser.add_option("-r", "--ref", dest="REFS", action="append", default=[],
                   help="File or folder with reference histos")
+parser.add_option("--ref-prefix", dest="REF_PREFIX", metavar="NAME", default="REF",
+                  help="Treat /NAME/foo as a reference plot for /foo, and don't rescale /NAME histos")
 # parser.add_option("--mode", dest="MODE", default="norm",
 #                   help="Shortcuts for modes. Allowed values: norm|normfirst|multiply")
 # parser.add_option("-f", "--specfile", dest="SPECFILE", default=None,
@@ -47,9 +49,9 @@ aos_ref = {}
 for r in reffiles:
     aos = yoda.read(r)
     for aopath, ao in aos.iteritems():
-        # TODO: what to do about the REF prefix? Squash or insist? Squash for now...
-        if aopath.startswith("/REF/"):
-            aopath = aopath.replace("/REF", "", 1) # NB. ao.path is unchanged
+        ## Use /REF_PREFIX/foo as a ref plot for /foo, if the ref prefix is set
+        if opts.REF_PREFIX and aopath.startswith("/%s/" % opts.REF_PREFIX):
+            aopath = aopath.replace("/%s/" % opts.REF_PREFIX, "/", 1) # NB. ao.path is unchanged
         aos_ref[aopath] = ao
 #print "DEBUG: %d reference histos" % len(refaos)
 
@@ -58,16 +60,16 @@ for r in reffiles:
 for infile in args:
     aos_out = {}
     aos_in = yoda.read(infile)
-    for aopath, ao in aos_in.iteritems():
+    for aopath, ao in sorted(aos_in.iteritems()):
         ## Default is to write out the unrescaled AO if no match is found
         aos_out[aopath] = ao
 
-        # TODO: what to do about the REF prefix? Squash or reject? Reject (no rescaling) for now...
-        if aopath.startswith("/REF/"):
-            print "DEBUG: not rescaling REF object '%s'" % aopath
+        ## Don't rescale /REF_PREFIX objects
+        if aopath.startswith("/%s/" % opts.REF_PREFIX):
+            print "DEBUG: not rescaling ref object '%s'" % aopath
             continue
 
-        # TODO: Find the mode of operation for this path
+        # TODO: Find the desired mode of operation for this path match
 
         ## Check for an equivalent ref object
         # TODO: not needed in MULTIPLY mode
@@ -97,30 +99,38 @@ for infile in args:
             continue
 
         ## Work out normalisations
-        # TODO: Are these at all appropriate (with width factor?) for profiles? Need an "ignore width" mode flag?
+        # TODO: Are these at all appropriate (with width factor?) for profiles? And ratios? Need an "ignore width" mode flag?
         if type(s) is yoda.Scatter2D:
-            # TODO: need Point2D.xWidth etc.? -- this approach probably isn't good if there's more than one xerr (but what *do* we do then?)
+            ## NOTE: sum(errs) only works if there's only one +- pair
+            # TODO: only loop over specified bins/points
+            assert(all(len(p.xErrs) == 2 for p in s.points))
+            assert(all(len(p.xErrs) == 2 for p in sref.points))
             norm = sum(p.y * sum(p.xErrs) for p in s.points)
             refnorm = sum(p.y * sum(p.xErrs) for p in sref.points)
         elif type(s) is yoda.Scatter3D:
-            # TODO: need Point3D.xWidth etc.? -- this approach probably isn't good if there's more than one xerr (but what *do* we do then?)
+            ## NOTE: sum(errs) only works if there's only one +- pair
+            # TODO: only loop over specified bins/points
+            assert(all(len(p.xErrs) == 2 and len(p.yErrs) == 2) for p in s.points)
+            assert(all(len(p.xErrs) == 2 and len(p.yErrs) == 2) for p in sref.points)
             norm = sum(p.z * sum(p.xErrs) * sum(p.yErrs) for p in s.points)
             refnorm = sum(p.z * sum(p.xErrs) * sum(p.yErrs) for p in sref.points)
         sf = refnorm / norm
-        print "INFO: '%s' rescaled by factor %.3g" % (aopath, sf)
 
         ## Rescale
-        # TODO: should apply scaling to original type or to the scatter?
-        if type(s) is yoda.Scatter2D:
-            s.scale(1,sf)
-        elif type(s) is yoda.Scatter3D:
-            s.scale(1,1,sf)
+        print "INFO: '%s' rescaled by factor %.3g" % (aopath, sf)
+        if type(ao) in (yoda.Histo1D, yoda.Histo2D):
+            ao.scaleW(sf)
+        elif type(ao) in (yoda.Profile1D, yoda.Profile2D):
+            ao.scaleY(sf)
+        elif type(ao) is yoda.Scatter2D:
+            ao.scale(1, sf)
+        elif type(ao) is yoda.Scatter3D:
+            ao.scale(1, 1, sf)
 
         ## Store rescaled result
         # TODO: should apply scaling to original type or to the scatter?
-        aos_out[aopath] = s
+        aos_out[aopath] = ao
 
     infileparts = os.path.splitext( os.path.basename(infile) )
-    # TODO: control output name(s)
     outfile = infileparts[0] + "-rescaled.yoda"
-    yoda.write(aos_out, outfile)
+    yoda.write(sorted(aos_out.values()), outfile)
