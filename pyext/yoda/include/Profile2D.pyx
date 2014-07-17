@@ -45,18 +45,13 @@ cdef class Profile2D(AnalysisObject):
         util.set_owned_ptr(self, new c.Profile2D(nxbins, xlow, xhigh,  nybins, ylow, yhigh,  string(path), string(title)))
 
 
-
-    def __len__(self):
-        return self._Profile2D().numBins()
-
+    # TODO: remove
     def __getitem__(self, py_ix):
         cdef size_t i = util.pythonic_index(py_ix, self._Profile2D().numBins())
         return util.new_borrowed_cls(ProfileBin2D, & self._Profile2D().bins().at(i), self)
 
     def __repr__(self):
-        return "<%s '%s' %d bins, sumw=%0.2g>" % \
-               (self.__class__.__name__, self.path,
-                len(self.bins), self.sumW())
+        return "<%s '%s' %d bins, sumw=%0.2g>" % (self.__class__.__name__, self.path, len(self.bins), self.sumW())
 
 
     def reset(self):
@@ -123,22 +118,42 @@ cdef class Profile2D(AnalysisObject):
         self._Profile2D().scaleW(w)
 
 
+
     @property
     def numBins(self):
         """() -> int
         Number of bins (not including overflows)."""
         return self._Profile2D().numBins()
 
+    def __len__(self):
+        return self._Profile2D().numBins()
+
+    @property
+    def numBinsX(self):
+        """() -> int
+        Number of bins (edges) along the x axis."""
+        return self._Histo2D().numBinsX()
+
+    @property
+    def numBinsY(self):
+        """() -> int
+        Number of bins (edges) along the y axis."""
+        return self._Histo2D().numBinsY()
+
+
     @property
     def bins(self):
         """Access the ordered bins list."""
         return list(self)
 
-    # TODO: change name to better match / don't map at all
-    def bin_by_coord(self, x, y):
-        cdef int index = self._Profile2D().binIndexAt(x, y)
-        print index
-        return self[index]
+    # TODO: add bin(ix, iy) and bin(iglobal)
+
+    # TODO: add binAt and binIndexAt and binIndexX,Y
+    # def binAt(self, x, y):
+    #     cdef int index = self._Profile2D().binIndexAt(x, y)
+    #     print index
+    #     return self[index]
+
 
     def addBin(self, double xlow, double xhigh, double ylow, double yhigh):
         """Add a bin."""

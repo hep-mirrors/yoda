@@ -43,14 +43,13 @@ cdef class Histo2D(AnalysisObject):
         util.set_owned_ptr(self, new c.Histo2D(nxbins, xlow, xhigh,  nybins, ylow, yhigh,  string(path), string(title)))
 
 
-    # def __getitem__(self, py_ix):
-    #     cdef size_t i = util.pythonic_index(py_ix, self._Histo2D().numBins())
-    #     return util.new_borrowed_cls(HistoBin2D, & self._Histo2D().bins().at(i), self)
+    # TODO: remove
+    def __getitem__(self, py_ix):
+        cdef size_t i = util.pythonic_index(py_ix, self._Histo2D().numBins())
+        return util.new_borrowed_cls(HistoBin2D, & self._Histo2D().bins().at(i), self)
 
     def __repr__(self):
-        return "<%s '%s' %d bins, sumw=%.2g>" % \
-               (self.__class__.__name__, self.path,
-                len(self.bins), self.sumW())
+        return "<%s '%s' %d bins, sumw=%.2g>" % (self.__class__.__name__, self.path, len(self.bins), self.sumW())
 
 
     def reset(self):
@@ -175,11 +174,15 @@ cdef class Histo2D(AnalysisObject):
         return self._Histo2D().numBinsY()
 
 
-
     @property
     def bins(self):
         """Access the ordered bins list."""
         return list(self)
+
+    # TODO: add bin(ix, iy) and bin(iglobal)
+
+    # TODO: add binAt and binIndexAt and binIndexX,Y
+
 
     def addBin(self, xlow, xhigh, ylow, yhigh):
         """Add a bin."""

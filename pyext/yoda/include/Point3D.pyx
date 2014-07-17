@@ -21,6 +21,7 @@ cdef class Point3D(util.Base):
     def copy(self):
         return util.new_owned_cls(Point3D, new c.Point3D(deref(self._Point3D())))
 
+
     property x:
         """x coordinate"""
         def __get__(self):
@@ -48,6 +49,7 @@ cdef class Point3D(util.Base):
         def __set__(self, val):
             self.x, self.y, self.z = val
 
+
     property xErrs:
         def __get__(self):
             return read_error_pair(self._Point3D().xErrs())
@@ -66,6 +68,36 @@ cdef class Point3D(util.Base):
         def __set__(self, val):
             self._Point3D().setZErr(read_symmetric(val))
 
+
+
+    @property
+    def xMin(self):
+        """The minimum x position, i.e. lowest error"""
+        return self._Point2D().xMin()
+    @property
+    def xMax(self):
+        """The maximum x position, i.e. highest error"""
+        return self._Point2D().xMax()
+
+    @property
+    def yMin(self):
+        """The minimum y position, i.e. lowest error"""
+        return self._Point2D().yMin()
+    @property
+    def yMax(self):
+        """The maximum y position, i.e. highest error"""
+        return self._Point2D().yMax()
+
+    @property
+    def zMin(self):
+        """The minimum z position, i.e. lowest error"""
+        return self._Point3D().zMin()
+    @property
+    def zMax(self):
+        """The maximum z position, i.e. highest error"""
+        return self._Point3D().zMax()
+
+
     property xErrAvg:
         def __get__(self):
             return self._Point3D().xErrAvg()
@@ -77,6 +109,7 @@ cdef class Point3D(util.Base):
     property zErrAvg:
         def __get__(self):
             return self._Point3D().zErrAvg()
+
 
     def scale(self, x=1.0, y=1.0, z=1.0):
         """

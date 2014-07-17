@@ -198,12 +198,12 @@ cdef extern from "YODA/Point2D.h" namespace "YODA":
         pair[double,double] xy() except +err
         void setXY(pair[double,double] xy) except +err
 
-        double xErrAvg() except +err
-        double yErrAvg() except +err
         pair[double,double] xErrs() except +err
         pair[double,double] yErrs() except +err
         void setXErr(pair[double, double]) except +err
         void setYErr(pair[double, double]) except +err
+        double xErrAvg() except +err
+        double yErrAvg() except +err
         double xMin() except +err
         double xMax() except +err
         double yMin() except +err
@@ -236,12 +236,7 @@ cdef extern from "YODA/Point3D.h" namespace "YODA":
         void setX(double x) except +err
         void setY(double y) except +err
         void setZ(double z) except +err
-        double xMin() except +err
-        double xMax() except +err
-        double yMin() except +err
-        double yMax() except +err
-        double zMin() except +err
-        double zMax() except +err
+
         pair[double,double] xErrs() except +err
         pair[double,double] yErrs() except +err
         pair[double,double] zErrs() except +err
@@ -251,6 +246,13 @@ cdef extern from "YODA/Point3D.h" namespace "YODA":
         double xErrAvg()
         double yErrAvg()
         double zErrAvg()
+        double xMin() except +err
+        double xMax() except +err
+        double yMin() except +err
+        double yMax() except +err
+        double zMin() except +err
+        double zMax() except +err
+
         void scale(double x, double y, double z) except +err
 
         bool operator == (Point3D b)

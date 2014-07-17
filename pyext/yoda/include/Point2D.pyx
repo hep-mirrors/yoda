@@ -62,23 +62,6 @@ cdef class Point2D(util.Base):
             # self.x, self.y = val
             self.setXY(val)
 
-    # # TODO: remove!
-    # property xRange:
-    #     """The minimum and maximum points within the x errors"""
-    #     def __get__(self):
-    #         return util.Edges(self._Point2D().xMin(), self._Point2D().xMax())
-
-    # # TODO: remove!
-    # property yRange:
-    #     """The minimum and maximum points within the y errors"""
-    #     def __get__(self):
-    #         return util.Edges(self._Point2D().yMin(), self._Point2D().yMax())
-
-    # # TODO: remove!
-    # property ranges:
-    #     """The x- and y-ranges"""
-    #     def __get__(self):
-    #         return util.XY(self.xRange, self.yRange)
 
     property xErrs:
         """The x errors"""
@@ -86,7 +69,6 @@ cdef class Point2D(util.Base):
             return read_error_pair(self._Point2D().xErrs())
         def __set__(self, val):
             self._Point2D().setXErr(read_symmetric(val))
-
 
     property yErrs:
         """The y errors"""
@@ -96,13 +78,37 @@ cdef class Point2D(util.Base):
             self._Point2D().setYErr(read_symmetric(val))
 
 
-    # TODO: add to C++ and reinstate
-    # property errs:
-    #     """The x and y errors as a tuple"""
+    # # TODO: remove! or add similar to C++ and map
+    # property xRange:
+    #     """The minimum and maximum points within the x errors"""
     #     def __get__(self):
-    #         return util.XY(self.xErrs, self.yErrs)
-    #     def __set__(self, val):
-    #         self.xErrs, self.yErrs = val
+    #         return util.Edges(self._Point2D().xMin(), self._Point2D().xMax())
+
+    # # TODO: remove! or add similar to C++ and map
+    # property yRange:
+    #     """The minimum and maximum points within the y errors"""
+    #     def __get__(self):
+    #         return util.Edges(self._Point2D().yMin(), self._Point2D().yMax())
+
+
+    @property
+    def xMin(self):
+        """The minimum x position, i.e. lowest error"""
+        return self._Point2D().xMin()
+    @property
+    def xMax(self):
+        """The maximum x position, i.e. highest error"""
+        return self._Point2D().xMax()
+
+    @property
+    def yMin(self):
+        """The minimum y position, i.e. lowest error"""
+        return self._Point2D().yMin()
+    @property
+    def yMax(self):
+        """The maximum y position, i.e. highest error"""
+        return self._Point2D().yMax()
+
 
     property xErrAvg:
         def __get__(self):
