@@ -147,11 +147,30 @@ namespace YODA {
       _points.clear();
     }
 
-    /// Scale
-    void scale(double scaleX, double scaleY, double scaleZ) {
-      for (size_t i = 0; i < _points.size(); ++i) {
-        _points[i].scale(scaleX, scaleY, scaleZ);
-      }
+    /// Scaling of x axis
+    void scaleX(double scalex) {
+      BOOST_FOREACH (Point3D& p, _points) p.scaleX(scalex);
+    }
+
+    /// Scaling of y axis
+    void scaleY(double scaley) {
+      BOOST_FOREACH (Point3D& p, _points) p.scaleY(scaley);
+    }
+
+    /// Scaling of z axis
+    void scaleZ(double scalez) {
+      BOOST_FOREACH (Point3D& p, _points) p.scaleZ(scalez);
+    }
+
+    /// Scaling of all three axes
+    void scaleXYZ(double scalex, double scaley, double scalez) {
+      BOOST_FOREACH (Point3D& p, _points) p.scaleXYZ(scalex, scaley, scalez);
+    }
+
+    /// Scaling of all three axes
+    /// @deprecated Use scaleXYZ
+    void scale(double scalex, double scaley, double scalez) {
+      scaleXYZ(scalex, scaley, scalez);
     }
 
     //@}

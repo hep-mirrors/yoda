@@ -111,12 +111,46 @@ cdef class Point3D(util.Base):
             return self._Point3D().zErrAvg()
 
 
-    def scale(self, x=1.0, y=1.0, z=1.0):
+    def scaleX(self, ax):
         """
-        (x=1.0, y=1.0, z=1.0) -> None
+        (float) -> None
+        Scale the x point coordinates by the given factor.
+        """
+        self._Point3D().scaleX(ax)
+
+    def scaleY(self, ay):
+        """
+        (float) -> None
+        Scale the y point coordinates by the given factor.
+        """
+        self._Point3D().scaleY(ay)
+
+    def scaleZ(self, az):
+        """
+        (float) -> None
+        Scale the z point coordinates by the given factor.
+        """
+        self._Point3D().scaleZ(az)
+
+    def scaleXYZ(self, ax=1.0, ay=1.0, az=1.0):
+        """
+        (float=1.0, float=1.0, float=1.0) -> None
         Scale the point coordinates by the given factors.
         """
-        self._Point3D().scale(x, y, z)
+        self._Point3D().scaleXYZ(ax, ay, az)
+
+    # TODO: remove
+    def scaleXYZ(self, ax=1.0, ay=1.0, az=1.0):
+        """
+        (double=1.0, double=1.0, double=1.0) -> None
+        DEPRECATED: USE scaleXYZ
+        Scale the point coordinates by the given factors.
+        """
+        self.scaleXYZ(ax, ay, az)
+
+
+    # TODO: transformX,Y,Z
+
 
     def __repr__(self):
         return '<Point3D(x=%g, y=%g, z=%g)>' % (self.x, self.y, self.z)

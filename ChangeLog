@@ -1,3 +1,8 @@
+2014-07-18  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Add scaleX,Y,Z and scaleXYZ to Point and Scatter classes, and
+	deprecate less explicit/consistent Scatter2D/3D.scale method.
+
 2014-07-17  Andy Buckley  <andy.buckley@cern.ch>
 
 	* yodascale now writes out rescaled histograms and profiles rather than scatters.

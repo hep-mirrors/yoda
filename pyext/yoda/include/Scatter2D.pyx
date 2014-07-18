@@ -106,10 +106,28 @@ cdef class Scatter2D(AnalysisObject):
         return util.new_owned_cls(Scatter2D, s2.newclone())
 
 
-    def scale(self, ax, ay):
-        """(float,float) -> None
+    def scaleX(self, a):
+        """(float) -> None
+        Scale the x values and errors of the points in this scatter by factor a."""
+        self._Scatter2D().scaleX(a)
+
+    def scaleY(self, a):
+        """(float) -> None
+        Scale the y values and errors of the points in this scatter by factor a."""
+        self._Scatter2D().scaleY(a)
+
+    def scaleXYZ(self, ax=1.0, ay=1.0):
+        """(float=1, float=1) -> None
         Scale the values and errors of the points in this scatter by factors ax, ay."""
-        self._Scatter2D().scale(ax, ay)
+        self._Scatter2D().scaleXY(ax, ay)
+
+    # TODO: remove
+    def scale(self, ax=1.0, ay=1.0):
+        """(float=1, float=1) -> None
+        DEPRECATED: USE scaleXY
+        Scale the values and errors of the points in this scatter by factors ax, ay."""
+        self.scaleXY(ax, ay)
+
 
     def transformX(self, f):
         """(fn) -> None

@@ -328,13 +328,28 @@ namespace YODA {
     // @name Manipulations
     //@{
 
-    /// Scaling
-    void scale(double scaleX, double scaleY) {
-      setX(x()*scaleX);
-      setY(y()*scaleY);
-      //
-      setXErr(xErrMinus()*scaleX, xErrPlus()*scaleX);
-      setYErr(yErrMinus()*scaleY, yErrPlus()*scaleY);
+    /// Scaling of x axis
+    void scaleX(double scalex) {
+      setX(x()*scalex);
+      setXErr(xErrMinus()*scalex, xErrPlus()*scalex);
+    }
+
+    /// Scaling of y axis
+    void scaleY(double scaley) {
+      setY(y()*scaley);
+      setYErr(yErrMinus()*scaley, yErrPlus()*scaley);
+    }
+
+    /// Scaling of both axes
+    void scaleXY(double scalex, double scaley) {
+      scaleX(scalex);
+      scaleY(scaley);
+    }
+
+    /// Scaling of both axes
+    /// @deprecated Use scaleXY
+    void scale(double scalex, double scaley) {
+      scaleXY(scalex, scaley);
     }
 
     //@}

@@ -209,7 +209,11 @@ cdef extern from "YODA/Point2D.h" namespace "YODA":
         double yMin() except +err
         double yMax() except +err
 
-        void scale(double x, double y) except +err
+        void scaleX(double) except +err
+        void scaleY(double) except +err
+        void scaleXY(double, double) except +err
+        #void scale(double, double) except +err
+
         bool operator == (Point2D) except +err
         bool operator != (Point2D b) except +err
         bool operator < (Point2D b) except +err
@@ -253,7 +257,11 @@ cdef extern from "YODA/Point3D.h" namespace "YODA":
         double zMin() except +err
         double zMax() except +err
 
-        void scale(double x, double y, double z) except +err
+        void scaleX(double) except +err
+        void scaleY(double) except +err
+        void scaleZ(double) except +err
+        void scaleXYZ(double, double, double) except +err
+        #void scale(double, double, double) except +err
 
         bool operator == (Point3D b)
         bool operator != (Point3D b)
@@ -589,7 +597,11 @@ cdef extern from "YODA/Scatter2D.h" namespace "YODA":
         void combineWith(const Scatter2D&) #except +err
         void combineWith(const vector[Scatter2D]&) #except +err
 
-        void scale(double, double)
+        void scaleX(double) except +err
+        void scaleY(double) except +err
+        void scaleXY(double, double) except +err
+        #void scale(double, double) except +err
+
 
     void Scatter2D_transformX "YODA::transformX" (Scatter2D&, dbl_dbl_fptr)
     void Scatter2D_transformY "YODA::transformY" (Scatter2D&, dbl_dbl_fptr)
@@ -644,7 +656,11 @@ cdef extern from "YODA/Scatter3D.h" namespace "YODA":
         void combineWith(const Scatter3D&) #except +err
         void combineWith(const vector[Scatter3D]&) #except +err
 
-        void scale(double, double, double)
+        void scaleX(double) except +err
+        void scaleY(double) except +err
+        void scaleZ(double) except +err
+        void scaleXYZ(double, double, double) except +err
+        #void scale(double, double, double) except +err
 
     void Scatter3D_transformX "YODA::transformX" (Scatter3D&, dbl_dbl_fptr)
     void Scatter3D_transformY "YODA::transformY" (Scatter3D&, dbl_dbl_fptr)

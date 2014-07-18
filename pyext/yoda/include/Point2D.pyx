@@ -119,12 +119,32 @@ cdef class Point2D(util.Base):
             return self._Point2D().yErrAvg()
 
 
-    def scale(self, x=1.0, y=1.0):
+    def scaleX(self, a):
+        """(float) -> None
+        Scale the x values and errors by factor a."""
+        self._Point2D().scaleX(a)
+
+    def scaleY(self, a):
+        """(float) -> None
+        Scale the y values and errors by factor a."""
+        self._Point2D().scaleY(a)
+
+    def scaleXY(self, x=1.0, y=1.0):
         """
-        (x=1.0, y=1.0) -> None
+        (float=1, float=1) -> None
         Scale the point coordinates by the given factors.
         """
-        self._Point2D().scale(x, y)
+        self._Point2D().scaleXY(x, y)
+
+    # TODO: remove
+    def scale(self, x=1.0, y=1.0):
+        """
+        (float=1, float=1) -> None
+        DEPRECATED! Use scaleXY
+        Scale the point coordinates by the given factors.
+        """
+        self._Point2D().scaleXY(x, y)
+
 
     def __repr__(self):
         return '<Point2D(x=%g, y=%g)>' % (self.x, self.y)

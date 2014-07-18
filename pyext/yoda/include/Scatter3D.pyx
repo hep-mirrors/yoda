@@ -105,10 +105,33 @@ cdef class Scatter3D(AnalysisObject):
         return util.new_owned_cls(Scatter3D, s3.newclone())
 
 
-    def scale(self, ax, ay, az):
-        """(float,float,float) -> None
+    def scaleX(self, a):
+        """(float) -> None
+        Scale the x values and errors of the points in this scatter by factor a."""
+        self._Scatter3D().scaleX(a)
+
+    def scaleY(self, a):
+        """(float) -> None
+        Scale the y values and errors of the points in this scatter by factor a."""
+        self._Scatter3D().scaleY(a)
+
+    def scaleZ(self, a):
+        """(float) -> None
+        Scale the z values and errors of the points in this scatter by factor a."""
+        self._Scatter3D().scaleZ(a)
+
+    def scaleXYZ(self, ax=1, ay=1, az=1):
+        """(float=1, float=1, float=1) -> None
         Scale the values and errors of the points in this scatter by factors ax, ay, az."""
-        self._Scatter3D().scale(ax, ay, az)
+        self._Scatter3D().scaleXYZ(ax, ay, az)
+
+    # TODO: remove
+    def scale(self, ax=1, ay=1, az=1):
+        """(float=1, float=1, float=1) -> None
+        DEPRECATED: USE scaleXYZ
+        Scale the values and errors of the points in this scatter by factors ax, ay, az."""
+        self.scaleXYZ(ax, ay, az)
+
 
     def transformX(self, f):
         """(fn) -> None
