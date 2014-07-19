@@ -95,6 +95,8 @@ namespace YODA {
     void reset() {
       _dbn.reset();
       _outflows.assign(8, Outflow());
+      BOOST_FOREACH(Bin& bin, _bins) bin.reset();
+      _locked = false;
     }
 
 

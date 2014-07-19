@@ -1,3 +1,9 @@
+2014-07-19  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Fix Axis2D::reset, which was resetting the total dbn and
+	outflows, but not the bins!!! Thanks to Ewen Gillies for the
+	report.
+
 2014-07-18  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Add scaleX,Y,Z and scaleXYZ to Point and Scatter classes, and
