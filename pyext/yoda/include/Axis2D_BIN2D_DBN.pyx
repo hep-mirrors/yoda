@@ -25,7 +25,7 @@ cdef class Axis2D_${BIN2D}_${DBN}(util.Base):
 
     # TODO: remove
     # def __getitem__(self, py_ix):
-    #     cdef size_t i = util.pythonic_index(py_ix, self._Axis2D().bins().size())
+    #     cdef size_t i = cutil.pythonic_index(py_ix, self._Axis2D().bins().size())
     #     return cutil.new_borrowed_cls(${BIN2D}, & self._Axis2D().bins().at(i), self)
 
     def __repr__(self):

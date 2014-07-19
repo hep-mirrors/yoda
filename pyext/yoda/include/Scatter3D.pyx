@@ -57,7 +57,7 @@ cdef class Scatter3D(AnalysisObject):
 
     # TODO: remove?
     # def __getitem__(self, py_ix):
-    #     cdef size_t i = util.pythonic_index(py_ix, self._Scatter3D().numPoints())
+    #     cdef size_t i = cutil.pythonic_index(py_ix, self._Scatter3D().numPoints())
     #     return cutil.new_borrowed_cls(Point3D, &self._Scatter3D().point(i), self)
 
 

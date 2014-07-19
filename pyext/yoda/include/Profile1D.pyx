@@ -60,7 +60,7 @@ cdef class Profile1D(AnalysisObject):
         return self._Profile1D().bins().size()
 
     def __getitem__(self, py_ix):
-        cdef size_t i = util.pythonic_index(py_ix, self._Profile1D().bins().size())
+        cdef size_t i = cutil.pythonic_index(py_ix, self._Profile1D().bins().size())
         return cutil.new_borrowed_cls(ProfileBin1D, & self._Profile1D().bins().at(i), self)
 
 

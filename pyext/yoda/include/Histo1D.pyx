@@ -59,7 +59,7 @@ cdef class Histo1D(AnalysisObject):
         return self._Histo1D().numBins()
 
     def __getitem__(self, py_ix):
-        cdef size_t i = util.pythonic_index(py_ix, self._Histo1D().numBins())
+        cdef size_t i = cutil.pythonic_index(py_ix, self._Histo1D().numBins())
         return cutil.new_borrowed_cls(HistoBin1D, & self._Histo1D().bin(i), self)
 
 

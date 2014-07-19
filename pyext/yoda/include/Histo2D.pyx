@@ -45,7 +45,7 @@ cdef class Histo2D(AnalysisObject):
 
     # TODO: remove
     def __getitem__(self, py_ix):
-        cdef size_t i = util.pythonic_index(py_ix, self._Histo2D().numBins())
+        cdef size_t i = cutil.pythonic_index(py_ix, self._Histo2D().numBins())
         return cutil.new_borrowed_cls(HistoBin2D, & self._Histo2D().bins().at(i), self)
 
     def __repr__(self):
