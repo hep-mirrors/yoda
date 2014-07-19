@@ -113,7 +113,8 @@ namespace YODA {
       _yedges.first *= scaleY;
       _yedges.second *= scaleY;
 
-      _dbn.scaleXY(scaleX, scaleY);
+      _dbn.scaleX(scaleX);
+      _dbn.scaleY(scaleY);
     }
 
     //@}

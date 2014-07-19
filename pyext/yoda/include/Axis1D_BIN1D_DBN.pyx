@@ -12,7 +12,7 @@ cdef class Axis1D_${BIN1D}_${DBN}(util.Base):
 
 
     def __init__(self):
-        util.set_owned_ptr(self, new c.Axis1D[c.${BIN1D}, c.${DBN}]())
+        cutil.set_owned_ptr(self, new c.Axis1D[c.${BIN1D}, c.${DBN}]())
 
     def __repr__(self):
         return "<Axis1D with %d bins>" % self.numBins
@@ -28,7 +28,7 @@ cdef class Axis1D_${BIN1D}_${DBN}(util.Base):
     # TODO: remove
     # def __getitem__(self, py_ix):
     #     cdef size_t i = util.pythonic_index(py_ix, self._Axis1D().bins().size())
-    #     return util.new_borrowed_cls(
+    #     return cutil.new_borrowed_cls(
     #         ${BIN1D}, & self._Axis1D().bins().at(i), self)
 
 
@@ -37,17 +37,17 @@ cdef class Axis1D_${BIN1D}_${DBN}(util.Base):
 
     @property
     def totalDbn(self):
-        return util.new_borrowed_cls(
+        return cutil.new_borrowed_cls(
             ${DBN}, &self._Axis1D().totalDbn(), self)
 
     @property
     def underflow(self):
-        return util.new_borrowed_cls(
+        return cutil.new_borrowed_cls(
             ${DBN}, &self._Axis1D().underflow(), self)
 
     @property
     def overflow(self):
-        return util.new_borrowed_cls(
+        return cutil.new_borrowed_cls(
             ${DBN}, &self._Axis1D().overflow(), self)
 
     def reset(self):

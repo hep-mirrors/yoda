@@ -11,7 +11,7 @@ cdef class Axis2D_${BIN2D}_${DBN}(util.Base):
 
 
     def __init__(self, nx, xl, xu, ny, yl, yu):
-        util.set_owned_ptr(self, new c.Axis2D[c.${BIN2D}, c.${DBN}](
+        cutil.set_owned_ptr(self, new c.Axis2D[c.${BIN2D}, c.${DBN}](
             nx, pair[double, double](xl, xu),
             ny, pair[double, double](yl, yu)))
 
@@ -26,7 +26,7 @@ cdef class Axis2D_${BIN2D}_${DBN}(util.Base):
     # TODO: remove
     # def __getitem__(self, py_ix):
     #     cdef size_t i = util.pythonic_index(py_ix, self._Axis2D().bins().size())
-    #     return util.new_borrowed_cls(${BIN2D}, & self._Axis2D().bins().at(i), self)
+    #     return cutil.new_borrowed_cls(${BIN2D}, & self._Axis2D().bins().at(i), self)
 
     def __repr__(self):
         # TODO: improve
@@ -35,7 +35,7 @@ cdef class Axis2D_${BIN2D}_${DBN}(util.Base):
 
     @property
     def totalDbn(self):
-        return util.new_owned_cls(
+        return cutil.new_owned_cls(
             ${DBN}, new c.${DBN}(self._Axis2D().totalDbn()))
 
     def addBin(self, a, b, c, d):
@@ -43,7 +43,7 @@ cdef class Axis2D_${BIN2D}_${DBN}(util.Base):
 
     @property
     def outflow(self, ix, iy):
-        return util.new_owned_cls(${DBN}, new c.${DBN}(self._Axis2D().outflow(ix, iy)))
+        return cutil.new_owned_cls(${DBN}, new c.${DBN}(self._Axis2D().outflow(ix, iy)))
 
     @property
     def edges(self):

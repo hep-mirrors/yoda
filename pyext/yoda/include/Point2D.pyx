@@ -13,7 +13,7 @@ cdef class Point2D(util.Base):
 
 
     def __init__(self, x=0, y=0, xerrs=0, yerrs=0):
-        util.set_owned_ptr(self, new c.Point2D())
+        cutil.set_owned_ptr(self, new c.Point2D())
         self.x = x
         self.y = y
         #self.coords = x, y
@@ -21,7 +21,7 @@ cdef class Point2D(util.Base):
         self.yErrs = yerrs
 
     def copy(self):
-        return util.new_owned_cls(Point2D, new c.Point2D(deref(self._Point2D())))
+        return cutil.new_owned_cls(Point2D, new c.Point2D(deref(self._Point2D())))
 
     # TODO: add clone() as mapping to (not yet existing) C++ newclone()?
 

@@ -79,6 +79,23 @@ namespace YODA {
     //@}
 
 
+    /// @name Bin scaling (x scaling is inherited)
+    //@{
+
+    /// Scale the y dimension
+    inline void scaleY(double ay) {
+      _dbn.scaleY(ay);
+    }
+
+    /// Scale the x and y dimensions
+    inline void scaleXY(double ax, double ay) {
+      scaleX(ax);
+      scaleY(ay);
+    }
+
+    //@}
+
+
   public:
 
     /// @name Bin content info

@@ -35,7 +35,7 @@ cdef class Profile1D(AnalysisObject):
         util.try_loop([self.__init2, self.__init3, self.__init5], *args, **kwargs)
 
     def __init2(self, char *path="", char *title=""):
-        util.set_owned_ptr(
+        cutil.set_owned_ptr(
             self, new c.Profile1D(string(path), string(title)))
 
     # TODO: Is Cython clever enough that we can make 3a and 3b versions and let it do the type inference?
@@ -45,7 +45,7 @@ cdef class Profile1D(AnalysisObject):
         try:
             ## If float conversions work for all elements, it's a list of edges:
             edges = list(float(x) for x in bins_or_edges)
-            util.set_owned_ptr(self, new c.Profile1D(edges, string(path), string(title)))
+            cutil.set_owned_ptr(self, new c.Profile1D(edges, string(path), string(title)))
         except:
             ## Assume it's a list of HistoBin1D
             bins = bins_or_edges
@@ -53,7 +53,7 @@ cdef class Profile1D(AnalysisObject):
             self.addBins(bins)
 
     def __init5(self, size_t nbins, double lower, double upper, char *path="", char *title=""):
-        util.set_owned_ptr(
+        cutil.set_owned_ptr(
             self, new c.Profile1D(nbins, lower, upper, string(path), string(title)))
 
     def __len__(self):
@@ -61,7 +61,7 @@ cdef class Profile1D(AnalysisObject):
 
     def __getitem__(self, py_ix):
         cdef size_t i = util.pythonic_index(py_ix, self._Profile1D().bins().size())
-        return util.new_borrowed_cls(ProfileBin1D, & self._Profile1D().bins().at(i), self)
+        return cutil.new_borrowed_cls(ProfileBin1D, & self._Profile1D().bins().at(i), self)
 
 
     def __repr__(self):
@@ -78,7 +78,7 @@ cdef class Profile1D(AnalysisObject):
     def clone(self):
         """None -> Profile1D.
         Clone this Profile1D."""
-        return util.new_owned_cls(Profile1D, self._Profile1D().newclone())
+        return cutil.new_owned_cls(Profile1D, self._Profile1D().newclone())
 
 
     def fill(self, x, y, weight=1.0):
@@ -96,21 +96,21 @@ cdef class Profile1D(AnalysisObject):
     def totalDbn(self):
         """() -> Dbn2D
         The Dbn2D representing the total distribution."""
-        return util.new_borrowed_cls(
+        return cutil.new_borrowed_cls(
             Dbn2D, &self._Profile1D().totalDbn(), self)
 
     @property
     def underflow(self):
         """() -> Dbn2D
         The Dbn2D representing the underflow distribution."""
-        return util.new_borrowed_cls(
+        return cutil.new_borrowed_cls(
             Dbn2D, &self._Profile1D().underflow(), self)
 
     @property
     def overflow(self):
         """() -> Dbn2D
         The Dbn2D representing the overflow distribution."""
-        return util.new_borrowed_cls(
+        return cutil.new_borrowed_cls(
             Dbn2D, &self._Profile1D().overflow(), self)
 
 
@@ -182,11 +182,11 @@ cdef class Profile1D(AnalysisObject):
         Convert this Profile1D to a Scatter2D, with y representing
         mean bin y values and their standard errors."""
         cdef c.Scatter2D s2 = c.mkScatter_Profile1D(deref(self._Profile1D()))
-        return util.new_owned_cls(Scatter2D, s2.newclone())
+        return cutil.new_owned_cls(Scatter2D, s2.newclone())
 
     def divide(self, Profile1D h1):
         cdef c.Scatter2D s2 = c.Profile1D_div_Profile1D(deref(self._Profile1D()), deref(h1._Profile1D()))
-        return util.new_owned_cls(Scatter2D, s2.newclone())
+        return cutil.new_owned_cls(Scatter2D, s2.newclone())
 
 
     def __iadd__(Profile1D self, Profile1D other):
@@ -198,14 +198,14 @@ cdef class Profile1D(AnalysisObject):
 
     def __add__(Profile1D self, Profile1D other):
         h = Profile1D()
-        util.set_owned_ptr(h, c.Profile1D_add_Profile1D(self._Profile1D(), other._Profile1D()))
+        cutil.set_owned_ptr(h, c.Profile1D_add_Profile1D(self._Profile1D(), other._Profile1D()))
         return h
     def __sub__(Profile1D self, Profile1D other):
         h = Profile1D()
-        util.set_owned_ptr(h, c.Profile1D_sub_Profile1D(self._Profile1D(), other._Profile1D()))
+        cutil.set_owned_ptr(h, c.Profile1D_sub_Profile1D(self._Profile1D(), other._Profile1D()))
         return h
 
     def __div__(Profile1D self, Profile1D other):
         h = Profile1D()
-        util.set_owned_ptr(h, c.Profile1D_div_Profile1D(self._Profile1D(), other._Profile1D()))
+        cutil.set_owned_ptr(h, c.Profile1D_div_Profile1D(self._Profile1D(), other._Profile1D()))
         return h

@@ -1,5 +1,8 @@
 2014-07-19  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Various consistency improvements and minor bugfixes to Python
+	mapping utils and Dbn and Bin objects.
+
 	* Fix Axis2D::reset, which was resetting the total dbn and
 	outflows, but not the bins!!! Thanks to Ewen Gillies for the
 	report.

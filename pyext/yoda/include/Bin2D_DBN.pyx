@@ -7,7 +7,7 @@ cdef class Bin2D_${DBN}(Bin):
 
 
     def __init__(self, xlow, xhigh, ylow, yhigh):
-        util.set_owned_ptr(self, new c.Bin2D_${DBN}( pair[double, double](xlow, xhigh),
+        cutil.set_owned_ptr(self, new c.Bin2D_${DBN}( pair[double, double](xlow, xhigh),
                                                      pair[double, double](ylow, yhigh) ))
 
 
@@ -177,11 +177,11 @@ cdef class Bin2D_${DBN}(Bin):
 
 
     def __add__(Bin2D_${DBN} self, Bin2D_${DBN} other):
-        return util.new_owned_cls(
+        return cutil.new_owned_cls(
             Bin2D_${DBN},
             new c.Bin2D_${DBN}(deref(self._Bin2D()) + deref(other._Bin2D())))
 
     def __sub__(Bin2D_${DBN} self, Bin2D_${DBN} other):
-        return util.new_owned_cls(
+        return cutil.new_owned_cls(
             Bin2D_${DBN},
             new c.Bin2D_${DBN}(deref(self._Bin2D()) - deref(other._Bin2D())))

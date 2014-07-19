@@ -33,20 +33,20 @@ cdef class Histo2D(AnalysisObject):
         util.try_loop([self.__init2, self.__init4, self.__init8], *args, **kwargs)
 
     def __init2(Histo2D self, char *path="", char *title=""):
-        util.set_owned_ptr(self, new c.Histo2D(string(path), string(title)))
+        cutil.set_owned_ptr(self, new c.Histo2D(string(path), string(title)))
 
     def __init4(Histo2D self, xedges,  yedges,  char* path="", char* title=""):
         # TODO: Do some type-checking and allow iterables of HistoBin2D as well?
-        util.set_owned_ptr(self, new c.Histo2D(xedges, yedges, string(path), string(title)))
+        cutil.set_owned_ptr(self, new c.Histo2D(xedges, yedges, string(path), string(title)))
 
     def __init8(Histo2D self, nxbins, xlow, xhigh,  nybins, ylow, yhigh,  char* path="", char* title=""):
-        util.set_owned_ptr(self, new c.Histo2D(nxbins, xlow, xhigh,  nybins, ylow, yhigh,  string(path), string(title)))
+        cutil.set_owned_ptr(self, new c.Histo2D(nxbins, xlow, xhigh,  nybins, ylow, yhigh,  string(path), string(title)))
 
 
     # TODO: remove
     def __getitem__(self, py_ix):
         cdef size_t i = util.pythonic_index(py_ix, self._Histo2D().numBins())
-        return util.new_borrowed_cls(HistoBin2D, & self._Histo2D().bins().at(i), self)
+        return cutil.new_borrowed_cls(HistoBin2D, & self._Histo2D().bins().at(i), self)
 
     def __repr__(self):
         return "<%s '%s' %d bins, sumw=%.2g>" % (self.__class__.__name__, self.path, len(self.bins), self.sumW())
@@ -60,7 +60,7 @@ cdef class Histo2D(AnalysisObject):
     def clone(self):
         """None -> Histo2D.
         Clone this Profile2D."""
-        return util.new_owned_cls(Histo2D, self._Histo2D().newclone())
+        return cutil.new_owned_cls(Histo2D, self._Histo2D().newclone())
 
 
     def fill(self, double x, double y, weight=1.0):
@@ -78,13 +78,13 @@ cdef class Histo2D(AnalysisObject):
     def totalDbn(self):
         """() -> Dbn2D
         The Dbn2D representing the total distribution."""
-        return util.new_borrowed_cls(Dbn2D, &self._Histo2D().totalDbn(), self)
+        return cutil.new_borrowed_cls(Dbn2D, &self._Histo2D().totalDbn(), self)
 
     # TODO: reinstate
     # def outflow(self, ix, iy):
     #     """(ix,iy) -> Dbn2D
     #     The Dbn2D representing the ix,iy outflow distribution."""
-    #     return util.new_borrowed_cls(Dbn2D, &self._Histo2D().outflow(ix, iy), self)
+    #     return cutil.new_borrowed_cls(Dbn2D, &self._Histo2D().outflow(ix, iy), self)
 
 
     def integral(self, overflows=True):
@@ -209,7 +209,7 @@ cdef class Histo2D(AnalysisObject):
         Convert this Histo2D to a Scatter3D, with y representing bin heights
         (not sumW) and height errors."""
         cdef c.Scatter3D s3 = c.mkScatter_Histo2D(deref(self._Histo2D()))
-        return util.new_owned_cls(Scatter3D, s3.newclone())
+        return cutil.new_owned_cls(Scatter3D, s3.newclone())
 
 
     def __iadd__(Histo2D self, Histo2D other):
@@ -221,9 +221,9 @@ cdef class Histo2D(AnalysisObject):
 
     def __add__(Histo2D self, Histo2D other):
         h = Histo2D()
-        util.set_owned_ptr(h, c.Histo2D_add_Histo2D(self._Histo2D(), other._Histo2D()))
+        cutil.set_owned_ptr(h, c.Histo2D_add_Histo2D(self._Histo2D(), other._Histo2D()))
         return h
     def __sub__(Histo2D self, Histo2D other):
         h = Histo2D()
-        util.set_owned_ptr(h, c.Histo2D_sub_Histo2D(self._Histo2D(), other._Histo2D()))
+        cutil.set_owned_ptr(h, c.Histo2D_sub_Histo2D(self._Histo2D(), other._Histo2D()))
         return h

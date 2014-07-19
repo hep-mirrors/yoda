@@ -5,7 +5,7 @@ cdef class ProfileBin2D(Bin2D_Dbn3D):
         return <c.ProfileBin2D *> self.ptr()
 
     def __init__(self, xlow, xhigh, ylow, yhigh):
-        util.set_owned_ptr(
+        cutil.set_owned_ptr(
             self, new c.ProfileBin2D(xlow, xhigh, ylow, yhigh))
         
     def fill(self, x, y, z, weight=1.0):
@@ -43,14 +43,14 @@ cdef class ProfileBin2D(Bin2D_Dbn3D):
         return self._ProfileBin2D().sumWZ2()
 
     def __add__(ProfileBin2D a, ProfileBin2D b):
-        return util.new_owned_cls(
+        return cutil.new_owned_cls(
             ProfileBin2D,
             new c.ProfileBin2D(
                 deref(a._ProfileBin2D()) + 
                 deref(b._ProfileBin2D())))
 
     def __sub__(ProfileBin2D a, ProfileBin2D b):
-        return util.new_owned_cls(
+        return cutil.new_owned_cls(
             ProfileBin2D,
             new c.ProfileBin2D(
                 deref(a._ProfileBin2D()) -

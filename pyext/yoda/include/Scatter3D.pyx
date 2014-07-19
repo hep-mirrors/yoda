@@ -21,7 +21,7 @@ cdef class Scatter3D(AnalysisObject):
         util.try_loop([self.__init_2, self.__init_3], *args, **kwargs)
 
     def __init_2(self, char* path="", char* title=""):
-        util.set_owned_ptr(self, new c.Scatter3D(string(path), string(title)))
+        cutil.set_owned_ptr(self, new c.Scatter3D(string(path), string(title)))
 
     def __init_3(self, points, char* path="", char* title=""):
         self.__init_2(path, title)
@@ -30,7 +30,7 @@ cdef class Scatter3D(AnalysisObject):
     def clone(self):
         """() -> Scatter3D.
         Clone this Scatter3D."""
-        return util.new_owned_cls(Scatter3D, self._Scatter3D().newclone())
+        return cutil.new_owned_cls(Scatter3D, self._Scatter3D().newclone())
 
     def __repr__(self):
         return "<%s '%s' %d points>" % (self.__class__.__name__, self.path, len(self.points))
@@ -53,12 +53,12 @@ cdef class Scatter3D(AnalysisObject):
 
     def point(self, size_t i):
         """Access the i'th point."""
-        return util.new_borrowed_cls(Point3D, &self._Scatter3D().point(i), self)
+        return cutil.new_borrowed_cls(Point3D, &self._Scatter3D().point(i), self)
 
     # TODO: remove?
     # def __getitem__(self, py_ix):
     #     cdef size_t i = util.pythonic_index(py_ix, self._Scatter3D().numPoints())
-    #     return util.new_borrowed_cls(Point3D, &self._Scatter3D().point(i), self)
+    #     return cutil.new_borrowed_cls(Point3D, &self._Scatter3D().point(i), self)
 
 
     def addPoint(self, *args, **kwargs):
@@ -102,7 +102,7 @@ cdef class Scatter3D(AnalysisObject):
         Make a new Scatter3D. Exists to allow mkScatter calls on any AnalysisObject,
         even if it already is a scatter."""
         cdef c.Scatter3D s3 = c.mkScatter_Scatter3D(deref(self._Scatter3D()))
-        return util.new_owned_cls(Scatter3D, s3.newclone())
+        return cutil.new_owned_cls(Scatter3D, s3.newclone())
 
 
     def scaleX(self, a):
@@ -169,8 +169,8 @@ cdef class Scatter3D(AnalysisObject):
 
     # TODO: remove?
     def __add__(Scatter3D self, Scatter3D other):
-        return util.new_owned_cls(Scatter3D, c.Scatter3D_add_Scatter3D(self._Scatter3D(), other._Scatter3D()))
+        return cutil.new_owned_cls(Scatter3D, c.Scatter3D_add_Scatter3D(self._Scatter3D(), other._Scatter3D()))
 
     # TODO: remove?
     def __sub__(Scatter3D self, Scatter3D other):
-        return util.new_owned_cls(Scatter3D, c.Scatter3D_sub_Scatter3D(self._Scatter3D(), other._Scatter3D()))
+        return cutil.new_owned_cls(Scatter3D, c.Scatter3D_sub_Scatter3D(self._Scatter3D(), other._Scatter3D()))

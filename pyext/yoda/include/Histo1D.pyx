@@ -35,7 +35,7 @@ cdef class Histo1D(AnalysisObject):
         util.try_loop([self.__init2, self.__init5, self.__init3], *args, **kwargs)
 
     def __init2(self, char *path="", char *title=""):
-        util.set_owned_ptr(self, new c.Histo1D(string(path), string(title)))
+        cutil.set_owned_ptr(self, new c.Histo1D(string(path), string(title)))
 
     # TODO: Is Cython clever enough that we can make 3a and 3b versions and let it do the type inference?
     def __init3(self, bins_or_edges, char *path="", char *title=""):
@@ -44,7 +44,7 @@ cdef class Histo1D(AnalysisObject):
         try:
             ## If float conversions work for all elements, it's a list of edges:
             edges = list(float(x) for x in bins_or_edges)
-            util.set_owned_ptr(self, new c.Histo1D(edges, string(path), string(title)))
+            cutil.set_owned_ptr(self, new c.Histo1D(edges, string(path), string(title)))
         except:
             ## Assume it's a list of HistoBin1D
             bins = bins_or_edges
@@ -52,7 +52,7 @@ cdef class Histo1D(AnalysisObject):
             self.addBins(bins)
 
     def __init5(self, nbins, low, high, char *path="", char *title=""):
-        util.set_owned_ptr(self, new c.Histo1D(nbins, low, high, string(path), string(title)))
+        cutil.set_owned_ptr(self, new c.Histo1D(nbins, low, high, string(path), string(title)))
 
 
     def __len__(self):
@@ -60,7 +60,7 @@ cdef class Histo1D(AnalysisObject):
 
     def __getitem__(self, py_ix):
         cdef size_t i = util.pythonic_index(py_ix, self._Histo1D().numBins())
-        return util.new_borrowed_cls(HistoBin1D, & self._Histo1D().bin(i), self)
+        return cutil.new_borrowed_cls(HistoBin1D, & self._Histo1D().bin(i), self)
 
 
     def __repr__(self):
@@ -81,7 +81,7 @@ cdef class Histo1D(AnalysisObject):
     def clone(self):
         """None -> Histo1D.
         Clone this Histo1D."""
-        return util.new_owned_cls(Histo1D, self._Histo1D().newclone())
+        return cutil.new_owned_cls(Histo1D, self._Histo1D().newclone())
 
 
     def fill(self, x, weight=1.0):
@@ -100,19 +100,19 @@ cdef class Histo1D(AnalysisObject):
     def totalDbn(self):
         """None -> Dbn1D
         The Dbn1D representing the total distribution."""
-        return util.new_borrowed_cls(Dbn1D, &self._Histo1D().totalDbn(), self)
+        return cutil.new_borrowed_cls(Dbn1D, &self._Histo1D().totalDbn(), self)
 
     @property
     def underflow(self):
         """None -> Dbn1D
         The Dbn1D representing the underflow distribution."""
-        return util.new_borrowed_cls(Dbn1D, &self._Histo1D().underflow(), self)
+        return cutil.new_borrowed_cls(Dbn1D, &self._Histo1D().underflow(), self)
 
     @property
     def overflow(self):
         """None -> Dbn1D
         The Dbn1D representing the overflow distribution."""
-        return util.new_borrowed_cls(Dbn1D, &self._Histo1D().overflow(), self)
+        return cutil.new_borrowed_cls(Dbn1D, &self._Histo1D().overflow(), self)
 
 
     def integral(self, overflows=True):
@@ -236,7 +236,7 @@ cdef class Histo1D(AnalysisObject):
         Convert this Histo1D to a Scatter2D, with y representing bin heights
         (not sumW) and height errors."""
         cdef c.Scatter2D s2 = c.mkScatter_Histo1D(deref(self._Histo1D()))
-        return util.new_owned_cls(Scatter2D, s2.newclone())
+        return cutil.new_owned_cls(Scatter2D, s2.newclone())
 
 
     def toIntegral(self, efficiency=False, includeunderflow=True, includeoverflow=True):
@@ -253,7 +253,7 @@ cdef class Histo1D(AnalysisObject):
             s2 = c.Histo1D_toIntegral(deref(self._Histo1D()), includeunderflow)
         else:
             s2 = c.Histo1D_toIntegralEff(deref(self._Histo1D()), includeunderflow, includeoverflow)
-        return util.new_owned_cls(Scatter2D, s2.newclone())
+        return cutil.new_owned_cls(Scatter2D, s2.newclone())
 
 
     def divide(self, Histo1D h1, efficiency=False):
@@ -264,7 +264,7 @@ cdef class Histo1D(AnalysisObject):
             s2 = c.Histo1D_div_Histo1D(deref(self._Histo1D()), deref(h1._Histo1D()))
         else:
             s2 = c.Histo1D_eff_Histo1D(deref(self._Histo1D()), deref(h1._Histo1D()))
-        return util.new_owned_cls(Scatter2D, s2.newclone())
+        return cutil.new_owned_cls(Scatter2D, s2.newclone())
 
 
     ## In-place special methods
@@ -290,7 +290,7 @@ cdef class Histo1D(AnalysisObject):
 
     def __add__(Histo1D self, Histo1D other):
         h = Histo1D()
-        util.set_owned_ptr(h, c.Histo1D_add_Histo1D(self._Histo1D(), other._Histo1D()))
+        cutil.set_owned_ptr(h, c.Histo1D_add_Histo1D(self._Histo1D(), other._Histo1D()))
         return h
 
     # TODO: Cython doesn't support type overloading for special functions?
@@ -311,7 +311,7 @@ cdef class Histo1D(AnalysisObject):
 
     def __sub__(Histo1D self, Histo1D other):
         h = Histo1D()
-        util.set_owned_ptr(h, c.Histo1D_sub_Histo1D(self._Histo1D(), other._Histo1D()))
+        cutil.set_owned_ptr(h, c.Histo1D_sub_Histo1D(self._Histo1D(), other._Histo1D()))
         return h
 
     # def __mul__(Histo1D self, double x):
@@ -323,5 +323,5 @@ cdef class Histo1D(AnalysisObject):
 
     def __div__(Histo1D self, Histo1D other):
         h = Histo1D()
-        util.set_owned_ptr(h, c.Histo1D_div_Histo1D(self._Histo1D(), other._Histo1D()))
+        cutil.set_owned_ptr(h, c.Histo1D_div_Histo1D(self._Histo1D(), other._Histo1D()))
         return h

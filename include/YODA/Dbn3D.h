@@ -137,25 +137,25 @@ namespace YODA {
     }
 
 
-    /// Rescale x and y: needed if histo bin edges are rescaled.
-    void scaleXY(double xscale, double yscale) {
-      scaleX(xscale);
-      scaleY(yscale);
-    }
+    // /// Rescale x and y: needed if histo bin edges are rescaled.
+    // void scaleXY(double xscale, double yscale) {
+    //   scaleX(xscale);
+    //   scaleY(yscale);
+    // }
 
 
-    /// Rescale x and z: needed if histo bin edges are rescaled.
-    void scaleXZ(double xscale, double zscale) {
-      scaleX(xscale);
-      scaleZ(zscale);
-    }
+    // /// Rescale x and z: needed if histo bin edges are rescaled.
+    // void scaleXZ(double xscale, double zscale) {
+    //   scaleX(xscale);
+    //   scaleZ(zscale);
+    // }
 
 
-    /// Rescale y and z: needed if histo bin edges are rescaled.
-    void scaleYZ(double yscale, double zscale) {
-      scaleY(yscale);
-      scaleZ(zscale);
-    }
+    // /// Rescale y and z: needed if histo bin edges are rescaled.
+    // void scaleYZ(double yscale, double zscale) {
+    //   scaleY(yscale);
+    //   scaleZ(zscale);
+    // }
 
 
     /// Rescale x, y and z: needed if histo bin edges are rescaled.

@@ -55,9 +55,10 @@ cdef extern from "YODA/Dbn1D.h" namespace "YODA":
         double sumWX() except +err
         double sumWX2() except +err
 
-        # Operators: TODO when Cython supports += and -= etc.
         Dbn1D operator+ (Dbn1D) except +err
         Dbn1D operator- (Dbn1D) except +err
+        # TODO: += and -= operators
+
 #}}} Dbn1D
 
 
@@ -104,7 +105,8 @@ cdef extern from "YODA/Dbn2D.h" namespace "YODA":
 
         Dbn2D operator + (Dbn2D) except +err
         Dbn2D operator - (Dbn2D) except +err
-        # TODO: += and -= operators in Cython (maybe 0.17?)
+        # TODO: += and -= operators
+
 #}}} Dbn2D
 
 
@@ -120,10 +122,11 @@ cdef extern from "YODA/Dbn3D.h" namespace "YODA":
         void scaleX(double)
         void scaleY(double)
         void scaleZ(double)
-        void scaleXY(double, double)
+        # void scaleXY(double, double)
+        # void scaleYZ(double, double)
+        # void scaleXZ(double, double)
         void scaleXYZ(double, double, double)
 
-        # Each of these statistics can return a 3D named tuple
         double xMean()
         double xVariance()
         double xStdDev()
@@ -174,7 +177,8 @@ cdef extern from "YODA/Dbn3D.h" namespace "YODA":
 
         Dbn3D operator + (Dbn3D)
         Dbn3D operator - (Dbn3D)
-        # TODO: += and -= operators in Cython (maybe 0.17?)
+        # TODO: += and -= operators
+
 #}}} Dbn3D
 
 
@@ -186,9 +190,8 @@ cdef extern from "YODA/Point2D.h" namespace "YODA":
     cdef cppclass Point2D:
         Point2D () except +err
         Point2D (Point2D p) except +err
-
         Point2D (double x, double y,
-                  double exminus, double explus,
+                 double exminus, double explus,
                  double eyminus, double eyplus) except +err
 
         double x() except +err
@@ -228,7 +231,6 @@ cdef extern from "YODA/Point3D.h" namespace "YODA":
     cdef cppclass Point3D:
         Point3D () except +err
         Point3D (Point3D& p) except +err
-
         Point3D (double x, double y, double z,
                  double exminus, double explus,
                  double eyminus, double eyplus,
@@ -420,6 +422,9 @@ cdef extern from "YODA/ProfileBin1D.h" namespace "YODA":
         double sumWY2() except +err
         ProfileBin1D operator + (ProfileBin1D) except +err
         ProfileBin1D operator - (ProfileBin1D) except +err
+
+        void scaleY(double) except +err
+        void scaleXY(double) except +err
 
 # }}} ProfileBin1D
 

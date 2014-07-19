@@ -20,10 +20,10 @@ def mkScatter(ao):
 #         raise ValueError("Histograms must be of the same type to be divided")
 #     if type(ao1) is Histo1D:
 #         s2 = c.Histo1D_div_Histo1D(deref(ao1._Histo1D()), deref(ao2._Histo1D()))
-#         return util.new_owned_cls(Scatter2D, s2.newclone())
+#         return cutil.new_owned_cls(Scatter2D, s2.newclone())
 #     elif type(ao1) is Profile1D:
 #         s2 = c.Profile1D_div_Profile1D(deref(ao1._Profile1D()), deref(ao2._Profile1D()))
-#         return util.new_owned_cls(Scatter2D, s2.newclone())
+#         return cutil.new_owned_cls(Scatter2D, s2.newclone())
 #     raise ValueError("TODO: Only division of Histo1D and Profile1D supported so far... please contact the developers!")
 
 

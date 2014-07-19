@@ -111,49 +111,61 @@ namespace YODA {
     //@{
 
     /// Lower limit of the bin (inclusive).
-    double lowEdge() const {
+    double xMin() const {
       return _edges.first;
     }
-    /// Synonym for lowEdge
-    double xMin() const {
-      return lowEdge();
+    /// Alias
+    double lowEdge() const {
+      return xMin();
     }
 
     /// Upper limit of the bin (exclusive).
-    double highEdge() const {
+    double xMax() const {
       return _edges.second;
     }
-    /// Synonym for highEdge
-    double xMax() const {
-      return highEdge();
+    /// Alias
+    double highEdge() const {
+      return xMax();
     }
 
     /// Get the {low,high} edges as an STL @c pair.
-    std::pair<double,double> edges() const {
+    std::pair<double,double> xEdges() const {
       return _edges;
+    }
+    /// Alias
+    std::pair<double,double> edges() const {
+      return xEdges();
     }
 
     /// Separation of low and high edges, i.e. high-low.
-    double width() const {
+    double xWidth() const {
       return _edges.second - _edges.first;
+    }
+    /// Alias
+    double width() const {
+      return xWidth();
     }
 
     /// The mean position in the bin, or the midpoint if that is not available.
-    double focus() const {
+    double xFocus() const {
       if (!isZero(sumW())) {
         return xMean();
       } else {
         return midpoint();
       }
     }
+    /// Alias
+    double focus() const {
+      return xFocus();
+    }
 
     /// Geometric centre of the bin, i.e. high+low/2.0
-    double midpoint() const {
+    double xMid() const {
       return ( _edges.second + _edges.first ) / 2;
     }
-    /// Synonym for midpoint
-    double xMid() const {
-      return midpoint();
+    /// Alias
+    double midpoint() const {
+      return xMid();
     }
 
     //@}

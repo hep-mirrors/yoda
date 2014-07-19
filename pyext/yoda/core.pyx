@@ -1,13 +1,16 @@
 #cython: embedsignature=True
 
-cimport yoda.declarations as c
-cimport yoda.util as util
-import yoda.util as util
+## System / stdlib imports
 from cython.operator cimport dereference as deref, preincrement as preinc
 from libcpp.string cimport string
 from libcpp.vector cimport vector
 from libcpp.pair cimport pair
 from libcpp.map cimport map
+
+## YODA mapping imports
+cimport yoda.declarations as c
+cimport yoda.util as cutil
+import yoda.util as util
 
 ## Pure Python imports
 from itertools import repeat, imap

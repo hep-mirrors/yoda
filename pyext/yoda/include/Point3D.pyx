@@ -13,13 +13,13 @@ cdef class Point3D(util.Base):
 
 
     def __init__(self, x=0, y=0, xerrs=0, yerrs=0):
-        util.set_owned_ptr(self, new c.Point3D())
+        cutil.set_owned_ptr(self, new c.Point3D())
         self.xy = x, y
         self.xerrs = xerrs
         self.yerrs = yerrs
 
     def copy(self):
-        return util.new_owned_cls(Point3D, new c.Point3D(deref(self._Point3D())))
+        return cutil.new_owned_cls(Point3D, new c.Point3D(deref(self._Point3D())))
 
 
     property x:
