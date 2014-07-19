@@ -6,25 +6,39 @@ cdef class Bin1D_${DBN}(Bin):
 
     """
 
+    cdef inline c.Bin1D_${DBN}* b1ptr(self) except NULL:
+        return <c.Bin1D_${DBN}*> self.ptr()
+    # TODO: remove
+    cdef inline c.Bin1D_${DBN}* _Bin1D(self) except NULL:
+        return <c.Bin1D_${DBN}*> self.ptr()
+
+
     def __init__(self, xlow, xhigh):
-        util.set_owned_ptr(
-            self, new c.Bin1D_${DBN}(pair[double, double](xlow, xhigh)))
+        cutil.set_owned_ptr(self, new c.Bin1D_${DBN}(pair[double, double](xlow, xhigh)))
 
-    def scale(self, x=1.0, w=1.0):
-        """
-        scale(x=1.0, w=1.0) -> None. Scale this bin's arguments by
-        their respective scalefactors.
+    def __repr__(self):
+        return '<%s[%g, %g)>' % ((self.__class__.__name__,) + self.edges)
 
+
+    def scaleX(self, ax):
         """
-        if w != 1.0:
-            self._Bin1D().scaleW(w)
-        if x != 1.0:
-            self._Bin1D().scaleX(x)
+        float -> None
+        Scale this bin's x arguments by ax.
+        """
+        self.b1ptr().scaleX(ax)
+
+    def scaleW(self, a):
+        """
+        float -> None
+        Scale this bin's weights by a.
+        """
+        self.b1ptr().scaleW(a)
+
 
     @property
     def lowEdge(self):
         """The lower bin edge."""
-        return self._Bin1D().lowEdge()
+        return self.b1ptr().lowEdge()
 
     @property
     def xMin(self):
@@ -34,7 +48,7 @@ cdef class Bin1D_${DBN}(Bin):
     @property
     def highEdge(self):
         """The upper bin edge."""
-        return self._Bin1D().highEdge()
+        return self.b1ptr().highEdge()
 
     @property
     def xMax(self):
@@ -42,14 +56,16 @@ cdef class Bin1D_${DBN}(Bin):
         return self.highEdge
 
     @property
-    def edges(self):
+    def xEdges(self):
         """The lower and upper edges."""
-        return (self.lowEdge, self.highEdge)
+        return (self.xMin, self.xMax)
+    # Alias
+    edges = xEdges
 
     @property
     def width(self):
         """The width of the bin."""
-        return self._Bin1D().width()
+        return self.b1ptr().width()
 
     @property
     def focus(self):
@@ -59,12 +75,12 @@ cdef class Bin1D_${DBN}(Bin):
         then the focus is the midpoint of the bin.
 
         """
-        return self._Bin1D().focus()
+        return self.b1ptr().focus()
 
     @property
     def midpoint(self):
         """The point half-way between the two bin edges."""
-        return self._Bin1D().midpoint()
+        return self.b1ptr().midpoint()
 
     @property
     def xMid(self):
@@ -74,7 +90,7 @@ cdef class Bin1D_${DBN}(Bin):
     @property
     def mean(self):
         """The mean of the x-values that have filled the bin."""
-        return self._Bin1D().xMean()
+        return self.b1ptr().xMean()
 
     @property
     def stdDev(self):
@@ -82,7 +98,7 @@ cdef class Bin1D_${DBN}(Bin):
         The standard deviation of the x-values that have filled the bin.
 
         """
-        return self._Bin1D().xStdDev()
+        return self.b1ptr().xStdDev()
 
     @property
     def stdErr(self):
@@ -90,7 +106,7 @@ cdef class Bin1D_${DBN}(Bin):
         The standard error of the x-values that have filled the bin.
 
         """
-        return self._Bin1D().xStdErr()
+        return self.b1ptr().xStdErr()
 
     @property
     def rms(self):
@@ -98,11 +114,8 @@ cdef class Bin1D_${DBN}(Bin):
         The root-mean-square of the x-values that have filled the bin.
 
         """
-        return self._Bin1D().xRMS()
+        return self.b1ptr().xRMS()
 
-    ##
-    ## Raw statistics
-    ##
 
     @property
     def numEntries(self):
@@ -110,7 +123,7 @@ cdef class Bin1D_${DBN}(Bin):
         The number of entries that have filled the bin.
 
         """
-        return int(self._Bin1D().numEntries())
+        return int(self.b1ptr().numEntries())
 
     @property
     def effNumEntries(self):
@@ -120,7 +133,7 @@ cdef class Bin1D_${DBN}(Bin):
         s.effNumEntries <==> (s.sumW ** 2) / s.sumW2
 
         """
-        return self._Bin1D().effNumEntries()
+        return self.b1ptr().effNumEntries()
 
     @property
     def sumW(self):
@@ -128,7 +141,7 @@ cdef class Bin1D_${DBN}(Bin):
         The sum of weights: sum(weights).
 
         """
-        return self._Bin1D().sumW()
+        return self.b1ptr().sumW()
 
     @property
     def sumW2(self):
@@ -136,7 +149,7 @@ cdef class Bin1D_${DBN}(Bin):
         The sum of weights-squared: sum(weights * weights)
 
         """
-        return self._Bin1D().sumW2()
+        return self.b1ptr().sumW2()
 
     @property
     def sumWX(self):
@@ -144,7 +157,7 @@ cdef class Bin1D_${DBN}(Bin):
         The sum of weights-times-x: sum(weights * x)
 
         """
-        return self._Bin1D().sumWX()
+        return self.b1ptr().sumWX()
 
     @property
     def sumWX2(self):
@@ -152,7 +165,8 @@ cdef class Bin1D_${DBN}(Bin):
         The sum of weights-times-x-squared: sum(weights * x * x)
 
         """
-        return self._Bin1D().sumWX2()
+        return self.b1ptr().sumWX2()
+
 
     def merge(Bin1D_${DBN} self, Bin1D_${DBN} other):
         """
@@ -161,21 +175,14 @@ cdef class Bin1D_${DBN}(Bin):
         common edge, can be merged.
 
         """
-        self._Bin1D().merge(deref(other._Bin1D()))
+        self.b1ptr().merge(deref(other.b1ptr()))
         return self
 
-    def __repr__(self):
-        return '<%s[%g, %g)>' % ((self.__class__.__name__,) + self.edges)
 
     def __add__(Bin1D_${DBN} self, Bin1D_${DBN} other):
-        return util.new_owned_cls(
-            Bin1D_${DBN},
-            new c.Bin1D_${DBN}(deref(self._Bin1D()) + deref(other._Bin1D())))
+        return cutil.new_owned_cls(Bin1D_${DBN},
+                                   new c.Bin1D_${DBN}(deref(self.b1ptr()) + deref(other.b1ptr())))
 
     def __sub__(Bin1D_${DBN} self, Bin1D_${DBN} other):
-        return util.new_owned_cls(
-            Bin1D_${DBN},
-            new c.Bin1D_${DBN}(deref(self._Bin1D()) - deref(other._Bin1D())))
-
-    cdef inline c.Bin1D_${DBN} *_Bin1D(self) except NULL:
-        return <c.Bin1D_${DBN} *> self.ptr()
+        return cutil.new_owned_cls(Bin1D_${DBN},
+                                   new c.Bin1D_${DBN}(deref(self.b1ptr()) - deref(other.b1ptr())))

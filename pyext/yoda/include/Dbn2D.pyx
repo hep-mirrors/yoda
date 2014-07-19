@@ -1,17 +1,39 @@
-
 cdef class Dbn2D(util.Base):
     """
     A 2D distribution 'counter', used and exposed by 2D histograms and
     1D profiles and their bins.
 
+    TODO: also provide normal scalar access to quantities like xRMS
     """
 
+    cdef c.Dbn2D* d2ptr(self) except NULL:
+        return <c.Dbn2D *> self.ptr()
+    # TODO: remove!
+    cdef c.Dbn2D* _Dbn2D(self) except NULL:
+        return <c.Dbn2D *> self.ptr()
+
+    def __dealloc__(self):
+        cdef c.Dbn2D *p = self.d2ptr()
+        if self._deallocate:
+            del p
+
+
     def __init__(self):
-        util.set_owned_ptr(self, new c.Dbn2D())
+        cutil.set_owned_ptr(self, new c.Dbn2D())
+
+    def __repr__(self):
+        return '<Dbn2D(mean=(%g, %g), stdDev=(%g, %g))>' % (self.mean + self.stdDev)
 
 
     def copy(self):
-        return util.new_owned_cls(Dbn2D, new c.Dbn2D(deref(self._Dbn2D())))
+        return cutil.new_owned_cls(Dbn2D, new c.Dbn2D(deref(self.d2ptr())))
+
+    def reset(self):
+        """
+        () -> None
+
+        Reset the distribution counters to the unfilled state."""
+        self.d2ptr().reset()
 
 
     def fill(self, x, y, weight=1.0):
@@ -21,15 +43,8 @@ cdef class Dbn2D(util.Base):
         Fills the distribution with the given weight at given (x, y).
 
         """
-        self._Dbn2D().fill(x, y, weight)
+        self.d2ptr().fill(x, y, weight)
 
-
-    def reset(self):
-        """
-        () -> None
-
-        Reset the distribution counters to the unfilled state."""
-        self._Dbn2D().reset()
 
     def scaleW(self, w):
         """
@@ -37,7 +52,7 @@ cdef class Dbn2D(util.Base):
 
         Scale the weights by the given factor.
         """
-        self._Dbn2D().scaleW(w)
+        self.d2ptr().scaleW(w)
 
     def scaleX(self, x):
         """
@@ -45,7 +60,7 @@ cdef class Dbn2D(util.Base):
 
         Scale the x dimension by the given factor.
         """
-        self._Dbn2D().scaleX(x)
+        self.d2ptr().scaleX(x)
 
     def scaleY(self, y):
         """
@@ -53,7 +68,7 @@ cdef class Dbn2D(util.Base):
 
         Scale the y dimension by the given factor.
         """
-        self._Dbn2D().scaleY(y)
+        self.d2ptr().scaleY(y)
 
     def scaleXY(self, x, y):
         """
@@ -61,94 +76,84 @@ cdef class Dbn2D(util.Base):
 
         Scale the x and y dimensions by the given factors.
         """
-        self._Dbn2D().scaleXY(x, y)
+        self.d2ptr().scaleXY(x, y)
+
 
     @property
     def mean(self):
         """Weighted mean of x"""
-        return util.XY(self._Dbn2D().xMean(), self._Dbn2D().yMean())
+        return util.XY(self.d2ptr().xMean(), self.d2ptr().yMean())
 
     @property
     def variance(self):
         """Weighted variance of x"""
-        return util.XY(self._Dbn2D().xVariance(), self._Dbn2D().yVariance())
+        return util.XY(self.d2ptr().xVariance(), self.d2ptr().yVariance())
 
     @property
     def stdDev(self):
         """Weighted standard deviation of x"""
-        return util.XY(self._Dbn2D().xStdDev(), self._Dbn2D().yStdDev())
+        return util.XY(self.d2ptr().xStdDev(), self.d2ptr().yStdDev())
 
     @property
     def stdErr(self):
         """Weighted standard error on <x>"""
-        return util.XY(self._Dbn2D().xStdErr(), self._Dbn2D().yStdErr())
+        return util.XY(self.d2ptr().xStdErr(), self.d2ptr().yStdErr())
 
     @property
     def rms(self):
         """Weighted root mean squared (RMS) of x"""
-        return util.XY(self._Dbn2D().xRMS(), self._Dbn2D().yRMS())
+        return util.XY(self.d2ptr().xRMS(), self.d2ptr().yRMS())
+
 
     @property
     def numEntries(self):
         """The number of entries"""
-        return int(self._Dbn2D().numEntries())
+        return int(self.d2ptr().numEntries())
 
     @property
     def effNumEntries(self):
         """Effective number of entries (for weighted events)"""
-        return self._Dbn2D().effNumEntries()
+        return self.d2ptr().effNumEntries()
+
 
     @property
     def sumW(self):
         """sum(weights)"""
-        return self._Dbn2D().sumW()
+        return self.d2ptr().sumW()
 
     @property
     def sumW2(self):
         """sum(weights * weights)"""
-        return self._Dbn2D().sumW2()
+        return self.d2ptr().sumW2()
 
     @property
     def sumWX(self):
         """sum(weights * xs)"""
-        return self._Dbn2D().sumWX()
+        return self.d2ptr().sumWX()
 
     @property
     def sumWY(self):
         """sum(weights * ys)"""
-        return self._Dbn2D().sumWY()
+        return self.d2ptr().sumWY()
 
     @property
     def sumWX2(self):
         """sum(weights * xs * xs)"""
-        return self._Dbn2D().sumWX2()
+        return self.d2ptr().sumWX2()
 
     @property
     def sumWY2(self):
         """sum(weights * ys * ys)"""
-        return self._Dbn2D().sumWY2()
+        return self.d2ptr().sumWY2()
 
     @property
     def sumWXY(self):
         """sum(weights xs * ys)"""
-        return self._Dbn2D().sumWXY()
+        return self.d2ptr().sumWXY()
+
 
     def __add__(Dbn2D self, Dbn2D other):
-        return util.new_owned_cls(Dbn2D, new c.Dbn2D(
-            deref(self._Dbn2D()) + deref(other._Dbn2D())))
+        return cutil.new_owned_cls(Dbn2D, new c.Dbn2D(deref(self.d2ptr()) + deref(other.d2ptr())))
 
     def __sub__(Dbn2D self, Dbn2D other):
-        return util.new_owned_cls(Dbn2D, new c.Dbn2D(
-            deref(self._Dbn2D()) - deref(other._Dbn2D())))
-
-    def __repr__(self):
-        return '<Dbn2D(mean=(%g, %g), stdDev=(%g, %g))>' % (self.mean + self.std_dev)
-
-    # Magic stuff
-    cdef c.Dbn2D *_Dbn2D(self) except NULL:
-        return <c.Dbn2D *> self.ptr()
-
-    def __dealloc__(self):
-        cdef c.Dbn2D *p = self._Dbn2D()
-        if self._deallocate:
-            del p
+        return cutil.new_owned_cls(Dbn2D, new c.Dbn2D(deref(self.d2ptr()) - deref(other.d2ptr())))

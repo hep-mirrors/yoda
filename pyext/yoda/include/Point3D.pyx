@@ -50,24 +50,26 @@ cdef class Point3D(util.Base):
             self.x, self.y, self.z = val
 
 
+    # TODO: How does this fit into the multi-error API? Still useful, but just reports first errs... how to get _all_ +- err pairs?
     property xErrs:
         def __get__(self):
-            return read_error_pair(self._Point3D().xErrs())
+            return util.read_error_pair(self._Point3D().xErrs())
         def __set__(self, val):
-            self._Point3D().setXErr(read_symmetric(val))
+            self._Point3D().setXErr(util.read_symmetric(val))
 
+    # TODO: How does this fit into the multi-error API? Still useful, but just reports first errs... how to get _all_ +- err pairs?
     property yErrs:
         def __get__(self):
-            return read_error_pair(self._Point3D().yErrs())
+            return util.read_error_pair(self._Point3D().yErrs())
         def __set__(self, val):
-            self._Point3D().setYErr(read_symmetric(val))
+            self._Point3D().setYErr(util.read_symmetric(val))
 
+    # TODO: How does this fit into the multi-error API? Still useful, but just reports first errs... how to get _all_ +- err pairs?
     property zErrs:
         def __get__(self):
-            return read_error_pair(self._Point3D().zErrs())
+            return util.read_error_pair(self._Point3D().zErrs())
         def __set__(self, val):
-            self._Point3D().setZErr(read_symmetric(val))
-
+            self._Point3D().setZErr(util.read_symmetric(val))
 
 
     @property

@@ -1,21 +1,22 @@
-
-#TODO docstrings
+# TODO: docstrings
 cdef class Bin2D_${DBN}(Bin):
-    """1D Bin class templated on a ${DBN}"""
+    """2D Bin class templated on a ${DBN}"""
+
+    cdef inline c.Bin2D_${DBN}* _Bin2D(self) except NULL:
+        return <c.Bin2D_${DBN}*> self.ptr()
+
 
     def __init__(self, xlow, xhigh, ylow, yhigh):
-        util.set_owned_ptr(
-            self, new c.Bin2D_${DBN}(
-                pair[double, double](xlow, xhigh),
-                pair[double, double](ylow, yhigh),
-            ))
+        util.set_owned_ptr(self, new c.Bin2D_${DBN}( pair[double, double](xlow, xhigh),
+                                                     pair[double, double](ylow, yhigh) ))
 
-    def scale(self, x=1.0, y=1.0, w=1.0):
-        if x != 1.0 or y != 1.0:
-            self.scaleXY(x, y)
 
-        if w != 1.0:
-            self.scaleW(w)
+    def scaleXY(self, x=1.0, y=1.0):
+        self._Bin2D().scaleXY(x, y)
+
+    def scaleW(self, w):
+        self._Bin2D().scaleW(w)
+
 
     @property
     def xMin(self):
@@ -46,8 +47,7 @@ cdef class Bin2D_${DBN}(Bin):
         """
         cdef pair[double, double] x = self._Bin2D().xedges()
         cdef pair[double, double] y = self._Bin2D().yedges()
-        return util.XY(util.Edges(x.first, x.second),
-                  util.Edges(y.first, y.second))
+        return util.XY((x.first, x.second), (y.first, y.second))
 
 
     @property
@@ -167,12 +167,14 @@ cdef class Bin2D_${DBN}(Bin):
     def sumWY2(self):
         return self._Bin2D().sumWY2()
 
+
     #def merge(Bin2D_${DBN} self, Bin2D_${DBN} other):
     #    self._Bin2D().merge(deref(other._Bin2D()))
     #    return self
 
     def adjacentTo(Bin2D_${DBN} self, Bin2D_${DBN} other):
         return self._Bin2D().adjacentTo(deref(other._Bin2D()))
+
 
     def __add__(Bin2D_${DBN} self, Bin2D_${DBN} other):
         return util.new_owned_cls(
@@ -183,6 +185,3 @@ cdef class Bin2D_${DBN}(Bin):
         return util.new_owned_cls(
             Bin2D_${DBN},
             new c.Bin2D_${DBN}(deref(self._Bin2D()) - deref(other._Bin2D())))
-
-    cdef inline c.Bin2D_${DBN} *_Bin2D(self) except NULL:
-        return <c.Bin2D_${DBN} *> self.ptr()

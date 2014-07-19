@@ -2,24 +2,38 @@
 # it be a user facing class... it's merely there for tests)
 cdef class Axis1D_${BIN1D}_${DBN}(util.Base):
 
-    def __init__(self):
-        util.set_owned_ptr(
-            self, new c.Axis1D[c.${BIN1D}, c.${DBN}]())
+    cdef inline c.Axis1D[c.${BIN1D}, c.${DBN}]* _Axis1D(self) except NULL:
+        return <c.Axis1D[c.${BIN1D}, c.${DBN}]*> self.ptr()
 
-    def __len__(self):
+    def __dealloc__(self):
+        cdef c.Axis1D[c.${BIN1D}, c.${DBN}]* p = self._Axis1D()
+        if self._deallocate:
+            del p
+
+
+    def __init__(self):
+        util.set_owned_ptr(self, new c.Axis1D[c.${BIN1D}, c.${DBN}]())
+
+    def __repr__(self):
+        return "<Axis1D with %d bins>" % self.numBins
+
+
+    @property
+    def numBins(self):
         return self._Axis1D().bins().size()
 
+    def __len__(self):
+        return self.numBins
 
-    def __getitem__(self, py_ix):
-        cdef size_t i = util.pythonic_index(py_ix, self._Axis1D().bins().size())
-        return util.new_borrowed_cls(
-            ${BIN1D}, & self._Axis1D().bins().at(i), self)
+    # TODO: remove
+    # def __getitem__(self, py_ix):
+    #     cdef size_t i = util.pythonic_index(py_ix, self._Axis1D().bins().size())
+    #     return util.new_borrowed_cls(
+    #         ${BIN1D}, & self._Axis1D().bins().at(i), self)
+
 
     def addBin(self, a, b):
         self._Axis1D().addBin(a, b)
-
-    def __repr__(self):
-        return "<Axis1D>"
 
     @property
     def totalDbn(self):
@@ -50,12 +64,3 @@ cdef class Axis1D_${BIN1D}_${DBN}(util.Base):
 
     #def binAt(self, x):
     #    return self[self._Axis1D().getBinIndex(x)]
-
-    # BOILERPLATE STUFF
-    cdef inline c.Axis1D[c.${BIN1D}, c.${DBN}] *_Axis1D(self) except NULL:
-        return <c.Axis1D[c.${BIN1D}, c.${DBN}]*> self.ptr()
-
-    def __dealloc__(self):
-        cdef c.Axis1D[c.${BIN1D}, c.${DBN}] *p = self._Axis1D()
-        if self._deallocate:
-            del p

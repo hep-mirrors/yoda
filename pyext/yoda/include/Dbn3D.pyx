@@ -1,16 +1,31 @@
 cdef class Dbn3D(util.Base):
     """
-    A 2D distribution 'counter', used and exposed by 2D histograms and
-    1D profiles and their bins.
+    A 3D distribution 'counter', used and exposed by 2D profiles and their bins.
 
+    TODO: also provide normal scalar access to quantities like xRMS
     """
 
+    cdef c.Dbn3D* d3ptr(self) except NULL:
+        return <c.Dbn3D*> self.ptr()
+    # TODO: remove
+    cdef c.Dbn3D* _Dbn3D(self) except NULL:
+        return <c.Dbn3D*> self.ptr()
+
+    def __dealloc__(self):
+        cdef c.Dbn3D *p = self.d3ptr()
+        if self._deallocate:
+            del p
+
+
     def __init__(self):
-        util.set_owned_ptr(self, new c.Dbn3D())
+        cutil.set_owned_ptr(self, new c.Dbn3D())
+
+    def __repr__(self):
+        return 'Dbn3D(mean=(%g, %g), stdDev=(%g, %g))' % (self.mean + self.stdDev)
 
 
     def copy(self):
-        return util.new_owned_cls(Dbn3D, new c.Dbn3D(deref(self._Dbn3D())))
+        return cutil.new_owned_cls(Dbn3D, new c.Dbn3D(deref(self.d3ptr())))
 
 
     def fill(self, x, y, z, weight=1.0):
@@ -20,14 +35,15 @@ cdef class Dbn3D(util.Base):
         Fills the distribution with the given weight at given (x, y).
 
         """
-        self._Dbn3D().fill(x, y, z, weight)
+        self.d3ptr().fill(x, y, z, weight)
 
     def reset(self):
         """
         () -> None
 
         Reset the distribution counters to the unfilled state."""
-        self._Dbn3D().reset()
+        self.d3ptr().reset()
+
 
     def scaleW(self, w):
         """
@@ -35,7 +51,7 @@ cdef class Dbn3D(util.Base):
 
         Scale the weights by the given factor.
         """
-        self._Dbn3D().scaleW(w)
+        self.d3ptr().scaleW(w)
 
     def scaleX(self, x):
         """
@@ -43,7 +59,7 @@ cdef class Dbn3D(util.Base):
 
         Scale the x dimension by the given factor.
         """
-        self._Dbn3D().scaleX(x)
+        self.d3ptr().scaleX(x)
 
     def scaleY(self, y):
         """
@@ -51,7 +67,7 @@ cdef class Dbn3D(util.Base):
 
         Scale the y dimension by the given factor.
         """
-        self._Dbn3D().scaleY(y)
+        self.d3ptr().scaleY(y)
 
     def scaleZ(self, z):
         """
@@ -59,7 +75,7 @@ cdef class Dbn3D(util.Base):
 
         Scale the z dimension by the given factor.
         """
-        self._Dbn3D().scaleZ(z)
+        self.d3ptr().scaleZ(z)
 
     def scaleXYZ(self, x, y, z):
         """
@@ -67,124 +83,114 @@ cdef class Dbn3D(util.Base):
 
         Scale the x, y and z dimensions by the given factors.
         """
-        self._Dbn3D().scaleXYZ(x, y, z)
+        self.d3ptr().scaleXYZ(x, y, z)
+
 
     @property
     def mean(self):
         """Weighted mean of x"""
-        return util.XYZ(self._Dbn3D().xMean(),
-                        self._Dbn3D().yMean(),
-                        self._Dbn3D().zMean())
+        return util.XYZ(self.d3ptr().xMean(),
+                        self.d3ptr().yMean(),
+                        self.d3ptr().zMean())
 
     @property
     def variance(self):
         """Weighted variance of x"""
-        return util.XYZ(self._Dbn3D().xVariance(),
-                        self._Dbn3D().yVariance(),
-                        self._Dbn3D().zVariance())
+        return util.XYZ(self.d3ptr().xVariance(),
+                        self.d3ptr().yVariance(),
+                        self.d3ptr().zVariance())
 
     @property
     def stdDev(self):
         """Weighted standard deviation of x"""
-        return util.XYZ(self._Dbn3D().xStdDev(),
-                        self._Dbn3D().yStdDev(),
-                        self._Dbn3D().zStdDev())
+        return util.XYZ(self.d3ptr().xStdDev(),
+                        self.d3ptr().yStdDev(),
+                        self.d3ptr().zStdDev())
 
     @property
     def stdErr(self):
         """Weighted standard error on <x>"""
-        return util.XYZ(self._Dbn3D().xStdErr(),
-                        self._Dbn3D().yStdErr(),
-                        self._Dbn3D().zStdErr())
+        return util.XYZ(self.d3ptr().xStdErr(),
+                        self.d3ptr().yStdErr(),
+                        self.d3ptr().zStdErr())
 
     @property
     def rms(self):
         """Weighted root mean squared (RMS) of x"""
-        return util.XYZ(self._Dbn3D().xRMS(),
-                        self._Dbn3D().yRMS(),
-                        self._Dbn3D().zRMS())
+        return util.XYZ(self.d3ptr().xRMS(),
+                        self.d3ptr().yRMS(),
+                        self.d3ptr().zRMS())
+
 
     @property
     def numEntries(self):
         """The number of entries"""
-        return int(self._Dbn3D().numEntries())
+        return int(self.d3ptr().numEntries())
 
     @property
     def effNumEntries(self):
         """Effective number of entries (for weighted events)"""
-        return self._Dbn3D().effNumEntries()
+        return self.d3ptr().effNumEntries()
+
 
     @property
     def sumW(self):
         """sum(weights)"""
-        return self._Dbn3D().sumW()
+        return self.d3ptr().sumW()
 
     @property
     def sumW2(self):
         """sum(weights * weights)"""
-        return self._Dbn3D().sumW2()
+        return self.d3ptr().sumW2()
 
     @property
     def sumWX(self):
         """sum(weights * xs)"""
-        return self._Dbn3D().sumWX()
+        return self.d3ptr().sumWX()
 
     @property
     def sumWY(self):
         """sum(weights * ys)"""
-        return self._Dbn3D().sumWY()
+        return self.d3ptr().sumWY()
 
     @property
     def sumWZ(self):
         """sum(weights * zs)"""
-        return self._Dbn3D().sumWZ()
+        return self.d3ptr().sumWZ()
 
     @property
     def sumWX2(self):
         """sum(weights * xs * xs)"""
-        return self._Dbn3D().sumWX2()
+        return self.d3ptr().sumWX2()
 
     @property
     def sumWY2(self):
         """sum(weights * ys * ys)"""
-        return self._Dbn3D().sumWY2()
+        return self.d3ptr().sumWY2()
 
     @property
     def sumWZ2(self):
-        """sum(weights * zs * zs")"""
-        return self._Dbn3D().sumWZ2()
+        """sum(weights * zs * zs)"""
+        return self.d3ptr().sumWZ2()
 
     @property
     def sumWXY(self):
         """sum(weights * xs * ys)"""
-        return self._Dbn3D().sumWXY()
+        return self.d3ptr().sumWXY()
 
     @property
     def sumWXZ(self):
         """sum(weights * xs * zs)"""
-        return self._Dbn3D().sumWXZ()
+        return self.d3ptr().sumWXZ()
 
     @property
     def sumWYZ(self):
         """sum(weights * ys * zs)"""
-        return self._Dbn3D().sumWYZ()
+        return self.d3ptr().sumWYZ()
+
 
     def __add__(Dbn3D self, Dbn3D other):
-        return util.new_owned_cls(Dbn3D, new c.Dbn3D(
-            deref(self._Dbn3D()) + deref(other._Dbn3D())))
+        return cutil.new_owned_cls(Dbn3D, new c.Dbn3D(deref(self.d3ptr()) + deref(other.d3ptr())))
 
     def __sub__(Dbn3D self, Dbn3D other):
-        return util.new_owned_cls(Dbn3D, new c.Dbn3D(
-            deref(self._Dbn3D()) - deref(other._Dbn3D())))
-
-    def __repr__(self):
-        return 'Dbn3D(mean=(%g, %g), stdDev=(%g, %g))' % (self.mean + self.std_dev)
-
-    # Magic stuff
-    cdef c.Dbn3D *_Dbn3D(self) except NULL:
-        return <c.Dbn3D *> self.ptr()
-
-    def __dealloc__(self):
-        cdef c.Dbn3D *p = self._Dbn3D()
-        if self._deallocate:
-            del p
+        return cutil.new_owned_cls(Dbn3D, new c.Dbn3D(deref(self.d3ptr()) - deref(other.d3ptr())))

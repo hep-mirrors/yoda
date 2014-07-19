@@ -1,23 +1,37 @@
-# TODO (when there is absolutely nothing else to do) docstrings (but never will
-# it be a user facing class... it's merely there for tests)
+# TODO: docstrings
 cdef class Axis2D_${BIN2D}_${DBN}(util.Base):
 
+    cdef inline c.Axis2D[c.${BIN2D}, c.${DBN}]* _Axis2D(self) except NULL:
+        return <c.Axis2D[c.${BIN2D}, c.${DBN}]*> self.ptr()
+
+    def __dealloc__(self):
+        cdef c.Axis2D[c.${BIN2D}, c.${DBN}]* p = self._Axis2D()
+        if self._deallocate:
+            del p
+
+
     def __init__(self, nx, xl, xu, ny, yl, yu):
-        util.set_owned_ptr(
-            self, new c.Axis2D[c.${BIN2D}, c.${DBN}](
-                nx, pair[double, double](xl, xu),
-                ny, pair[double, double](yl, yu)))
+        util.set_owned_ptr(self, new c.Axis2D[c.${BIN2D}, c.${DBN}](
+            nx, pair[double, double](xl, xu),
+            ny, pair[double, double](yl, yu)))
+
+
+    @property
+    def numBins(self):
+        return self._Axis1D().bins().size()
 
     def __len__(self):
-        return self._Axis2D().bins().size()
+        return self.numBins
 
-    def __getitem__(self, py_ix):
-        cdef size_t i = util.pythonic_index(py_ix, self._Axis2D().bins().size())
-        return util.new_borrowed_cls(
-            ${BIN2D}, & self._Axis2D().bins().at(i), self)
+    # TODO: remove
+    # def __getitem__(self, py_ix):
+    #     cdef size_t i = util.pythonic_index(py_ix, self._Axis2D().bins().size())
+    #     return util.new_borrowed_cls(${BIN2D}, & self._Axis2D().bins().at(i), self)
 
     def __repr__(self):
-        return "<Axis2D>"
+        # TODO: improve
+        return "<Axis2D with %d bins>" % self.numBins
+
 
     @property
     def totalDbn(self):
@@ -25,18 +39,17 @@ cdef class Axis2D_${BIN2D}_${DBN}(util.Base):
             ${DBN}, new c.${DBN}(self._Axis2D().totalDbn()))
 
     def addBin(self, a, b, c, d):
-        self._Axis1D().addBin(a, b, c, d)
+        self._Axis2D().addBin(a, b, c, d)
 
     @property
     def outflow(self, ix, iy):
-        return util.new_owned_cls(
-            ${DBN}, new c.${DBN}(self._Axis2D().outflow(ix, iy)))
+        return util.new_owned_cls(${DBN}, new c.${DBN}(self._Axis2D().outflow(ix, iy)))
 
     @property
     def edges(self):
         return util.XY(
-            util.Edges(self._Axis2D().lowEdgeX(), self._Axis2D().highEdgeX()),
-            util.Edges(self._Axis2D().lowEdgeY(), self._Axis2D().highEdgeY())
+            util.EdgePair(self._Axis2D().lowEdgeX(), self._Axis2D().highEdgeX()),
+            util.EdgePair(self._Axis2D().lowEdgeY(), self._Axis2D().highEdgeY())
         )
 
     def reset(self):
@@ -47,12 +60,3 @@ cdef class Axis2D_${BIN2D}_${DBN}(util.Base):
         if ix < 0:
             raise YodaExc_RangeError('No bin found!')
         return self[ix]
-
-    # BOILERPLATE STUFF
-    cdef inline c.Axis2D[c.${BIN2D}, c.${DBN}] *_Axis2D(self) except NULL:
-        return <c.Axis2D[c.${BIN2D}, c.${DBN}]*> self.ptr()
-
-    def __dealloc__(self):
-        cdef c.Axis2D[c.${BIN2D}, c.${DBN}] *p = self._Axis2D()
-        if self._deallocate:
-            del p

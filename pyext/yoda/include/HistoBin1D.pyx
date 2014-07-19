@@ -1,25 +1,29 @@
 cdef class HistoBin1D(Bin1D_Dbn1D):
 
-    cdef inline c.HistoBin1D *_HistoBin1D(self) except NULL:
-        return <c.HistoBin1D *> self.ptr()
+    cdef inline c.HistoBin1D* hb1ptr(self) except NULL:
+        return <c.HistoBin1D*> self.ptr()
+    # TODO: remove
+    cdef inline c.HistoBin1D* _HistoBin1D(self) except NULL:
+        return <c.HistoBin1D*> self.ptr()
 
 
     def __init__(self, double a, double b):
-        util.set_owned_ptr(
-            self, new c.HistoBin1D(a, b))
+        cutil.set_owned_ptr(self, new c.HistoBin1D(a, b))
 
 
-    def fill(self, value=None, double weight=1.0):
+    def fill(self, value, double weight=1.0):
         """
         (value=None, weight=1.0)
 
-        Fill this bin with the given value and given weight. If value is None,
-        fill at the midpoint of the bin.
+        Fill this bin with the given value and given weight.
         """
-        try:
-            self._HistoBin1D().fill(value, weight)
-        except TypeError:
-            self._HistoBin1D().fillBin(weight)
+        self.hb1ptr().fill(value, weight)
+
+    def fillBin(self, weight=1.0):
+        """
+        (weight=1.0) -> None. Fill this bin with given weight.
+        """
+        self.hb1ptr().fillBin(weight)
 
 
     @property
@@ -29,9 +33,8 @@ cdef class HistoBin1D(Bin1D_Dbn1D):
 
         The area of the bin is the sum of weights of the bin; it is
         independent of width.
-
         """
-        return self._HistoBin1D().area()
+        return self.hb1ptr().area()
 
 
     @property
@@ -41,9 +44,8 @@ cdef class HistoBin1D(Bin1D_Dbn1D):
 
         The height of the bin is defined as the area divided by the
         width.
-
         """
-        return self._HistoBin1D().height()
+        return self.hb1ptr().height()
 
 
     @property
@@ -51,9 +53,8 @@ cdef class HistoBin1D(Bin1D_Dbn1D):
         """
         Error computed using binomial statistics on squared sum of bin
         weights, i.e. s.areaErr = sqrt(s.sumW2)
-
         """
-        return self._HistoBin1D().areaErr()
+        return self.hb1ptr().areaErr()
 
 
     @property
@@ -61,37 +62,30 @@ cdef class HistoBin1D(Bin1D_Dbn1D):
         """
         Height error - scales the s.areaError by the reciprocal of the
         bin width.
-
         """
-        return self._HistoBin1D().heightErr()
+        return self.hb1ptr().heightErr()
 
 
     @property
     def relErr(self):
         """
         Relative error - same for either area or height interpretations.
-
         """
-        return self._HistoBin1D().relErr()
+        return self.hb1ptr().relErr()
+
 
     def __iadd__(HistoBin1D self, HistoBin1D other):
-        c.HistoBin1D_iadd_HistoBin1D(self._HistoBin1D(), other._HistoBin1D())
+        c.HistoBin1D_iadd_HistoBin1D(self.hb1ptr(), other.hb1ptr())
         return self
+
     def __isub__(HistoBin1D self, HistoBin1D other):
-        c.HistoBin1D_isub_HistoBin1D(self._HistoBin1D(), other._HistoBin1D())
+        c.HistoBin1D_isub_HistoBin1D(self.hb1ptr(), other.hb1ptr())
         return self
 
     def __add__(HistoBin1D a, HistoBin1D b):
-        return util.new_owned_cls(
-            HistoBin1D,
-            new c.HistoBin1D(
-                deref(a._HistoBin1D()) +
-                deref(b._HistoBin1D())))
-
+        return cutil.new_owned_cls(HistoBin1D,
+                                   new c.HistoBin1D(deref(a.hb1ptr()) + deref(b.hb1ptr())))
 
     def __sub__(HistoBin1D a, HistoBin1D b):
-        return util.new_owned_cls(
-            HistoBin1D,
-            new c.HistoBin1D(
-                deref(a._HistoBin1D()) -
-                deref(b._HistoBin1D())))
+        return cutil.new_owned_cls(HistoBin1D,
+                                   new c.HistoBin1D(deref(a.hb1ptr()) - deref(b.hb1ptr())))

@@ -1,16 +1,3 @@
-cdef inline pair[double, double] read_symmetric(object val) except *:
-    try:
-        a, b = val
-    except TypeError:
-        a = b = val
-    return pair[double, double](a, b)
-
-
-cdef inline object read_error_pair(pair[double, double] es):
-    return util.Errors(es.first, es.second)
-
-
-
 cdef class Point2D(util.Base):
     """
     A 2D point with errors, used by the Scatter2D class.
@@ -56,39 +43,39 @@ cdef class Point2D(util.Base):
     property xy:
         """x and y coordinates as a tuple"""
         def __get__(self):
-            # return util.XY(self.x, self.y)
-            return util.XY(self.xy)
+            return util.XY(self.x, self.y)
         def __set__(self, val):
-            # self.x, self.y = val
-            self.setXY(val)
+            self.x, self.y = val
 
 
+    # TODO: How does this fit into the multi-error API? Still useful, but just reports first errs... how to get _all_ +- err pairs?
     property xErrs:
         """The x errors"""
         def __get__(self):
-            return read_error_pair(self._Point2D().xErrs())
+            return util.read_error_pair(self._Point2D().xErrs())
         def __set__(self, val):
-            self._Point2D().setXErr(read_symmetric(val))
+            self._Point2D().setXErr(util.read_symmetric(val))
 
+    # TODO: How does this fit into the multi-error API? Still useful, but just reports first errs... how to get _all_ +- err pairs?
     property yErrs:
         """The y errors"""
         def __get__(self):
-            return read_error_pair(self._Point2D().yErrs())
+            return util.read_error_pair(self._Point2D().yErrs())
         def __set__(self, val):
-            self._Point2D().setYErr(read_symmetric(val))
+            self._Point2D().setYErr(util.read_symmetric(val))
 
 
-    # # TODO: remove! or add similar to C++ and map
+    # TODO: add similar to C++, plus xRanges, and xWidth(s) and map
     # property xRange:
     #     """The minimum and maximum points within the x errors"""
     #     def __get__(self):
-    #         return util.Edges(self._Point2D().xMin(), self._Point2D().xMax())
+    #         return util.EdgePair(self._Point2D().xMin(), self._Point2D().xMax())
 
     # # TODO: remove! or add similar to C++ and map
     # property yRange:
     #     """The minimum and maximum points within the y errors"""
     #     def __get__(self):
-    #         return util.Edges(self._Point2D().yMin(), self._Point2D().yMax())
+    #         return util.EdgePair(self._Point2D().yMin(), self._Point2D().yMax())
 
 
     @property
@@ -99,6 +86,7 @@ cdef class Point2D(util.Base):
     def xMax(self):
         """The maximum x position, i.e. highest error"""
         return self._Point2D().xMax()
+
 
     @property
     def yMin(self):
