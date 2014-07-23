@@ -26,10 +26,25 @@ namespace YODA {
     ///
     /// Base class for guessing the right bin index for a given value. The
     /// better the guess, the less time spent looking.
-    class Estimator {
-    public:
-      virtual size_t operator() (double x) const = 0;
-      virtual ~Estimator() {}
+    struct Estimator {
+
+      /// Return offset bin index estimate, with 0 = underflow and Nbins+1 = overflow
+      virtual size_t operator() (double x) const {
+        const int i = est(x);
+        if (i < 0) return 0;
+        const size_t i2 = (size_t) i;
+        if (i2 >= _N) return _N+1;
+        return i2 + 1;
+      }
+
+    protected:
+
+      /// Make an int-valued estimate of bin index
+      /// @note No range checking or underflow offset
+      virtual int est(double x) const = 0;
+
+      /// Number of bins
+      size_t _N;
     };
 
 
@@ -37,27 +52,28 @@ namespace YODA {
     ///
     /// This class handles guessing a index bin with a hypothesis of uniformly
     /// spaced bins on a linear scale.
-    class LinEstimator : public Estimator {
-    public:
+    struct LinEstimator : public Estimator {
 
       /// Constructor
-      LinEstimator(double xlow, double xhigh, size_t N) {
+      LinEstimator(size_t nbins, double xlow, double xhigh) {
+        _N = nbins;
         _c = xlow;
-        _m = (double) N / (xhigh - xlow);
+        _m = (double) nbins / (xhigh - xlow);
       }
 
       /// Copy constructor
-      LinEstimator(const LinEstimator& other)
-        : _c(other._c), _m(other._m)
-      {  }
+      LinEstimator(const LinEstimator& other) {
+        _N = other._N;
+        _c = other._c;
+        _m = other._m;
+      }
 
-      /// Call operator returns estimated bin index
-      size_t operator() (double x) const {
-        return (size_t)(int) floor(_m * (x - _c));
+      /// Call operator returns estimated bin index (offset so 0 == underflow)
+      int est(double x) const {
+        return (int) floor(_m * (x - _c));
       }
 
     protected:
-
       double _c, _m;
     };
 
@@ -72,23 +88,25 @@ namespace YODA {
     public:
 
       /// Constructor
-      LogEstimator(double xlow, double xhigh, size_t N) {
+      LogEstimator(size_t nbins, double xlow, double xhigh) {
+        _N = nbins;
         _c = log2(xlow);
-        _m = N / (log2(xhigh) - _c);
+        _m = nbins / (log2(xhigh) - _c);
       }
 
       /// Copy constructor
-      LogEstimator(const LogEstimator& other)
-        : _c(other._c), _m(other._m)
-      {  }
+      LogEstimator(const LogEstimator& other) {
+        _N = other._N;
+        _c = other._c;
+        _m = other._m;
+      }
 
-      /// Call operator returns estimated bin index
-      size_t operator() (double x) const {
-        return static_cast<size_t>(1 + _m * (fastlog2(x) - _c));
+      /// Call operator returns estimated bin index (offset so 0 == underflow)
+      int est(double x) const {
+        return (int) floor(_m * (fastlog2(x) - _c));
       }
 
     protected:
-
       double _c, _m;
     };
 
@@ -122,7 +140,6 @@ namespace YODA {
       BinSearcher(const BinSearcher& bs) {
         _est = bs._est;
         _edges = bs._edges;
-        _max = bs._max;
       }
 
       /// Explicit constructor, specifying the edges and estimation strategy
@@ -130,9 +147,9 @@ namespace YODA {
         _updateEdges(edges);
         // Internally use a log or linear estimator as requested
         if (log) {
-          _est.reset(new LogEstimator(edges.front(), edges.back(), edges.size()-1));
+          _est.reset(new LogEstimator(edges.size()-1, edges.front(), edges.back()));
         } else {
-          _est.reset(new LinEstimator(edges.front(), edges.back(), edges.size()-1));
+          _est.reset(new LinEstimator(edges.size()-1, edges.front(), edges.back()));
         }
       }
 
@@ -145,8 +162,8 @@ namespace YODA {
         } else if (edges.front() <= 0.0) {
           _est.reset(new LinEstimator(edges.front(), edges.back(), edges.size()-1));
         } else {
-          LinEstimator linEst(edges.front(), edges.back(), edges.size()-1);
-          LogEstimator logEst(edges.front(), edges.back(), edges.size()-1);
+          LinEstimator linEst(edges.size()-1, edges.front(), edges.back());
+          LogEstimator logEst(edges.size()-1, edges.front(), edges.back());
 
           // Calculate mean index estimate deviations from the correct answers (for bin edges)
           double logsum = 0, linsum = 0;
@@ -170,100 +187,89 @@ namespace YODA {
 
 
       /// Look up a bin index
-      /// @todo What about x out of range? Need to return ssize_t = -1?
-      __attribute__((noinline))
+      /// @note Returned indices are offset by one, so 0 = underflow and Nbins+1 = overflow
+      __attribute__((noinline)) //< WHY?
       size_t index(double x) const {
-        size_t index = _estimate(x);
 
-        if (x >= _edges[index]) {
-          const size_t di = _linsearch_forward(_edges.get() + index, x, SEARCH_SIZE);
-          index += di;
-          if (di == SEARCH_SIZE) index = _bisect(_edges.get(), x, index, _max);
-        } else {
-          const size_t di = _linsearch_backward(_edges.get() + index, x, SEARCH_SIZE);
-          index -= di;
-          if (di == SEARCH_SIZE) index = _bisect(_edges.get(), x, 0, index+1);
+        // Get initial estimate
+        size_t index = (*_est)(x); //< @todo This is where the functor syntax doesn't help...
+
+        // Refine the estimate if x is not exactly on a bin edge
+        if (x > _edges[index]) {
+          const ssize_t newindex = _linsearch_forward(index, x, SEARCH_SIZE);
+          index = (newindex > 0) ? newindex : _bisect(x, index, _edges.size()-1);
+        } else if (x < _edges[index]) {
+          const ssize_t newindex = _linsearch_backward(index, x, SEARCH_SIZE);
+          index = (newindex > 0) ? newindex : _bisect(x, 0, index+1);
         }
 
-        return index - 1;
+        return index;
       }
 
 
     protected:
 
-      /// Make an estimate of the bin index containing x
-      size_t _estimate(const double x) const {
-        double y = (*_est)(x); //< @todo This is where the functor syntax doesn't help...
-        if ( y > double(_max) ) return _max;
-        size_t yi = (size_t)(int) floor((y < 0) ? 0 : y);
-        return (yi > _max) ? _max : yi;
-      }
-
-
-      // std::pair<double, double> indexRange(size_t ix) const {
-      //   return std::make_pair(_edges[ix], _edges[ix+1]);
-      // }
-
-      // bool inRange (const std::pair<double,double>& range, double x) const {
-      //   return (range.first <= x) && (x < range.second);
-      // }
-
-
+      /// Set the edges array and related member variables
       void _updateEdges(const std::vector<double>& edges) {
-        _edges.reset(new double[edges.size() + 2]);
+        // Array of in-range edges, plus underflow and overflow sentinels
+        _edges.clear();
+        _edges.resize(edges.size() + 2);
 
-        // Lower sentinel
+        // Copy vector with -+inf at ends
         _edges[0] = -std::numeric_limits<double>::infinity();
+        for (size_t i = 0; i < edges.size(); i++) _edges[i+1] = edges[i];
+        _edges[_edges.size()-1] = std::numeric_limits<double>::infinity();
+      }
 
-        // Copy a sorted vector
-        for (size_t i = 0; i < edges.size(); i++) {
-          _edges[i+1] = edges[i];
+
+      /// @brief Linear search in the forward direction
+      ///
+      /// Return bin index or -1 if not found within linear search range. Assumes that edges[istart] <= x
+      ssize_t _linsearch_forward(size_t istart, double x, size_t nmax) const {
+        assert(x >= _edges[istart]); // assumption that x >= start is wrong
+        for (size_t i = 0; i < nmax; i++) {
+          const size_t j = istart + i + 1; // index of _next_ edge
+          if (j > _edges.size()-1) return -1;
+          if (x < _edges[j]) return j-1; // note one more iteration needed if x is on an edge
         }
+        return -1;
+      }
 
-        _max = edges.size() + 1;
-
-        // Upper sentinel
-        _edges[_max] = std::numeric_limits<double>::infinity();
+      /// @brief Linear search in the backward direction
+      ///
+      /// Return bin index or -1 if not found within linear search range. Assumes that edges[istart] > x
+      ssize_t _linsearch_backward(size_t istart, double x, size_t nmax) const {
+        assert(x < _edges[istart]); // assumption that x < start is wrong
+        for (size_t i = 0; i < nmax; i++) {
+          const size_t j = istart - i - 1; // index of _next_ edge (working backwards)
+          if (j < 0) return -1;
+          if (x >= _edges[j]) return j; // note one more iteration needed if x is on an edge
+        }
+        return -1;
       }
 
 
-      // Linear search in the forward direction
-      size_t _linsearch_forward(const double* arr, double key, size_t n) const {
-        for (size_t i = 0; i < n; i++) if (arr[i] > key) return i;
-        return n;
-      }
-
-
-      // Linear search in the backward direction
-      size_t _linsearch_backward(const double* arr, double key, size_t n) const {
-        arr -= n;
-        for (size_t i = 0; i < n; i++) if (arr[n - 1 - i] <= key) return i;
-        return n;
-      }
-
-
-      // Bisection search, adapted from C++ std lib implementation
-      size_t _bisect(const double* arr, const double key, size_t min, size_t max) const {
-        size_t len = max - min;
-        size_t middle;
+      /// Bisection search, adapted from C++ std lib implementation
+      size_t _bisect(double x, size_t imin, size_t imax) const {
+        size_t len = imax - imin;
         while (len > BISECT_LINEAR_THRESHOLD) {
-          size_t half = len >> 1;
-          middle = min + half;
-          if (arr[middle] < key) {
-            min = middle + 1;
-            len = len - half - 1;
-          } else
-            len = half;
+          const size_t half = len >> 1;
+          const size_t imid = imin + half;
+          if (x >= _edges[imid]) {
+            imin = imid;
+          } else {
+            imax = imid-1;
+          }
+          len = imax - imin;
         }
-        return min + _linsearch_forward(arr + min, key, BISECT_LINEAR_THRESHOLD);
+        return _linsearch_forward(imin, x, BISECT_LINEAR_THRESHOLD);
       }
 
 
     protected:
 
       boost::shared_ptr<Estimator> _est;
-      boost::shared_array<double> _edges;
-      size_t _max;
+      std::vector<double> _edges;
 
     };
 
