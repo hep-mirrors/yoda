@@ -7,9 +7,9 @@
 #define YODA_BINSEARCHER_H
 
 #include <cstdlib>
+#include <cmath>
 #include <vector>
 #include <limits>
-#include <iostream>
 #include "YODA/Utils/fastlog.h"
 #include <boost/shared_ptr.hpp>
 #include <boost/shared_array.hpp>
@@ -43,13 +43,12 @@ namespace YODA {
       /// Constructor
       LinEstimator(double xlow, double xhigh, size_t N) {
         _c = xlow;
-        _max = N + 1;
         _m = (double) N / (xhigh - xlow);
       }
 
       /// Copy constructor
       LinEstimator(const LinEstimator& other)
-        : _c(other._c), _m(other._m), _max(other._max)
+        : _c(other._c), _m(other._m)
       {  }
 
       /// Call operator returns estimated bin index
@@ -60,7 +59,6 @@ namespace YODA {
     protected:
 
       double _c, _m;
-      size_t _max;
     };
 
 
@@ -76,13 +74,12 @@ namespace YODA {
       /// Constructor
       LogEstimator(double xlow, double xhigh, size_t N) {
         _c = log2(xlow);
-        _max = N + 1;
         _m = N / (log2(xhigh) - _c);
       }
 
       /// Copy constructor
       LogEstimator(const LogEstimator& other)
-        : _c(other._c), _m(other._m), _max(other._max), _half(other._half)
+        : _c(other._c), _m(other._m)
       {  }
 
       /// Call operator returns estimated bin index
@@ -93,7 +90,6 @@ namespace YODA {
     protected:
 
       double _c, _m;
-      size_t _max, _half;
     };
 
 
@@ -125,41 +121,41 @@ namespace YODA {
       /// Copy constructor
       BinSearcher(const BinSearcher& bs) {
         _est = bs._est;
-        _lows = bs._lows;
+        _edges = bs._edges;
         _max = bs._max;
       }
 
-      /// Explicit constructor, specifying the low edges and estimation strategy
-      BinSearcher(std::vector<double>& lows, bool log) {
-        _updateLows(lows);
+      /// Explicit constructor, specifying the edges and estimation strategy
+      BinSearcher(const std::vector<double>& edges, bool log) {
+        _updateEdges(edges);
         // Internally use a log or linear estimator as requested
         if (log) {
-          _est.reset(new LogEstimator(lows.front(), lows.back(), lows.size()-1));
+          _est.reset(new LogEstimator(edges.front(), edges.back(), edges.size()-1));
         } else {
-          _est.reset(new LinEstimator(lows.front(), lows.back(), lows.size()-1));
+          _est.reset(new LinEstimator(edges.front(), edges.back(), edges.size()-1));
         }
       }
 
       /// Fully automatic constructor: give bin edges and it does the rest!
-      BinSearcher(std::vector<double>& lows) {
-        _updateLows(lows);
+      BinSearcher(const std::vector<double>& edges) {
+        _updateEdges(edges);
 
-        if (lows.empty()) {
+        if (edges.empty()) {
           _est.reset(new LinEstimator(0, 0, 0));
-        } else if (lows.front() <= 0.0) {
-          _est.reset(new LinEstimator(lows.front(), lows.back(), lows.size()-1));
+        } else if (edges.front() <= 0.0) {
+          _est.reset(new LinEstimator(edges.front(), edges.back(), edges.size()-1));
         } else {
-          LinEstimator linEst(lows.front(), lows.back(), lows.size()-1);
-          LogEstimator logEst(lows.front(), lows.back(), lows.size()-1);
+          LinEstimator linEst(edges.front(), edges.back(), edges.size()-1);
+          LogEstimator logEst(edges.front(), edges.back(), edges.size()-1);
 
           // Calculate mean index estimate deviations from the correct answers (for bin edges)
           double logsum = 0, linsum = 0;
-          for (size_t i = 0; i < lows.size(); i++) {
-            logsum += fabs(logEst(lows[i]) - i);
-            linsum += fabs(linEst(lows[i]) - i);
+          for (size_t i = 0; i < edges.size(); i++) {
+            logsum += fabs(logEst(edges[i]) - i);
+            linsum += fabs(linEst(edges[i]) - i);
           }
-          const double log_avg = logsum / lows.size();
-          const double lin_avg = linsum / lows.size();
+          const double log_avg = logsum / edges.size();
+          const double lin_avg = linsum / edges.size();
 
           // This also implicitly works for NaN returned from the log There is a
           // subtle bug here if the if statement is the other way around, as
@@ -179,14 +175,14 @@ namespace YODA {
       size_t index(double x) const {
         size_t index = _estimate(x);
 
-        if (x >= _lows[index]) {
-          const size_t di = _linsearch_forward(_lows.get() + index, x, SEARCH_SIZE);
+        if (x >= _edges[index]) {
+          const size_t di = _linsearch_forward(_edges.get() + index, x, SEARCH_SIZE);
           index += di;
-          if (di == SEARCH_SIZE) index = _bisect(_lows.get(), x, index, _max);
+          if (di == SEARCH_SIZE) index = _bisect(_edges.get(), x, index, _max);
         } else {
-          const size_t di = _linsearch_backward(_lows.get() + index, x, SEARCH_SIZE);
+          const size_t di = _linsearch_backward(_edges.get() + index, x, SEARCH_SIZE);
           index -= di;
-          if (di == SEARCH_SIZE) index = _bisect(_lows.get(), x, 0, index+1);
+          if (di == SEARCH_SIZE) index = _bisect(_edges.get(), x, 0, index+1);
         }
 
         return index - 1;
@@ -205,7 +201,7 @@ namespace YODA {
 
 
       // std::pair<double, double> indexRange(size_t ix) const {
-      //   return std::make_pair(_lows[ix], _lows[ix+1]);
+      //   return std::make_pair(_edges[ix], _edges[ix+1]);
       // }
 
       // bool inRange (const std::pair<double,double>& range, double x) const {
@@ -213,33 +209,33 @@ namespace YODA {
       // }
 
 
-      void _updateLows(std::vector<double>& lows) {
-        _lows.reset(new double[lows.size() + 2]);
+      void _updateEdges(const std::vector<double>& edges) {
+        _edges.reset(new double[edges.size() + 2]);
 
         // Lower sentinel
-        _lows[0] = -std::numeric_limits<double>::infinity();
+        _edges[0] = -std::numeric_limits<double>::infinity();
 
         // Copy a sorted vector
-        for (size_t i = 0; i < lows.size(); i++) {
-          _lows[i+1] = lows[i];
+        for (size_t i = 0; i < edges.size(); i++) {
+          _edges[i+1] = edges[i];
         }
 
-        _max = lows.size() + 1;
+        _max = edges.size() + 1;
 
         // Upper sentinel
-        _lows[_max] = std::numeric_limits<double>::infinity();
+        _edges[_max] = std::numeric_limits<double>::infinity();
       }
 
 
       // Linear search in the forward direction
-      size_t _linsearch_forward(double* arr, double key, size_t n) const {
+      size_t _linsearch_forward(const double* arr, double key, size_t n) const {
         for (size_t i = 0; i < n; i++) if (arr[i] > key) return i;
         return n;
       }
 
 
       // Linear search in the backward direction
-      size_t _linsearch_backward(double* arr, double key, size_t n) const {
+      size_t _linsearch_backward(const double* arr, double key, size_t n) const {
         arr -= n;
         for (size_t i = 0; i < n; i++) if (arr[n - 1 - i] <= key) return i;
         return n;
@@ -247,7 +243,7 @@ namespace YODA {
 
 
       // Bisection search, adapted from C++ std lib implementation
-      size_t _bisect(double *arr, const double key, size_t min, size_t max) const {
+      size_t _bisect(const double* arr, const double key, size_t min, size_t max) const {
         size_t len = max - min;
         size_t middle;
         while (len > BISECT_LINEAR_THRESHOLD) {
@@ -266,7 +262,7 @@ namespace YODA {
     protected:
 
       boost::shared_ptr<Estimator> _est;
-      boost::shared_array<double> _lows;
+      boost::shared_array<double> _edges;
       size_t _max;
 
     };

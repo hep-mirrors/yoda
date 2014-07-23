@@ -249,7 +249,7 @@ namespace YODA {
 
       double low = binedges.front();
 
-      for (size_t i=1; i < binedges.size(); i++) {
+      for (size_t i = 1; i < binedges.size(); i++) {
         double high = binedges[i];
         newBins.push_back(Bin(low, high));
         low = high;
@@ -264,12 +264,12 @@ namespace YODA {
     // constructors)
 
     /// Add a list of bins as pairs of lowEdge, highEdge
-    void addBins(const std::vector<std::pair<double, double> > &binpairs) {
+    void addBins(const std::vector<std::pair<double, double> >& binpairs) {
       // Make a copy of the current binning
       Bins newBins(_bins);
 
       // Iterate over given bins
-      for (size_t i=0; i<binpairs.size(); i++) {
+      for (size_t i = 0; i < binpairs.size(); i++) {
         std::pair<double, double> b = binpairs[i];
         newBins.push_back(Bin(b.first, b.second));
       }
@@ -277,11 +277,9 @@ namespace YODA {
     }
 
 
-    void addBins(const Bins &bins) {
+    void addBins(const Bins& bins) {
       Bins newBins(_bins);
-      BOOST_FOREACH(const Bin &b, bins) {
-        newBins.push_back(b);
-      }
+      BOOST_FOREACH(const Bin& b, bins) newBins.push_back(b);
       _updateAxis(newBins);
     }
 
@@ -293,7 +291,7 @@ namespace YODA {
         throw RangeError("Bin index is out of range");
 
       const bool wasLocked = _locked;
-      _locked=false;
+      _locked = false;
       _bins.erase(_bins.begin() + i);
       _updateAxis(_bins);
       _locked = wasLocked;
@@ -309,7 +307,7 @@ namespace YODA {
         throw RangeError("Final index is less than initial index");
 
       const bool wasLocked = _locked;
-      _locked=false;
+      _locked = false;
       _bins.erase(_bins.begin() + from, _bins.begin() + to + 1);
       _updateAxis(_bins);
       _locked = wasLocked;
@@ -336,6 +334,7 @@ namespace YODA {
 
     //@}
 
+
     /// @name Operators
     //@{
 
@@ -343,7 +342,7 @@ namespace YODA {
     bool operator == (const Axis1D& other) const {
       if (numBins() != other.numBins())
         return false;
-      for (size_t i=0; i < numBins(); i++)
+      for (size_t i = 0; i < numBins(); i++)
         if (!(fuzzyEquals(bin(i).lowEdge(), other.bin(i).lowEdge()) &&
               fuzzyEquals(bin(i).highEdge(), other.bin(i).highEdge())))
           return false;
@@ -402,7 +401,7 @@ namespace YODA {
         throw LockError("Attempting to update a locked axis");
       }
       // Define the new cuts and indexes
-      std::vector<double> edgeCuts;
+      std::vector<double> edges;
       std::vector<long> indexes;
 
       // Sort the bins
@@ -422,14 +421,14 @@ namespace YODA {
           throw RangeError(ss.str());
         } else if (reldiff > 1e-3) { //< @note If there is a "large" positive gap, create a bin gap
           indexes.push_back(-1);
-          edgeCuts.push_back(new_low);
+          edges.push_back(new_low);
         }
 
         // Bins check that they are not zero or negative width. It's perfectly
         // okay for them to throw an exception here, as we haven't changed
         // anything yet.
         indexes.push_back(i);
-        edgeCuts.push_back(currentBin.highEdge());
+        edges.push_back(currentBin.highEdge());
 
         last_high = currentBin.highEdge();
       }
@@ -437,7 +436,7 @@ namespace YODA {
 
       // Everything was okay, so let's make our changes
       //std::cout << "In" << std::endl;
-      _binsearcher = Utils::BinSearcher(edgeCuts);
+      _binsearcher = Utils::BinSearcher(edges);
       //std::cout << "Out" << std::endl;
       _indexes = indexes;
       _bins = bins;

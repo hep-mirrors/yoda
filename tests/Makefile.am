@@ -12,6 +12,7 @@ EXTRA_DIST = \
 
 check_PROGRAMS = \
   testweights \
+  testbinsearcher \
   testhisto1Da testhisto1Db \
   testhisto2Da \
   testprofile1Da \
@@ -34,6 +35,7 @@ check_PROGRAMS = \
 AM_LDFLAGS = -L$(top_builddir)/src -lYODA
 
 testweights_SOURCES = TestWeights.cc
+testbinsearcher_SOURCES = TestBinSearcher.cc
 testhisto1Da_SOURCES = TestHisto1Da.cc
 testhisto1Db_SOURCES = TestHisto1Db.cc
 testprofile1Da_SOURCES = TestProfile1Da.cc
@@ -67,6 +69,7 @@ TESTS_ENVIRONMENT = \
 
 TESTS = \
   testweights \
+  testbinsearcher \
   testhisto1Da \
   testhisto1Db \
   testhisto2Da \
