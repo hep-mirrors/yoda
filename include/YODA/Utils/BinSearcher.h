@@ -24,8 +24,8 @@ namespace YODA {
 
     /// @brief Bin estimator
     ///
-    /// This class handles guessing the right bin for a given value. The better
-    /// the guess, the less time spent looking.
+    /// Base class for guessing the right bin index for a given value. The
+    /// better the guess, the less time spent looking.
     class Estimator {
     public:
       virtual size_t operator() (double x) const = 0;
@@ -35,41 +35,63 @@ namespace YODA {
 
     /// @brief Linear bin estimator
     ///
-    /// This class handles guessing a bin on a linear scale.
+    /// This class handles guessing a index bin with a hypothesis of uniformly
+    /// spaced bins on a linear scale.
     class LinEstimator : public Estimator {
     public:
+
+      /// Constructor
       LinEstimator(double xlow, double xhigh, size_t N) {
         _c = xlow;
         _max = N + 1;
         _m = (double) N / (xhigh - xlow);
       }
 
+      /// Copy constructor
+      LinEstimator(const LinEstimator& other)
+        : _c(other._c), _m(other._m), _max(other._max)
+      {  }
+
+      /// Call operator returns estimated bin index
       size_t operator() (double x) const {
         return (size_t)(int) floor(_m * (x - _c));
       }
 
     protected:
+
       double _c, _m;
       size_t _max;
     };
 
 
-    /// @brief Linear bin estimator
+    /// @brief Logarithmic bin estimator
     ///
-    /// This class handles guessing a bin on a logarithmic scale.
+    /// This class handles guessing a bin index with a hypothesis of uniformly
+    /// spaced bins on a logarithmic scale.
+    ///
+    /// @todo Make a generalised version of this with a transform function
     class LogEstimator : public Estimator {
     public:
+
+      /// Constructor
       LogEstimator(double xlow, double xhigh, size_t N) {
         _c = log2(xlow);
         _max = N + 1;
         _m = N / (log2(xhigh) - _c);
       }
 
+      /// Copy constructor
+      LogEstimator(const LogEstimator& other)
+        : _c(other._c), _m(other._m), _max(other._max), _half(other._half)
+      {  }
+
+      /// Call operator returns estimated bin index
       size_t operator() (double x) const {
         return static_cast<size_t>(1 + _m * (fastlog2(x) - _c));
       }
 
     protected:
+
       double _c, _m;
       size_t _max, _half;
     };
@@ -94,109 +116,104 @@ namespace YODA {
     class BinSearcher {
     public:
 
+      /// Default constructor
+      /// @todo What's the point?
       BinSearcher() {
         _est.reset(new LinEstimator(0, 1, 1));
       }
 
-      // Copy constructor
+      /// Copy constructor
       BinSearcher(const BinSearcher& bs) {
         _est = bs._est;
         _lows = bs._lows;
         _max = bs._max;
       }
 
-      // Explicit constructor
-      BinSearcher(std::vector<double> &lows, bool log)
-      {
+      /// Explicit constructor, specifying the low edges and estimation strategy
+      BinSearcher(std::vector<double>& lows, bool log) {
         _updateLows(lows);
-        // Use an array for C-style hackery (templates make no sense here)
+        // Internally use a log or linear estimator as requested
         if (log) {
-          _est.reset(new LogEstimator(lows.front(), lows.back(), lows.size() - 1));
+          _est.reset(new LogEstimator(lows.front(), lows.back(), lows.size()-1));
         } else {
-          _est.reset(new LinEstimator(lows.front(), lows.back(), lows.size() - 1));
+          _est.reset(new LinEstimator(lows.front(), lows.back(), lows.size()-1));
         }
       }
 
-      // Fully automatic constructor: give bins and it does the rest!
-      BinSearcher(std::vector<double>& lows)
-      {
+      /// Fully automatic constructor: give bin edges and it does the rest!
+      BinSearcher(std::vector<double>& lows) {
         _updateLows(lows);
 
-        if (!lows.size()) {
+        if (lows.empty()) {
           _est.reset(new LinEstimator(0, 0, 0));
-        } else if ( lows.front() <= 0.0 ) {
-          _est.reset(new LinEstimator(lows.front(), lows.back(), lows.size() - 1));
+        } else if (lows.front() <= 0.0) {
+          _est.reset(new LinEstimator(lows.front(), lows.back(), lows.size()-1));
         } else {
-          LinEstimator linEst(lows.front(), lows.back(), lows.size() - 1);
-          LogEstimator logEst(lows.front(), lows.back(), lows.size() - 1);
+          LinEstimator linEst(lows.front(), lows.back(), lows.size()-1);
+          LogEstimator logEst(lows.front(), lows.back(), lows.size()-1);
 
-          double logsum = 0;
+          // Calculate mean index estimate deviations from the correct answers (for bin edges)
+          double logsum = 0, linsum = 0;
           for (size_t i = 0; i < lows.size(); i++) {
             logsum += fabs(logEst(lows[i]) - i);
-          }
-
-          double linsum = 0;
-          for (size_t i = 0; i < lows.size(); i++) {
             linsum += fabs(linEst(lows[i]) - i);
           }
+          const double log_avg = logsum / lows.size();
+          const double lin_avg = linsum / lows.size();
 
-          // Use an array for C-style hackery (templates make no sense here)
-          double log_avg = logsum / lows.size();
-          double lin_avg = linsum / lows.size();
-
-          // This also implicitly works for NaN returned from the log
-          // There is a subtle bug here if the if statement is the other way
-          // around, as (nan < linsum) -> false always.
-          // But (nan > linsum) -> false also.
-          if (log_avg < lin_avg) {
-            _est.reset(new LogEstimator(lows.front(), lows.back(), lows.size() - 1));
-          } else {
-            _est.reset(new LinEstimator(lows.front(), lows.back(), lows.size() - 1));
+          // This also implicitly works for NaN returned from the log There is a
+          // subtle bug here if the if statement is the other way around, as
+          // (nan < linsum) -> false always.  But (nan > linsum) -> false also.
+          if (log_avg < lin_avg) { //< Use log estimator if its avg performance is better than lin
+            _est.reset(new LogEstimator(logEst));
+          } else { // Else use linear estimation
+            _est.reset(new LinEstimator(linEst));
           }
         }
-
       }
 
-      // Lookup a bin
+
+      /// Look up a bin index
+      /// @todo What about x out of range? Need to return ssize_t = -1?
       __attribute__((noinline))
       size_t index(double x) const {
-
-        size_t index = estimate(x);
+        size_t index = _estimate(x);
 
         if (x >= _lows[index]) {
-          size_t di = _linsearch_forward(_lows.get() + index, x, SEARCH_SIZE);
+          const size_t di = _linsearch_forward(_lows.get() + index, x, SEARCH_SIZE);
           index += di;
-          if (di == SEARCH_SIZE) {
-            index = _bisect(_lows.get(), x, index, _max);
-          }
+          if (di == SEARCH_SIZE) index = _bisect(_lows.get(), x, index, _max);
         } else {
-          size_t di = _linsearch_backward(_lows.get() + index, x, SEARCH_SIZE);
+          const size_t di = _linsearch_backward(_lows.get() + index, x, SEARCH_SIZE);
           index -= di;
-          if (di == SEARCH_SIZE) {
-            index = _bisect(_lows.get(), x, 0, index + 1);
-          }
+          if (di == SEARCH_SIZE) index = _bisect(_lows.get(), x, 0, index+1);
         }
 
         return index - 1;
       }
 
-      size_t estimate(const double x) const {
-        double y = (*_est)(x);
+
+    protected:
+
+      /// Make an estimate of the bin index containing x
+      size_t _estimate(const double x) const {
+        double y = (*_est)(x); //< @todo This is where the functor syntax doesn't help...
         if ( y > double(_max) ) return _max;
         size_t yi = (size_t)(int) floor((y < 0) ? 0 : y);
         return (yi > _max) ? _max : yi;
       }
 
-      std::pair<double, double> indexRange(size_t ix) const {
-        return std::make_pair(_lows[ix], _lows[ix+1]);
-      }
 
-      bool inRange (std::pair<double, double> range, double x) const {
-        return (range.first <= x) && (x < range.second);
-      }
+      // std::pair<double, double> indexRange(size_t ix) const {
+      //   return std::make_pair(_lows[ix], _lows[ix+1]);
+      // }
 
-    protected:
-      void _updateLows(std::vector<double> &lows) {
+      // bool inRange (const std::pair<double,double>& range, double x) const {
+      //   return (range.first <= x) && (x < range.second);
+      // }
+
+
+      void _updateLows(std::vector<double>& lows) {
         _lows.reset(new double[lows.size() + 2]);
 
         // Lower sentinel
@@ -213,20 +230,21 @@ namespace YODA {
         _lows[_max] = std::numeric_limits<double>::infinity();
       }
 
+
       // Linear search in the forward direction
-      size_t _linsearch_forward(double *arr, double key, size_t n) const {
-        for (size_t i = 0; i < n; i++)
-          if (arr[i] > key) return i;
+      size_t _linsearch_forward(double* arr, double key, size_t n) const {
+        for (size_t i = 0; i < n; i++) if (arr[i] > key) return i;
         return n;
       }
 
+
       // Linear search in the backward direction
-      size_t _linsearch_backward(double *arr, double key, size_t n) const {
+      size_t _linsearch_backward(double* arr, double key, size_t n) const {
         arr -= n;
-        for (size_t i = 0; i < n; i++)
-          if (arr[n - 1 - i] <= key) return i;
+        for (size_t i = 0; i < n; i++) if (arr[n - 1 - i] <= key) return i;
         return n;
       }
+
 
       // Bisection search, adapted from C++ std lib implementation
       size_t _bisect(double *arr, const double key, size_t min, size_t max) const {
@@ -244,10 +262,13 @@ namespace YODA {
         return min + _linsearch_forward(arr + min, key, BISECT_LINEAR_THRESHOLD);
       }
 
+
     protected:
+
       boost::shared_ptr<Estimator> _est;
       boost::shared_array<double> _lows;
       size_t _max;
+
     };
 
 
