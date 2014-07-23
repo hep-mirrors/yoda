@@ -1,5 +1,8 @@
 2014-07-23  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Fix to logspace: make sure that start and end values are exact,
+	not the result of exp(log(x)).
+
 	* Clean-up, minor improvements, and adding a test for BinSearcher and friends.
 
 2014-07-19  Andy Buckley  <andy.buckley@cern.ch>

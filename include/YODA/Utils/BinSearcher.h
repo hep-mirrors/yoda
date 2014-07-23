@@ -194,6 +194,9 @@ namespace YODA {
         // Get initial estimate
         size_t index = (*_est)(x); //< @todo This is where the functor syntax doesn't help...
 
+        // Return if this is the right bin
+        if (x >= _edges[index] && x < _edges[index+1]) return index;
+
         // Refine the estimate if x is not exactly on a bin edge
         if (x > _edges[index]) {
           const ssize_t newindex = _linsearch_forward(index, x, SEARCH_SIZE);
@@ -203,6 +206,7 @@ namespace YODA {
           index = (newindex > 0) ? newindex : _bisect(x, 0, index+1);
         }
 
+        assert(x >= _edges[index] && x < _edges[index+1]);
         return index;
       }
 

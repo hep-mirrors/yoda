@@ -263,10 +263,12 @@ namespace YODA {
     const double logstart = std::log(start);
     const double logend = std::log(end);
     const std::vector<double> logvals = linspace(nbins, logstart, logend);
-    std::vector<double> rtn;
-    for (size_t i = 0; i < logvals.size(); ++i) {
+    std::vector<double> rtn; rtn.reserve(logvals.size());
+    rtn.push_back(start);
+    for (size_t i = 1; i < logvals.size()-1; ++i) {
       rtn.push_back(std::exp(logvals[i]));
     }
+    rtn.push_back(end);
     assert(rtn.size() == nbins+1);
     return rtn;
   }
