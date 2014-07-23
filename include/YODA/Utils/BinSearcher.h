@@ -210,6 +210,13 @@ namespace YODA {
         return index;
       }
 
+      /// Look up an in-range bin index
+      /// @note This returns a *normal* index starting with zero for the first in-range bin
+      ssize_t index_inrange(double x) const {
+        const size_t i = index(x);
+        if (i == 0 || i == _edges.size()-1) return -1;
+        return i;
+      }
 
     protected:
 
