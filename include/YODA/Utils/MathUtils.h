@@ -241,35 +241,46 @@ namespace YODA {
   /// @name Binning helper functions
   //@{
 
-  /// Make a list of @a nbins + 1 values equally spaced between @a start and @a end inclusive.
-  inline std::vector<double> linspace(size_t nbins, double start, double end) {
+  /// @brief Make a list of @a nbins + 1 values equally spaced between @a start and @a end inclusive.
+  ///
+  /// NB. The arg ordering and the meaning of the nbins variable is "histogram-like",
+  /// as opposed to the Numpy/Matlab version.
+  inline std::vector<double> linspace(size_t nbins, double start, double end, bool include_end=true) {
     assert(end >= start);
+    assert(nbins > 0);
     std::vector<double> rtn;
     const double interval = (end-start)/static_cast<double>(nbins);
     double edge = start;
-    while (inRange(edge, start, end, CLOSED, CLOSED)) {
+    for (size_t i = 0; i < nbins; ++i) {
       rtn.push_back(edge);
       edge += interval;
     }
-    assert(rtn.size() == nbins+1);
+    assert(rtn.size() == nbins);
+    if (include_end) rtn.push_back(end); // exact end, not result of n * interval
     return rtn;
   }
 
 
-  /// Make a list of @a nbins + 1 values exponentially spaced between @a start and @a end inclusive.
-  inline std::vector<double> logspace(size_t nbins, double start, double end) {
+  /// @brief Make a list of @a nbins + 1 values exponentially spaced between @a start and @a end inclusive.
+  ///
+  /// NB. The arg ordering and the meaning of the nbins variable is "histogram-like",
+  /// as opposed to the Numpy/Matlab version, and the start and end arguments are expressed
+  /// in "normal" space, rather than as the logarithms of the start/end values as in Numpy/Matlab.
+  inline std::vector<double> logspace(size_t nbins, double start, double end, bool include_end=true) {
     assert(end >= start);
     assert(start > 0);
+    assert(nbins > 0);
     const double logstart = std::log(start);
     const double logend = std::log(end);
     const std::vector<double> logvals = linspace(nbins, logstart, logend);
+    assert(logvals.size() == nbins+1);
     std::vector<double> rtn; rtn.reserve(logvals.size());
     rtn.push_back(start);
     for (size_t i = 1; i < logvals.size()-1; ++i) {
       rtn.push_back(std::exp(logvals[i]));
     }
-    rtn.push_back(end);
-    assert(rtn.size() == nbins+1);
+    assert(rtn.size() == nbins);
+    if (include_end) rtn.push_back(end);
     return rtn;
   }
 
