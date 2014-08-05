@@ -128,11 +128,17 @@ namespace YODA {
     double xMid() const {
       return ( _edges.second + _edges.first ) / 2;
     }
+    /// Alias for xMid
+    /// @deprecated Only retained for temporary backward compatibility: use xMid
+    double midpoint() const { return xMid(); }
 
     /// Separation of low and high edges, i.e. high-low.
     double xWidth() const {
       return _edges.second - _edges.first;
     }
+    /// Alias for xWidth
+    /// @deprecated Only retained for temporary backward compatibility: use xWidth
+    double width() const { return xWidth(); }
 
 
     /// The mean position in the bin, or the midpoint if that is not available.
