@@ -148,6 +148,16 @@ cdef class Profile1D(AnalysisObject):
         return self._Profile1D().numBins()
 
     @property
+    def xMin(self):
+        """Low x edge of the histo."""
+        return self._Profile1D().xMin()
+
+    @property
+    def xMax(self):
+        """High x edge of the histo."""
+        return self._Profile1D().xMax()
+
+    @property
     def bins(self):
         """Access the ordered bins list."""
         return list(self)

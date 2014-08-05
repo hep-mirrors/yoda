@@ -36,24 +36,26 @@ cdef class Bin1D_${DBN}(Bin):
 
 
     @property
-    def lowEdge(self):
-        """The lower bin edge."""
-        return self.b1ptr().lowEdge()
-
-    @property
     def xMin(self):
-        """Synonym for lowEdge."""
-        return self.lowEdge
+        """The lower bin edge."""
+        return self.b1ptr().xMin()
 
     @property
-    def highEdge(self):
-        """The upper bin edge."""
-        return self.b1ptr().highEdge()
+    def lowEdge(self):
+        """Alias. DEPRECATED: use xMin"""
+        return self.b1ptr().xMin()
+
 
     @property
     def xMax(self):
-        """Synonym for highEdge."""
-        return self.highEdge
+        """The upper bin edge."""
+        return self.b1ptr().xMax()
+
+    @property
+    def highEdge(self):
+        """Alias. DEPRECATED: use xMax"""
+        return self.b1ptr().xMax()
+
 
     @property
     def xEdges(self):
@@ -63,7 +65,7 @@ cdef class Bin1D_${DBN}(Bin):
     edges = xEdges
 
     @property
-    def width(self):
+    def xWidth(self):
         """The width of the bin."""
         return self.b1ptr().width()
 

@@ -179,14 +179,19 @@ cdef class Histo1D(AnalysisObject):
         return self._Histo1D().numBins()
 
     @property
+    def xMin(self):
+        """Low x edge of the histo."""
+        return self._Histo1D().xMin()
+
+    @property
+    def xMax(self):
+        """High x edge of the histo."""
+        return self._Histo1D().xMax()
+
+    @property
     def bins(self):
         """Access the ordered bins list."""
         return list(self)
-
-    # @property
-    # def edges(self):
-    #     return util.Edges(self._Histo1D().lowEdge(),
-    #                       self._Histo1D().highEdge())
 
     def mergeBins(self, ia, ib):
         """mergeBins(ia, ib) -> None.

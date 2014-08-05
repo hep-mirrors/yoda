@@ -1,3 +1,12 @@
+2014-08-05  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Lots of adding xMin/Max etc. functions to C++ and Python bin/histo classes.
+
+	* Compiler pickiness fixes in BinSearcher.
+
+	* Improvement to linspace, avoiding fuzzyEquals and again making
+	sure that the end value is exact.
+
 2014-07-23  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Fix to logspace: make sure that start and end values are exact,

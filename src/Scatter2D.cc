@@ -125,6 +125,8 @@ namespace YODA {
 
 
   // Divide two scatters
+  /// @todo Need to rework this: should be able to divide matching pairs of points along either axis
+  /// @todo In general any pairing of points should be able to have any binary operation applied to it...
   Scatter2D divide(const Scatter2D& numer, const Scatter2D& denom) {
     Scatter2D tmp;
 

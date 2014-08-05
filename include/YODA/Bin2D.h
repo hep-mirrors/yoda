@@ -6,8 +6,8 @@
 #ifndef YODA_Bin2D_h
 #define YODA_Bin2D_h
 
+#include "YODA/Utils/MathUtils.h"
 #include "YODA/Bin.h"
-#include "YODA/Dbn2D.h"
 #include <string>
 #include <utility>
 #include <cassert>
@@ -125,27 +125,29 @@ namespace YODA {
     /// @name X-axis info
     //@{
 
+    /// Get the {low,high} edges as an STL @c pair.
+    std::pair<double,double> xEdges() const {
+      return _xedges;
+    }
+
     /// Lower x limit of the bin (inclusive).
-    double lowEdgeX() const {
+    double xMin() const {
       return _xedges.first;
     }
-    /// Synonym for lowEdgeX()
-    double xMin() const {
-      return lowEdgeX();
+    /// Alias
+    /// @deprecated Use xMin
+    double lowEdgeX() const {
+      return xMin();
     }
 
     /// Upper x limit of the bin (exclusive).
-    double highEdgeX() const {
+    double xMax() const {
       return _xedges.second;
     }
-    /// Synonym for highEdgeX()
-    double xMax() const {
-      return highEdgeX();
-    }
-
-    /// Get the {low,high} edges as an STL @c pair.
-    std::pair<double,double> xedges() const {
-      return _xedges;
+    /// Alias
+    /// @deprecated Use xMax
+    double highEdgeX() const {
+      return xMax();
     }
 
     /// Middle of the bin in x
@@ -160,27 +162,29 @@ namespace YODA {
 
 
 
+    /// Get the {low,high} edges as an STL @c pair.
+    std::pair<double,double> yEdges() const {
+      return _yedges;
+    }
+
     /// Lower y limit of the bin (inclusive).
-    double lowEdgeY() const {
+    double yMin() const {
       return _yedges.first;
     }
-    /// Synonym for lowEdgeY()
-    double yMin() const {
-      return lowEdgeY();
+    /// Alias
+    /// @deprecated Use yMin
+    double lowEdgeY() const {
+      return yMin();
     }
 
     /// Upper y limit of the bin (exclusive).
-    double highEdgeY() const {
+    double yMax() const {
       return _yedges.second;
     }
-    /// Synonym for highEdgeY()
-    double yMax() const {
-      return highEdgeY();
-    }
-
-    /// Get the {low,high} edges as an STL @c pair.
-    std::pair<double,double> yedges() const {
-      return _yedges;
+    /// Alias
+    /// @deprecated Use yMax
+    double highEdgeY() const {
+      return yMax();
     }
 
     /// Middle of the bin in y
@@ -202,7 +206,6 @@ namespace YODA {
         return midpoint();
       }
     }
-
 
     /// Geometric centre of the bin, i.e. high+low/2.0
     std::pair<double, double> midpoint() const {
@@ -274,6 +277,16 @@ namespace YODA {
 
     /// @name Raw distribution statistics
     //@{
+
+    /// Statistical distribution in this bin (non-const)
+    DBN& dbn() {
+      return _dbn;
+    }
+
+    /// Statistical distribution in this bin (const)
+    const DBN& dbn() const {
+      return _dbn;
+    }
 
     /// The number of entries
     unsigned long numEntries() const {
@@ -390,8 +403,7 @@ namespace YODA {
 
     /// Test whether this bin would fit inside the given area.
     bool fitsInside(std::pair<double, double> xrange,
-                    std::pair<double, double> yrange) const
-    {
+                    std::pair<double, double> yrange) const {
       return (lowEdgeX() >= xrange.first &&
               lowEdgeY() >= yrange.first &&
               highEdgeX() < xrange.second &&
@@ -400,15 +412,14 @@ namespace YODA {
 
     /// Test whether a point lies within the current bin
     bool bounds(double x, double y) const {
-      return (x >= lowEdgeX() && x < highEdgeX()
-              && y >= lowEdgeY() && y < highEdgeY());
+      return (x >= lowEdgeX() && x < highEdgeX() && y >= lowEdgeY() && y < highEdgeY());
     }
 
 
 
     /// Test whether two bins are adjacent and, if so, return how as an integer.
     int adjacentTo(const Bin2D<DBN> &b) const {
-      for(int i=0; i<4; i++) {
+      for (int i = 0; i < 4; i++) {
         if (_edges_equal(b, i, (i+2) % 4))
           return i;
       }
@@ -427,38 +438,37 @@ namespace YODA {
     // Distribution of weighted x (and perhaps y) values
     DBN _dbn;
 
+    /// @todo Remove?
     std::pair<double, double> _edge_par(int i) const {
       if (i % 2)
-        return xedges();
+        return xEdges();
       else
-        return yedges();
+        return yEdges();
     }
 
+    /// @todo Remove?
     double _edge_perp(size_t i) const {
       double output = 0.0;
-
       switch (i) {
         case 0: output = xMax(); break;
         case 1: output = yMax(); break;
         case 2: output = xMin(); break;
         case 3: output = yMin(); break;
       }
-
       return output;
     }
 
     // Check if common edge.
-    bool _edges_equal(const Bin2D<DBN> &other, const int i, const int j) const {
+    /// @todo Remove?
+    bool _edges_equal(const Bin2D<DBN>& other, const int i, const int j) const {
       return other._edges_equal(_edge_perp(i), _edge_par(i), j);
     }
 
-    bool _edges_equal(const double perp,
-        const std::pair<double, double> par, int j) const {
-      return (
-          fuzzyEquals(perp, _edge_perp(j)) &&
-          fuzzyEquals(par.first, _edge_par(j).first) &&
-          fuzzyEquals(par.second, _edge_par(j).second)
-          );
+    /// @todo Remove?
+    bool _edges_equal(const double perp, const std::pair<double, double> par, int j) const {
+      return (fuzzyEquals(perp, _edge_perp(j)) &&
+              fuzzyEquals(par.first, _edge_par(j).first) &&
+              fuzzyEquals(par.second, _edge_par(j).second));
     }
 
   };
@@ -494,9 +504,8 @@ namespace YODA {
   /// Bin2Ds are compared for axis sorting by lower edge position in first x and then y directions
   template <class DBN>
   inline bool operator<(const Bin2D<DBN>& a, const Bin2D<DBN>& b) {
-    if (!fuzzyEquals(a.xedges().first, b.xedges().first))
-      return b.xedges().first > a.xedges().first;
-    return b.yedges().first > a.yedges().first;
+    if (!fuzzyEquals(a.xMin(), b.xMin())) return b.xMin() > a.xMin();
+    return b.yMin() > a.yMin();
   }
 
 

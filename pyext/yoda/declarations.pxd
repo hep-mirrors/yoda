@@ -207,6 +207,7 @@ cdef extern from "YODA/Point2D.h" namespace "YODA":
         void setYErr(pair[double, double]) except +err
         double xErrAvg() except +err
         double yErrAvg() except +err
+
         double xMin() except +err
         double xMax() except +err
         double yMin() except +err
@@ -252,6 +253,7 @@ cdef extern from "YODA/Point3D.h" namespace "YODA":
         double xErrAvg()
         double yErrAvg()
         double zErrAvg()
+
         double xMin() except +err
         double xMax() except +err
         double yMin() except +err
@@ -301,8 +303,11 @@ cdef extern from "YODA/Bin1D.h" namespace "YODA":
         void scaleX(double scale) except +err
         void reset()  except +err
 
-        double lowEdge() except +err
-        double highEdge()  except +err
+        # double lowEdgeX() except +err
+        # double highEdgeX() except +err
+        double xMin() except +err
+        double xMax() except +err
+
         pair[double, double] edges() except +err
         double width() except +err
         double focus() except +err
@@ -336,8 +341,7 @@ ctypedef Bin1D[Dbn3D] Bin1D_Dbn3D
 # Bin2D {{{
 cdef extern from "YODA/Bin2D.h" namespace "YODA":
     cdef cppclass Bin2D[DBN](Bin):
-        Bin2D(pair[double, double] xedges,
-              pair[double, double] yedges) except+
+        Bin2D(pair[double, double] xedges, pair[double, double] yedges) except+
         Bin2D(Bin2D bin) except +err
 
         # CYTHON HACK DO NOT CALL THIS IT DOES NOT EXIST
@@ -348,19 +352,15 @@ cdef extern from "YODA/Bin2D.h" namespace "YODA":
         void scaleXY(double, double) except +err
         void reset()  except +err
 
-        # Also xMin, xMax etc...
-        pair[double, double] xedges() except +err
-        pair[double, double] yedges() except +err
+        pair[double, double] xEdges() except +err
+        pair[double, double] yEdges() except +err
 
         double xMin() except +err
         double yMin() except +err
-
         double xMax() except +err
         double yMax() except +err
-
         double xMid() except +err
         double yMid() except +err
-
         double xWidth() except +err
         double yWidth() except +err
 
@@ -493,8 +493,7 @@ cdef extern from "merge.hh":
 # HistoBin2D {{{
 cdef extern from "YODA/HistoBin2D.h" namespace "YODA":
     cdef cppclass HistoBin2D(Bin2D_Dbn2D):
-        HistoBin2D(double xmin, double xmax,
-                   double ymin, double ymax) except +err
+        HistoBin2D(double xmin, double xmax, double ymin, double ymax) except +err
         HistoBin2D(HistoBin2D) except +err
 
         void fill(double x, double y, double weight) except +err
@@ -722,9 +721,10 @@ cdef extern from "YODA/Profile1D.h" namespace "YODA":
         void addBins(vector[double] edges) except +err
         # void eraseBin(size_t index) except +err
 
+        double xMin() except +err
+        double xMax() except +err
+
         size_t numBins() except +err
-        double lowEdge() except +err
-        double highEdge() except +err
 
         vector[ProfileBin1D] bins()
         int binIndexAt(double x) except +err
@@ -814,11 +814,14 @@ cdef extern from "YODA/Profile2D.h" namespace "YODA":
         void addBins(const vector[double]&, const vector[double]&) except +err
         # void eraseBin(size_t index) except +err
 
-        double lowEdgeX() except +err
-        double lowEdgeY() except +err
-        double highEdgeX() except +err
-        double highEdgeY() except +err
-        # TODO: add xMin, xMax, yMin, yMax
+        # double lowEdgeX() except +err
+        # double highEdgeX() except +err
+        # double lowEdgeY() except +err
+        # double highEdgeY() except +err
+        double xMin() except +err
+        double xMax() except +err
+        double yMin() except +err
+        double yMax() except +err
 
         # Dbn3D& outflow(int, int) #except +err
 
@@ -888,9 +891,10 @@ cdef extern from "YODA/Histo1D.h" namespace "YODA":
         void mergeBins(size_t, size_t) except +err
         void rebin(int n) except +err
 
+        double xMin() except +err
+        double xMax() except +err
+
         size_t numBins() except +err
-        double lowEdge() except +err
-        double highEdge() except +err
 
         vector[HistoBin1D]& bins()
         int binIndexAt(double x) except +err
@@ -997,11 +1001,14 @@ cdef extern from "YODA/Histo2D.h" namespace "YODA":
         void addBins(const vector[double]& edges) except +err
         # void eraseBin(size_t index) except +err
 
-        double lowEdgeX() except +err
-        double lowEdgeY() except +err
-        double highEdgeX() except +err
-        double highEdgeY() except +err
-        # TODO: add xMin, xMax, yMin, yMax
+        # double lowEdgeX() except +err
+        # double highEdgeX() except +err
+        # double lowEdgeY() except +err
+        # double highEdgeY() except +err
+        double xMin() except +err
+        double xMax() except +err
+        double yMin() except +err
+        double yMax() except +err
 
         # Dbn2D& outflow(int, int) #except +err
 

@@ -11,6 +11,7 @@
 #include <vector>
 #include <limits>
 #include "YODA/Utils/fastlog.h"
+#include "YODA/Utils/MathUtils.h"
 #include <boost/shared_ptr.hpp>
 #include <boost/shared_array.hpp>
 
@@ -28,20 +29,28 @@ namespace YODA {
     /// better the guess, the less time spent looking.
     struct Estimator {
 
+      /// Virtual destructor needed for inheritance
+      virtual ~Estimator() {}
+
       /// Return offset bin index estimate, with 0 = underflow and Nbins+1 = overflow
-      virtual size_t operator() (double x) const {
-        const int i = est(x);
+      size_t estindex(double x) const {
+        const int i = _est(x);
         if (i < 0) return 0;
         const size_t i2 = (size_t) i;
         if (i2 >= _N) return _N+1;
         return i2 + 1;
       }
 
+      /// Return offset bin index estimate, with 0 = underflow and Nbins+1 = overflow
+      size_t operator() (double x) const {
+        return estindex(x);
+      }
+
     protected:
 
       /// Make an int-valued estimate of bin index
       /// @note No range checking or underflow offset
-      virtual int est(double x) const = 0;
+      virtual int _est(double x) const = 0;
 
       /// Number of bins
       size_t _N;
@@ -69,7 +78,7 @@ namespace YODA {
       }
 
       /// Call operator returns estimated bin index (offset so 0 == underflow)
-      int est(double x) const {
+      int _est(double x) const {
         return (int) floor(_m * (x - _c));
       }
 
@@ -102,7 +111,7 @@ namespace YODA {
       }
 
       /// Call operator returns estimated bin index (offset so 0 == underflow)
-      int est(double x) const {
+      int _est(double x) const {
         return (int) floor(_m * (fastlog2(x) - _c));
       }
 
@@ -114,6 +123,7 @@ namespace YODA {
     /// @brief Bin searcher
     ///
     /// @author David Mallows
+    /// @author Andy Buckley
     ///
     /// Handles low-level bin lookups using a hybrid algorithm that is
     /// considerably faster for regular (logarithmic or linear) and near-regular
@@ -142,16 +152,16 @@ namespace YODA {
         _edges = bs._edges;
       }
 
-      /// Explicit constructor, specifying the edges and estimation strategy
-      BinSearcher(const std::vector<double>& edges, bool log) {
-        _updateEdges(edges);
-        // Internally use a log or linear estimator as requested
-        if (log) {
-          _est.reset(new LogEstimator(edges.size()-1, edges.front(), edges.back()));
-        } else {
-          _est.reset(new LinEstimator(edges.size()-1, edges.front(), edges.back()));
-        }
-      }
+      // /// Explicit constructor, specifying the edges and estimation strategy
+      // BinSearcher(const std::vector<double>& edges, bool log) {
+      //   _updateEdges(edges);
+      //   // Internally use a log or linear estimator as requested
+      //   if (log) {
+      //     _est.reset(new LogEstimator(edges.size()-1, edges.front(), edges.back()));
+      //   } else {
+      //     _est.reset(new LinEstimator(edges.size()-1, edges.front(), edges.back()));
+      //   }
+      // }
 
       /// Fully automatic constructor: give bin edges and it does the rest!
       BinSearcher(const std::vector<double>& edges) {
@@ -192,12 +202,12 @@ namespace YODA {
       size_t index(double x) const {
 
         // Get initial estimate
-        size_t index = (*_est)(x); //< @todo This is where the functor syntax doesn't help...
+        size_t index = _est->estindex(x);
 
-        // Return if this is the right bin
+        // Return now if this is the correct bin
         if (x >= _edges[index] && x < _edges[index+1]) return index;
 
-        // Refine the estimate if x is not exactly on a bin edge
+        // Otherwise refine the estimate, if x is not exactly on a bin edge
         if (x > _edges[index]) {
           const ssize_t newindex = _linsearch_forward(index, x, SEARCH_SIZE);
           index = (newindex > 0) ? newindex : _bisect(x, index, _edges.size()-1);
@@ -252,9 +262,9 @@ namespace YODA {
       ssize_t _linsearch_backward(size_t istart, double x, size_t nmax) const {
         assert(x < _edges[istart]); // assumption that x < start is wrong
         for (size_t i = 0; i < nmax; i++) {
-          const size_t j = istart - i - 1; // index of _next_ edge (working backwards)
+          const int j = istart - i - 1; // index of _next_ edge (working backwards)
           if (j < 0) return -1;
-          if (x >= _edges[j]) return j; // note one more iteration needed if x is on an edge
+          if (x >= _edges[j]) return (ssize_t) j; // note one more iteration needed if x is on an edge
         }
         return -1;
       }
@@ -277,9 +287,23 @@ namespace YODA {
       }
 
 
+    /// Check if two BinSearcher objects have the same edges
+    bool sameBinning(const BinSearcher& other) const {
+      if (_edges.size() != other._edges.size()) return false;
+      for (size_t i = 1; i < _edges.size()-1; i++) {
+        /// @todo Be careful about using fuzzyEquals... should be an exact comparison?
+        if (!fuzzyEquals(_edges[i], other._edges[i])) return false;
+      }
+      return true;
+    }
+
+
     protected:
 
+      /// Estimator object to be used for making fast bin index guesses
       boost::shared_ptr<Estimator> _est;
+
+      /// List of bin edges, including +- inf at either end
       std::vector<double> _edges;
 
     };

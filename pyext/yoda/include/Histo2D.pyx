@@ -153,6 +153,27 @@ cdef class Histo2D(AnalysisObject):
 
 
     @property
+    def xMin(self):
+        """Low x edge of the histo."""
+        return self._Histo2D().xMin()
+
+    @property
+    def xMax(self):
+        """High x edge of the histo."""
+        return self._Histo2D().xMax()
+
+    @property
+    def yMin(self):
+        """Low y edge of the histo."""
+        return self._Histo2D().yMin()
+
+    @property
+    def yMax(self):
+        """High y edge of the histo."""
+        return self._Histo2D().yMax()
+
+
+    @property
     def numBins(self):
         """() -> int
         Number of bins (not including overflows)."""

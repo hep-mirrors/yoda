@@ -118,6 +118,26 @@ cdef class Profile2D(AnalysisObject):
         self._Profile2D().scaleW(w)
 
 
+    @property
+    def xMin(self):
+        """Low x edge of the histo."""
+        return self._Profile2D().xMin()
+
+    @property
+    def xMax(self):
+        """High x edge of the histo."""
+        return self._Profile2D().xMax()
+
+    @property
+    def yMin(self):
+        """Low y edge of the histo."""
+        return self._Profile2D().yMin()
+
+    @property
+    def yMax(self):
+        """High y edge of the histo."""
+        return self._Profile2D().yMax()
+
 
     @property
     def numBins(self):
@@ -132,13 +152,13 @@ cdef class Profile2D(AnalysisObject):
     def numBinsX(self):
         """() -> int
         Number of bins (edges) along the x axis."""
-        return self._Histo2D().numBinsX()
+        return self._Profile2D().numBinsX()
 
     @property
     def numBinsY(self):
         """() -> int
         Number of bins (edges) along the y axis."""
-        return self._Histo2D().numBinsY()
+        return self._Profile2D().numBinsY()
 
 
     @property

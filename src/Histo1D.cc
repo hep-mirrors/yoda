@@ -134,6 +134,7 @@ namespace YODA {
 
   // Divide two histograms
   Scatter2D divide(const Histo1D& numer, const Histo1D& denom) {
+    /// @todo Is this really an appropriate definition? Should Scatter/Scatter even exist?!?
     return divide(mkScatter(numer), mkScatter(denom));
   }
 
@@ -146,7 +147,7 @@ namespace YODA {
       const HistoBin1D& b_tot = total.bin(i);
       Point2D& point = tmp.point(i);
 
-      // Check that the numerator is a subset of the denominator
+      // Check that the numerator is consistent with being a subset of the denominator
       if (b_acc.effNumEntries() > b_tot.effNumEntries() || b_acc.sumW() > b_tot.sumW())
         throw UserError("Attempt to calculate an efficiency when the numerator is not a subset of the denominator");
 

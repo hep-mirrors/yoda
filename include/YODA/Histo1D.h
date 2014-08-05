@@ -181,10 +181,18 @@ namespace YODA {
     }
 
     /// Low edge of this histo's axis
+    double xMin() const {
+      return _axis.xMin();
+    }
+    /// Alias for xMin
     double lowEdge() const {
       return _axis.lowEdge();
     }
 
+    /// High edge of this histo's axis
+    double xMax() const {
+      return _axis.xMax();
+    }
     /// High edge of this histo's axis
     double highEdge() const {
       return _axis.highEdge();

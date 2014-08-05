@@ -8,7 +8,6 @@
 #include "YODA/Utils/Predicates.h"
 #include "YODA/Utils/BinSearcher.h"
 #include <limits>
-
 #include <string>
 
 namespace YODA {
@@ -271,44 +270,46 @@ namespace YODA {
       _locked = locked;
     }
 
+
     /// Return the lowest-valued bin edge along the x-axis
-    double lowEdgeX() const {
+    double xMin() const {
       return _xRange.first;
     }
-
-    /// Alias for lowEdgeX()
-    double xMin() const {
-      return lowEdgeX();
+    /// Alias
+    /// @deprecated Use xMin
+    double lowEdgeX() const {
+      return xMin();
     }
 
     /// Return the highest-valued bin edge along the x-axis
-    double highEdgeX() const {
+    double xMax() const {
       return _xRange.second;
     }
-
-    /// Alias for highEdgeX()
-    double xMax() const {
-      return highEdgeX();
+    /// Alias
+    /// @deprecated Use xMax
+    double highEdgeX() const {
+      return xMax();
     }
+
 
     /// Return the lowest-valued bin edge along the y-axis
-    double lowEdgeY() const {
+    double yMin() const {
       return _yRange.first;
     }
-
-    /// Alias for lowEdgeY()
-    double yMin() const {
-      return lowEdgeY();
+    /// Alias
+    /// @deprecated Use yMin
+    double lowEdgeY() const {
+      return yMin();
     }
 
     /// Return the highest-valued bin edge along the y-axis
-    double highEdgeY() const {
+    double yMax() const {
       return _yRange.second;
     }
-
-    /// Alias for highEdgeY()
-    double yMax() const {
-      return highEdgeY();
+    /// Alias
+    /// @deprecated Use yMax
+    double highEdgeY() const {
+      return yMax();
     }
 
 

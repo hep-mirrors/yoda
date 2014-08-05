@@ -7,9 +7,8 @@
 #define YODA_HistoBin1D_h
 
 #include "YODA/Bin1D.h"
+#include "YODA/Dbn1D.h"
 #include "YODA/Exceptions.h"
-#include <cmath>
-#include <cassert>
 
 namespace YODA {
 
@@ -20,7 +19,6 @@ namespace YODA {
   /// a generic Bin1D object, but also supplies the specific member functions
   /// for histogram-type data, as opposed to profile-type.
   class HistoBin1D : public Bin1D<Dbn1D> {
-
   public:
 
     /// @name Constructor giving bin low and high edges.

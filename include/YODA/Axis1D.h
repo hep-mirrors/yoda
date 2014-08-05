@@ -7,10 +7,10 @@
 #include "YODA/Utils/MathUtils.h"
 #include "YODA/Utils/BinSearcher.h"
 #include <limits>
-
 #include <string>
 
 namespace YODA {
+
 
   /// @brief 1D bin container
   ///
@@ -99,20 +99,22 @@ namespace YODA {
     }
 
     /// Return the lowest-value bin edge on the axis
-    double lowEdge() const {
+    double xMin() const {
       if (numBins() == 0) throw RangeError("This axis contains no bins and so has no defined range");
       return bins().front().xMin();
     }
-    /// A alias for lowEdge()
-    double xMin() const { return lowEdge();}
+    /// A alias for xMin()
+    /// @deprecated Use xMin
+    double lowEdge() const { return xMin();}
 
     /// Return the highest-value bin edge on the axis
-    double highEdge() const {
+    double xMax() const {
       if (numBins() == 0) throw RangeError("This axis contains no bins and so has no defined range");
       return bins().back().xMax();
     }
-    /// Alias for highEdge()
-    double xMax() const { return highEdge();}
+    /// Alias for xMax()
+    /// @deprecated Use xMax
+    double highEdge() const { return xMax();}
 
     /// Return a bin at a given index (non-const)
     BIN1D& bin(size_t index) {
@@ -127,21 +129,21 @@ namespace YODA {
     }
 
     /// Returns an index of a bin at a given coord, -1 if no bin matches
-    int binIndexAt(double coord) const {
-      // Yes, this is robust even with an empty axis.
+    ssize_t binIndexAt(double coord) const {
+      // Yes, this is robust even with an empty axis: there's always at least one outflow
       return _indexes[_binsearcher.index(coord)];
     }
 
     /// Return a bin at a given coordinate (non-const)
     BIN1D& binAt(double x) {
-      const int index = binIndexAt(x);
+      const ssize_t index = binIndexAt(x);
       if (index == -1) throw RangeError("There is no bin at the specified x");
       return bin(index);
     }
 
     /// Return a bin at a given coordinate (const)
     const BIN1D& binAt(double x) const {
-      const long int index = binIndexAt(x);
+      const ssize_t index = binIndexAt(x);
       if (index == -1) throw RangeError("There is no bin at the specified x");
       return bin(index);
     }
@@ -213,11 +215,9 @@ namespace YODA {
       if (_gapInRange(from, to))
         throw RangeError("Bin ranges containing gaps cannot be merged");
 
-      Bin &b = bin(from);
-
+      Bin& b = bin(from);
       for (size_t i = from + 1; i <= to; i++)
         b.merge(_bins[i]);
-
       eraseBins(from+1, to);
     }
 
@@ -401,8 +401,8 @@ namespace YODA {
         throw LockError("Attempting to update a locked axis");
       }
       // Define the new cuts and indexes
-      std::vector<double> edges;
-      std::vector<long> indexes;
+      std::vector<double> edges; edges.reserve(bins.size()+1); // Nbins+1 edges
+      std::vector<long> indexes; edges.reserve(bins.size()+2); // Nbins + 2 outflows
 
       // Sort the bins
       std::sort(bins.begin(), bins.end());
@@ -413,50 +413,51 @@ namespace YODA {
       // Check for overlaps
       for (size_t i = 0; i < bins.size(); ++i) {
         Bin& currentBin = bins[i];
-        const double new_low  = currentBin.lowEdge();
+        const double new_low  = currentBin.xMin();
         const double reldiff = (new_low - last_high) / currentBin.width();
         if (reldiff < -1e-3) { //< @note If there is a "large" negative gap (i.e. overlap), throw an exception
           std::stringstream ss;
           ss << "Bin edges overlap: " << last_high << " -> " << new_low;
           throw RangeError(ss.str());
         } else if (reldiff > 1e-3) { //< @note If there is a "large" positive gap, create a bin gap
-          indexes.push_back(-1);
-          edges.push_back(new_low);
+          indexes.push_back(-1); // First index will be for underflow
+          edges.push_back(new_low); // Will include first edge
         }
 
-        // Bins check that they are not zero or negative width. It's perfectly
-        // okay for them to throw an exception here, as we haven't changed
-        // anything yet.
+        // Bins check that they are not zero or negative width. It's okay for
+        // them to throw an exception here, as we haven't changed anything yet.
         indexes.push_back(i);
-        edges.push_back(currentBin.highEdge());
+        edges.push_back(currentBin.xMax());
 
-        last_high = currentBin.highEdge();
+        last_high = currentBin.xMax();
       }
-      indexes.push_back(-1);
+      indexes.push_back(-1); // Overflow
 
       // Everything was okay, so let's make our changes
-      //std::cout << "In" << std::endl;
       _binsearcher = Utils::BinSearcher(edges);
-      //std::cout << "Out" << std::endl;
       _indexes = indexes;
       _bins = bins;
     }
 
 
-    /// Check if there are any gaps in the axis' binning between bin indices @a from and @a to, inclusive.
-    bool _gapInRange(size_t from, size_t to) const {
-      assert(to < numBins() && from < to);
-      if (from == to) return false;
+    /// Check if there are any gaps in the axis' binning between bin indices @a
+    /// from and @a to, inclusive.
+    bool _gapInRange(size_t ifrom, size_t ito) const {
+      if (ifrom == ito) return false;
+      assert(ito < numBins() && ifrom < ito);
 
-      const size_t from_ix = _binsearcher.index(bin(from).lowEdge());
-      const size_t to_ix = _binsearcher.index(bin(to).lowEdge());
+      /// @todo Why do we need to re-find the bin indices?
+      const size_t from_ix = _binsearcher.index(bin(ifrom).xMid());
+      const size_t to_ix = _binsearcher.index(bin(ito).xMid());
+      std::cout << ifrom << " vs. " << from_ix << std::endl;
+      std::cout << ito << " vs. " << to_ix << std::endl;
 
       for (size_t i = from_ix; i <= to_ix; i++)
-        if (_indexes[i] == -1)
-          return true;
-
+      // for (size_t i = ifrom; i <= ito; i++)
+        if (_indexes[i] == -1) return true;
       return false;
     }
+
 
   private:
 

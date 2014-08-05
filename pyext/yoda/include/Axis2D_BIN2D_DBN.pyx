@@ -1,11 +1,14 @@
 # TODO: docstrings
 cdef class Axis2D_${BIN2D}_${DBN}(util.Base):
 
+    cdef inline c.Axis2D[c.${BIN2D}, c.${DBN}]* a2ptr(self) except NULL:
+        return <c.Axis2D[c.${BIN2D}, c.${DBN}]*> self.ptr()
+    # TODO: remove
     cdef inline c.Axis2D[c.${BIN2D}, c.${DBN}]* _Axis2D(self) except NULL:
         return <c.Axis2D[c.${BIN2D}, c.${DBN}]*> self.ptr()
 
     def __dealloc__(self):
-        cdef c.Axis2D[c.${BIN2D}, c.${DBN}]* p = self._Axis2D()
+        cdef c.Axis2D[c.${BIN2D}, c.${DBN}]* p = self.a2ptr()
         if self._deallocate:
             del p
 
@@ -25,8 +28,8 @@ cdef class Axis2D_${BIN2D}_${DBN}(util.Base):
 
     # TODO: remove
     # def __getitem__(self, py_ix):
-    #     cdef size_t i = cutil.pythonic_index(py_ix, self._Axis2D().bins().size())
-    #     return cutil.new_borrowed_cls(${BIN2D}, & self._Axis2D().bins().at(i), self)
+    #     cdef size_t i = cutil.pythonic_index(py_ix, self.a2ptr().bins().size())
+    #     return cutil.new_borrowed_cls(${BIN2D}, & self.a2ptr().bins().at(i), self)
 
     def __repr__(self):
         # TODO: improve
@@ -36,27 +39,27 @@ cdef class Axis2D_${BIN2D}_${DBN}(util.Base):
     @property
     def totalDbn(self):
         return cutil.new_owned_cls(
-            ${DBN}, new c.${DBN}(self._Axis2D().totalDbn()))
+            ${DBN}, new c.${DBN}(self.a2ptr().totalDbn()))
 
     def addBin(self, a, b, c, d):
-        self._Axis2D().addBin(a, b, c, d)
+        self.a2ptr().addBin(a, b, c, d)
 
     @property
     def outflow(self, ix, iy):
-        return cutil.new_owned_cls(${DBN}, new c.${DBN}(self._Axis2D().outflow(ix, iy)))
+        return cutil.new_owned_cls(${DBN}, new c.${DBN}(self.a2ptr().outflow(ix, iy)))
 
     @property
     def edges(self):
         return util.XY(
-            util.EdgePair(self._Axis2D().lowEdgeX(), self._Axis2D().highEdgeX()),
-            util.EdgePair(self._Axis2D().lowEdgeY(), self._Axis2D().highEdgeY())
+            util.EdgePair(self.a2ptr().xMin(), self.a2ptr().xMax()),
+            util.EdgePair(self.a2ptr().yMin(), self.a2ptr().yMax())
         )
 
     def reset(self):
-        self._Axis2D().reset()
+        self.a2ptr().reset()
 
     def binAt(self, x, y):
-        cdef int ix = self._Axis2D().getBinIndex(x, y)
+        cdef int ix = self.a2ptr().getBinIndex(x, y)
         if ix < 0:
             raise YodaExc_RangeError('No bin found!')
         return self[ix]

@@ -8,7 +8,6 @@
 
 #include "YODA/Utils/MathUtils.h"
 #include "YODA/Bin.h"
-#include "YODA/Dbn1D.h"
 #include <string>
 #include <utility>
 #include <cassert>
@@ -115,6 +114,7 @@ namespace YODA {
       return _edges.first;
     }
     /// Alias
+    /// @deprecated Use xMin
     double lowEdge() const {
       return xMin();
     }
@@ -124,6 +124,7 @@ namespace YODA {
       return _edges.second;
     }
     /// Alias
+    /// @deprecated Use xMax
     double highEdge() const {
       return xMax();
     }
@@ -171,8 +172,6 @@ namespace YODA {
     //@}
 
 
-  public:
-
     /// @name X distribution statistics
     //@{
 
@@ -208,6 +207,17 @@ namespace YODA {
 
     /// @name Raw distribution statistics
     //@{
+
+    /// Statistical distribution in this bin (non-const)
+    DBN& dbn() {
+      return _dbn;
+    }
+
+    /// Statistical distribution in this bin (const)
+    const DBN& dbn() const {
+      return _dbn;
+    }
+
 
     /// The number of entries
     unsigned long numEntries() const {

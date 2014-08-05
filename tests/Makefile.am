@@ -16,7 +16,8 @@ check_PROGRAMS = \
   testhisto1Da testhisto1Db \
   testhisto2Da \
   testprofile1Da \
-  testindexedset testsortedvector\
+  testindexedset \
+  testsortedvector\
   testhisto1Dcreate \
   testhisto1Dfill \
   testhisto1Dmodify \
