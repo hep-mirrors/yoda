@@ -33,7 +33,7 @@ namespace YODA {
 
 
   void Profile1D::fillBin(size_t i, double y, double weight) {
-    fill(bin(i).midpoint(), y, weight);
+    fill(bin(i).xMid(), y, weight);
   }
 
 

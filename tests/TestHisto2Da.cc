@@ -19,8 +19,8 @@ using namespace YODA;
 // too high on the priority list right now!
 void printStats(Histo2D& h, bool full=false){
     cout << "-----------------------------" << endl;
-    cout << "LowEdgeX = " << h.lowEdgeX() << " HighEdgeX = " << h.highEdgeX() << endl;
-    cout << "LowEdgeY = " << h.lowEdgeY() << " HighEdgeY = " << h.highEdgeY() << endl;
+    cout << "LowEdgeX = " << h.xMin() << " HighEdgeX = " << h.xMax() << endl;
+    cout << "LowEdgeY = " << h.yMin() << " HighEdgeY = " << h.yMax() << endl;
 
     cout << "Sum of weights is " << h.sumW(true) << ", squared: " << h.sumW2(true) << endl;
 

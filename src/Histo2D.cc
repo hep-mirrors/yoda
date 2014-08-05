@@ -36,7 +36,7 @@ namespace YODA {
 
 
   void Histo2D::fillBin(size_t i, double weight) {
-    pair<double, double> mid = bin(i).midpoint();
+    pair<double, double> mid = bin(i).xyMid();
     fill(mid.first, mid.second, weight);
   }
 
@@ -79,7 +79,7 @@ namespace YODA {
     double sigma2 = 0;
     const double xMean = this->xMean();
     for (size_t i = 0; i < bins().size(); ++i) {
-      const double diff = bin(i).focus().first - xMean;
+      const double diff = bin(i).xFocus() - xMean;
       sigma2 += diff * diff * bin(i).sumW();
     }
     return sigma2/sumW();
@@ -92,7 +92,7 @@ namespace YODA {
     double sigma2 = 0;
     const double yMean = this->yMean();
     for (size_t i = 0; i < bins().size(); ++i) {
-      const double diff = bin(i).focus().first - yMean;
+      const double diff = bin(i).yFocus() - yMean;
       sigma2 += diff * diff * bin(i).sumW();
     }
     return sigma2/sumW();
@@ -165,21 +165,21 @@ namespace YODA {
   // Histo1D Histo2D::cutterX(double atY, const std::string& path, const std::string& title) {
   //   if (!_axis.isGrid()) throw GridError("Attempt to cut a Histo2D that is not a grid!");
 
-  //   if (atY < lowEdgeY() || atY > highEdgeY()) throw RangeError("Y is outside the grid");
+  //   if (atY < yMin() || atY > highEdgeY()) throw RangeError("Y is outside the grid");
   //   vector<HistoBin1D> tempBins;
 
-  //   for (double i = binByCoord(lowEdgeX(), atY).xMin(); i < highEdgeX(); i += binByCoord(i, atY).widthX()) {
+  //   for (double i = binByCoord(xMin(), atY).xMin(); i < highEdgeX(); i += binByCoord(i, atY).widthX()) {
   //     const HistoBin2D& b2 = binByCoord(i, atY);
   //     const Dbn1D dbn2(b2.numEntries(), b2.sumW(), b2.sumW2(), b2.sumWX(), b2.sumWX2());
-  //     tempBins.push_back(HistoBin1D(b2.lowEdgeX(), b2.highEdgeX(), dbn2));
+  //     tempBins.push_back(HistoBin1D(b2.xMin(), b2.highEdgeX(), dbn2));
   //   }
 
   //   /// Setting under/over flows
   //   Dbn2D underflow;
-  //   underflow += _axis.outflows()[7][_axis.getBinRow(_axis.getBinIndex(lowEdgeX(), atY))];
+  //   underflow += _axis.outflows()[7][_axis.getBinRow(_axis.getBinIndex(xMin(), atY))];
 
   //   Dbn2D overflow;
-  //   overflow += _axis.outflows()[3][_axis.getBinRow(_axis.getBinIndex(lowEdgeX(), atY))];
+  //   overflow += _axis.outflows()[3][_axis.getBinRow(_axis.getBinIndex(xMin(), atY))];
 
   //   return Histo1D(tempBins, _axis.totalDbn().transformX(), underflow.transformX(), overflow.transformX(), path, title);
 
@@ -189,21 +189,21 @@ namespace YODA {
   // Histo1D Histo2D::cutterY(double atX, const std::string& path, const std::string& title) {
   //   if (!_axis.isGrid()) throw GridError("Attempt to cut a Histo2D that is not a grid!");
 
-  //   if (atX < lowEdgeX() || atX > highEdgeX()) throw RangeError("X is outside the grid");
+  //   if (atX < xMin() || atX > highEdgeX()) throw RangeError("X is outside the grid");
   //   vector<HistoBin1D> tempBins;
 
-  //   for (double i = binByCoord(atX, lowEdgeY()).yMin(); i < highEdgeY(); i += binByCoord(atX, i).widthY()) {
+  //   for (double i = binByCoord(atX, yMin()).yMin(); i < highEdgeY(); i += binByCoord(atX, i).widthY()) {
   //     const HistoBin2D& b2 = binByCoord(atX, i);
   //     const Dbn1D dbn2(b2.numEntries(), b2.sumW(), b2.sumW2(), b2.sumWX(), b2.sumWX2());
-  //     tempBins.push_back(HistoBin1D(b2.lowEdgeY(), b2.highEdgeY(), dbn2));
+  //     tempBins.push_back(HistoBin1D(b2.yMin(), b2.highEdgeY(), dbn2));
   //   }
 
   //   // Setting under/over flows
   //   Dbn2D underflow;
-  //   underflow += _axis.outflows()[1][_axis.getBinColumn(_axis.getBinIndex(atX, lowEdgeY()))];
+  //   underflow += _axis.outflows()[1][_axis.getBinColumn(_axis.getBinIndex(atX, yMin()))];
 
   //   Dbn2D overflow;
-  //   overflow += _axis.outflows()[5][_axis.getBinColumn(_axis.getBinIndex(atX, lowEdgeY()))];
+  //   overflow += _axis.outflows()[5][_axis.getBinColumn(_axis.getBinIndex(atX, yMin()))];
   //   Dbn2D total = _axis.totalDbn();
 
   //   // Making sure that we rotate our distributions, as we are cutting parallel to Y axis now
@@ -219,10 +219,10 @@ namespace YODA {
   //   if (!_axis.isGrid()) throw GridError("Profile1D cannot be made from a histogram that is not a grid!");
 
   //   vector<ProfileBin1D> prof;
-  //   for(int i = lowEdgeX() + _axis.bin(0).midpoint().first; i < highEdgeX(); i+= _axis.bin(0).widthX()) {
-  //     HistoBin2D& bin(_axis.binByCoord(i, lowEdgeY()));
+  //   for(int i = xMin() + _axis.bin(0).xMid(); i < highEdgeX(); i+= _axis.bin(0).widthX()) {
+  //     HistoBin2D& bin(_axis.binByCoord(i, yMin()));
   //     HistoBin2D composite(bin.xMin(), bin.xMax(), bin.yMin(), bin.yMax()) ;
-  //     for(int j = lowEdgeY() + _axis.bin(0).midpoint().second; j < highEdgeY(); j += _axis.bin(0).widthY()) {
+  //     for(int j = yMin() + _axis.bin(0).yMid(); j < highEdgeY(); j += _axis.bin(0).widthY()) {
   //       composite += _axis.binByCoord(i, j);
   //     }
   //     prof.push_back(composite.transformX());
@@ -254,10 +254,10 @@ namespace YODA {
   //   if (!_axis.isGrid()) throw GridError("Profile1D cannot be made from a histogram that is not a grid!");
 
   //   vector<ProfileBin1D> prof;
-  //   for(int i = lowEdgeY() + _axis.bin(0).midpoint().second; i < highEdgeY(); i+= _axis.bin(0).widthY()) {
-  //     HistoBin2D& bin(_axis.binByCoord(i, lowEdgeY()));
+  //   for(int i = yMin() + _axis.bin(0).yMid(); i < highEdgeY(); i+= _axis.bin(0).widthY()) {
+  //     HistoBin2D& bin(_axis.binByCoord(i, yMin()));
   //     HistoBin2D composite(bin.xMin(), bin.xMax(), bin.yMin(), bin.yMax()) ;
-  //     for(int j = lowEdgeX() + _axis.bin(0).midpoint().first; j < highEdgeX(); j += _axis.bin(0).widthX()) {
+  //     for(int j = xMin() + _axis.bin(0).xMid(); j < highEdgeX(); j += _axis.bin(0).widthX()) {
   //       composite += _axis.binByCoord(i, j);
   //     }
   //     prof.push_back(composite.transformY());

@@ -32,7 +32,7 @@ namespace YODA {
 
 
   void Histo1D::fillBin(size_t i, double weight) {
-    fill(bin(i).midpoint(), weight);
+    fill(bin(i).xMid(), weight);
   }
 
 
@@ -60,8 +60,8 @@ namespace YODA {
   }
 
 
-  double Histo1D::mean(bool includeoverflows) const {
-    if (includeoverflows) return _axis.totalDbn().mean();
+  double Histo1D::xMean(bool includeoverflows) const {
+    if (includeoverflows) return _axis.totalDbn().xMean();
     double sumwx = 0;
     double sumw  = 0;
     BOOST_FOREACH (const Bin& b, bins()) {
@@ -75,22 +75,22 @@ namespace YODA {
   }
 
 
-  double Histo1D::variance(bool includeoverflows) const {
-    if (includeoverflows) return _axis.totalDbn().variance();
+  double Histo1D::xVariance(bool includeoverflows) const {
+    if (includeoverflows) return _axis.totalDbn().xVariance();
     double sigma2 = 0;
-    const double mean = this->mean();
+    const double mean = this->xMean();
     BOOST_FOREACH (const HistoBin1D& b, bins()) {
-      const double diff = b.focus() - mean;
+      const double diff = b.xFocus() - mean;
       sigma2 += diff * diff * b.sumW();
     }
     return sigma2/sumW();
   }
 
 
-  double Histo1D::stdErr(bool includeoverflows) const {
-    if (includeoverflows) return _axis.totalDbn().stdErr();
+  double Histo1D::xStdErr(bool includeoverflows) const {
+    if (includeoverflows) return _axis.totalDbn().xStdErr();
     const double effNumEntries = sumW(false)*sumW(false)/sumW2(false);
-    return std::sqrt(variance(false) / effNumEntries);
+    return std::sqrt(xVariance(false) / effNumEntries);
   }
 
 

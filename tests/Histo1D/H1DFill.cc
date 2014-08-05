@@ -34,21 +34,21 @@ int main() {
   MSG_GREEN("PASS");
 
   MSG_(PAD(70) << "Checking mean: ");
-  if (!fuzzyEquals(5, h.mean(false))) {
+  if (!fuzzyEquals(5, h.xMean(false))) {
     MSG_RED("FAIL");
     return -1;
   }
   MSG_GREEN("PASS");
 
   MSG_(PAD(70) << "Checking variance: ");
-  if (!fuzzyEquals(25, h.variance(false))) {
+  if (!fuzzyEquals(25, h.xVariance(false))) {
     MSG_RED("FAIL");
     return -1;
   }
   MSG_GREEN("PASS");
 
   MSG_(PAD(70) << "Checking standard deviation: ");
-  if (!fuzzyEquals(5, h.stdDev(false))) {
+  if (!fuzzyEquals(5, h.xStdDev(false))) {
     MSG_RED("FAIL");
     return -1;
   }
@@ -76,7 +76,7 @@ int main() {
   MSG_GREEN("PASS");
 
   MSG_(PAD(70) << "Checking if stats were set correctly: ");
-  if (!fuzzyEquals(h.underflow().mean(), -10)) {
+  if (!fuzzyEquals(h.underflow().xMean(), -10)) {
     MSG_RED("FAIL");
     return -1;
   }
@@ -87,7 +87,7 @@ int main() {
   MSG_GREEN("PASS");
 
   MSG_(PAD(70) << "Checking if stats were set correctly: ");
-  if (!fuzzyEquals(h.overflow().mean(), 110)) {
+  if (!fuzzyEquals(h.overflow().xMean(), 110)) {
     MSG_RED("FAIL");
     return -1;
   }

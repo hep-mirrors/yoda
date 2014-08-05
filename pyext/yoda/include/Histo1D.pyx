@@ -27,6 +27,9 @@ cdef class Histo1D(AnalysisObject):
       iterator of bins, B.
     """
 
+    cdef inline c.Histo1D* h1ptr(self) except NULL:
+        return <c.Histo1D*> self.ptr()
+    # TODO: remove
     cdef inline c.Histo1D* _Histo1D(self) except NULL:
         return <c.Histo1D*> self.ptr()
 
@@ -56,17 +59,17 @@ cdef class Histo1D(AnalysisObject):
 
 
     def __len__(self):
-        return self._Histo1D().numBins()
+        return self.h1ptr().numBins()
 
     def __getitem__(self, py_ix):
-        cdef size_t i = cutil.pythonic_index(py_ix, self._Histo1D().numBins())
-        return cutil.new_borrowed_cls(HistoBin1D, & self._Histo1D().bin(i), self)
+        cdef size_t i = cutil.pythonic_index(py_ix, self.h1ptr().numBins())
+        return cutil.new_borrowed_cls(HistoBin1D, & self.h1ptr().bin(i), self)
 
 
     def __repr__(self):
         xmean = None
         if self.sumW() != 0:
-            xmean = "%0.2e" % self.mean()
+            xmean = "%0.2e" % self.xMean()
         return "<%s '%s' %d bins, sumw=%0.2g, xmean=%s>" % \
                (self.__class__.__name__, self.path,
                 len(self.bins), self.sumW(), xmean)
@@ -75,118 +78,118 @@ cdef class Histo1D(AnalysisObject):
     def reset(self):
         """None -> None.
         Reset the histogram but leave the bin structure."""
-        self._Histo1D().reset()
+        self.h1ptr().reset()
 
 
     def clone(self):
         """None -> Histo1D.
         Clone this Histo1D."""
-        return cutil.new_owned_cls(Histo1D, self._Histo1D().newclone())
+        return cutil.new_owned_cls(Histo1D, self.h1ptr().newclone())
 
 
     def fill(self, x, weight=1.0):
         """(x,[w]) -> None.
         Fill with given x value and optional weight."""
-        self._Histo1D().fill(x, weight)
+        self.h1ptr().fill(x, weight)
 
 
     def fillBin(self, size_t ix, weight=1.0):
         """(ix,[w]) -> None.
         Fill bin ix and optional weight."""
-        self._Histo1D().fillBin(ix, weight)
+        self.h1ptr().fillBin(ix, weight)
 
 
     @property
     def totalDbn(self):
         """None -> Dbn1D
         The Dbn1D representing the total distribution."""
-        return cutil.new_borrowed_cls(Dbn1D, &self._Histo1D().totalDbn(), self)
+        return cutil.new_borrowed_cls(Dbn1D, &self.h1ptr().totalDbn(), self)
 
     @property
     def underflow(self):
         """None -> Dbn1D
         The Dbn1D representing the underflow distribution."""
-        return cutil.new_borrowed_cls(Dbn1D, &self._Histo1D().underflow(), self)
+        return cutil.new_borrowed_cls(Dbn1D, &self.h1ptr().underflow(), self)
 
     @property
     def overflow(self):
         """None -> Dbn1D
         The Dbn1D representing the overflow distribution."""
-        return cutil.new_borrowed_cls(Dbn1D, &self._Histo1D().overflow(), self)
+        return cutil.new_borrowed_cls(Dbn1D, &self.h1ptr().overflow(), self)
 
 
     def integral(self, overflows=True):
         """([bool]) -> float
         Histogram integral, optionally excluding the overflows."""
-        return self._Histo1D().integral(overflows)
+        return self.h1ptr().integral(overflows)
 
     def numEntries(self): # add overflows arg
         """None -> int
         Number of times this histogram was filled."""
-        return int(self._Histo1D().numEntries())
+        return int(self.h1ptr().numEntries())
 
     def effNumEntries(self): # add overflows arg
         """None -> float
         Effective number of times this histogram was filled, computed from weights."""
-        return self._Histo1D().effNumEntries()
+        return self.h1ptr().effNumEntries()
 
     def sumW(self, overflows=True):
         """([bool]) -> float
         Sum of weights filled into this histogram, optionally excluding the overflows."""
-        return self._Histo1D().sumW(overflows)
+        return self.h1ptr().sumW(overflows)
 
     def sumW2(self, overflows=True):
         """([bool]) -> float
         Sum of weights filled into this histogram, optionally excluding the overflows."""
-        return self._Histo1D().sumW2(overflows)
+        return self.h1ptr().sumW2(overflows)
 
-    def mean(self, overflows=True):
+    def xMean(self, overflows=True):
         """([bool]) -> float
         Mean x of the histogram, optionally excluding the overflows."""
-        return self._Histo1D().mean(overflows)
+        return self.h1ptr().xMean(overflows)
 
-    def variance(self, overflows=True):
+    def xVariance(self, overflows=True):
         """([bool]) -> float
         Variance in x of the histogram, optionally excluding the overflows."""
-        return self._Histo1D().variance(overflows)
+        return self.h1ptr().xVariance(overflows)
 
-    def stdDev(self, overflows=True):
+    def xStdDev(self, overflows=True):
         """([bool]) -> float
         Standard deviation in x of the histogram, optionally excluding the overflows."""
-        return self._Histo1D().stdDev(overflows)
+        return self.h1ptr().xStdDev(overflows)
 
-    def stdErr(self, overflows=True):
+    def xStdErr(self, overflows=True):
         """([bool]) -> float
         Standard error on the mean x of the histogram, optionally excluding the overflows."""
-        return self._Histo1D().stdErr(overflows)
+        return self.h1ptr().xStdErr(overflows)
 
 
     def scaleW(self, w):
         """ (float) -> None.
         Rescale the weights in this histogram by the factor w."""
-        self._Histo1D().scaleW(w)
+        self.h1ptr().scaleW(w)
 
     def normalize(self, normto=1.0, overflows=True):
         """ (float, bool) -> None.
         Normalize the histogram."""
-        self._Histo1D().normalize(normto, overflows)
+        self.h1ptr().normalize(normto, overflows)
 
 
     @property
     def numBins(self):
         """() -> int
         Number of bins (not including overflows)."""
-        return self._Histo1D().numBins()
+        return self.h1ptr().numBins()
 
     @property
     def xMin(self):
         """Low x edge of the histo."""
-        return self._Histo1D().xMin()
+        return self.h1ptr().xMin()
 
     @property
     def xMax(self):
         """High x edge of the histo."""
-        return self._Histo1D().xMax()
+        return self.h1ptr().xMax()
 
     @property
     def bins(self):
@@ -196,17 +199,17 @@ cdef class Histo1D(AnalysisObject):
     def mergeBins(self, ia, ib):
         """mergeBins(ia, ib) -> None.
         Merge bins from indices ia through ib."""
-        self._Histo1D().mergeBins(ia, ib)
+        self.h1ptr().mergeBins(ia, ib)
 
     def rebin(self, n):
         """(n) -> None.
         Merge every group of n bins together."""
-        self._Histo1D().rebin(n)
+        self.h1ptr().rebin(n)
 
     def addBin(self, low, high):
         """(low, high) -> None.
         Add a bin."""
-        self._Histo1D().addBin(low, high)
+        self.h1ptr().addBin(low, high)
 
     def addBins(self, edges_or_bins):
         """Add several bins."""
@@ -222,7 +225,7 @@ cdef class Histo1D(AnalysisObject):
         for edge in edges:
             cedges.push_back(edge)
         if len(edges):
-            self._Histo1D().addBins(cedges)
+            self.h1ptr().addBins(cedges)
 
     def __addBins_bins(self, bins):
         self.__addBins_tuples(imap(attrgetter('edges'), bins))
@@ -233,14 +236,14 @@ cdef class Histo1D(AnalysisObject):
     def __addBins_tuples(self, tuples):
         cdef double a, b
         for a, b in tuples:
-            self._Histo1D().addBin(a, b)
+            self.h1ptr().addBin(a, b)
 
 
     def mkScatter(self):
         """None -> Scatter2D.
         Convert this Histo1D to a Scatter2D, with y representing bin heights
         (not sumW) and height errors."""
-        cdef c.Scatter2D s2 = c.mkScatter_Histo1D(deref(self._Histo1D()))
+        cdef c.Scatter2D s2 = c.mkScatter_Histo1D(deref(self.h1ptr()))
         return cutil.new_owned_cls(Scatter2D, s2.newclone())
 
 
@@ -255,9 +258,9 @@ cdef class Histo1D(AnalysisObject):
         """
         cdef c.Scatter2D s2
         if not efficiency:
-            s2 = c.Histo1D_toIntegral(deref(self._Histo1D()), includeunderflow)
+            s2 = c.Histo1D_toIntegral(deref(self.h1ptr()), includeunderflow)
         else:
-            s2 = c.Histo1D_toIntegralEff(deref(self._Histo1D()), includeunderflow, includeoverflow)
+            s2 = c.Histo1D_toIntegralEff(deref(self.h1ptr()), includeunderflow, includeoverflow)
         return cutil.new_owned_cls(Scatter2D, s2.newclone())
 
 
@@ -266,28 +269,28 @@ cdef class Histo1D(AnalysisObject):
         #     raise ValueError("Histograms must be of the same type to be divided")
         cdef c.Scatter2D s2
         if not efficiency:
-            s2 = c.Histo1D_div_Histo1D(deref(self._Histo1D()), deref(h1._Histo1D()))
+            s2 = c.Histo1D_div_Histo1D(deref(self.h1ptr()), deref(h1.h1ptr()))
         else:
-            s2 = c.Histo1D_eff_Histo1D(deref(self._Histo1D()), deref(h1._Histo1D()))
+            s2 = c.Histo1D_eff_Histo1D(deref(self.h1ptr()), deref(h1.h1ptr()))
         return cutil.new_owned_cls(Scatter2D, s2.newclone())
 
 
     ## In-place special methods
 
     def __iadd__(Histo1D self, Histo1D other):
-        c.Histo1D_iadd_Histo1D(self._Histo1D(), other._Histo1D())
+        c.Histo1D_iadd_Histo1D(self.h1ptr(), other.h1ptr())
         return self
 
     def __isub__(Histo1D self, Histo1D other):
-        c.Histo1D_isub_Histo1D(self._Histo1D(), other._Histo1D())
+        c.Histo1D_isub_Histo1D(self.h1ptr(), other.h1ptr())
         return self
 
     # def __imul__(Histo1D self, double x):
-    #     c.Histo1D_imul_dbl(self._Histo1D(), x)
+    #     c.Histo1D_imul_dbl(self.h1ptr(), x)
     #     return self
 
     # def __idiv__(Histo1D self, double x):
-    #     c.Histo1D_idiv_dbl(self._Histo1D(), x)
+    #     c.Histo1D_idiv_dbl(self.h1ptr(), x)
     #     return self
 
 
@@ -295,7 +298,7 @@ cdef class Histo1D(AnalysisObject):
 
     def __add__(Histo1D self, Histo1D other):
         h = Histo1D()
-        cutil.set_owned_ptr(h, c.Histo1D_add_Histo1D(self._Histo1D(), other._Histo1D()))
+        cutil.set_owned_ptr(h, c.Histo1D_add_Histo1D(self.h1ptr(), other.h1ptr()))
         return h
 
     # TODO: Cython doesn't support type overloading for special functions?
@@ -316,17 +319,17 @@ cdef class Histo1D(AnalysisObject):
 
     def __sub__(Histo1D self, Histo1D other):
         h = Histo1D()
-        cutil.set_owned_ptr(h, c.Histo1D_sub_Histo1D(self._Histo1D(), other._Histo1D()))
+        cutil.set_owned_ptr(h, c.Histo1D_sub_Histo1D(self.h1ptr(), other.h1ptr()))
         return h
 
     # def __mul__(Histo1D self, double x):
-    #     h = c.Histo1D_mul_dbl(self._Histo1D(), x)
+    #     h = c.Histo1D_mul_dbl(self.h1ptr(), x)
     #     return h
     # def __rmul__(Histo1D self, double x):
-    #     h = c.Histo1D_mul_dbl(self._Histo1D(), x)
+    #     h = c.Histo1D_mul_dbl(self.h1ptr(), x)
     #     return h
 
     def __div__(Histo1D self, Histo1D other):
         h = Histo1D()
-        cutil.set_owned_ptr(h, c.Histo1D_div_Histo1D(self._Histo1D(), other._Histo1D()))
+        cutil.set_owned_ptr(h, c.Histo1D_div_Histo1D(self.h1ptr(), other.h1ptr()))
         return h

@@ -41,19 +41,8 @@ cdef class Bin1D_${DBN}(Bin):
         return self.b1ptr().xMin()
 
     @property
-    def lowEdge(self):
-        """Alias. DEPRECATED: use xMin"""
-        return self.b1ptr().xMin()
-
-
-    @property
     def xMax(self):
         """The upper bin edge."""
-        return self.b1ptr().xMax()
-
-    @property
-    def highEdge(self):
-        """Alias. DEPRECATED: use xMax"""
         return self.b1ptr().xMax()
 
 
@@ -61,60 +50,50 @@ cdef class Bin1D_${DBN}(Bin):
     def xEdges(self):
         """The lower and upper edges."""
         return (self.xMin, self.xMax)
-    # Alias
-    edges = xEdges
 
     @property
     def xWidth(self):
         """The width of the bin."""
-        return self.b1ptr().width()
-
-    @property
-    def focus(self):
-        """
-        The focus of the bin. If the bin has been filled, then this
-        is the mean fill on this bin. If the bin has not been filled,
-        then the focus is the midpoint of the bin.
-
-        """
-        return self.b1ptr().focus()
-
-    @property
-    def midpoint(self):
-        """The point half-way between the two bin edges."""
-        return self.b1ptr().midpoint()
+        return self.b1ptr().xWidth()
 
     @property
     def xMid(self):
-        """Synonym for midpoint."""
-        return self.midpoint
+        """The midpoint of the bin."""
+        return self.b1ptr().xMid()
+
 
     @property
-    def mean(self):
+    def xMean(self):
         """The mean of the x-values that have filled the bin."""
         return self.b1ptr().xMean()
 
     @property
-    def stdDev(self):
+    def xFocus(self):
+        """
+        The focus of the bin. If the bin has been filled, then this
+        is the mean fill on this bin. If the bin has not been filled,
+        then the focus is the midpoint of the bin.
+        """
+        return self.b1ptr().xFocus()
+
+    @property
+    def xStdDev(self):
         """
         The standard deviation of the x-values that have filled the bin.
-
         """
         return self.b1ptr().xStdDev()
 
     @property
-    def stdErr(self):
+    def xStdErr(self):
         """
         The standard error of the x-values that have filled the bin.
-
         """
         return self.b1ptr().xStdErr()
 
     @property
-    def rms(self):
+    def xRMS(self):
         """
         The root-mean-square of the x-values that have filled the bin.
-
         """
         return self.b1ptr().xRMS()
 
@@ -123,7 +102,6 @@ cdef class Bin1D_${DBN}(Bin):
     def numEntries(self):
         """
         The number of entries that have filled the bin.
-
         """
         return int(self.b1ptr().numEntries())
 
@@ -133,15 +111,14 @@ cdef class Bin1D_${DBN}(Bin):
         The effective number of entries in the bin.
 
         s.effNumEntries <==> (s.sumW ** 2) / s.sumW2
-
         """
         return self.b1ptr().effNumEntries()
+
 
     @property
     def sumW(self):
         """
         The sum of weights: sum(weights).
-
         """
         return self.b1ptr().sumW()
 
@@ -149,7 +126,6 @@ cdef class Bin1D_${DBN}(Bin):
     def sumW2(self):
         """
         The sum of weights-squared: sum(weights * weights)
-
         """
         return self.b1ptr().sumW2()
 
@@ -157,7 +133,6 @@ cdef class Bin1D_${DBN}(Bin):
     def sumWX(self):
         """
         The sum of weights-times-x: sum(weights * x)
-
         """
         return self.b1ptr().sumWX()
 
@@ -165,7 +140,6 @@ cdef class Bin1D_${DBN}(Bin):
     def sumWX2(self):
         """
         The sum of weights-times-x-squared: sum(weights * x * x)
-
         """
         return self.b1ptr().sumWX2()
 
@@ -175,7 +149,6 @@ cdef class Bin1D_${DBN}(Bin):
         merge(other) -> Bin1D_${DBN}. Merge this bin with another of the
         same type. Only directly adjacent bins, i.e. those sharing a
         common edge, can be merged.
-
         """
         self.b1ptr().merge(deref(other.b1ptr()))
         return self

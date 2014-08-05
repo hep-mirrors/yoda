@@ -103,18 +103,12 @@ namespace YODA {
       if (numBins() == 0) throw RangeError("This axis contains no bins and so has no defined range");
       return bins().front().xMin();
     }
-    /// A alias for xMin()
-    /// @deprecated Use xMin
-    double lowEdge() const { return xMin();}
 
     /// Return the highest-value bin edge on the axis
     double xMax() const {
       if (numBins() == 0) throw RangeError("This axis contains no bins and so has no defined range");
       return bins().back().xMax();
     }
-    /// Alias for xMax()
-    /// @deprecated Use xMax
-    double highEdge() const { return xMax();}
 
     /// Return a bin at a given index (non-const)
     BIN1D& bin(size_t index) {
@@ -343,8 +337,8 @@ namespace YODA {
       if (numBins() != other.numBins())
         return false;
       for (size_t i = 0; i < numBins(); i++)
-        if (!(fuzzyEquals(bin(i).lowEdge(), other.bin(i).lowEdge()) &&
-              fuzzyEquals(bin(i).highEdge(), other.bin(i).highEdge())))
+        if (!(fuzzyEquals(bin(i).xMin(), other.bin(i).xMin()) &&
+              fuzzyEquals(bin(i).xMax(), other.bin(i).xMax())))
           return false;
 
       return true;
@@ -414,7 +408,7 @@ namespace YODA {
       for (size_t i = 0; i < bins.size(); ++i) {
         Bin& currentBin = bins[i];
         const double new_low  = currentBin.xMin();
-        const double reldiff = (new_low - last_high) / currentBin.width();
+        const double reldiff = (new_low - last_high) / currentBin.xWidth();
         if (reldiff < -1e-3) { //< @note If there is a "large" negative gap (i.e. overlap), throw an exception
           std::stringstream ss;
           ss << "Bin edges overlap: " << last_high << " -> " << new_low;

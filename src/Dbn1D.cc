@@ -8,7 +8,7 @@
 namespace YODA {
 
 
-  double Dbn1D::mean() const {
+  double Dbn1D::xMean() const {
     if (effNumEntries() == 0) {
       throw LowStatsError("Requested mean of a distribution with no net fill weights");
     }
@@ -17,7 +17,7 @@ namespace YODA {
   }
 
 
-  double Dbn1D::variance() const {
+  double Dbn1D::xVariance() const {
     // Weighted variance defined as
     // sig2 = ( sum(wx**2) * sum(w) - sum(wx)**2 ) / ( sum(w)**2 - sum(w**2) )
     // see http://en.wikipedia.org/wiki/Weighted_mean
@@ -46,17 +46,17 @@ namespace YODA {
   }
 
 
-  double Dbn1D::stdErr() const {
+  double Dbn1D::xStdErr() const {
     // Handle zero/negative sum weight
     if (effNumEntries() == 0) {
       throw LowStatsError("Requested std error of a distribution with no net fill weights");
     }
     /// @todo Unbiased should check that Neff > 1 and divide by N-1?
-    return std::sqrt(variance() / effNumEntries());
+    return std::sqrt(xVariance() / effNumEntries());
   }
 
 
-  double Dbn1D::rms() const {
+  double Dbn1D::xRMS() const {
     // Weighted RMS defined as
     // rms = sqrt(sum{w x^2} / sum{w})
     if (effNumEntries() == 0) {

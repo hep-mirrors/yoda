@@ -1,5 +1,12 @@
 2014-08-05  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Remove all methods not specific about the axis to which they
+	refer, e.g. Histo1D::mean -> xMean. Also remove all related
+	aliases (a nightmare to maintain) and low/highEdge and midpoint
+	functions: use the proper xMin/Max/Mid from now on. This is a
+	significant compatibility breaking API change (and the decision
+	was not taken lightly) so will require a 2nd digit version change.
+
 	* Lots of adding xMin/Max etc. functions to C++ and Python bin/histo classes.
 
 	* Compiler pickiness fixes in BinSearcher.

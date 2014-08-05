@@ -77,7 +77,7 @@ namespace YODA {
     /// Fill the bin at the midpoint with a given z value
     /// @todo Need to also fill the totalDbn...
     void fillBin(double z, double weight=1.0){
-      fill(midpoint(), z, weight);
+      fill(xyMid(), z, weight);
     }
 
     /// A reset function

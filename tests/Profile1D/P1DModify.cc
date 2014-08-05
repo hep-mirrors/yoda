@@ -43,7 +43,7 @@ int main() {
   MSG_(PAD(70) << "Testing rebinning: ");
   p.rebin(2);
   for (size_t i = 1; i < p.bins().size() - 1; ++i){
-    if (2 != p.bin(i).width()){
+    if (2 != p.bin(i).xWidth()){
       MSG_RED("FAIL");
       return -1;
     }

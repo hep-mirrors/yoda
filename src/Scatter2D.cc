@@ -12,12 +12,12 @@ namespace YODA {
       rtn.setAnnotation(a, h.annotation(a));
     rtn.setAnnotation("Type", h.type()); // might override the copied ones
     BOOST_FOREACH (const HistoBin1D& b, h.bins()) {
-      // const double x = b.focus();
-      // const double ex_m = b.focus() - b.lowEdge();
-      // const double ex_p = b.highEdge() - b.focus();
-      const double x = b.midpoint();
-      const double ex_m = b.width()/2.0;
-      const double ex_p = b.width()/2.0;
+      // const double x = b.xFocus();
+      // const double ex_m = b.xFocus() - b.xMin();
+      // const double ex_p = b.xMax() - b.xFocus();
+      const double x = b.xMid();
+      const double ex_m = b.xWidth()/2.0;
+      const double ex_p = b.xWidth()/2.0;
       double y;
       try {
         y = b.height();
@@ -45,12 +45,12 @@ namespace YODA {
       rtn.setAnnotation(a, p.annotation(a));
     rtn.setAnnotation("Type", p.type());
     BOOST_FOREACH (const ProfileBin1D& b, p.bins()) {
-      // const double x = b.focus();
-      // const double ex_m = b.focus() - b.lowEdge();
-      // const double ex_p = b.highEdge() - b.focus();
-      const double x = b.midpoint();
-      const double ex_m = b.width()/2.0;
-      const double ex_p = b.width()/2.0;
+      // const double x = b.xFocus();
+      // const double ex_m = b.xFocus() - b.xMin();
+      // const double ex_p = b.xMax() - b.xFocus();
+      const double x = b.xMid();
+      const double ex_m = b.xWidth()/2.0;
+      const double ex_p = b.xWidth()/2.0;
       double y;
       try {
         y = b.mean();
@@ -79,6 +79,7 @@ namespace YODA {
 
 
   // Add two scatters
+  /// @todo Does this even make sense?
   Scatter2D add(const Scatter2D& first, const Scatter2D& second) {
     Scatter2D tmp;
     for (size_t i = 0; i < first.numPoints(); ++i) {
@@ -102,6 +103,7 @@ namespace YODA {
 
 
   // Subtract two scatters
+  /// @todo Does this even make sense?
   Scatter2D subtract(const Scatter2D& first, const Scatter2D& second) {
     Scatter2D tmp;
     for (size_t i = 0; i < first.numPoints(); ++i) {

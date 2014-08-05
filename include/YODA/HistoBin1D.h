@@ -73,7 +73,7 @@ namespace YODA {
     /// Fill this bin with weight @a weight.
     /// @todo Need to also fill the totalDbn...
     void fillBin(double weight=1.0) {
-      fill(midpoint(), weight);
+      fill(xMid(), weight);
     }
 
     //@}
@@ -92,7 +92,7 @@ namespace YODA {
 
     /// The height is defined as area/width.
     double height() const {
-      return area() / width();
+      return area() / xWidth();
     }
 
     //@}
@@ -110,7 +110,7 @@ namespace YODA {
     /// As for the height vs. area, the height error includes a scaling factor
     /// of the bin width, i.e. err_height = sqrt{sum{weights}} / width.
     double heightErr() const {
-      return areaErr() / width();
+      return areaErr() / xWidth();
     }
 
     /// The relative size of the error (same for either area or height errors)

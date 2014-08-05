@@ -111,11 +111,11 @@ namespace YODA {
     // Work out bin edges first
     std::vector<double> edges;
     edges.reserve(h.numBins()+1);
-    edges.push_back(h.bin(0).lowEdge());
+    edges.push_back(h.bin(0).xMin());
     for (size_t i = 0; i < h.numBins(); ++i) {
       const HistoBin1D& b = h.bin(i);
-      if (!fuzzyEquals(edges.back(), b.lowEdge())) edges.push_back(b.lowEdge());
-      if (!fuzzyEquals(edges.back(), b.highEdge())) edges.push_back(b.highEdge());
+      if (!fuzzyEquals(edges.back(), b.xMin())) edges.push_back(b.xMin());
+      if (!fuzzyEquals(edges.back(), b.xMax())) edges.push_back(b.xMax());
     }
     // Book ROOT histogram
     TH1D rtn(h.path().c_str(), h.title().c_str(), edges.size()-1, &edges[0]);
@@ -150,11 +150,11 @@ namespace YODA {
     // Work out bin edges first
     std::vector<double> edges;
     edges.reserve(p.numBins()+1);
-    edges.push_back(p.bin(0).lowEdge());
+    edges.push_back(p.bin(0).xMin());
     for (size_t i = 0; i < p.numBins(); ++i) {
       const ProfileBin1D& b = p.bin(i);
-      if (!fuzzyEquals(edges.back(), b.lowEdge())) edges.push_back(b.lowEdge());
-      if (!fuzzyEquals(edges.back(), b.highEdge())) edges.push_back(b.highEdge());
+      if (!fuzzyEquals(edges.back(), b.xMin())) edges.push_back(b.xMin());
+      if (!fuzzyEquals(edges.back(), b.xMax())) edges.push_back(b.xMax());
     }
     // Book ROOT histogram
     TProfile rtn(p.path().c_str(), p.title().c_str(), edges.size()-1, &edges[0]);

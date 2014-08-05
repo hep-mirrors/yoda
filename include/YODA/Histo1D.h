@@ -176,124 +176,69 @@ namespace YODA {
     //@{
 
     /// Number of bins on this axis (not counting under/overflow)
-    size_t numBins() const {
-      return bins().size();
-    }
+    size_t numBins() const { return bins().size(); }
 
     /// Low edge of this histo's axis
-    double xMin() const {
-      return _axis.xMin();
-    }
-    /// Alias for xMin
-    double lowEdge() const {
-      return _axis.lowEdge();
-    }
+    double xMin() const { return _axis.xMin(); }
 
     /// High edge of this histo's axis
-    double xMax() const {
-      return _axis.xMax();
-    }
-    /// High edge of this histo's axis
-    double highEdge() const {
-      return _axis.highEdge();
-    }
+    double xMax() const { return _axis.xMax(); }
 
 
     /// Access the bin vector
-    std::vector<YODA::HistoBin1D>& bins() {
-      return _axis.bins();
-    }
-
+    std::vector<YODA::HistoBin1D>& bins() { return _axis.bins(); }
     /// Access the bin vector (const version)
-    const std::vector<YODA::HistoBin1D>& bins() const {
-      return _axis.bins();
-    }
+    const std::vector<YODA::HistoBin1D>& bins() const { return _axis.bins(); }
 
 
     /// Access a bin by index (non-const version)
-    HistoBin1D& bin(size_t index) {
-      return _axis.bins()[index];
-    }
-
+    HistoBin1D& bin(size_t index) { return _axis.bins()[index]; }
     /// Access a bin by index (const version)
-    const HistoBin1D& bin(size_t index) const {
-      return _axis.bins()[index];
-    }
+    const HistoBin1D& bin(size_t index) const { return _axis.bins()[index]; }
 
 
     /// Access a bin index by coordinate
-    /// @todo Rename to binIndexAt
     int binIndexAt(double x) {
       return _axis.binIndexAt(x);
     }
 
-
     /// Access a bin by coordinate (non-const version)
-    /// @todo Rename to binAt
-    HistoBin1D& binAt(double x) {
-      return _axis.binAt(x);
-    }
-
+    HistoBin1D& binAt(double x) { return _axis.binAt(x); }
     /// Access a bin by coordinate (const version)
-    /// @todo Rename to binAt
-    const HistoBin1D& binAt(double x) const {
-      return _axis.binAt(x);
-    }
+    const HistoBin1D& binAt(double x) const { return _axis.binAt(x); }
 
 
     /// Access summary distribution, including gaps and overflows (non-const version)
-    Dbn1D& totalDbn() {
-      return _axis.totalDbn();
-    }
-
+    Dbn1D& totalDbn() { return _axis.totalDbn(); }
     /// Access summary distribution, including gaps and overflows (const version)
-    const Dbn1D& totalDbn() const {
-      return _axis.totalDbn();
-    }
+    const Dbn1D& totalDbn() const { return _axis.totalDbn(); }
 
 
     /// Access underflow (non-const version)
-    Dbn1D& underflow() {
-      return _axis.underflow();
-    }
-
+    Dbn1D& underflow() { return _axis.underflow(); }
     /// Access underflow (const version)
-    const Dbn1D& underflow() const {
-      return _axis.underflow();
-    }
+    const Dbn1D& underflow() const { return _axis.underflow(); }
 
 
     /// Access overflow (non-const version)
-    Dbn1D& overflow() {
-      return _axis.overflow();
-    }
-
+    Dbn1D& overflow() { return _axis.overflow(); }
     /// Access overflow (const version)
-    const Dbn1D& overflow() const {
-      return _axis.overflow();
-    }
+    const Dbn1D& overflow() const { return _axis.overflow(); }
 
 
     /// Add a new bin specifying its lower and upper bound
-    void addBin(double from, double to) {
-      _axis.addBin(from, to);
-    }
+    void addBin(double from, double to) { _axis.addBin(from, to); }
 
     /// Add a new bin specifying a vector of edges
-    void addBins(std::vector<double> edges) {
-      _axis.addBins(edges);
-    }
+    void addBins(std::vector<double> edges) { _axis.addBins(edges); }
 
     // /// Add new bins specifying a beginning and end of each of them
     // void addBins(std::vector<std::pair<double,double> > edges) {
     //   _axis.addBins(edges);
     // }
 
-
     /// Remove a bin
-    void eraseBin(size_t index) {
-      _axis.eraseBin(index);
-    }
+    void eraseBin(size_t index) { _axis.eraseBin(index); }
 
     //@}
 
@@ -304,9 +249,7 @@ namespace YODA {
     //@{
 
     /// Get the total area of the histogram
-    double integral(bool includeoverflows=true) const {
-      return sumW(includeoverflows);
-    }
+    double integral(bool includeoverflows=true) const { return sumW(includeoverflows); }
 
     /// @brief Get the integrated area of the histogram between bins @a binindex1 and @a binindex2.
     ///
@@ -351,19 +294,19 @@ namespace YODA {
     double sumW2(bool includeoverflows=true) const;
 
     /// Get the mean
-    double mean(bool includeoverflows=true) const;
+    double xMean(bool includeoverflows=true) const;
 
     /// Get the variance
-    double variance(bool includeoverflows=true) const;
+    double xVariance(bool includeoverflows=true) const;
 
     /// Get the standard deviation
-    double stdDev(bool includeoverflows=true) const {
-      if (includeoverflows) return _axis.totalDbn().stdDev();
-      return std::sqrt(variance(includeoverflows));
+    double xStdDev(bool includeoverflows=true) const {
+      if (includeoverflows) return _axis.totalDbn().xStdDev();
+      return std::sqrt(xVariance(includeoverflows));
     }
 
     /// Get the standard error
-    double stdErr(bool includeoverflows=true) const;
+    double xStdErr(bool includeoverflows=true) const;
 
     //@}
 

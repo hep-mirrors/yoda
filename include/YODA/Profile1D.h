@@ -183,97 +183,49 @@ namespace YODA {
     //@{
 
     /// Number of bins on this axis (not counting under/overflow)
-    size_t numBins() const {
-      return bins().size();
-    }
+    size_t numBins() const { return bins().size(); }
 
     /// Low edge of this histo's axis
-    double xMin() const {
-      return _axis.xMin();
-    }
-    /// Alias for xMin
-    double lowEdge() const {
-      return _axis.lowEdge();
-    }
+    double xMin() const { return _axis.xMin(); }
 
     /// High edge of this histo's axis
-    double xMax() const {
-      return _axis.xMax();
-    }
-    /// High edge of this histo's axis
-    double highEdge() const {
-      return _axis.highEdge();
-    }
+    double xMax() const { return _axis.xMax(); }
 
 
     /// Access the bin vector
-    std::vector<YODA::ProfileBin1D>& bins() {
-      return _axis.bins();
-    }
+    std::vector<YODA::ProfileBin1D>& bins() { return _axis.bins(); }
 
     /// Access the bin vector
-    const std::vector<YODA::ProfileBin1D>& bins() const {
-      return _axis.bins();
-    }
+    const std::vector<YODA::ProfileBin1D>& bins() const { return _axis.bins(); }
 
 
     /// Access a bin by index (non-const version)
-    ProfileBin1D& bin(size_t index) {
-      return _axis.bins()[index];
-    }
-
+    ProfileBin1D& bin(size_t index) { return _axis.bins()[index]; }
     /// Access a bin by index (const version)
-    const ProfileBin1D& bin(size_t index) const {
-      return _axis.bins()[index];
-    }
+    const ProfileBin1D& bin(size_t index) const { return _axis.bins()[index]; }
 
     /// Access a bin index by x-coordinate.
-    int binIndexAt(double x) {
-      return _axis.binIndexAt(x);
-    }
+    int binIndexAt(double x) { return _axis.binIndexAt(x); }
 
     /// Access a bin by x-coordinate (non-const version)
-    ProfileBin1D& binAt(double x) {
-      return _axis.binAt(x);
-    }
-
+    ProfileBin1D& binAt(double x) { return _axis.binAt(x); }
     /// Access a bin by x-coordinate (const version)
-    const ProfileBin1D& binAt(double x) const {
-      return _axis.binAt(x);
-    }
-
+    const ProfileBin1D& binAt(double x) const { return _axis.binAt(x); }
 
     /// Access summary distribution, including gaps and overflows (non-const version)
-    Dbn2D& totalDbn() {
-      return _axis.totalDbn();
-    }
-
+    Dbn2D& totalDbn() { return _axis.totalDbn(); }
     /// Access summary distribution, including gaps and overflows (const version)
-    const Dbn2D& totalDbn() const {
-      return _axis.totalDbn();
-    }
-
+    const Dbn2D& totalDbn() const { return _axis.totalDbn(); }
 
     /// Access underflow (non-const version)
-    Dbn2D& underflow() {
-      return _axis.underflow();
-    }
-
+    Dbn2D& underflow() { return _axis.underflow(); }
     /// Access underflow (const version)
-    const Dbn2D& underflow() const {
-      return _axis.underflow();
-    }
-
+    const Dbn2D& underflow() const { return _axis.underflow(); }
 
     /// Access overflow (non-const version)
-    Dbn2D& overflow() {
-      return _axis.overflow();
-    }
-
+    Dbn2D& overflow() { return _axis.overflow(); }
     /// Access overflow (const version)
-    const Dbn2D& overflow() const {
-      return _axis.overflow();
-    }
+    const Dbn2D& overflow() const { return _axis.overflow(); }
 
     //@}
 

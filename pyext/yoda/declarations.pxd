@@ -303,15 +303,14 @@ cdef extern from "YODA/Bin1D.h" namespace "YODA":
         void scaleX(double scale) except +err
         void reset()  except +err
 
-        # double lowEdgeX() except +err
-        # double highEdgeX() except +err
+        pair[double, double] edges() except +err
+
         double xMin() except +err
         double xMax() except +err
+        double xMid() except +err
+        double xWidth() except +err
 
-        pair[double, double] edges() except +err
-        double width() except +err
-        double focus() except +err
-        double midpoint() except +err
+        double xFocus() except +err
 
         # x statistics
         double xMean() except +err
@@ -364,8 +363,11 @@ cdef extern from "YODA/Bin2D.h" namespace "YODA":
         double xWidth() except +err
         double yWidth() except +err
 
-        pair[double, double] focus() except +err
-        pair[double, double] midpoint() except +err
+        double xFocus() except +err
+        double yFocus() except +err
+
+        pair[double, double] xyFocus() except +err
+        pair[double, double] xyMid() except +err
 
         # x statistics
         double xMean() except +err
@@ -380,7 +382,7 @@ cdef extern from "YODA/Bin2D.h" namespace "YODA":
         double yStdErr() except +err
         double yRMS() except +err
 
-        # raw statistics
+        # Raw statistics
         unsigned long numEntries() except +err
         double effNumEntries() except +err
         double sumW() except +err
@@ -814,10 +816,6 @@ cdef extern from "YODA/Profile2D.h" namespace "YODA":
         void addBins(const vector[double]&, const vector[double]&) except +err
         # void eraseBin(size_t index) except +err
 
-        # double lowEdgeX() except +err
-        # double highEdgeX() except +err
-        # double lowEdgeY() except +err
-        # double highEdgeY() except +err
         double xMin() except +err
         double xMax() except +err
         double yMin() except +err
@@ -912,12 +910,11 @@ cdef extern from "YODA/Histo1D.h" namespace "YODA":
         double effNumEntries() # @todo Add bool arg
         double sumW(bool)
         double sumW2(bool)
-        double mean(bool)
-        double variance(bool)
-        double stdDev(bool)
-        double stdErr(bool)
+        double xMean(bool)
+        double xVariance(bool)
+        double xStdDev(bool)
+        double xStdErr(bool)
 
-        # TODO: BUG! This does not correctly report identical bins... ???? AB
         void addBin(double, double) except +err
         void addBins(vector[double] edges) except +err
         void eraseBin(size_t index) except +err
@@ -1001,10 +998,6 @@ cdef extern from "YODA/Histo2D.h" namespace "YODA":
         void addBins(const vector[double]& edges) except +err
         # void eraseBin(size_t index) except +err
 
-        # double lowEdgeX() except +err
-        # double highEdgeX() except +err
-        # double lowEdgeY() except +err
-        # double highEdgeY() except +err
         double xMin() except +err
         double xMax() except +err
         double yMin() except +err
@@ -1109,8 +1102,8 @@ cdef extern from "YODA/Axis1D.h" namespace "YODA":
         void addBin(double, double) except +err
         size_t numBins() except +err
         vector[BIN1D]& bins()
-        double lowEdge() except +err
-        double highEdge() except +err
+        double xMin() except +err
+        double xMax() except +err
         long getBinIndex(double)
         void reset()
         DBN& totalDbn()
@@ -1131,10 +1124,10 @@ cdef extern from "YODA/Axis2D.h" namespace "YODA":
         void addBin(pair[double, double], pair[double, double]) except +err
         size_t numBins() except +err
         vector[BIN2D]& bins()
-        double lowEdgeX() except +err
-        double highEdgeX() except +err
-        double lowEdgeY() except +err
-        double highEdgeY() except +err
+        double xMin() except +err
+        double xMax() except +err
+        double yMin() except +err
+        double yMax() except +err
         long getBinIndex(double, double)
         void reset()
         DBN& totalDbn()

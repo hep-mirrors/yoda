@@ -73,7 +73,7 @@ namespace YODA {
     /// Fill histo with @a weight and y-value @c y at x = bin midpoint.
     /// @todo Need to also fill the totalDbn...
     void fillBin(double y, double weight=1.0) {
-      fill(midpoint(), y, weight);
+      fill(xMid(), y, weight);
     }
 
     //@}

@@ -266,51 +266,22 @@ namespace YODA {
 
 
     /// Set the axis lock state
-    void _setLock(bool locked) {
-      _locked = locked;
-    }
+    /// @todo Remove? Should not be public
+    void _setLock(bool locked) { _locked = locked; }
 
 
     /// Return the lowest-valued bin edge along the x-axis
-    double xMin() const {
-      return _xRange.first;
-    }
-    /// Alias
-    /// @deprecated Use xMin
-    double lowEdgeX() const {
-      return xMin();
-    }
+    double xMin() const { return _xRange.first; }
 
     /// Return the highest-valued bin edge along the x-axis
-    double xMax() const {
-      return _xRange.second;
-    }
-    /// Alias
-    /// @deprecated Use xMax
-    double highEdgeX() const {
-      return xMax();
-    }
+    double xMax() const { return _xRange.second; }
 
 
     /// Return the lowest-valued bin edge along the y-axis
-    double yMin() const {
-      return _yRange.first;
-    }
-    /// Alias
-    /// @deprecated Use yMin
-    double lowEdgeY() const {
-      return yMin();
-    }
+    double yMin() const { return _yRange.first; }
 
     /// Return the highest-valued bin edge along the y-axis
-    double yMax() const {
-      return _yRange.second;
-    }
-    /// Alias
-    /// @deprecated Use yMax
-    double highEdgeY() const {
-      return yMax();
-    }
+    double yMax() const { return _yRange.second; }
 
 
     /// Add a bin, providing its x- and y- edge ranges
@@ -418,10 +389,10 @@ namespace YODA {
     bool operator == (const Axis2D& other) const {
       if (numBins() != other.numBins()) return false;
       for (size_t i = 0; i < numBins(); i++)
-        if (!(fuzzyEquals(bin(i).lowEdgeX(), other.bin(i).lowEdgeX()) &&
-              fuzzyEquals(bin(i).highEdgeX(), other.bin(i).highEdgeX()) &&
-              fuzzyEquals(bin(i).lowEdgeY(), other.bin(i).lowEdgeY()) &&
-              fuzzyEquals(bin(i).highEdgeY(), other.bin(i).highEdgeY())))
+        if (!(fuzzyEquals(bin(i).xMin(), other.bin(i).xMin()) &&
+              fuzzyEquals(bin(i).xMax(), other.bin(i).xMax()) &&
+              fuzzyEquals(bin(i).yMin(), other.bin(i).yMin()) &&
+              fuzzyEquals(bin(i).yMax(), other.bin(i).yMax())))
           return false;
       return true;
     }

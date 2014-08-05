@@ -109,64 +109,35 @@ namespace YODA {
     /// @name X-axis info
     //@{
 
+    /// Get the {low,high} edges as an STL @c pair.
+    std::pair<double,double> xEdges() const {
+      return _edges;
+    }
+
     /// Lower limit of the bin (inclusive).
     double xMin() const {
       return _edges.first;
-    }
-    /// Alias
-    /// @deprecated Use xMin
-    double lowEdge() const {
-      return xMin();
     }
 
     /// Upper limit of the bin (exclusive).
     double xMax() const {
       return _edges.second;
     }
-    /// Alias
-    /// @deprecated Use xMax
-    double highEdge() const {
-      return xMax();
-    }
 
-    /// Get the {low,high} edges as an STL @c pair.
-    std::pair<double,double> xEdges() const {
-      return _edges;
-    }
-    /// Alias
-    std::pair<double,double> edges() const {
-      return xEdges();
+    /// Geometric centre of the bin, i.e. high+low/2.0
+    double xMid() const {
+      return ( _edges.second + _edges.first ) / 2;
     }
 
     /// Separation of low and high edges, i.e. high-low.
     double xWidth() const {
       return _edges.second - _edges.first;
     }
-    /// Alias
-    double width() const {
-      return xWidth();
-    }
+
 
     /// The mean position in the bin, or the midpoint if that is not available.
     double xFocus() const {
-      if (!isZero(sumW())) {
-        return xMean();
-      } else {
-        return midpoint();
-      }
-    }
-    /// Alias
-    double focus() const {
-      return xFocus();
-    }
-
-    /// Geometric centre of the bin, i.e. high+low/2.0
-    double xMid() const {
-      return ( _edges.second + _edges.first ) / 2;
-    }
-    /// Alias
-    double midpoint() const {
-      return xMid();
+      return (!isZero(sumW())) ? xMean() : xMid();
     }
 
     //@}
@@ -327,6 +298,8 @@ namespace YODA {
     // Distribution of weighted x (and perhaps y) values
     DBN _dbn;
 
+    /// @todo Make Axis1D<BIN, DBN> -> Axis1D<DBN> and hold a pointer to the one that contains this bin
+
   };
 
 
@@ -358,7 +331,7 @@ namespace YODA {
   /// Bin1Ds are compared for axis sorting by lower edge position
   template <class DBN>
   inline bool operator<(const Bin1D<DBN>& a, const Bin1D<DBN>& b) {
-    return b.edges().first > a.edges().first;
+    return b.xEdges().first > a.xEdges().first;
   }
 
 

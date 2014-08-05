@@ -20,7 +20,7 @@ int main() {
     h.fill(num);
   }
 
-  MSG("Mean value = " << h.mean() << " +- " << h.stdErr());
+  MSG("Mean value = " << h.xMean() << " +- " << h.xStdErr());
   MSG("Total area = " << h.integral());
 
   const HistoBin1D& highestBin = *( max_element(h.bins().begin(), h.bins().end(), compareHeight) );

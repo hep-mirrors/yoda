@@ -174,79 +174,49 @@ namespace YODA {
     //@{
 
     /// Weighted mean, \f$ \bar{x} \f$, of distribution.
-    double xMean() const {
-      return _dbnX.mean();
-    }
+    double xMean() const { return _dbnX.xMean(); }
 
     /// Weighted mean, \f$ \bar{y} \f$, of distribution.
-    double yMean() const {
-      return _dbnY.mean();
-    }
+    double yMean() const { return _dbnY.xMean(); }
 
     /// Weighted mean, \f$ \bar{z} \f$, of distribution.
-    double zMean() const {
-      return _dbnZ.mean();
-    }
+    double zMean() const { return _dbnZ.xMean(); }
 
     /// Weighted \f$ x \f$ variance, \f$ \sigma_x^2 \f$, of distribution.
-    double xVariance() const {
-      return _dbnX.variance();
-    }
+    double xVariance() const { return _dbnX.xVariance(); }
 
     /// Weighted \f$ y \f$ variance, \f$ \sigma_y^2 \f$, of distribution.
-    double yVariance() const {
-      return _dbnY.variance();
-    }
+    double yVariance() const { return _dbnY.xVariance(); }
 
     /// Weighted \f$ z \f$ variance, \f$ \sigma_z^2 \f$, of distribution.
-    double zVariance() const {
-      return _dbnZ.variance();
-    }
+    double zVariance() const { return _dbnZ.xVariance(); }
 
     /// Weighted \f$ x \f$ standard deviation, \f$ \sigma_x \f$, of distribution.
-    double xStdDev() const {
-      return _dbnX.stdDev();
-    }
+    double xStdDev() const { return _dbnX.xStdDev(); }
 
     /// Weighted \f$ y \f$ standard deviation, \f$ \sigma_y \f$, of distribution.
-    double yStdDev() const {
-      return _dbnY.stdDev();
-    }
+    double yStdDev() const { return _dbnY.xStdDev(); }
 
     /// Weighted \f$ z \f$ standard deviation, \f$ \sigma_z \f$, of distribution.
-    double zStdDev() const {
-      return _dbnZ.stdDev();
-    }
+    double zStdDev() const { return _dbnZ.xStdDev(); }
 
     /// Weighted standard error on the \f$ x \f$ mean, \f$ \sim \sigma_x/\sqrt{N-1} \f$, of distribution.
-    double xStdErr() const {
-      return _dbnX.stdErr();
-    }
+    double xStdErr() const { return _dbnX.xStdErr(); }
 
     /// Weighted standard error on the \f$ y \f$ mean, \f$ \sim \sigma_y/\sqrt{N-1} \f$, of distribution.
-    double yStdErr() const {
-      return _dbnY.stdErr();
-    }
+    double yStdErr() const { return _dbnY.xStdErr(); }
 
     /// Weighted standard error on the \f$ z \f$ mean, \f$ \sim \sigma_z/\sqrt{N-1} \f$, of distribution.
-    double zStdErr() const {
-      return _dbnZ.stdErr();
-    }
+    double zStdErr() const { return _dbnZ.xStdErr(); }
 
     /// Weighted RMS, \f$ \sqrt{ \sum{w x^2}/\sum{w} } \f$, of distribution.
-    double xRMS() const {
-      return _dbnX.rms();
-    }
+    double xRMS() const { return _dbnX.xRMS(); }
 
     /// Weighted RMS, \f$ \sqrt{ \sum{w y^2}/\sum{w} } \f$, of distribution.
-    double yRMS() const {
-      return _dbnY.rms();
-    }
+    double yRMS() const { return _dbnY.xRMS(); }
 
     /// Weighted RMS, \f$ \sqrt{ \sum{w z^2}/\sum{w} } \f$, of distribution.
-    double zRMS() const {
-      return _dbnZ.rms();
-    }
+    double zRMS() const { return _dbnZ.xRMS(); }
 
     //@}
 

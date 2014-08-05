@@ -22,26 +22,6 @@ cdef class Bin2D_${DBN}(Bin):
 
 
     @property
-    def xMin(self):
-        """Low edge in x."""
-        return self.b2ptr().xMin()
-
-    @property
-    def xMax(self):
-        """High edge in x."""
-        return self.b2ptr().xMax()
-
-    @property
-    def yMin(self):
-        """Low edge in y."""
-        return self.b2ptr().yMin()
-
-    @property
-    def yMax(self):
-        """High edge in y."""
-        return self.b2ptr().yMax()
-
-    @property
     def edges(self):
         """
         The lower and upper edges.
@@ -54,16 +34,26 @@ cdef class Bin2D_${DBN}(Bin):
 
 
     @property
-    def widths(self):
-        """The widths of this bin in the x- and y-dimensions."""
-        return util.XY(self.b2ptr().xWidth(), self.b2ptr().yWidth())
+    def xMin(self):
+        """Low edge in x."""
+        return self.b2ptr().xMin()
+
+    @property
+    def xMax(self):
+        """High edge in x."""
+        return self.b2ptr().xMax()
 
 
     @property
-    def focus(self):
-        """The focus of the bin in the x- and y-dimensions"""
-        cdef pair[double, double] f = self.b2ptr().focus()
-        return util.XY(f.first, f.second)
+    def yMin(self):
+        """Low edge in y."""
+        return self.b2ptr().yMin()
+
+    @property
+    def yMax(self):
+        """High edge in y."""
+        return self.b2ptr().yMax()
+
 
     @property
     def xMid(self):
@@ -76,10 +66,33 @@ cdef class Bin2D_${DBN}(Bin):
         return self.b2ptr().yMid()
 
     @property
-    def midpoint(self):
+    def xyMid(self):
         """Geometric centre of the bin"""
-        cdef pair[double, double] f = self.b2ptr().midpoint()
+        return util.XY(self.xMid, self.yMid)
+
+
+    @property
+    def xWidth(self):
+        """Width of the bin in x"""
+        return self.b2ptr().xWidth()
+
+    @property
+    def yWidth(self):
+        """Width of the bin in y"""
+        return self.b2ptr().yWidth()
+
+    @property
+    def xyWidths(self):
+        """The widths of this bin in the x- and y-dimensions."""
+        return util.XY(self.xWidth, self.yWidth)
+
+
+    @property
+    def xyFocus(self):
+        """The focus of the bin in the x- and y-dimensions"""
+        cdef pair[double, double] f = self.b2ptr().xyFocus()
         return util.XY(f.first, f.second)
+
 
 
     @property
@@ -91,8 +104,9 @@ cdef class Bin2D_${DBN}(Bin):
         return self.b2ptr().xMean()
 
     @property
-    def mean(self):
-        return util.XY(self.b2ptr().xMean(), self.b2ptr().yMean())
+    def xyMean(self):
+        return util.XY(self.xMean, self.yMean)
+
 
     @property
     def xStdDev(self):

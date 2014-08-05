@@ -37,7 +37,7 @@ namespace YODA {
 
 
   void Profile2D::fillBin(size_t i, double z, double weight) {
-    pair<double, double> mid = bin(i).midpoint();
+    pair<double, double> mid = bin(i).xyMid();
     fill(mid.first, mid.second, z, weight);
   }
 
@@ -80,7 +80,7 @@ namespace YODA {
     double sigma2 = 0;
     const double xMean = this->xMean();
     for (size_t i = 0; i < bins().size(); ++i) {
-      const double diff = bin(i).focus().first - xMean;
+      const double diff = bin(i).xFocus() - xMean;
       sigma2 += diff * diff * bin(i).sumW();
     }
     return sigma2/sumW();
@@ -93,7 +93,7 @@ namespace YODA {
     double sigma2 = 0;
     const double yMean = this->yMean();
     for (size_t i = 0; i < bins().size(); ++i) {
-      const double diff = bin(i).focus().first - yMean;
+      const double diff = bin(i).yFocus() - yMean;
       sigma2 += diff * diff * bin(i).sumW();
     }
     return sigma2/sumW();

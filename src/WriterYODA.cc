@@ -54,7 +54,7 @@ namespace YODA {
     os << "# BEGIN YODA_HISTO1D " << h.path() << "\n";
     _writeAnnotations(os, h);
     if ( h.totalDbn().effNumEntries() > 0 ) {
-      os << "# Mean: " << h.mean() << "\n";
+      os << "# Mean: " << h.xMean() << "\n";
     }
     os << "# Area: " << h.integral() << "\n";
     os << "# ID\t ID\t sumw\t sumw2\t sumwx\t sumwx2\t numEntries\n";
@@ -72,7 +72,7 @@ namespace YODA {
     os << h.overflow().numEntries() << "\n";
     os << "# xlow\t xhigh\t sumw\t sumw2\t sumwx\t sumwx2\t numEntries\n";
     BOOST_FOREACH (const HistoBin1D& b, h.bins()) {
-      os << b.lowEdge() << "\t" << b.highEdge() << "\t";
+      os << b.xMin() << "\t" << b.xMax() << "\t";
       os << b.sumW()    << "\t" << b.sumW2()    << "\t";
       os << b.sumWX()   << "\t" << b.sumWX2()   << "\t";
       os << b.numEntries() << "\n";
@@ -119,8 +119,8 @@ namespace YODA {
     // Bins
     os << "# xlow\t xhigh\t ylow\t yhigh\t sumw\t sumw2\t sumwx\t sumwx2\t sumwy\t sumwy2\t sumwxy\t numEntries\n";
     BOOST_FOREACH (const HistoBin2D& b, h.bins()) {
-      os << b.lowEdgeX() << "\t" << b.highEdgeX() << "\t";
-      os << b.lowEdgeY() << "\t" << b.highEdgeY() << "\t";
+      os << b.xMin() << "\t" << b.xMax() << "\t";
+      os << b.yMin() << "\t" << b.yMax() << "\t";
       os << b.sumW()     << "\t" << b.sumW2()     << "\t";
       os << b.sumWX()    << "\t" << b.sumWX2()    << "\t";
       os << b.sumWY()    << "\t" << b.sumWY2()    << "\t";
@@ -157,7 +157,7 @@ namespace YODA {
     os << p.overflow().numEntries() << "\n";
     os << "# xlow\t xhigh\t sumw\t sumw2\t sumwx\t sumwx2\t sumwy\t sumwy2\t numEntries\n";
     BOOST_FOREACH (const ProfileBin1D& b, p.bins()) {
-      os << b.lowEdge() << "\t" << b.highEdge() << "\t";
+      os << b.xMin() << "\t" << b.xMax() << "\t";
       os << b.sumW()    << "\t" << b.sumW2()    << "\t";
       os << b.sumWX()   << "\t" << b.sumWX2()   << "\t";
       os << b.sumWY()   << "\t" << b.sumWY2()   << "\t";
@@ -204,8 +204,8 @@ namespace YODA {
     // Bins
     os << "# xlow\t xhigh\t ylow\t yhigh\t sumw\t sumw2\t sumwx\t sumwx2\t sumwy\t sumwy2\t sumwz\t sumwz2\t sumwxy\t numEntries\n";
     BOOST_FOREACH (const ProfileBin2D& b, h.bins()) {
-      os << b.lowEdgeX() << "\t" << b.highEdgeX() << "\t";
-      os << b.lowEdgeY() << "\t" << b.highEdgeY() << "\t";
+      os << b.xMin() << "\t" << b.xMax() << "\t";
+      os << b.yMin() << "\t" << b.yMax() << "\t";
       os << b.sumW()     << "\t" << b.sumW2()     << "\t";
       os << b.sumWX()    << "\t" << b.sumWX2()    << "\t";
       os << b.sumWY()    << "\t" << b.sumWY2()    << "\t";

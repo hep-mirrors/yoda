@@ -112,35 +112,19 @@ namespace YODA {
     //@{
 
     /// Weighted mean, \f$ \bar{x} \f$, of distribution.
-    double mean() const;
-    /// Synonym for interface compatibility with Dbn2D
-    double xMean() const { return mean(); }
-
+    double xMean() const;
 
     /// Weighted variance, \f$ \sigma^2 \f$, of distribution.
-    double variance() const;
-    /// Synonym for interface compatibility with Dbn2D
-    double xVariance() const { return variance(); }
-
+    double xVariance() const;
 
     /// Weighted standard deviation, \f$ \sigma \f$, of distribution.
-    double stdDev() const {
-      return std::sqrt(variance());
-    }
-    /// Synonym for interface compatibility with Dbn2D
-    double xStdDev() const { return stdDev(); }
-
+    double xStdDev() const { return std::sqrt(xVariance()); }
 
     /// Weighted standard error on the mean, \f$ \sim \sigma/\sqrt{N-1} \f$, of distribution.
-    double stdErr() const;
-    /// Synonym for interface compatibility with Dbn2D
-    double xStdErr() const { return stdErr(); }
-
+    double xStdErr() const;
 
     /// Weighted RMS, \f$ \sqrt{ \sum{w x^2}/\sum{w} } \f$, of distribution.
-    double rms() const;
-    /// Synonym for interface compatibility with Dbn2D
-    double xRMS() const { return rms(); }
+    double xRMS() const;
 
     //@}
 

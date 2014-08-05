@@ -18,7 +18,7 @@ for i in range(NUM_SAMPLES):
     h1.fill(val);
     h2.fill(val);
     h3.fill(val);
-print h1.mean(), "+-", h1.stdDev()
+print h1.xMean(), "+-", h1.xStdDev()
 print h1
 print h2
 print h3

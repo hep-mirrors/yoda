@@ -35,8 +35,11 @@ namespace YODA {
     for (size_t i = 0; i < h.numBins(); ++i) {
       const HistoBin2D& bin = h.bin(i);
 
-      const double x = bin.focus().first;
-      const double y = bin.focus().second;
+      /// @todo Add a flag to allow optionally using the focus rather than midpoint
+      // const double x = bin.xFocus();
+      // const double y = bin.yFocus();
+      const double x = bin.xMid();
+      const double y = bin.yMid();
 
       const double exminus = x - bin.xMin();
       const double explus = bin.xMax() - x;
@@ -62,8 +65,11 @@ namespace YODA {
     for (size_t i = 0; i < h.numBins(); ++i) {
       const ProfileBin2D& bin = h.bin(i);
 
-      const double x = bin.focus().first;
-      const double y = bin.focus().second;
+      /// @todo Add a flag to allow optionally using the focus rather than midpoint
+      // const double x = bin.xFocus();
+      // const double y = bin.yFocus();
+      const double x = bin.xMid();
+      const double y = bin.yMid();
 
       const double exminus = x - bin.xMin();
       const double explus = bin.xMax() - x;

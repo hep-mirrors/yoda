@@ -75,7 +75,7 @@ namespace YODA {
     /// A function that fills this particular bin.
     /// @todo Need to also fill the totalDbn...
     void fillBin(double weight=1.0) {
-      _dbn.fill(midpoint(), weight);
+      _dbn.fill(xyMid(), weight);
     }
 
     /// A reset function
