@@ -198,7 +198,7 @@ namespace YODA {
 
       /// Look up a bin index
       /// @note Returned indices are offset by one, so 0 = underflow and Nbins+1 = overflow
-      __attribute__((noinline)) //< WHY?
+      //__attribute__((noinline)) //< WHY? SOME COUNTERINTUITIVE SPEED THING E.G. SYMBOL CACHING?
       size_t index(double x) const {
 
         // Get initial estimate
@@ -215,8 +215,6 @@ namespace YODA {
           const ssize_t newindex = _linsearch_backward(index, x, SEARCH_SIZE);
           index = (newindex > 0) ? newindex : _bisect(x, 0, index+1);
         }
-
-        assert(x >= _edges[index] && x < _edges[index+1]);
         return index;
       }
 
@@ -227,6 +225,7 @@ namespace YODA {
         if (i == 0 || i == _edges.size()-1) return -1;
         return i;
       }
+
 
     protected:
 
@@ -251,7 +250,10 @@ namespace YODA {
         for (size_t i = 0; i < nmax; i++) {
           const size_t j = istart + i + 1; // index of _next_ edge
           if (j > _edges.size()-1) return -1;
-          if (x < _edges[j]) return j-1; // note one more iteration needed if x is on an edge
+          if (x < _edges[j]) {
+            assert(x >= _edges[j-1] && x < _edges[j]);
+            return j-1; // note one more iteration needed if x is on an edge
+          }
         }
         return -1;
       }
@@ -264,16 +266,19 @@ namespace YODA {
         for (size_t i = 0; i < nmax; i++) {
           const int j = istart - i - 1; // index of _next_ edge (working backwards)
           if (j < 0) return -1;
-          if (x >= _edges[j]) return (ssize_t) j; // note one more iteration needed if x is on an edge
+          if (x >= _edges[j]) {
+            assert(x >= _edges[j] && x < _edges[j+1]);
+            return (ssize_t) j; // note one more iteration needed if x is on an edge
+          }
         }
         return -1;
       }
 
 
-      /// Bisection search, adapted from C++ std lib implementation
+      /// Truncated bisection search, adapted from C++ std lib implementation
       size_t _bisect(double x, size_t imin, size_t imax) const {
         size_t len = imax - imin;
-        while (len > BISECT_LINEAR_THRESHOLD) {
+        while (len >= BISECT_LINEAR_THRESHOLD) {
           const size_t half = len >> 1;
           const size_t imid = imin + half;
           if (x >= _edges[imid]) {
@@ -287,15 +292,15 @@ namespace YODA {
       }
 
 
-    /// Check if two BinSearcher objects have the same edges
-    bool sameBinning(const BinSearcher& other) const {
-      if (_edges.size() != other._edges.size()) return false;
-      for (size_t i = 1; i < _edges.size()-1; i++) {
-        /// @todo Be careful about using fuzzyEquals... should be an exact comparison?
-        if (!fuzzyEquals(_edges[i], other._edges[i])) return false;
+      /// Check if two BinSearcher objects have the same edges
+      bool sameBinning(const BinSearcher& other) const {
+        if (_edges.size() != other._edges.size()) return false;
+        for (size_t i = 1; i < _edges.size()-1; i++) {
+          /// @todo Be careful about using fuzzyEquals... should be an exact comparison?
+          if (!fuzzyEquals(_edges[i], other._edges[i])) return false;
+        }
+        return true;
       }
-      return true;
-    }
 
 
     protected:
