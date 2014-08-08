@@ -198,9 +198,7 @@ namespace YODA {
 
       /// Look up a bin index
       /// @note Returned indices are offset by one, so 0 = underflow and Nbins+1 = overflow
-      //__attribute__((noinline)) //< WHY? SOME COUNTERINTUITIVE SPEED THING E.G. SYMBOL CACHING?
       size_t index(double x) const {
-
         // Get initial estimate
         size_t index = _est->estindex(x);
 
@@ -215,6 +213,8 @@ namespace YODA {
           const ssize_t newindex = _linsearch_backward(index, x, SEARCH_SIZE);
           index = (newindex > 0) ? newindex : _bisect(x, 0, index+1);
         }
+
+        assert(x >= _edges[index] && x < _edges[index+1]);
         return index;
       }
 
@@ -282,12 +282,14 @@ namespace YODA {
           const size_t half = len >> 1;
           const size_t imid = imin + half;
           if (x >= _edges[imid]) {
+            if (x < _edges[imid+1]) return imid; // Might as well return directly if we get lucky!
             imin = imid;
           } else {
-            imax = imid-1;
+            imax = imid;
           }
           len = imax - imin;
         }
+        assert(x >= _edges[imin] && x < _edges[imax]);
         return _linsearch_forward(imin, x, BISECT_LINEAR_THRESHOLD);
       }
 
