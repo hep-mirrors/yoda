@@ -12,7 +12,7 @@ if test "$prefix" = "NONE"; then
    prefix=/usr/local
 fi
 
-#AC_CONFIG_SRCDIR([src/Bin1D.cc])
+dnl AC_CONFIG_SRCDIR([src/Bin1D.cc])
 AM_INIT_AUTOMAKE([subdir-objects -Wall dist-bzip2])
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 m4_ifdef([AM_PROG_AR], [AM_PROG_AR])
@@ -105,6 +105,24 @@ if test "x$enable_root" = "xyes"; then
     AC_MSG_WARN([root-config not found -- not building extra ROOT compatibility tools])
     enable_root=no;
   else
+    AC_MSG_CHECKING([ROOT version])
+    ROOT_VERSION=`$ROOTCONFIG --version`
+    ROOT_MAJOR_VERSION=`echo $ROOT_VERSION | cut -d. -f1`
+    ROOT_MINOR_VERSION=`echo $ROOT_VERSION | cut -d. -f2 | cut -d/ -f1`
+    ROOT_MICRO_VERSION=`echo $ROOT_VERSION | cut -d. -f2 | cut -d/ -f2`
+    AC_MSG_RESULT([$ROOT_VERSION ($ROOT_MAJOR_VERSION,$ROOT_MINOR_VERSION,$ROOT_MICRO_VERSION)])
+    if test "$ROOT_MAJOR_VERSION" -ne 5; then
+      enable_root=no;
+      AC_MSG_WARN([ROOT major version is not 5 -- not building extra ROOT compatibility tools])
+    fi
+    if test "$ROOT_MINOR_VERSION" -lt 33; then
+      enable_root=no;
+      AC_MSG_WARN([ROOT version is less than 5.33 -- not building extra ROOT compatibility tools])
+    fi
+    if test "$ROOT_MINOR_VERSION" -eq 33 && test "$ROOT_MICRO_VERSION" -lt 2; then
+      enable_root=no;
+      AC_MSG_WARN([ROOT version is less than 5.33/02 -- not building extra ROOT compatibility tools])
+    fi
     # TODO: Test for existence of TPython, instance_from_void API, etc.
     #AM_CXXFLAGS="$AM_CXXFLAGS -Wno-long-long"
     ROOT_CXXFLAGS=`$ROOTCONFIG --cflags`
