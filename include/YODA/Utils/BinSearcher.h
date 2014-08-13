@@ -200,8 +200,7 @@ namespace YODA {
       /// @note Returned indices are offset by one, so 0 = underflow and Nbins+1 = overflow
       size_t index(double x) const {
         // Get initial estimate
-        size_t index = _est->estindex(x);
-
+        size_t index = std::min(_est->estindex(x),_edges.size()-1);
         // Return now if this is the correct bin
         if (x >= _edges[index] && x < _edges[index+1]) return index;
 
