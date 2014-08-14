@@ -111,6 +111,12 @@ namespace YODA {
     /// @name Distribution statistics
     //@{
 
+    /// The absolute error on sumW
+    double errW() const { return _dbnW.errW(); }
+
+    /// The relative error on sumW
+    double relErrW() const { return _dbnW.relErrW(); }
+
     /// Weighted mean, \f$ \bar{x} \f$, of distribution.
     double xMean() const;
 

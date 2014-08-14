@@ -116,7 +116,7 @@ cdef class Scatter2D(AnalysisObject):
         Scale the y values and errors of the points in this scatter by factor a."""
         self._Scatter2D().scaleY(a)
 
-    def scaleXYZ(self, ax=1.0, ay=1.0):
+    def scaleXY(self, ax=1.0, ay=1.0):
         """(float=1, float=1) -> None
         Scale the values and errors of the points in this scatter by factors ax, ay."""
         self._Scatter2D().scaleXY(ax, ay)

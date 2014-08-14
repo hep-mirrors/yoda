@@ -127,6 +127,18 @@ namespace YODA {
     //@}
 
 
+    /// @name Uncertainties on sumW
+    //@{
+
+    /// The absolute error on sumW
+    double errW() const;
+
+    /// The relative error on sumW
+    double relErrW() const;
+
+    //@}
+
+
     /// @name Operators
     //@{
 
@@ -146,20 +158,10 @@ namespace YODA {
   protected:
 
     /// Add two dbns (internal, explicitly named version)
-    Dbn0D& add(const Dbn0D& d) {
-      _numFills += d._numFills;
-      _sumW     += d._sumW;
-      _sumW2    += d._sumW2;
-      return *this;
-    }
+    Dbn0D& add(const Dbn0D& d);
 
     /// Subtract one dbn from another (internal, explicitly named version)
-    Dbn0D& subtract(const Dbn0D& d) {
-      _numFills += d._numFills; //< @todo Hmm, add or subtract?!?
-      _sumW     -= d._sumW;
-      _sumW2    += d._sumW2;
-      return *this;
-    }
+    Dbn0D& subtract(const Dbn0D& d);
 
 
   private:

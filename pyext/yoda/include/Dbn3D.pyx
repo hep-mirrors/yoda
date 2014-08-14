@@ -7,6 +7,7 @@ cdef class Dbn3D(util.Base):
 
     cdef c.Dbn3D* d3ptr(self) except NULL:
         return <c.Dbn3D*> self.ptr()
+
     # TODO: remove
     cdef c.Dbn3D* _Dbn3D(self) except NULL:
         return <c.Dbn3D*> self.ptr()
@@ -86,6 +87,8 @@ cdef class Dbn3D(util.Base):
         self.d3ptr().scaleXYZ(x, y, z)
 
 
+    # TODO: map direct properties from C++
+
     @property
     def mean(self):
         """Weighted mean of x"""
@@ -131,6 +134,17 @@ cdef class Dbn3D(util.Base):
     def effNumEntries(self):
         """Effective number of entries (for weighted events)"""
         return self.d3ptr().effNumEntries()
+
+
+    @property
+    def errW(self):
+        """Error on sumW"""
+        return self.d3ptr().errW()
+
+    @property
+    def relErrW(self):
+        """Relative error on sumW"""
+        return self.d3ptr().relErrW()
 
 
     @property

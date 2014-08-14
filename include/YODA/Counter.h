@@ -8,7 +8,7 @@
 
 #include "YODA/AnalysisObject.h"
 #include "YODA/Dbn0D.h"
-//#include "YODA/Scatter1D.h"
+#include "YODA/Scatter1D.h"
 #include "YODA/Exceptions.h"
 #include <vector>
 #include <string>
@@ -193,28 +193,28 @@ namespace YODA {
   }
 
 
-  // /// Divide two counters, with an uncorrelated error treatment
-  // /// @todo Or just return a Point1D?
-  // Scatter1D divide(const Counter& numer, const Counter& denom);
+  /// Divide two counters, with an uncorrelated error treatment
+  /// @todo Or just return a Point1D?
+  Scatter1D divide(const Counter& numer, const Counter& denom);
 
 
-  // /// Divide two counters, with an uncorrelated error treatment
-  // /// @todo Or just return a Point1D?
-  // inline Scatter1D operator / (const Counter& numer, const Counter& denom) {
-  //   return divide(numer, denom);
-  // }
+  /// Divide two counters, with an uncorrelated error treatment
+  /// @todo Or just return a Point1D?
+  inline Scatter1D operator / (const Counter& numer, const Counter& denom) {
+    return divide(numer, denom);
+  }
 
 
-  // /// @todo Add divide functions/operators on pointers
+  /// @todo Add divide functions/operators on pointers
 
 
-  // /// @brief Calculate an efficiency ratio of two counters
-  // ///
-  // /// Note that an efficiency is not the same thing as a standard division of two
-  // /// histograms: the errors must be treated as correlated
-  // ///
-  // /// @todo Or just return a Point1D?
-  // Scatter1D efficiency(const Counter& accepted, const Counter& total);
+  /// @brief Calculate an efficiency ratio of two counters
+  ///
+  /// Note that an efficiency is not the same thing as a standard division of two
+  /// histograms: the errors must be treated as correlated
+  ///
+  /// @todo Or just return a Point1D?
+  Scatter1D efficiency(const Counter& accepted, const Counter& total);
 
   //@}
 

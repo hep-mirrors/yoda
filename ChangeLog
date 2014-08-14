@@ -1,5 +1,10 @@
 2014-08-14  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Python mappings for Dbn0D and Counter, and other improvements.
+
+	* Adding val() and err() methods to Counter, and errW() and
+	relErrW() to all DbnXD types.
+
 	* Adding Scatter1D and Point1D types, with conversion from Counter
 	supported. Both Counter and Scatter1D still need to be supported
 	by YODA persistency.

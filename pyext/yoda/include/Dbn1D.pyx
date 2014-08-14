@@ -60,29 +60,40 @@ cdef class Dbn1D(util.Base):
 
 
     @property
-    def mean(self):
+    def xMean(self):
         """Weighted mean of x"""
         return self.d1ptr().xMean()
+    # TODO: remove alias
+    mean = xMean
 
     @property
-    def variance(self):
+    def xVariance(self):
         """Weighted variance of x"""
         return self.d1ptr().xVariance()
+    # TODO: remove alias
+    variance = xVariance
 
     @property
-    def stdDev(self):
+    def xStdDev(self):
         """Weighted standard deviation of x"""
         return self.d1ptr().xStdDev()
+    # TODO: remove alias
+    stdDev = xStdDev
 
     @property
-    def stdErr(self):
+    def xStdErr(self):
         """Weighted standard error on <x>"""
         return self.d1ptr().xStdErr()
+    # TODO: remove alias
+    stdErr = xStdErr
 
     @property
-    def rms(self):
+    def xRMS(self):
         """Weighted root mean squared (RMS) of x"""
         return self.d1ptr().xRMS()
+    # TODO: remove alias
+    rms = xRMS
+
 
     @property
     def numEntries(self):
@@ -93,6 +104,18 @@ cdef class Dbn1D(util.Base):
     def effNumEntries(self):
         """Effective number of entries (for weighted events)"""
         return self.d1ptr().effNumEntries()
+
+
+    @property
+    def errW(self):
+        """Error on sumW"""
+        return self.d1ptr().errW()
+
+    @property
+    def relErrW(self):
+        """Relative error on sumW"""
+        return self.d1ptr().relErrW()
+
 
     @property
     def sumW(self):

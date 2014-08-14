@@ -9,7 +9,7 @@ namespace YODA {
 
 
   double Dbn1D::xMean() const {
-    if (effNumEntries() == 0) {
+    if (effNumEntries() == 0 || sumW() == 0) {
       throw LowStatsError("Requested mean of a distribution with no net fill weights");
     }
     // This is ok, even for negative sum(w)

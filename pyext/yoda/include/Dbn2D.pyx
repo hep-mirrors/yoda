@@ -8,6 +8,7 @@ cdef class Dbn2D(util.Base):
 
     cdef c.Dbn2D* d2ptr(self) except NULL:
         return <c.Dbn2D *> self.ptr()
+
     # TODO: remove!
     cdef c.Dbn2D* _Dbn2D(self) except NULL:
         return <c.Dbn2D *> self.ptr()
@@ -79,6 +80,8 @@ cdef class Dbn2D(util.Base):
         self.d2ptr().scaleXY(x, y)
 
 
+    # TODO: map direct properties from C++
+
     @property
     def mean(self):
         """Weighted mean of x"""
@@ -114,6 +117,17 @@ cdef class Dbn2D(util.Base):
     def effNumEntries(self):
         """Effective number of entries (for weighted events)"""
         return self.d2ptr().effNumEntries()
+
+
+    @property
+    def errW(self):
+        """Error on sumW"""
+        return self.d2ptr().errW()
+
+    @property
+    def relErrW(self):
+        """Relative error on sumW"""
+        return self.d2ptr().relErrW()
 
 
     @property

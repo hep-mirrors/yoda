@@ -12,7 +12,9 @@ libYODA_la_SOURCES = \
     WriterYODA.cc \
     WriterAIDA.cc \
     WriterFLAT.cc \
-    Dbn1D.cc \
+    Dbn0D.cc \
+	Dbn1D.cc \
+    Counter.cc \
     Histo1D.cc \
     Histo2D.cc \
     Profile1D.cc \
