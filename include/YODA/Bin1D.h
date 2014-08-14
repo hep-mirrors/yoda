@@ -8,9 +8,7 @@
 
 #include "YODA/Utils/MathUtils.h"
 #include "YODA/Bin.h"
-#include <string>
 #include <utility>
-#include <cassert>
 
 namespace YODA {
 

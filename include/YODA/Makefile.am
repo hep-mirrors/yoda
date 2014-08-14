@@ -10,6 +10,7 @@ pkginclude_HEADERS = \
     Histo2D.h HistoBin2D.h  \
     Profile1D.h ProfileBin1D.h \
     Profile2D.h ProfileBin2D.h \
+    Scatter1D.h Point1D.h \
     Scatter2D.h Point2D.h \
     Scatter3D.h Point3D.h \
     ScatterND.h PointND.h ErrorND.h \

@@ -9,8 +9,6 @@
 #include "YODA/AnalysisObject.h"
 #include "YODA/Point3D.h"
 #include "YODA/Utils/sortedvector.h"
-#include <vector>
-#include <string>
 #include <utility>
 
 namespace YODA {

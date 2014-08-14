@@ -115,6 +115,7 @@ namespace YODA {
 
     /// The relative size of the error (same for either area or height errors)
     double relErr() const {
+      /// @todo Throw excp if sumW2 is 0?
       return sumW2() != 0 ? sqrt(sumW2()) / sumW() : 0;
     }
 

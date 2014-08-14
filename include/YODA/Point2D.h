@@ -279,7 +279,7 @@ namespace YODA {
     //@}
 
 
-    /// @todo Support multiple weights (then need to discard setYMin/Max?)
+    /// @todo Support multiple errors
 
 
     /// @name Combined x/y value and error setters

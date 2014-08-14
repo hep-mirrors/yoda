@@ -9,8 +9,6 @@
 #include "YODA/AnalysisObject.h"
 #include "YODA/Point2D.h"
 #include "YODA/Utils/sortedvector.h"
-#include <vector>
-#include <string>
 #include <utility>
 
 namespace YODA {
@@ -52,10 +50,8 @@ namespace YODA {
               const std::string& path="", const std::string& title="")
       : AnalysisObject("Scatter2D", path, title)
     {
-      assert(x.size() == y.size());
-      for (size_t i = 0; i < x.size(); ++i) {
-        addPoint(x[i], y[i]);
-      }
+      if (x.size() != y.size()) throw UserError("x and y vectors must have same length");
+      for (size_t i = 0; i < x.size(); ++i) addPoint(x[i], y[i]);
     }
 
 
@@ -65,37 +61,11 @@ namespace YODA {
               const std::string& path="", const std::string& title="")
       : AnalysisObject("Scatter2D", path, title)
     {
-      assert(x.size() == y.size() && x.size() == ex.size() && x.size() == ey.size());
-      for (size_t i = 0; i < x.size(); ++i) {
-        addPoint(x[i], y[i], ex[i], ey[i]);
-      }
+      if (x.size() != y.size()) throw UserError("x and y vectors must have same length");
+      if (x.size() != ex.size()) throw UserError("x and ex vectors must have same length");
+      if (y.size() != ey.size()) throw UserError("y and ey vectors must have same length");
+      for (size_t i = 0; i < x.size(); ++i) addPoint(x[i], y[i], ex[i], ey[i]);
     }
-
-
-    // /// Constructor from values with symmetric errors on x and asymmetric errors on y
-    // Scatter2D(const std::vector<double>& x, const std::vector<double>& y,
-    //           const std::vector<double>& ex, const std::vector<std::pair<double,double> >& ey,
-    //           const std::string& path="", const std::string& title="")
-    //   : AnalysisObject("Scatter2D", path, title)
-    // {
-    //   assert(x.size() == y.size() && x.size() == ex.size() && x.size() == ey.size());
-    //   for (size_t i = 0; i < x.size(); ++i) {
-    //     addPoint(Point2D(x[i], y[i], ex[i], ey[i]));
-    //   }
-    // }
-
-
-    // /// Constructor from values with asymmetric errors on x and symmetric errors on y
-    // Scatter2D(const std::vector<double>& x, const std::vector<double>& y,
-    //           const std::vector<std::pair<double,double> >& ex, const std::vector<double>& ey,
-    //           const std::string& path="", const std::string& title="")
-    //   : AnalysisObject("Scatter2D", path, title)
-    // {
-    //   assert(x.size() == y.size() && x.size() == ex.size() && x.size() == ey.size());
-    //   for (size_t i = 0; i < x.size(); ++i) {
-    //     addPoint(Point2D(x[i], y[i], ex[i], ey[i]));
-    //   }
-    // }
 
 
     /// Constructor from values with asymmetric errors on both x and y
@@ -104,28 +74,26 @@ namespace YODA {
               const std::string& path="", const std::string& title="")
       : AnalysisObject("Scatter2D", path, title)
     {
-      assert(x.size() == y.size() && x.size() == ex.size() && x.size() == ey.size());
-      for (size_t i = 0; i < x.size(); ++i) {
-        addPoint(Point2D(x[i], y[i], ex[i], ey[i]));
-      }
+      if (x.size() != y.size()) throw UserError("x and y vectors must have same length");
+      if (x.size() != ex.size()) throw UserError("x and ex vectors must have same length");
+      if (y.size() != ey.size()) throw UserError("y and ey vectors must have same length");
+      for (size_t i = 0; i < x.size(); ++i) addPoint(Point2D(x[i], y[i], ex[i], ey[i]));
     }
 
 
     /// Constructor from values with completely explicit asymmetric errors
     Scatter2D(const std::vector<double>& x, const std::vector<double>& y,
-              const std::vector<double>& exminus,
-              const std::vector<double>& explus,
-              const std::vector<double>& eyminus,
-              const std::vector<double>& eyplus,
+              const std::vector<double>& exminus, const std::vector<double>& explus,
+              const std::vector<double>& eyminus, const std::vector<double>& eyplus,
               const std::string& path="", const std::string& title="")
       : AnalysisObject("Scatter2D", path, title)
     {
-      assert(x.size() == y.size() &&
-             x.size() == exminus.size() && x.size() == explus.size() &&
-             x.size() == eyminus.size() && x.size() == eyplus.size());
-      for (size_t i = 0; i < x.size(); ++i) {
-        addPoint(Point2D(x[i], y[i], exminus[i], explus[i], eyminus[i], eyplus[i]));
-      }
+      if (x.size() != y.size()) throw UserError("x and y vectors must have same length");
+      if (x.size() != exminus.size()) throw UserError("x and ex vectors must have same length");
+      if (y.size() != eyminus.size()) throw UserError("y and ey vectors must have same length");
+      if (exminus.size() != explus.size()) throw UserError("ex plus and minus vectors must have same length");
+      if (eyminus.size() != eyplus.size()) throw UserError("ey plus and minus vectors must have same length");
+      for (size_t i = 0; i < x.size(); ++i) addPoint(Point2D(x[i], y[i], exminus[i], explus[i], eyminus[i], eyplus[i]));
     }
 
 

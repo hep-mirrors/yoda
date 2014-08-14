@@ -1,3 +1,9 @@
+2014-08-14  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Adding Scatter1D and Point1D types, with conversion from Counter
+	supported. Both Counter and Scatter1D still need to be supported
+	by YODA persistency.
+
 2014-08-11  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Add ROOT version checking to configure. Thanks to Michael Grosse

@@ -110,9 +110,21 @@ namespace YODA {
     /// Get the sum of squared weights
     double sumW2() const { return _dbn.sumW2(); }
 
-    /// Get the error
+    /// Get the value
+    double val() const { return sumW(); }
+
+    /// Get the uncertainty on the value
     /// @todo Implement on Dbn0D and feed through to this and Dbn1D, 2D, etc.
     // double err() const { return _dbn.err(); }
+    double err() const { return sqrt(sumW2()); }
+
+    /// Get the relative uncertainty on the value
+    /// @todo Implement on Dbn0D and feed through to this and Dbn1D, 2D, etc.
+    // double err() const { return _dbn.err(); }
+    double relErr() const {
+      /// @todo Throw excp if sumW2 is 0?
+      return sumW2() != 0 ? err()/sumW() : 0;
+    }
 
     //@}
 
