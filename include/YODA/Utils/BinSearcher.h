@@ -250,7 +250,7 @@ namespace YODA {
           const size_t j = istart + i + 1; // index of _next_ edge
           if (j > _edges.size()-1) return -1;
           if (x < _edges[j]) {
-            assert(x >= _edges[j-1] && x < _edges[j]);
+            assert(x >= _edges[j-1] && (x < _edges[j] || isinf(x)));
             return j-1; // note one more iteration needed if x is on an edge
           }
         }
@@ -266,7 +266,7 @@ namespace YODA {
           const int j = istart - i - 1; // index of _next_ edge (working backwards)
           if (j < 0) return -1;
           if (x >= _edges[j]) {
-            assert(x >= _edges[j] && x < _edges[j+1]);
+            assert(x >= _edges[j] && (x < _edges[j+1] || isinf(x)));
             return (ssize_t) j; // note one more iteration needed if x is on an edge
           }
         }
@@ -288,7 +288,7 @@ namespace YODA {
           }
           len = imax - imin;
         }
-        assert(x >= _edges[imin] && x < _edges[imax]);
+        assert(x >= _edges[imin] && (x < _edges[imax] || isinf(x)));
         return _linsearch_forward(imin, x, BISECT_LINEAR_THRESHOLD);
       }
 
