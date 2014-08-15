@@ -15,9 +15,9 @@ namespace YODA {
 
   void Profile1D::fill(double x, double y, double weight) {
     if ( std::isnan(x) ) throw RangeError("X is NaN");
-    if ( std::isinf(x) ) throw RangeError("X is Inf");
+    // if ( std::isinf(x) ) throw RangeError("X is Inf");
     if ( std::isnan(y) ) throw RangeError("Y is NaN");
-    if ( std::isinf(y) ) throw RangeError("Y is Inf");
+    // if ( std::isinf(y) ) throw RangeError("Y is Inf");
     // Fill the overall distribution
     _axis.totalDbn().fill(x, y, weight);
     // Fill the bins and overflows

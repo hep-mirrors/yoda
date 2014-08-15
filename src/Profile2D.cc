@@ -14,11 +14,11 @@ namespace YODA {
 
   void Profile2D::fill(double x, double y, double z, double weight) {
     if ( std::isnan(x) ) throw RangeError("X is NaN");
-    if ( std::isinf(x) ) throw RangeError("X is Inf");
+    // if ( std::isinf(x) ) throw RangeError("X is Inf");
     if ( std::isnan(y) ) throw RangeError("Y is NaN");
-    if ( std::isinf(y) ) throw RangeError("Y is Inf");
+    // if ( std::isinf(y) ) throw RangeError("Y is Inf");
     if ( std::isnan(z) ) throw RangeError("Z is NaN");
-    if ( std::isinf(z) ) throw RangeError("Z is Inf");
+    // if ( std::isinf(z) ) throw RangeError("Z is Inf");
     // Fill the overall distribution
     _axis.totalDbn().fill(x, y, z, weight);
     // Fill the bins and overflows
@@ -26,10 +26,10 @@ namespace YODA {
       ProfileBin2D& b = binAt(x, y);
       b.fill(x, y, z, weight);
     } catch (const RangeError& re) {
-      size_t ix(0), iy(0);
-      if (x <  _axis.xMin()) ix = -1; else if (x >= _axis.xMax()) ix = 1;
-      if (y <  _axis.yMin()) iy = -1; else if (y >= _axis.yMax()) iy = 1;
       /// @todo Reinstate! With outflow axis bin lookup _axis.outflow(ix, iy).fill(x, y, z, weight);
+      // size_t ix(0), iy(0);
+      // if (x <  _axis.xMin()) ix = -1; else if (x >= _axis.xMax()) ix = 1;
+      // if (y <  _axis.yMin()) iy = -1; else if (y >= _axis.yMax()) iy = 1;
     }
     // Lock the axis now that a fill has happened
     _axis._setLock(true);

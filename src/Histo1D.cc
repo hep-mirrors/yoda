@@ -16,7 +16,7 @@ namespace YODA {
 
   void Histo1D::fill(double x, double weight) {
     if ( std::isnan(x) ) throw RangeError("X is NaN");
-    if ( std::isinf(x) ) throw RangeError("X is Inf");
+    // if ( std::isinf(x) ) throw RangeError("X is Inf");
     // Fill the overall distribution
     _axis.totalDbn().fill(x, weight);
     // Fill the bins and overflows

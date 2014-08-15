@@ -1,5 +1,11 @@
 2014-08-15  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Permit +-inf values to be filled into histograms; NaN fills will
+	still explicitly throw an exception.
+
+	* Add unit tests for Counter, Scatter1D, and Scatter2D, including
+	persistency.
+
 	* Adding YODA and FLAT format I/O for Scatter1D and Counter (as
 	far as currently possible -- FLAT Counter can't be read due to a
 	#item ambiguity, just like the one between the YODA format Point3D
