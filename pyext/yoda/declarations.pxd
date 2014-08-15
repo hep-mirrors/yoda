@@ -34,7 +34,7 @@ cdef extern from "YODA/Utils/MathUtils.h" namespace "YODA":
 cdef extern from "YODA/Dbn0D.h" namespace "YODA":
     cdef cppclass Dbn0D:
         Dbn0D ()
-        Dbn0D (Dbn1D)
+        Dbn0D (Dbn0D)
 
         void fill(double weight)
         void reset()
@@ -221,7 +221,7 @@ cdef extern from "YODA/Dbn3D.h" namespace "YODA":
 cdef extern from "YODA/Point1D.h" namespace "YODA":
     cdef cppclass Point1D:
         Point1D () except +yodaerr
-        Point1D (Point2D p) except +yodaerr
+        Point1D (Point1D p) except +yodaerr
         Point1D (double x, double exminus, double explus) except +yodaerr
 
         double x() except +yodaerr
@@ -658,7 +658,7 @@ cdef extern from "merge.hh":
     Counter* Counter_add_Counter "cython_add" (Counter*, Counter*)
     Counter* Counter_sub_Counter "cython_sub" (Counter*, Counter*)
 
-# TODO: add counter division and efficiency calculations -> Scatter1D
+# TODO: add counter division and efficiency calculations and mkScatter -> Scatter1D
 
 
 # Scatter1D {{{

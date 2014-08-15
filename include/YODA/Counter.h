@@ -26,8 +26,7 @@ namespace YODA {
 
     /// Default constructor
     Counter(const std::string& path="", const std::string& title="")
-      : AnalysisObject("Counter", path, title),
-        _dbn()
+      : AnalysisObject("Counter", path, title)
     { }
 
 
@@ -205,7 +204,10 @@ namespace YODA {
   }
 
 
+  /// @todo Add mkScatter
+
   /// @todo Add divide functions/operators on pointers
+
 
 
   /// @brief Calculate an efficiency ratio of two counters

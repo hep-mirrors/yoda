@@ -83,16 +83,6 @@ cdef class Dbn0D(util.Base):
         """sum(weights * weights)"""
         return self.d0ptr().sumW2()
 
-    @property
-    def sumWX(self):
-        """sum(weights * xs)"""
-        return self.d0ptr().sumWX()
-
-    @property
-    def sumWX2(self):
-        """sum(weights * xs * xs)"""
-        return self.d0ptr().sumWX2()
-
 
     def __add__(Dbn0D self, Dbn0D other):
         return cutil.new_owned_cls(Dbn0D, new c.Dbn0D(deref(self.d0ptr()) + deref(other.d0ptr())))

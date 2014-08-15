@@ -12,6 +12,14 @@ using namespace std;
 namespace YODA {
 
 
+  /// Copy constructor with optional new path
+  Counter::Counter(const Counter& c, const std::string& path)
+    : AnalysisObject("Counter", (path.size() == 0) ? c.path() : path, c, c.title())
+  {
+    _dbn = c._dbn;
+  }
+
+
   // Divide two counters
   Scatter1D divide(const Counter& numer, const Counter& denom) {
     Scatter1D rtn;

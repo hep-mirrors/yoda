@@ -62,6 +62,7 @@ Doxyfile$
 ^tests/testscatter2Dmodify$
 ^tests/testsortedvector$
 ^tests/testweights$
+^tests/testbinsearcher$
 ^plots$
 ^a.out$
-^test[^/]+$
+^testplotting$

@@ -1,9 +1,12 @@
 EXTRA_DIST = \
   pytest-unit \
+  pytest-counter \
   pytest-h1d \
   pytest-p1d \
   pytest-h2d \
   pytest-p2d \
+  pytest-s1d \
+  pytest-s2d \
   pytest-operators \
   shtest-yodamerge \
   shtest-yoda2root \
@@ -87,10 +90,13 @@ TESTS = \
   testscatter2Dmodify \
   testhisto2Dcreate \
   pytest-unit \
+  pytest-counter \
   pytest-h1d \
   pytest-p1d \
   pytest-h2d \
   pytest-p2d \
+  pytest-s1d \
+  pytest-s2d \
   pytest-operators \
   shtest-yodamerge
 
