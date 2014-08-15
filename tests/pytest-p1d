@@ -23,13 +23,13 @@ print p2
 print p3
 
 
-yoda.write([p1,p2,p3], "h1d.yoda")
-aos = yoda.read("h1d.yoda")
+yoda.write([p1,p2,p3], "p1d.yoda")
+aos = yoda.read("p1d.yoda")
 for _, ao in aos.iteritems():
     print ao
 
-yoda.writeFLAT([p1,p2,p3], "h1d.dat")
-aos = yoda.read("h1d.dat")
+yoda.writeFLAT([p1,p2,p3], "p1d.dat")
+aos = yoda.read("p1d.dat")
 for _, ao in aos.iteritems():
     print ao
 

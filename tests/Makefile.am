@@ -105,8 +105,14 @@ if ENABLE_ROOT
 endif
 
 CLEANFILES = \
-  merged12.yoda p2d.dat test.aida h2d.yoda h1d.dat p2d.yoda merged12pi.yoda \
-  h1d.yoda h2d.dat
+  merged12.yoda merged12pi.yoda \
+  h1d.yoda h1d.dat \
+  p1d.yoda p1d.dat \
+  h2d.yoda h2d.dat \
+  p2d.yoda p2d.dat \
+  s1d.yoda s2d.yoda \
+  counter.yoda \
+  test.aida
 
 #  testhisto2De \
 #  testpoint3D    \
