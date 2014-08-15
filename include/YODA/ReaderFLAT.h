@@ -147,25 +147,25 @@ namespace YODA {
     struct fillpoint {
       // 0D
       void operator()(const histogrampointsymmetric0d p, qi::unused_type, qi::unused_type) const {
-        std::cout << "0d symm" << std::endl;
+        //std::cout << "0d symm" << std::endl;
         YODA::Point1D point(p.x, p.ex, p.ex);
         _scatter1d.points.push_back(point);
       }
       void operator()(const histogrampointasymmetric0d p, qi::unused_type, qi::unused_type) const {
-        std::cout << "0d asymm" << std::endl;
+        //std::cout << "0d asymm" << std::endl;
         YODA::Point1D point(p.x, p.exminus, p.explus);
         _scatter1d.points.push_back(point);
       }
       // 1D
       void operator()(const histogrampointsymmetric1d p, qi::unused_type, qi::unused_type) const {
-        std::cout << "1d symm" << std::endl;
+        //std::cout << "1d symm" << std::endl;
         double x  = 0.5*(p.xmin+p.xmax);
         double ex = 0.5*(p.xmax-p.xmin);
         YODA::Point2D point(x, p.y, ex, ex, p.ey, p.ey);
         _scatter2d.points.push_back(point);
       }
       void operator()(const histogrampointasymmetric1d p, qi::unused_type, qi::unused_type) const {
-        std::cout << "1d asymm" << std::endl;
+        //std::cout << "1d asymm" << std::endl;
         double x  = 0.5*(p.xmin+p.xmax);
         double ex = 0.5*(p.xmax-p.xmin);
         YODA::Point2D point(x, p.y, ex, ex, p.eyminus, p.eyplus);
@@ -173,7 +173,7 @@ namespace YODA {
       }
       // 2D
       void operator()(const histogrampointsymmetric2d p, qi::unused_type, qi::unused_type) const {
-        std::cout << "2d symm" << std::endl;
+        //std::cout << "2d symm" << std::endl;
         double x  = 0.5*(p.xmin+p.xmax);
         double ex = 0.5*(p.xmax-p.xmin);
         double y  = 0.5*(p.ymin+p.ymax);
@@ -182,7 +182,7 @@ namespace YODA {
         _scatter3d.points.push_back(point);
       }
       void operator()(const histogrampointasymmetric2d p, qi::unused_type, qi::unused_type) const {
-        std::cout << "2d asymm" << std::endl;
+        //std::cout << "2d asymm" << std::endl;
         double x  = 0.5*(p.xmin+p.xmax);
         double ex = 0.5*(p.xmax-p.xmin);
         double y  = 0.5*(p.ymin+p.ymax);

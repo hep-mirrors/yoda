@@ -97,10 +97,10 @@ namespace YODA {
       // if (qi::parse(s.begin(), s.end(), group_parser, newcontext)) { //< Only supported in Boost 1.47+
       string::iterator it1 = s.begin();
       if (qi::parse(it1, s.end(), group_parser, newcontext)) { //< End patch
-
         context = newcontext;
         if (context > 0) {
           // We are inside a group now, so we are looking for the corresponding END and ignore all BEGINs
+          //cout << "New context = " << context << endl;
           bgroup.clear();
           egroup.add(groups[context], -context);
         }
@@ -135,7 +135,7 @@ namespace YODA {
             if (!_scatter1d.points.empty()) {
               // cout << "S1D" << endl;
               ao = new YODA::Scatter1D(_scatter1d.points);
-            } else if (!_scatter1d.points.empty()) {
+            } else if (!_scatter2d.points.empty()) {
               // cout << "S2D" << endl;
               ao = new YODA::Scatter2D(_scatter2d.points);
             } else if (!_scatter3d.points.empty()) {
