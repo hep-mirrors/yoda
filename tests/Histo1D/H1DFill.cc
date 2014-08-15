@@ -1,5 +1,7 @@
 #include "YODA/Histo1D.h"
 #include "YODA/Utils/Formatting.h"
+#include <cmath>
+#include <limits>
 
 using namespace YODA;
 using namespace std;
@@ -92,6 +94,34 @@ int main() {
     return -1;
   }
   MSG_GREEN("PASS");
+
+
+  // MSG_(PAD(70) << "Trying to fill with inf: ");
+  // h.fill(numeric_limits<double>::infinity(),1);
+  // MSG_GREEN("PASS");
+
+  // MSG_(PAD(70) << "Checking if stats were set correctly: ");
+  // if (isinf(h.xMean())) {
+  //   MSG_RED("FAIL");
+  //   return -1;
+  // }
+  // if (isinf(h.xMean(false))) {
+  //   MSG_RED("FAIL");
+  //   return -1;
+  // }
+  // MSG_GREEN("PASS");
+
+
+  // MSG_(PAD(70) << "Trying to fill with NaN: ");
+  // h.fill(numeric_limits<double>::quiet_NaN(),1);
+  // MSG_GREEN("PASS");
+
+  // MSG_(PAD(70) << "Checking if stats were set correctly: ");
+  // if (isnan(h.xMean())) {
+  //   MSG_RED("FAIL");
+  //   return -1;
+  // }
+  // MSG_GREEN("PASS");
 
   return EXIT_SUCCESS;
 }

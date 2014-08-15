@@ -8,10 +8,6 @@
 #include "YODA/Exceptions.h"
 
 #include "YODA/Counter.h"
-#include "YODA/Histo1D.h"
-#include "YODA/Histo2D.h"
-#include "YODA/Profile1D.h"
-#include "YODA/Profile2D.h"
 #include "YODA/Scatter1D.h"
 #include "YODA/Scatter2D.h"
 #include "YODA/Scatter3D.h"
@@ -23,10 +19,10 @@ namespace YODA {
 
   qi::symbols<char, int> ReaderFLAT::bgroup;
   qi::symbols<char, int> ReaderFLAT::egroup;
+  //ReaderFLAT::counter ReaderFLAT::_counter;
   ReaderFLAT::scatter1d ReaderFLAT::_scatter1d;
   ReaderFLAT::scatter2d ReaderFLAT::_scatter2d;
   ReaderFLAT::scatter3d ReaderFLAT::_scatter3d;
-  //ReaderFLAT::counter ReaderFLAT::_counter;
   map<string, string> ReaderFLAT::_annotations;
 
 
@@ -104,18 +100,14 @@ namespace YODA {
 
         context = newcontext;
         if (context > 0) {
-          // We are inside a group now, so we are looking for the corresponding
-          // END and ignore all BEGINs
+          // We are inside a group now, so we are looking for the corresponding END and ignore all BEGINs
           bgroup.clear();
           egroup.add(groups[context], -context);
         }
         if (context < 0) {
-          // We are outside a group, so we are looking for any BEGIN and ignore
-          // all ENDs
+          // We are outside a group, so we are looking for any BEGIN and ignore all ENDs
           egroup.remove(groups[-context]);
-          BOOST_FOREACH(pis, groups) {
-            bgroup.add(pis.second, pis.first);
-          }
+          BOOST_FOREACH(pis, groups) bgroup.add(pis.second, pis.first);
           contextchange = true;
         }
       }

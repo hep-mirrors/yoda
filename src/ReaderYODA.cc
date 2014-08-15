@@ -14,7 +14,7 @@
 #include "YODA/Profile2D.h"
 #include "YODA/Scatter1D.h"
 #include "YODA/Scatter2D.h"
-// #include "YODA/Scatter3D.h"
+#include "YODA/Scatter3D.h"
 
 #include <iostream>
 using namespace std;
@@ -31,7 +31,7 @@ namespace YODA {
   ReaderYODA::profile1d ReaderYODA::_profile1d;
   ReaderYODA::scatter1d ReaderYODA::_scatter1d;
   ReaderYODA::scatter2d ReaderYODA::_scatter2d;
-  //ReaderYODA::scatter3d ReaderYODA::_scatter3d;
+  ReaderYODA::scatter3d ReaderYODA::_scatter3d;
   map<string, string> ReaderYODA::_annotations;
 
 
@@ -112,18 +112,14 @@ namespace YODA {
       if (qi::parse(it1, s.end(), group_parser, newcontext)) { //< End patch
         context = newcontext;
         if (context > 0) {
-          // We are inside a group now, so we are looking for the corresponding
-          // END and ignore all BEGINs
+          // We are inside a group now, so we are looking for the corresponding END and ignore all BEGINs
           bgroup.clear();
           egroup.add(groups[context], -context);
         }
         if (context < 0) {
-          // We are outside a group, so we are looking for any BEGIN and ignore
-          // all ENDs
+          // We are outside a group, so we are looking for any BEGIN and ignore all ENDs
           egroup.remove(groups[-context]);
-          BOOST_FOREACH(pis, groups) {
-            bgroup.add(pis.second, pis.first);
-          }
+          BOOST_FOREACH(pis, groups) bgroup.add(pis.second, pis.first);
           contextchange = true;
         }
       }
