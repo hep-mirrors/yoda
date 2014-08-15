@@ -213,7 +213,7 @@ namespace YODA {
           index = (newindex > 0) ? newindex : _bisect(x, 0, index+1);
         }
 
-        assert(x >= _edges[index] && x < _edges[index+1]);
+        assert(x >= _edges[index] && (x < _edges[index+1] || isinf(x)));
         return index;
       }
 
