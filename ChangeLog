@@ -1,5 +1,7 @@
 2014-08-15  Andy Buckley  <andy.buckley@cern.ch>
 
+	* YODA 1.2.0 release!
+
 	* Permit +-inf values to be filled into histograms; NaN fills will
 	still explicitly throw an exception.
 
