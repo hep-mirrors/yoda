@@ -62,9 +62,9 @@ namespace YODA {
   }
 
 
-  // void WriterAIDA::writeScatter1D(std::ostream& os, const Scatter1D& s) {
-  //   os << endl << "<!-- SCATTER1D WRITING TO AIDA IS CURRENTLY UNSUPPORTED! -->" << endl << endl;
-  // }
+  void WriterAIDA::writeScatter1D(std::ostream& os, const Scatter1D& s) {
+    os << endl << "<!-- SCATTER1D WRITING TO AIDA IS CURRENTLY UNSUPPORTED! -->" << endl << endl;
+  }
 
 
   void WriterAIDA::writeScatter2D(std::ostream& os, const Scatter2D& s) {
@@ -94,7 +94,7 @@ namespace YODA {
       os << "      <item key=\"Type\" value=\"Scatter2D\" />\n";
     }
     os << "    </annotation>\n";
-    BOOST_FOREACH (Point2D pt, s.points()) {
+    BOOST_FOREACH (const Point2D& pt, s.points()) {
       os << "    <dataPoint>\n";
       os << "      <measurement value=\"" << pt.x()
 	 << "\" errorPlus=\"" << pt.xErrPlus()

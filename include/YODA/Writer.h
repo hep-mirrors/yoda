@@ -12,7 +12,7 @@
 #include "YODA/Histo2D.h"
 #include "YODA/Profile1D.h"
 #include "YODA/Profile2D.h"
-// #include "YODA/Scatter1D.h"
+#include "YODA/Scatter1D.h"
 #include "YODA/Scatter2D.h"
 #include "YODA/Scatter3D.h"
 
@@ -112,7 +112,7 @@ namespace YODA {
     virtual void writeHisto2D(std::ostream& os, const Histo2D& h) = 0;
     virtual void writeProfile1D(std::ostream& os, const Profile1D& p) = 0;
     virtual void writeProfile2D(std::ostream& os, const Profile2D& p) = 0;
-    // virtual void writeScatter1D(std::ostream& os, const Scatter1D& s) = 0;
+    virtual void writeScatter1D(std::ostream& os, const Scatter1D& s) = 0;
     virtual void writeScatter2D(std::ostream& os, const Scatter2D& s) = 0;
     virtual void writeScatter3D(std::ostream& os, const Scatter3D& s) = 0;
 

@@ -12,7 +12,7 @@
 #include "YODA/Histo2D.h"
 #include "YODA/Profile1D.h"
 #include "YODA/Profile2D.h"
-// #include "YODA/Scatter1D.h"
+#include "YODA/Scatter1D.h"
 #include "YODA/Scatter2D.h"
 #include "YODA/Scatter3D.h"
 
@@ -23,8 +23,10 @@ namespace YODA {
 
   qi::symbols<char, int> ReaderFLAT::bgroup;
   qi::symbols<char, int> ReaderFLAT::egroup;
+  ReaderFLAT::scatter1d ReaderFLAT::_scatter1d;
   ReaderFLAT::scatter2d ReaderFLAT::_scatter2d;
   ReaderFLAT::scatter3d ReaderFLAT::_scatter3d;
+  //ReaderFLAT::counter ReaderFLAT::_counter;
   map<string, string> ReaderFLAT::_annotations;
 
 
@@ -76,6 +78,7 @@ namespace YODA {
     groups[1] = "HISTOGRAM";
     groups[2] = "HISTO1D";
     groups[3] = "HISTO2D";
+    groups[4] = "COUNTER";
 
     // Initialize the group parser
     pair <int, string> pis;  // To make boost's BOOST_FOREACH happy
@@ -123,6 +126,7 @@ namespace YODA {
         case 1:  // we are inside HISTOGRAM
         case 2:  // we are inside HISTO1D
         case 3:  // we are inside HISTO2D
+        case 4:  // we are inside COUNTER
           // if (! qi::phrase_parse(s.begin(), s.end(), data_parser, ascii::space) ) { //< Only supported in Boost 1.47+
           { //< Why the explicit scoping? Added by supplied patch from Andrii Verbytskyi
             string::iterator it2 = s.begin();
@@ -131,12 +135,15 @@ namespace YODA {
             }
           } //< End patch scoping
           break;
-        case -1: // we left HISTOGRAM
+        case -1:  // we left HISTOGRAM
         case -2:  // we left HISTO1D
         case -3:  // we left HISTO2D
           if (contextchange) {
-            YODA::AnalysisObject* ao = 0;
-            if (!_scatter2d.points.empty()) {
+            YODA::AnalysisObject* ao = NULL;
+            if (!_scatter1d.points.empty()) {
+              // cout << "S1D" << endl;
+              ao = new YODA::Scatter1D(_scatter1d.points);
+            } else if (!_scatter1d.points.empty()) {
               // cout << "S2D" << endl;
               ao = new YODA::Scatter2D(_scatter2d.points);
             } else if (!_scatter3d.points.empty()) {
@@ -151,6 +158,18 @@ namespace YODA {
             cleanup();
             contextchange = false;
           }
+          break;
+        case -4:  // we left COUNTER
+          /// @todo Complete when context-sensitive parsing available, to avoid clash with symm H0D
+          // if (contextchange) {
+          //   YODA::AnalysisObject* ao = NULL;
+          //   ao = new YODA::Counter(_counter);
+          //   pair<string, string> pss; // to make boost's BOOST_FOREACH happy
+          //   BOOST_FOREACH (pss, _annotations) ao->setAnnotation(pss.first, pss.second);
+          //   aos.push_back(ao);
+          //   cleanup();
+          //   contextchange = false;
+          // }
           break;
       }
     }

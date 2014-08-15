@@ -8,6 +8,8 @@
 
 #include "YODA/AnalysisObject.h"
 #include "YODA/Reader.h"
+#include <YODA/Counter.h>
+#include <YODA/Scatter1D.h>
 #include <YODA/Scatter2D.h>
 #include <YODA/Scatter3D.h>
 #include <boost/spirit/include/qi.hpp>
@@ -60,12 +62,22 @@ namespace YODA {
     // Here comes everything we need for the parser
 
     /// Structs for the flat HISTOGRAM parser
-    /// The data for a flat HISTOGRAM bin
+    struct histogrampointsymmetric0d {
+      double x;
+      double ex;
+    };
+
     struct histogrampointsymmetric1d {
       double xmin;
       double xmax;
       double y;
       double ey;
+    };
+
+    struct histogrampointasymmetric0d {
+      double x;
+      double exminus;
+      double explus;
     };
 
     struct histogrampointasymmetric1d {
@@ -106,6 +118,13 @@ namespace YODA {
     static std::map<std::string, std::string> _annotations;
 
 
+    /// All information for creating a Scatter1D from a flat HISTOGRAM
+    struct scatter1d {
+      std::vector<YODA::Point1D> points;
+    };
+    static scatter1d _scatter1d;
+
+
     /// All information for creating a Scatter2D from a flat HISTOGRAM
     struct scatter2d {
       std::vector<YODA::Point2D> points;
@@ -125,6 +144,15 @@ namespace YODA {
 
     /// Filling a point
     struct fillpoint {
+      // 0D
+      void operator()(const histogrampointsymmetric0d p, qi::unused_type, qi::unused_type) const {
+        YODA::Point1D point(p.x, p.ex, p.ex);
+        _scatter1d.points.push_back(point);
+      }
+      void operator()(const histogrampointasymmetric0d p, qi::unused_type, qi::unused_type) const {
+        YODA::Point1D point(p.x, p.exminus, p.explus);
+        _scatter1d.points.push_back(point);
+      }
       // 1D
       void operator()(const histogrampointsymmetric1d p, qi::unused_type, qi::unused_type) const {
         double x  = 0.5*(p.xmin+p.xmax);
@@ -200,11 +228,13 @@ namespace YODA {
         /// first match wins.
         /// In brackets we specify the functions that are
         /// called in case the rule matches.
-        line = HistogramPointAsymmetric2D [fillpoint()] |
-               HistogramPointSymmetric2D [fillpoint()]  |
-               HistogramPointAsymmetric1D [fillpoint()] |
-               HistogramPointSymmetric1D [fillpoint()]  |
-               keyvaluepair[fillkeyval()]               |
+        line = HistogramPointAsymmetric2D [fillpoint()]  |
+               HistogramPointSymmetric2D  [fillpoint()]  |
+               HistogramPointAsymmetric1D [fillpoint()]  |
+               HistogramPointSymmetric1D  [fillpoint()]  |
+               HistogramPointAsymmetric0D [fillpoint()]  |
+               HistogramPointSymmetric0D  [fillpoint()]  |
+               keyvaluepair[fillkeyval()]                |
                comment;
 
         // Histogram
@@ -212,10 +242,12 @@ namespace YODA {
         HistogramPointSymmetric2D  %= double_ >> double_ >>   double_ >> double_ >>   double_ >> double_;
         HistogramPointAsymmetric1D %= double_ >> double_ >>   double_ >> double_ >> double_;
         HistogramPointSymmetric1D  %= double_ >> double_ >>   double_ >> double_;
+        HistogramPointAsymmetric0D %= double_ >> double_ >> double_;
+        HistogramPointSymmetric0D  %= double_ >> double_;
 
 
-        /// Annotations.
-        /// The key is anyting up to the first equal sign, but
+        /// Annotations
+        /// The key is anything up to the first equal sign, but
         /// keys can't start with a number or a minus sign. The
         /// value is anything after the equal sign.
         key = !qi::char_("0-9-") >> *~qi::char_("=");
@@ -239,6 +271,8 @@ namespace YODA {
       qi::rule<Iterator, histogrampointasymmetric2d(), Skipper> HistogramPointAsymmetric2D;
       qi::rule<Iterator, histogrampointsymmetric1d(), Skipper> HistogramPointSymmetric1D;
       qi::rule<Iterator, histogrampointasymmetric1d(), Skipper> HistogramPointAsymmetric1D;
+      qi::rule<Iterator, histogrampointsymmetric0d(), Skipper> HistogramPointSymmetric0D;
+      qi::rule<Iterator, histogrampointasymmetric0d(), Skipper> HistogramPointAsymmetric0D;
     };
 
 
@@ -255,6 +289,21 @@ namespace YODA {
 // the global scope, that's why we have it outside the namespace.
 
 /// @cond PRIVATE
+
+/// @todo Can't do Counter without context sensitive parsing, since clashes with symm 0D HISTOGRAM
+
+BOOST_FUSION_ADAPT_STRUCT(
+  YODA::ReaderFLAT::histogrampointsymmetric0d,
+  (double, x)
+  (double, ex)
+)
+
+BOOST_FUSION_ADAPT_STRUCT(
+  YODA::ReaderFLAT::histogrampointasymmetric0d,
+  (double, x)
+  (double, exminus)
+  (double, explus)
+)
 
 BOOST_FUSION_ADAPT_STRUCT(
   YODA::ReaderFLAT::histogrampointsymmetric1d,

@@ -12,7 +12,7 @@
 #include "YODA/Histo2D.h"
 #include "YODA/Profile1D.h"
 #include "YODA/Profile2D.h"
-// #include "YODA/Scatter1D.h"
+#include "YODA/Scatter1D.h"
 #include "YODA/Scatter2D.h"
 // #include "YODA/Scatter3D.h"
 
@@ -24,11 +24,14 @@ namespace YODA {
   // Static initializations
   qi::symbols<char, int> ReaderYODA::bgroup;
   qi::symbols<char, int> ReaderYODA::egroup;
+  ReaderYODA::counter ReaderYODA::_counter;
   ReaderYODA::histo1d ReaderYODA::_histo1d;
   ReaderYODA::histo2d ReaderYODA::_histo2d;
   ReaderYODA::profile2d ReaderYODA::_profile2d;
   ReaderYODA::profile1d ReaderYODA::_profile1d;
+  ReaderYODA::scatter1d ReaderYODA::_scatter1d;
   ReaderYODA::scatter2d ReaderYODA::_scatter2d;
+  //ReaderYODA::scatter3d ReaderYODA::_scatter3d;
   map<string, string> ReaderYODA::_annotations;
 
 
@@ -84,7 +87,7 @@ namespace YODA {
     groups[5] = "YODA_SCATTER1D";
     groups[6] = "YODA_SCATTER2D";
     groups[7] = "YODA_SCATTER3D";
-    //groups[8] = "YODA_COUNTER";
+    groups[8] = "YODA_COUNTER";
 
     // Initialize the group parser
     pair <int, string> pis;  // To make boost's BOOST_FOREACH happy
@@ -146,6 +149,7 @@ namespace YODA {
         case 5:  // we are inside YODA_SCATTER1D
         case 6:  // we are inside YODA_SCATTER2D
         case 7:  // we are inside YODA_SCATTER3D
+        case 8:  // we are inside YODA_COUNTER
           {
             // if (! qi::phrase_parse(s.begin(), s.end(), yoda_parser, ascii::space) ) { //< Only supported in Boost 1.47+
             string::iterator it2 = s.begin();
@@ -201,7 +205,17 @@ namespace YODA {
             contextchange = false;
           }
           break;
-        // case -5: // we left YODA_SCATTER1D
+        case -5: // we left YODA_SCATTER1D
+          if (contextchange) {
+            YODA::AnalysisObject* ao = new YODA::Scatter1D(_scatter1d.points);
+            pair<string, string> pss;  // to make boost's BOOST_FOREACH happy
+            BOOST_FOREACH (pss, _annotations)
+              ao->setAnnotation(pss.first, pss.second);
+            aos.push_back(ao);
+            cleanup();
+            contextchange = false;
+          }
+          break;
         case -6: // we left YODA_SCATTER2D
           if (contextchange) {
             YODA::AnalysisObject* ao = new YODA::Scatter2D(_scatter2d.points);
@@ -214,6 +228,9 @@ namespace YODA {
           }
           break;
         // case -7: // we left YODA_SCATTER3D
+          /// @todo We need to iprove the parser to read Scatter3D, since it has the same number of line items as a profile type
+          cerr << "YODA WARNING: Scatter3D can't currently be read from .yoda format. "
+               << "This should be fixed soon: please complain to the authors!" << endl;
       }
     }
   }

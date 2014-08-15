@@ -8,11 +8,14 @@
 
 #include "YODA/AnalysisObject.h"
 #include "YODA/Reader.h"
+#include <YODA/Counter.h>
 #include <YODA/Histo1D.h>
 #include <YODA/Histo2D.h>
 #include <YODA/Profile1D.h>
 #include <YODA/Profile2D.h>
+#include <YODA/Scatter1D.h>
 #include <YODA/Scatter2D.h>
+//#include <YODA/Scatter3D.h>
 #include <boost/spirit/include/qi.hpp>
 #include <boost/spirit/include/phoenix_operator.hpp>
 #include <boost/fusion/include/adapt_struct.hpp>
@@ -49,6 +52,8 @@ namespace YODA {
   private:
 
     void cleanup() {
+      _counter.clear();
+
       _histo1d.bins.clear();
       _histo1d.dbn_tot.reset();
       _histo1d.dbn_uflow.reset();
@@ -69,7 +74,11 @@ namespace YODA {
       /// @todo For now just create 8 fake entries: needs to be greatly generalised for final form
       _profile2d.dbns_oflow.resize(8);
 
+      _scatter1d.points.clear();
+
       _scatter2d.points.clear();
+
+      _scatter3d.points.clear();
 
       _annotations.clear();
     }
@@ -82,6 +91,16 @@ namespace YODA {
 
 
     // Here comes everything we need for the parser
+
+    /// The data for the Counter
+    struct counter {
+      double sumW;
+      double sumW2;
+      unsigned long numFills;
+      void clear() { sumW = 0; sumW2 = 0; numFills = 0; }
+    };
+    static counter _counter;
+
 
     /// The data for the Dbn1D in Histo1D
     struct histo1ddbn {
@@ -165,14 +184,34 @@ namespace YODA {
       profile2ddbn dbn;
     };
 
+    /// The data for Point1D
+    struct scatter1dpoint {
+      double x;
+      double exminus;
+      double explus;
+    };
+
     /// The data for Point2D
-    struct scatterpoint2d {
+    struct scatter2dpoint {
       double x;
       double exminus;
       double explus;
       double y;
       double eyminus;
       double eyplus;
+    };
+
+    /// The data for Point3D
+    struct scatter3dpoint {
+      double x;
+      double exminus;
+      double explus;
+      double y;
+      double eyminus;
+      double eyplus;
+      double z;
+      double ezminus;
+      double ezplus;
     };
 
 
@@ -219,14 +258,23 @@ namespace YODA {
     };
     static profile2d _profile2d;
 
+    /// All information for creating a Scatter1D
+    struct scatter1d {
+      std::vector<YODA::Point1D> points;
+    };
+    static scatter1d _scatter1d;
+
     /// All information for creating a Scatter2D
     struct scatter2d {
       std::vector<YODA::Point2D> points;
     };
     static scatter2d _scatter2d;
 
-
-    /// @todo Add Counter persistency
+    /// All information for creating a Scatter3D
+    struct scatter3d {
+      std::vector<YODA::Point3D> points;
+    };
+    static scatter3d _scatter3d;
 
 
     /// Functions to call from the parser
@@ -308,12 +356,18 @@ namespace YODA {
 
     /// Filling a point
     struct fillpoint {
-      // @todo Add Point1D
-      void operator()(const scatterpoint2d p, qi::unused_type, qi::unused_type) const {
+      void operator()(const scatter1dpoint p, qi::unused_type, qi::unused_type) const {
+        YODA::Point1D point(p.x, p.exminus, p.explus);
+        _scatter1d.points.push_back(point);
+      }
+      void operator()(const scatter2dpoint p, qi::unused_type, qi::unused_type) const {
         YODA::Point2D point(p.x, p.y, p.exminus, p.explus, p.eyminus, p.eyplus);
         _scatter2d.points.push_back(point);
       }
-      // @todo Add Point3D
+      void operator()(const scatter3dpoint p, qi::unused_type, qi::unused_type) const {
+        YODA::Point3D point(p.x, p.y, p.z, p.exminus, p.explus, p.eyminus, p.eyplus, p.ezminus, p.ezplus);
+        _scatter3d.points.push_back(point);
+      }
     };
 
 
@@ -353,9 +407,8 @@ namespace YODA {
 
       yoda_grammar() : yoda_grammar::base_type(line) {
 
-        /// @note A line can be anything. Note that we need to specify the long
-        /// lines first, because the first match wins.
-        /// @todo Refactor so that only the appropriate content lines can match in each type-block.
+        /// @note A line can be anything. Note that we need to specify the long lines first, because the first match wins.
+        /// @todo Refactor so that only the appropriate content lines can match in each type-block: anyway _needed_ to allow Scatter3D
 
         // In brackets we specify the functions that are called if the rule matches.
         line = \
@@ -373,10 +426,10 @@ namespace YODA {
           Histo1Dtotal[filltotaldbn()]    | // "
           Histo1Duflow[filluflowdbn()]    | // "
           Histo1Doflow[filloflowdbn()]    | // "
-          /// @todo Note clash of ScatterPoint3D with Profile1Dbin: need "scoped" content line parsing
-          //ScatterPoint3D[fillpoint()]   | // x y z ex- ex+ ey- ey+ ez- ez+ = 9 (+ arbitrarily more sets of errors as 6 doubles... and names?)
-          ScatterPoint2D[fillpoint()]     | // x y ex- ex+ ey- ey+ = 6 (+ arbitrarily more sets of errors as 4 doubles... and names?)
-          //ScatterPoint1D[fillpoint()]   | // x ex- ex+ = 3 (+ arbitrarily more sets of errors as 2 doubles... and names?)
+          /// @todo Note clash of Scatter3Dpoint with Profile1Dbin: need "scoped" content line parsing
+          //Scatter3Dpoint[fillpoint()]   | // x y z ex- ex+ ey- ey+ ez- ez+ = 9 (+ arbitrarily more sets of errors as 6 doubles... and names?)
+          Scatter2Dpoint[fillpoint()]     | // x y ex- ex+ ey- ey+ = 6 (+ arbitrarily more sets of errors as 4 doubles... and names?)
+          Scatter1Dpoint[fillpoint()]     | // x ex- ex+ = 3 (+ arbitrarily more sets of errors as 2 doubles... and names?)
           keyvaluepair[fillkeyval()]      |
           comment;
 
@@ -416,13 +469,13 @@ namespace YODA {
         Profile2Ddbn = (double_ >> double_) >> (double_ >> double_) >> (double_ >> double_) >> (double_ >> double_) >> double_ >> ulong_;
 
         // Scatter1D
-        // ScatterPoint1D %= double_ >> double_ >> double_;
+        Scatter1Dpoint %= double_ >> double_ >> double_;
 
         // Scatter2D
-        ScatterPoint2D %= double_ >> double_ >> double_ >> double_ >> double_ >> double_;
+        Scatter2Dpoint %= double_ >> double_ >> double_ >> double_ >> double_ >> double_;
 
         // Scatter3D
-        // ScatterPoint2D %= double_ >> double_ >> double_ >> double_ >> double_ >> double_ >> double_ >> double_ >> double_;
+        // Scatter2Dpoint %= double_ >> double_ >> double_ >> double_ >> double_ >> double_ >> double_ >> double_ >> double_;
 
 
         /// Annotations.
@@ -446,7 +499,7 @@ namespace YODA {
       qi::rule<Iterator, std::string()> key, value;
       qi::rule<Iterator, keyval(), Skipper> keyvaluepair;
 
-      /// @todo Add Counter
+      qi::rule<Iterator, counter(), Skipper> Counter;
 
       qi::rule<Iterator, histo1dbin(), Skipper> Histo1Dbin;
       qi::rule<Iterator, histo1ddbn(), Skipper> Histo1Ddbn, Histo1Dtotal, Histo1Duflow, Histo1Doflow;
@@ -460,11 +513,9 @@ namespace YODA {
       qi::rule<Iterator, profile2dbin(), Skipper> Profile2Dbin;
       qi::rule<Iterator, profile2ddbn(), Skipper> Profile2Ddbn, Profile2Dtotal; //, Profile2Doflow;
 
-      /// @todo Add ScatterPoint1D
-
-      qi::rule<Iterator, scatterpoint2d(), Skipper> ScatterPoint2D;
-
-      /// @todo Add ScatterPoint3D
+      qi::rule<Iterator, scatter1dpoint(), Skipper> Scatter1Dpoint;
+      qi::rule<Iterator, scatter2dpoint(), Skipper> Scatter2Dpoint;
+      //qi::rule<Iterator, scatter3dpoint(), Skipper> Scatter3Dpoint;
 
     };
 
@@ -482,6 +533,14 @@ namespace YODA {
 // the global scope, that's why we have it outside the namespace.
 
 /// @cond PRIVATE
+
+BOOST_FUSION_ADAPT_STRUCT(
+  YODA::ReaderYODA::counter,
+  (double, sumW)
+  (double, sumW2)
+  (unsigned long, numFills)
+)
+
 
 BOOST_FUSION_ADAPT_STRUCT(
   YODA::ReaderYODA::histo1ddbn,
@@ -567,13 +626,35 @@ BOOST_FUSION_ADAPT_STRUCT(
 
 /// @todo Change ordering to {vals} {errs}
 BOOST_FUSION_ADAPT_STRUCT(
-  YODA::ReaderYODA::scatterpoint2d,
+  YODA::ReaderYODA::scatter1dpoint,
+  (double, x)
+  (double, exminus)
+  (double, explus)
+)
+
+/// @todo Change ordering to {vals} {errs}
+BOOST_FUSION_ADAPT_STRUCT(
+  YODA::ReaderYODA::scatter2dpoint,
   (double, x)
   (double, exminus)
   (double, explus)
   (double, y)
   (double, eyminus)
   (double, eyplus)
+)
+
+/// @todo Change ordering to {vals} {errs}
+BOOST_FUSION_ADAPT_STRUCT(
+  YODA::ReaderYODA::scatter3dpoint,
+  (double, x)
+  (double, exminus)
+  (double, explus)
+  (double, y)
+  (double, eyminus)
+  (double, eyplus)
+  (double, z)
+  (double, ezminus)
+  (double, ezplus)
 )
 
 

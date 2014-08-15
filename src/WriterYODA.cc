@@ -219,23 +219,21 @@ namespace YODA {
   }
 
 
-  /*
-    void WriterYODA::writeScatter1D(std::ostream& os, const Scatter1D& s) {
+  void WriterYODA::writeScatter1D(std::ostream& os, const Scatter1D& s) {
     ios_base::fmtflags oldflags = os.flags();
-      os << scientific << showpoint << setprecision(_precision);
+    os << scientific << showpoint << setprecision(_precision);
 
-      os << "# BEGIN YODA_SCATTER1D " << s.path() << "\n";
-      _writeAnnotations(os, s);
-      os << "# xval\t xerr-\t xerr+\n";
-      BOOST_FOREACH (Point1D pt, s.points()) {
-        os << pt.x() << "\t" << pt.xErrMinus() << "\t" << pt.xErrMinus() << "\t";
-      }
-      os << "# END YODA_SCATTER1D\n";
-
-      os << flush;
-      os.flags(oldflags);
+    os << "# BEGIN YODA_SCATTER1D " << s.path() << "\n";
+    _writeAnnotations(os, s);
+    os << "# xval\t xerr-\t xerr+\n";
+    BOOST_FOREACH (const Point1D& pt, s.points()) {
+      os << pt.x() << "\t" << pt.xErrMinus() << "\t" << pt.xErrMinus() << "\t";
     }
-  */
+    os << "# END YODA_SCATTER1D\n";
+
+    os << flush;
+    os.flags(oldflags);
+  }
 
 
   void WriterYODA::writeScatter2D(std::ostream& os, const Scatter2D& s) {
@@ -246,7 +244,7 @@ namespace YODA {
     _writeAnnotations(os, s);
     /// @todo Change ordering to {vals} {errs} {errs} ...
     os << "# xval\t xerr-\t xerr+\t yval\t yerr-\t yerr+\n";
-    BOOST_FOREACH (Point2D pt, s.points()) {
+    BOOST_FOREACH (const Point2D& pt, s.points()) {
       /// @todo Change ordering to {vals} {errs} {errs} ...
       os << pt.x() << "\t" << pt.xErrMinus() << "\t" << pt.xErrPlus() << "\t";
       os << pt.y() << "\t" << pt.yErrMinus() << "\t" << pt.yErrPlus() << "\n";
@@ -266,7 +264,7 @@ namespace YODA {
     _writeAnnotations(os, s);
     /// @todo Change ordering to {vals} {errs} {errs} ...
     os << "# xval\t xerr-\t xerr+\t yval\t yerr-\t yerr+\t zval\t zerr-\t zerr+\n";
-    BOOST_FOREACH (Point3D pt, s.points()) {
+    BOOST_FOREACH (const Point3D& pt, s.points()) {
       /// @todo Change ordering to {vals} {errs} {errs} ...
       os << pt.x() << "\t" << pt.xErrMinus() << "\t" << pt.xErrMinus() << "\t";
       os << pt.y() << "\t" << pt.yErrMinus() << "\t" << pt.yErrMinus() << "\t";

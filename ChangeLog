@@ -1,3 +1,10 @@
+2014-08-15  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Adding YODA and FLAT format I/O for Scatter1D and Counter (as
+	far as currently possible -- FLAT Counter can't be read due to a
+	#item ambiguity, just like the one between the YODA format Point3D
+	and ProfileBin1D). To be continued...
+
 2014-08-14  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Python mappings for Dbn0D and Counter, and other improvements.
