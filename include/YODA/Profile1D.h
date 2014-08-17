@@ -68,17 +68,17 @@ namespace YODA {
 
 
     /// Copy constructor with optional new path
-    /// @todo Don't copy the path?
+    /// @todo Also allow title setting from the constructor?
     Profile1D(const Profile1D& p, const std::string& path="");
 
 
     /// Constructor from a Scatter2D's binning, with optional new path
-    /// @todo Don't copy the path?
+    /// @todo Also allow title setting from the constructor?
     Profile1D(const Scatter2D& s, const std::string& path="");
 
 
     /// Constructor from a Histo1D's binning, with optional new path
-    /// @todo Don't copy the path?
+    /// @todo Also allow title setting from the constructor?
     Profile1D(const Histo1D& h, const std::string& path="");
 
 

@@ -40,6 +40,17 @@ namespace YODA {
     { }
 
 
+    /// @brief Constructor accepting a double (treated as the weight of a single fill).
+    ///
+    /// Intended for user convenience only, so Counter can be treated as a number.
+    Counter(double w,
+            const std::string& path="", const std::string& title="")
+            : AnalysisObject("Counter", path, title)
+    {
+      _dbn.fill(w);
+    }
+
+
     /// Copy constructor with optional new path
     /// @todo Don't copy the path?
     Counter(const Counter& c, const std::string& path="");
@@ -142,6 +153,32 @@ namespace YODA {
     /// Subtract another counter from this
     Counter& operator -= (const Counter& toSubtract) {
       _dbn -= toSubtract._dbn;
+      return *this;
+    }
+
+    /// Increment as if by a fill of weight = 1
+    /// @note This is post-increment only, i.e. cn++ not ++cn
+    Counter& operator ++ () {
+      *this += 1;
+      return *this;
+    }
+
+    /// Increment as if by a fill of weight = -1
+    /// @note This is post-decrement only, i.e. cn-- not --cn
+    Counter& operator -- () {
+      *this -= 1;
+      return *this;
+    }
+
+    /// Scale by a double (syntactic sugar for @c scaleW(s))
+    Counter& operator *= (double s) {
+      scaleW(s);
+      return *this;
+    }
+
+    /// Inverse-scale by a double (syntactic sugar for @c scaleW(1/s))
+    Counter& operator /= (double s) {
+      scaleW(1/s);
       return *this;
     }
 

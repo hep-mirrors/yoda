@@ -73,12 +73,15 @@ namespace YODA {
 
 
     /// Copy constructor with optional new path
+    /// @todo Also allow title setting from the constructor?
     Histo2D(const Histo2D& h, const std::string& path="");
 
     /// A constructor from a Scatter3D's binning, with optional new path
+    /// @todo Also allow title setting from the constructor?
     Histo2D(const Scatter3D& s, const std::string& path="");
 
     /// Constructor from a Profile2D's binning, with optional new path
+    /// @todo Also allow title setting from the constructor?
     Histo2D(const Profile2D& h, const std::string& path="");
 
     /// @brief State-setting constructor

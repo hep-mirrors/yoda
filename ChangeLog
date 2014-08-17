@@ -1,3 +1,9 @@
+2014-08-17  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Add +=, -=, *-, /=, ++ and -- operators to Counter, along with
+	an (implicit) constructor from a double -- all for user
+	convenience so Counter can be used in lieu of a simple number.
+
 2014-08-15  Andy Buckley  <andy.buckley@cern.ch>
 
 	* YODA 1.2.0 release!

@@ -88,6 +88,7 @@ namespace YODA {
 
 
     /// Copy constructor with optional new path
+    /// @todo Also allow title setting from the constructor?
     Scatter1D(const Scatter1D& s1, const std::string& path="")
       : AnalysisObject("Scatter1D", (path.size() == 0) ? s1.path() : path, s1, s1.title()),
         _points(s1._points)

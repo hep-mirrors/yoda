@@ -110,12 +110,12 @@ namespace YODA {
     }
 
 
-    /// Copy constructor
+    /// Copy constructor with optional new path
+    /// @todo Also allow title setting from the constructor?
     Scatter3D(const Scatter3D& s3, const std::string& path="")
-      : AnalysisObject("Scatter3D", (path.size() == 0) ? s3.path() : path, s3, s3.title())
-    {
-      _points = s3._points;
-    }
+      : AnalysisObject("Scatter3D", (path.size() == 0) ? s3.path() : path, s3, s3.title()),
+        _points(s3._points)
+    {  }
 
     /// Assignment operator
     Scatter3D& operator = (const Scatter3D& s3) {
