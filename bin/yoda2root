@@ -21,6 +21,18 @@ for i, o in in_out:
     of = ROOT.TFile(o, "recreate")
     analysisobjects = yoda.readYODA(i)
     rootobjects = [yoda.to_root(ao) for ao in analysisobjects.values()]
-    #print rootobjects
-    of.Write()
+
+    ## Protect against "/" in the histogram name, which ROOT does not like
+    for obj in rootobjects:
+        ## Split the name on "/" directory separators
+        parts = obj.GetName().split("/")
+        ## Walk down dir tree, making it as we go
+        d = of
+        for part in parts[:-1]:
+            subdir = d.GetDirectory(part)
+            if not subdir:
+                subdir = d.mkdir(part)
+            d = subdir
+        ## Write the histo into the leaf dir
+        d.WriteTObject(obj, parts[-1])
     of.Close()

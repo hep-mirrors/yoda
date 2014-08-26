@@ -1,3 +1,8 @@
+2014-08-26  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Add protection against / characters in histo names in yoda2root
+	(thanks to Will Bell for the report and suggested patch).
+
 2014-08-17  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Add +=, -=, *-, /=, ++ and -- operators to Counter, along with
