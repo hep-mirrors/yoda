@@ -170,7 +170,8 @@ namespace YODA {
         if (edges.empty()) {
           _est.reset(new LinEstimator(0, 0, 0));
         } else if (edges.front() <= 0.0) {
-          _est.reset(new LinEstimator(edges.front(), edges.back(), edges.size()-1));
+          _est.reset(new LinEstimator(edges.size()-1,
+				      edges.front(), edges.back()));
         } else {
           LinEstimator linEst(edges.size()-1, edges.front(), edges.back());
           LogEstimator logEst(edges.size()-1, edges.front(), edges.back());
