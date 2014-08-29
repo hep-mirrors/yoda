@@ -207,8 +207,6 @@ namespace YODA {
     /// Access a bin index by x-coordinate.
     int binIndexAt(double x) { return _axis.binIndexAt(x); }
 
-    /// Access a bin by x-coordinate (non-const version)
-    ProfileBin1D& binAt(double x) { return _axis.binAt(x); }
     /// Access a bin by x-coordinate (const version)
     const ProfileBin1D& binAt(double x) const { return _axis.binAt(x); }
 
@@ -230,8 +228,6 @@ namespace YODA {
     //@}
 
 
-  public:
-
     /// @name Whole histo data
     //@{
 
@@ -251,8 +247,6 @@ namespace YODA {
 
     //@}
 
-
-  public:
 
     /// @name Adding and subtracting histograms
     //@{
@@ -279,6 +273,12 @@ namespace YODA {
       return ! operator == (other);
     }
     //@}
+
+
+  protected:
+
+    /// Access a bin by x-coordinate (non-const version)
+    ProfileBin1D& binAt(double x) { return _axis.binAt(x); }
 
 
   private:

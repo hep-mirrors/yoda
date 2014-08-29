@@ -1,3 +1,13 @@
+2014-08-29  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Hide non-const access to bin objects from histogram users:
+	avoids potential for inconsistency between total dbns and in-range
+	bins.
+
+	* Bug in BinSearcher fixed by Peter Richardson: constructor
+	arguments were passed in the wrong order when constructing a
+	LinEstimator in cases where log binning wouldn't be allowed.
+
 2014-08-26  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Add protection against / characters in histo names in yoda2root
