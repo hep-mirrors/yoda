@@ -310,6 +310,68 @@ namespace YODA {
     //@}
 
 
+    /// @name Combined x/y value and error setters
+    //@{
+
+    /// Set x value and symmetric error
+    void setX(double x, double ex) {
+      setX(x);
+      setXErr(ex);
+    }
+
+    /// Set x value and asymmetric error
+    void setX(double x, double exminus, double explus) {
+      setX(x);
+      setXErr(exminus, explus);
+    }
+
+    /// Set x value and asymmetric error
+    void setX(double x, std::pair<double,double> ex) {
+      setX(x);
+      setXErr(ex);
+    }
+
+
+    /// Set y value and symmetric error
+    void setY(double y, double ey) {
+      setY(y);
+      setYErr(ey);
+    }
+
+    /// Set y value and asymmetric error
+    void setY(double y, double eyminus, double eyplus) {
+      setY(y);
+      setYErr(eyminus, eyplus);
+    }
+
+    /// Set y value and asymmetric error
+    void setY(double y, std::pair<double,double> ey) {
+      setY(y);
+      setYErr(ey);
+    }
+
+
+    /// Set z value and symmetric error
+    void setZ(double z, double ez) {
+      setZ(z);
+      setZErr(ez);
+    }
+
+    /// Set z value and asymmetric error
+    void setZ(double z, double ezminus, double ezplus) {
+      setZ(z);
+      setZErr(ezminus, ezplus);
+    }
+
+    /// Set z value and asymmetric error
+    void setZ(double z, std::pair<double,double> ez) {
+      setZ(z);
+      setZErr(ez);
+    }
+
+    //@}
+
+
     // @name Manipulations
     //@{
 
