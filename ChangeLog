@@ -1,5 +1,7 @@
 2014-09-17  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Small improvements to yodahist and yodaplot behaviours/UIs.
+
 	* Adding setX/Y/Z(val, err) methods to Point3D.
 
 	* Add an efficiency method for 2D histos.
