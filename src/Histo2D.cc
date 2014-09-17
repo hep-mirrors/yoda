@@ -290,11 +290,47 @@ namespace YODA {
 
 
   Scatter3D divide(const Histo2D& numer, const Histo2D& denom) {
+    /// @todo Implement without conversion to scatters; scatter division is a flawed idea
     return divide(mkScatter(numer), mkScatter(denom));
   }
 
 
-  /// @todo Add efficiency(Histo2D, Histo2D)
+  Scatter3D efficiency(const Histo2D& accepted, const Histo2D& total) {
+    Scatter3D tmp = divide(accepted, total);
+    for (size_t i = 0; i < accepted.numBins(); ++i) {
+      const HistoBin2D& b_acc = accepted.bin(i);
+      const HistoBin2D& b_tot = total.bin(i);
+      Point3D& point = tmp.point(i);
+
+      /// BEGIN DIMENSIONALITY-INDEPENDENT BIT TO SHARE WITH H1
+
+      // Check that the numerator is consistent with being a subset of the denominator
+      if (b_acc.effNumEntries() > b_tot.effNumEntries() || b_acc.sumW() > b_tot.sumW())
+        throw UserError("Attempt to calculate an efficiency when the numerator is not a subset of the denominator");
+
+      // If no entries on the denominator, set eff = err = 0 and move to the next bin
+      /// @todo Provide optional alt behaviours to fill with NaN or remove the invalid point, or...
+      /// @todo Or throw a LowStatsError exception if h.effNumEntries() == 0?
+      double eff = 0, err = 0;
+      if (b_tot.effNumEntries() != 0) {
+        // Calculate the values and errors
+        // const double eff = b_acc.effNumEntries() / b_tot.effNumEntries();
+        // const double ey = sqrt( b_acc.effNumEntries() * (1 - b_acc.effNumEntries()/b_tot.effNumEntries()) ) / b_tot.effNumEntries();
+        eff = b_acc.sumW() / b_tot.sumW(); //< Actually this is already calculated by the division...
+        err = sqrt(abs( ((1-2*eff)*b_acc.sumW2() + sqr(eff)*b_tot.sumW2()) / sqr(b_tot.sumW()) ));
+        // assert(point.y() == eff); //< @todo Correct? So we don't need to reset the eff on the next line?
+      }
+
+      /// END DIMENSIONALITY-INDEPENDENT BIT TO SHARE WITH H1
+
+      point.setZ(eff, err);
+    }
+    return tmp;
+
+  }
+
+
+  /// @todo Add asymm for 2D histos?
 
 
 }

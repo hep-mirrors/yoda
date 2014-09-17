@@ -422,7 +422,7 @@ namespace YODA {
   /// @note The two histos must have _exactly_ the same binning.
   ///
   /// @note An efficiency is not the same thing as a standard division of two
-  /// histograms: the errors must be treated as correlated.
+  /// histograms: the errors are treated as correlated via binomial statistics.
   Scatter2D efficiency(const Histo1D& accepted, const Histo1D& total);
 
 

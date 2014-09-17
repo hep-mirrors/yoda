@@ -1,3 +1,11 @@
+2014-09-17  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Adding setX/Y/Z(val, err) methods to Point3D.
+
+	* Add an efficiency method for 2D histos.
+
+	* Hide fill and fillBin methods from Python mappings of bin types.
+
 2014-09-01  Andy Buckley  <andy.buckley@cern.ch>
 
 	* YODA 1.2.1 release!

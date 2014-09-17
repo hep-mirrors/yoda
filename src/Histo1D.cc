@@ -147,25 +147,28 @@ namespace YODA {
       const HistoBin1D& b_tot = total.bin(i);
       Point2D& point = tmp.point(i);
 
+      /// BEGIN DIMENSIONALITY-INDEPENDENT BIT TO SHARE WITH H2
+
       // Check that the numerator is consistent with being a subset of the denominator
       if (b_acc.effNumEntries() > b_tot.effNumEntries() || b_acc.sumW() > b_tot.sumW())
         throw UserError("Attempt to calculate an efficiency when the numerator is not a subset of the denominator");
 
-      // If no entries on the denominator, set eff = 0 and move to the next bin
+      // If no entries on the denominator, set eff = err = 0 and move to the next bin
       /// @todo Provide optional alt behaviours to fill with NaN or remove the invalid point, or...
       /// @todo Or throw a LowStatsError exception if h.effNumEntries() == 0?
-      if (b_tot.effNumEntries() == 0) {
-        point.setY(0.0, 0.0);
-        continue;
+      double eff = 0, err = 0;
+      if (b_tot.effNumEntries() != 0) {
+        // Calculate the values and errors
+        // const double eff = b_acc.effNumEntries() / b_tot.effNumEntries();
+        // const double ey = sqrt( b_acc.effNumEntries() * (1 - b_acc.effNumEntries()/b_tot.effNumEntries()) ) / b_tot.effNumEntries();
+        eff = b_acc.sumW() / b_tot.sumW(); //< Actually this is already calculated by the division...
+        err = sqrt(abs( ((1-2*eff)*b_acc.sumW2() + sqr(eff)*b_tot.sumW2()) / sqr(b_tot.sumW()) ));
+        // assert(point.y() == eff); //< @todo Correct? So we don't need to reset the eff on the next line?
       }
 
-      // Calculate the values and errors
-      // const double eff = b_acc.effNumEntries() / b_tot.effNumEntries();
-      // const double ey = sqrt( b_acc.effNumEntries() * (1 - b_acc.effNumEntries()/b_tot.effNumEntries()) ) / b_tot.effNumEntries();
-      const double eff = b_acc.sumW() / b_tot.sumW(); //< Actually this is already calculated by the division...
-      const double ey = sqrt(abs( ((1-2*eff)*sqr(b_acc.areaErr()) + sqr(eff)*sqr(b_tot.areaErr())) / sqr(b_tot.sumW()) ));
-      // assert(point.y() == eff); //< @todo Correct? So we don't need to reset the eff on the next line?
-      point.setY(eff, ey);
+      /// END DIMENSIONALITY-INDEPENDENT BIT TO SHARE WITH H2
+
+      point.setY(eff, err);
     }
     return tmp;
   }
