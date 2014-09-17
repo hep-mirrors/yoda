@@ -45,6 +45,8 @@ r"""\documentclass[multi=tikzpicture,border=2mm]{standalone}
 
 \usepackage{mathpazo}
 
+\usepackage{amsmath,amssymb}
+
 \usepackage{tikz}
 \usepackage{pgfplots}
 % TODO: use siunitx for number typesetting?
@@ -117,7 +119,7 @@ for arg in args:
             if aostyles["LineStyle"] == "none":
                 body += "only marks, "
             else:
-                body += "const plot mark mid, %s" % aostyles["LineStyle"]
+                body += "const plot mark mid, %s, " % aostyles["LineStyle"]
             if aostyles["Marker"] != "none":
                 body += "mark=%s, mark options={scale=%g}, " % (aostyles["Marker"], aostyles["MarkerScale"])
             if aostyles["ErrorBars"]:
@@ -139,7 +141,7 @@ for arg in args:
             body += "    };\n"
 
         if aostyles["Legend"]:
-            body += "  \\addlegendentry{%s}%%\n" % basename
+            body += "  \\addlegendentry{%s}%%\n" % aostyles.get("Title", basename)
 
         body += "  \\end{%s}%%\n" % axistype
         body += "\\end{tikzpicture}%\n"

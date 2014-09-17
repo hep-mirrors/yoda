@@ -5,9 +5,15 @@
 
 Make and fill a YODA histogram from plain text file/stream input.
 
+e.g.
+cat foo.dat | %prog h1 10 0. 100. out foo.yoda
+cat foo2.dat | %prog prof2 10 0. 100. 5 -10 10 show
+
+
 TODO:
+ * Automatically treat '-' as a minus sign in cmds list (with argparse?)
  * Also allow explicit lists of bin edges as parseable strings on command line?
- * Minimal unique cmd shortcut finding
+ * Default printout/write and auto-true vals for show, log*, etc.
  * How to determine bin range in advance?... must need two passes??
  * Add plotting later: plot params nx lx ux palette linecolor linestyle legend ticks on this or yodaplot interface?
  * Multiple datasets / histos? How???
@@ -109,7 +115,10 @@ elif MODE in ["hist2", "prof2"]:
 cmds = {}
 while tmpargs:
     cmd = tmpargs[0].lower()
-    cmds[cmd] = tmpargs[1]
+    try:
+        cmds[cmd] = tmpargs[1]
+    except:
+        sys.stderr.write("Value missing for command '%s'\n" % cmd)
     del tmpargs[:2]
     # TODO: For now all commands take single-value arguments... maybe this will always be the case?
     # TODO: We avoid enforcing specific allowed commands for now.
