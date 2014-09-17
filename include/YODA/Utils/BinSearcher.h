@@ -179,8 +179,8 @@ namespace YODA {
           // Calculate mean index estimate deviations from the correct answers (for bin edges)
           double logsum = 0, linsum = 0;
           for (size_t i = 0; i < edges.size(); i++) {
-            logsum += fabs(logEst(edges[i]) - i);
-            linsum += fabs(linEst(edges[i]) - i);
+            logsum += logEst(edges[i]) - i;
+            linsum += linEst(edges[i]) - i;
           }
           const double log_avg = logsum / edges.size();
           const double lin_avg = linsum / edges.size();
