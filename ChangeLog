@@ -1,5 +1,7 @@
 2014-09-30  Andy Buckley  <andy.buckley@cern.ch>
 
+	* 1.3.0 release!
+
 	* Use numEntries() rather than effNumEntries() when checking
 	consistency of inputs to efficiency() calculations -- the
 	effNumEntries of a set can be smaller than that of a strict
