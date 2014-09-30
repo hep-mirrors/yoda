@@ -39,20 +39,28 @@ namespace YODA {
     Scatter1D tmp = divide(accepted, total);
     assert(tmp.numPoints() == 1);
 
-    // Check that the numerator is consistent with being a subset of the denominator
-    if (accepted.effNumEntries() > total.effNumEntries() || accepted.sumW() > total.sumW())
+    /// BEGIN DIMENSIONALITY-INDEPENDENT BIT TO SHARE WITH H1
+
+    // Check that the numerator is consistent with being a subset of the denominator (NOT effNumEntries here!)
+    if (accepted.numEntries() > total.numEntries() || accepted.sumW() > total.sumW())
       throw UserError("Attempt to calculate an efficiency when the numerator is not a subset of the denominator");
 
-    // If no entries on the denominator, set eff = 0 and move to the next bin
+    // If no entries on the denominator, set eff = err = 0 and move to the next bin
     /// @todo Provide optional alt behaviours to fill with NaN or remove the invalid point, or...
-    /// @todo Or throw a LowStatsError exception if h.effNumEntries() == 0?
-    if (total.effNumEntries() == 0) tmp.point(0).setX(0.0, 0.0);
+    /// @todo Or throw a LowStatsError exception if h.effNumEntries() (or sumW()?) == 0?
+    double eff = 0, err = 0;
+    if (total.sumW() != 0) {
+      // Calculate the values and errors
+      // const double eff = b_acc.effNumEntries() / b_tot.effNumEntries();
+      // const double ey = sqrt( b_acc.effNumEntries() * (1 - b_acc.effNumEntries()/b_tot.effNumEntries()) ) / b_tot.effNumEntries();
+      eff = accepted.sumW() / total.sumW(); //< Actually this is already calculated by the division...
+      err = sqrt(abs( ((1-2*eff)*accepted.sumW2() + sqr(eff)*total.sumW2()) / sqr(total.sumW()) ));
+      // assert(point.y() == eff); //< @todo Correct? So we don't need to reset the eff on the next line?
+    }
 
-    // Calculate the values and errors
-    const double eff = accepted.sumW() / total.sumW(); //< Actually this is already calculated by the division...
-    const double err = sqrt(abs( ( (1-2*eff)*sqr(accepted.err()) + sqr(eff)*sqr(total.err()) ) / sqr(total.val()) ));
+    /// END DIMENSIONALITY-INDEPENDENT BIT TO SHARE WITH H1
+
     tmp.point(0).setX(eff, err);
-
     return tmp;
   }
 

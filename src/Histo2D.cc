@@ -304,15 +304,15 @@ namespace YODA {
 
       /// BEGIN DIMENSIONALITY-INDEPENDENT BIT TO SHARE WITH H1
 
-      // Check that the numerator is consistent with being a subset of the denominator
-      if (b_acc.effNumEntries() > b_tot.effNumEntries() || b_acc.sumW() > b_tot.sumW())
+      // Check that the numerator is consistent with being a subset of the denominator (NOT effNumEntries here!)
+      if (b_acc.numEntries() > b_tot.numEntries() || b_acc.sumW() > b_tot.sumW())
         throw UserError("Attempt to calculate an efficiency when the numerator is not a subset of the denominator");
 
       // If no entries on the denominator, set eff = err = 0 and move to the next bin
       /// @todo Provide optional alt behaviours to fill with NaN or remove the invalid point, or...
-      /// @todo Or throw a LowStatsError exception if h.effNumEntries() == 0?
+      /// @todo Or throw a LowStatsError exception if h.effNumEntries() (or sumW()?) == 0?
       double eff = 0, err = 0;
-      if (b_tot.effNumEntries() != 0) {
+      if (b_tot.sumW() != 0) {
         // Calculate the values and errors
         // const double eff = b_acc.effNumEntries() / b_tot.effNumEntries();
         // const double ey = sqrt( b_acc.effNumEntries() * (1 - b_acc.effNumEntries()/b_tot.effNumEntries()) ) / b_tot.effNumEntries();
