@@ -6,9 +6,14 @@
 
 import optparse
 op = optparse.OptionParser(usage=__doc__)
-op.add_option("-f", "--format", dest="FORMAT", default="PDF")
-op.add_option("--tex", dest="ENGINE", action="store_const", const="TEX", default="MPL")
-op.add_option("--pgf", dest="ENGINE", action="store_const", const="PGF", default="MPL")
+op.add_option("-f", "--format", dest="FORMAT", default="PDF",
+              help="output format string consisting of desired output formats separated by commas [default=%default]")
+op.add_option("--mpl", dest="ENGINE", action="store_const", const="MPL", default="MPL",
+              help="use MathText text renderer")
+op.add_option("--tex", dest="ENGINE", action="store_const", const="TEX", default="MPL",
+              help="use TeX text renderer")
+op.add_option("--pgf", dest="ENGINE", action="store_const", const="PGF", default="MPL",
+              help="use LaTeX PGF plot renderer")
 opts, args = op.parse_args()
 
 
@@ -131,6 +136,8 @@ axratio.yaxis.set_major_locator(mpl.ticker.MaxNLocator(4, prune="upper"))
 
 plt.tight_layout()
 
+
+## Output in (potentially) several different formats
 if "PDF" in opts.FORMAT.upper().split(","):
     fig.savefig("yodaplot.pdf")
 if "PNG" in opts.FORMAT.upper().split(","):
