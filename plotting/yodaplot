@@ -4,17 +4,19 @@
 ################
 ## Data reading:
 
-import yoda, sys, optparse
+import optparse
 op = optparse.OptionParser(usage=__doc__)
+op.add_option("-f", "--format", dest="FORMAT", default="PDF")
+op.add_option("--tex", dest="ENGINE", action="store_const", const="TEX", default="MPL")
+op.add_option("--pgf", dest="ENGINE", action="store_const", const="PGF", default="MPL")
 opts, args = op.parse_args()
-refaos = yoda.read(args[0])
-cmpaos = yoda.read(args[1])
 
 
 #################
 ## Data handling:
 
 import numpy as np
+import yoda, sys
 
 def mk_dataarray(s):
     data = np.zeros(s.numPoints, dtype={'names':['x', 'y', 'exminus', 'explus', 'eyminus', 'eyplus'],
@@ -28,7 +30,8 @@ def mk_dataarray(s):
         data.eyplus[i]  = p.yErrs[1]
     return data
 
-
+refaos = yoda.read(args[0])
+cmpaos = yoda.read(args[1])
 hname = sorted(cmpaos.keys())[0]
 sref = mk_dataarray(refaos["/REF"+hname].mkScatter())
 scmp = mk_dataarray(cmpaos[hname].mkScatter())
@@ -40,7 +43,8 @@ assert (scmp.exminus == sref.exminus).all()
 assert (scmp.explus == sref.explus).all()
 xmins, xmaxs = sref.x-sref.exminus, sref.x+sref.explus
 xmin, xmax = min(xmins), max(xmaxs)
-xdiff = xmax-xmin
+xdiff = xmax - xmin
+
 ## Get the y min and max extents of each data point (over all of the ref and cmp datasets)
 ref_ymins, ref_ymaxs = sref.y-sref.eyminus, sref.y+sref.eyplus
 ymin, ymax = None, None
@@ -56,7 +60,7 @@ ydiff = ymax - ymin
 
 import matplotlib as mpl
 mpl.rcParams.update({
-    "text.usetex" : True,
+    "text.usetex" : (opts.ENGINE.upper() != "MPL"),
     "font.size"   : 17,
     "font.family" : "serif",
     "font.serif"         : ["Palatino", "Computer Modern Roman"] + mpl.rcParams["font.serif"],
@@ -69,8 +73,10 @@ mpl.rcParams.update({
     # r"\usepackage{sfmath}", ",]
     # r"\usepackage{siunitx},"]
     })
-#mpl.use("pgf")
+if opts.ENGINE.upper() == "PGF":
+    mpl.use("pgf")
 from matplotlib import pyplot as plt
+
 
 ## Make subplot grid layout
 # fig, (axmain, axratio) = plt.subplots(nrows=2, ncols=1, sharex=True, squeeze=True)
@@ -104,6 +110,7 @@ axratio.set_xlim([xmin-0.001*xdiff, xmax+0.001*xdiff])
 # Stepped:
 ref_ymin_ratios = ref_ymins/sref.y
 ref_ymax_ratios = ref_ymaxs/sref.y
+# TODO: split out a function for array doubling
 ref_ymin_ratios_dbl, ref_ymax_ratios_dbl = [], []
 for yminratio, ymaxratio in zip(ref_ymin_ratios, ref_ymax_ratios):
     ref_ymin_ratios_dbl += [yminratio, yminratio]
@@ -124,5 +131,9 @@ axratio.yaxis.set_major_locator(mpl.ticker.MaxNLocator(4, prune="upper"))
 
 plt.tight_layout()
 
-fig.savefig("yodaplot.pdf")
-#fig.savefig("yodaplot.pgf")
+if "PDF" in opts.FORMAT.upper().split(","):
+    fig.savefig("yodaplot.pdf")
+if "PNG" in opts.FORMAT.upper().split(","):
+    fig.savefig("yodaplot.png")
+if "PGF" in opts.FORMAT.upper().split(","):
+    fig.savefig("yodaplot.pgf")
