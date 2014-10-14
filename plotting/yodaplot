@@ -4,9 +4,11 @@
 ################
 ## Data reading:
 
-import yoda, sys
-refaos = yoda.read(sys.argv[1])
-cmpaos = yoda.read(sys.argv[2])
+import yoda, sys, optparse
+op = optparse.OptionParser(usage=__doc__)
+opts, args = op.parse_args()
+refaos = yoda.read(args[0])
+cmpaos = yoda.read(args[1])
 
 
 #################
@@ -16,15 +18,16 @@ import numpy as np
 
 def mk_dataarray(s):
     data = np.zeros(s.numPoints, dtype={'names':['x', 'y', 'exminus', 'explus', 'eyminus', 'eyplus'],
-                                              'formats':['f4', 'f4', 'f4', 'f4', 'f4', 'f4']})
+                                        'formats':['f4', 'f4', 'f4', 'f4', 'f4', 'f4']}).view(np.recarray)
     for i, p in enumerate(s.points):
-        data["x"][i] = p.x
-        data["y"][i] = p.y
-        data["exminus"][i] = p.xErrs[0]
-        data["explus"][i]  = p.xErrs[1]
-        data["eyminus"][i] = p.yErrs[0]
-        data["eyplus"][i]  = p.yErrs[1]
+        data.x[i] = p.x
+        data.y[i] = p.y
+        data.exminus[i] = p.xErrs[0]
+        data.explus[i]  = p.xErrs[1]
+        data.eyminus[i] = p.yErrs[0]
+        data.eyplus[i]  = p.yErrs[1]
     return data
+
 
 hname = sorted(cmpaos.keys())[0]
 sref = mk_dataarray(refaos["/REF"+hname].mkScatter())
