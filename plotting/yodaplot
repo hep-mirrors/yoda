@@ -35,17 +35,17 @@ scmp = mk_dataarray(cmpaos[hname].mkScatter())
 #print "Data:\n" + str(sref)
 
 ## Check that x bins are compatible and compute min and max x extents of each data point
-assert (scmp["x"] == sref["x"]).all()
-assert (scmp["exminus"] == sref["exminus"]).all()
-assert (scmp["explus"] == sref["explus"]).all()
-xmins, xmaxs = sref["x"]-sref["exminus"], sref["x"]+sref["explus"]
+assert (scmp.x == sref.x).all()
+assert (scmp.exminus == sref.exminus).all()
+assert (scmp.explus == sref.explus).all()
+xmins, xmaxs = sref.x-sref.exminus, sref.x+sref.explus
 xmin, xmax = min(xmins), max(xmaxs)
 xdiff = xmax-xmin
 ## Get the y min and max extents of each data point (over all of the ref and cmp datasets)
-ref_ymins, ref_ymaxs = sref["y"]-sref["eyminus"], sref["y"]+sref["eyplus"]
+ref_ymins, ref_ymaxs = sref.y-sref.eyminus, sref.y+sref.eyplus
 ymin, ymax = None, None
 for s in (sref, scmp):
-    s_ymin, s_ymax = min(s["y"]-s["eyminus"]), max(s["y"]+s["eyplus"])
+    s_ymin, s_ymax = min(s.y-s.eyminus), max(s.y+s.eyplus)
     ymin = min(ymin, s_ymin) if ymin else s_ymin
     ymax = min(ymax, s_ymax) if ymax else s_ymax
 ydiff = ymax - ymin
@@ -84,11 +84,11 @@ axmain.set_ylabel("FOO $\in y$")
 #axmain.xaxis.set_major_locator(mpl.ticker.NullLocator())
 plt.setp(axmain.get_xticklabels(), visible=False)
 axmain.set_ylim([ymin-0.1*ydiff, ymax+0.1*ydiff])
-axmain.errorbar(sref["x"], sref["y"],
-                xerr=sref["exminus"], yerr=sref["eyminus"],
+axmain.errorbar(sref.x, sref.y,
+                xerr=sref.exminus, yerr=sref.eyminus,
                 fmt="ko", linewidth=1.3, capthick=1.3)
-axmain.step(np.append(xmins, [xmax]), np.append(scmp["y"], scmp["y"][-1]), where="post", color="r", linewidth=1.3)
-#  xerr=sref["exminus"], yerr=sref["eyminus"], capthick=1.3)
+axmain.step(np.append(xmins, [xmax]), np.append(scmp.y, scmp.y[-1]), where="post", color="r", linewidth=1.3)
+#  xerr=sref.exminus, yerr=sref.eyminus, capthick=1.3)
 
 ## Ratio plot
 axratio = fig.add_subplot(gs[1], sharex=axmain)
@@ -98,12 +98,12 @@ axratio.set_ylabel("MC / Data")
 axratio.set_xlim([xmin-0.001*xdiff, xmax+0.001*xdiff])
 # Draw fill_between ref error band
 # Continuous:
-# ref_ymax_ratios = ref_ymaxs/sref["y"]
-# ref_ymin_ratios = ref_ymins/sref["y"]
-# axratio.fill_between(sref["x"], ref_ymin_ratios, ref_ymax_ratios, edgecolor="none", facecolor='yellow', interpolate=False)
+# ref_ymax_ratios = ref_ymaxs/sref.y
+# ref_ymin_ratios = ref_ymins/sref.y
+# axratio.fill_between(sref.x, ref_ymin_ratios, ref_ymax_ratios, edgecolor="none", facecolor='yellow', interpolate=False)
 # Stepped:
-ref_ymin_ratios = ref_ymins/sref["y"]
-ref_ymax_ratios = ref_ymaxs/sref["y"]
+ref_ymin_ratios = ref_ymins/sref.y
+ref_ymax_ratios = ref_ymaxs/sref.y
 ref_ymin_ratios_dbl, ref_ymax_ratios_dbl = [], []
 for yminratio, ymaxratio in zip(ref_ymin_ratios, ref_ymax_ratios):
     ref_ymin_ratios_dbl += [yminratio, yminratio]
@@ -111,12 +111,12 @@ for yminratio, ymaxratio in zip(ref_ymin_ratios, ref_ymax_ratios):
 xs_dbl = np.empty((len(ref_ymin_ratios_dbl),), dtype=ref_ymin_ratios.dtype)
 xs_dbl[0::2] = xmins
 xs_dbl[1::2] = xmaxs
-ref_ymax_ratio = ref_ymaxs/sref["y"]
-ref_ymin_ratio = ref_ymins/sref["y"]
+ref_ymax_ratio = ref_ymaxs/sref.y
+ref_ymin_ratio = ref_ymins/sref.y
 axratio.fill_between(xs_dbl, ref_ymin_ratios_dbl, ref_ymax_ratios_dbl, edgecolor="none", facecolor='yellow', interpolate=False)
 # Ratio = 1 marker line:
 axratio.axhline(1.0, color="gray")
-yratios = scmp["y"]/sref["y"]
+yratios = scmp.y/sref.y
 #axratio.plot(sref["x"], yratios, color="r", linestyle="--")
 axratio.step(np.append(xmins, [xmax]), np.append(yratios, yratios[-1]), where="post", color="r", linewidth=1.3)
 #axratio.set_ylim(0.5, 1.5)
