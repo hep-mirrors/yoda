@@ -175,7 +175,7 @@ plt.setp(axmain.get_xticklabels(), visible=False)
 axmain.set_ylim([ymin-0.1*ydiff, ymax+0.1*ydiff])
 axmain.errorbar(href.x, href.y, xerr=href.exminus, yerr=href.eyminus, fmt="ko", linewidth=1.3, capthick=1.3)
 for ih, hcmp in enumerate(hcmps):
-    axmain.step(np.append(hcmp.xmin, hcmp.xmax[-1]), np.append(hcmp.y, hcmp.y[-1]), where="post", color=COLORS[ih], linewidth=1.3)
+    axmain.step(np.append(hcmp.xmin, hcmp.xmax[-1]), np.append(hcmp.y, hcmp.y[-1]), where="post", color=COLORS[ih % len(COLORS)], linewidth=1.3)
     # axmain.step(np.append(hcmp.xmin, hcmp.xmax[-1]), np.append(hcmp.y, hcmp.y[-1]), where="post", linewidth=1.3,
     #             xerr=href.exminus, yerr=href.eyminus, capthick=1.3)
 
