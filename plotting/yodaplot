@@ -116,12 +116,10 @@ hcmp = NumpyHist(cmpaos[hname])
 assert (hcmp.x == href.x).all()
 assert (hcmp.exminus == href.exminus).all()
 assert (hcmp.explus == href.explus).all()
-xmins, xmaxs = href.xmin, href.xmax
-xmin, xmax = min(xmins), max(xmaxs)
+xmin, xmax = min(href.xmin), max(href.xmax)
 xdiff = xmax - xmin
 
 ## Get the y min and max extents of each data point (over all of the ref and cmp datasets)
-ref_ymins, ref_ymaxs = href.ymin, href.ymax
 ymin, ymax = None, None
 for h in (href, hcmp):
     h_ymin, h_ymax = min(h.ymin), max(h.ymax)
@@ -162,14 +160,13 @@ gs = mpl.gridspec.GridSpec(2, 1, height_ratios=[3,1], hspace=0)
 # TODO: take log axes and preference for round numbers into account in setting default axis limits
 axmain = fig.add_subplot(gs[0])
 axmain.set_ylabel("FOO $\in y$")
-#axmain.xaxis.set_major_locator(mpl.ticker.NullLocator())
+# axmain.xaxis.set_major_locator(mpl.ticker.NullLocator())
 plt.setp(axmain.get_xticklabels(), visible=False)
 axmain.set_ylim([ymin-0.1*ydiff, ymax+0.1*ydiff])
-axmain.errorbar(href.x, href.y,
-                xerr=href.exminus, yerr=href.eyminus,
-                fmt="ko", linewidth=1.3, capthick=1.3)
-axmain.step(np.append(xmins, [xmax]), np.append(hcmp.y, hcmp.y[-1]), where="post", color="r", linewidth=1.3)
-#  xerr=href.exminus, yerr=href.eyminus, capthick=1.3)
+axmain.errorbar(href.x, href.y, xerr=href.exminus, yerr=href.eyminus, fmt="ko", linewidth=1.3, capthick=1.3)
+axmain.step(np.append(h.xmin, [xmax]), np.append(hcmp.y, hcmp.y[-1]), where="post", color="r", linewidth=1.3)
+# axmain.step(np.append(h.xmin, [xmax]), np.append(hcmp.y, hcmp.y[-1]), where="post", color="r", linewidth=1.3,
+#             xerr=href.exminus, yerr=href.eyminus, capthick=1.3)
 
 ## Ratio plot
 axratio = fig.add_subplot(gs[1], sharex=axmain)
@@ -178,19 +175,15 @@ axratio.set_ylabel("MC / Data")
 # TODO: Would be nice to add a display space fixed padding rather than prop to xdiff
 axratio.set_xlim([xmin-0.001*xdiff, xmax+0.001*xdiff])
 # Draw fill_between ref error band
-ref_ymax_ratios = ref_ymaxs/href.y
-ref_ymin_ratios = ref_ymins/href.y
+ref_ymax_ratios = href.ymax/href.y
+ref_ymin_ratios = href.ymin/href.y
 
 # Continuous:
 # axratio.fill_between(href.x, ref_ymin_ratios, ref_ymax_ratios, edgecolor="none", facecolor='yellow', interpolate=False)
 
 # Stepped:
 def dbl_array(arr):
-    darr = []
-    for x in arr:
-        darr += [x, x]
-    return darr
-
+    return sum(([x,x] for x in arr), [])
 axratio.fill_between(href.xedges_dbl, dbl_array(ref_ymin_ratios), dbl_array(ref_ymax_ratios),
                      edgecolor="none", facecolor='yellow', interpolate=False)
 # Ratio = 1 marker line:
