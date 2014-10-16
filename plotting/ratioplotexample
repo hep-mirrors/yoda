@@ -1,0 +1,220 @@
+#! /usr/bin/env python
+
+
+################
+## Data reading:
+
+import optparse
+op = optparse.OptionParser(usage=__doc__)
+op.add_option("-f", "--format", dest="FORMAT", default="PDF",
+              help="output format string consisting of desired output formats separated by commas [default=%default]")
+op.add_option("--mpl", dest="ENGINE", action="store_const", const="MPL", default="MPL",
+              help="use MathText text renderer")
+op.add_option("--tex", dest="ENGINE", action="store_const", const="TEX", default="MPL",
+              help="use TeX text renderer")
+op.add_option("--pgf", dest="ENGINE", action="store_const", const="PGF", default="MPL",
+              help="use LaTeX PGF plot renderer")
+opts, args = op.parse_args()
+
+
+#################
+## Data handling:
+
+import numpy as np
+import yoda, sys
+
+class NumpyHist(object):
+    def __init__(self, ao):
+        if not isinstance(ao, yoda.AnalysisObject):
+            raise Exception("ao argument must be a YODA AnalysisObject")
+        points = ao.points if type(ao) is yoda.Scatter2D else ao.mkScatter().points
+        self.data = np.zeros(len(points), dtype={'names':['x', 'y', 'exminus', 'explus', 'eyminus', 'eyplus'],
+                                                 'formats':['f4', 'f4', 'f4', 'f4', 'f4', 'f4']}).view(np.recarray)
+        for i, p in enumerate(points):
+            self.data.x[i] = p.x
+            self.data.y[i] = p.y
+            self.data.exminus[i] = p.xErrs[0]
+            self.data.explus[i]  = p.xErrs[1]
+            self.data.eyminus[i] = p.yErrs[0]
+            self.data.eyplus[i]  = p.yErrs[1]
+
+
+    @property
+    def __len__(self):
+        return len(self.x)
+
+
+    @property
+    def xedges_sgl(self):
+        return np.append(self.xmin, self.xmax[-1])
+
+    @property
+    def xedges_dbl(self):
+        edges = np.empty((2*len(self.x),), dtype=self.x.dtype)
+        edges[0::2] = self.xmin
+        edges[1::2] = self.xmax
+        return edges
+
+
+    @property
+    def xmin(self):
+        return self.x - self.exminus
+
+    @property
+    def xmax(self):
+        return self.x + self.explus
+
+
+    @property
+    def ymin(self):
+        return self.y - self.eyminus
+
+    @property
+    def ymax(self):
+        return self.y + self.eyplus
+
+
+    @property
+    def x(self):
+        return self.data.x
+
+    @property
+    def y(self):
+        return self.data.y
+
+    @property
+    def exminus(self):
+        return self.data.exminus
+
+    @property
+    def explus(self):
+        return self.data.explus
+
+    @property
+    def eyminus(self):
+        return self.data.eyminus
+
+    @property
+    def eyplus(self):
+        return self.data.eyplus
+
+    # def __getattr__(self, attr):
+    #     "Fall back to the data array for attributes not defined on NumpyHist"
+    #     return getattr(self.data, attr)
+
+
+    def same_binning_as(self, other):
+        return (hcmp.x == href.x).all() and \
+               (hcmp.exminus == href.exminus).all() and \
+               (hcmp.explus == href.explus).all()
+
+
+
+## Load ref histos and establish data ranges
+refaos = yoda.read(args[0])
+hname = sorted(refaos.keys())[0].replace("/REF", "")
+href = NumpyHist(refaos["/REF"+hname])
+xmin, xmax, ymin, ymax = min(href.xmin), max(href.xmax), min(href.ymin), max(href.ymax)
+
+# TODO: loop over all histo names
+
+## Load comparison histos, check bin compatibility, and compute max extents
+hcmps = []
+for a in args[1:]:
+    cmpaos = yoda.read(a)
+    hcmp = NumpyHist(cmpaos[hname])
+    assert hcmp.same_binning_as(href)
+    xmin = min(xmin, min(href.xmin))
+    xmax = max(xmax, max(href.xmax))
+    ymin = min(ymin, min(href.ymin))
+    ymax = max(ymax, max(href.ymax))
+    hcmps.append(hcmp)
+xdiff, ydiff = xmax-xmin, ymax-ymin
+
+
+############
+## Plotting:
+
+import matplotlib as mpl
+mpl.rcParams.update({
+    "text.usetex" : (opts.ENGINE.upper() != "MPL"),
+    "font.size"   : 17,
+    "font.family" : "serif",
+    "font.serif"         : ["Palatino", "Computer Modern Roman"] + mpl.rcParams["font.serif"],
+    #"font.sans-serif"    : ["Computer Modern Sans serif", "Helvetica"]
+    #"font.cursive"       : "Zapf Chancery",
+    #"font.monospace"     : "Courier, Computer Modern Typewriter",
+    "pgf.rcfonts" : True,
+    "pgf.preamble": [r"\usepackage[osf]{mathpazo}", r"\usepackage{amsmath,amssymb}"]
+    # r"\usepackage{lmodern}",
+    # r"\usepackage{sfmath}", ",]
+    # r"\usepackage{siunitx},"]
+    })
+if opts.ENGINE.upper() == "PGF":
+    mpl.use("pgf")
+from matplotlib import pyplot as plt
+# TODO: allocate a nice palette for line color cycling... or some automatic system for that?
+
+## Colour and line style lists
+colormap = plt.cm.gist_ncar
+COLORS = [colormap(i) for i in np.linspace(0.2, 0.8, len(args)-1)]
+STYLES = ["-", "--", ":", "-."]
+
+
+## Make subplot grid layout
+# fig, (axmain, axratio) = plt.subplots(nrows=2, ncols=1, sharex=True, squeeze=True)
+fig = plt.figure(figsize=(8, 6))
+gs = mpl.gridspec.GridSpec(2, 1, height_ratios=[3,1], hspace=0)
+
+## Main plot
+# TODO: take log axes and preference for round numbers into account in setting default axis limits
+axmain = fig.add_subplot(gs[0])
+axmain.set_ylabel("FOO $\in y$")
+# axmain.xaxis.set_major_locator(mpl.ticker.NullLocator())
+plt.setp(axmain.get_xticklabels(), visible=False)
+axmain.set_ylim([ymin-0.1*ydiff, ymax+0.1*ydiff])
+axmain.errorbar(href.x, href.y, xerr=href.exminus, yerr=href.eyminus, fmt="ko", linewidth=1.3, capthick=1.3)
+for ih, hcmp in enumerate(hcmps):
+    axmain.step(np.append(hcmp.xmin, hcmp.xmax[-1]), np.append(hcmp.y, hcmp.y[-1]), where="post", color=COLORS[ih], linewidth=1.3)
+    # axmain.step(np.append(hcmp.xmin, hcmp.xmax[-1]), np.append(hcmp.y, hcmp.y[-1]), where="post", linewidth=1.3,
+    #             xerr=href.exminus, yerr=href.eyminus, capthick=1.3)
+
+
+## Ratio plot
+axratio = fig.add_subplot(gs[1], sharex=axmain)
+axratio.set_xlabel("BAR $\in x$")
+axratio.set_ylabel("MC / Data")
+# TODO: Would be nice to add a display space fixed padding rather than prop to xdiff
+axratio.set_xlim([xmin-0.001*xdiff, xmax+0.001*xdiff])
+# Draw fill_between ref error band
+ref_ymax_ratios = href.ymax/href.y
+ref_ymin_ratios = href.ymin/href.y
+# Continuous:
+# axratio.fill_between(href.x, ref_ymin_ratios, ref_ymax_ratios,
+#                      edgecolor="none", facecolor='yellow', interpolate=False)
+# Stepped:
+def dbl_array(arr):
+    return sum(([x,x] for x in arr), [])
+axratio.fill_between(href.xedges_dbl, dbl_array(ref_ymin_ratios), dbl_array(ref_ymax_ratios),
+                     edgecolor="none", facecolor='yellow', interpolate=False)
+# Ratio = 1 marker line:
+axratio.axhline(1.0, color="gray")
+for ih, hcmp in enumerate(hcmps):
+    # TODO: log ratio or #sigma deviation
+    yratios = hcmp.y/href.y
+    #axratio.plot(href["x"], yratios, color="r", linestyle="--")
+    axratio.step(href.xedges_sgl, np.append(yratios, yratios[-1]), where="post", color=COLORS[ih], linewidth=1.3)
+    #axratio.set_ylim(0.5, 1.5)
+axratio.yaxis.set_major_locator(mpl.ticker.MaxNLocator(4, prune="upper"))
+
+## Automatically tweak layout now that everything is in place
+fig.tight_layout()
+
+
+## Output in (potentially) several different formats
+if "PDF" in opts.FORMAT.upper().split(","):
+    fig.savefig("yodaplot.pdf")
+if "PNG" in opts.FORMAT.upper().split(","):
+    fig.savefig("yodaplot.png")
+if "PGF" in opts.FORMAT.upper().split(","):
+    fig.savefig("yodaplot.pgf")

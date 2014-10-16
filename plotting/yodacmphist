@@ -1,0 +1,50 @@
+#! /usr/bin/env python
+
+"""\
+Usage: %prog file1.yoda [file2.yoda ...]
+
+Produce plottable histogram data files comparing sets of histograms from YODA
+analysis data files.
+"""
+
+import optparse
+op = optparse.OptionParser(usage=__doc__)
+opts, args = op.parse_args()
+
+## Load histos and attach annotations
+import yoda
+
+def parse_arg(arg):
+    "Function to parse a command line arg and return the filename + dict of command-line annotations"
+    argparts = arg.split(":")
+    fname = argparts[0]
+    anns = {}
+    for ann in argparts[1:]:
+        if "=" in ann:
+            aname, aval = ann.split("=")
+            anns[aname] = aval
+        else:
+            anns["Title"] = ann
+    return fname, anns
+
+## Parse command line args into filename and associated annotations
+fnames, fname_anns = [], []
+for a in args:
+    fname, anns = parse_arg(a)
+    fnames.append(fname)
+    fname_anns.append(anns)
+
+## Load ref data objects and apply annotations
+# TODO: should include default color/style cycling
+refaos = yoda.read(fnames[0])
+for i, ao in enumerate(refaos):
+    for k, v in fname_anns[i]:
+        ao.setAnnotation(k, v)
+
+cmpaolists = {}
+for f in fnames[1:]:
+    cmpaos = yoda.read(f)
+    for i, ao in enumerate(cmpaos, start=1):
+        for k, v in fname_anns[i]:
+            ao.setAnnotation(k, v)
+        cmpaolists.setdefault(ao.path, ao, [])
