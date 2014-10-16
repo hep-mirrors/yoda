@@ -44,33 +44,17 @@ class NumpyHist(object):
         return self.x - self.exminus
 
     @property
-    def xmin(self):
-        return min(self.xmins)
-
-    @property
-    def xmaxs(self):
+    def xmax(self):
         return self.x + self.explus
 
-    @property
-    def xmax(self):
-        return max(self.xmaxs)
-
-
-    @property
-    def ymins(self):
-        return self.y - self.eyminus
 
     @property
     def ymin(self):
-        return min(self.ymins)
-
-    @property
-    def ymaxs(self):
-        return self.y + self.eyplus
+        return self.y - self.eyminus
 
     @property
     def ymax(self):
-        return max(self.ymaxs)
+        return self.y + self.eyplus
 
 
     def __getattr__(self, attr):
