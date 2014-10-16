@@ -34,17 +34,24 @@ for a in args:
     fnames.append(fname)
     fname_anns.append(anns)
 
+# TODO: convert all to Scatters?
+
 ## Load ref data objects and apply annotations
-# TODO: should include default color/style cycling
 refaos = yoda.read(fnames[0])
-for i, ao in enumerate(refaos):
-    for k, v in fname_anns[i]:
+for p, ao in refaos.iteritems():
+    for k, v in fname_anns[0].iteritems():
         ao.setAnnotation(k, v)
 
+## Load non-ref data objects into a dict of lists, and apply annotations
+# TODO: should include default color/style cycling
 cmpaolists = {}
-for f in fnames[1:]:
+for i, f in enumerate(fnames[1:], start=1):
     cmpaos = yoda.read(f)
-    for i, ao in enumerate(cmpaos, start=1):
-        for k, v in fname_anns[i]:
+    for p, ao in cmpaos.iteritems():
+        for k, v in fname_anns[i].iteritems():
             ao.setAnnotation(k, v)
-        cmpaolists.setdefault(ao.path, ao, [])
+        cmpaolists.setdefault(ao.path, []).append(ao)
+
+print refaos
+print
+print cmpaolists
