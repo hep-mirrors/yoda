@@ -98,16 +98,15 @@ class NumpyHist(object):
     def eyplus(self):
         return self.data.eyplus
 
+    # def __getattr__(self, attr):
+    #     "Fall back to the data array for attributes not defined on NumpyHist"
+    #     return getattr(self.data, attr)
+
 
     def same_binning_as(self, other):
         return (hcmp.x == href.x).all() and \
                (hcmp.exminus == href.exminus).all() and \
                (hcmp.explus == href.explus).all()
-
-
-    # def __getattr__(self, attr):
-    #     "Fall back to the data array for attributes not defined on NumpyHist"
-    #     return getattr(self.data, attr)
 
 
 
