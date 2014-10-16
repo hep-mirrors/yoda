@@ -25,18 +25,35 @@ import yoda, sys
 
 class NumpyHist(object):
     def __init__(self, ao):
-        if not issubclass(ao, yoda.AnalysisObject):
+        if not isinstance(ao, yoda.AnalysisObject):
             raise Exception("ao argument must be a YODA AnalysisObject")
         points = ao.points if type(ao) is yoda.Scatter2D else ao.mkScatter().points
         self.data = np.zeros(len(points), dtype={'names':['x', 'y', 'exminus', 'explus', 'eyminus', 'eyplus'],
                                                  'formats':['f4', 'f4', 'f4', 'f4', 'f4', 'f4']}).view(np.recarray)
         for i, p in enumerate(points):
-            data.x[i] = p.x
-            data.y[i] = p.y
-            data.exminus[i] = p.xErrs[0]
-            data.explus[i]  = p.xErrs[1]
-            data.eyminus[i] = p.yErrs[0]
-            data.eyplus[i]  = p.yErrs[1]
+            self.data.x[i] = p.x
+            self.data.y[i] = p.y
+            self.data.exminus[i] = p.xErrs[0]
+            self.data.explus[i]  = p.xErrs[1]
+            self.data.eyminus[i] = p.yErrs[0]
+            self.data.eyplus[i]  = p.yErrs[1]
+
+
+    @property
+    def __len__(self):
+        return len(self.x)
+
+
+    @property
+    def xedges_sgl(self):
+        return np.append(self.xmin, self.xmax[-1])
+
+    @property
+    def xedges_dbl(self):
+        edges = np.empty((2*len(self.x),), dtype=self.x.dtype)
+        edges[0::2] = self.xmin
+        edges[1::2] = self.xmax
+        return edges
 
 
     @property
@@ -57,9 +74,34 @@ class NumpyHist(object):
         return self.y + self.eyplus
 
 
-    def __getattr__(self, attr):
-        "Fall back to the data array for attributes not defined on NumpyHist"
-        return getattr(self.data, attr)
+    @property
+    def x(self):
+        return self.data.x
+
+    @property
+    def y(self):
+        return self.data.y
+
+    @property
+    def exminus(self):
+        return self.data.exminus
+
+    @property
+    def explus(self):
+        return self.data.explus
+
+    @property
+    def eyminus(self):
+        return self.data.eyminus
+
+    @property
+    def eyplus(self):
+        return self.data.eyplus
+
+
+    # def __getattr__(self, attr):
+    #     "Fall back to the data array for attributes not defined on NumpyHist"
+    #     return getattr(self.data, attr)
 
 
 refaos = yoda.read(args[0])
@@ -74,17 +116,17 @@ hcmp = NumpyHist(cmpaos[hname])
 assert (hcmp.x == href.x).all()
 assert (hcmp.exminus == href.exminus).all()
 assert (hcmp.explus == href.explus).all()
-xmins, xmaxs = href.xmins, href.xmaxs
+xmins, xmaxs = href.xmin, href.xmax
 xmin, xmax = min(xmins), max(xmaxs)
 xdiff = xmax - xmin
 
 ## Get the y min and max extents of each data point (over all of the ref and cmp datasets)
-ref_ymins, ref_ymaxs = href.y-href.eyminus, href.y+href.eyplus
+ref_ymins, ref_ymaxs = href.ymin, href.ymax
 ymin, ymax = None, None
-for s in (href, hcmp):
-    s_ymin, s_ymax = min(s.y-s.eyminus), max(s.y+s.eyplus)
-    ymin = min(ymin, s_ymin) if ymin else s_ymin
-    ymax = min(ymax, s_ymax) if ymax else s_ymax
+for h in (href, hcmp):
+    h_ymin, h_ymax = min(h.ymin), max(h.ymax)
+    ymin = min(ymin, h_ymin) if ymin is not None else h_ymin
+    ymax = min(ymax, h_ymax) if ymax is not None else h_ymax
 ydiff = ymax - ymin
 
 
@@ -148,29 +190,14 @@ def dbl_array(arr):
     for x in arr:
         darr += [x, x]
     return darr
-def interleave_array(arr1, arr2):
-    assert len(arr1) == len(arr2)
-    darr = np.empty((2*len(arr1),), dtype=ref_ymin_ratios.dtype)
-    darr[0::2] = arr1
-    darr[1::2] = arr2
-    return darr
-#
-np.append(xmins, [xmax])
 
-xs_dbl = interleave_array(xmins, xmaxs)
-
-
-ref_ymin_ratios_dbl = mk_dbl_array(ref_ymin_ratios)
-ref_ymax_ratios_dbl = mk_dbl_array(ref_ymax_ratios)
-
-
-
-axratio.fill_between(xs_dbl, ref_ymin_ratios_dbl, ref_ymax_ratios_dbl, edgecolor="none", facecolor='yellow', interpolate=False)
+axratio.fill_between(href.xedges_dbl, dbl_array(ref_ymin_ratios), dbl_array(ref_ymax_ratios),
+                     edgecolor="none", facecolor='yellow', interpolate=False)
 # Ratio = 1 marker line:
 axratio.axhline(1.0, color="gray")
 yratios = hcmp.y/href.y
 #axratio.plot(href["x"], yratios, color="r", linestyle="--")
-axratio.step(np.append(xmins, [xmax]), np.append(yratios, yratios[-1]), where="post", color="r", linewidth=1.3)
+axratio.step(href.xedges_sgl, np.append(yratios, yratios[-1]), where="post", color="r", linewidth=1.3)
 #axratio.set_ylim(0.5, 1.5)
 axratio.yaxis.set_major_locator(mpl.ticker.MaxNLocator(4, prune="upper"))
 
