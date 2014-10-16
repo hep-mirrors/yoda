@@ -23,37 +23,81 @@ opts, args = op.parse_args()
 import numpy as np
 import yoda, sys
 
-def mk_dataarray(s):
-    data = np.zeros(s.numPoints, dtype={'names':['x', 'y', 'exminus', 'explus', 'eyminus', 'eyplus'],
-                                        'formats':['f4', 'f4', 'f4', 'f4', 'f4', 'f4']}).view(np.recarray)
-    for i, p in enumerate(s.points):
-        data.x[i] = p.x
-        data.y[i] = p.y
-        data.exminus[i] = p.xErrs[0]
-        data.explus[i]  = p.xErrs[1]
-        data.eyminus[i] = p.yErrs[0]
-        data.eyplus[i]  = p.yErrs[1]
-    return data
+class NumpyHist(object):
+    def __init__(self, ao):
+        if not issubclass(ao, yoda.AnalysisObject):
+            raise Exception("ao argument must be a YODA AnalysisObject")
+        points = ao.points if type(ao) is yoda.Scatter2D else ao.mkScatter().points
+        self.data = np.zeros(len(points), dtype={'names':['x', 'y', 'exminus', 'explus', 'eyminus', 'eyplus'],
+                                                 'formats':['f4', 'f4', 'f4', 'f4', 'f4', 'f4']}).view(np.recarray)
+        for i, p in enumerate(points):
+            data.x[i] = p.x
+            data.y[i] = p.y
+            data.exminus[i] = p.xErrs[0]
+            data.explus[i]  = p.xErrs[1]
+            data.eyminus[i] = p.yErrs[0]
+            data.eyplus[i]  = p.yErrs[1]
+
+
+    @property
+    def xmin(self):
+        return self.x - self.exminus
+
+    @property
+    def xmin(self):
+        return min(self.xmins)
+
+    @property
+    def xmaxs(self):
+        return self.x + self.explus
+
+    @property
+    def xmax(self):
+        return max(self.xmaxs)
+
+
+    @property
+    def ymins(self):
+        return self.y - self.eyminus
+
+    @property
+    def ymin(self):
+        return min(self.ymins)
+
+    @property
+    def ymaxs(self):
+        return self.y + self.eyplus
+
+    @property
+    def ymax(self):
+        return max(self.ymaxs)
+
+
+    def __getattr__(self, attr):
+        "Fall back to the data array for attributes not defined on NumpyHist"
+        return getattr(self.data, attr)
+
 
 refaos = yoda.read(args[0])
 cmpaos = yoda.read(args[1])
 hname = sorted(cmpaos.keys())[0]
-sref = mk_dataarray(refaos["/REF"+hname].mkScatter())
-scmp = mk_dataarray(cmpaos[hname].mkScatter())
-#print "Data:\n" + str(sref)
+
+href = NumpyHist(refaos["/REF"+hname])
+hcmp = NumpyHist(cmpaos[hname])
+#print "Data:\n" + str(href.data)
 
 ## Check that x bins are compatible and compute min and max x extents of each data point
-assert (scmp.x == sref.x).all()
-assert (scmp.exminus == sref.exminus).all()
-assert (scmp.explus == sref.explus).all()
-xmins, xmaxs = sref.x-sref.exminus, sref.x+sref.explus
+assert (hcmp.x == href.x).all()
+assert (hcmp.exminus == href.exminus).all()
+assert (hcmp.explus == href.explus).all()
+xmins, xmaxs = href.xmins, href.xmaxs
 xmin, xmax = min(xmins), max(xmaxs)
 xdiff = xmax - xmin
 
 ## Get the y min and max extents of each data point (over all of the ref and cmp datasets)
-ref_ymins, ref_ymaxs = sref.y-sref.eyminus, sref.y+sref.eyplus
+ref_ymins, ref_ymaxs = href.y-href.eyminus, href.y+href.eyplus
 ymin, ymax = None, None
-for s in (sref, scmp):
+for s in (href, hcmp):
     s_ymin, s_ymax = min(s.y-s.eyminus), max(s.y+s.eyplus)
     ymin = min(ymin, s_ymin) if ymin else s_ymin
     ymax = min(ymax, s_ymax) if ymax else s_ymax
@@ -95,11 +139,11 @@ axmain.set_ylabel("FOO $\in y$")
 #axmain.xaxis.set_major_locator(mpl.ticker.NullLocator())
 plt.setp(axmain.get_xticklabels(), visible=False)
 axmain.set_ylim([ymin-0.1*ydiff, ymax+0.1*ydiff])
-axmain.errorbar(sref.x, sref.y,
-                xerr=sref.exminus, yerr=sref.eyminus,
+axmain.errorbar(href.x, href.y,
+                xerr=href.exminus, yerr=href.eyminus,
                 fmt="ko", linewidth=1.3, capthick=1.3)
-axmain.step(np.append(xmins, [xmax]), np.append(scmp.y, scmp.y[-1]), where="post", color="r", linewidth=1.3)
-#  xerr=sref.exminus, yerr=sref.eyminus, capthick=1.3)
+axmain.step(np.append(xmins, [xmax]), np.append(hcmp.y, hcmp.y[-1]), where="post", color="r", linewidth=1.3)
+#  xerr=href.exminus, yerr=href.eyminus, capthick=1.3)
 
 ## Ratio plot
 axratio = fig.add_subplot(gs[1], sharex=axmain)
@@ -108,28 +152,40 @@ axratio.set_ylabel("MC / Data")
 # TODO: Would be nice to add a display space fixed padding rather than prop to xdiff
 axratio.set_xlim([xmin-0.001*xdiff, xmax+0.001*xdiff])
 # Draw fill_between ref error band
+ref_ymax_ratios = ref_ymaxs/href.y
+ref_ymin_ratios = ref_ymins/href.y
+
 # Continuous:
-# ref_ymax_ratios = ref_ymaxs/sref.y
-# ref_ymin_ratios = ref_ymins/sref.y
-# axratio.fill_between(sref.x, ref_ymin_ratios, ref_ymax_ratios, edgecolor="none", facecolor='yellow', interpolate=False)
+# axratio.fill_between(href.x, ref_ymin_ratios, ref_ymax_ratios, edgecolor="none", facecolor='yellow', interpolate=False)
+
 # Stepped:
-ref_ymin_ratios = ref_ymins/sref.y
-ref_ymax_ratios = ref_ymaxs/sref.y
-# TODO: split out a function for array doubling
-ref_ymin_ratios_dbl, ref_ymax_ratios_dbl = [], []
-for yminratio, ymaxratio in zip(ref_ymin_ratios, ref_ymax_ratios):
-    ref_ymin_ratios_dbl += [yminratio, yminratio]
-    ref_ymax_ratios_dbl += [ymaxratio, ymaxratio]
-xs_dbl = np.empty((len(ref_ymin_ratios_dbl),), dtype=ref_ymin_ratios.dtype)
-xs_dbl[0::2] = xmins
-xs_dbl[1::2] = xmaxs
-ref_ymax_ratio = ref_ymaxs/sref.y
-ref_ymin_ratio = ref_ymins/sref.y
+def dbl_array(arr):
+    darr = []
+    for x in arr:
+        darr += [x, x]
+    return darr
+def interleave_array(arr1, arr2):
+    assert len(arr1) == len(arr2)
+    darr = np.empty((2*len(arr1),), dtype=ref_ymin_ratios.dtype)
+    darr[0::2] = arr1
+    darr[1::2] = arr2
+    return darr
+#
+np.append(xmins, [xmax])
+
+xs_dbl = interleave_array(xmins, xmaxs)
+
+
+ref_ymin_ratios_dbl = mk_dbl_array(ref_ymin_ratios)
+ref_ymax_ratios_dbl = mk_dbl_array(ref_ymax_ratios)
+
+
+
 axratio.fill_between(xs_dbl, ref_ymin_ratios_dbl, ref_ymax_ratios_dbl, edgecolor="none", facecolor='yellow', interpolate=False)
 # Ratio = 1 marker line:
 axratio.axhline(1.0, color="gray")
-yratios = scmp.y/sref.y
-#axratio.plot(sref["x"], yratios, color="r", linestyle="--")
+yratios = hcmp.y/href.y
+#axratio.plot(href["x"], yratios, color="r", linestyle="--")
 axratio.step(np.append(xmins, [xmax]), np.append(yratios, yratios[-1]), where="post", color="r", linewidth=1.3)
 #axratio.set_ylim(0.5, 1.5)
 axratio.yaxis.set_major_locator(mpl.ticker.MaxNLocator(4, prune="upper"))
