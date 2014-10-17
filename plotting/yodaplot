@@ -154,7 +154,11 @@ def plot(a):
     ymax = max(max(h.ymax) for h in hcmps)
     ydiff = ymax - ymin
 
-    #assert hcmp.same_binning_as(href)
+    # TODO: loading a PLOT section
+
+    # TODO: identify reference histo (by annotation rather than path?) and default-style differently
+
+    # TODO: use annotation style info
 
     ## Make subplot grid layout
     # fig, (axmain, axratio) = plt.subplots(nrows=2, ncols=1, sharex=True, squeeze=True)
@@ -177,6 +181,7 @@ def plot(a):
         #             xerr=href.exminus, yerr=href.eyminus, capthick=1.3)
 
     # ## Ratio plot
+    #assert hcmp.same_binning_as(href)
     # axratio = fig.add_subplot(gs[1], sharex=axmain)
     # axratio.set_xlabel("BAR $\in x$")
     # axratio.set_ylabel("MC / Data")
