@@ -14,6 +14,7 @@ Legend=0
 
 # BEGIN HISTOGRAM /REF/ATLAS_2013_JETUE/d01-x01-y01
 ConnectBins=0
+RatioRef=yes
 Marker=*
 MarkerColor=black
 ErrorBars=1
