@@ -1,13 +1,27 @@
-PLotting thoughts and TODOs
+Plotting thoughts and TODOs
 ===========================
+
+DESIGN
+------
 
 Booleans should be specifiable via integers (0=false,1=true), true/false,
    yes/no, on/off -- string comparisons being case-insensitive
 
-Show ratio unless no plot has a RatioRef=yes
-
 Prefer specifying plot properties, e.g. plot, ratio and legend inclusion, at
 histo level rather than in the PLOT section.
+
+
+TASKS
+-----
+
+Show ratio unless no plot has a RatioRef=yes. Allocate/size main & ratio plots
+   and assign x label and tick-hiding according to ratio display decision
+
+Smooth line plotting
+
+
+MINOR
+-----
 
 Alpha level in color spec -- automatic?
 
