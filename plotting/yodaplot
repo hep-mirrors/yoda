@@ -274,7 +274,7 @@ def plot(a):
         fig.savefig(abase+".pgf")
 
 
-
+## Do the rendering using a multiprocessing pool (cleaner than threads)
 import multiprocessing
 pool = multiprocessing.Pool()
 pool.map(plot, args)
