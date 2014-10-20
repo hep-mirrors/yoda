@@ -11,8 +11,11 @@ Prefer specifying plot properties, e.g. plot, ratio and legend inclusion, at
 histo level rather than in the PLOT section.
 
 
+
 TASKS
 -----
+
+Legend
 
 Split into more reusable function / object bits for scripted customisation
 
