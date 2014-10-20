@@ -14,8 +14,12 @@ histo level rather than in the PLOT section.
 TASKS
 -----
 
-Show ratio unless no plot has a RatioRef=yes. Allocate/size main & ratio plots
-   and assign x label and tick-hiding according to ratio display decision
+Show ratio unless no plot has a RatioRef=yes.
+
+Allocate/size main & ratio plots and assign x label and tick-hiding according to
+   ratio display decision
+
+Blank space at LHS of main plot in d01-...dat demo?
 
 
 MINOR
