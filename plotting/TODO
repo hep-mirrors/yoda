@@ -4,6 +4,8 @@ PLotting thoughts and TODOs
 Booleans should be specifiable via integers (0=false,1=true), true/false,
    yes/no, on/off -- string comparisons being case-insensitive
 
+Show ratio unless no plot has a RatioRef=yes
+
 Prefer specifying plot properties, e.g. plot, ratio and legend inclusion, at
 histo level rather than in the PLOT section.
 
