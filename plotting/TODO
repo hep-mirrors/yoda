@@ -17,8 +17,6 @@ TASKS
 Show ratio unless no plot has a RatioRef=yes. Allocate/size main & ratio plots
    and assign x label and tick-hiding according to ratio display decision
 
-Smooth line plotting
-
 
 MINOR
 -----

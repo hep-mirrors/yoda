@@ -57,7 +57,7 @@ Title=tune-py8shower-weights04c-000-0
 # END HISTOGRAM
 
 # BEGIN HISTOGRAM /home/andy/proj/hep/atlas/tuning/TuningSystem/tunepy8shower_nnpdf23lo130_e/tunes/tune-py8shower-weights04c-000.eig05/ipolhistos/tune-py8shower-weights04c-000-05+.yoda/ATLAS_2013_JETUE/d01-x01-y01
-#Line=smooth
+Line=smooth
 LineColor=green
 LineStyle=dashed
 Path=/home/andy/proj/hep/atlas/tuning/TuningSystem/tunepy8shower_nnpdf23lo130_e/tunes/tune-py8shower-weights04c-000.eig05/ipolhistos/tune-py8shower-weights04c-000-05+.yoda/ATLAS_2013_JETUE/d01-x01-y01
@@ -246,4 +246,3 @@ Title=tune-py8shower-weights04c-000-10-
 3.100000e+02	4.000000e+02	2.246348e+00	0.000000e+00	0.000000e+00
 4.000000e+02	8.000000e+02	2.411174e+00	0.000000e+00	0.000000e+00
 # END HISTOGRAM
-

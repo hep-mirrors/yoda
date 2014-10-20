@@ -48,7 +48,6 @@ class NumpyHist(object):
             self.data.eyplus[i]  = p.yErrs[1]
 
 
-    @property
     def __len__(self):
         return len(self.x)
 
@@ -191,6 +190,7 @@ def plot(a):
         lcolor = h.annotations.get("LineColor", default_color)
         lstyle = h.annotations.get("LineStyle", "-")
         lstyle = {"solid":"-", "dashed":"--", "dotdashed":"-.", "dashdotted":"-.", "dotted":":"}.get(lstyle, lstyle) # <- make-plots translation
+        lwidth=1.3
 
         ## If no drawing is enabled, default to a step line
         if not any(h.annotations.get(a) for a in ("Marker", "Line", "ErrorBars")):
@@ -198,11 +198,16 @@ def plot(a):
 
         ## Plotting
         if errbar:
-            axmain.errorbar(h.x, h.y, xerr=h.exminus, yerr=h.eyminus, color=ecolor, linestyle="none", linewidth=1.3, capthick=1.3) # linestyle="-", marker="o",
-        if True: # line == "step":
-            axmain.step(np.append(h.xmin, h.xmax[-1]), np.append(h.y, h.y[-1]), where="post", color=lcolor, linestyle=lstyle, linewidth=1.3)
+            axmain.errorbar(h.x, h.y, xerr=h.exminus, yerr=h.eyminus, color=ecolor, linestyle="none", linewidth=lwidth, capthick=lwidth) # linestyle="-", marker="o",
+        if line == "step":
+            axmain.step(np.append(h.xmin, h.xmax[-1]), np.append(h.y, h.y[-1]), where="post", color=lcolor, linestyle=lstyle, linewidth=lwidth)
         elif line == "diag":
-            axmain.plot(h.x, h.y, linestyle=lstyle, color=lcolor)
+            axmain.plot(h.x, h.y, color=lcolor, linestyle=lstyle, linewidth=lwidth)
+        elif line == "smooth":
+            from scipy.interpolate import spline
+            xnew = np.linspace(h.x.min(), h.x.max(), 3*len(h))
+            ynew = spline(h.x, h.y, xnew)
+            axmain.plot(xnew, ynew, color=lcolor, linestyle=lstyle, linewidth=lwidth)
         if marker:
             axmain.plot(h.x, h.y, marker=marker, linestyle="none", color=mcolor)
 
