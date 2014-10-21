@@ -15,6 +15,8 @@ Legend=0
 # BEGIN HISTOGRAM /REF/ATLAS_2013_JETUE/d01-x01-y01
 ConnectBins=0
 RatioRef=yes
+RatioErrColor=yellow
+RatioYLabel=MC/Data
 Marker=*
 MarkerColor=black
 ErrorBars=1
@@ -42,7 +44,7 @@ Line=diag
 LineColor=red
 LineStyle=solid
 Path=/home/andy/proj/hep/atlas/tuning/TuningSystem/tunepy8shower_nnpdf23lo130_e/tunes/tune-py8shower-weights04c-000.eig05/ipolhistos/tune-py8shower-weights04c-000-0.yoda/ATLAS_2013_JETUE/d01-x01-y01
-Title=tune-py8shower-weights04c-000-0
+Title=Nominal tune
 # xlow	 xhigh	 val	 errminus	 errplus
 2.000000e+01	3.000000e+01	1.057113e+00	0.000000e+00	0.000000e+00
 3.000000e+01	4.000000e+01	1.100918e+00	0.000000e+00	0.000000e+00
@@ -62,7 +64,7 @@ Line=smooth
 LineColor=green
 LineStyle=dashed
 Path=/home/andy/proj/hep/atlas/tuning/TuningSystem/tunepy8shower_nnpdf23lo130_e/tunes/tune-py8shower-weights04c-000.eig05/ipolhistos/tune-py8shower-weights04c-000-05+.yoda/ATLAS_2013_JETUE/d01-x01-y01
-Title=tune-py8shower-weights04c-000-05+
+Title=5+
 # xlow	 xhigh	 val	 errminus	 errplus
 2.000000e+01	3.000000e+01	1.056723e+00	0.000000e+00	0.000000e+00
 3.000000e+01	4.000000e+01	1.098029e+00	0.000000e+00	0.000000e+00
@@ -81,7 +83,7 @@ Title=tune-py8shower-weights04c-000-05+
 LineColor=green
 LineStyle=dashed
 Path=/home/andy/proj/hep/atlas/tuning/TuningSystem/tunepy8shower_nnpdf23lo130_e/tunes/tune-py8shower-weights04c-000.eig05/ipolhistos/tune-py8shower-weights04c-000-05-.yoda/ATLAS_2013_JETUE/d01-x01-y01
-Title=tune-py8shower-weights04c-000-05-
+Title=_tune-py8shower-weights04c-000-05-
 # xlow	 xhigh	 val	 errminus	 errplus
 2.000000e+01	3.000000e+01	1.067561e+00	0.000000e+00	0.000000e+00
 3.000000e+01	4.000000e+01	1.112729e+00	0.000000e+00	0.000000e+00
@@ -100,7 +102,7 @@ Title=tune-py8shower-weights04c-000-05-
 LineColor=purple
 LineStyle=dashed
 Path=/home/andy/proj/hep/atlas/tuning/TuningSystem/tunepy8shower_nnpdf23lo130_e/tunes/tune-py8shower-weights04c-000.eig05/ipolhistos/tune-py8shower-weights04c-000-06+.yoda/ATLAS_2013_JETUE/d01-x01-y01
-Title=tune-py8shower-weights04c-000-06+
+Title=6+
 # xlow	 xhigh	 val	 errminus	 errplus
 2.000000e+01	3.000000e+01	1.032003e+00	0.000000e+00	0.000000e+00
 3.000000e+01	4.000000e+01	1.083824e+00	0.000000e+00	0.000000e+00
@@ -119,7 +121,7 @@ Title=tune-py8shower-weights04c-000-06+
 LineColor=purple
 LineStyle=dashed
 Path=/home/andy/proj/hep/atlas/tuning/TuningSystem/tunepy8shower_nnpdf23lo130_e/tunes/tune-py8shower-weights04c-000.eig05/ipolhistos/tune-py8shower-weights04c-000-06-.yoda/ATLAS_2013_JETUE/d01-x01-y01
-Title=tune-py8shower-weights04c-000-06-
+Title=_tune-py8shower-weights04c-000-06-
 # xlow	 xhigh	 val	 errminus	 errplus
 2.000000e+01	3.000000e+01	1.091828e+00	0.000000e+00	0.000000e+00
 3.000000e+01	4.000000e+01	1.129777e+00	0.000000e+00	0.000000e+00
@@ -138,7 +140,7 @@ Title=tune-py8shower-weights04c-000-06-
 LineColor=blue
 LineStyle=dashed
 Path=/home/andy/proj/hep/atlas/tuning/TuningSystem/tunepy8shower_nnpdf23lo130_e/tunes/tune-py8shower-weights04c-000.eig05/ipolhistos/tune-py8shower-weights04c-000-07+.yoda/ATLAS_2013_JETUE/d01-x01-y01
-Title=tune-py8shower-weights04c-000-07+
+Title=7+
 # xlow	 xhigh	 val	 errminus	 errplus
 2.000000e+01	3.000000e+01	8.934177e-01	0.000000e+00	0.000000e+00
 3.000000e+01	4.000000e+01	9.430305e-01	0.000000e+00	0.000000e+00
@@ -157,7 +159,7 @@ Title=tune-py8shower-weights04c-000-07+
 LineColor=blue
 LineStyle=dashed
 Path=/home/andy/proj/hep/atlas/tuning/TuningSystem/tunepy8shower_nnpdf23lo130_e/tunes/tune-py8shower-weights04c-000.eig05/ipolhistos/tune-py8shower-weights04c-000-07-.yoda/ATLAS_2013_JETUE/d01-x01-y01
-Title=tune-py8shower-weights04c-000-07-
+Title=_tune-py8shower-weights04c-000-07-
 # xlow	 xhigh	 val	 errminus	 errplus
 2.000000e+01	3.000000e+01	1.232764e+00	0.000000e+00	0.000000e+00
 3.000000e+01	4.000000e+01	1.269778e+00	0.000000e+00	0.000000e+00
@@ -176,7 +178,7 @@ Title=tune-py8shower-weights04c-000-07-
 LineColor=brown
 LineStyle=dashed
 Path=/home/andy/proj/hep/atlas/tuning/TuningSystem/tunepy8shower_nnpdf23lo130_e/tunes/tune-py8shower-weights04c-000.eig05/ipolhistos/tune-py8shower-weights04c-000-09+.yoda/ATLAS_2013_JETUE/d01-x01-y01
-Title=tune-py8shower-weights04c-000-09+
+Title=9+
 # xlow	 xhigh	 val	 errminus	 errplus
 2.000000e+01	3.000000e+01	1.002598e+00	0.000000e+00	0.000000e+00
 3.000000e+01	4.000000e+01	1.043948e+00	0.000000e+00	0.000000e+00
@@ -195,7 +197,7 @@ Title=tune-py8shower-weights04c-000-09+
 LineColor=brown
 LineStyle=dashed
 Path=/home/andy/proj/hep/atlas/tuning/TuningSystem/tunepy8shower_nnpdf23lo130_e/tunes/tune-py8shower-weights04c-000.eig05/ipolhistos/tune-py8shower-weights04c-000-09-.yoda/ATLAS_2013_JETUE/d01-x01-y01
-Title=tune-py8shower-weights04c-000-09-
+Title=_tune-py8shower-weights04c-000-09-
 # xlow	 xhigh	 val	 errminus	 errplus
 2.000000e+01	3.000000e+01	1.108537e+00	0.000000e+00	0.000000e+00
 3.000000e+01	4.000000e+01	1.162404e+00	0.000000e+00	0.000000e+00
@@ -214,7 +216,7 @@ Title=tune-py8shower-weights04c-000-09-
 LineColor=orange
 LineStyle=dashed
 Path=/home/andy/proj/hep/atlas/tuning/TuningSystem/tunepy8shower_nnpdf23lo130_e/tunes/tune-py8shower-weights04c-000.eig05/ipolhistos/tune-py8shower-weights04c-000-10+.yoda/ATLAS_2013_JETUE/d01-x01-y01
-Title=tune-py8shower-weights04c-000-10+
+Title=10+
 # xlow	 xhigh	 val	 errminus	 errplus
 2.000000e+01	3.000000e+01	1.010975e+00	0.000000e+00	0.000000e+00
 3.000000e+01	4.000000e+01	1.055192e+00	0.000000e+00	0.000000e+00
@@ -233,7 +235,7 @@ Title=tune-py8shower-weights04c-000-10+
 LineColor=orange
 LineStyle=dashed
 Path=/home/andy/proj/hep/atlas/tuning/TuningSystem/tunepy8shower_nnpdf23lo130_e/tunes/tune-py8shower-weights04c-000.eig05/ipolhistos/tune-py8shower-weights04c-000-10-.yoda/ATLAS_2013_JETUE/d01-x01-y01
-Title=tune-py8shower-weights04c-000-10-
+Title=_tune-py8shower-weights04c-000-10-
 # xlow	 xhigh	 val	 errminus	 errplus
 2.000000e+01	3.000000e+01	1.105660e+00	0.000000e+00	0.000000e+00
 3.000000e+01	4.000000e+01	1.152779e+00	0.000000e+00	0.000000e+00

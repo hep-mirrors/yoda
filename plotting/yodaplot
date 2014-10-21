@@ -172,14 +172,14 @@ def plot(plotargs):
     ymax = max(max(h.ymax) for h in hs)
     ydiff = ymax - ymin
 
-    ## Get plot info: axis log/lin measure, ranges and labels
+
+    ## Get whole-plot info: axis log/lin measure, ranges and labels
     title = None
     xlabel = "$x$"
     ylabel = "$y$"
-    ratioylabel = "Ratio"
-    ratioerrcolor = "yellow"
     xmeasure = "lin"
     ymeasure = "lin"
+
 
     ## Identify reference histo by annotation
     href = None
@@ -189,6 +189,11 @@ def plot(plotargs):
                 href = h
             else:
                 print "Ratio reference set twice: using first value = {}".format(href.path)
+
+    ## Ratio plot styling via the reference histo annotations
+    if href:
+        ratioylabel = href.annotations.get("RatioYLabel", "Ratio")
+        ratioerrcolor = href.annotations.get("RatioErrColor", "yellow")
 
 
     ## Make figure and subplot grid layout
@@ -247,7 +252,7 @@ def plot(plotargs):
 
     ## Dataset plotting
     for ih, h in enumerate(hs):
-        print ih, h.path
+        #print ih, h.path
 
         label = h.annotations.get("Title", None)
 
@@ -322,8 +327,8 @@ def plot(plotargs):
 
 ## Do the rendering using a multiprocessing pool (cleaner than threads)
 if opts.DEBUG:
-    for ia, a in enumerate(args):
-        plot(ia, a)
+    for a in enumerate(args):
+        plot(a)
 else:
     import multiprocessing
     pool = multiprocessing.Pool()
