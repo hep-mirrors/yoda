@@ -160,8 +160,11 @@ def plot(plotargs):
     ia, a = plotargs
     print "Plotting file {f} ({i}/{n})".format(f=a, i=ia+1, n=len(args))
 
+    ## Load and sort data objects
     aos = yoda.read(a)
-    hs = [NumpyHist(ao) for ao in aos.values()]
+    hs = sorted([NumpyHist(ao) for ao in aos.values()], key=lambda h: h.path)
+    # TODO: allow plotting order specification via PlotIndex (-1 = no plot)
+
     xmin = min(min(h.xmin) for h in hs)
     xmax = max(max(h.xmax) for h in hs)
     xdiff = xmax - xmin
@@ -223,9 +226,6 @@ def plot(plotargs):
         axratio.set_xlim([xmin-0.001*xdiff, xmax+0.001*xdiff])
         # TODO: manual ratio limit specification and RatioSymmRange option
         #axratio.set_ylim(0.5, 1.5)
-        # Ratio = 1 marker line:
-        axratio.axhline(1.0, color="gray")
-        # TODO: specify ratio display in log/lin, abs, or #sigma, and as x/r or (x-r)/r
 
         # Draw fill_between ref error band (do this before looping over cmp lines)
         ref_ymax_ratios = href.ymax/href.y
@@ -240,10 +240,17 @@ def plot(plotargs):
                              edgecolor="none", facecolor=ratioerrcolor)
         # TODO: Smoothed: (needs -> limit handling at ends)
 
+        # Ratio = 1 marker line:
+        axratio.axhline(1.0, color="gray")
+        # TODO: specify ratio display in log/lin, abs, or #sigma, and as x/r or (x-r)/r
+
 
     ## Dataset plotting
     for ih, h in enumerate(hs):
-        # TODO: allow plotting order specification via PlotIndex (-1 = no plot)
+        print ih, h.path
+
+        label = h.annotations.get("Title", None)
+
         default_color = h.annotations.get("Color", COLORS[ih % len(COLORS)])
         marker = h.annotations.get("Marker", h.annotations.get("PolyMarker", None)) # <- make-plots translation
         marker = {"*":"o"}.get(marker, marker) # <- make-plots translation
@@ -261,20 +268,24 @@ def plot(plotargs):
             line = "step"
 
         ## Plotting
+        artists = None
         if errbar:
-            axmain.errorbar(h.x, h.y, xerr=h.exminus, yerr=h.eyminus, color=ecolor, linestyle="none", linewidth=lwidth, capthick=lwidth) # linestyle="-", marker="o",
+            artists = axmain.errorbar(h.x, h.y, xerr=h.exminus, yerr=h.eyminus, color=ecolor, linestyle="none", linewidth=lwidth, capthick=lwidth) # linestyle="-", marker="o",
         if line == "step":
-            axmain.step(np.append(h.xmin, h.xmax[-1]), np.append(h.y, h.y[-1]), where="post", color=lcolor, linestyle=lstyle, linewidth=lwidth)
+            artists = axmain.step(np.append(h.xmin, h.xmax[-1]), np.append(h.y, h.y[-1]), where="post", color=lcolor, linestyle=lstyle, linewidth=lwidth)
         elif line == "diag":
-            axmain.plot(h.x, h.y, color=lcolor, linestyle=lstyle, linewidth=lwidth)
+            artists = axmain.plot(h.x, h.y, color=lcolor, linestyle=lstyle, linewidth=lwidth)
         elif line == "smooth":
             from scipy.interpolate import spline
             xnew = np.linspace(h.x.min(), h.x.max(), 3*len(h))
             ynew = spline(h.x, h.y, xnew)
-            axmain.plot(xnew, ynew, color=lcolor, linestyle=lstyle, linewidth=lwidth)
+            artists = axmain.plot(xnew, ynew, color=lcolor, linestyle=lstyle, linewidth=lwidth)
         if marker:
-            axmain.plot(h.x, h.y, marker=marker, linestyle="none", color=mcolor)
+            artists = axmain.plot(h.x, h.y, marker=marker, linestyle="none", color=mcolor)
 
+        ## Legend entry
+        if label and artists:
+            artists[0].set_label(label)
 
         ## Ratio plot
         if href and h is not href:
@@ -290,6 +301,7 @@ def plot(plotargs):
 
 
     # TODO: legend (can exclude and specify order via LegendIndex, position via LegendPos)
+    axmain.legend(loc=4, fontsize="xx-small", frameon=False)
 
 
     ## Tweak layout now that everything is in place
