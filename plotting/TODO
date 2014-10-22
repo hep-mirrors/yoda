@@ -4,26 +4,44 @@ Plotting thoughts and TODOs
 DESIGN
 ------
 
-Booleans should be specifiable via integers (0=false,1=true), true/false,
-   yes/no, on/off -- string comparisons being case-insensitive
+* Booleans should be specifiable via integers
+   (0=false,1=true), true/false, yes/no, on/off -- string comparisons being
+   case-insensitive. Done in as_bool(x) in yodaplot, should go into yoda.plot or
+   yoda.util.
 
-Prefer specifying plot properties, e.g. plot, ratio and legend inclusion, at
-histo level rather than in the PLOT section.
+* Prefer specifying plot properties at histo level rather than in the PLOT section.
+   e.g. plot, ratio and legend inclusion
 
+* How to allow full customisation?
+   For people who want to add arrows, general annotations, v/hlines, shaded
+   areas... just make it as easy as possible for them to write their own
+   plotting script, or allow code insertion in .dat?
 
 
 TASKS
 -----
 
-Legend
+* PLOT section parsing
+   By separate parsing of data file in Python function -- use same function for
+   .plot file reading?)
 
-Split into more reusable function / object bits for scripted customisation
+* Lin/log axis control for main (and ratio) plots
 
+* Split into more reusable function / object bits for scripted customisation
+
+* Provide a yodacmp to contain most of the comparison logic
+   N runs * M obs -> N lines in M plot files. rivet-cmphistos can then be a thin
+   wrapper on this (or the constituent YODA package functions) to add
+   Rivet-specific logic like special handling of /REF and /TMP path prefixes.
+
+* How to specify a fill-between band in .dat files?
+   Should have a "band" plotting style -- and break out the code to assemble the
+   correct arrays, call the right plotting command, etc. into functions for easy
+   reuse.
 
 
 MINOR
 -----
 
-Alpha level in color spec -- automatic?
-
-How to specify a fill-between band?
+* Alpha level in color spec -- automatic?
+   Test with current code
