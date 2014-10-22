@@ -45,3 +45,8 @@ MINOR
 
 * Alpha level in color spec -- automatic?
    Test with current code
+
+* Font control
+   Needs to be specified within font family. Use a single key like
+   serif/Palatino? (A colon family/font separator won't work because we use
+   colons to separate keys on the cmphistos command line.)
