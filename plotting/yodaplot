@@ -53,9 +53,10 @@ mpl.rcParams.update({
     #"font.sans-serif"    : ["Computer Modern Sans serif", "Helvetica"]
     #"font.cursive"       : "Zapf Chancery",
     #"font.monospace"     : "Courier, Computer Modern Typewriter",
-    "text.latex.preamble": [r"\addfontfeature{Numbers=(OldStyle)}"],
-    "pgf.rcfonts" : True,
-    "pgf.preamble": [r"\usepackage[osf]{mathpazo}", r"\usepackage{amsmath,amssymb}"]
+    "text.latex.preamble": [r"\addfontfeature{Numbers=(OldStyle)}", r"\usepackage{amsmath,amssymb}"],
+    "pgf.rcfonts" : False,
+    #"pgf.preamble": [r"\usepackage[osf]{mathpazo}", r"\usepackage{amsmath,amssymb}"],
+    "pgf.preamble": [r"\usepackage{amsmath,amssymb}", r"\usepackage{fontspec}", r"\defaultfontfeatures{Numbers=(OldStyle)}"],
     # r"\usepackage{lmodern}",
     # r"\usepackage{sfmath}", ",]
     # r"\usepackage{siunitx},"]
@@ -106,7 +107,7 @@ def plot(plotargs):
 
     ## Get whole-plot info: axis log/lin measure, ranges and labels
     title = None
-    xlabel = "$x$"
+    xlabel = "$x$ 1234567890 $1234567890$"
     ylabel = "$y$"
     xmeasure = "lin"
     ymeasure = "lin"

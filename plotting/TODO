@@ -26,6 +26,9 @@ TASKS
    .plot file reading?)
 
 * Lin/log axis control for main (and ratio) plots
+   Controlled from PLOT section
+
+* 2D plotting
 
 * Split into more reusable function / object bits for scripted customisation
 
@@ -50,3 +53,6 @@ MINOR
    Needs to be specified within font family. Use a single key like
    serif/Palatino? (A colon family/font separator won't work because we use
    colons to separate keys on the cmphistos command line.)
+
+* Old-style figures
+   Via fontspec package keys? Requires MPL modifications?
