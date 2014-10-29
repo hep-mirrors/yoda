@@ -7,7 +7,7 @@ Make a plot from each of the given plot data files.
 """
 
 ################
-## Data reading:
+## Command line args:
 
 import os, optparse
 op = optparse.OptionParser(usage=__doc__)
@@ -20,8 +20,17 @@ op.add_option("--tex", dest="ENGINE", action="store_const", const="TEX", default
 op.add_option("--pgf", dest="ENGINE", action="store_const", const="PGF", default="MPL",
               help="use LaTeX PGF plot renderer")
 op.add_option("--debug", dest="DEBUG", action="store_true", default=False,
-              help="run in debug mode with more verbosity, output and easier debugging")
+              help="run in debug mode with more verbosity and no parallelism")
+op.add_option("--quiet", dest="QUIET", action="store_true", default=False,
+              help="run in quiet mode with no status output to terminal")
 opts, args = op.parse_args()
+
+## Set the verbosity level in response to --debug and --quiet args
+opts.VERBOSITY = 1
+if opts.DEBUG:
+    opts.VERBOSITY = 2
+if opts.QUIET:
+    opts.VERBOSITY = 0
 
 
 #################
@@ -29,102 +38,7 @@ opts, args = op.parse_args()
 
 import numpy as np
 import yoda
-
-def as_bool(x):
-    if type(x) is bool:
-        return x
-    s = str(x)
-    if x.lower() in ("true", "yes", "on", "1"): return True
-    if x.lower() in ("false", "no", "off", "0"): return False
-    raise Exception("'{}' cannot be parsed as a boolean flag".format(s))
-
-class NumpyHist(object):
-    def __init__(self, ao):
-        if not isinstance(ao, yoda.AnalysisObject):
-            raise Exception("ao argument must be a YODA AnalysisObject")
-        ## Get annotations
-        self.path = ao.path
-        self.annotations = {aname : ao.annotation(aname) for aname in ao.annotations}
-        ## Get data points
-        points = ao.points if type(ao) is yoda.Scatter2D else ao.mkScatter().points
-        self.data = np.zeros(len(points), dtype={'names':['x', 'y', 'exminus', 'explus', 'eyminus', 'eyplus'],
-                                                 'formats':['f4', 'f4', 'f4', 'f4', 'f4', 'f4']}).view(np.recarray)
-        for i, p in enumerate(points):
-            self.data.x[i] = p.x
-            self.data.y[i] = p.y
-            self.data.exminus[i] = p.xErrs[0]
-            self.data.explus[i]  = p.xErrs[1]
-            self.data.eyminus[i] = p.yErrs[0]
-            self.data.eyplus[i]  = p.yErrs[1]
-
-
-    def __len__(self):
-        return len(self.x)
-
-
-    @property
-    def xedges_sgl(self):
-        return np.append(self.xmin, self.xmax[-1])
-
-    @property
-    def xedges_dbl(self):
-        edges = np.empty((2*len(self.x),), dtype=self.x.dtype)
-        edges[0::2] = self.xmin
-        edges[1::2] = self.xmax
-        return edges
-
-
-    @property
-    def xmin(self):
-        return self.x - self.exminus
-
-    @property
-    def xmax(self):
-        return self.x + self.explus
-
-
-    @property
-    def ymin(self):
-        return self.y - self.eyminus
-
-    @property
-    def ymax(self):
-        return self.y + self.eyplus
-
-
-    @property
-    def x(self):
-        return self.data.x
-
-    @property
-    def y(self):
-        return self.data.y
-
-    @property
-    def exminus(self):
-        return self.data.exminus
-
-    @property
-    def explus(self):
-        return self.data.explus
-
-    @property
-    def eyminus(self):
-        return self.data.eyminus
-
-    @property
-    def eyplus(self):
-        return self.data.eyplus
-
-    # def __getattr__(self, attr):
-    #     "Fall back to the data array for attributes not defined on NumpyHist"
-    #     return getattr(self.data, attr)
-
-
-    def same_binning_as(self, other):
-        return (other.x == self.x).all() and \
-               (other.exminus == self.exminus).all() and \
-               (other.explus == self.explus).all()
+import plotting
 
 
 ############
@@ -139,6 +53,7 @@ mpl.rcParams.update({
     #"font.sans-serif"    : ["Computer Modern Sans serif", "Helvetica"]
     #"font.cursive"       : "Zapf Chancery",
     #"font.monospace"     : "Courier, Computer Modern Typewriter",
+    "text.latex.preamble": [r"\addfontfeature{Numbers=(OldStyle)}"],
     "pgf.rcfonts" : True,
     "pgf.preamble": [r"\usepackage[osf]{mathpazo}", r"\usepackage{amsmath,amssymb}"]
     # r"\usepackage{lmodern}",
@@ -157,12 +72,28 @@ STYLES = ["-", "--", ":", "-."]
 
 
 def plot(plotargs):
-    ia, a = plotargs
-    print "Plotting file {f} ({i}/{n})".format(f=a, i=ia+1, n=len(args))
+    idatfile, datfile = plotargs
+    numdatfiles = len(args)
+
+    ## Plan for output in (potentially) several different formats
+    outfiles = []
+    basename = os.path.splitext(datfile)[0]
+    formats = opts.FORMAT.upper().split(",")
+    if "PDF" in formats:
+        outfiles.append(basename+".pdf")
+    if "PNG" in formats:
+        outfiles.append(basename+".png")
+    if "PGF" in formats:
+        outfiles.append(basename+".pgf")
+
+    ## Print status update to terminal
+    if opts.VERBOSITY > 0:
+        outstr = " ".join(outfiles)
+        print "Plotting file {f} -> {o} ({i}/{n})".format(f=datfile, o=outstr, i=idatfile+1, n=numdatfiles)
 
     ## Load and sort data objects
-    aos = yoda.read(a)
-    hs = sorted([NumpyHist(ao) for ao in aos.values()], key=lambda h: h.path)
+    aos = yoda.read(datfile)
+    hs = sorted([plotting.NumpyHist(ao) for ao in aos.values()], key=lambda h: h.path)
     # TODO: allow plotting order specification via PlotIndex (-1 = no plot)
 
     xmin = min(min(h.xmin) for h in hs)
@@ -184,7 +115,7 @@ def plot(plotargs):
     ## Identify reference histo by annotation
     href = None
     for h in hs:
-        if as_bool(h.annotations.get("RatioRef", False)):
+        if plotting.as_bool(h.annotations.get("RatioRef", False)):
             if href is None:
                 href = h
             else:
@@ -315,14 +246,9 @@ def plot(plotargs):
     fig.tight_layout()
 
 
-    ## Output in (potentially) several different formats
-    abase = os.path.splitext(a)[0]
-    if "PDF" in opts.FORMAT.upper().split(","):
-        fig.savefig(abase+".pdf")
-    if "PNG" in opts.FORMAT.upper().split(","):
-        fig.savefig(abase+".png")
-    if "PGF" in opts.FORMAT.upper().split(","):
-        fig.savefig(abase+".pgf")
+    ## Output in each requested format
+    for of in outfiles:
+        fig.savefig(of)
 
 
 ## Do the rendering using a multiprocessing pool (cleaner than threads)
