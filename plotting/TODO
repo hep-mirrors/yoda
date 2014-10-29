@@ -56,3 +56,7 @@ MINOR
 
 * Old-style figures
    Via fontspec package keys? Requires MPL modifications?
+
+* Marginal plots for 2D
+
+* Stacked plots

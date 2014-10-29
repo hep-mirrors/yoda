@@ -27,9 +27,10 @@ SurfaceStyle {color,contour} [color]  => should allow both!
 ColorMap [grey]
 
 Color [cycle]
-Marker [PolyMarker (compat) or None]
+Marker {mpl marker codes, e.g. o,x,+,-,. etc.} [PolyMarker (compat) or None]
 LineColor [Color or black]
-ErrorBars [None]
+ErrorBars (bool) [no]
 ErrorBarsColor [Color or black]
 LineColor [Color or black]
 LineStyle [-]
+Line {step,diag,smooth} [step]
