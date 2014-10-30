@@ -92,6 +92,30 @@ def plot(plotargs):
         outstr = " ".join(outfiles)
         print "Plotting file {f} -> {o} ({i}/{n})".format(f=datfile, o=outstr, i=idatfile+1, n=numdatfiles)
 
+    ## Read PLOT section manually
+    # TODO: move out into plotting.py
+    inplot = False
+    plotkeys = {}
+    import re
+    re_begin = re.compile("#*\s*BEGIN\s+PLOT\s*(\w*)")
+    re_comment = re.compile("#.*")
+    re_attr = re.compile("(\w+)\s*=\s*(.*)")
+    re_end = re.compile("#*\s*END\s+PLOT\s+\w*")
+    with open(datfile) as f:
+        for line in f:
+            l = line.strip()
+            if re_begin.match(l):
+                inplot = True
+            elif re_begin.match(l):
+                inplot = False
+            elif re_comment.match(l):
+                continue
+            elif inplot:
+                m = re_attr.match(l)
+                if m is None: continue
+                plotkeys[m.group(1)] = m.group(2)
+    #print plotkeys
+
     ## Load and sort data objects
     aos = yoda.read(datfile)
     hs = sorted([plotting.NumpyHist(ao) for ao in aos.values()], key=lambda h: h.path)
@@ -107,10 +131,11 @@ def plot(plotargs):
 
     ## Get whole-plot info: axis log/lin measure, ranges and labels
     title = None
-    xlabel = "$x$ 1234567890 $1234567890$"
-    ylabel = "$y$"
-    xmeasure = "lin"
-    ymeasure = "lin"
+    xlabel = plotkeys.get("XLabel", "") #"$x$ 1234567890 $1234567890$"
+    ylabel = plotkeys.get("YLabel", "")
+    # TODO: Dynamic default based on data ranges?
+    xmeasure = "log" if plotting.as_bool(plotkeys.get("LogX", False)) else "lin"
+    ymeasure = "log" if plotting.as_bool(plotkeys.get("LogY", False)) else "lin"
 
 
     ## Identify reference histo by annotation
@@ -198,7 +223,8 @@ def plot(plotargs):
         lcolor = h.annotations.get("LineColor", default_color)
         lstyle = h.annotations.get("LineStyle", "-")
         lstyle = {"solid":"-", "dashed":"--", "dotdashed":"-.", "dashdotted":"-.", "dotted":":"}.get(lstyle, lstyle) # <- make-plots translation
-        lwidth = 1.3
+        lwidth = 1.4
+        msize = 7
 
         ## If no drawing is enabled, default to a step line
         if not any(h.annotations.get(a) for a in ("Marker", "Line", "ErrorBars")):
@@ -218,7 +244,7 @@ def plot(plotargs):
             ynew = spline(h.x, h.y, xnew)
             artists = axmain.plot(xnew, ynew, color=lcolor, linestyle=lstyle, linewidth=lwidth)
         if marker:
-            artists = axmain.plot(h.x, h.y, marker=marker, linestyle="none", color=mcolor)
+            artists = axmain.plot(h.x, h.y, marker=marker, markersize=msize, linestyle="none", color=mcolor)
 
         ## Legend entry
         if label and artists:
@@ -238,7 +264,7 @@ def plot(plotargs):
 
 
     # TODO: legend (can exclude and specify order via LegendIndex, position via LegendPos)
-    axmain.legend(loc=4, fontsize="xx-small", frameon=False)
+    axmain.legend(loc=4, fontsize="x-small", frameon=False)
 
 
     ## Tweak layout now that everything is in place
