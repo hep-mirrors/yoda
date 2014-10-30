@@ -166,8 +166,8 @@ def plot(plotargs):
     # TODO: take log axes and preference for round numbers into account in setting default axis limits
     axmain = fig.add_subplot(gs[0])
     if not href:
-        axmain.set_xlabel(xlabel)
-    axmain.set_ylabel(ylabel)
+        axmain.set_xlabel(xlabel, x=1, ha="right", labelpad=None)
+    axmain.set_ylabel(ylabel, y=1, ha="right", labelpad=None)
     # axmain.xaxis.set_major_locator(mpl.ticker.NullLocator())
     plt.setp(axmain.get_xticklabels(), visible=False)
     # TODO: Main plot manual limits
@@ -179,7 +179,7 @@ def plot(plotargs):
     axratio = None
     if href:
         axratio = fig.add_subplot(gs[1], sharex=axmain)
-        axratio.set_xlabel(xlabel)
+        axratio.set_xlabel(xlabel, x=1, ha="right", labelpad=None)
         axratio.set_ylabel(ratioylabel)
         # TODO: Ratio plot manual limits
         # TODO: Ratio plot manual ticks

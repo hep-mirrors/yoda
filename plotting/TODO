@@ -42,6 +42,11 @@ TASKS
    correct arrays, call the right plotting command, etc. into functions for easy
    reuse.
 
+* Old-style figures
+   Via fontspec package keys? Requires MPL modifications? Special non-math ticker?
+
+* Supporting amsmath commands like \text?
+
 
 MINOR
 -----
@@ -54,9 +59,9 @@ MINOR
    serif/Palatino? (A colon family/font separator won't work because we use
    colons to separate keys on the cmphistos command line.)
 
-* Old-style figures
-   Via fontspec package keys? Requires MPL modifications?
 
 * Marginal plots for 2D
+
+* Remove final ticks that merge with the frame
 
 * Stacked plots
