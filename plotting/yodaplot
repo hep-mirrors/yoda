@@ -49,14 +49,14 @@ mpl.rcParams.update({
     "text.usetex" : (opts.ENGINE.upper() != "MPL"),
     "font.size"   : 17,
     "font.family" : "serif",
-    "font.serif"         : ["Palatino", "Computer Modern Roman"] + mpl.rcParams["font.serif"],
+    "font.serif"         : ["TeX Gyre Pagella", "Palatino", "Computer Modern Roman"] + mpl.rcParams["font.serif"],
     #"font.sans-serif"    : ["Computer Modern Sans serif", "Helvetica"]
     #"font.cursive"       : "Zapf Chancery",
     #"font.monospace"     : "Courier, Computer Modern Typewriter",
-    "text.latex.preamble": [r"\addfontfeature{Numbers=(OldStyle)}", r"\usepackage{amsmath,amssymb}"],
-    "pgf.rcfonts" : False,
+    #"text.latex.preamble": [r"\addfontfeature{Numbers=OldStyle}", r"\usepackage{amsmath,amssymb}"],
+    "pgf.rcfonts" : True,
     #"pgf.preamble": [r"\usepackage[osf]{mathpazo}", r"\usepackage{amsmath,amssymb}"],
-    "pgf.preamble": [r"\usepackage{amsmath,amssymb}", r"\usepackage{fontspec}", r"\defaultfontfeatures{Numbers=(OldStyle)}"],
+    "pgf.preamble": [r"\usepackage{amsmath,amssymb}", r"\usepackage{fontspec}", r"\defaultfontfeatures{Numbers=OldStyle}"],
     # r"\usepackage{lmodern}",
     # r"\usepackage{sfmath}", ",]
     # r"\usepackage{siunitx},"]
@@ -121,6 +121,7 @@ def plot(plotargs):
     hs = sorted([plotting.NumpyHist(ao) for ao in aos.values()], key=lambda h: h.path)
     # TODO: allow plotting order specification via PlotIndex (-1 = no plot)
 
+    ## Get data ranges
     xmin = min(min(h.xmin) for h in hs)
     xmax = max(max(h.xmax) for h in hs)
     xdiff = xmax - xmin
@@ -128,6 +129,7 @@ def plot(plotargs):
     ymax = max(max(h.ymax) for h in hs)
     ydiff = ymax - ymin
 
+    # TODO: Round up ymax to nearest round number within 10% of ydiff, to create a top tick label
 
     ## Get whole-plot info: axis log/lin measure, ranges and labels
     title = None

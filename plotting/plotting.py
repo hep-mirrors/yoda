@@ -2,6 +2,8 @@ import yoda
 import numpy as np
 
 
+## Utils
+
 def as_bool(x):
     if type(x) is bool:
         return x
@@ -9,6 +11,30 @@ def as_bool(x):
     if x.lower() in ("true", "yes", "on", "1"): return True
     if x.lower() in ("false", "no", "off", "0"): return False
     raise Exception("'{}' cannot be parsed as a boolean flag".format(s))
+
+def autotype(var):
+    """Automatically convert strings to numerical types if possible."""
+    if type(var) is not str:
+        return var
+    if var.isdigit() or (var.startswith("-") and var[1:].isdigit()):
+        return int(var)
+    try:
+        f = float(var)
+        return f
+    except ValueError:
+        return var
+
+def autostr(var, precision=8):
+    """Automatically format numerical types as the right sort of string."""
+    if type(var) is float:
+        return ("% ." + str(precision) + "e") % var
+    elif not hasattr(var, "__iter__"):
+        return str(var)
+    else:
+        return ",".join(_autostr(subval) for subval in var)
+
+
+########################
 
 
 class NumpyHist(object):
@@ -18,17 +44,31 @@ class NumpyHist(object):
         ## Get annotations
         self.path = ao.path
         self.annotations = {aname : ao.annotation(aname) for aname in ao.annotations}
-        ## Get data points
-        points = ao.points if type(ao) is yoda.Scatter2D else ao.mkScatter().points
-        self.data = np.zeros(len(points), dtype={'names':['x', 'y', 'exminus', 'explus', 'eyminus', 'eyplus'],
-                                                 'formats':['f4', 'f4', 'f4', 'f4', 'f4', 'f4']}).view(np.recarray)
-        for i, p in enumerate(points):
+        ## Convert to Scatter and set dimensionality & recarray column names
+        s = ao.mkScatter()
+        names = ['x', 'y', 'exminus', 'explus', 'eyminus', 'eyplus']
+        if type(s) is yoda.Scatter2D:
+            self.dim = 2
+        elif type(s) is yoda.Scatter3D:
+            self.dim = 3
+            names.insert(2, "z")
+            names += ['ezminus', 'ezplus']
+        else:
+            raise RuntimeError("Whoa! If ao doesn't convert to a 2D or 3D scatter, what is it?!")
+        ## Put data points into numpy structure
+        dtype = {"names": names, "formats": ["f4" for _ in names]}
+        self.data = np.zeros(len(s.points), dtype).view(np.recarray)
+        for i, p in enumerate(s.points):
             self.data.x[i] = p.x
-            self.data.y[i] = p.y
             self.data.exminus[i] = p.xErrs[0]
             self.data.explus[i]  = p.xErrs[1]
+            self.data.y[i] = p.y
             self.data.eyminus[i] = p.yErrs[0]
             self.data.eyplus[i]  = p.yErrs[1]
+            if self.dim > 2:
+                self.data.z[i] = p.z
+                self.data.ezminus[i] = p.zErrs[0]
+                self.data.ezplus[i]  = p.zErrs[1]
 
 
     def __len__(self):
@@ -65,13 +105,11 @@ class NumpyHist(object):
         return self.y + self.eyplus
 
 
+    # TODO: automate more with __get/setattr__?
+
     @property
     def x(self):
         return self.data.x
-
-    @property
-    def y(self):
-        return self.data.y
 
     @property
     def exminus(self):
@@ -81,6 +119,11 @@ class NumpyHist(object):
     def explus(self):
         return self.data.explus
 
+
+    @property
+    def y(self):
+        return self.data.y
+
     @property
     def eyminus(self):
         return self.data.eyminus
@@ -89,12 +132,36 @@ class NumpyHist(object):
     def eyplus(self):
         return self.data.eyplus
 
+
+    # TODO: don't provide these / throw helpful errors if only 2D
+
+    @property
+    def z(self):
+        return self.data.z
+
+    @property
+    def ezminus(self):
+        return self.data.ezminus
+
+    @property
+    def ezplus(self):
+        return self.data.ezplus
+
+
     # def __getattr__(self, attr):
     #     "Fall back to the data array for attributes not defined on NumpyHist"
     #     return getattr(self.data, attr)
 
 
     def same_binning_as(self, other):
-        return (other.x == self.x).all() and \
+        if self.dim != other.dim:
+            return False
+        if not (other.x == self.x).all() and \
                (other.exminus == self.exminus).all() and \
-               (other.explus == self.explus).all()
+               (other.explus == self.explus).all():
+            return False
+        if self.dim == 2:
+            return True
+        return (other.y == self.y).all() and \
+               (other.eyminus == self.eyminus).all() and \
+               (other.eyplus == self.eyplus).all()
