@@ -27,6 +27,9 @@ cdef class Profile1D(AnalysisObject):
       iterator of bins, B.
     """
 
+    cdef inline c.Profile1D* p1ptr(self) except NULL:
+        return <c.Profile1D*> self.ptr()
+    # TODO: remove
     cdef inline c.Profile1D* _Profile1D(self) except NULL:
         return <c.Profile1D*> self.ptr()
 
@@ -57,11 +60,11 @@ cdef class Profile1D(AnalysisObject):
             self, new c.Profile1D(nbins, lower, upper, string(path), string(title)))
 
     def __len__(self):
-        return self._Profile1D().bins().size()
+        return self.p1ptr().bins().size()
 
     def __getitem__(self, py_ix):
-        cdef size_t i = cutil.pythonic_index(py_ix, self._Profile1D().bins().size())
-        return cutil.new_borrowed_cls(ProfileBin1D, & self._Profile1D().bins().at(i), self)
+        cdef size_t i = cutil.pythonic_index(py_ix, self.p1ptr().bins().size())
+        return cutil.new_borrowed_cls(ProfileBin1D, & self.p1ptr().bins().at(i), self)
 
 
     def __repr__(self):
@@ -73,23 +76,23 @@ cdef class Profile1D(AnalysisObject):
     def reset(self):
         """None -> None.
         Reset the histogram but leave the bin structure."""
-        self._Profile1D().reset()
+        self.p1ptr().reset()
 
     def clone(self):
         """None -> Profile1D.
         Clone this Profile1D."""
-        return cutil.new_owned_cls(Profile1D, self._Profile1D().newclone())
+        return cutil.new_owned_cls(Profile1D, self.p1ptr().newclone())
 
 
     def fill(self, x, y, weight=1.0):
         """(x,y,[w]) -> None.
         Fill with given x & y values and optional weight."""
-        self._Profile1D().fill(x, y, weight)
+        self.p1ptr().fill(x, y, weight)
 
     def fillBin(self, size_t ix, double y, weight=1.0):
         """(ix,y,[w]) -> None.
         Fill bin ix with y value and optional weight."""
-        self._Profile1D().fillBin(ix, y, weight)
+        self.p1ptr().fillBin(ix, y, weight)
 
 
     @property
@@ -97,65 +100,65 @@ cdef class Profile1D(AnalysisObject):
         """() -> Dbn2D
         The Dbn2D representing the total distribution."""
         return cutil.new_borrowed_cls(
-            Dbn2D, &self._Profile1D().totalDbn(), self)
+            Dbn2D, &self.p1ptr().totalDbn(), self)
 
     @property
     def underflow(self):
         """() -> Dbn2D
         The Dbn2D representing the underflow distribution."""
         return cutil.new_borrowed_cls(
-            Dbn2D, &self._Profile1D().underflow(), self)
+            Dbn2D, &self.p1ptr().underflow(), self)
 
     @property
     def overflow(self):
         """() -> Dbn2D
         The Dbn2D representing the overflow distribution."""
         return cutil.new_borrowed_cls(
-            Dbn2D, &self._Profile1D().overflow(), self)
+            Dbn2D, &self.p1ptr().overflow(), self)
 
 
     def numEntries(self): # add overflows arg
         """([bool]) -> int
         Number of times this histogram was filled."""
-        return int(self._Profile1D().numEntries())
+        return int(self.p1ptr().numEntries())
 
     def effNumEntries(self): # add overflows arg
         """([bool]) -> float
         Effective number of times this histogram was filled, computed from weights."""
-        return self._Profile1D().effNumEntries()
+        return self.p1ptr().effNumEntries()
 
     def sumW(self, overflows=True):
         """([bool]) -> float
         Sum of weights filled into this histogram."""
-        return self._Profile1D().sumW(overflows)
+        return self.p1ptr().sumW(overflows)
 
     def sumW2(self, overflows=True):
         """([bool]) -> float
         Sum of weights filled into this histogram."""
-        return self._Profile1D().sumW2(overflows)
+        return self.p1ptr().sumW2(overflows)
 
 
     def scaleW(self, double w):
         """(float) -> None.
         Rescale the weights in this histogram by the factor w."""
-        self._Profile1D().scaleW(w)
+        self.p1ptr().scaleW(w)
 
 
     @property
     def numBins(self):
         """() -> int
         Number of bins (not including overflows)."""
-        return self._Profile1D().numBins()
+        return self.p1ptr().numBins()
 
     @property
     def xMin(self):
         """Low x edge of the histo."""
-        return self._Profile1D().xMin()
+        return self.p1ptr().xMin()
 
     @property
     def xMax(self):
         """High x edge of the histo."""
-        return self._Profile1D().xMax()
+        return self.p1ptr().xMax()
 
     @property
     def bins(self):
@@ -164,7 +167,7 @@ cdef class Profile1D(AnalysisObject):
 
     def addBin(self, low, high):
         """Add a bin."""
-        self._Profile1D().addBin(low, high)
+        self.p1ptr().addBin(low, high)
         return self
 
     def addBins(self, edges):
@@ -173,49 +176,47 @@ cdef class Profile1D(AnalysisObject):
         cdef vector[double] cedges
         for i in edges:
             cedges.push_back(i)
-        self._Profile1D().addBins(cedges)
+        self.p1ptr().addBins(cedges)
         return self
 
     def mergeBins(self, a, b):
         """mergeBins(ia, ib) -> None.
         Merge bins from indices ia through ib."""
-        self._Profile1D().mergeBins(a, b)
+        self.p1ptr().mergeBins(a, b)
 
     def rebin(self, int n):
         """(low, high) -> None.
         Add a bin."""
-        self._Profile1D().rebin(n)
+        self.p1ptr().rebin(n)
 
 
     def mkScatter(self):
         """None -> Scatter2D.
         Convert this Profile1D to a Scatter2D, with y representing
         mean bin y values and their standard errors."""
-        cdef c.Scatter2D s2 = c.mkScatter_Profile1D(deref(self._Profile1D()))
+        cdef c.Scatter2D s2 = c.mkScatter_Profile1D(deref(self.p1ptr()))
         return cutil.new_owned_cls(Scatter2D, s2.newclone())
 
-    def divide(self, Profile1D h1):
-        cdef c.Scatter2D s2 = c.Profile1D_div_Profile1D(deref(self._Profile1D()), deref(h1._Profile1D()))
-        return cutil.new_owned_cls(Scatter2D, s2.newclone())
+    def divideBy(self, Profile1D h):
+        cdef c.Scatter2D s = c.Profile1D_div_Profile1D(deref(self.p1ptr()), deref(h.p1ptr()))
+        return cutil.new_owned_cls(Scatter2D, s.newclone())
 
 
     def __iadd__(Profile1D self, Profile1D other):
-        c.Profile1D_iadd_Profile1D(self._Profile1D(), other._Profile1D())
+        c.Profile1D_iadd_Profile1D(self.p1ptr(), other.p1ptr())
         return self
     def __isub__(Profile1D self, Profile1D other):
-        c.Profile1D_isub_Profile1D(self._Profile1D(), other._Profile1D())
+        c.Profile1D_isub_Profile1D(self.p1ptr(), other.p1ptr())
         return self
 
     def __add__(Profile1D self, Profile1D other):
         h = Profile1D()
-        cutil.set_owned_ptr(h, c.Profile1D_add_Profile1D(self._Profile1D(), other._Profile1D()))
+        cutil.set_owned_ptr(h, c.Profile1D_add_Profile1D(self.p1ptr(), other.p1ptr()))
         return h
     def __sub__(Profile1D self, Profile1D other):
         h = Profile1D()
-        cutil.set_owned_ptr(h, c.Profile1D_sub_Profile1D(self._Profile1D(), other._Profile1D()))
+        cutil.set_owned_ptr(h, c.Profile1D_sub_Profile1D(self.p1ptr(), other.p1ptr()))
         return h
 
     def __div__(Profile1D self, Profile1D other):
-        h = Profile1D()
-        cutil.set_owned_ptr(h, c.Profile1D_div_Profile1D(self._Profile1D(), other._Profile1D()))
-        return h
+        return self.divideBy(other)

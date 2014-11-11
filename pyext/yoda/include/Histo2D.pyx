@@ -10,7 +10,7 @@ cdef class Histo2D(AnalysisObject):
     also supported, but in development.
 
     Rescaling of weights and/or the x axis is permitted in-place: the
-    result is still a valid Histo2D. Binning-compatible 1D histograms
+    result is still a valid Histo2D. Binning-compatible 2D histograms
     may be divided, resulting in a Scatter3D since further fills would
     not be meaningful.
 
@@ -25,7 +25,10 @@ cdef class Histo2D(AnalysisObject):
       axis, distributed linearly between the respective low--high limits.
     """
 
-    cdef inline c.Histo2D *_Histo2D(self) except NULL:
+    cdef inline c.Histo2D* h2ptr(self) except NULL:
+        return <c.Histo2D*> self.ptr()
+    # TODO: remove
+    cdef inline c.Histo2D* _Histo2D(self) except NULL:
         return <c.Histo2D*> self.ptr()
 
 
@@ -45,8 +48,8 @@ cdef class Histo2D(AnalysisObject):
 
     # TODO: remove
     def __getitem__(self, py_ix):
-        cdef size_t i = cutil.pythonic_index(py_ix, self._Histo2D().numBins())
-        return cutil.new_borrowed_cls(HistoBin2D, & self._Histo2D().bins().at(i), self)
+        cdef size_t i = cutil.pythonic_index(py_ix, self.h2ptr().numBins())
+        return cutil.new_borrowed_cls(HistoBin2D, & self.h2ptr().bins().at(i), self)
 
     def __repr__(self):
         return "<%s '%s' %d bins, sumw=%.2g>" % (self.__class__.__name__, self.path, len(self.bins), self.sumW())
@@ -55,129 +58,129 @@ cdef class Histo2D(AnalysisObject):
     def reset(self):
         """None -> None.
         Reset the histogram but leave the bin structure."""
-        self._Histo2D().reset()
+        self.h2ptr().reset()
 
     def clone(self):
         """None -> Histo2D.
         Clone this Profile2D."""
-        return cutil.new_owned_cls(Histo2D, self._Histo2D().newclone())
+        return cutil.new_owned_cls(Histo2D, self.h2ptr().newclone())
 
 
     def fill(self, double x, double y, weight=1.0):
         """(x,y,[w]) -> None.
         Fill with given x,y values and optional weight."""
-        self._Histo2D().fill(x, y, weight)
+        self.h2ptr().fill(x, y, weight)
 
     def fillBin(self, size_t i, weight=1.0):
         """(i,[w]) -> None.
         Fill bin i and optional weight."""
-        self._Histo2D().fillBin(i, weight)
+        self.h2ptr().fillBin(i, weight)
 
 
     @property
     def totalDbn(self):
         """() -> Dbn2D
         The Dbn2D representing the total distribution."""
-        return cutil.new_borrowed_cls(Dbn2D, &self._Histo2D().totalDbn(), self)
+        return cutil.new_borrowed_cls(Dbn2D, &self.h2ptr().totalDbn(), self)
 
     # TODO: reinstate
     # def outflow(self, ix, iy):
     #     """(ix,iy) -> Dbn2D
     #     The Dbn2D representing the ix,iy outflow distribution."""
-    #     return cutil.new_borrowed_cls(Dbn2D, &self._Histo2D().outflow(ix, iy), self)
+    #     return cutil.new_borrowed_cls(Dbn2D, &self.h2ptr().outflow(ix, iy), self)
 
 
     def integral(self, overflows=True):
         """([bool]) -> float
         Histogram integral, optionally excluding the overflows."""
-        return self._Histo2D().integral(overflows)
+        return self.h2ptr().integral(overflows)
 
     def numEntries(self): # add overflows arg
         """() -> int
         Number of times this histogram was filled."""
-        return int(self._Histo2D().numEntries())
+        return int(self.h2ptr().numEntries())
 
     def effNumEntries(self): # add overflows arg
         """() -> float
         Effective number of times this histogram was filled, computed from weights."""
-        return self._Histo2D().effNumEntries()
+        return self.h2ptr().effNumEntries()
 
     def sumW(self, overflows=True):
         """([bool]) -> float
         Sum of weights filled into this histogram."""
-        return self._Histo2D().sumW(overflows)
+        return self.h2ptr().sumW(overflows)
 
     def sumW2(self, overflows=True):
         """([bool]) -> float
         Sum of squared weights filled into this histogram."""
-        return self._Histo2D().sumW2(overflows)
+        return self.h2ptr().sumW2(overflows)
 
     def mean(self, overflows=True):
         """([bool]) -> (float,float)
         Mean (x,y) of the histogram, optionally excluding the overflows."""
         return util.XY(
-            self._Histo2D().xMean(overflows),
-            self._Histo2D().yMean(overflows))
+            self.h2ptr().xMean(overflows),
+            self.h2ptr().yMean(overflows))
 
     def variance(self, overflows=True):
         """([bool]) -> (float,float)
         Variances in (x,y) of the histogram, optionally excluding the overflows."""
         return util.XY(
-            self._Histo2D().xVariance(overflows),
-            self._Histo2D().yVariance(overflows))
+            self.h2ptr().xVariance(overflows),
+            self.h2ptr().yVariance(overflows))
 
     def stdDev(self, overflows=True):
         """([bool]) -> (float,float)
         Standard deviations in (x,y) of the histogram, optionally excluding the overflows."""
         return util.XY(
-            self._Histo2D().xStdDev(overflows),
-            self._Histo2D().yStdDev(overflows))
+            self.h2ptr().xStdDev(overflows),
+            self.h2ptr().yStdDev(overflows))
 
     def stdErr(self, overflows=True):
         """([bool]) -> (float,float)
         Standard errors on the mean (x,y) of the histogram, optionally excluding the overflows."""
         return util.XY(
-            self._Histo2D().xStdErr(overflows),
-            self._Histo2D().yStdErr(overflows))
+            self.h2ptr().xStdErr(overflows),
+            self.h2ptr().yStdErr(overflows))
 
 
     def scaleW(self, w):
         """(float) -> None.
         Rescale the weights in this histogram by the factor w."""
-        self._Histo2D().scaleW(w)
+        self.h2ptr().scaleW(w)
 
     def normalize(self, double normto, bint includeoverflows=True):
         """(float, bool) -> None.
         Normalize the histogram."""
-        self._Histo2D().normalize(normto, includeoverflows)
+        self.h2ptr().normalize(normto, includeoverflows)
 
 
     @property
     def xMin(self):
         """Low x edge of the histo."""
-        return self._Histo2D().xMin()
+        return self.h2ptr().xMin()
 
     @property
     def xMax(self):
         """High x edge of the histo."""
-        return self._Histo2D().xMax()
+        return self.h2ptr().xMax()
 
     @property
     def yMin(self):
         """Low y edge of the histo."""
-        return self._Histo2D().yMin()
+        return self.h2ptr().yMin()
 
     @property
     def yMax(self):
         """High y edge of the histo."""
-        return self._Histo2D().yMax()
+        return self.h2ptr().yMax()
 
 
     @property
     def numBins(self):
         """() -> int
         Number of bins (not including overflows)."""
-        return self._Histo2D().numBins()
+        return self.h2ptr().numBins()
 
     def __len__(self):
         return self.numBins
@@ -186,13 +189,13 @@ cdef class Histo2D(AnalysisObject):
     def numBinsX(self):
         """() -> int
         Number of bins (edges) along the x axis."""
-        return self._Histo2D().numBinsX()
+        return self.h2ptr().numBinsX()
 
     @property
     def numBinsY(self):
         """() -> int
         Number of bins (edges) along the y axis."""
-        return self._Histo2D().numBinsY()
+        return self.h2ptr().numBinsY()
 
 
     @property
@@ -207,7 +210,7 @@ cdef class Histo2D(AnalysisObject):
 
     def addBin(self, xlow, xhigh, ylow, yhigh):
         """Add a bin."""
-        self._Histo2D().addBin(pair[double, double](xlow, xhigh),
+        self.h2ptr().addBin(pair[double, double](xlow, xhigh),
                                pair[double, double](ylow, yhigh))
         return self
 
@@ -215,36 +218,56 @@ cdef class Histo2D(AnalysisObject):
         """Add several bins."""
         # TODO: simplify / make consistent
         for xlow, xhigh, ylow, yhigh in bounds:
-            self._Histo2D().addBin(pair[double, double](xlow, xhigh),
-                                   pair[double, double](ylow, yhigh))
+            self.h2ptr().addBin(pair[double, double](xlow, xhigh),
+                                pair[double, double](ylow, yhigh))
 
     # def mergeBins(self, size_t a, size_t b):
-    #     self._Histo2D().mergeBins(a, b)
+    #     self.h2ptr().mergeBins(a, b)
 
     # def rebin(self, int n):
-    #     self._Histo2D().rebin(n)
+    #     self.h2ptr().rebin(n)
 
 
     def mkScatter(self):
         """None -> Scatter3D.
         Convert this Histo2D to a Scatter3D, with y representing bin heights
         (not sumW) and height errors."""
-        cdef c.Scatter3D s3 = c.mkScatter_Histo2D(deref(self._Histo2D()))
+        cdef c.Scatter3D s3 = c.mkScatter_Histo2D(deref(self.h2ptr()))
         return cutil.new_owned_cls(Scatter3D, s3.newclone())
+
+    def divideBy(self, Histo2D h, efficiency=False):
+        """Histo2D -> Scatter3D
+
+        Divide this histogram by Histo2D h, returning a Scatter3D. The optional 'efficiency'
+        argument, if set True, will use a binomial efficiency treatment of the errors.
+        """
+        # if type(h) is not Histo2D:
+        #     raise ValueError("Histograms must be of the same type to be divided")
+        # TODO: allow dividing profiles by histos, etc.? (But then what do the errors mean? Add in quad?)
+        cdef c.Scatter3D s
+        if not efficiency:
+            s = c.Histo2D_div_Histo2D(deref(self.h2ptr()), deref(h.h2ptr()))
+        else:
+            s = c.Histo2D_eff_Histo2D(deref(self.h2ptr()), deref(h.h2ptr()))
+        return cutil.new_owned_cls(Scatter3D, s.newclone())
+
 
 
     def __iadd__(Histo2D self, Histo2D other):
-        c.Histo2D_iadd_Histo2D(self._Histo2D(), other._Histo2D())
+        c.Histo2D_iadd_Histo2D(self.h2ptr(), other.h2ptr())
         return self
     def __isub__(Histo2D self, Histo2D other):
-        c.Histo2D_isub_Histo2D(self._Histo2D(), other._Histo2D())
+        c.Histo2D_isub_Histo2D(self.h2ptr(), other.h2ptr())
         return self
 
     def __add__(Histo2D self, Histo2D other):
         h = Histo2D()
-        cutil.set_owned_ptr(h, c.Histo2D_add_Histo2D(self._Histo2D(), other._Histo2D()))
+        cutil.set_owned_ptr(h, c.Histo2D_add_Histo2D(self.h2ptr(), other.h2ptr()))
         return h
     def __sub__(Histo2D self, Histo2D other):
         h = Histo2D()
-        cutil.set_owned_ptr(h, c.Histo2D_sub_Histo2D(self._Histo2D(), other._Histo2D()))
+        cutil.set_owned_ptr(h, c.Histo2D_sub_Histo2D(self.h2ptr(), other.h2ptr()))
         return h
+
+    def __div__(Histo2D self, Histo2D other):
+        return self.divideBy(other)

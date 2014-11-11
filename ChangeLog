@@ -1,5 +1,7 @@
 2014-11-11  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Improving/adding __div__ functions in Python for all binned types.
+
 	* Add std:: prefix to isinf() calls in BinSearcher.h.
 
 2014-09-30  Andy Buckley  <andy.buckley@cern.ch>

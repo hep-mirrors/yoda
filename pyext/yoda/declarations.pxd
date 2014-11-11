@@ -897,8 +897,6 @@ cdef extern from "YODA/Profile1D.h" namespace "YODA":
 
     Scatter2D Profile1D_div_Profile1D "divide" (const Profile1D&, const Profile1D&) except +yodaerr
 
-#}}} Profile1D
-
 cdef extern from "merge.hh":
     void Profile1D_iadd_Profile1D "cython_iadd" (Profile1D*, Profile1D*)
     void Profile1D_isub_Profile1D "cython_isub" (Profile1D*, Profile1D*)
@@ -911,6 +909,7 @@ cdef extern from "merge.hh":
 cdef extern from "YODA/Scatter2D.h" namespace "YODA":
     Scatter2D mkScatter_Profile1D "YODA::mkScatter" (const Profile1D&) except +yodaerr
 
+#}}} Profile1D
 
 
 
@@ -981,7 +980,7 @@ cdef extern from "YODA/Profile2D.h" namespace "YODA":
         operator - (Profile2D)
         operator / (Profile2D)
 
-#}}} Profile2D
+    Scatter3D Profile2D_div_Profile2D "divide" (const Profile2D&, const Profile2D&) except +yodaerr
 
 cdef extern from "merge.hh":
     void Profile2D_iadd_Profile2D "cython_iadd" (Profile2D*, Profile2D*)
@@ -994,6 +993,8 @@ cdef extern from "merge.hh":
 
 cdef extern from "YODA/Scatter3D.h" namespace "YODA":
     Scatter3D mkScatter_Profile2D "YODA::mkScatter" (const Profile2D&) except +yodaerr
+
+#}}} Profile2D
 
 
 
@@ -1076,7 +1077,6 @@ cdef extern from "YODA/Histo1D.h" namespace "YODA":
     Scatter2D Histo1D_toIntegralEff "toIntegralEfficiencyHisto" (const Histo1D& h, bool includeunderflow, bool includeoverflow) except +yodaerr
     Scatter2D Histo1D_div_Histo1D "divide" (const Histo1D&, const Histo1D&) except +yodaerr
     Scatter2D Histo1D_eff_Histo1D "efficiency" (const Histo1D&, const Histo1D&) except +yodaerr
-#}}} Histo1D
 
 cdef extern from "merge.hh":
     void Histo1D_iadd_Histo1D "cython_iadd" (Histo1D*, Histo1D*)
@@ -1090,6 +1090,7 @@ cdef extern from "merge.hh":
 cdef extern from "YODA/Scatter2D.h" namespace "YODA":
     Scatter2D mkScatter_Histo1D "YODA::mkScatter" (const Histo1D&) except +yodaerr
 
+#}}} Histo1D
 
 
 
@@ -1173,7 +1174,9 @@ cdef extern from "YODA/Histo2D.h" namespace "YODA":
         operator + (Histo2D)
         operator - (Histo2D)
         operator / (Histo2D)
-# Histo2D }}}
+
+    Scatter3D Histo2D_div_Histo2D "divide" (const Histo2D&, const Histo2D&) except +yodaerr
+    Scatter3D Histo2D_eff_Histo2D "efficiency" (const Histo2D&, const Histo2D&) except +yodaerr
 
 cdef extern from "merge.hh":
     void Histo2D_iadd_Histo2D "cython_iadd" (Histo2D*, Histo2D*)
@@ -1186,6 +1189,8 @@ cdef extern from "merge.hh":
 
 cdef extern from "YODA/Scatter3D.h" namespace "YODA":
     Scatter3D mkScatter_Histo2D "YODA::mkScatter" (const Histo2D&) except +yodaerr
+
+# Histo2D }}}
 
 
 

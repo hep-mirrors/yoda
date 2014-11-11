@@ -248,6 +248,7 @@ cdef class Histo1D(AnalysisObject):
 
     def toIntegral(self, efficiency=False, includeunderflow=True, includeoverflow=True):
         """None -> Scatter2D.
+
         Convert this Histo1D to a Scatter2D representing an integral (i.e. cumulative)
         histogram constructed from this differential one.
 
@@ -255,23 +256,27 @@ cdef class Histo1D(AnalysisObject):
         and the includeXXXflow bools determine whether under and overflows are included
         in computing the (efficiency) integral.
         """
-        cdef c.Scatter2D s2
+        cdef c.Scatter2D s
         if not efficiency:
-            s2 = c.Histo1D_toIntegral(deref(self.h1ptr()), includeunderflow)
+            s = c.Histo1D_toIntegral(deref(self.h1ptr()), includeunderflow)
         else:
-            s2 = c.Histo1D_toIntegralEff(deref(self.h1ptr()), includeunderflow, includeoverflow)
-        return cutil.new_owned_cls(Scatter2D, s2.newclone())
+            s = c.Histo1D_toIntegralEff(deref(self.h1ptr()), includeunderflow, includeoverflow)
+        return cutil.new_owned_cls(Scatter2D, s.newclone())
 
+    def divideBy(self, Histo1D h, efficiency=False):
+        """Histo1D -> Scatter2D
 
-    def divide(self, Histo1D h1, efficiency=False):
-        # if type(h1) is not Histo1D:
+        Divide this histogram by h, returning a Scatter2D. The optional 'efficiency'
+        argument, if set True, will use a binomial efficiency treatment of the errors.
+        """
+        # if type(h) is not Histo1D:
         #     raise ValueError("Histograms must be of the same type to be divided")
-        cdef c.Scatter2D s2
+        cdef c.Scatter2D s
         if not efficiency:
-            s2 = c.Histo1D_div_Histo1D(deref(self.h1ptr()), deref(h1.h1ptr()))
+            s = c.Histo1D_div_Histo1D(deref(self.h1ptr()), deref(h.h1ptr()))
         else:
-            s2 = c.Histo1D_eff_Histo1D(deref(self.h1ptr()), deref(h1.h1ptr()))
-        return cutil.new_owned_cls(Scatter2D, s2.newclone())
+            s = c.Histo1D_eff_Histo1D(deref(self.h1ptr()), deref(h.h1ptr()))
+        return cutil.new_owned_cls(Scatter2D, s.newclone())
 
 
     ## In-place special methods
@@ -329,6 +334,4 @@ cdef class Histo1D(AnalysisObject):
     #     return h
 
     def __div__(Histo1D self, Histo1D other):
-        h = Histo1D()
-        cutil.set_owned_ptr(h, c.Histo1D_div_Histo1D(self.h1ptr(), other.h1ptr()))
-        return h
+        return self.divideBy(other)

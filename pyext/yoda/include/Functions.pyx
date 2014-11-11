@@ -1,7 +1,13 @@
 def mkScatter(ao):
-    """None -> Scatter{1,2,3}D
+    """AnalysisObject -> Scatter{1,2,3}D
     Convert an AnalysisObject to a Scatter, using the logic of the bound mkScatter methods."""
     return ao.mkScatter()
+
+
+def divide(ao1, ao2):
+    """(AnalysisObject, AnalysisObject) -> Scatter{1,2,3}D
+    Divide one AnalysisObject by another, producing a Scatter of appropriate dimension by using the logic of the bound divideBy methods."""
+    return ao1.divideBy(ao2)
 
 
 # def divide(ao1, ao2, efficiency=False):
