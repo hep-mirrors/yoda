@@ -1,3 +1,7 @@
+2014-11-11  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Add std:: prefix to isinf() calls in BinSearcher.h.
+
 2014-09-30  Andy Buckley  <andy.buckley@cern.ch>
 
 	* 1.3.0 release!
