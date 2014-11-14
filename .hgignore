@@ -1,5 +1,5 @@
 ~$
-\.(o|lo|Po|so|la)$
+\.(o|lo|Po|so|la|pyc)$
 \.(yoda|aida|dat|txt|root)$
 \.libs$
 \.deps$
@@ -66,3 +66,4 @@ Doxyfile$
 ^plots$
 ^a.out$
 ^testplotting$
+^sphinxdoc/_build$
