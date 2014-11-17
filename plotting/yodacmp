@@ -100,16 +100,17 @@ def main():
             for k, v in anns.iteritems():
                 ao.setAnnotation(k, v)
             # TODO: Allow Rivet to strip /REF prefixes in its use of this API
-            if ao.path.startswith("/REF"):
-                ao.path = ao.path[4:]
+            p = ao.path.replace("/REF", "")
+            # TODO: Tidy fname for this purpose
+            ao.path = p + "@" + fname
             # TODO: Use arg[0] or --refid for identifying the ref histo (if there is one)
             if i == 0:
                 ao.setAnnotation("RatioRef", "yes")
             ## Label with the original filename
             ao.setAnnotation("Origin", fname)
             ## Add to plotting dict
-            aolists.setdefault(ao.path, []).append(ao)
-    # print aolists.keys()
+            aolists.setdefault(p, []).append(ao)
+    # for p, aos in sorted(aolists.iteritems()): print p, len(aos)
 
 
     ## Apply path pattern match discarding from dict
@@ -128,6 +129,8 @@ def main():
                     break
         if not useThis:
             del aolists[path]
+    # for p, aos in sorted(aolists.iteritems()): print p, len(aos)
+
 
 
     # TODO: read and apply .plot files
@@ -172,6 +175,7 @@ def main():
             aos[0].setAnnotation("PolyMarker", "o")
             # aos[0].setAnnotation("ConnectBins", "0") # TODO: add
             aos[0].setAnnotation("Title", "Data") # TODO:improve
+            aos[0].setAnnotation("Color", "black") # TODO:improve
 
 
         # ## Loop over the MC files to plot all instances of the histogram
@@ -203,9 +207,9 @@ def main():
         from cStringIO import StringIO
         sio = StringIO()
         yoda.writeFLAT(aos, sio)
-        output = str(plot) + "\n\n" + sio.getvalue()
+        output = str(plot) + sio.getvalue()
         ##
-        outpath = ao.path.strip("/").replace("/", "_") + ".dat" # TODO: tidy up
+        outpath = path.strip("/").replace("/", "_") + ".dat" # TODO: tidy up
         with open(outpath, "w") as of:
             of.write(output)
 
@@ -247,22 +251,6 @@ def mkoutdir(outdir):
         msg = "Can't write to output directory '%s'" % outdir
         raise Exception(msg)
 
-
-def writeOutput(output, h):
-    "Choose output file name and dir"
-    hparts = h.strip("/").split("/")
-    if opts.HIER_OUTPUT:
-        ana = "_".join(hparts[:-1]) if len(hparts) > 1 else "ANALYSIS"
-        outdir = os.path.join(opts.OUTDIR, ana)
-        outfile = '%s.dat' % hparts[-1]
-    else:
-        outdir = opts.OUTDIR
-        outfile = '%s.dat' % "_".join(hparts)
-    mkoutdir(outdir)
-    outfilepath = os.path.join(outdir, outfile)
-    f = open(outfilepath, 'w')
-    f.write(output)
-    f.close()
 
 
 if __name__ == '__main__':
@@ -331,11 +319,25 @@ def setStyle(ao, style):
     ao.setAnnotation('LineColor', '%s' % LINECOLORS[c])
 
 
+def writeOutput(output, h):
+    "Choose output file name and dir"
+    hparts = h.strip("/").split("/")
+    if opts.HIER_OUTPUT:
+        ana = "_".join(hparts[:-1]) if len(hparts) > 1 else "ANALYSIS"
+        outdir = os.path.join(opts.OUTDIR, ana)
+        outfile = '%s.dat' % hparts[-1]
+    else:
+        outdir = opts.OUTDIR
+        outfile = '%s.dat' % "_".join(hparts)
+    mkoutdir(outdir)
+    outfilepath = os.path.join(outdir, outfile)
+    f = open(outfilepath, 'w')
+    f.write(output)
+    f.close()
+
+
 def setOptions(ao, options):
     "Set arbitrary annotations"
     for opt in options:
         key, val = opt.split('=', 1)
         ao.setAnnotation(key, val)
-
-
-#--------------------------------------------------------------------------------------------
