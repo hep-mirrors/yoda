@@ -62,6 +62,9 @@ namespace YODA {
       writeScatter2D(stream, dynamic_cast<const Scatter2D&>(ao));
     } else if (aotype == "Scatter3D") {
       writeScatter3D(stream, dynamic_cast<const Scatter3D&>(ao));
+    } else if (aotype[0] == '_') {
+      // skip writing AO types with underscore prefixes (needed e.g. for Rivet wrappers)
+      // maybe write a comment line in the output
     } else {
       ostringstream oss;
       oss << "Unrecognised analysis object type " << aotype << " in Writer::write";
