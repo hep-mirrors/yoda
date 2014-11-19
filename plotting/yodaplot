@@ -49,14 +49,17 @@ mpl.rcParams.update({
     "text.usetex" : (opts.ENGINE.upper() != "MPL"),
     "font.size"   : 17,
     "font.family" : "serif",
-    "font.serif"         : ["TeX Gyre Pagella", "Palatino", "Computer Modern Roman"] + mpl.rcParams["font.serif"],
-    #"font.sans-serif"    : ["Computer Modern Sans serif", "Helvetica"]
-    #"font.cursive"       : "Zapf Chancery",
-    #"font.monospace"     : "Courier, Computer Modern Typewriter",
-    #"text.latex.preamble": [r"\addfontfeature{Numbers=OldStyle}", r"\usepackage{amsmath,amssymb}"],
-    "pgf.rcfonts" : True,
+    # "font.serif"         : ["TeX Gyre Pagella", "Palatino", "Computer Modern Roman"] + mpl.rcParams["font.serif"],
+    # "font.sans-serif"    : ["Computer Modern Sans serif", "Helvetica"]
+    # "font.cursive"       : "Zapf Chancery",
+    # "font.monospace"     : "Courier, Computer Modern Typewriter",
+    # "text.latex.preamble": [r"\addfontfeature{Numbers=OldStyle}", r"\usepackage{amsmath,amssymb}"],
+    # "pgf.rcfonts" : False,
     #"pgf.preamble": [r"\usepackage[osf]{mathpazo}", r"\usepackage{amsmath,amssymb}"],
-    "pgf.preamble": [r"\usepackage{amsmath,amssymb}", r"\usepackage{fontspec}", r"\defaultfontfeatures{Numbers=OldStyle}"],
+    "pgf.preamble": [r"\usepackage{amsmath,amssymb}", r"\usepackage{mathspec}",
+                     # r"\usepackage{fontspec}", #r"\defaultfontfeatures{Numbers=OldStyle}",
+                     r"\setmainfont[Numbers=OldStyle]{TeX Gyre Pagella}",
+                     r"\setmathsfont(Digits,Latin)[Numbers=OldStyle,Scale=MatchUppercase]{TeX Gyre Pagella}"],
     # r"\usepackage{lmodern}",
     # r"\usepackage{sfmath}", ",]
     # r"\usepackage{siunitx},"]
@@ -266,7 +269,7 @@ def plot(plotargs):
 
 
     # TODO: legend (can exclude and specify order via LegendIndex, position via LegendPos)
-    axmain.legend(loc=4, fontsize="x-small", frameon=False)
+    axmain.legend(loc="best", fontsize="x-small", frameon=False)
 
 
     ## Tweak layout now that everything is in place
