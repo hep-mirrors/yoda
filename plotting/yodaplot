@@ -246,7 +246,7 @@ def plot(plotargs):
             ynew = spline(h.x, h.y, xnew)
             artists = axmain.plot(xnew, ynew, color=lcolor, linestyle=lstyle, linewidth=lwidth)
         if marker:
-            artists = axmain.plot(h.x, h.y, marker=marker, markersize=msize, linestyle="none", color=mcolor)
+            artists = axmain.plot(h.x, h.y, marker=marker, markersize=msize, linestyle="none", color=mcolor, markeredgecolor=mcolor)
 
         ## Legend entry
         if label and artists:

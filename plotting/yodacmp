@@ -14,13 +14,13 @@ def main():
 
     from optparse import OptionParser, OptionGroup
     parser = OptionParser(usage=__doc__)
-    parser.add_option('-o', '--outdir', dest='OUTDIR',
-                      default='.', help='write data files into this directory')
+    parser.add_option("-o", "--outdir", dest="OUTDIR",
+                      default=".", help="write data files into this directory")
     # parser.add_option("--hier-out", action="store_true", dest="HIER_OUTPUT", default=False,
     #                   help="write output dat files into a directory hierarchy which matches the analysis paths")
-    # parser.add_option('--plotinfodir', dest='PLOTINFODIRS', action='append',
-    #                   default=['.'], help='directory which may contain plot header information (in addition '
-    #                   'to standard Rivet search paths)')
+    # parser.add_option("--plotinfodir", dest="PLOTINFODIRS", action="append",
+    #                   default=["."], help="directory which may contain plot header information (in addition "
+    #                   "to standard Rivet search paths)")
 
     # stygroup = OptionGroup(parser, "Plot style")
     # stygroup.add_option("--refid", dest="REF_ID",
@@ -72,6 +72,14 @@ def main():
         fname, anns = parse_arg(a)
         fnames.append(fname)
         fname_anns.append(anns)
+
+
+    ## Extract PLOT keys
+    plotanns = {}
+    if "PLOT" in fnames:
+        del fnames[fnames.index("PLOT")]
+        plotanns = fname_anns["PLOT"]
+        del fname_anns["PLOT"]
 
 
     ## Initialise regex list variables
@@ -154,13 +162,19 @@ def main():
         plot = Plot()
         plot["Legend"] = has_ref
         plot["LogY"] = True # TODO: make dynamic?
+        ##
+        ## Apply PLOT annotations from command line
+        # TODO: also handle .plot file annotations via plotanns?
+        for k, v in plotanns.iteritems():
+            plot[k] = v
+        ##
         # for key, val in plotparser.getHeaders(h).iteritems():
         #     plot[key] = val
         # if opts.LINEAR:
-        #     plot["LogY'] = "0"
+        #     plot["LogY"] = "0"
         # if opts.NOPLOTTITLE:
-        #     plot["Title'] = ""
-
+        #     plot["Title"] = ""
+        ##
         # if opts.STYLE == "talk":
         #     plot["PlotSize"] = "8,6"
         # elif opts.STYLE == "bw":
@@ -168,14 +182,17 @@ def main():
         #         plot["RatioPlotErrorBandColor"] = "black!10"
 
 
-        ## Style the reference histo
+        ## Style the histos
         # TODO: Make style and label more customisable
-        if aos[0].annotation("RatioRef", False):
-            aos[0].setAnnotation("ErrorBars", "1")
-            aos[0].setAnnotation("PolyMarker", "o")
-            # aos[0].setAnnotation("ConnectBins", "0") # TODO: add
-            aos[0].setAnnotation("Title", "Data") # TODO:improve
-            aos[0].setAnnotation("Color", "black") # TODO:improve
+        for i, ao in enumerate(aos):
+            if ao.annotation("RatioRef", False):
+                ao.setAnnotation("ErrorBars", "1")
+                ao.setAnnotation("Marker", "o")
+                ao.setAnnotation("Title", "Data") # TODO:improve
+                ao.setAnnotation("Color", "black") # TODO:improve
+                # ao.setAnnotation("ConnectBins", "0") # TODO: add
+            else:
+                setStyle(ao, i)
 
 
         # ## Loop over the MC files to plot all instances of the histogram
@@ -186,21 +203,21 @@ def main():
         #         setStyle(mchistos[infile][h], styleidx)
         #         styleidx += 1
         #         if opts.MC_ERRS:
-        #             mchistos[infile][h].setAnnotation('ErrorBars', '1')
+        #             mchistos[infile][h].setAnnotation("ErrorBars", "1")
         #         ## Plot defaults from .plot files
         #         for key, val in plotparser.getHistogramOptions(h).iteritems():
         #             mchistos[infile][h].setAnnotation(key, val)
         #         ## Command line plot options
         #         setOptions(mchistos[infile][h], plotoptions[infile])
-        #         mchistos[infile][h].setAnnotation('Path', infile + h)
+        #         mchistos[infile][h].setAnnotation("Path", infile + h)
         #         anaobjects.append(mchistos[infile][h])
         #         drawonly.append(infile + h)
         #         if opts.RATIO and ratioreference is None:
         #             ratioreference = infile + h
 
         # if opts.RATIO and len(drawonly) > 1:
-        #     plot['RatioPlot'] = '1'
-        #     plot['RatioPlotReference'] = ratioreference
+        #     plot["RatioPlot"] = "1"
+        #     plot["RatioPlotReference"] = ratioreference
 
 
         ## Create the output. We can't use yoda.writeFLAT because PLOT and SPECIAL aren't AOs
@@ -239,6 +256,28 @@ class Plot(dict):
         return "# BEGIN PLOT\n" + "\n".join("%s=%s" % (k,v) for k,v in self.iteritems()) + "\n# END PLOT\n\n"
 
 
+def setStyle(ao, index):
+    """Set default plot styles (color and line width)"""
+
+    # Colors: red (Google uses "DC3912"), blue, green, orange, lilac
+    LINECOLORS = ["#EE3311", "#3366FF", "#109618", "#FF9900", "#990099"]
+    LINECOLORS = ["Blue", "Red", "Green", "DarkOrange", "DarkOrchid"]
+    LINESTYLES = ["-", "--", "-.", ":"]
+
+    # if opts.STYLE == "talk":
+    #     ao.setAnnotation("LineWidth", "1pt")
+    # if opts.STYLE == "bw":
+    #     LINECOLORS = [0.9, 0.5, 0.3]
+
+    c = index % len(LINECOLORS)
+    s = index / len(LINECOLORS)
+
+    if not ao.hasAnnotation("LineStyle"):
+        ao.setAnnotation("LineStyle", "%s" % LINESTYLES[s])
+    if not ao.hasAnnotation("Color"):
+        ao.setAnnotation("Color", "%s" % LINECOLORS[c])
+
+
 def mkoutdir(outdir):
     "Function to make output directories"
     if not os.path.exists(outdir):
@@ -253,7 +292,7 @@ def mkoutdir(outdir):
 
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
 
 
@@ -276,47 +315,21 @@ if __name__ == '__main__':
 #     filelist = []
 #     plotoptions = {}
 #     for a in args:
-#         asplit = a.split(':')
+#         asplit = a.split(":")
 #         path = asplit[0]
 #         filelist.append(path)
 #         plotoptions[path] = []
 #         has_title = False
 #         for i in xrange(1, len(asplit)):
-#             ## Add 'Title' if there is no = sign before math mode
-#             if not '=' in asplit[i] or ('$' in asplit[i] and asplit[i].index('$') < asplit[i].index('=')):
-#                 asplit[i] = 'Title=%s' % asplit[i]
-#             if asplit[i].startswith('Title='):
+#             ## Add "Title" if there is no = sign before math mode
+#             if not "=" in asplit[i] or ("$" in asplit[i] and asplit[i].index("$") < asplit[i].index("=")):
+#                 asplit[i] = "Title=%s" % asplit[i]
+#             if asplit[i].startswith("Title="):
 #                 has_title = True
 #             plotoptions[path].append(asplit[i])
 #         if not has_title:
-#             plotoptions[path].append('Title=%s' % sanitiseString(os.path.basename( os.path.splitext(path)[0] )) )
+#             plotoptions[path].append("Title=%s" % sanitiseString(os.path.basename( os.path.splitext(path)[0] )) )
 #     return filelist, plotoptions
-
-
-def setStyle(ao, style):
-    """Set default plot styles (color and line width) colors borrowed from Google Ngrams"""
-    LINECOLORS = ['{[HTML]{EE3311}}',  # red (Google uses 'DC3912')
-                  '{[HTML]{3366FF}}',  # blue
-                  '{[HTML]{109618}}',  # green
-                  '{[HTML]{FF9900}}',  # orange... weirdly this screws up if the F is lower-case!
-                  '{[HTML]{990099}}']  # lilac
-    LINESTYLES = ['solid',
-                  'dashed',
-                  'dashdotted',
-                  'dotted']
-
-    if opts.STYLE == 'talk':
-        ao.setAnnotation('LineWidth', '1pt')
-    if opts.STYLE == 'bw':
-        LINECOLORS = ['black!90',
-                      'black!50',
-                      'black!30']
-
-    c = style % len(LINECOLORS)
-    s = style / len(LINECOLORS)
-
-    ao.setAnnotation('LineStyle', '%s' % LINESTYLES[s])
-    ao.setAnnotation('LineColor', '%s' % LINECOLORS[c])
 
 
 def writeOutput(output, h):
@@ -325,13 +338,13 @@ def writeOutput(output, h):
     if opts.HIER_OUTPUT:
         ana = "_".join(hparts[:-1]) if len(hparts) > 1 else "ANALYSIS"
         outdir = os.path.join(opts.OUTDIR, ana)
-        outfile = '%s.dat' % hparts[-1]
+        outfile = "%s.dat" % hparts[-1]
     else:
         outdir = opts.OUTDIR
-        outfile = '%s.dat' % "_".join(hparts)
+        outfile = "%s.dat" % "_".join(hparts)
     mkoutdir(outdir)
     outfilepath = os.path.join(outdir, outfile)
-    f = open(outfilepath, 'w')
+    f = open(outfilepath, "w")
     f.write(output)
     f.close()
 
@@ -339,5 +352,5 @@ def writeOutput(output, h):
 def setOptions(ao, options):
     "Set arbitrary annotations"
     for opt in options:
-        key, val = opt.split('=', 1)
+        key, val = opt.split("=", 1)
         ao.setAnnotation(key, val)
