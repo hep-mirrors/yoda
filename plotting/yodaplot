@@ -33,17 +33,11 @@ if opts.QUIET:
     opts.VERBOSITY = 0
 
 
-#################
-## Data handling:
-
 import numpy as np
 import yoda
-
-
-############
-## Plotting:
-
 import matplotlib as mpl
+import plotting
+
 if opts.ENGINE.upper() == "PGF":
     mpl.use("pgf")
 mpl.rcParams.update({
@@ -54,11 +48,11 @@ mpl.rcParams.update({
                      r"\setmainfont[Numbers=OldStyle]{TeX Gyre Pagella}",
                      r"\setmathsfont(Digits,Latin)[Numbers=OldStyle,Scale=MatchUppercase]{TeX Gyre Pagella}"],
     })
-import plotting
 from matplotlib import pyplot as plt
-# TODO: allocate a nice palette for line color cycling... or some automatic system for that?
+
 
 ## Colour and line style lists
+# TODO: find a better palette for default line color cycling
 colormap = plt.cm.gist_ncar
 COLORS = [colormap(i) for i in np.linspace(0.2, 0.8, len(args))]
 STYLES = ["-", "--", ":", "-."]
@@ -232,7 +226,7 @@ def plot(plotargs):
             artists[0].set_label(label)
 
         ## Ratio plot
-        if href and h is not href:
+        if axratio and h is not href:
             # TODO: exclude and specify order via RatioIndex
             assert h.same_binning_as(href)
             # TODO: log ratio or #sigma deviation

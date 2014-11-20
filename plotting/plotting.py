@@ -196,10 +196,10 @@ def read_plot_keys(datfile):
 ## Plotting helper functions
 
 import matplotlib as mpl
-from matplotlib import pyplot as plt
 
 def mk_figaxes(ratio=True, title=None, figsize=(8,6)):
     "Make figure and subplot grid layout"
+    from matplotlib import pyplot as plt
     fig = plt.figure(figsize=figsize)
     if title:
         fig.suptitle(title, x=0.0)
