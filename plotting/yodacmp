@@ -348,10 +348,3 @@ def writeOutput(output, h):
     f = open(outfilepath, "w")
     f.write(output)
     f.close()
-
-
-def setOptions(ao, options):
-    "Set arbitrary annotations"
-    for opt in options:
-        key, val = opt.split("=", 1)
-        ao.setAnnotation(key, val)
