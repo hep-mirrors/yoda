@@ -78,8 +78,10 @@ def plot(plotargs):
         outstr = " ".join(outfiles)
         print "Plotting file {f} -> {o} ({i}/{n})".format(f=datfile, o=outstr, i=idatfile+1, n=numdatfiles)
 
+
     ## Read PLOT section annotations
     plotkeys = plotting.read_plot_keys(datfile)
+
 
     ## Load and sort data objects
     aos = yoda.read(datfile)
@@ -182,6 +184,7 @@ def plot(plotargs):
         # TODO: specify ratio display in log/lin, abs, or #sigma, and as x/r or (x-r)/r
 
 
+    ######################################################
     ## Dataset plotting
     for ih, h in enumerate(hs):
         #print ih, h.path
@@ -239,15 +242,15 @@ def plot(plotargs):
             # TODO: Smoothed plot
 
 
-    # TODO: legend (can exclude and specify order via LegendIndex, position via LegendPos)
-    axmain.legend(loc="best", fontsize="x-small", frameon=False)
+    ## Legend
+    # TODO: allow excluding and specify order via LegendIndex
+    axmain.legend(loc=plotkeys.get("LegendPos", "best"), fontsize=plotkeys.get("LegendFontSize", "x-small"), frameon=False)
 
 
     ## Tweak layout now that everything is in place
     if axratio:
         axratio.yaxis.set_major_locator(mpl.ticker.MaxNLocator(4, prune="upper"))
     fig.tight_layout()
-
 
     ## Output in each requested format
     for of in outfiles:
