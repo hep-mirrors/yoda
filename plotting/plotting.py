@@ -165,3 +165,48 @@ class NumpyHist(object):
         return (other.y == self.y).all() and \
                (other.eyminus == self.eyminus).all() and \
                (other.eyplus == self.eyplus).all()
+
+
+##########
+
+def read_plot_keys(datfile):
+    import re
+    re_begin = re.compile("#*\s*BEGIN\s+PLOT\s*(\w*)")
+    re_comment = re.compile("#.*")
+    re_attr = re.compile("(\w+)\s*=\s*(.*)")
+    re_end = re.compile("#*\s*END\s+PLOT\s+\w*")
+    plotkeys = {}
+    with open(datfile) as f:
+        inplot = False
+        for line in f:
+            l = line.strip()
+            if re_begin.match(l):
+                inplot = True
+            elif re_begin.match(l):
+                inplot = False
+            elif re_comment.match(l):
+                continue
+            elif inplot:
+                m = re_attr.match(l)
+                if m is None: continue
+                plotkeys[m.group(1)] = m.group(2)
+    return plotkeys
+
+
+## Plotting helper functions
+
+import matplotlib as mpl
+from matplotlib import pyplot as plt
+
+def mk_figaxes(ratio=True, title=None, figsize=(8,6)):
+    "Make figure and subplot grid layout"
+    fig = plt.figure(figsize=figsize)
+    if title:
+        fig.suptitle(title, x=0.0)
+    if ratio:
+        gs = mpl.gridspec.GridSpec(2, 1, height_ratios=[3,1], hspace=0)
+    else:
+        gs = mpl.gridspec.GridSpec(1, 1, hspace=0)
+    axmain = fig.add_subplot(gs[0])
+    axratio = fig.add_subplot(gs[1], sharex=axmain) if gs.get_geometry != (1,) else None
+    return fig, axmain, axratio

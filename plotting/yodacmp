@@ -77,9 +77,10 @@ def main():
     ## Extract PLOT keys
     plotanns = {}
     if "PLOT" in fnames:
-        del fnames[fnames.index("PLOT")]
-        plotanns = fname_anns["PLOT"]
-        del fname_anns["PLOT"]
+        i = fnames.index("PLOT")
+        plotanns = fname_anns[i]
+        del fnames[i]
+        del fname_anns[i]
 
 
     ## Initialise regex list variables

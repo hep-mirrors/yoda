@@ -13,11 +13,11 @@ import os, optparse
 op = optparse.OptionParser(usage=__doc__)
 op.add_option("-f", "--format", dest="FORMAT", default="PDF",
               help="output format string consisting of desired output formats separated by commas [default=%default]")
-op.add_option("--mpl", dest="ENGINE", action="store_const", const="MPL", default="MPL",
+op.add_option("--mpl", dest="ENGINE", action="store_const", const="MPL", default="PGF",
               help="use MathText text renderer")
-op.add_option("--tex", dest="ENGINE", action="store_const", const="TEX", default="MPL",
+op.add_option("--tex", dest="ENGINE", action="store_const", const="TEX", default="PGF",
               help="use TeX text renderer")
-op.add_option("--pgf", dest="ENGINE", action="store_const", const="PGF", default="MPL",
+op.add_option("--pgf", dest="ENGINE", action="store_const", const="PGF", default="PGF",
               help="use LaTeX PGF plot renderer")
 op.add_option("--debug", dest="DEBUG", action="store_true", default=False,
               help="run in debug mode with more verbosity and no parallelism")
@@ -38,34 +38,23 @@ if opts.QUIET:
 
 import numpy as np
 import yoda
-import plotting
 
 
 ############
 ## Plotting:
 
 import matplotlib as mpl
+if opts.ENGINE.upper() == "PGF":
+    mpl.use("pgf")
 mpl.rcParams.update({
     "text.usetex" : (opts.ENGINE.upper() != "MPL"),
     "font.size"   : 17,
     "font.family" : "serif",
-    # "font.serif"         : ["TeX Gyre Pagella", "Palatino", "Computer Modern Roman"] + mpl.rcParams["font.serif"],
-    # "font.sans-serif"    : ["Computer Modern Sans serif", "Helvetica"]
-    # "font.cursive"       : "Zapf Chancery",
-    # "font.monospace"     : "Courier, Computer Modern Typewriter",
-    # "text.latex.preamble": [r"\addfontfeature{Numbers=OldStyle}", r"\usepackage{amsmath,amssymb}"],
-    # "pgf.rcfonts" : False,
-    #"pgf.preamble": [r"\usepackage[osf]{mathpazo}", r"\usepackage{amsmath,amssymb}"],
     "pgf.preamble": [r"\usepackage{amsmath,amssymb}", r"\usepackage{mathspec}",
-                     # r"\usepackage{fontspec}", #r"\defaultfontfeatures{Numbers=OldStyle}",
                      r"\setmainfont[Numbers=OldStyle]{TeX Gyre Pagella}",
                      r"\setmathsfont(Digits,Latin)[Numbers=OldStyle,Scale=MatchUppercase]{TeX Gyre Pagella}"],
-    # r"\usepackage{lmodern}",
-    # r"\usepackage{sfmath}", ",]
-    # r"\usepackage{siunitx},"]
     })
-if opts.ENGINE.upper() == "PGF":
-    mpl.use("pgf")
+import plotting
 from matplotlib import pyplot as plt
 # TODO: allocate a nice palette for line color cycling... or some automatic system for that?
 
@@ -95,53 +84,22 @@ def plot(plotargs):
         outstr = " ".join(outfiles)
         print "Plotting file {f} -> {o} ({i}/{n})".format(f=datfile, o=outstr, i=idatfile+1, n=numdatfiles)
 
-    ## Read PLOT section manually
-    # TODO: move out into plotting.py
-    inplot = False
-    plotkeys = {}
-    import re
-    re_begin = re.compile("#*\s*BEGIN\s+PLOT\s*(\w*)")
-    re_comment = re.compile("#.*")
-    re_attr = re.compile("(\w+)\s*=\s*(.*)")
-    re_end = re.compile("#*\s*END\s+PLOT\s+\w*")
-    with open(datfile) as f:
-        for line in f:
-            l = line.strip()
-            if re_begin.match(l):
-                inplot = True
-            elif re_begin.match(l):
-                inplot = False
-            elif re_comment.match(l):
-                continue
-            elif inplot:
-                m = re_attr.match(l)
-                if m is None: continue
-                plotkeys[m.group(1)] = m.group(2)
-    #print plotkeys
+    ## Read PLOT section annotations
+    plotkeys = plotting.read_plot_keys(datfile)
 
     ## Load and sort data objects
     aos = yoda.read(datfile)
     hs = sorted([plotting.NumpyHist(ao) for ao in aos.values()], key=lambda h: h.path)
-    # TODO: allow plotting order specification via PlotIndex (-1 = no plot)
+    # TODO: allow plotting order specification via PlotIndex (-ve = no plot)
 
-    ## Get data ranges
-    xmin = min(min(h.xmin) for h in hs)
-    xmax = max(max(h.xmax) for h in hs)
+    ## Get data ranges (calculated or forced)
+    # TODO: Round up calc'd ymax to nearest round number within 10% of ydiff, to create a top tick label... sensitive to log/lin measure
+    xmin = plotkeys.get("XMin", min(min(h.xmin) for h in hs))
+    xmax = plotkeys.get("XMax", max(max(h.xmax) for h in hs))
     xdiff = xmax - xmin
-    ymin = min(min(h.ymin) for h in hs)
-    ymax = max(max(h.ymax) for h in hs)
+    ymin = plotkeys.get("YMin", min(min(h.ymin) for h in hs))
+    ymax = plotkeys.get("YMax", max(max(h.ymax) for h in hs))
     ydiff = ymax - ymin
-
-    # TODO: Round up ymax to nearest round number within 10% of ydiff, to create a top tick label
-
-    ## Get whole-plot info: axis log/lin measure, ranges and labels
-    title = None
-    xlabel = plotkeys.get("XLabel", "") #"$x$ 1234567890 $1234567890$"
-    ylabel = plotkeys.get("YLabel", "")
-    # TODO: Dynamic default based on data ranges?
-    xmeasure = "log" if plotting.as_bool(plotkeys.get("LogX", False)) else "lin"
-    ymeasure = "log" if plotting.as_bool(plotkeys.get("LogY", False)) else "lin"
-
 
     ## Identify reference histo by annotation
     href = None
@@ -150,51 +108,69 @@ def plot(plotargs):
             if href is None:
                 href = h
             else:
-                print "Ratio reference set twice: using first value = {}".format(href.path)
-
-    ## Ratio plot styling via the reference histo annotations
-    if href:
-        ratioylabel = href.annotations.get("RatioYLabel", "Ratio")
-        ratioerrcolor = href.annotations.get("RatioErrColor", "yellow")
+                print "Multiple ratio references set: using first value = {}".format(href.path)
 
 
     ## Make figure and subplot grid layout
-    fig = plt.figure(figsize=(8, 6))
-    if title:
-        fig.suptitle(title, x=0.0)
-    if href:
-        gs = mpl.gridspec.GridSpec(2, 1, height_ratios=[3,1], hspace=0)
-    else:
-        gs = mpl.gridspec.GridSpec(1, 1, hspace=0)
+    title = plotkeys.get("Title", "")
+    fig, axmain, axratio = plotting.mk_figaxes(href, title)
 
+
+    ######################################################
     ## Main plot
+
+    ## Get axis labels
+    xlabel = plotkeys.get("XLabel", "")
+    ylabel = plotkeys.get("YLabel", "")
+
+    ## Get axis log/lin measure
+    # TODO: Dynamic default based on data ranges?
+    xmeasure = "log" if plotting.as_bool(plotkeys.get("LogX", False)) else "linear"
+    ymeasure = "log" if plotting.as_bool(plotkeys.get("LogY", False)) else "linear"
+
     # TODO: take log axes and preference for round numbers into account in setting default axis limits
-    axmain = fig.add_subplot(gs[0])
-    if not href:
-        axmain.set_xlabel(xlabel, x=1, ha="right", labelpad=None)
+    axmain.set_yscale(ymeasure)
+    axmain.set_xscale(xmeasure)
     axmain.set_ylabel(ylabel, y=1, ha="right", labelpad=None)
-    # axmain.xaxis.set_major_locator(mpl.ticker.NullLocator())
-    plt.setp(axmain.get_xticklabels(), visible=False)
-    # TODO: Main plot manual limits
+    if href:
+        axmain.xaxis.set_major_locator(mpl.ticker.NullLocator())
+    else:
+        axmain.set_xlabel(xlabel, x=1, ha="right", labelpad=None)
+
     # TODO: Main plot manual ticks
     axmain.set_ylim([ymin-0.1*ydiff, ymax+0.1*ydiff])
     axmain.hold(True)
 
+    ## Ratio plot styling via the reference histo annotations
+    ratioylabel = plotkeys.get("RatioYLabel", "Ratio")
+    ratioerrcolor = plotkeys.get("RatioErrColor", "yellow")
+    ratioymeasure = "log" if plotting.as_bool(plotkeys.get("RatioLogY", False)) else "linear"
+
+
+    ######################################################
     ## Ratio plot
-    axratio = None
-    if href:
-        axratio = fig.add_subplot(gs[1], sharex=axmain)
+
+    if axratio:
         axratio.set_xlabel(xlabel, x=1, ha="right", labelpad=None)
         axratio.set_ylabel(ratioylabel)
-        # TODO: Ratio plot manual limits
+        axratio.set_xscale(xmeasure)
+        axratio.set_yscale(ratioymeasure)
         # TODO: Ratio plot manual ticks
         axratio.hold(True)
         # TODO: Would be nice to add a display space fixed padding rather than prop to xdiff
         axratio.set_xlim([xmin-0.001*xdiff, xmax+0.001*xdiff])
-        # TODO: manual ratio limit specification and RatioSymmRange option
-        #axratio.set_ylim(0.5, 1.5)
+        # TODO: RatioSymmRange option
+        ## Set ratio display limits
+        axratio.set_ylim(auto=True)
+        if plotkeys.has_key("RatioYMin"):
+            axratio.set_ylim(bottom=plotkeys.get("RatioYMin"))
+        if plotkeys.has_key("RatioYMax"):
+            axratio.set_ylim(top=plotkeys.get("RatioYMax"))
+        # Ratio = 1 marker line
+        axratio.axhline(1.0, color="gray")
 
-        # Draw fill_between ref error band (do this before looping over cmp lines)
+    ## Draw fill_between ref error band (do this before looping over cmp lines)
+    if axratio:
         ref_ymax_ratios = href.ymax/href.y
         ref_ymin_ratios = href.ymin/href.y
         # TODO: Diag: (needs -> limit handling at ends)
@@ -207,7 +183,7 @@ def plot(plotargs):
                              edgecolor="none", facecolor=ratioerrcolor)
         # TODO: Smoothed: (needs -> limit handling at ends)
 
-        # Ratio = 1 marker line:
+        # Redraw ratio = 1 marker line:
         axratio.axhline(1.0, color="gray")
         # TODO: specify ratio display in log/lin, abs, or #sigma, and as x/r or (x-r)/r
 
@@ -261,6 +237,7 @@ def plot(plotargs):
             assert h.same_binning_as(href)
             # TODO: log ratio or #sigma deviation
             yratios = h.y/href.y
+            # TODO: Same styling control as for main plot (with Ratio prefix, default to main plot style)
             ## Stepped plot
             axratio.step(href.xedges_sgl, np.append(yratios, yratios[-1]), where="post", color=lcolor, linestyle=lstyle, linewidth=lwidth)
             # TODO: Diag plot
