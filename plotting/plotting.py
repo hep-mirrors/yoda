@@ -178,18 +178,21 @@ def read_plot_keys(datfile):
     plotkeys = {}
     with open(datfile) as f:
         inplot = False
+        name = None
         for line in f:
             l = line.strip()
             if re_begin.match(l):
                 inplot = True
-            elif re_begin.match(l):
+                name = re_begin.match(l).group(1)
+            elif re_end.match(l):
                 inplot = False
+                name = None
             elif re_comment.match(l):
                 continue
             elif inplot:
                 m = re_attr.match(l)
                 if m is None: continue
-                plotkeys[m.group(1)] = m.group(2)
+                plotkeys.setdefault(name, {})[m.group(1)] = m.group(2)
     return plotkeys
 
 

@@ -22,7 +22,7 @@ def main():
     #                   default=["."], help="directory which may contain plot header information (in addition "
     #                   "to standard Rivet search paths)")
 
-    # stygroup = OptionGroup(parser, "Plot style")
+    stygroup = OptionGroup(parser, "Plot style")
     # stygroup.add_option("--refid", dest="REF_ID",
     #                     default="REF", help="ID of reference data set (file path for non-REF data)")
     # stygroup.add_option("--linear", action="store_true", dest="LINEAR",
@@ -34,9 +34,9 @@ def main():
     #                     "(useful when the plot description should only be given in a caption)")
     # stygroup.add_option("--style", dest="STYLE", default="default",
     #                     help="change plotting style: default|bw|talk")
-    # stygroup.add_option("-c", "--config", dest="CONFIGFILES", action="append", default=None, #["~/.make-plots"],
-    #                     help="additional plot config file(s). Settings will be included in the output configuration.")
-    # parser.add_option_group(stygroup)
+    stygroup.add_option("-c", "--config", dest="CONFIGFILES", action="append", default=[], #["~/.make-plots"],
+                        help="additional plot config file(s). Settings will be included in the output configuration.")
+    parser.add_option_group(stygroup)
 
     # TODO: re-enable the pattern matching, and _maybe_ the variants on ref-only plotting if we don't have a plotting system via YODA soon
     #
@@ -74,6 +74,13 @@ def main():
         fname_anns.append(anns)
 
 
+    ## Read .plot files
+    # TODO: Order, dict merging, etc.
+    import re, plotting
+    plotkeys = {}
+    for pf in opts.CONFIGFILES:
+        plotkeys.update( plotting.read_plot_keys(plotfile) )
+
     ## Extract PLOT keys
     plotanns = {}
     if "PLOT" in fnames:
@@ -83,35 +90,26 @@ def main():
         del fname_anns[i]
 
 
-    ## Initialise regex list variables
-    import re
-    if opts.PATHPATTERNS is None:
-        opts.PATHPATTERNS = []
-    # See if a pattern option is an observable file and append its contents to
-    # the pattern list
-    import os
-    for m in opts.PATHPATTERNS:
-        if os.path.exists(m):
-            f=open(m, "r")
-            opts.PATHPATTERNS.extend([line.strip() for line in f if not line.startswith("#")])
-            f.close()
-    opts.PATHPATTERNS = [re.compile(r) for r in opts.PATHPATTERNS]
-    if opts.PATHUNPATTERNS is None:
-        opts.PATHUNPATTERNS = []
-    opts.PATHUNPATTERNS = [re.compile(r) for r in opts.PATHUNPATTERNS]
-
-
     ## Load data objects into a dict of list[AO]s, and apply annotations
+    # TODO: do the path pattern matching 'inline' here?
     aolists = {}
     for i, (fname, anns) in enumerate(zip(fnames, fname_anns)):
         aos = [ ao.mkScatter() for ao in yoda.read(fname, asdict=False) ]
         for ao in aos:
-            for k, v in anns.iteritems():
-                ao.setAnnotation(k, v)
             # TODO: Allow Rivet to strip /REF prefixes in its use of this API
             p = ao.path.replace("/REF", "")
-            # TODO: Tidy fname for this purpose
+            ## Apply .plot patterns first
+            for patt, keys in plotkeys.keys():
+                if re.match(patt, p):
+                    for k, v in keys.iteritems():
+                        ao.setAnnotation(k, v)
+            ## Then command line annotation overrides
+            for k, v in anns.iteritems():
+                ao.setAnnotation(k, v)
+            ## Obsfucate the path for uniqueness
+            # TODO: Tidy fname slashes etc. for this purpose
             ao.path = p + "@" + fname
+            ## The first file is used as the reference
             # TODO: Use arg[0] or --refid for identifying the ref histo (if there is one)
             if i == 0:
                 ao.setAnnotation("RatioRef", "yes")
@@ -121,8 +119,9 @@ def main():
             aolists.setdefault(p, []).append(ao)
     # for p, aos in sorted(aolists.iteritems()): print p, len(aos)
 
-
     ## Apply path pattern match discarding from dict
+    opts.PATHPATTERNS = [re.compile(r) for r in opts.PATHPATTERNS] if opts.PATHPATTERNS else []
+    opts.PATHUNPATTERNS = [re.compile(r) for r in opts.PATHUNPATTERNS] if opts.PATHUNPATTERNS else []
     for path in aolists.keys():
         useThis = True
         if opts.PATHPATTERNS:
@@ -141,12 +140,9 @@ def main():
     # for p, aos in sorted(aolists.iteritems()): print p, len(aos)
 
 
-
-    # TODO: read and apply .plot files
-
-
     ## Loop over unique paths, plotting in order of command-line appearance
     # TODO: bind default color/style cycling to the filenames
+
 
     ## Now loop over all MC histograms and plot them
     for path, aos in aolists.iteritems():

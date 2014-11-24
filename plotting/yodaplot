@@ -80,7 +80,8 @@ def plot(plotargs):
 
 
     ## Read PLOT section annotations
-    plotkeys = plotting.read_plot_keys(datfile)
+    # TODO: Handle named PLOT section
+    plotkeys = plotting.read_plot_keys(datfile)['']
 
 
     ## Load and sort data objects
