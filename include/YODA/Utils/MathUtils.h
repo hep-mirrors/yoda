@@ -153,11 +153,11 @@ namespace YODA {
     if (lowbound == OPEN && highbound == OPEN) {
       return (value > low && value < high);
     } else if (lowbound == OPEN && highbound == CLOSED) {
-      return (value > low && (value < high || fuzzyEquals(value, high)));
+      return (value > low && value <= high);
     } else if (lowbound == CLOSED && highbound == OPEN) {
-      return ((value > low || fuzzyEquals(value, low)) && value < high);
+      return (value >= low && value < high);
     } else { // if (lowbound == CLOSED && highbound == CLOSED) {
-      return ((value > low || fuzzyEquals(value, low)) && (value < high || fuzzyEquals(value, high)));
+      return (value >= low && value <= high);
     }
   }
 
