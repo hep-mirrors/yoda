@@ -1,3 +1,9 @@
+2014-11-25  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Handle overflow filling in binned types without invoking an exception.
+
+	* Change inRange to have non-fuzzy comparison behaviour.
+
 2014-11-11  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Improving/adding __div__ functions in Python for all binned types.

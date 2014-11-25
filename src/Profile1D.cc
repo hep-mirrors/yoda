@@ -15,18 +15,24 @@ namespace YODA {
 
   void Profile1D::fill(double x, double y, double weight) {
     if ( std::isnan(x) ) throw RangeError("X is NaN");
-    // if ( std::isinf(x) ) throw RangeError("X is Inf");
     if ( std::isnan(y) ) throw RangeError("Y is NaN");
-    // if ( std::isinf(y) ) throw RangeError("Y is Inf");
+
     // Fill the overall distribution
     _axis.totalDbn().fill(x, y, weight);
+
     // Fill the bins and overflows
-    try {
-      binAt(x).fill(x, y, weight);
-    } catch (const RangeError& re) {
-      if      (x <  _axis.xMin()) _axis.underflow().fill(x, y, weight);
-      else if (x >= _axis.xMax()) _axis.overflow().fill(x, y, weight);
+    /// Unify this with Histo1D's version, when binning and inheritance are reworked
+    if (inRange(x, _axis.xMin(), _axis.xMax())) {
+      try {
+        /// @todo Replace try block with a check that there is a bin at x
+        binAt(x).fill(x, y, weight);
+      } catch (const RangeError& re) {    }
+    } else if (x < _axis.xMin()) {
+      _axis.underflow().fill(x, y, weight);
+    } else if (x >= _axis.xMax()) {
+      _axis.overflow().fill(x, y, weight);
     }
+
     // Lock the axis now that a fill has happened
     _axis._setLock(true);
   }
