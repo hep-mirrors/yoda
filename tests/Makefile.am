@@ -7,6 +7,7 @@ EXTRA_DIST = \
   pytest-p2d \
   pytest-s1d \
   pytest-s2d \
+  pytest-div \
   pytest-operators \
   shtest-yodamerge \
   shtest-yoda2root \
@@ -97,6 +98,7 @@ TESTS = \
   pytest-p2d \
   pytest-s1d \
   pytest-s2d \
+  pytest-div \
   pytest-operators \
   shtest-yodamerge
 
