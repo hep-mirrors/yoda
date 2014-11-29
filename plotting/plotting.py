@@ -206,10 +206,15 @@ def mk_figaxes(ratio=True, title=None, figsize=(8,6)):
     fig = plt.figure(figsize=figsize)
     if title:
         fig.suptitle(title, x=0.0)
+    #
     if ratio:
         gs = mpl.gridspec.GridSpec(2, 1, height_ratios=[3,1], hspace=0)
     else:
         gs = mpl.gridspec.GridSpec(1, 1, hspace=0)
     axmain = fig.add_subplot(gs[0])
-    axratio = fig.add_subplot(gs[1], sharex=axmain) if gs.get_geometry != (1,) else None
+    #
+    try:
+        axratio = fig.add_subplot(gs[1], sharex=axmain)
+    except IndexError, e:
+        axratio = None
     return fig, axmain, axratio
