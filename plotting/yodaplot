@@ -35,26 +35,10 @@ if opts.QUIET:
 
 import numpy as np
 import yoda
-import matplotlib as mpl
+
 import plotting
-
-if opts.ENGINE.upper() == "PGF":
-    mpl.use("pgf")
-mpl.rcParams.update({
-    "text.usetex" : (opts.ENGINE.upper() != "MPL"),
-    "font.size"   : 17,
-    "font.family" : "serif",
-    "pgf.preamble": [r"\usepackage{amsmath,amssymb}", r"\usepackage{mathspec}",
-                     r"\setmainfont[Numbers=OldStyle]{TeX Gyre Pagella}",
-                     r"\setmathsfont(Digits,Latin)[Numbers=OldStyle,Scale=MatchUppercase]{TeX Gyre Pagella}"],
-    })
-from matplotlib import pyplot as plt
-
-
-## Colour and line style lists
-# TODO: find a better palette for default line color cycling
-colormap = plt.cm.gist_ncar
-COLORS = [colormap(i) for i in np.linspace(0.2, 0.8, len(args))]
+mpl, plt = plotting.setup_mpl(opts.ENGINE)
+COLORS = [plt.cm.jet(i) for i in np.linspace(0.2, 0.8, len(args))]
 STYLES = ["-", "--", ":", "-."]
 
 
@@ -78,185 +62,17 @@ def plot(plotargs):
         outstr = " ".join(outfiles)
         print "Plotting file {f} -> {o} ({i}/{n})".format(f=datfile, o=outstr, i=idatfile+1, n=numdatfiles)
 
-
     ## Read PLOT section annotations
-    # TODO: Handle named PLOT section
+    # TODO: Handle regex'd PLOT sections
     plotkeys = plotting.read_plot_keys(datfile)['']
-
 
     ## Load and sort data objects
     aos = yoda.read(datfile)
     hs = sorted([plotting.NumpyHist(ao) for ao in aos.values()], key=lambda h: h.path)
     # TODO: allow plotting order specification via PlotIndex (-ve = no plot)
 
-    ## Get data ranges (calculated or forced)
-    # TODO: Round up calc'd ymax to nearest round number within 10% of ydiff, to create a top tick label... sensitive to log/lin measure
-    xmin = float(plotkeys.get("XMin", min(min(h.xmin) for h in hs)))
-    xmax = float(plotkeys.get("XMax", max(max(h.xmax) for h in hs)))
-    xdiff = xmax - xmin
-    # print xmin, xmax, xdiff
-    ymin = float(plotkeys.get("YMin", min(min(h.ymin) for h in hs)))
-    ymax = float(plotkeys.get("YMax", max(max(h.ymax) for h in hs)))
-    ydiff = ymax - ymin
-    # print ymin, ymax, ydiff
-
-    ## Identify reference histo by annotation
-    href = None
-    for h in hs:
-        if plotting.as_bool(h.annotations.get("RatioRef", False)):
-            if href is None:
-                href = h
-            else:
-                print "Multiple ratio references set: using first value = {}".format(href.path)
-
-
-    ## Make figure and subplot grid layout
-    title = plotkeys.get("Title", "")
-    fig, axmain, axratio = plotting.mk_figaxes(href, title)
-
-
-    ######################################################
-    ## Main plot
-
-    ## Get axis labels
-    xlabel = plotkeys.get("XLabel", "")
-    ylabel = plotkeys.get("YLabel", "")
-
-    ## Get axis log/lin measure
-    # TODO: Dynamic default based on data ranges?
-    xmeasure = "log" if plotting.as_bool(plotkeys.get("LogX", False)) else "linear"
-    ymeasure = "log" if plotting.as_bool(plotkeys.get("LogY", False)) else "linear"
-    # print xmeasure, ymeasure
-
-    # TODO: take log axes and preference for round numbers into account in setting default axis limits
-    axmain.set_yscale(ymeasure)
-    axmain.set_xscale(xmeasure)
-    axmain.set_ylabel(ylabel, y=1, ha="right", labelpad=None)
-    if href:
-        axmain.xaxis.set_major_locator(mpl.ticker.NullLocator())
-    else:
-        axmain.set_xlabel(xlabel, x=1, ha="right", labelpad=None)
-
-    # TODO: Main plot manual ticks
-    #axmain.set_ylim([ymin-0.1*ydiff, ymax+0.1*ydiff]) # <- TODO: bad on a log scale!
-    axmain.set_ylim([ymin, ymax])
-    axmain.hold(True)
-
-    ## Ratio plot styling via the reference histo annotations
-    ratioylabel = plotkeys.get("RatioYLabel", "Ratio")
-    ratioerrcolor = plotkeys.get("RatioErrColor", "yellow")
-    ratioymeasure = "log" if plotting.as_bool(plotkeys.get("RatioLogY", False)) else "linear"
-
-
-    ######################################################
-    ## Ratio plot
-
-    if axratio:
-        axratio.set_xlabel(xlabel, x=1, ha="right", labelpad=None)
-        axratio.set_ylabel(ratioylabel)
-        axratio.set_xscale(xmeasure)
-        axratio.set_yscale(ratioymeasure)
-        # TODO: Ratio plot manual ticks
-        axratio.hold(True)
-        # TODO: Would be nice to add a display space fixed padding rather than prop to xdiff
-        # axratio.set_xlim([xmin-0.001*xdiff, xmax+0.001*xdiff]) # <- TODO: bad on a log scale!
-        axratio.set_xlim([xmin, xmax])
-        # TODO: RatioSymmRange option
-        ## Set ratio display limits
-        axratio.set_ylim(auto=True)
-        if plotkeys.has_key("RatioYMin"):
-            axratio.set_ylim(bottom=float(plotkeys.get("RatioYMin")))
-        if plotkeys.has_key("RatioYMax"):
-            axratio.set_ylim(top=float(plotkeys.get("RatioYMax")))
-        # Ratio = 1 marker line
-        axratio.axhline(1.0, color="gray")
-
-    ## Draw fill_between ref error band (do this before looping over cmp lines)
-    if axratio:
-        ref_ymax_ratios = href.ymax/href.y
-        ref_ymin_ratios = href.ymin/href.y
-        # TODO: Diag: (needs -> limit handling at ends)
-        # axratio.fill_between(href.x, ref_ymin_ratios, ref_ymax_ratios,
-        #                      edgecolor="none", facecolor=ratioerrcolor, interpolate=False)
-        # Stepped:
-        def dbl_array(arr):
-            return sum(([x,x] for x in arr), [])
-        axratio.fill_between(href.xedges_dbl, dbl_array(ref_ymin_ratios), dbl_array(ref_ymax_ratios),
-                             edgecolor="none", facecolor=ratioerrcolor)
-        # TODO: Smoothed: (needs -> limit handling at ends)
-
-        # Redraw ratio = 1 marker line:
-        axratio.axhline(1.0, color="gray")
-        # TODO: specify ratio display in log/lin, abs, or #sigma, and as x/r or (x-r)/r
-
-
-    ######################################################
-    ## Dataset plotting
-    for ih, h in enumerate(hs):
-        #print ih, h.path
-
-        label = h.annotations.get("Title", None)
-
-        default_color = h.annotations.get("Color", COLORS[ih % len(COLORS)])
-        marker = h.annotations.get("Marker", h.annotations.get("PolyMarker", None)) # <- make-plots translation
-        marker = {"*":"o"}.get(marker, marker) # <- make-plots translation
-        mcolor = h.annotations.get("LineColor", default_color)
-        errbar = h.annotations.get("ErrorBars", None)
-        ecolor = h.annotations.get("ErrorBarsColor", default_color)
-        line = h.annotations.get("Line", None)
-        lcolor = h.annotations.get("LineColor", default_color)
-        lstyle = h.annotations.get("LineStyle", "-")
-        lstyle = {"solid":"-", "dashed":"--", "dotdashed":"-.", "dashdotted":"-.", "dotted":":"}.get(lstyle, lstyle) # <- make-plots translation
-        lwidth = 1.4
-        msize = 7
-
-        ## If no drawing is enabled, default to a step line
-        if not any(h.annotations.get(a) for a in ("Marker", "Line", "ErrorBars")):
-            line = "step"
-
-        ## Plotting
-        artists = None
-        if errbar:
-            artists = axmain.errorbar(h.x, h.y, xerr=h.exminus, yerr=h.eyminus, color=ecolor, linestyle="none", linewidth=lwidth, capthick=lwidth) # linestyle="-", marker="o",
-        if line == "step":
-            artists = axmain.step(np.append(h.xmin, h.xmax[-1]), np.append(h.y, h.y[-1]), where="post", color=lcolor, linestyle=lstyle, linewidth=lwidth)
-        elif line == "diag":
-            artists = axmain.plot(h.x, h.y, color=lcolor, linestyle=lstyle, linewidth=lwidth)
-        elif line == "smooth":
-            from scipy.interpolate import spline
-            xnew = np.linspace(h.x.min(), h.x.max(), 3*len(h))
-            ynew = spline(h.x, h.y, xnew)
-            artists = axmain.plot(xnew, ynew, color=lcolor, linestyle=lstyle, linewidth=lwidth)
-        if marker:
-            artists = axmain.plot(h.x, h.y, marker=marker, markersize=msize, linestyle="none", color=mcolor, markeredgecolor=mcolor)
-
-        ## Legend entry
-        if label and artists:
-            artists[0].set_label(label)
-
-        ## Ratio plot
-        if axratio and h is not href:
-            # TODO: exclude and specify order via RatioIndex
-            assert h.same_binning_as(href)
-            # TODO: log ratio or #sigma deviation
-            yratios = h.y/href.y
-            # TODO: Same styling control as for main plot (with Ratio prefix, default to main plot style)
-            ## Stepped plot
-            axratio.step(href.xedges_sgl, np.append(yratios, yratios[-1]), where="post", color=lcolor, linestyle=lstyle, linewidth=lwidth)
-            # TODO: Diag plot
-            # axratio.plot(href["x"], yratios, color="r", linestyle="--")
-            # TODO: Smoothed plot
-
-
-    ## Legend
-    # TODO: allow excluding and specify order via LegendIndex
-    axmain.legend(loc=plotkeys.get("LegendPos", "best"), fontsize=plotkeys.get("LegendFontSize", "x-small"), frameon=False)
-
-
-    ## Tweak layout now that everything is in place
-    if axratio:
-        axratio.yaxis.set_major_locator(mpl.ticker.MaxNLocator(4, prune="upper"))
-    fig.tight_layout()
+    ## Do plotting
+    fig, ax1, ax2 = plotting.plothists(hs, plotkeys)
 
     ## Output in each requested format
     for of in outfiles:
