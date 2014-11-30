@@ -212,9 +212,68 @@ def mk_figaxes(ratio=True, title=None, figsize=(8,6)):
     else:
         gs = mpl.gridspec.GridSpec(1, 1, hspace=0)
     axmain = fig.add_subplot(gs[0])
+    axmain.hold(True)
     #
     try:
         axratio = fig.add_subplot(gs[1], sharex=axmain)
+        axratio.hold(True)
+        axratio.axhline(1.0, color="gray") #< Ratio = 1 marker line
     except IndexError, e:
         axratio = None
+    #
     return fig, axmain, axratio
+
+
+def set_axis_labels(axmain, axratio, xlabel=None, ylabel=None, ratioylabel=None):
+    axmain.set_ylabel(ylabel, y=1, ha="right", labelpad=None)
+    if axratio:
+        axmain.xaxis.set_major_locator(mpl.ticker.NullLocator())
+        axratio.set_xlabel(xlabel, x=1, ha="right", labelpad=None)
+        axratio.set_ylabel(ratioylabel)
+    else:
+        axmain.set_xlabel(xlabel, x=1, ha="right", labelpad=None)
+
+
+def setup_axes(axmain, axratio, plotkeys):
+    ## Axis labels first
+    xlabel = plotkeys.get("XLabel", "")
+    ylabel = plotkeys.get("YLabel", "")
+    ratioylabel = plotkeys.get("RatioYLabel", "Ratio")
+    set_axis_labels(axmain, axratio, xlabel, ylabel, ratioylabel)
+
+    ## log/lin measures
+    # TODO: Dynamic default based on data ranges?
+    # TODO: take log axes and preference for round numbers into account in setting default axis limits
+    xmeasure = "log" if as_bool(plotkeys.get("LogX", False)) else "linear"
+    ymeasure = "log" if as_bool(plotkeys.get("LogY", False)) else "linear"
+    ratioymeasure = "log" if as_bool(plotkeys.get("RatioLogY", False)) else "linear"
+    axmain.set_xscale(xmeasure)
+    axmain.set_yscale(ymeasure)
+    if axratio:
+        axratio.set_xscale(xmeasure)
+        axratio.set_yscale(ratioymeasure)
+
+    ## Plot range limits
+    if plotkeys.has_key("YMin"):
+        axmain.set_ylim(bottom=float(plotkeys.get("YMin")))
+    if plotkeys.has_key("YMax"):
+        axmain.set_ylim(top=float(plotkeys.get("YMin")))
+    #
+    if plotkeys.has_key("XMin"):
+        axmain.set_xlim(left=float(plotkeys.get("XMin")))
+    if plotkeys.has_key("XMax"):
+        axmain.set_xlim(right=float(plotkeys.get("XMin")))
+    #
+    if axratio:
+        # TODO: RatioSymmRange option
+        # axratio.set_xlim([xmin-0.001*xdiff, xmax+0.001*xdiff]) # <- TODO: bad on a log scale!
+        if plotkeys.has_key("XMin"):
+            axratio.set_xlim(left=float(plotkeys.get("XMin")))
+        if plotkeys.has_key("XMax"):
+            axratio.set_xlim(right=float(plotkeys.get("XMin")))
+        if plotkeys.has_key("RatioYMin"):
+            axratio.set_ylim(bottom=float(plotkeys.get("RatioYMin")))
+        if plotkeys.has_key("RatioYMax"):
+            axratio.set_ylim(top=float(plotkeys.get("RatioYMax")))
+
+    # TODO: Ratio plot manual ticks

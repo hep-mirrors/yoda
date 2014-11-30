@@ -52,41 +52,17 @@ def plot(hs, **plotkeys):
             else:
                 print "Multiple ratio references set: using first value = {}".format(href.path)
 
-
     ## Make figure and subplot grid layout
     title = plotkeys.get("Title", "")
     fig, axmain, axratio = plotting.mk_figaxes(href, title)
 
-
-    ######################################################
-    ## Main plot
-
-    ## Setup
-    #
-    ## Get axis labels
-    xlabel = plotkeys.get("XLabel", "")
-    ylabel = plotkeys.get("YLabel", "")
-
-    ## Get axis log/lin measure
-    # TODO: Dynamic default based on data ranges?
-    xmeasure = "log" if plotting.as_bool(plotkeys.get("LogX", False)) else "linear"
-    ymeasure = "log" if plotting.as_bool(plotkeys.get("LogY", False)) else "linear"
-    # print xmeasure, ymeasure
-
-    # TODO: take log axes and preference for round numbers into account in setting default axis limits
-    axmain.set_yscale(ymeasure)
-    axmain.set_xscale(xmeasure)
-    axmain.set_ylabel(ylabel, y=1, ha="right", labelpad=None)
-    if href:
-        axmain.xaxis.set_major_locator(mpl.ticker.NullLocator())
-    else:
-        axmain.set_xlabel(xlabel, x=1, ha="right", labelpad=None)
-
-    # TODO: Main plot manual ticks
-    #axmain.set_ylim([ymin-0.1*ydiff, ymax+0.1*ydiff]) # <- TODO: bad on a log scale!
+    ## Setup axes appearances
+    axmain.set_xlim([xmin, xmax])
     axmain.set_ylim([ymin, ymax])
-    axmain.hold(True)
-
+    if axratio:
+        axratio.set_xlim([xmin, xmax])
+        axratio.set_ylim(auto=True)
+    plotting.setup_axes(axmain, axratio, plotkeys)
 
     ## Dataset plotting
     for ih, h in enumerate(hs):
@@ -132,43 +108,11 @@ def plot(hs, **plotkeys):
             artists[0].set_label(label)
 
 
-    ## Legend
-    # TODO: allow excluding and specify order via LegendIndex
-    axmain.legend(loc=plotkeys.get("LegendPos", "best"), fontsize=plotkeys.get("LegendFontSize", "x-small"), frameon=False)
-
-
 
     ######################################################
     ## Ratio plot
 
     if axratio:
-
-        ## Ratio plot setup
-        #
-        ## Ratio plot styling via the reference histo annotations
-        ratioylabel = plotkeys.get("RatioYLabel", "Ratio")
-        ratioerrcolor = plotkeys.get("RatioErrColor", "yellow")
-        ratioymeasure = "log" if plotting.as_bool(plotkeys.get("RatioLogY", False)) else "linear"
-        #
-        axratio.set_xlabel(xlabel, x=1, ha="right", labelpad=None)
-        axratio.set_ylabel(ratioylabel)
-        axratio.set_xscale(xmeasure)
-        axratio.set_yscale(ratioymeasure)
-        # TODO: Ratio plot manual ticks
-        axratio.hold(True)
-        # TODO: Would be nice to add a display space fixed padding rather than prop to xdiff
-        # axratio.set_xlim([xmin-0.001*xdiff, xmax+0.001*xdiff]) # <- TODO: bad on a log scale!
-        axratio.set_xlim([xmin, xmax])
-        # TODO: RatioSymmRange option
-        ## Set ratio display limits
-        axratio.set_ylim(auto=True)
-        if plotkeys.has_key("RatioYMin"):
-            axratio.set_ylim(bottom=float(plotkeys.get("RatioYMin")))
-        if plotkeys.has_key("RatioYMax"):
-            axratio.set_ylim(top=float(plotkeys.get("RatioYMax")))
-        # Ratio = 1 marker line
-        axratio.axhline(1.0, color="gray")
-
 
         ## Plotting
         #
@@ -181,6 +125,7 @@ def plot(hs, **plotkeys):
         # Stepped:
         def dbl_array(arr):
             return sum(([x,x] for x in arr), [])
+        ratioerrcolor = plotkeys.get("RatioErrColor", "yellow")
         axratio.fill_between(href.xedges_dbl, dbl_array(ref_ymin_ratios), dbl_array(ref_ymax_ratios),
                              edgecolor="none", facecolor=ratioerrcolor)
         # TODO: Smoothed: (needs -> limit handling at ends)
@@ -203,6 +148,10 @@ def plot(hs, **plotkeys):
                 # axratio.plot(href["x"], yratios, color="r", linestyle="--")
                 # TODO: Smoothed plot
 
+
+    ## Legend
+    # TODO: allow excluding and specify order via LegendIndex
+    axmain.legend(loc=plotkeys.get("LegendPos", "best"), fontsize=plotkeys.get("LegendFontSize", "x-small"), frameon=False)
 
     ## Tweak layout now that everything is in place, and return the figure object
     if axratio:
