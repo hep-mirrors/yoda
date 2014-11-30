@@ -277,3 +277,150 @@ def setup_axes(axmain, axratio, plotkeys):
             axratio.set_ylim(top=float(plotkeys.get("RatioYMax")))
 
     # TODO: Ratio plot manual ticks
+
+
+def plothist(axmain, axratio, h, href=None):
+    # TODO: Split into different plot styles: line/filled/range, step/diag/smooth, ...?
+
+    ## Styles
+    default_color = h.annotations.get("Color", "black")
+    marker = h.annotations.get("Marker", h.annotations.get("PolyMarker", None)) # <- make-plots translation
+    marker = {"*":"o"}.get(marker, marker) # <- make-plots translation
+    mcolor = h.annotations.get("LineColor", default_color)
+    errbar = h.annotations.get("ErrorBars", None)
+    ecolor = h.annotations.get("ErrorBarsColor", default_color)
+    line = h.annotations.get("Line", None)
+    lcolor = h.annotations.get("LineColor", default_color)
+    lstyle = h.annotations.get("LineStyle", "-")
+    lstyle = {"solid":"-", "dashed":"--", "dotdashed":"-.", "dashdotted":"-.", "dotted":":"}.get(lstyle, lstyle) # <- make-plots translation
+    lwidth = 1.4
+    msize = 7
+
+    ## If no drawing is enabled, default to a step line
+    if not any(h.annotations.get(a) for a in ("Marker", "Line", "ErrorBars")):
+        line = "step"
+
+    ## Plotting
+    artists = None
+    if errbar:
+        artists = axmain.errorbar(h.x, h.y, xerr=h.exminus, yerr=h.eyminus, color=ecolor, linestyle="none", linewidth=lwidth, capthick=lwidth) # linestyle="-", marker="o",
+    if line == "step":
+        artists = axmain.step(np.append(h.xmin, h.xmax[-1]), np.append(h.y, h.y[-1]), where="post", color=lcolor, linestyle=lstyle, linewidth=lwidth)
+    elif line == "diag":
+        artists = axmain.plot(h.x, h.y, color=lcolor, linestyle=lstyle, linewidth=lwidth)
+    elif line == "smooth":
+        from scipy.interpolate import spline
+        xnew = np.linspace(h.x.min(), h.x.max(), 3*len(h))
+        ynew = spline(h.x, h.y, xnew)
+        artists = axmain.plot(xnew, ynew, color=lcolor, linestyle=lstyle, linewidth=lwidth)
+    if marker:
+        artists = axmain.plot(h.x, h.y, marker=marker, markersize=msize, linestyle="none", color=mcolor, markeredgecolor=mcolor)
+
+    ## Legend entry
+    label = h.annotations.get("Title", None)
+    if label and artists:
+        artists[0].set_label(label)
+
+    ## Ratio
+    ratioartists = None
+    if href and h is not href:
+        # TODO: exclude and specify order via RatioIndex
+        assert h.same_binning_as(href)
+        # TODO: log ratio or #sigma deviation
+        yratios = h.y/href.y
+        # TODO: Same styling control as for main plot (with Ratio prefix, default to main plot style)
+        ## Stepped plot
+        ratioartists = axratio.step(href.xedges_sgl, np.append(yratios, yratios[-1]), where="post", color=lcolor, linestyle=lstyle, linewidth=lwidth)
+        # TODO: Diag plot
+        # axratio.plot(href["x"], yratios, color="r", linestyle="--")
+        # TODO: Smoothed plot
+
+    return artists
+
+
+def plothists(hs, plotkeys={}):
+
+    ## Get data ranges (calculated or forced)
+    # TODO: Round up calc'd ymax to nearest round number within 10% of ydiff, to create a top tick label... sensitive to log/lin measure
+    xmin = float(plotkeys.get("XMin", min(min(h.xmin) for h in hs)))
+    xmax = float(plotkeys.get("XMax", max(max(h.xmax) for h in hs)))
+    xdiff = xmax - xmin
+    # print xmin, xmax, xdiff
+    ymin = float(plotkeys.get("YMin", min(min(h.ymin) for h in hs)))
+    ymax = float(plotkeys.get("YMax", max(max(h.ymax) for h in hs)))
+    ydiff = ymax - ymin
+    # print ymin, ymax, ydiff
+
+    ## Identify reference histo by annotation
+    href = None
+    for h in hs:
+        if as_bool(h.annotations.get("RatioRef", False)):
+            if href is None:
+                href = h
+            else:
+                print "Multiple ratio references set: using first value = {}".format(href.path)
+
+    ## Make figure and subplot grid layout
+    title = plotkeys.get("Title", "")
+    fig, axmain, axratio = mk_figaxes(href, title)
+
+    ## Setup axes appearances
+    axmain.set_xlim([xmin, xmax])
+    axmain.set_ylim([ymin, ymax])
+    if axratio:
+        axratio.set_xlim([xmin, xmax])
+        axratio.set_ylim(auto=True)
+    setup_axes(axmain, axratio, plotkeys)
+
+    # TODO: specify ratio display in log/lin, abs, or #sigma, and as x/r or (x-r)/r
+
+    ## Draw ratio error band (do this before looping over cmp lines)
+    if axratio:
+        ref_ymax_ratios = href.ymax/href.y
+        ref_ymin_ratios = href.ymin/href.y
+        # TODO: Diag: (needs -> limit handling at ends)
+        # axratio.fill_between(href.x, ref_ymin_ratios, ref_ymax_ratios, edgecolor="none", facecolor=ratioerrcolor, interpolate=False)
+        # Stepped:
+        def dbl_array(arr):
+            return sum(([x,x] for x in arr), [])
+        ratioerrcolor = plotkeys.get("RatioErrColor", "yellow")
+        axratio.fill_between(href.xedges_dbl, dbl_array(ref_ymin_ratios), dbl_array(ref_ymax_ratios),
+                             edgecolor="none", facecolor=ratioerrcolor)
+        # TODO: Smoothed: (needs -> limit handling at ends)
+        # Redraw ratio = 1 marker line:
+        axratio.axhline(1.0, color="gray")
+
+    ## Dataset plotting
+    for ih, h in enumerate(hs):
+        #print ih, h.path
+        plothist(axmain, axratio, h, href)
+
+    ## Legend
+    # TODO: allow excluding and specify order via LegendIndex
+    axmain.legend(loc=plotkeys.get("LegendPos", "best"), fontsize=plotkeys.get("LegendFontSize", "x-small"), frameon=False)
+
+    ## Tweak layout now that everything is in place, and return the figure objects
+    if axratio:
+        axratio.yaxis.set_major_locator(mpl.ticker.MaxNLocator(4, prune="upper"))
+    fig.tight_layout()
+    #
+    return fig, axmain, axratio
+
+
+def setup_mpl(engine="PGF"):
+    ## Matplotlib setup
+    import matplotlib as mpl
+    mpl.rcParams.update({
+        "text.usetex" : (engine != "MPL"),
+        "font.size"   : 17,
+        "font.family" : "serif",
+        })
+    if engine == "PGF":
+        mpl.use("pgf")
+        mpl.rcParams.update({
+            "pgf.preamble": [r"\usepackage{amsmath,amssymb}", r"\usepackage{mathspec}",
+                             r"\setmainfont[Numbers=OldStyle]{TeX Gyre Pagella}",
+                             r"\setmathsfont(Digits,Latin)[Numbers=OldStyle,Scale=MatchUppercase]{TeX Gyre Pagella}"],
+            })
+    from matplotlib import pyplot as plt
+    return mpl, plt
