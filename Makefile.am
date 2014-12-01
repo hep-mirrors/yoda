@@ -1,5 +1,9 @@
 ACLOCAL_AMFLAGS = -I m4
-SUBDIRS = src include pyext tests bin
+
+SUBDIRS = src include tests bin
+if ENABLE_PYEXT
+SUBDIRS += pyext
+endif
 
 EXTRA_FILES = main.dox
 
