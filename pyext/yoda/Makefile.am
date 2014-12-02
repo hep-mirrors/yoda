@@ -23,6 +23,7 @@ CYTHON_SRC = \
     include/Dbn2D.pyx \
     include/Dbn3D.pyx \
     include/Errors.pyx \
+    include/Functions.pyx \
     include/Histo1D.pyx \
     include/Histo2D.pyx \
     include/HistoBin1D.pyx \
