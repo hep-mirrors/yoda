@@ -102,10 +102,6 @@ TESTS = \
   pytest-operators \
   shtest-yodamerge
 
-if ENABLE_ROOT
-  TESTS += shtest-yoda2root
-endif
-
 CLEANFILES = \
   merged12.yoda merged12pi.yoda \
   h1d.yoda h1d.dat \
@@ -116,12 +112,7 @@ CLEANFILES = \
   counter.yoda \
   test.aida
 
-#  testhisto2De \
-#  testpoint3D    \
-#  testscatter3D
-
-#  testhisto2Dfill\
-#  testhisto2Dmodify
-
-#  testscatter3Dcreate\
-#  testscatter3Dmodify
+if ENABLE_ROOT
+  TESTS += shtest-yoda2root
+  CLEANFILES += test1.root
+endif

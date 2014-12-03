@@ -1,3 +1,9 @@
+2014-12-03  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Small build improvements: cleaning test1.root from the yoda2root
+	test, and adding a make target & flag file for mktemplates in
+	pyext/yoda to make sure that it only gets run once.
+
 2014-11-25  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Handle overflow filling in binned types without invoking an exception.

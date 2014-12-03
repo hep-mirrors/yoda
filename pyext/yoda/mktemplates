@@ -50,11 +50,10 @@ def make_templates(filename, *args, **kwargs):
     #print plain_name
 
     try:
-        os.mkdir("generated")
+        os.mkdir("include/generated")
     except OSError as exc: # Python >2.5
-        if exc.errno == errno.EEXIST and os.path.isdir("generated"):
-            pass
-        else: raise
+        if exc.errno != errno.EEXIST or not os.path.isdir("include/generated"):
+            raise
 
     includes = []
     for a in individuals:

@@ -48,8 +48,7 @@ EXTRA_DIST += \
 
 
 if WITH_CYTHON
-core.cpp core.h: $(CYTHON_SRC)
-	./mktemplates
+core.cpp core.h: $(CYTHON_SRC) .made_pyx_templates
 	cython core.pyx --cplus
 else
 core.cpp core.h: $(CYTHON_SRC)
@@ -58,8 +57,7 @@ endif
 
 
 if WITH_CYTHON
-util.cpp: util.pxd util.pyx
-	./mktemplates
+util.cpp: util.pxd util.pyx .made_pyx_templates
 	cython util.pyx --cplus
 else
 util.cpp: util.pxd util.pyx
@@ -74,8 +72,7 @@ all-local: core.cpp util.cpp rootcompat.cpp
 	@true
 
 if WITH_CYTHON
-rootcompat.cpp: util.pxd rootcompat.pxd rootcompat.pyx
-	./mktemplates
+rootcompat.cpp: util.pxd rootcompat.pxd rootcompat.pyx .made_pyx_templates
 	cython rootcompat.pyx --cplus
 else
 rootcompat.cpp: util.pxd rootcompat.pxd rootcompat.pyx
@@ -83,6 +80,10 @@ rootcompat.cpp: util.pxd rootcompat.pxd rootcompat.pyx
 endif
 
 
+## Make text-substitution .pyx files from templates -- should only run once
+.made_pyx_templates: include/Bin1D_DBN.pyx include/Bin2D_DBN.pyx include/Axis1D_BIN1D_DBN.pyx include/Axis2D_BIN2D_DBN.pyx
+	./mktemplates
+	touch $@
 
 
 ## fixes for out-of-source builds, especially "make distcheck"
@@ -108,4 +109,4 @@ clean-local: fix-out-of-source
 	rm -f $<
 
 distclean-local:
-	rm -f core.cpp core.h util.cpp rootcompat.cpp include/generated/*
+	rm -f core.cpp core.h util.cpp rootcompat.cpp include/generated/* .made_pyx_templates
