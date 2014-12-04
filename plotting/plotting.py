@@ -167,6 +167,14 @@ class NumpyHist(object):
                (other.eyplus == self.eyplus).all()
 
 
+
+def mk_numpyhist(h):
+    if type(h) is NumpyHist:
+        return h
+    else:
+        return NumpyHist(h)
+
+
 ##########
 
 def read_plot_keys(datfile):
@@ -280,6 +288,8 @@ def setup_axes(axmain, axratio, plotkeys):
 
 
 def plothist(axmain, axratio, h, href=None):
+    h = mk_numpyhist(h)
+
     # TODO: Split into different plot styles: line/filled/range, step/diag/smooth, ...?
 
     ## Styles
@@ -339,6 +349,7 @@ def plothist(axmain, axratio, h, href=None):
 
 
 def plothists(hs, plotkeys={}):
+    hs = [mk_numpyhist(h) for h in hs]
 
     ## Get data ranges (calculated or forced)
     # TODO: Round up calc'd ymax to nearest round number within 10% of ydiff, to create a top tick label... sensitive to log/lin measure

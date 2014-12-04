@@ -24,7 +24,7 @@ for ao in aos:
         var = var.strip("[]") #< strip surrounding brackets
     else:
         basepath, var = ao.path, None
-    hgroups.setdefault(basepath, []).append(plotting.NumpyHist(ao)) #< TODO: or just ao?
+    hgroups.setdefault(basepath, []).append(ao)
 
 
 ## Loop over plots, showing overlaid histos in automatic styles and colors
