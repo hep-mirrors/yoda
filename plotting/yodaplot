@@ -36,8 +36,7 @@ if opts.QUIET:
 import numpy as np
 import yoda
 
-import plotting
-mpl, plt = plotting.setup_mpl(opts.ENGINE)
+mpl, plt = yoda.plotting.setup_mpl(opts.ENGINE)
 COLORS = [plt.cm.jet(i) for i in np.linspace(0.2, 0.8, len(args))]
 STYLES = ["-", "--", ":", "-."]
 
@@ -64,15 +63,15 @@ def plot(plotargs):
 
     ## Read PLOT section annotations
     # TODO: Handle regex'd PLOT sections
-    plotkeys = plotting.read_plot_keys(datfile)['']
+    plotkeys = yoda.plotting.read_plot_keys(datfile)['']
 
     ## Load and sort data objects
     aos = yoda.read(datfile)
-    hs = sorted([plotting.NumpyHist(ao) for ao in aos.values()], key=lambda h: h.path)
+    hs = sorted([yoda.plotting.NumpyHist(ao) for ao in aos.values()], key=lambda h: h.path)
     # TODO: allow plotting order specification via PlotIndex (-ve = no plot)
 
     ## Do plotting
-    fig, ax1, ax2 = plotting.plothists(hs, plotkeys)
+    fig, ax1, ax2 = yoda.plothists(hs, plotkeys)
 
     ## Output in each requested format
     for of in outfiles:
