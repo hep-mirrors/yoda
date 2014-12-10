@@ -1,5 +1,6 @@
 import yoda
 import numpy as np
+import sys
 
 
 ## Utils
@@ -253,28 +254,34 @@ def setup_mpl(engine="PGF", font="TeX Gyre Pagella", mfont=None, textfigs=True):
 def mk_figaxes(ratio=True, title=None, figsize=(8,6)):
     "Make figure and subplot grid layout"
 
-    # TODO: do we need plt? Can't we create Figure directly from mpl?
-    from matplotlib import pyplot as plt
+    if "plt" not in dir():
+        mpl, plt = setup_mpl()
+
+    # TODO: Eliminate plt? Requires manual work to set up the backend-specific
+    # canvas, but would be better for 'more local' memory management
     fig = plt.figure(figsize=figsize)
+    # fig = mpl.figure.Figure(figsize=figsize, tight_layout=True)
 
     if title:
         fig.suptitle(title, x=0.0)
 
-    # TODO: wrap in a try...except with fallback to no-ratio/marginal if GridSpec not available
+    ## Make axes. GridSpec may not be available, in which case fall back ~gracefully
+    axmain, axratio = None, None
     if ratio:
-        gs = mpl.gridspec.GridSpec(2, 1, height_ratios=[3,1], hspace=0)
-    else:
-        gs = mpl.gridspec.GridSpec(1, 1, hspace=0)
-    axmain = fig.add_subplot(gs[0])
-    axmain.hold(True)
-    #
-    try:
-        axratio = fig.add_subplot(gs[1], sharex=axmain)
-        axratio.hold(True)
-        axratio.axhline(1.0, color="gray") #< Ratio = 1 marker line
-    except IndexError, e:
-        axratio = None
-    #
+        try:
+            gs = mpl.gridspec.GridSpec(2, 1, height_ratios=[3,1], hspace=0)
+            axmain = fig.add_subplot(gs[0])
+            axmain.hold(True)
+            axratio = fig.add_subplot(gs[1], sharex=axmain)
+            axratio.hold(True)
+            axratio.axhline(1.0, color="gray") #< Ratio = 1 marker line
+        except:
+            sys.stderr.write("matplotlib.gridspec not available: falling back to plotting without a ratio\n")
+            ratio = False
+    if not ratio:
+        axmain = fig.add_subplot(1,1,1)
+        axmain.hold(True)
+
     return fig, axmain, axratio
 
 

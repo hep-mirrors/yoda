@@ -21,13 +21,6 @@ DESIGN
 TASKS
 -----
 
-* Check/require minimal MPL version.
-   Put use of gridspec in a try...except with fallback to no-ratio/marginal.
-
-* Delete figs
-   Better: don't create them through pyplot, so GC can run
-
-
 * Convenience wrapper on multiprocessing for multiplotting
    Also allow plotting several hists to a single file? (direct or via pdftk)
    Default to ncpu-1 or 1.
@@ -49,6 +42,11 @@ TASKS
 
 MINOR
 -----
+
+* Check/require minimal MPL version.
+
+* Create figs in native MPL rather than pyplot
+   Better for memory management, but requires manual canvas/backend handling
 
 * Alpha level in color spec -- automatic?
    Test with current code
