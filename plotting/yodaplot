@@ -13,12 +13,9 @@ import os, optparse
 op = optparse.OptionParser(usage=__doc__)
 op.add_option("-f", "--format", dest="FORMAT", default="PDF",
               help="output format string consisting of desired output formats separated by commas [default=%default]")
-op.add_option("--mpl", dest="ENGINE", action="store_const", const="MPL", default="PGF",
-              help="use MathText text renderer")
-op.add_option("--tex", dest="ENGINE", action="store_const", const="TEX", default="PGF",
-              help="use TeX text renderer")
-op.add_option("--pgf", dest="ENGINE", action="store_const", const="PGF", default="PGF",
-              help="use LaTeX PGF plot renderer")
+op.add_option("-E", "--engine", dest="ENGINE", default="PGF", help="choose rendering engine: 'PGF' = LaTeX PGF plotting, "
+              + "'TEX' = TeX text renderer, 'MPL' = matplotlib MathText (fast but very limited)")
+op.add_option("-n", "--nproc", dest="NPROC", default=None, type=int, help="number of plotting processes to run in parallel")
 op.add_option("--debug", dest="DEBUG", action="store_true", default=False,
               help="run in debug mode with more verbosity and no parallelism")
 op.add_option("--quiet", dest="QUIET", action="store_true", default=False,
@@ -63,7 +60,7 @@ def plot(plotargs):
 
     ## Read PLOT section annotations
     # TODO: Handle regex'd PLOT sections
-    plotkeys = yoda.plotting.read_plot_keys(datfile)['']
+    plotkeys = yoda.plotting.read_plot_keys(datfile).get('', {})
 
     ## Load and sort data objects
     aos = yoda.read(datfile)
@@ -71,9 +68,7 @@ def plot(plotargs):
     # TODO: allow plotting order specification via PlotIndex (-ve = no plot)
 
     ## Do plotting
-    fig, ax1, ax2 = yoda.plot(hs, plotkeys)
-
-    ## Output in each requested format
+    fig, (ax1, ax2) = yoda.plot(hs, plotkeys=plotkeys)
     for of in outfiles:
         fig.savefig(of)
 
@@ -84,5 +79,6 @@ if opts.DEBUG:
         plot(i_a)
 else:
     import multiprocessing
-    pool = multiprocessing.Pool()
+    nproc = opts.NPROC or multiprocessing.cpu_count()-1 or 1
+    pool = multiprocessing.Pool(processes=nproc)
     pool.map(plot, zip(xrange(len(args)), args))

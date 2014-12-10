@@ -21,13 +21,11 @@ DESIGN
 TASKS
 -----
 
-* Convenience wrapper on multiprocessing for multiplotting
-   Also allow plotting several hists to a single file? (direct or via pdftk)
-   Default to ncpu-1 or 1.
-
 * 2D plotting
 
 * More data-from-hist functions (incl for ratio, stack and band building)
+
+* Fix plot title separation from axes frame
 
 
 * Case-insensitive plot key lookup, so kwargs can be used to add to plotkeys
@@ -42,6 +40,8 @@ TASKS
 
 MINOR
 -----
+
+* Allow plotting several hists to a single file?
 
 * Check/require minimal MPL version.
 

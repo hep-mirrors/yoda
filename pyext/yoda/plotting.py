@@ -263,7 +263,8 @@ def mk_figaxes_1d(ratio=True, title=None, figsize=(8,6)):
     # fig = mpl.figure.Figure(figsize=figsize, tight_layout=True)
 
     if title:
-        fig.suptitle(title, x=0.0)
+        fig.suptitle(title, horizontalalignment="left", x=0.13)
+
 
     ## Make axes. GridSpec may not be available, in which case fall back ~gracefully
     axmain, axratio = None, None
