@@ -208,6 +208,47 @@ def read_plot_keys(datfile):
 
 import matplotlib as mpl
 
+def setup_mpl(engine="PGF", font="TeX Gyre Pagella", mfont=None, textfigs=True):
+    """One-liner matplotlib (mpl) setup.
+
+    By default mpl will be configured with the TeX PGF rendering backend, and a
+    Palatino-like font for both text and math contexts, using 'lower-case
+    numerals' if supported. Setting the engine to 'TEX' will use standard mpl
+    rendering, with calls to LaTeX for axis labels and other text; setting it to
+    'MPL' will use the built-in mpl MathText renderer. MPL mode only supports a
+    limited set of LaTeX macros and does not render as well as TeX, but it is
+    faster and can be used to render to an interactive window.
+
+    The font and mfont optional arguments can be used to choose a different text
+    font and math font respectively; if mfont is None, it defaults to the same
+    as the text font. The textfigs boolean argument can be set false to disable
+    the lower-case/text/old-style numerals and use 'upper-case' numerals
+    everywhere. These options do not currently apply to the MPL rendering engine.
+    """
+    # import matplotlib as mpl
+    mpl.rcParams.update({
+        "text.usetex" : (engine != "MPL"),
+        "font.size"   : 17,
+        "font.family" : "serif",
+        })
+
+    texpreamble = [r"\usepackage{amsmath,amssymb}", r"\usepackage{mathspec}"]
+    mfont = mfont if mfont else font
+    fontopts = "[Numbers=OldStyle]" if textfigs else ""
+    mfontopts = fontopts.replace("]", ",") + "Scale=MatchUppercase" + "]"
+    texpreamble.append( r"\setmainfont{fopts}{{{font}}}".format(fopts=fontopts, font=font) )
+    texpreamble.append( r"\setmathsfont(Digits,Latin){fopts}{{{font}}}".format(fopts=mfontopts, font=mfont) )
+
+    if engine == "PGF":
+        mpl.use("pgf")
+        mpl.rcParams["pgf.preamble"] = texpreamble
+    elif engine == "TEX":
+        mpl.rcParams["tex.preamble"] = texpreamble
+
+    from matplotlib import pyplot as plt
+    return mpl, plt
+
+
 def mk_figaxes(ratio=True, title=None, figsize=(8,6)):
     "Make figure and subplot grid layout"
     from matplotlib import pyplot as plt
@@ -287,7 +328,10 @@ def setup_axes(axmain, axratio, plotkeys):
     # TODO: Ratio plot manual ticks
 
 
-def plothist(axmain, axratio, h, href=None):
+def plothist_on_axes(axmain, axratio, h, href=None):
+    if "plt" not in dir():
+        mpl, plt = setup_mpl()
+
     h = mk_numpyhist(h)
 
     # TODO: Split into different plot styles: line/filled/range, step/diag/smooth, ...?
@@ -348,7 +392,14 @@ def plothist(axmain, axratio, h, href=None):
     return artists
 
 
-def plothists(hs, plotkeys={}):
+# TODO: Add arg for MPL setup?
+def plothists(hs, outfile=None, ratio=None, plotkeys={}):
+    """Plot the given histograms on a single figure, returning the 3-tuple of
+    (fig, main_axis, ratio_axis), and saving to outfile if it is given."""
+
+    if "plt" not in dir():
+        mpl, plt = setup_mpl()
+
     hs = [mk_numpyhist(h) for h in hs]
 
     ## Get data ranges (calculated or forced)
@@ -362,14 +413,16 @@ def plothists(hs, plotkeys={}):
     ydiff = ymax - ymin
     # print ymin, ymax, ydiff
 
-    ## Identify reference histo by annotation
+    ## Identify reference histo by annotation (unless explicitly disabled)
     href = None
-    for h in hs:
-        if as_bool(h.annotations.get("RatioRef", False)):
-            if href is None:
-                href = h
-            else:
-                print "Multiple ratio references set: using first value = {}".format(href.path)
+    # TODO: Use ratio to setdefault RatioPlot in plotkeys, then use that to decide whether to look for href
+    if ratio is not False:
+        for h in hs:
+            if as_bool(h.annotations.get("RatioRef", False)):
+                if href is None:
+                    href = h
+                else:
+                    print "Multiple ratio references set: using first value = {}".format(href.path)
 
     ## Make figure and subplot grid layout
     title = plotkeys.get("Title", "")
@@ -386,6 +439,7 @@ def plothists(hs, plotkeys={}):
     # TODO: specify ratio display in log/lin, abs, or #sigma, and as x/r or (x-r)/r
 
     ## Draw ratio error band (do this before looping over cmp lines)
+    # TODO: Actually we can call this when we hit the href, and force the zorder into groups: bands, lines, dots, legend, text, frame
     if axratio:
         ref_ymax_ratios = href.ymax/href.y
         ref_ymin_ratios = href.ymin/href.y
@@ -404,34 +458,28 @@ def plothists(hs, plotkeys={}):
     ## Dataset plotting
     for ih, h in enumerate(hs):
         #print ih, h.path
-        plothist(axmain, axratio, h, href)
+        plothist_on_axes(axmain, axratio, h, href)
 
     ## Legend
     # TODO: allow excluding and specify order via LegendIndex
     axmain.legend(loc=plotkeys.get("LegendPos", "best"), fontsize=plotkeys.get("LegendFontSize", "x-small"), frameon=False)
 
-    ## Tweak layout now that everything is in place, and return the figure objects
+    ## Tweak layout now that everything is in place
     if axratio:
         axratio.yaxis.set_major_locator(mpl.ticker.MaxNLocator(4, prune="upper"))
     fig.tight_layout()
-    #
+
+    ## Save to an image file if we were asked to
+    if outfile:
+        #print "Saving to " + outfile
+        fig.savefig(outfile)
+
+    ## Return the figure objects
     return fig, axmain, axratio
 
 
-def setup_mpl(engine="PGF"):
-    ## Matplotlib setup
-    import matplotlib as mpl
-    mpl.rcParams.update({
-        "text.usetex" : (engine != "MPL"),
-        "font.size"   : 17,
-        "font.family" : "serif",
-        })
-    if engine == "PGF":
-        mpl.use("pgf")
-        mpl.rcParams.update({
-            "pgf.preamble": [r"\usepackage{amsmath,amssymb}", r"\usepackage{mathspec}",
-                             r"\setmainfont[Numbers=OldStyle]{TeX Gyre Pagella}",
-                             r"\setmathsfont(Digits,Latin)[Numbers=OldStyle,Scale=MatchUppercase]{TeX Gyre Pagella}"],
-            })
-    from matplotlib import pyplot as plt
-    return mpl, plt
+# TODO: Add arg for MPL setup?
+def plothist(h, outfile=None, plotkeys={}):
+    "Plot the given histogram on a single figure without a ratio plot, returning the 2-tuple of (fig, main_axis)."
+    f, ax, _ = plothists([h,], outfile=outfile, ratio=False, plotkeys=plotkeys)
+    return f, ax

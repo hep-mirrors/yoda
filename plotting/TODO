@@ -21,35 +21,25 @@ DESIGN
 TASKS
 -----
 
-* PLOT section parsing
-   By separate parsing of data file in Python function -- use same function for
-   .plot file reading?)
+* Check MPL version.
+   Put use of gridspec in a try...except with fallback to no-ratio/marginal.
 
-* Lin/log axis control for main (and ratio) plots
-   Controlled from PLOT section
+* More data-from-hist functions (incl for ratio, stack and band building)
+
+* Case-insensitive plot key lookup, so kwargs can be used to add to plotkeys
 
 * 2D plotting
-
-* Split into more reusable function / object bits for scripted customisation
-
-* Provide a yodacmp to contain most of the comparison logic
-   N runs * M obs -> N lines in M plot files. rivet-cmphistos can then be a thin
-   wrapper on this (or the constituent YODA package functions) to add
-   Rivet-specific logic like special handling of /REF and /TMP path prefixes.
 
 * How to specify a fill-between band in .dat files?
    Should have a "band" plotting style -- and break out the code to assemble the
    correct arrays, call the right plotting command, etc. into functions for easy
    reuse.
 
-* Old-style figures
-   Via fontspec package keys? Requires MPL modifications? Special non-math ticker?
-
-* Supporting amsmath commands like \text?
-
 
 MINOR
 -----
+
+* Plotting several hists to a single file (direct or via pdftk?)
 
 * Alpha level in color spec -- automatic?
    Test with current code
@@ -59,9 +49,21 @@ MINOR
    serif/Palatino? (A colon family/font separator won't work because we use
    colons to separate keys on the cmphistos command line.)
 
+* Stacked plots
 
-* Marginal plots for 2D
+* Marginal plots for 2D?
+   First we need to be able to make marginal histos from 2D ones! Need to be
+   able to specify whether summed or profiled data to be shown in each of the
+   X/Y marginals. In principle gridspec should allow 4 separate marginals in
+   the four LRTB positions, with different styles in each.
 
 * Remove final ticks that merge with the frame
 
-* Stacked plots
+
+DONE (but still of interest)
+----------------------------
+
+* Provide a yodacmp to contain most of the comparison logic
+   N runs * M obs -> N lines in M plot files. rivet-cmphistos can then be a thin
+   wrapper on this (or the constituent YODA package functions) to add
+   Rivet-specific logic like special handling of /REF and /TMP path prefixes.

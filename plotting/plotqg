@@ -42,8 +42,8 @@ def plot(args):
 
 ## Do plotting
 mpl, plt = plotting.setup_mpl()
-# for obs, hs in hgroups.iteritems():
-#     plot(obs, hs)
 import multiprocessing
 pool = multiprocessing.Pool()
 pool.map(plot, hgroups.iteritems())
+# for obs, hs in hgroups.iteritems():
+#     plot(obs, hs)
