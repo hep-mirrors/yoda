@@ -58,8 +58,8 @@ def plot(args):
     for ih, h in enumerate(hs):
         h.annotations.setdefault("Color", COLORS[ih % len(COLORS)])
         h.annotations.setdefault("LineStyle", STYLES[ih % len(STYLES)])
-    f, axm, axr = yoda.plothists(hs)
-    f.savefig(filename)
+
+    yoda.plot(hs, filename)
 
 
 ## Do plotting

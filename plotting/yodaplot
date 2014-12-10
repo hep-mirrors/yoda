@@ -71,7 +71,7 @@ def plot(plotargs):
     # TODO: allow plotting order specification via PlotIndex (-ve = no plot)
 
     ## Do plotting
-    fig, ax1, ax2 = yoda.plothists(hs, plotkeys)
+    fig, ax1, ax2 = yoda.plot(hs, plotkeys)
 
     ## Output in each requested format
     for of in outfiles:
@@ -80,8 +80,8 @@ def plot(plotargs):
 
 ## Do the rendering using a multiprocessing pool (cleaner than threads)
 if opts.DEBUG:
-    for a in enumerate(args):
-        plot(a)
+    for i_a in enumerate(args):
+        plot(i_a)
 else:
     import multiprocessing
     pool = multiprocessing.Pool()

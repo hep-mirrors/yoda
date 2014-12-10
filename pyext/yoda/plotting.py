@@ -251,7 +251,7 @@ def setup_mpl(engine="PGF", font="TeX Gyre Pagella", mfont=None, textfigs=True):
     return mpl, plt
 
 
-def mk_figaxes(ratio=True, title=None, figsize=(8,6)):
+def mk_figaxes_1d(ratio=True, title=None, figsize=(8,6)):
     "Make figure and subplot grid layout"
 
     if "plt" not in dir():
@@ -285,7 +285,7 @@ def mk_figaxes(ratio=True, title=None, figsize=(8,6)):
     return fig, axmain, axratio
 
 
-def set_axis_labels(axmain, axratio, xlabel=None, ylabel=None, ratioylabel=None):
+def set_axis_labels_1d(axmain, axratio, xlabel=None, ylabel=None, ratioylabel=None):
     axmain.set_ylabel(ylabel, y=1, ha="right", labelpad=None)
     if axratio:
         axmain.xaxis.set_major_locator(mpl.ticker.NullLocator())
@@ -296,13 +296,13 @@ def set_axis_labels(axmain, axratio, xlabel=None, ylabel=None, ratioylabel=None)
 
 
 # TODO: Needs generalisation for 2D marginal axes)
-def setup_axes(axmain, axratio, plotkeys):
+def setup_axes_1d(axmain, axratio, plotkeys):
 
     ## Axis labels first
     xlabel = plotkeys.get("XLabel", "")
     ylabel = plotkeys.get("YLabel", "")
     ratioylabel = plotkeys.get("RatioYLabel", "Ratio")
-    set_axis_labels(axmain, axratio, xlabel, ylabel, ratioylabel)
+    set_axis_labels_1d(axmain, axratio, xlabel, ylabel, ratioylabel)
 
     ## log/lin measures
     # TODO: Dynamic default based on data ranges?
@@ -343,7 +343,7 @@ def setup_axes(axmain, axratio, plotkeys):
 
 
 # TODO: rename to be more obviously an ~internal helper
-def plothist_on_axes(axmain, axratio, h, href=None):
+def plot_hist_on_axes_1d(axmain, axratio, h, href=None):
     if "plt" not in dir():
         mpl, plt = setup_mpl()
 
@@ -370,6 +370,7 @@ def plothist_on_axes(axmain, axratio, h, href=None):
         line = "step"
 
     ## Plotting
+    # TODO: Split this into different functions for each kind of data preparation (and smoothing as an extra function?)
     artists = None
     if errbar:
         artists = axmain.errorbar(h.x, h.y, xerr=h.exminus, yerr=h.eyminus, color=ecolor, linestyle="none", linewidth=lwidth, capthick=lwidth) # linestyle="-", marker="o",
@@ -408,7 +409,7 @@ def plothist_on_axes(axmain, axratio, h, href=None):
 
 
 # TODO: Add arg for MPL setup?
-def plothists(hs, outfile=None, ratio=None, plotkeys={}):
+def plot_hists_1d(hs, outfile=None, ratio=None, plotkeys={}):
     """Plot the given histograms on a single figure, returning the 3-tuple of
     (fig, main_axis, ratio_axis), and saving to outfile if it is given."""
 
@@ -441,7 +442,7 @@ def plothists(hs, outfile=None, ratio=None, plotkeys={}):
 
     ## Make figure and subplot grid layout
     title = plotkeys.get("Title", "")
-    fig, axmain, axratio = mk_figaxes(href, title)
+    fig, axmain, axratio = mk_figaxes_1d(href, title)
 
     ## Setup axes appearances
     axmain.set_xlim([xmin, xmax])
@@ -449,7 +450,7 @@ def plothists(hs, outfile=None, ratio=None, plotkeys={}):
     if axratio:
         axratio.set_xlim([xmin, xmax])
         axratio.set_ylim(auto=True)
-    setup_axes(axmain, axratio, plotkeys)
+    setup_axes_1d(axmain, axratio, plotkeys)
 
     # TODO: specify ratio display in log/lin, abs, or #sigma, and as x/r or (x-r)/r
 
@@ -473,13 +474,14 @@ def plothists(hs, outfile=None, ratio=None, plotkeys={}):
     ## Dataset plotting
     for ih, h in enumerate(hs):
         #print ih, h.path
-        plothist_on_axes(axmain, axratio, h, href)
+        plot_hist_on_axes_1d(axmain, axratio, h, href)
 
     ## Legend
     # TODO: allow excluding and specify order via LegendIndex
     axmain.legend(loc=plotkeys.get("LegendPos", "best"), fontsize=plotkeys.get("LegendFontSize", "x-small"), frameon=False)
 
     ## Tweak layout now that everything is in place
+    # TODO: merge tight_layout() into the Figure constructor, and maybe the ratio ticker when retrospectively drawing the zorder'ed err band
     if axratio:
         axratio.yaxis.set_major_locator(mpl.ticker.MaxNLocator(4, prune="upper"))
     fig.tight_layout()
@@ -494,10 +496,66 @@ def plothists(hs, outfile=None, ratio=None, plotkeys={}):
 
 
 # TODO: Add arg for MPL setup?
-def plothist(h, outfile=None, plotkeys={}):
+def plot_hist_1d(h, outfile=None, plotkeys={}):
     "Plot the given histogram on a single figure without a ratio plot, returning the 2-tuple of (fig, main_axis)."
-    f, ax, _ = plothists([h,], outfile=outfile, ratio=False, plotkeys=plotkeys)
+    f, ax, _ = plot_hists_1d([h,], outfile=outfile, ratio=False, plotkeys=plotkeys)
     return f, ax
 
 
-# TODO: Add multiplot(hist(s)) as a handy multiprocessing wrapper
+def plot(hs, outfile=None, plotkeys={}, ratio=None):
+    """Plot the given histogram(s) on a single figure, maybe with a ratio plot,
+    and return the 2-tuple of (fig, (main_axis,ratio_axis)). If an outfile is
+    given, it will be saved to before returning the figure objects."""
+    # TODO: Handle 2D plots, too.
+    if hasattr(hs, "__iter__"):
+        f, axm, axr = plot_hists_1d(hs, outfile=outfile, ratio=ratio, plotkeys=plotkeys)
+    else:
+        f, axm, axr = plot_hists_1d([hs,], outfile=outfile, ratio=False, plotkeys=plotkeys)
+    return f, (axm, axr)
+
+
+def _plot1arg(args):
+    "Helper function for mplot, until pool.starmap() is available"
+    # hs, outfile, ratio, plotkeys = args
+    return plot(*args)
+
+def mplot(hs, outfiles=None, plotkeys={}, ratio=None, nproc=None):
+    """Plot the given list of histogram(s) using the Python multiprocessing
+    module to distribute the work on to multiple parallel processes. This is
+    just syntactic sugar for something fairly easily done by the user.
+
+    hs must be an iterable, each entry of which will be the content of a single
+    plot: the entries can either be single histograms or lists of histograms,
+    i.e. either kind of valid first argument to plot().
+
+    The outfiles, plotkeys, and ratio arguments can either be iterables of valid
+    corresponding plot() args, or single instances of such args to be applied to
+    all the plots.
+
+    The nproc argument should be the integer number of parallel processes on
+    which to distribute the plotting. nproc = None (the default value) will use
+    Ncpu-1 or 1 process, whichever is larger. If nproc = 1, multiprocessing will
+    not be used -- this may ease debugging.
+
+    The return value is a list of the return tuples from each call to plot(), of
+    the same length as the hs arg.
+    """
+
+    argslist = []
+    for i, hs_arg in enumerate(hs):
+        outfile_arg = outfiles[i] if outfiles else None
+        plotkeys_arg = plotkeys if type(plotkeys) is dict else plotkeys[i]
+        ratio_arg = ratio[i] if hasattr(ratio, "__iter__") else ratio
+        argslist += (hs_arg, outfile_arg, plotkeys_arg, ratio_arg)
+
+    import multiprocessing
+    nproc = nproc or multiprocessing.cpu_count()-1 or 1
+    if nproc > 1:
+        pool = multiprocessing.Pool(processes=nproc)
+        res = pool.map_async(plot, hgroups.iteritems())
+        rtn = res.get()
+    else:
+        ## Run this way in the 1 proc case for easier debugging
+        rtn = [plot(args) for args in hgroups.iteritems()]
+
+    return rtn
