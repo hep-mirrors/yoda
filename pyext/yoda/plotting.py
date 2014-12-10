@@ -39,9 +39,10 @@ def autostr(var, precision=8):
 
 
 class NumpyHist(object):
+
     def __init__(self, ao):
         if not isinstance(ao, yoda.AnalysisObject):
-            raise Exception("ao argument must be a YODA AnalysisObject")
+            raise Exception("ao argument must be a YODA AnalysisObject; this is a %s" % type(ao))
         ## Get annotations
         self.path = ao.path
         self.annotations = {aname : ao.annotation(aname) for aname in ao.annotations}
@@ -170,10 +171,7 @@ class NumpyHist(object):
 
 
 def mk_numpyhist(h):
-    if type(h) is NumpyHist:
-        return h
-    else:
-        return NumpyHist(h)
+    return h if type(h) is NumpyHist else NumpyHist(h)
 
 
 ##########
@@ -417,6 +415,7 @@ def plot_hists_1d(hs, outfile=None, ratio=None, plotkeys={}):
     if "plt" not in dir():
         mpl, plt = setup_mpl()
 
+    #print hs
     hs = [mk_numpyhist(h) for h in hs]
 
     ## Get data ranges (calculated or forced)
@@ -508,7 +507,8 @@ def plot(hs, outfile=None, plotkeys={}, ratio=None):
     and return the 2-tuple of (fig, (main_axis,ratio_axis)). If an outfile is
     given, it will be saved to before returning the figure objects."""
     # TODO: Handle 2D plots, too.
-    if hasattr(hs, "__iter__"):
+    #print hs
+    if type(hs) in (list, tuple):
         f, axm, axr = plot_hists_1d(hs, outfile=outfile, ratio=ratio, plotkeys=plotkeys)
     else:
         f, axm, axr = plot_hists_1d([hs,], outfile=outfile, ratio=False, plotkeys=plotkeys)
@@ -544,19 +544,21 @@ def mplot(hs, outfiles=None, plotkeys={}, ratio=None, nproc=None):
 
     argslist = []
     for i, hs_arg in enumerate(hs):
+        hs_arg = [mk_numpyhist(h) for h in hs_arg] if type(hs_arg) in (list,tuple) else mk_numpyhist(hs_arg)
         outfile_arg = outfiles[i] if outfiles else None
         plotkeys_arg = plotkeys if type(plotkeys) is dict else plotkeys[i]
         ratio_arg = ratio[i] if hasattr(ratio, "__iter__") else ratio
-        argslist += (hs_arg, outfile_arg, plotkeys_arg, ratio_arg)
+        argslist.append( (hs_arg, outfile_arg, plotkeys_arg, ratio_arg) )
+    #print argslist
 
     import multiprocessing
     nproc = nproc or multiprocessing.cpu_count()-1 or 1
     if nproc > 1:
         pool = multiprocessing.Pool(processes=nproc)
-        res = pool.map_async(plot, hgroups.iteritems())
+        res = pool.map_async(_plot1arg, argslist)
         rtn = res.get()
     else:
         ## Run this way in the 1 proc case for easier debugging
-        rtn = [plot(args) for args in hgroups.iteritems()]
+        rtn = [_plot1arg(args) for args in argslist]
 
     return rtn
