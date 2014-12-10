@@ -21,14 +21,25 @@ DESIGN
 TASKS
 -----
 
-* Check MPL version.
+* Check/require minimal MPL version.
    Put use of gridspec in a try...except with fallback to no-ratio/marginal.
+
+* Delete figs
+   Better: don't create them through pyplot, so GC can run
+
+* Convenience wrapper on multiprocessing for multiplotting
+   Also allow plotting several hists to a single file? (direct or via pdftk)
+
+
+
+* 2D plotting
 
 * More data-from-hist functions (incl for ratio, stack and band building)
 
+
 * Case-insensitive plot key lookup, so kwargs can be used to add to plotkeys
 
-* 2D plotting
+* Access to zorder, and defining zorder numerical groupings
 
 * How to specify a fill-between band in .dat files?
    Should have a "band" plotting style -- and break out the code to assemble the
@@ -38,8 +49,6 @@ TASKS
 
 MINOR
 -----
-
-* Plotting several hists to a single file (direct or via pdftk?)
 
 * Alpha level in color spec -- automatic?
    Test with current code
