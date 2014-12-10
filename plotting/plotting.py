@@ -245,17 +245,22 @@ def setup_mpl(engine="PGF", font="TeX Gyre Pagella", mfont=None, textfigs=True):
     elif engine == "TEX":
         mpl.rcParams["tex.preamble"] = texpreamble
 
+    # TODO: do we need plt?
     from matplotlib import pyplot as plt
     return mpl, plt
 
 
 def mk_figaxes(ratio=True, title=None, figsize=(8,6)):
     "Make figure and subplot grid layout"
+
+    # TODO: do we need plt? Can't we create Figure directly from mpl?
     from matplotlib import pyplot as plt
     fig = plt.figure(figsize=figsize)
+
     if title:
         fig.suptitle(title, x=0.0)
-    #
+
+    # TODO: wrap in a try...except with fallback to no-ratio/marginal if GridSpec not available
     if ratio:
         gs = mpl.gridspec.GridSpec(2, 1, height_ratios=[3,1], hspace=0)
     else:
@@ -283,7 +288,9 @@ def set_axis_labels(axmain, axratio, xlabel=None, ylabel=None, ratioylabel=None)
         axmain.set_xlabel(xlabel, x=1, ha="right", labelpad=None)
 
 
+# TODO: Needs generalisation for 2D marginal axes)
 def setup_axes(axmain, axratio, plotkeys):
+
     ## Axis labels first
     xlabel = plotkeys.get("XLabel", "")
     ylabel = plotkeys.get("YLabel", "")
@@ -328,6 +335,7 @@ def setup_axes(axmain, axratio, plotkeys):
     # TODO: Ratio plot manual ticks
 
 
+# TODO: rename to be more obviously an ~internal helper
 def plothist_on_axes(axmain, axratio, h, href=None):
     if "plt" not in dir():
         mpl, plt = setup_mpl()
@@ -483,3 +491,6 @@ def plothist(h, outfile=None, plotkeys={}):
     "Plot the given histogram on a single figure without a ratio plot, returning the 2-tuple of (fig, main_axis)."
     f, ax, _ = plothists([h,], outfile=outfile, ratio=False, plotkeys=plotkeys)
     return f, ax
+
+
+# TODO: Add multiplot(hist(s)) as a handy multiprocessing wrapper
