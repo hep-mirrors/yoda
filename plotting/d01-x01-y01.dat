@@ -1,0 +1,251 @@
+# BEGIN PLOT
+DrawOnly=/REF/ATLAS_2013_JETUE/d01-x01-y01 /home/andy/proj/hep/atlas/tuning/TuningSystem/tunepy8shower_nnpdf23lo130_e/tunes/tune-py8shower-weights04c-000.eig05/ipolhistos/tune-py8shower-weights04c-000-0.yoda/ATLAS_2013_JETUE/d01-x01-y01 /home/andy/proj/hep/atlas/tuning/TuningSystem/tunepy8shower_nnpdf23lo130_e/tunes/tune-py8shower-weights04c-000.eig05/ipolhistos/tune-py8shower-weights04c-000-05+.yoda/ATLAS_2013_JETUE/d01-x01-y01 /home/andy/proj/hep/atlas/tuning/TuningSystem/tunepy8shower_nnpdf23lo130_e/tunes/tune-py8shower-weights04c-000.eig05/ipolhistos/tune-py8shower-weights04c-000-05-.yoda/ATLAS_2013_JETUE/d01-x01-y01 /home/andy/proj/hep/atlas/tuning/TuningSystem/tunepy8shower_nnpdf23lo130_e/tunes/tune-py8shower-weights04c-000.eig05/ipolhistos/tune-py8shower-weights04c-000-06+.yoda/ATLAS_2013_JETUE/d01-x01-y01 /home/andy/proj/hep/atlas/tuning/TuningSystem/tunepy8shower_nnpdf23lo130_e/tunes/tune-py8shower-weights04c-000.eig05/ipolhistos/tune-py8shower-weights04c-000-06-.yoda/ATLAS_2013_JETUE/d01-x01-y01 /home/andy/proj/hep/atlas/tuning/TuningSystem/tunepy8shower_nnpdf23lo130_e/tunes/tune-py8shower-weights04c-000.eig05/ipolhistos/tune-py8shower-weights04c-000-07+.yoda/ATLAS_2013_JETUE/d01-x01-y01 /home/andy/proj/hep/atlas/tuning/TuningSystem/tunepy8shower_nnpdf23lo130_e/tunes/tune-py8shower-weights04c-000.eig05/ipolhistos/tune-py8shower-weights04c-000-07-.yoda/ATLAS_2013_JETUE/d01-x01-y01 /home/andy/proj/hep/atlas/tuning/TuningSystem/tunepy8shower_nnpdf23lo130_e/tunes/tune-py8shower-weights04c-000.eig05/ipolhistos/tune-py8shower-weights04c-000-09+.yoda/ATLAS_2013_JETUE/d01-x01-y01 /home/andy/proj/hep/atlas/tuning/TuningSystem/tunepy8shower_nnpdf23lo130_e/tunes/tune-py8shower-weights04c-000.eig05/ipolhistos/tune-py8shower-weights04c-000-09-.yoda/ATLAS_2013_JETUE/d01-x01-y01 /home/andy/proj/hep/atlas/tuning/TuningSystem/tunepy8shower_nnpdf23lo130_e/tunes/tune-py8shower-weights04c-000.eig05/ipolhistos/tune-py8shower-weights04c-000-10+.yoda/ATLAS_2013_JETUE/d01-x01-y01 /home/andy/proj/hep/atlas/tuning/TuningSystem/tunepy8shower_nnpdf23lo130_e/tunes/tune-py8shower-weights04c-000.eig05/ipolhistos/tune-py8shower-weights04c-000-10-.yoda/ATLAS_2013_JETUE/d01-x01-y01
+Title=Transverse $\sum p_T^\text{ch}$ vs. $p_T^\text{lead}$ in $|\eta| < 2.5$, incl jet events
+RatioPlotReference=/REF/ATLAS_2013_JETUE/d01-x01-y01
+RatioPlot=1
+LogX=1
+LogY=0
+LegendXPos=0.1
+XLabel=$p_\perp^\text{lead}$ [GeV]
+YLabel=$\langle \mathrm{d}^2 \sum p_\perp^\text{ch}/\mathrm{d}\eta\mathrm{d}\phi \rangle$ [GeV]
+LegendYPos=0.9
+Legend=0
+# END PLOT
+
+# BEGIN HISTOGRAM /REF/ATLAS_2013_JETUE/d01-x01-y01
+ConnectBins=0
+RatioRef=yes
+RatioErrColor=yellow
+RatioYLabel=MC/Data
+Marker=*
+MarkerColor=black
+ErrorBars=1
+ErrorBarsColor=black
+LineStyle=
+LineColor=black
+Path=/REF/ATLAS_2013_JETUE/d01-x01-y01
+Title=Data
+# xlow	 xhigh	 val	 errminus	 errplus
+2.000000e+01	3.000000e+01	1.184110e+00	4.953248e-02	5.212959e-02
+3.000000e+01	4.000000e+01	1.197900e+00	6.473234e-02	7.014127e-02
+4.000000e+01	6.000000e+01	1.222824e+00	3.706976e-02	1.120134e-01
+6.000000e+01	8.000000e+01	1.328614e+00	5.293203e-02	6.524244e-02
+8.000000e+01	1.100000e+02	1.448654e+00	7.928663e-02	1.201431e-01
+1.100000e+02	1.600000e+02	1.591207e+00	6.408728e-02	9.936254e-02
+1.600000e+02	2.100000e+02	1.776711e+00	7.451176e-02	1.217100e-01
+2.100000e+02	2.600000e+02	1.992603e+00	1.007682e-01	1.397180e-01
+2.600000e+02	3.100000e+02	2.058836e+00	1.269458e-01	2.043494e-01
+3.100000e+02	4.000000e+02	2.191395e+00	1.134686e-01	1.879660e-01
+4.000000e+02	8.000000e+02	2.511286e+00	2.059142e-01	2.806106e-01
+# END HISTOGRAM
+
+# BEGIN HISTOGRAM /home/andy/proj/hep/atlas/tuning/TuningSystem/tunepy8shower_nnpdf23lo130_e/tunes/tune-py8shower-weights04c-000.eig05/ipolhistos/tune-py8shower-weights04c-000-0.yoda/ATLAS_2013_JETUE/d01-x01-y01
+Line=diag
+LineColor=red
+LineStyle=solid
+Path=/home/andy/proj/hep/atlas/tuning/TuningSystem/tunepy8shower_nnpdf23lo130_e/tunes/tune-py8shower-weights04c-000.eig05/ipolhistos/tune-py8shower-weights04c-000-0.yoda/ATLAS_2013_JETUE/d01-x01-y01
+Title=Nominal tune
+# xlow	 xhigh	 val	 errminus	 errplus
+2.000000e+01	3.000000e+01	1.057113e+00	0.000000e+00	0.000000e+00
+3.000000e+01	4.000000e+01	1.100918e+00	0.000000e+00	0.000000e+00
+4.000000e+01	6.000000e+01	1.155086e+00	0.000000e+00	0.000000e+00
+6.000000e+01	8.000000e+01	1.261468e+00	0.000000e+00	0.000000e+00
+8.000000e+01	1.100000e+02	1.372369e+00	0.000000e+00	0.000000e+00
+1.100000e+02	1.600000e+02	1.531602e+00	0.000000e+00	0.000000e+00
+1.600000e+02	2.100000e+02	1.722801e+00	0.000000e+00	0.000000e+00
+2.100000e+02	2.600000e+02	1.881903e+00	0.000000e+00	0.000000e+00
+2.600000e+02	3.100000e+02	2.007531e+00	0.000000e+00	0.000000e+00
+3.100000e+02	4.000000e+02	2.157775e+00	0.000000e+00	0.000000e+00
+4.000000e+02	8.000000e+02	2.330827e+00	0.000000e+00	0.000000e+00
+# END HISTOGRAM
+
+# BEGIN HISTOGRAM /home/andy/proj/hep/atlas/tuning/TuningSystem/tunepy8shower_nnpdf23lo130_e/tunes/tune-py8shower-weights04c-000.eig05/ipolhistos/tune-py8shower-weights04c-000-05+.yoda/ATLAS_2013_JETUE/d01-x01-y01
+Line=smooth
+LineColor=green
+LineStyle=dashed
+Path=/home/andy/proj/hep/atlas/tuning/TuningSystem/tunepy8shower_nnpdf23lo130_e/tunes/tune-py8shower-weights04c-000.eig05/ipolhistos/tune-py8shower-weights04c-000-05+.yoda/ATLAS_2013_JETUE/d01-x01-y01
+Title=5+
+# xlow	 xhigh	 val	 errminus	 errplus
+2.000000e+01	3.000000e+01	1.056723e+00	0.000000e+00	0.000000e+00
+3.000000e+01	4.000000e+01	1.098029e+00	0.000000e+00	0.000000e+00
+4.000000e+01	6.000000e+01	1.161571e+00	0.000000e+00	0.000000e+00
+6.000000e+01	8.000000e+01	1.275079e+00	0.000000e+00	0.000000e+00
+8.000000e+01	1.100000e+02	1.401688e+00	0.000000e+00	0.000000e+00
+1.100000e+02	1.600000e+02	1.570369e+00	0.000000e+00	0.000000e+00
+1.600000e+02	2.100000e+02	1.748945e+00	0.000000e+00	0.000000e+00
+2.100000e+02	2.600000e+02	1.939886e+00	0.000000e+00	0.000000e+00
+2.600000e+02	3.100000e+02	2.074298e+00	0.000000e+00	0.000000e+00
+3.100000e+02	4.000000e+02	2.160642e+00	0.000000e+00	0.000000e+00
+4.000000e+02	8.000000e+02	2.400143e+00	0.000000e+00	0.000000e+00
+# END HISTOGRAM
+
+# BEGIN HISTOGRAM /home/andy/proj/hep/atlas/tuning/TuningSystem/tunepy8shower_nnpdf23lo130_e/tunes/tune-py8shower-weights04c-000.eig05/ipolhistos/tune-py8shower-weights04c-000-05-.yoda/ATLAS_2013_JETUE/d01-x01-y01
+LineColor=green
+LineStyle=dashed
+Path=/home/andy/proj/hep/atlas/tuning/TuningSystem/tunepy8shower_nnpdf23lo130_e/tunes/tune-py8shower-weights04c-000.eig05/ipolhistos/tune-py8shower-weights04c-000-05-.yoda/ATLAS_2013_JETUE/d01-x01-y01
+Title=_tune-py8shower-weights04c-000-05-
+# xlow	 xhigh	 val	 errminus	 errplus
+2.000000e+01	3.000000e+01	1.067561e+00	0.000000e+00	0.000000e+00
+3.000000e+01	4.000000e+01	1.112729e+00	0.000000e+00	0.000000e+00
+4.000000e+01	6.000000e+01	1.165454e+00	0.000000e+00	0.000000e+00
+6.000000e+01	8.000000e+01	1.262276e+00	0.000000e+00	0.000000e+00
+8.000000e+01	1.100000e+02	1.371185e+00	0.000000e+00	0.000000e+00
+1.100000e+02	1.600000e+02	1.516347e+00	0.000000e+00	0.000000e+00
+1.600000e+02	2.100000e+02	1.713577e+00	0.000000e+00	0.000000e+00
+2.100000e+02	2.600000e+02	1.869739e+00	0.000000e+00	0.000000e+00
+2.600000e+02	3.100000e+02	1.989530e+00	0.000000e+00	0.000000e+00
+3.100000e+02	4.000000e+02	2.111390e+00	0.000000e+00	0.000000e+00
+4.000000e+02	8.000000e+02	2.294436e+00	0.000000e+00	0.000000e+00
+# END HISTOGRAM
+
+# BEGIN HISTOGRAM /home/andy/proj/hep/atlas/tuning/TuningSystem/tunepy8shower_nnpdf23lo130_e/tunes/tune-py8shower-weights04c-000.eig05/ipolhistos/tune-py8shower-weights04c-000-06+.yoda/ATLAS_2013_JETUE/d01-x01-y01
+LineColor=purple
+LineStyle=dashed
+Path=/home/andy/proj/hep/atlas/tuning/TuningSystem/tunepy8shower_nnpdf23lo130_e/tunes/tune-py8shower-weights04c-000.eig05/ipolhistos/tune-py8shower-weights04c-000-06+.yoda/ATLAS_2013_JETUE/d01-x01-y01
+Title=6+
+# xlow	 xhigh	 val	 errminus	 errplus
+2.000000e+01	3.000000e+01	1.032003e+00	0.000000e+00	0.000000e+00
+3.000000e+01	4.000000e+01	1.083824e+00	0.000000e+00	0.000000e+00
+4.000000e+01	6.000000e+01	1.139876e+00	0.000000e+00	0.000000e+00
+6.000000e+01	8.000000e+01	1.242304e+00	0.000000e+00	0.000000e+00
+8.000000e+01	1.100000e+02	1.360026e+00	0.000000e+00	0.000000e+00
+1.100000e+02	1.600000e+02	1.511713e+00	0.000000e+00	0.000000e+00
+1.600000e+02	2.100000e+02	1.701745e+00	0.000000e+00	0.000000e+00
+2.100000e+02	2.600000e+02	1.865779e+00	0.000000e+00	0.000000e+00
+2.600000e+02	3.100000e+02	1.989919e+00	0.000000e+00	0.000000e+00
+3.100000e+02	4.000000e+02	2.146796e+00	0.000000e+00	0.000000e+00
+4.000000e+02	8.000000e+02	2.331219e+00	0.000000e+00	0.000000e+00
+# END HISTOGRAM
+
+# BEGIN HISTOGRAM /home/andy/proj/hep/atlas/tuning/TuningSystem/tunepy8shower_nnpdf23lo130_e/tunes/tune-py8shower-weights04c-000.eig05/ipolhistos/tune-py8shower-weights04c-000-06-.yoda/ATLAS_2013_JETUE/d01-x01-y01
+LineColor=purple
+LineStyle=dashed
+Path=/home/andy/proj/hep/atlas/tuning/TuningSystem/tunepy8shower_nnpdf23lo130_e/tunes/tune-py8shower-weights04c-000.eig05/ipolhistos/tune-py8shower-weights04c-000-06-.yoda/ATLAS_2013_JETUE/d01-x01-y01
+Title=_tune-py8shower-weights04c-000-06-
+# xlow	 xhigh	 val	 errminus	 errplus
+2.000000e+01	3.000000e+01	1.091828e+00	0.000000e+00	0.000000e+00
+3.000000e+01	4.000000e+01	1.129777e+00	0.000000e+00	0.000000e+00
+4.000000e+01	6.000000e+01	1.178622e+00	0.000000e+00	0.000000e+00
+6.000000e+01	8.000000e+01	1.289828e+00	0.000000e+00	0.000000e+00
+8.000000e+01	1.100000e+02	1.391867e+00	0.000000e+00	0.000000e+00
+1.100000e+02	1.600000e+02	1.554677e+00	0.000000e+00	0.000000e+00
+1.600000e+02	2.100000e+02	1.749695e+00	0.000000e+00	0.000000e+00
+2.100000e+02	2.600000e+02	1.891806e+00	0.000000e+00	0.000000e+00
+2.600000e+02	3.100000e+02	2.033707e+00	0.000000e+00	0.000000e+00
+3.100000e+02	4.000000e+02	2.187744e+00	0.000000e+00	0.000000e+00
+4.000000e+02	8.000000e+02	2.340953e+00	0.000000e+00	0.000000e+00
+# END HISTOGRAM
+
+# BEGIN HISTOGRAM /home/andy/proj/hep/atlas/tuning/TuningSystem/tunepy8shower_nnpdf23lo130_e/tunes/tune-py8shower-weights04c-000.eig05/ipolhistos/tune-py8shower-weights04c-000-07+.yoda/ATLAS_2013_JETUE/d01-x01-y01
+LineColor=blue
+LineStyle=dashed
+Path=/home/andy/proj/hep/atlas/tuning/TuningSystem/tunepy8shower_nnpdf23lo130_e/tunes/tune-py8shower-weights04c-000.eig05/ipolhistos/tune-py8shower-weights04c-000-07+.yoda/ATLAS_2013_JETUE/d01-x01-y01
+Title=7+
+# xlow	 xhigh	 val	 errminus	 errplus
+2.000000e+01	3.000000e+01	8.934177e-01	0.000000e+00	0.000000e+00
+3.000000e+01	4.000000e+01	9.430305e-01	0.000000e+00	0.000000e+00
+4.000000e+01	6.000000e+01	1.009636e+00	0.000000e+00	0.000000e+00
+6.000000e+01	8.000000e+01	1.118966e+00	0.000000e+00	0.000000e+00
+8.000000e+01	1.100000e+02	1.234281e+00	0.000000e+00	0.000000e+00
+1.100000e+02	1.600000e+02	1.392650e+00	0.000000e+00	0.000000e+00
+1.600000e+02	2.100000e+02	1.591601e+00	0.000000e+00	0.000000e+00
+2.100000e+02	2.600000e+02	1.750855e+00	0.000000e+00	0.000000e+00
+2.600000e+02	3.100000e+02	1.886340e+00	0.000000e+00	0.000000e+00
+3.100000e+02	4.000000e+02	2.035492e+00	0.000000e+00	0.000000e+00
+4.000000e+02	8.000000e+02	2.213585e+00	0.000000e+00	0.000000e+00
+# END HISTOGRAM
+
+# BEGIN HISTOGRAM /home/andy/proj/hep/atlas/tuning/TuningSystem/tunepy8shower_nnpdf23lo130_e/tunes/tune-py8shower-weights04c-000.eig05/ipolhistos/tune-py8shower-weights04c-000-07-.yoda/ATLAS_2013_JETUE/d01-x01-y01
+LineColor=blue
+LineStyle=dashed
+Path=/home/andy/proj/hep/atlas/tuning/TuningSystem/tunepy8shower_nnpdf23lo130_e/tunes/tune-py8shower-weights04c-000.eig05/ipolhistos/tune-py8shower-weights04c-000-07-.yoda/ATLAS_2013_JETUE/d01-x01-y01
+Title=_tune-py8shower-weights04c-000-07-
+# xlow	 xhigh	 val	 errminus	 errplus
+2.000000e+01	3.000000e+01	1.232764e+00	0.000000e+00	0.000000e+00
+3.000000e+01	4.000000e+01	1.269778e+00	0.000000e+00	0.000000e+00
+4.000000e+01	6.000000e+01	1.310118e+00	0.000000e+00	0.000000e+00
+6.000000e+01	8.000000e+01	1.412646e+00	0.000000e+00	0.000000e+00
+8.000000e+01	1.100000e+02	1.519264e+00	0.000000e+00	0.000000e+00
+1.100000e+02	1.600000e+02	1.678621e+00	0.000000e+00	0.000000e+00
+1.600000e+02	2.100000e+02	1.860028e+00	0.000000e+00	0.000000e+00
+2.100000e+02	2.600000e+02	2.020943e+00	0.000000e+00	0.000000e+00
+2.600000e+02	3.100000e+02	2.137253e+00	0.000000e+00	0.000000e+00
+3.100000e+02	4.000000e+02	2.284838e+00	0.000000e+00	0.000000e+00
+4.000000e+02	8.000000e+02	2.453611e+00	0.000000e+00	0.000000e+00
+# END HISTOGRAM
+
+# BEGIN HISTOGRAM /home/andy/proj/hep/atlas/tuning/TuningSystem/tunepy8shower_nnpdf23lo130_e/tunes/tune-py8shower-weights04c-000.eig05/ipolhistos/tune-py8shower-weights04c-000-09+.yoda/ATLAS_2013_JETUE/d01-x01-y01
+LineColor=brown
+LineStyle=dashed
+Path=/home/andy/proj/hep/atlas/tuning/TuningSystem/tunepy8shower_nnpdf23lo130_e/tunes/tune-py8shower-weights04c-000.eig05/ipolhistos/tune-py8shower-weights04c-000-09+.yoda/ATLAS_2013_JETUE/d01-x01-y01
+Title=9+
+# xlow	 xhigh	 val	 errminus	 errplus
+2.000000e+01	3.000000e+01	1.002598e+00	0.000000e+00	0.000000e+00
+3.000000e+01	4.000000e+01	1.043948e+00	0.000000e+00	0.000000e+00
+4.000000e+01	6.000000e+01	1.100683e+00	0.000000e+00	0.000000e+00
+6.000000e+01	8.000000e+01	1.193734e+00	0.000000e+00	0.000000e+00
+8.000000e+01	1.100000e+02	1.301381e+00	0.000000e+00	0.000000e+00
+1.100000e+02	1.600000e+02	1.449002e+00	0.000000e+00	0.000000e+00
+1.600000e+02	2.100000e+02	1.633734e+00	0.000000e+00	0.000000e+00
+2.100000e+02	2.600000e+02	1.778478e+00	0.000000e+00	0.000000e+00
+2.600000e+02	3.100000e+02	1.890884e+00	0.000000e+00	0.000000e+00
+3.100000e+02	4.000000e+02	2.057389e+00	0.000000e+00	0.000000e+00
+4.000000e+02	8.000000e+02	2.194007e+00	0.000000e+00	0.000000e+00
+# END HISTOGRAM
+
+# BEGIN HISTOGRAM /home/andy/proj/hep/atlas/tuning/TuningSystem/tunepy8shower_nnpdf23lo130_e/tunes/tune-py8shower-weights04c-000.eig05/ipolhistos/tune-py8shower-weights04c-000-09-.yoda/ATLAS_2013_JETUE/d01-x01-y01
+LineColor=brown
+LineStyle=dashed
+Path=/home/andy/proj/hep/atlas/tuning/TuningSystem/tunepy8shower_nnpdf23lo130_e/tunes/tune-py8shower-weights04c-000.eig05/ipolhistos/tune-py8shower-weights04c-000-09-.yoda/ATLAS_2013_JETUE/d01-x01-y01
+Title=_tune-py8shower-weights04c-000-09-
+# xlow	 xhigh	 val	 errminus	 errplus
+2.000000e+01	3.000000e+01	1.108537e+00	0.000000e+00	0.000000e+00
+3.000000e+01	4.000000e+01	1.162404e+00	0.000000e+00	0.000000e+00
+4.000000e+01	6.000000e+01	1.210659e+00	0.000000e+00	0.000000e+00
+6.000000e+01	8.000000e+01	1.328939e+00	0.000000e+00	0.000000e+00
+8.000000e+01	1.100000e+02	1.444436e+00	0.000000e+00	0.000000e+00
+1.100000e+02	1.600000e+02	1.611992e+00	0.000000e+00	0.000000e+00
+1.600000e+02	2.100000e+02	1.812043e+00	0.000000e+00	0.000000e+00
+2.100000e+02	2.600000e+02	1.969335e+00	0.000000e+00	0.000000e+00
+2.600000e+02	3.100000e+02	2.117307e+00	0.000000e+00	0.000000e+00
+3.100000e+02	4.000000e+02	2.256895e+00	0.000000e+00	0.000000e+00
+4.000000e+02	8.000000e+02	2.472724e+00	0.000000e+00	0.000000e+00
+# END HISTOGRAM
+
+# BEGIN HISTOGRAM /home/andy/proj/hep/atlas/tuning/TuningSystem/tunepy8shower_nnpdf23lo130_e/tunes/tune-py8shower-weights04c-000.eig05/ipolhistos/tune-py8shower-weights04c-000-10+.yoda/ATLAS_2013_JETUE/d01-x01-y01
+LineColor=orange
+LineStyle=dashed
+Path=/home/andy/proj/hep/atlas/tuning/TuningSystem/tunepy8shower_nnpdf23lo130_e/tunes/tune-py8shower-weights04c-000.eig05/ipolhistos/tune-py8shower-weights04c-000-10+.yoda/ATLAS_2013_JETUE/d01-x01-y01
+Title=10+
+# xlow	 xhigh	 val	 errminus	 errplus
+2.000000e+01	3.000000e+01	1.010975e+00	0.000000e+00	0.000000e+00
+3.000000e+01	4.000000e+01	1.055192e+00	0.000000e+00	0.000000e+00
+4.000000e+01	6.000000e+01	1.104649e+00	0.000000e+00	0.000000e+00
+6.000000e+01	8.000000e+01	1.200350e+00	0.000000e+00	0.000000e+00
+8.000000e+01	1.100000e+02	1.308491e+00	0.000000e+00	0.000000e+00
+1.100000e+02	1.600000e+02	1.449830e+00	0.000000e+00	0.000000e+00
+1.600000e+02	2.100000e+02	1.634606e+00	0.000000e+00	0.000000e+00
+2.100000e+02	2.600000e+02	1.789400e+00	0.000000e+00	0.000000e+00
+2.600000e+02	3.100000e+02	1.911158e+00	0.000000e+00	0.000000e+00
+3.100000e+02	4.000000e+02	2.078573e+00	0.000000e+00	0.000000e+00
+4.000000e+02	8.000000e+02	2.262659e+00	0.000000e+00	0.000000e+00
+# END HISTOGRAM
+
+# BEGIN HISTOGRAM /home/andy/proj/hep/atlas/tuning/TuningSystem/tunepy8shower_nnpdf23lo130_e/tunes/tune-py8shower-weights04c-000.eig05/ipolhistos/tune-py8shower-weights04c-000-10-.yoda/ATLAS_2013_JETUE/d01-x01-y01
+LineColor=orange
+LineStyle=dashed
+Path=/home/andy/proj/hep/atlas/tuning/TuningSystem/tunepy8shower_nnpdf23lo130_e/tunes/tune-py8shower-weights04c-000.eig05/ipolhistos/tune-py8shower-weights04c-000-10-.yoda/ATLAS_2013_JETUE/d01-x01-y01
+Title=_tune-py8shower-weights04c-000-10-
+# xlow	 xhigh	 val	 errminus	 errplus
+2.000000e+01	3.000000e+01	1.105660e+00	0.000000e+00	0.000000e+00
+3.000000e+01	4.000000e+01	1.152779e+00	0.000000e+00	0.000000e+00
+4.000000e+01	6.000000e+01	1.205451e+00	0.000000e+00	0.000000e+00
+6.000000e+01	8.000000e+01	1.321612e+00	0.000000e+00	0.000000e+00
+8.000000e+01	1.100000e+02	1.427660e+00	0.000000e+00	0.000000e+00
+1.100000e+02	1.600000e+02	1.598636e+00	0.000000e+00	0.000000e+00
+1.600000e+02	2.100000e+02	1.801672e+00	0.000000e+00	0.000000e+00
+2.100000e+02	2.600000e+02	1.943056e+00	0.000000e+00	0.000000e+00
+2.600000e+02	3.100000e+02	2.085918e+00	0.000000e+00	0.000000e+00
+3.100000e+02	4.000000e+02	2.246348e+00	0.000000e+00	0.000000e+00
+4.000000e+02	8.000000e+02	2.411174e+00	0.000000e+00	0.000000e+00
+# END HISTOGRAM

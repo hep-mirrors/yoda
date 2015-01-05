@@ -1,0 +1,76 @@
+Plotting thoughts and TODOs
+===========================
+
+DESIGN
+------
+
+* Booleans should be specifiable via integers
+   (0=false,1=true), true/false, yes/no, on/off -- string comparisons being
+   case-insensitive. Done in as_bool(x) in yodaplot, should go into yoda.plot or
+   yoda.util.
+
+* Prefer specifying plot properties at histo level rather than in the PLOT section.
+   e.g. plot, ratio and legend inclusion
+
+* How to allow full customisation?
+   For people who want to add arrows, general annotations, v/hlines, shaded
+   areas... just make it as easy as possible for them to write their own
+   plotting script, or allow code insertion in .dat?
+
+
+TASKS
+-----
+
+* 2D plotting
+
+* More data-from-hist functions (incl for ratio, stack and band building)
+
+* Fix plot title separation from axes frame
+
+
+* Case-insensitive plot key lookup, so kwargs can be used to add to plotkeys
+
+* Access to zorder, and defining zorder numerical groupings
+
+* How to specify a fill-between band in .dat files?
+   Should have a "band" plotting style -- and break out the code to assemble the
+   correct arrays, call the right plotting command, etc. into functions for easy
+   reuse.
+
+
+MINOR
+-----
+
+* Allow plotting several hists to a single file?
+
+* Check/require minimal MPL version.
+
+* Create figs in native MPL rather than pyplot
+   Better for memory management, but requires manual canvas/backend handling
+
+* Alpha level in color spec -- automatic?
+   Test with current code
+
+* Font control
+   Needs to be specified within font family. Use a single key like
+   serif/Palatino? (A colon family/font separator won't work because we use
+   colons to separate keys on the cmphistos command line.)
+
+* Stacked plots
+
+* Marginal plots for 2D?
+   First we need to be able to make marginal histos from 2D ones! Need to be
+   able to specify whether summed or profiled data to be shown in each of the
+   X/Y marginals. In principle gridspec should allow 4 separate marginals in
+   the four LRTB positions, with different styles in each.
+
+* Remove final ticks that merge with the frame
+
+
+DONE (but still of interest)
+----------------------------
+
+* Provide a yodacmp to contain most of the comparison logic
+   N runs * M obs -> N lines in M plot files. rivet-cmphistos can then be a thin
+   wrapper on this (or the constituent YODA package functions) to add
+   Rivet-specific logic like special handling of /REF and /TMP path prefixes.

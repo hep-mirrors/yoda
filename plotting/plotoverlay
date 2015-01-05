@@ -1,0 +1,74 @@
+#! /usr/bin/env python
+
+"""\
+Usage: %prog data.yoda
+
+Combined plotting of observables which use either an array-subscript bracket or
+underscored-prefix naming scheme for variations, i.e. either
+
+/Jet_Obs_test/C02_1[gluon], /Jet_Obs_test/C02_1[quark]
+
+or
+
+/Jet_Obs_test/gluon_C02_1, /Jet_Obs_test/quark_C02_1
+
+will produce a single plot of observable /Jet_Obs_test/C02_1, written
+to Jet_Obs_test_C02_1.pdf and containing two lines labelled 'gluon'
+and 'quark' respectively.
+"""
+
+import optparse
+op = optparse.OptionParser(usage=__doc__)
+op.add_option("-n", "--nproc", dest="NPROC", default=None, type=int, help="number of plotting processes to run in parallel")
+opts, args = op.parse_args()
+
+
+## Load and sort data objects, using regexes to detect histo variations
+import yoda, os, re
+aos = yoda.read(args[0], asdict=False)
+re_varname1 = re.compile(r"([^\[\]]+)(\[[^\]]+\])?")
+re_varname2 = re.compile(r"([^_]+)_(.*)?")
+hgroups = {}
+for ao in aos:
+    basedir = os.path.dirname(ao.path)
+    basename = os.path.basename(ao.path)
+    var = None
+    #
+    m1 = re_varname1.match(basename)
+    m2 = re_varname2.match(basename)
+    if m1 and m1.group(2):
+        basename, var = m1.groups()
+        var = var.strip("[]") #< strip surrounding brackets
+    elif m2:
+        var, basename = m2.groups()
+    #
+    ao.title = var or ""
+    basepath = os.path.join(basedir, basename)
+    hgroups.setdefault(basepath, []).append(yoda.plotting.NumpyHist(ao))
+
+
+def plot(args):
+    obs, hs = args # until pool.starmap() is available
+    obsname = obs.replace("/", "_").strip("_")
+    filename = obsname + ".pdf"
+    print "Plotting " + filename
+
+    COLORS = ["red", "blue", "green", "orange", "magenta"]
+    STYLES = ["-", "--", ":", "-."]
+    for ih, h in enumerate(hs):
+        h.annotations.setdefault("Color", COLORS[ih % len(COLORS)])
+        h.annotations.setdefault("LineStyle", STYLES[ih % len(STYLES)])
+
+    yoda.plot(hs, filename)
+
+
+## Do plotting
+import multiprocessing
+nproc = opts.NPROC or multiprocessing.cpu_count()-1 or 1
+if nproc > 1:
+    pool = multiprocessing.Pool(processes=nproc)
+    pool.map(plot, hgroups.iteritems())
+else:
+    ## Run this way for easier debugging
+    for args in hgroups.iteritems():
+        plot(args)

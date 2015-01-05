@@ -1,0 +1,36 @@
+DOCUMENTATION OF YODAPLOT PLOT FORMAT KEYS
+==========================================
+
+IN PLOT SECTIONS
+----------------
+
+Title [None]
+XMeasure {lin,log,symlog} [LogX or lin]
+YMeasure {lin,log,symlog} [LogY or lin]
+XLabel [None]
+YLabel [None]
+XLabelPos {left,right,center,FRAC} [right]
+YLabelPos {top,bottom,center,FRAC} [top]
+XLabelSep [None]
+YLabelSep [None]
+LegendPos [best] => allow (fx,fy) spec style
+
+
+IN DATA-OBJECT SECTIONS
+-----------------------
+
+Title [None]
+RatioRef [None]
+RatioYLabel [Ratio]
+RatioErrColor [yellow]
+SurfaceStyle {color,contour} [color]  => should allow both!
+ColorMap [grey]
+
+Color [cycle]
+Marker {mpl marker codes, e.g. o,x,+,-,. etc.} [PolyMarker (compat) or None]
+LineColor [Color or black]
+ErrorBars (bool) [no]
+ErrorBarsColor [Color or black]
+LineColor [Color or black]
+LineStyle [-]
+Line {step,diag,smooth} [step]
