@@ -28,8 +28,10 @@ parser.add_option("--ref-prefix", dest="REF_PREFIX", metavar="NAME", default="RE
 #                   help="Shortcuts for modes. Allowed values: norm|normfirst|multiply")
 # parser.add_option("-f", "--specfile", dest="SPECFILE", default=None,
 #                   help="Specify a file with histogram path patterns (and bin ranges) that are to be normalised.")
+# PATT:1:2   2xREF:x:y
 # parser.add_option("-i", "--in-place", dest="IN_PLACE", default=False, action="store_true",
 #                   help="Overwrite input file rather than making input-rescaled.yoda")
+# TODO: -q --quiet
 opts, args = parser.parse_args()
 
 

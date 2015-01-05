@@ -15,14 +15,14 @@ class Point(object):
 
     def __init__(self, path, n, xmin, xmax, value=None):
         self.path = path
-        self.n = n
+        self.n = n #< bin index
         self.xmin = xmin
         self.xmax = xmax
         self.value = value
 
     def __repr__(self):
-        return "Point[{} #{:d}  {:.2e}--{:.2e}{}]".format(self.path, self.n, self.xmin, self.xmax,
-                                                         " = {}".format(self.value) if self.value else "")
+        return "Point({} #{:d}  {:.2e}--{:.2e}{})".format(self.path, self.n, self.xmin, self.xmax,
+                                                          " = {}".format(self.value) if self.value else "")
 
 
 
@@ -58,27 +58,30 @@ class PointMatcher(object):
                         if not indexstr2[1]: indexstr2[1] = "inf"
                         self.index = [float(istr) for istr in indexstr2]
 
+    def match_path(self, path):
+        return self.path.match(path) is not None
+
+    def match_pos(self, p):
+        if not self.indextype:
+            accept = True
+        elif self.indextype == "#":
+            if type(self.index) is float:
+                accept = (p.n == int(self.index))
+            else:
+                accept = (p.n >= self.index[0] and p.n < self.index[1])
+        else: # self.indextype == "@"
+            if type(self.index) is float:
+                accept = (self.index >= p.xmin and self.index < p.xmax)
+            else:
+                accept = (p.xmax > self.index[0] and p.xmin <= self.index[1])
+        return accept
+
     def find_points(self, points):
         rtn = []
         for p in points:
-            # print self.path.pattern, p.path, self.path.match(p.path)
-            if not self.path.match(p.path):
+            if not self.match_path(p.path):
                 continue
-
-            if not self.indextype:
-                accept = True
-            elif self.indextype == "#":
-                if type(self.index) is float:
-                    accept = (p.n == int(self.index))
-                else:
-                    accept = (p.n >= self.index[0] and p.n < self.index[1])
-            else:
-                if type(self.index) is float:
-                    accept = (self.index >= p.xmin and self.index < p.xmax)
-                else:
-                    accept = (p.xmax > self.index[0] and p.xmin <= self.index[1])
-
-            if accept:
+            if self.match_pos(p):
                 rtn.append(p)
         return rtn
 
