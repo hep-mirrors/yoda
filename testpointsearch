@@ -1,32 +1,17 @@
 #! /usr/bin/env python
 
-## System for selecting subsets of bins based on a search range
-## syntax extended from Professor weight files:
-##  Path structure: /path/parts/to/histo[syst_variation]@xmin:xmax
-##              or: /path/parts/to/histo[syst_variation]#nmin:nmax
-
 
 import re
-import numpy as np
-from pprint import pprint
-
-
-class Point(object):
-
-    def __init__(self, path, n, xmin, xmax, value=None):
-        self.path = path
-        self.n = n #< bin index
-        self.xmin = xmin
-        self.xmax = xmax
-        self.value = value
-
-    def __repr__(self):
-        return "Point({} #{:d}  {:.2e}--{:.2e}{})".format(self.path, self.n, self.xmin, self.xmax,
-                                                          " = {}".format(self.value) if self.value else "")
-
-
 
 class PointMatcher(object):
+    """\
+    System for selecting subsets of bins based on a search range
+    syntax extended from Professor weight files:
+    Path structure: /path/parts/to/histo[syst_variation]@xmin:xmax
+                or: /path/parts/to/histo[syst_variation]#nmin:nmax
+
+    TODO: Extend to multi-dimensional ranges i.e. @xmin:xmax,#nymin:nymax,...
+    """
 
     def __init__(self, patt):
         self.re_patt = re.compile(r"([^#@]+)(#\d+|@[\d\.:]+)?")
@@ -76,35 +61,51 @@ class PointMatcher(object):
                 accept = (p.xmax > self.index[0] and p.xmin <= self.index[1])
         return accept
 
-    def find_points(self, points):
-        rtn = []
-        for p in points:
-            if not self.match_path(p.path):
-                continue
-            if self.match_pos(p):
-                rtn.append(p)
-        return rtn
+
+if __name__ == "__main__":
+
+    import numpy as np
 
 
-POINTS = []
-xs = np.linspace(0, 10, 5)
-POINTS += [Point("/foo", i, xs[i], xs[i+1]) for i in xrange(len(xs)-1)]
-xs = np.linspace(0, 100, 50)
-POINTS += [Point("/bar", i, xs[i], xs[i+1]) for i in xrange(len(xs)-1)]
-xs = np.linspace(0, np.pi, 20)
-POINTS += [Point("/baz/pi", i, xs[i], xs[i+1]) for i in xrange(len(xs)-1)]
-xs = np.logspace(0.1, 50, 20)
-POINTS += [Point("/baz/log", i, xs[i], xs[i+1]) for i in xrange(len(xs)-1)]
-pprint(POINTS)
+    class Point(object):
+
+        def __init__(self, path, n, xmin, xmax, value=None):
+            self.path = path
+            self.n = n #< bin index
+            self.xmin = xmin
+            self.xmax = xmax
+            self.value = value
+
+        def __repr__(self):
+            return "Point({} #{:d}  {:.2e}--{:.2e}{})". \
+                   format(self.path, self.n, self.xmin, self.xmax, " = {}".format(self.value) if self.value else "")
 
 
-pms = [PointMatcher("/foo   # this bit is a comment"),
-       PointMatcher("/bar#1  # this bit is a comment"),
-       PointMatcher("/baz/pi@2.76  # this bit is a comment"),
-       PointMatcher("/baz/.*@:1.32 # this bit is a comment"),
-       PointMatcher("/baz/.*@2.76: # this bit is a comment")]
+    POINTS = []
+    xs = np.linspace(0, 10, 5)
+    POINTS += [Point("/foo", i, xs[i], xs[i+1]) for i in xrange(len(xs)-1)]
+    xs = np.linspace(0, 100, 50)
+    POINTS += [Point("/bar", i, xs[i], xs[i+1]) for i in xrange(len(xs)-1)]
+    xs = np.linspace(0, np.pi, 20)
+    POINTS += [Point("/baz/pi", i, xs[i], xs[i+1]) for i in xrange(len(xs)-1)]
+    xs = np.logspace(0.1, 50, 20)
+    POINTS += [Point("/baz/log", i, xs[i], xs[i+1]) for i in xrange(len(xs)-1)]
 
-for p in pms:
-    print
-    print p.patt, p.indextype, p.index
-    pprint(p.find_points(POINTS))
+    pms = [PointMatcher("/foo   # this bit is a comment"),
+           PointMatcher("/bar#1  # this bit is a comment"),
+           PointMatcher("/baz/pi@2.76  # this bit is a comment"),
+           PointMatcher("/baz/.*@:1.32 # this bit is a comment"),
+           PointMatcher("/baz/.*@2.76: # this bit is a comment")]
+
+    from pprint import pprint
+    pprint(POINTS)
+    pprint(pms)
+
+    def find_points(pm, points):
+        """Return matching Points from a list of them and a PointMatcher object."""
+        return [p for p in points if pm.match_path(p.path) and pm.match_pos(p)]
+
+    for pm in pms:
+        print
+        print pm.patt, pm.indextype, pm.index
+        pprint(find_points(pm, POINTS))
