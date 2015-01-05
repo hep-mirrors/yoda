@@ -65,21 +65,18 @@ class PointMatcher(object):
 if __name__ == "__main__":
 
     import numpy as np
-
+    from pprint import pprint
 
     class Point(object):
-
         def __init__(self, path, n, xmin, xmax, value=None):
             self.path = path
             self.n = n #< bin index
             self.xmin = xmin
             self.xmax = xmax
             self.value = value
-
         def __repr__(self):
-            return "Point({} #{:d}  {:.2e}--{:.2e}{})". \
-                   format(self.path, self.n, self.xmin, self.xmax, " = {}".format(self.value) if self.value else "")
-
+            val = " = {}".format(self.value) if self.value else ""
+            return "Point({} #{:d}  {:.2e}--{:.2e}{})".format(self.path, self.n, self.xmin, self.xmax, val)
 
     POINTS = []
     xs = np.linspace(0, 10, 5)
@@ -90,22 +87,16 @@ if __name__ == "__main__":
     POINTS += [Point("/baz/pi", i, xs[i], xs[i+1]) for i in xrange(len(xs)-1)]
     xs = np.logspace(0.1, 50, 20)
     POINTS += [Point("/baz/log", i, xs[i], xs[i+1]) for i in xrange(len(xs)-1)]
+    pprint(POINTS)
 
     pms = [PointMatcher("/foo   # this bit is a comment"),
            PointMatcher("/bar#1  # this bit is a comment"),
            PointMatcher("/baz/pi@2.76  # this bit is a comment"),
            PointMatcher("/baz/.*@:1.32 # this bit is a comment"),
            PointMatcher("/baz/.*@2.76: # this bit is a comment")]
-
-    from pprint import pprint
-    pprint(POINTS)
     pprint(pms)
-
-    def find_points(pm, points):
-        """Return matching Points from a list of them and a PointMatcher object."""
-        return [p for p in points if pm.match_path(p.path) and pm.match_pos(p)]
 
     for pm in pms:
         print
         print pm.patt, pm.indextype, pm.index
-        pprint(find_points(pm, POINTS))
+        pprint( [p for p in POINTS if pm.match_path(p.path) and pm.match_pos(p)] )
