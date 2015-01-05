@@ -1,3 +1,7 @@
+2015-01-05  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Script updates, improved docstrings, and improved tab completion.
+
 2014-12-10  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Add a yoda.plotting sub-module, based on matplotlib.

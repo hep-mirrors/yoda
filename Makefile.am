@@ -5,7 +5,7 @@ if ENABLE_PYEXT
 SUBDIRS += pyext
 endif
 
-EXTRA_FILES = main.dox
+EXTRA_FILES = main.dox PLOTKEYS
 
 pkgconfigdir = $(libdir)/pkgconfig
 dist_pkgconfig_DATA = yoda.pc
