@@ -25,3 +25,18 @@ def parse_x2y_args(args, xextn, yextn):
             infiles.append(infile)
             outfiles.append(outfile)
     return zip(infiles, outfiles)
+
+
+def filter_aos(aos, match_re=None, unmatch_re=None):
+    "Remove unwanted analysis objects from a list (modifies arg, also returned)"
+    if match_re:
+        re_match = re.compile(match_re)
+        for k in aos.keys():
+            if not re_match.match(k):
+                del aos[k]
+    if unmatch_re:
+        re_unmatch = re.compile(unmatch_re)
+        for k in aos.keys():
+            if re_unmatch.match(k):
+                del aos[k]
+    return aos

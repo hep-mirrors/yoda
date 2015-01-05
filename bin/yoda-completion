@@ -156,7 +156,7 @@ function _yodahist() {
     opts="--help -h --quiet -q"
     cmds1a="hist1 prof1"
     cmds1b="hist2 prof2"
-    cmds2="path title xlabel ylabel in out"
+    cmds2="path title xlabel ylabel ann in out"
     cmds3="logx logy show"
 
     if [[ ${cur} = -* ]] ; then
@@ -284,7 +284,7 @@ function _yoda2aida() {
     cur="${COMP_WORDS[COMP_CWORD]}"
     prev="${COMP_WORDS[COMP_CWORD-1]}"
 
-    opts="--help -h"
+    opts="--help -h --match -m --unmatch -M"
 
     if [[ ${cur} = -* ]] ; then
         COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
@@ -308,7 +308,7 @@ function _yoda2flat() {
     cur="${COMP_WORDS[COMP_CWORD]}"
     prev="${COMP_WORDS[COMP_CWORD-1]}"
 
-    opts="--help -h"
+    opts="--help -h --match -m --unmatch -M"
 
     if [[ ${cur} = -* ]] ; then
         COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
@@ -332,7 +332,7 @@ function _yoda2root() {
     cur="${COMP_WORDS[COMP_CWORD]}"
     prev="${COMP_WORDS[COMP_CWORD-1]}"
 
-    opts="--help -h"
+    opts="--help -h --match -m --unmatch -M"
 
     if [[ ${cur} = -* ]] ; then
         COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
@@ -356,7 +356,7 @@ function _aida2yoda() {
     cur="${COMP_WORDS[COMP_CWORD]}"
     prev="${COMP_WORDS[COMP_CWORD-1]}"
 
-    opts="--help -h"
+    opts="--help -h --match -m --unmatch -M"
 
     if [[ ${cur} = -* ]] ; then
         COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
@@ -380,7 +380,7 @@ function _aida2flat() {
     cur="${COMP_WORDS[COMP_CWORD]}"
     prev="${COMP_WORDS[COMP_CWORD-1]}"
 
-    opts="--help -h"
+    opts="--help -h --match -m --unmatch -M"
 
     if [[ ${cur} = -* ]] ; then
         COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
@@ -404,7 +404,7 @@ function _flat2yoda() {
     cur="${COMP_WORDS[COMP_CWORD]}"
     prev="${COMP_WORDS[COMP_CWORD-1]}"
 
-    opts="--help -h"
+    opts="--help -h --match -m --unmatch -M"
 
     if [[ ${cur} = -* ]] ; then
         COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )

@@ -30,6 +30,8 @@ Command syntax:
   using lin/log axis measures:
     logx yes
     logy 0
+  general annotations (can be used multiple times):
+    ann 'Foo=bar'
   and input output file/stdout:
     in -  (default)
     out 'foo.yoda'
@@ -55,6 +57,9 @@ parser = optparse.OptionParser(usage=__doc__)
 opts, args = parser.parse_args()
 
 class Binning:
+
+    # TODO: Also allow explicit lists of bin edges as parseable strings
+
     def __init__(self, nbins, low, high, measure="LIN"):
         try:
             self.nbins = int(nbins)
@@ -114,12 +119,14 @@ elif MODE in ["h2", "hist2"]:
     MODE = "hist2"
 elif MODE in ["p2", "prof2"]:
     MODE = "prof2"
+if MODE in ["s", "s2", "scat", "scat2"]:
+    MODE = "scat2"
 else:
     raise Exception("Unknown histogramming mode: " + MODE)
 
 
 ## Now process binning instructions
-# TODO: Also allow explicit lists of bin edges as parseable strings?
+# TODO: Also allow explicit lists of bin edges as parseable strings
 del tmpargs[0]
 XBINNING = None
 YBINNING = None
@@ -142,7 +149,10 @@ cmds = {}
 while tmpargs:
     cmd = tmpargs[0].lower()
     try:
-        cmds[cmd] = tmpargs[1]
+        if cmd == "ann":
+            cmds.setdefault("ann", []).append(tmpargs[1])
+        else:
+            cmds[cmd] = tmpargs[1]
     except:
         sys.stderr.write("Value missing for command '%s'\n" % cmd)
     del tmpargs[:2]
@@ -199,7 +209,13 @@ if "logx" in cmds:
     h.setAnnotation("LogX", int(tobool(cmds.get("logx"))) )
 if "logy" in cmds:
     h.setAnnotation("LogY", int(tobool(cmds.get("logy"))) )
-
+if "ann" in cmds:
+    for kv in cmds.get("ann"):
+        try:
+            k, v = kv.split("=", 1)
+            h.setAnnotation(k, v)
+        except:
+            print "Couldn't set annotation from arg '%s'" % kv
 
 ## Read the input and fill the histo
 INPUT = cmds.get("in", "-")

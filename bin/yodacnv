@@ -23,15 +23,7 @@ if not len(args) == 2:
 i, o = args
 
 ## Read, filter, and write out histos
+from yoda.script_helpers import filter_aos
 aos = yoda.read(i)
-if opts.MATCH:
-    re_match = re.compile(opts.MATCH)
-    for k in aos.keys():
-        if not re_match.match(k):
-            del aos[k]
-if opts.UNMATCH:
-    re_unmatch = re.compile(opts.UNMATCH)
-    for k in aos.keys():
-        if re_unmatch.match(k):
-            del aos[k]
+filter_aos(aos, opts.MATCH, opts.UNMATCH)
 yoda.write(aos, o)
