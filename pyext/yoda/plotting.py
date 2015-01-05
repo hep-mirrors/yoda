@@ -271,9 +271,9 @@ def setup_axes_1d(axmain, axratio, plotkeys):
     ## log/lin measures
     # TODO: Dynamic default based on data ranges?
     # TODO: take log axes and preference for round numbers into account in setting default axis limits
-    xmeasure = "log" if as_bool(plotkeys.get("LogX", False)) else "linear"
-    ymeasure = "log" if as_bool(plotkeys.get("LogY", False)) else "linear"
-    ratioymeasure = "log" if as_bool(plotkeys.get("RatioLogY", False)) else "linear"
+    xmeasure = "log" if yoda.util.as_bool(plotkeys.get("LogX", False)) else "linear"
+    ymeasure = "log" if yoda.util.as_bool(plotkeys.get("LogY", False)) else "linear"
+    ratioymeasure = "log" if yoda.util.as_bool(plotkeys.get("RatioLogY", False)) else "linear"
     axmain.set_xscale(xmeasure)
     axmain.set_yscale(ymeasure)
     if axratio:
@@ -399,7 +399,7 @@ def plot_hists_1d(hs, outfile=None, ratio=None, plotkeys={}):
     # TODO: Use ratio to setdefault RatioPlot in plotkeys, then use that to decide whether to look for href
     if ratio is not False:
         for h in hs:
-            if as_bool(h.annotations.get("RatioRef", False)):
+            if yoda.util.as_bool(h.annotations.get("RatioRef", False)):
                 if href is None:
                     href = h
                 else:

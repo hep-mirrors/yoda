@@ -1,5 +1,7 @@
 2015-01-05  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Adding 'scat2' type to yodahist.
+
 	* Add match/unmatch args to all conversion scripts, via a new Python yoda.script_helpers function.
 
 	* Script updates, improved docstrings, and improved tab completion.

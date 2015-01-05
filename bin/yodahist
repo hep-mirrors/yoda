@@ -19,6 +19,8 @@ Command syntax:
   Each of these must be followed by a list of numbers defining bin
   edges: a 3-tuple of x3 = nxbins xlow xhigh for 1D histogram types
   and a 6 tuple of x3 y3 for 2D histogram types.
+  To book with logarithmic binning, use the xlogbins,ylogbins with
+  boolean arguments.
 
   Remaining commands all take a single argument. They allow specifying
   the histogram path:
@@ -27,7 +29,7 @@ Command syntax:
     title 'Foo bar'
     xlabel '$p_T$ [GeV]'
     ylabel '$N$'
-  using lin/log axis measures:
+  using lin/log axis plotting measures:
     logx yes
     logy 0
   general annotations (can be used multiple times):
@@ -119,7 +121,7 @@ elif MODE in ["h2", "hist2"]:
     MODE = "hist2"
 elif MODE in ["p2", "prof2"]:
     MODE = "prof2"
-if MODE in ["s", "s2", "scat", "scat2"]:
+elif MODE in ["s", "s2", "scat", "scat2"]:
     MODE = "scat2"
 else:
     raise Exception("Unknown histogramming mode: " + MODE)
@@ -142,6 +144,8 @@ elif MODE in ["hist2", "prof2"]:
     del tmpargs[:3]
     YBINNING = Binning(*tmpargs[:3])
     del tmpargs[:3]
+elif MODE in ["scat2"]:
+    pass
 
 
 ## Break remaining args into cmds, as a dict[cmd] -> [cmdargs]
@@ -168,19 +172,12 @@ while tmpargs:
     #     error("unknown command '%s'\n" % cmd)
 # print cmds
 
-def tobool(s):
-    if type(s) is str:
-        assert len(s) != 0
-        if s.lower() in ["false", "off", "no", "0"]:
-            return False
-        elif s.lower() in ["true", "on", "yes", "1"]:
-            return True
-    return bool(s)
 
 ## Apply log binning measure(s) if needed
-XBINNING.measure = "LOG" if tobool(cmds.get("xlogbins")) else "LIN"
+if XBINNING:
+    XBINNING.measure = "LOG" if yoda.util.as_bool(cmds.get("xlogbins", False)) else "LIN"
 if YBINNING:
-    YBINNING.measure = "LOG" if tobool(cmds.get("ylogbins")) else "LIN"
+    YBINNING.measure = "LOG" if yoda.util.as_bool(cmds.get("ylogbins", False)) else "LIN"
 
 
 ## Make the histo object
@@ -193,6 +190,8 @@ elif MODE == "hist2":
     h = yoda.Histo2D(XBINNING.binedges(), YBINNING.binedges())
 elif MODE == "prof2":
     h = yoda.Profile2D(XBINNING.binedges(), YBINNING.binedges())
+elif MODE == "scat2":
+    h = yoda.Scatter2D()
 else:
     raise Exception("Unknown histogramming mode: " + MODE)
 
@@ -200,15 +199,15 @@ else:
 ## Set more annotations, etc.
 h.path = cmds.get("path", "/hist1")
 if "title" in cmds:
-    h.title = cmds.get("title", "")
+    h.title = cmds.get("title")
 if "xlabel" in cmds:
-    h.setAnnotation("XLabel", cmds.get("xlabel", ""))
+    h.setAnnotation("XLabel", cmds.get("xlabel"))
 if "ylabel" in cmds:
-    h.setAnnotation("YLabel", cmds.get("ylabel", ""))
+    h.setAnnotation("YLabel", cmds.get("ylabel"))
 if "logx" in cmds:
-    h.setAnnotation("LogX", int(tobool(cmds.get("logx"))) )
+    h.setAnnotation("LogX", int(yoda.util.as_bool(cmds.get("logx"))) )
 if "logy" in cmds:
-    h.setAnnotation("LogY", int(tobool(cmds.get("logy"))) )
+    h.setAnnotation("LogY", int(yoda.util.as_bool(cmds.get("logy"))) )
 if "ann" in cmds:
     for kv in cmds.get("ann"):
         try:
@@ -217,22 +216,27 @@ if "ann" in cmds:
         except:
             print "Couldn't set annotation from arg '%s'" % kv
 
+
 ## Read the input and fill the histo
 INPUT = cmds.get("in", "-")
 import fileinput
 for line in fileinput.input(INPUT):
     vals = [float(x) for x in line.strip().split()]
-    if MODE == "hist1":
-        assert len(vals) in [1,2]
-    elif MODE in ["prof1", "hist2"]:
-        assert len(vals) in [2,3]
-    elif MODE == "prof2":
-        assert len(vals) in [3,4]
-    h.fill(*vals)
+    if MODE == "scat2":
+        # TODO: Multiple errors and asymm errors
+        h.addPoint(*vals)
+    else:
+        if MODE == "hist1":
+            assert len(vals) in [1,2]
+        elif MODE in ["prof1", "hist2"]:
+            assert len(vals) in [2,3]
+        elif MODE == "prof2":
+            assert len(vals) in [3,4]
+        h.fill(*vals)
 
 
 ## Show the histogram on the terminal
-if tobool(cmds.get("show")):
+if yoda.util.as_bool(cmds.get("show", False)):
     yoda.writeFLAT([h], "-")
 
 

@@ -156,8 +156,9 @@ function _yodahist() {
     opts="--help -h --quiet -q"
     cmds1a="hist1 prof1"
     cmds1b="hist2 prof2"
+    cmds1c="scat2"
     cmds2="path title xlabel ylabel ann in out"
-    cmds3="logx logy show"
+    cmds3="logx logy show xlogbins ylogbins"
 
     if [[ ${cur} = -* ]] ; then
         COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
@@ -165,7 +166,7 @@ function _yodahist() {
     else
         ## First command must be a bin definition
         if [[ ${prev} = "yodahist" ]] ; then
-            COMPREPLY=( $(compgen -W "$cmds1a $cmds1b" -- ${cur}) )
+            COMPREPLY=( $(compgen -W "$cmds1a $cmds1b $cmds1c" -- ${cur}) )
             return 0;
         fi
         ## Print help for bin defn commands
