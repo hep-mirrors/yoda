@@ -4,6 +4,7 @@ EXTRA_DIST = \
     errors.cpp errors.hh \
     pyroot_helpers.hh merge.hh \
     rootcompat.pxd rootcompat.pyx \
+    matcher.py plotting.py \
     script_helpers.py
 
 CYTHON_SRC = \
@@ -39,7 +40,6 @@ CYTHON_SRC = \
     include/Scatter1D.pyx \
     include/Scatter2D.pyx \
     include/Scatter3D.pyx
-
 
 EXTRA_DIST += \
     $(CYTHON_SRC) \

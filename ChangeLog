@@ -1,5 +1,8 @@
 2015-01-05  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Adding yoda.matcher Python sub-package with PointMatcher
+	functionality. To be used in Professor 2.0 and in yodascale.
+
 	* Adding 'scat2' type to yodahist.
 
 	* Add match/unmatch args to all conversion scripts, via a new Python yoda.script_helpers function.
