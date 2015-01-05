@@ -3,41 +3,6 @@ import numpy as np
 import sys
 
 
-## Utils
-
-def as_bool(x):
-    if type(x) is bool:
-        return x
-    s = str(x)
-    if x.lower() in ("true", "yes", "on", "1"): return True
-    if x.lower() in ("false", "no", "off", "0"): return False
-    raise Exception("'{}' cannot be parsed as a boolean flag".format(s))
-
-def autotype(var):
-    """Automatically convert strings to numerical types if possible."""
-    if type(var) is not str:
-        return var
-    if var.isdigit() or (var.startswith("-") and var[1:].isdigit()):
-        return int(var)
-    try:
-        f = float(var)
-        return f
-    except ValueError:
-        return var
-
-def autostr(var, precision=8):
-    """Automatically format numerical types as the right sort of string."""
-    if type(var) is float:
-        return ("% ." + str(precision) + "e") % var
-    elif not hasattr(var, "__iter__"):
-        return str(var)
-    else:
-        return ",".join(_autostr(subval) for subval in var)
-
-
-########################
-
-
 class NumpyHist(object):
 
     def __init__(self, ao):

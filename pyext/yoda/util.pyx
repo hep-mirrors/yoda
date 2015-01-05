@@ -1,22 +1,33 @@
 from collections import namedtuple
 from operator import itemgetter
 
+
+def as_bool(x):
+    if type(x) is bool:
+        return x
+    s = str(x)
+    if s.lower() in ("true", "yes", "on", "1", "1.0"):
+        return True
+    if s.lower() in ("false", "no", "off", "0", "0.0"):
+        return False
+    raise Exception("'{}' cannot be parsed as a boolean flag".format(s))
+
+
 def _autotype(var, autobool=True):
     """Automatically convert strings to numerical types if possible."""
     if type(var) is not str:
         return var
-    if autobool:
-        if var.lower() in ("yes", "true", "on"):
-            return True
-        if var.lower() in ("no", "false", "off"):
-            return False
     if var.isdigit() or (var.startswith("-") and var[1:].isdigit()):
         return int(var)
     try:
-        f = float(var)
-        return f
-    except ValueError:
-        return var
+        return float(var)
+    except: pass
+    if autobool:
+        try:
+            return as_bool(var)
+        except: pass
+    return var
+
 
 def _autostr(var, precision=8):
     """Automatically format numerical types as the right sort of string."""
@@ -26,6 +37,8 @@ def _autostr(var, precision=8):
         return str(var)
     else:
         return ",".join(_autostr(subval) for subval in var)
+
+
 
 
 cdef class Base:
