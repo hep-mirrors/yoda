@@ -50,7 +50,6 @@ def parse_specstr(line):
     ## Match and extract the spec command structure
     import re
     re_scalespec = re.compile(r"([\d\.]+x?)?(.*)")
-    print re_scalespec, scalespec
     m = re_scalespec.match(scalespec)
     if not m:
         raise Exception("Invalid scaling spec string: '%s'" % scalespec)
@@ -60,8 +59,9 @@ def parse_specstr(line):
         scaleop = "x"
         scalearg = scalearg[:-1]
     scalenum = float(scalearg)
-    print repr(pathpatt), repr(refpatt), scaleop, scalenum
-    return PointMatcher(pathpatt), PointMatcher(refpatt), scaleop, scalenum
+    rtn = (PointMatcher(pathpatt), PointMatcher(refpatt), scaleop, scalenum)
+    #print rtn
+    return rtn
 
 ## Parse spec file and command-line specs
 SPECS = []
@@ -73,9 +73,6 @@ if opts.SPECFILE:
                 continue
             SPECS.append( parse_specstr(line) )
 SPECS += [parse_specstr(s) for s in opts.SPECS]
-
-
-exit(0)
 
 ## Read reference histograms
 import yoda, os, glob
@@ -109,12 +106,35 @@ for infile in args:
             print "DEBUG: not rescaling ref object '%s'" % aopath
             continue
 
-        # TODO: Find the desired mode of operation for this path match
+        ## Match specs to MC AO paths, and thence ref AOs
+        for s in SPECS:
+            if s[0].match_path(aopath):
+                refpaths = None
+                if s[1].path.pattern == "REF":
+                    if not aos_ref.has_key(aopath):
+                        continue
+                    refpaths = [aopath]
+                else:
+                    #print s[1]
+                    refpaths = [p for p in aos_ref.keys() if (s[1] and s[1].match_path(p))]
+                print aopath, refpaths
+                if not refpaths:
+                    #print "WARNING: no reference histogram found for '%s'" % aopath
+                    continue
+                refpath = refpaths[0]
+                aoref = aos_ref[refpath]
+
+                # TODO: Find the desired mode of operation for this path match
+                if s[2] == "x":
+                    pass
+
+        continue
+
 
         ## Check for an equivalent ref object
         # TODO: not needed in MULTIPLY mode
         if not aos_ref.has_key(aopath):
-            print "WARNING: no reference histogram found for '%s'" % aopath
+            # print "WARNING: no reference histogram found for '%s'" % aopath
             continue
         aoref = aos_ref[aopath]
 

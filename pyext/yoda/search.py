@@ -60,6 +60,10 @@ class PointMatcher(object):
                 accept = (p.xmax > self.index[0] and p.xmin <= self.index[1])
         return accept
 
+    def __repr__(self):
+        s = "PointMatcher('%s' %s %s %s)" % (self.patt, self.path, self.indextype, self.index)
+        return s
+
 
 if __name__ == "__main__":
 
