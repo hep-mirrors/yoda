@@ -114,8 +114,8 @@ for infile in args:
                     if aos_ref.has_key(aopath):
                         refpaths = [aopath]
                 else:
-                    refpaths = [p for p in aos_ref.keys() if (s[1] and s[1].match_path(p))]
-                print aopath, refpaths
+                    refpaths = [p for p in aos_ref.keys() if (s[1] and s[1].search_path(p))]
+                print "DEBUG:", aopath, "=>", refpaths
                 if not refpaths:
                     #print "WARNING: no reference histogram found for '%s'" % aopath
                     continue
