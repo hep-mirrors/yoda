@@ -18,26 +18,64 @@ TODO:
 
 ## Parse command line args
 import optparse
-parser = optparse.OptionParser(usage=__doc__)
+op = optparse.OptionParser(usage=__doc__)
 # TODO: how to look up ref histos?
-parser.add_option("-r", "--ref", dest="REFS", action="append", default=[],
+op.add_option("-r", "--ref", dest="REFS", action="append", default=[],
                   help="File or folder with reference histos")
-parser.add_option("--ref-prefix", dest="REF_PREFIX", metavar="NAME", default="REF",
+op.add_option("--ref-prefix", dest="REF_PREFIX", metavar="NAME", default="REF",
                   help="Treat /NAME/foo as a reference plot for /foo, and don't rescale /NAME histos")
-# parser.add_option("--mode", dest="MODE", default="norm",
+# op.add_option("--mode", dest="MODE", default="norm",
 #                   help="Shortcuts for modes. Allowed values: norm|normfirst|multiply")
-# parser.add_option("-f", "--specfile", dest="SPECFILE", default=None,
-#                   help="Specify a file with histogram path patterns (and bin ranges) that are to be normalised.")
+op.add_option("-c", "--spec", dest="SPECS", metavar="SPECSTR", action="append", default=[],
+                  help="Provide a single scaling specification on the command line. Multiple -c options " +
+                  "may be given. Specs will be _appended_ to any read from a file with -f/--specfile")
+op.add_option("-f", "--specfile", dest="SPECFILE", metavar="FILE", default=None,
+                  help="Specify a file with histogram path patterns (and bin ranges) that are to be normalised")
 # PATT:1:2   2xREF:x:y
-# parser.add_option("-i", "--in-place", dest="IN_PLACE", default=False, action="store_true",
+# op.add_option("-i", "--in-place", dest="IN_PLACE", default=False, action="store_true",
 #                   help="Overwrite input file rather than making input-rescaled.yoda")
 # TODO: -q --quiet
-opts, args = parser.parse_args()
+opts, args = op.parse_args()
 
 
-## Parse spec file
-# TODO
+## Define parser for scale specification strings
+from yoda.search import PointMatcher
+def parse_specstr(line):
+    ## Strip comments
+    if " #" in line:
+        line = line[:line.index(" #")]
+    ## Split whitespace-separated target and ref parts
+    parts = line.split()
+    pathpatt, scalespec = parts[0], " ".join(parts[1:])
+    ## Match and extract the spec command structure
+    import re
+    re_scalespec = re.compile(r"([\d\.]+x?)?(.*)")
+    print re_scalespec, scalespec
+    m = re_scalespec.match(scalespec)
+    if not m:
+        raise Exception("Invalid scaling spec string: '%s'" % scalespec)
+    scalearg, refpatt = m.groups()
+    scaleop = "="
+    if scalearg.endswith("x"):
+        scaleop = "x"
+        scalearg = scalearg[:-1]
+    scalenum = float(scalearg)
+    print repr(pathpatt), repr(refpatt), scaleop, scalenum
+    return PointMatcher(pathpatt), PointMatcher(refpatt), scaleop, scalenum
 
+## Parse spec file and command-line specs
+SPECS = []
+if opts.SPECFILE:
+    with open(opts.SPECFILE, "r") as f:
+        for line in f:
+            line = line.strip()
+            if line.startswith("#"):
+                continue
+            SPECS.append( parse_specstr(line) )
+SPECS += [parse_specstr(s) for s in opts.SPECS]
+
+
+exit(0)
 
 ## Read reference histograms
 import yoda, os, glob

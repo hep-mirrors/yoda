@@ -4,7 +4,7 @@ EXTRA_DIST = \
     errors.cpp errors.hh \
     pyroot_helpers.hh merge.hh \
     rootcompat.pxd rootcompat.pyx \
-    matcher.py plotting.py \
+    search.py plotting.py \
     script_helpers.py
 
 CYTHON_SRC = \
