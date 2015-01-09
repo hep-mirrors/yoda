@@ -108,14 +108,12 @@ for infile in args:
 
         ## Match specs to MC AO paths, and thence ref AOs
         for s in SPECS:
-            if s[0].match_path(aopath):
-                refpaths = None
+            if s[0].search_path(aopath):
+                refpaths = []
                 if s[1].path.pattern == "REF":
-                    if not aos_ref.has_key(aopath):
-                        continue
-                    refpaths = [aopath]
+                    if aos_ref.has_key(aopath):
+                        refpaths = [aopath]
                 else:
-                    #print s[1]
                     refpaths = [p for p in aos_ref.keys() if (s[1] and s[1].match_path(p))]
                 print aopath, refpaths
                 if not refpaths:

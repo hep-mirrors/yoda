@@ -45,6 +45,9 @@ class PointMatcher(object):
     def match_path(self, path):
         return self.path.match(path) is not None
 
+    def search_path(self, path):
+        return self.path.search(path) is not None
+
     def match_pos(self, p):
         if not self.indextype:
             accept = True
