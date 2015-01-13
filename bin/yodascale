@@ -11,8 +11,7 @@ Example:
   .yoda found in refdir, and writes out to run{1,2}-rescaled.yoda)
 
 TODO:
- * add detailed scaling control with pattern match + bin/var range files/args
- * allow command-line use of same scaling spec args
+ * add overflow inclusion in normalization for binned types
 """
 
 
@@ -55,6 +54,8 @@ def parse_specstr(line):
         raise Exception("Invalid scaling spec string: '%s'" % scalespec)
     scalearg, refpatt = m.groups()
     scaleop = "="
+    if not scalearg:
+        scalearg = "1x"
     if scalearg.endswith("x"):
         scaleop = "x"
         scalearg = scalearg[:-1]
@@ -62,6 +63,7 @@ def parse_specstr(line):
     rtn = (PointMatcher(pathpatt), PointMatcher(refpatt), scaleop, scalenum)
     #print rtn
     return rtn
+
 
 ## Parse spec file and command-line specs
 SPECS = []
@@ -73,6 +75,7 @@ if opts.SPECFILE:
                 continue
             SPECS.append( parse_specstr(line) )
 SPECS += [parse_specstr(s) for s in opts.SPECS]
+
 
 ## Read reference histograms
 import yoda, os, glob
@@ -98,6 +101,7 @@ for infile in args:
     aos_out = {}
     aos_in = yoda.read(infile)
     for aopath, ao in sorted(aos_in.iteritems()):
+
         ## Default is to write out the unrescaled AO if no match is found
         aos_out[aopath] = ao
 
@@ -106,73 +110,108 @@ for infile in args:
             print "DEBUG: not rescaling ref object '%s'" % aopath
             continue
 
-        ## Match specs to MC AO paths, and thence ref AOs
+
+        ## Match specs to MC AO path, and thence ref AOs
+        aospecs = []
         for s in SPECS:
             if s[0].search_path(aopath):
-                refpaths = []
-                if s[1].path.pattern == "REF":
-                    if aos_ref.has_key(aopath):
-                        refpaths = [aopath]
-                else:
-                    refpaths = [p for p in aos_ref.keys() if (s[1] and s[1].search_path(p))]
-                print "DEBUG:", aopath, "=>", refpaths
-                if not refpaths:
-                    #print "WARNING: no reference histogram found for '%s'" % aopath
-                    continue
-                refpath = refpaths[0]
-                aoref = aos_ref[refpath]
+                aoref, (matcher, mode, factor) = None, s[1:]
+                if s[1].path is not None:
+                    refpaths = []
+                    if s[1].path.pattern == "REF":
+                        if aos_ref.has_key(aopath):
+                            refpaths = [aopath]
+                    else:
+                        refpaths = [p for p in aos_ref.keys() if (s[1] and s[1].search_path(p))]
+                    print "DEBUG:", aopath, "=>", refpaths
+                    if not refpaths:
+                        print "ERROR: no reference histogram '%s' found for '%s'. Not rescaling" % (s[1].path.pattern, aopath)
+                        # TODO: should we actually skip it from the output entirely in this case?
+                        continue
+                    if len(refpaths) > 1:
+                        print "WARNING: multiple reference histograms found for '%s'. Using first: '%s'" % (aopath, refpaths[0])
+                    aoref = aos_ref[refpaths[0]]
 
-                # TODO: Find the desired mode of operation for this path match
-                if s[2] == "x":
-                    pass
+                aospecs.append( [aoref, s[1], mode, factor] )
 
-        continue
+        ## Identify and check spec to be used for scaling determination
+        if not aospecs:
+            print "DEBUG: no scaling spec found for '%s'. Output is unscaled" % aopath
+            aoref, matcher, mode, factor = None, None, "x", 1.0
+        else:
+            if len(aospecs) > 1:
+                print "WARNING: multiple scaling specs found for '%s'. Using first: '%r'" % (aopath, aospecs[0])
+            aoref, matcher, mode, factor = aospecs[0]
 
 
-        ## Check for an equivalent ref object
-        # TODO: not needed in MULTIPLY mode
-        if not aos_ref.has_key(aopath):
-            # print "WARNING: no reference histogram found for '%s'" % aopath
-            continue
-        aoref = aos_ref[aopath]
+        ## Work out scalefactor
+        if aoref is None and mode == "x":
+            sf = factor
+        else:
 
-        # TODO: check binning compatibility (between types... hmm, check via equiv scatters?)
-        # TODO: need a function on Scatter for this? Or would break symmetry? (including 3D scatters)
+            # TODO: check binning compatibility (between types... hmm, check via equiv scatters?)
+            # TODO: need a function on Scatter for this? Or would break symmetry? (including 3D scatters)
 
-        ## Work out rescaling factor
-        # TODO: depends on mode and types. Histo/Profile have outflows, Scatters do not
-        # TODO: provide a mode to only do rescales on Histos, not Profiles and Scatters?
-        # TODO: ranges (index or val) from spec file. Need syntax for 2D ranges
-        # TODO: assume full integral for now, but ignore overflows
-        # TODO: check that the Scatter type attribute matches the non-Scatter type
-        ## Note that we are assuming that it is the Scatter y (or z) axis that is to be rescaled
-        try:
+            ## Convert types to scatters
+            # TODO: depends on mode and types. Histo/Profile have outflows, Scatters do not
+            # TODO: provide a mode to only do rescales on Histos, not Profiles and Scatters?
+            # TODO: ranges (index or val) from spec file. Need syntax for 2D ranges
+            # TODO: assume full integral for now, but ignore overflows
+            # TODO: check that the Scatter type attribute matches the non-Scatter type
+            ## Note that we are assuming that it is the Scatter y (or z) axis that is to be rescaled
             s = ao.mkScatter()
-            sref = aoref.mkScatter()
-        except: # in YODA 1.2.0 Scatters will also have mkScatter methods, so this won't be needed
-            s = ao
-            sref = aoref
-        if type(s) is not type(sref):
-            print "WARNING: type mismatch between Scatter reps of '%s'. Are input and ref histos of same dimension?" % aopath
-            continue
+            sref = None
+            if aoref:
+                sref = aoref.mkScatter()
+            if sref and type(s) is not type(sref):
+                print "WARNING: type mismatch between Scatter reps of '%s'. Are input and ref histos of same dimension?" % aopath
+                continue
 
-        ## Work out normalisations
-        # TODO: Are these at all appropriate (with width factor?) for profiles? And ratios? Need an "ignore width" mode flag?
-        if type(s) is yoda.Scatter2D:
-            ## NOTE: sum(errs) only works if there's only one +- pair
-            # TODO: only loop over specified bins/points
-            assert(all(len(p.xErrs) == 2 for p in s.points))
-            assert(all(len(p.xErrs) == 2 for p in sref.points))
-            norm = sum(p.y * sum(p.xErrs) for p in s.points)
-            refnorm = sum(p.y * sum(p.xErrs) for p in sref.points)
-        elif type(s) is yoda.Scatter3D:
-            ## NOTE: sum(errs) only works if there's only one +- pair
-            # TODO: only loop over specified bins/points
-            assert(all(len(p.xErrs) == 2 and len(p.yErrs) == 2) for p in s.points)
-            assert(all(len(p.xErrs) == 2 and len(p.yErrs) == 2) for p in sref.points)
-            norm = sum(p.z * sum(p.xErrs) * sum(p.yErrs) for p in s.points)
-            refnorm = sum(p.z * sum(p.xErrs) * sum(p.yErrs) for p in sref.points)
-        sf = refnorm / norm
+            def matchpoint(i, p):
+                class Pt(object):
+                    def __init__(self, n, xmin, xmax):
+                        self.n    = n
+                        self.xmin = xmin
+                        self.xmax = xmax
+                pt = Pt(i, p.xMin, p.xMax)
+                result = matcher.match_pos(pt)
+                #print result
+                return result
+
+
+            ## Work out normalisations
+            # TODO: Are these at all appropriate (with width factor?) for profiles? And ratios? Need an "ignore width" mode flag?
+            if type(s) is yoda.Scatter2D:
+                ## NOTE: sum(errs) only works if there's only one +- pair
+                # TODO: only loop over specified bins/points
+                assert(all(len(p.xErrs) == 2 for p in s.points))
+                assert(all(len(p.xErrs) == 2 for p in sref.points))
+                norm = sum(p.y * sum(p.xErrs) for i, p in enumerate(s.points) if matchpoint(i, p))
+                if norm == 0:
+                    print "ERROR: normalisation of given range is 0; cannot rescale this to a finite value. Result will be unscaled"
+                    sf = 1.0
+                elif mode == "=":
+                    sf = factor/norm
+                elif mode == "x":
+                    refnorm = sum(p.y * sum(p.xErrs) for i, p in enumerate(sref.points) if matchpoint(i, p))
+                    sf = factor*refnorm/norm
+            #
+            elif type(s) is yoda.Scatter3D:
+                ## NOTE: sum(errs) only works if there's only one +- pair
+                # TODO: only loop over specified bins/points
+                print "WARNING: point/bin range restrictions are not yet implemented for 2D scatter / 3D histo types"
+                assert(all(len(p.xErrs) == 2 and len(p.yErrs) == 2) for p in s.points)
+                assert(all(len(p.xErrs) == 2 and len(p.yErrs) == 2) for p in sref.points)
+                norm = sum(p.z * sum(p.xErrs) * sum(p.yErrs) for p in s.points)
+                if norm == 0:
+                    print "ERROR: normalisation of given range is 0; cannot rescale this to a finite value. Result will be unscaled"
+                    sf = 1.0
+                elif mode == "=":
+                    sf = factor/norm
+                elif mode == "x":
+                    refnorm = sum(p.z * sum(p.xErrs) * sum(p.yErrs) for p in sref.points)
+                    sf = factor*refnorm/norm
+
 
         ## Rescale
         print "INFO: '%s' rescaled by factor %.3g" % (aopath, sf)
@@ -184,6 +223,7 @@ for infile in args:
             ao.scale(1, sf)
         elif type(ao) is yoda.Scatter3D:
             ao.scale(1, 1, sf)
+
 
         ## Store rescaled result
         # TODO: should apply scaling to original type or to the scatter?

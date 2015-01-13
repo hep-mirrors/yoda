@@ -49,6 +49,18 @@ class PointMatcher(object):
         return self.path.search(path) is not None
 
     def match_pos(self, p):
+        """Decide if a given point p is in the match range.
+
+        p must be an object with attrs xmin, xmax, n
+
+        TODO: Use open ranges to include underflow and overflow
+
+        TODO: Allow negative indices in Python style, and use index=!
+        to mean the N+1 index needed to include the last bin without
+        picking up the overflow, too.
+
+        TODO: Extension to multiple dimensions
+        """
         if not self.indextype:
             accept = True
         elif self.indextype == "#":
