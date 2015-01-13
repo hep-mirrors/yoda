@@ -33,7 +33,10 @@ op.add_option("-f", "--specfile", dest="SPECFILE", metavar="FILE", default=None,
 # PATT:1:2   2xREF:x:y
 # op.add_option("-i", "--in-place", dest="IN_PLACE", default=False, action="store_true",
 #                   help="Overwrite input file rather than making input-rescaled.yoda")
-# TODO: -q --quiet
+op.add_option("-q", "--quiet", dest="VERBOSITY", action="store_const", const=0, default=1,
+              help="Reduce printouts to errors-only")
+op.add_option("-v", "--debug", dest="VERBOSITY", action="store_const", const=2, default=1,
+              help="Increase printouts to include debug info")
 opts, args = op.parse_args()
 
 
@@ -93,7 +96,8 @@ for r in reffiles:
         if opts.REF_PREFIX and aopath.startswith("/%s/" % opts.REF_PREFIX):
             aopath = aopath.replace("/%s/" % opts.REF_PREFIX, "/", 1) # NB. ao.path is unchanged
         aos_ref[aopath] = ao
-#print "DEBUG: %d reference histos" % len(refaos)
+if opts.VERBOSITY > 1:
+    print "DEBUG: %d reference histos" % len(refaos)
 
 
 ## Loop over input files for rescaling
@@ -107,7 +111,8 @@ for infile in args:
 
         ## Don't rescale /REF_PREFIX objects
         if aopath.startswith("/%s/" % opts.REF_PREFIX):
-            print "DEBUG: not rescaling ref object '%s'" % aopath
+            if opts.VERBOSITY > 1:
+                print "DEBUG: not rescaling ref object '%s'" % aopath
             continue
 
 
@@ -123,24 +128,28 @@ for infile in args:
                             refpaths = [aopath]
                     else:
                         refpaths = [p for p in aos_ref.keys() if (s[1] and s[1].search_path(p))]
-                    print "DEBUG:", aopath, "=>", refpaths
+                    if opts.VERBOSITY > 1:
+                        print "DEBUG:", aopath, "=>", refpaths
                     if not refpaths:
                         print "ERROR: no reference histogram '%s' found for '%s'. Not rescaling" % (s[1].path.pattern, aopath)
                         # TODO: should we actually skip it from the output entirely in this case?
                         continue
                     if len(refpaths) > 1:
-                        print "WARNING: multiple reference histograms found for '%s'. Using first: '%s'" % (aopath, refpaths[0])
+                        if opts.VERBOSITY > 0:
+                            print "WARNING: multiple reference histograms found for '%s'. Using first: '%s'" % (aopath, refpaths[0])
                     aoref = aos_ref[refpaths[0]]
 
                 aospecs.append( [aoref, s[1], mode, factor] )
 
         ## Identify and check spec to be used for scaling determination
         if not aospecs:
-            print "DEBUG: no scaling spec found for '%s'. Output is unscaled" % aopath
+            if opts.VERBOSITY > 1:
+                print "DEBUG: no scaling spec found for '%s'. Output is unscaled" % aopath
             aoref, matcher, mode, factor = None, None, "x", 1.0
         else:
             if len(aospecs) > 1:
-                print "WARNING: multiple scaling specs found for '%s'. Using first: '%r'" % (aopath, aospecs[0])
+                if opts.VERBOSITY > 0:
+                    print "WARNING: multiple scaling specs found for '%s'. Using first: '%r'" % (aopath, aospecs[0])
             aoref, matcher, mode, factor = aospecs[0]
 
 
@@ -164,7 +173,8 @@ for infile in args:
             if aoref:
                 sref = aoref.mkScatter()
             if sref and type(s) is not type(sref):
-                print "WARNING: type mismatch between Scatter reps of '%s'. Are input and ref histos of same dimension?" % aopath
+                if opts.VERBOSITY > 0:
+                    print "WARNING: type mismatch between Scatter reps of '%s'. Are input and ref histos of same dimension?" % aopath
                 continue
 
             def matchpoint(i, p):
@@ -199,7 +209,8 @@ for infile in args:
             elif type(s) is yoda.Scatter3D:
                 ## NOTE: sum(errs) only works if there's only one +- pair
                 # TODO: only loop over specified bins/points
-                print "WARNING: point/bin range restrictions are not yet implemented for 2D scatter / 3D histo types"
+                if opts.VERBOSITY > 0:
+                    print "WARNING: point/bin range restrictions are not yet implemented for 2D scatter / 3D histo types"
                 assert(all(len(p.xErrs) == 2 and len(p.yErrs) == 2) for p in s.points)
                 assert(all(len(p.xErrs) == 2 and len(p.yErrs) == 2) for p in sref.points)
                 norm = sum(p.z * sum(p.xErrs) * sum(p.yErrs) for p in s.points)
@@ -214,6 +225,7 @@ for infile in args:
 
 
         ## Rescale
+        #if opts.VERBOSITY > 0:
         print "INFO: '%s' rescaled by factor %.3g" % (aopath, sf)
         if type(ao) in (yoda.Histo1D, yoda.Histo2D):
             ao.scaleW(sf)
