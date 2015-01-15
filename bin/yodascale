@@ -97,7 +97,7 @@ for r in reffiles:
             aopath = aopath.replace("/%s/" % opts.REF_PREFIX, "/", 1) # NB. ao.path is unchanged
         aos_ref[aopath] = ao
 if opts.VERBOSITY > 1:
-    print "DEBUG: %d reference histos" % len(refaos)
+    print "DEBUG: %d reference histos" % len(aos_ref)
 
 
 ## Loop over input files for rescaling
@@ -131,12 +131,12 @@ for infile in args:
                     if opts.VERBOSITY > 1:
                         print "DEBUG:", aopath, "=>", refpaths
                     if not refpaths:
-                        print "ERROR: no reference histogram '%s' found for '%s'. Not rescaling" % (s[1].path.pattern, aopath)
+                        print "ERROR: No reference histogram '%s' found for '%s'. Not rescaling" % (s[1].path.pattern, aopath)
                         # TODO: should we actually skip it from the output entirely in this case?
                         continue
                     if len(refpaths) > 1:
                         if opts.VERBOSITY > 0:
-                            print "WARNING: multiple reference histograms found for '%s'. Using first: '%s'" % (aopath, refpaths[0])
+                            print "WARNING: Multiple reference histograms found for '%s'. Using first: '%s'" % (aopath, refpaths[0])
                     aoref = aos_ref[refpaths[0]]
 
                 aospecs.append( [aoref, s[1], mode, factor] )
@@ -144,12 +144,12 @@ for infile in args:
         ## Identify and check spec to be used for scaling determination
         if not aospecs:
             if opts.VERBOSITY > 1:
-                print "DEBUG: no scaling spec found for '%s'. Output is unscaled" % aopath
+                print "DEBUG: No scaling spec found for '%s'. Output is unscaled" % aopath
             aoref, matcher, mode, factor = None, None, "x", 1.0
         else:
             if len(aospecs) > 1:
                 if opts.VERBOSITY > 0:
-                    print "WARNING: multiple scaling specs found for '%s'. Using first: '%r'" % (aopath, aospecs[0])
+                    print "WARNING: Multiple scaling specs found for '%s'. Using first: '%r'" % (aopath, aospecs[0])
             aoref, matcher, mode, factor = aospecs[0]
 
 
@@ -174,7 +174,7 @@ for infile in args:
                 sref = aoref.mkScatter()
             if sref and type(s) is not type(sref):
                 if opts.VERBOSITY > 0:
-                    print "WARNING: type mismatch between Scatter reps of '%s'. Are input and ref histos of same dimension?" % aopath
+                    print "WARNING: Type mismatch between Scatter reps of '%s'. Are input and ref histos of same dimension?" % aopath
                 continue
 
             def matchpoint(i, p):
@@ -198,7 +198,7 @@ for infile in args:
                 assert(all(len(p.xErrs) == 2 for p in sref.points))
                 norm = sum(p.y * sum(p.xErrs) for i, p in enumerate(s.points) if matchpoint(i, p))
                 if norm == 0:
-                    print "ERROR: normalisation of given range is 0; cannot rescale this to a finite value. Result will be unscaled"
+                    print "ERROR: Normalisation of given range is 0; cannot rescale this to a finite value. Result will be unscaled"
                     sf = 1.0
                 elif mode == "=":
                     sf = factor/norm
@@ -210,12 +210,12 @@ for infile in args:
                 ## NOTE: sum(errs) only works if there's only one +- pair
                 # TODO: only loop over specified bins/points
                 if opts.VERBOSITY > 0:
-                    print "WARNING: point/bin range restrictions are not yet implemented for 2D scatter / 3D histo types"
+                    print "WARNING: Point/bin range restrictions are not yet implemented for 2D scatter / 3D histo types"
                 assert(all(len(p.xErrs) == 2 and len(p.yErrs) == 2) for p in s.points)
                 assert(all(len(p.xErrs) == 2 and len(p.yErrs) == 2) for p in sref.points)
                 norm = sum(p.z * sum(p.xErrs) * sum(p.yErrs) for p in s.points)
                 if norm == 0:
-                    print "ERROR: normalisation of given range is 0; cannot rescale this to a finite value. Result will be unscaled"
+                    print "ERROR: Normalisation of given range is 0; cannot rescale this to a finite value. Result will be unscaled"
                     sf = 1.0
                 elif mode == "=":
                     sf = factor/norm
@@ -225,8 +225,8 @@ for infile in args:
 
 
         ## Rescale
-        #if opts.VERBOSITY > 0:
-        print "INFO: '%s' rescaled by factor %.3g" % (aopath, sf)
+        if opts.VERBOSITY > 1:
+            print "DEBUG: '%s' rescaled by factor %.3g" % (aopath, sf)
         if type(ao) in (yoda.Histo1D, yoda.Histo2D):
             ao.scaleW(sf)
         elif type(ao) in (yoda.Profile1D, yoda.Profile2D):
