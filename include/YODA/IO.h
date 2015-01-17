@@ -62,7 +62,7 @@ namespace YODA {
   /// filename.
   std::vector<AnalysisObject*> read(const std::string& filename) {
     std::vector<AnalysisObject*> rtn;
-    readFrom(filename, rtn);
+    read(filename, rtn);
     return rtn;
   }
 
