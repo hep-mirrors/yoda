@@ -165,7 +165,8 @@ namespace YODA {
         const ProfileBin1D& b = p.binAt(rtn.GetBinCenter(i)); // throws if in a gap
         /// @todo This part is probably wrong -- also need to do something with GetW,
         ///   GetW2, GetB, GetB2, and/or GetBinSumw2? ROOT docs are 100% useless...
-        rtn.SetBinContent(i, b.sumW());
+        rtn.SetBinContent(i, b.mean());
+        rtn.SetBinError(i, b.stdErr());
         sumw2s[i] = b.sumW2();
       } catch (const Exception& e) {  }
     }
@@ -206,6 +207,63 @@ namespace YODA {
     if (s.hasAnnotation("YLabel")) rtn.GetYaxis()->SetTitle(s.annotation("YLabel").c_str());
     return rtn;
   }
+
+
+  /// @brief Convert a YODA Histo2D to a ROOT 2D histogram
+  ///
+  /// @todo Check/improve/extend -- needs SetBinError or not?
+  inline TH2D toTH2D(const Histo2D& h) {
+    // Work out bin edges first
+    std::vector<double> xedges, yedges;
+    xedges.reserve(h.numBins()+1);
+    yedges.reserve(h.numBins()+1);
+    xedges.push_back(h.bin(0).xMin());
+    yedges.push_back(h.bin(0).yMin());
+    for (size_t i = 0; i < h.numBins(); ++i) {
+      const HistoBin2D& b = h.bin(i);
+      xedges.push_back(b.xMin());
+      xedges.push_back(b.xMax());
+      yedges.push_back(b.yMin());
+      yedges.push_back(b.yMax());
+    }
+    // Sort and remove (fuzzy) duplicate edges
+    std::sort(xedges.begin(), xedges.end());
+    std::sort(yedges.begin(), yedges.end());
+    const std::vector<double>::iterator xlast = std::unique(xedges.begin(), xedges.end());
+    const std::vector<double>::iterator ylast = std::unique(yedges.begin(), yedges.end());
+    xedges.erase(xlast, xedges.end());
+    yedges.erase(ylast, yedges.end());
+
+    // Book ROOT histogram
+    TH2D rtn(h.path().c_str(), h.title().c_str(), xedges.size()-1, &xedges[0], yedges.size()-1, &yedges[0]);
+    rtn.Sumw2();
+    TArrayD& sumw2s = *rtn.GetSumw2();
+    for (int ix = 1; ix <= rtn.GetNbinsX(); ++ix) {
+      for (int iy = 1; iy <= rtn.GetNbinsY(); ++iy) {
+        const int i = rtn.GetBin(ix, iy);
+        try {
+          const HistoBin2D& b = h.binAt(rtn.GetBinCenter(ix), rtn.GetBinCenter(iy)); // throws if in a gap
+          rtn.SetBinContent(i, b.sumW());
+          sumw2s[i] = b.sumW2();
+        } catch (const Exception& e) {  }
+      }
+    }
+    // Overflows
+    /// @todo Connect up when supported in YODA... if 2D overflows are possible in ROOT?!
+    // rtn.SetBinContent(0, h.underflow().sumW());
+    // rtn.SetBinContent(rtn.GetNbinsX()+1, h.overflow().sumW());
+    // sumw2s[0] = h.underflow().sumW2();
+    // sumw2s[rtn.GetNbinsX()+1] = h.overflow().sumW2();
+    // Labels
+    if (h.hasAnnotation("XLabel")) rtn.SetXTitle(h.annotation("XLabel").c_str());
+    if (h.hasAnnotation("YLabel")) rtn.SetYTitle(h.annotation("YLabel").c_str());
+    if (h.hasAnnotation("ZLabel")) rtn.SetZTitle(h.annotation("ZLabel").c_str());
+    return rtn;
+  }
+
+
+  /// @todo Convert a YODA Profile2D to a ROOT TProfile2D
+
 
   //@}
 
