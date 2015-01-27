@@ -1,7 +1,7 @@
 YODA TODO list
 ==============
 
-1.2.0
+1.4.0
 -----
 
 * Python access to Counter, Scatter1D, and Scatter3D
@@ -11,6 +11,13 @@ YODA TODO list
 * 2D histogram outflow improvements
    Store full sets of outflow bins corresponding to an extended grid, and
    provide neat access to them.
+
+* Add 2D histogram conversion to Python layer and yoda2root
+   Also Python binding for the H1,P1 -> TGraph routines.
+
+
+LATER
+-----
 
 * Python docstrings for Points, Dbns and Bins (AB)
 
