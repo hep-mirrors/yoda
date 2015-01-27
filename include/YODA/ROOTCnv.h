@@ -140,74 +140,6 @@ namespace YODA {
   }
 
 
-  /// @brief Convert a YODA Scatter2D to a ROOT TH1D
-
-
-  /// @brief Convert a YODA Profile1D to a ROOT TProfile
-  ///
-  /// @todo Check/improve/extend. How to set all the y-weights in ROOT profiles?
-  inline TProfile toTProfile(const Profile1D& p) {
-    // Work out bin edges first
-    std::vector<double> edges;
-    edges.reserve(p.numBins()+1);
-    edges.push_back(p.bin(0).xMin());
-    for (size_t i = 0; i < p.numBins(); ++i) {
-      const ProfileBin1D& b = p.bin(i);
-      if (!fuzzyEquals(edges.back(), b.xMin())) edges.push_back(b.xMin());
-      if (!fuzzyEquals(edges.back(), b.xMax())) edges.push_back(b.xMax());
-    }
-    // Book ROOT histogram
-    TProfile rtn(p.path().c_str(), p.title().c_str(), edges.size()-1, &edges[0]);
-    rtn.Sumw2();
-    TArrayD& sumw2s = *rtn.GetSumw2();
-    for (int i = 1; i <= rtn.GetNbinsX(); ++i) {
-      try {
-        const ProfileBin1D& b = p.binAt(rtn.GetBinCenter(i)); // throws if in a gap
-        /// @todo This part is probably wrong -- also need to do something with GetW,
-        ///   GetW2, GetB, GetB2, and/or GetBinSumw2? ROOT docs are 100% useless...
-        rtn.SetBinContent(i, b.mean());
-        rtn.SetBinError(i, b.stdErr());
-        sumw2s[i] = b.sumW2();
-      } catch (const Exception& e) {  }
-    }
-    // Overflows
-    rtn.SetBinContent(0, p.underflow().sumW());
-    rtn.SetBinContent(rtn.GetNbinsX()+1, p.overflow().sumW());
-    sumw2s[0] = p.underflow().sumW2();
-    sumw2s[rtn.GetNbinsX()+1] = p.overflow().sumW2();
-    // Labels
-    if (p.hasAnnotation("XLabel")) rtn.SetXTitle(p.annotation("XLabel").c_str());
-    if (p.hasAnnotation("YLabel")) rtn.SetYTitle(p.annotation("YLabel").c_str());
-    return rtn;
-  }
-
-
-  /// @brief Convert a YODA Scatter2D to a ROOT TGraphAsymmErrors
-  ///
-  /// @todo Check/improve/extend.
-  inline TGraphAsymmErrors toTGraph(const Scatter2D& s) {
-    TVectorF xs(s.numPoints()), ys(s.numPoints());
-    TVectorF exls(s.numPoints()), exhs(s.numPoints());
-    TVectorF eyls(s.numPoints()), eyhs(s.numPoints());
-    for (size_t i = 0; i < s.numPoints(); ++i) {
-      const Point2D& p = s.point(i);
-      xs[i] = p.x();
-      ys[i] = p.y();
-      exls[i] = p.xErrMinus();
-      exhs[i] = p.xErrPlus();
-      eyls[i] = p.yErrMinus();
-      eyhs[i] = p.yErrPlus();
-    }
-    // Make the ROOT object... mm, the constructors don't take name+title, unlike all this histos!
-    TGraphAsymmErrors rtn(xs, ys, exls, exhs, eyls, eyhs);
-    rtn.SetName(s.path().c_str());
-    rtn.SetTitle(s.title().c_str());
-    // Labels
-    if (s.hasAnnotation("XLabel")) rtn.GetXaxis()->SetTitle(s.annotation("XLabel").c_str());
-    if (s.hasAnnotation("YLabel")) rtn.GetYaxis()->SetTitle(s.annotation("YLabel").c_str());
-    return rtn;
-  }
-
 
   /// @brief Convert a YODA Histo2D to a ROOT 2D histogram
   ///
@@ -262,7 +194,137 @@ namespace YODA {
   }
 
 
+
+  /// @brief Convert a YODA Scatter2D to a ROOT TH1D
+
+
+  /// @brief Convert a YODA Profile1D to a ROOT TProfile
+  ///
+  /// @todo Check/improve/extend. How to set all the y-weights in ROOT profiles?
+  inline TProfile toTProfile(const Profile1D& p) {
+    // Work out bin edges first
+    std::vector<double> edges;
+    edges.reserve(p.numBins()+1);
+    edges.push_back(p.bin(0).xMin());
+    for (size_t i = 0; i < p.numBins(); ++i) {
+      const ProfileBin1D& b = p.bin(i);
+      if (!fuzzyEquals(edges.back(), b.xMin())) edges.push_back(b.xMin());
+      if (!fuzzyEquals(edges.back(), b.xMax())) edges.push_back(b.xMax());
+    }
+    // Book ROOT histogram
+    TProfile rtn(p.path().c_str(), p.title().c_str(), edges.size()-1, &edges[0]);
+    rtn.Sumw2();
+    Double_t* sumwys = rtn.GetArray(); //< YUCK!!!
+    TArrayD& sumwy2s = *rtn.GetSumw2(); //< YUCK!!!
+    for (int i = 1; i <= rtn.GetNbinsX(); ++i) {
+      try {
+        const ProfileBin1D& b = p.binAt(rtn.GetBinCenter(i)); // throws if in a gap
+        // rtn.SetBinContent(i, b.mean());
+        // rtn.SetBinError(i, b.stdErr());
+        /// @todo Need to set the following, according to Roman Lysak:
+        // - for sum(y*y): TProfile::GetSumw2()
+        // - for sum(y):   TProfile::GetArray()
+        // - for sum(w):   TProfile::SetBinEntries(bin, w)
+        // Clearly, the names of accessors/methods are confusing...
+        rtn.SetBinEntries(i, b.sumW());
+        sumwys[i] = b.sumWY();
+        sumwy2s[i] = b.sumWY2();
+      } catch (const Exception& e) {  }
+    }
+    // Overflows
+    rtn.SetBinEntries(0, p.underflow().sumW());
+    rtn.SetBinEntries(rtn.GetNbinsX()+1, p.overflow().sumW());
+    sumwys[0] = p.underflow().sumWY();
+    sumwys[0] = p.underflow().sumWY();
+    sumwy2s[rtn.GetNbinsX()+1] = p.overflow().sumWY2();
+    sumwy2s[rtn.GetNbinsX()+1] = p.overflow().sumWY2();
+    // Labels
+    if (p.hasAnnotation("XLabel")) rtn.SetXTitle(p.annotation("XLabel").c_str());
+    if (p.hasAnnotation("YLabel")) rtn.SetYTitle(p.annotation("YLabel").c_str());
+    return rtn;
+  }
+
+
+  /// @brief Convert a YODA Profile1D to a ROOT TH1D
+  inline TH1D toTH1D(const Profile1D& p) {
+    // Work out bin edges first
+    std::vector<double> edges;
+    edges.reserve(p.numBins()+1);
+    edges.push_back(p.bin(0).xMin());
+    for (size_t i = 0; i < p.numBins(); ++i) {
+      const ProfileBin1D& b = p.bin(i);
+      if (!fuzzyEquals(edges.back(), b.xMin())) edges.push_back(b.xMin());
+      if (!fuzzyEquals(edges.back(), b.xMax())) edges.push_back(b.xMax());
+    }
+    // Book ROOT histogram
+    TH1D rtn(p.path().c_str(), p.title().c_str(), edges.size()-1, &edges[0]);
+    for (int i = 1; i <= rtn.GetNbinsX(); ++i) {
+      try {
+        const ProfileBin1D& b = p.binAt(rtn.GetBinCenter(i)); // throws if in a gap
+        rtn.SetBinContent(i, b.mean());
+        rtn.SetBinError(i, b.stdErr());
+      } catch (const Exception& e) {  }
+    }
+    // Overflows
+    rtn.SetBinContent(0, p.underflow().yMean());
+    rtn.SetBinContent(rtn.GetNbinsX()+1, p.overflow().yMean());
+    rtn.SetBinError(0, p.underflow().yStdErr());
+    rtn.SetBinError(rtn.GetNbinsX()+1, p.overflow().yStdErr());
+    // Labels
+    if (p.hasAnnotation("XLabel")) rtn.SetXTitle(p.annotation("XLabel").c_str());
+    if (p.hasAnnotation("YLabel")) rtn.SetYTitle(p.annotation("YLabel").c_str());
+    return rtn;
+  }
+
+
   /// @todo Convert a YODA Profile2D to a ROOT TProfile2D
+
+
+
+
+
+  /// @brief Convert a YODA Scatter2D to a ROOT TGraphAsymmErrors
+  ///
+  /// @todo Check/improve/extend.
+  inline TGraphAsymmErrors toTGraph(const Scatter2D& s) {
+    TVectorF xs(s.numPoints()), ys(s.numPoints());
+    TVectorF exls(s.numPoints()), exhs(s.numPoints());
+    TVectorF eyls(s.numPoints()), eyhs(s.numPoints());
+    for (size_t i = 0; i < s.numPoints(); ++i) {
+      const Point2D& p = s.point(i);
+      xs[i] = p.x();
+      ys[i] = p.y();
+      exls[i] = p.xErrMinus();
+      exhs[i] = p.xErrPlus();
+      eyls[i] = p.yErrMinus();
+      eyhs[i] = p.yErrPlus();
+    }
+    // Make the ROOT object... mm, the constructors don't take name+title, unlike all this histos!
+    TGraphAsymmErrors rtn(xs, ys, exls, exhs, eyls, eyhs);
+    rtn.SetName(s.path().c_str());
+    rtn.SetTitle(s.title().c_str());
+    // Labels
+    if (s.hasAnnotation("XLabel")) rtn.GetXaxis()->SetTitle(s.annotation("XLabel").c_str());
+    if (s.hasAnnotation("YLabel")) rtn.GetYaxis()->SetTitle(s.annotation("YLabel").c_str());
+    return rtn;
+  }
+
+
+  /// @brief Convert a YODA Histo1D to a ROOT TGraphAsymmErrors
+  ///
+  inline TGraphAsymmErrors toTGraph(const Histo1D& h) {
+    return toTGraph(mkScatter(h));
+  }
+
+
+  /// @brief Convert a YODA Profile1D to a ROOT TGraphAsymmErrors
+  ///
+  inline TGraphAsymmErrors toTGraph(const Profile1D& p) {
+    return toTGraph(mkScatter(p));
+  }
+
+
+  /// @todo Convert YODA Histo2D and Profile2D to TGraph colour maps
 
 
   //@}
