@@ -76,10 +76,10 @@ def main():
 
     ## Read .plot files
     # TODO: Order, dict merging, etc.
-    import re, plotting
+    import re
     plotkeys = {}
     for pf in opts.CONFIGFILES:
-        plotkeys.update( plotting.read_plot_keys(plotfile) )
+        plotkeys.update( yoda.plotting.read_plot_keys(plotfile) )
 
     ## Extract PLOT keys
     plotanns = {}
