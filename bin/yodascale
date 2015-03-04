@@ -51,7 +51,7 @@ def parse_specstr(line):
     pathpatt, scalespec = parts[0], " ".join(parts[1:])
     ## Match and extract the spec command structure
     import re
-    re_scalespec = re.compile(r"([\d\.]+x?)?(.*)")
+    re_scalespec = re.compile(r"([\d\.eE\+\-]+x?)?(.*)")
     m = re_scalespec.match(scalespec)
     if not m:
         raise Exception("Invalid scaling spec string: '%s'" % scalespec)
@@ -195,7 +195,6 @@ for infile in args:
                 ## NOTE: sum(errs) only works if there's only one +- pair
                 # TODO: only loop over specified bins/points
                 assert(all(len(p.xErrs) == 2 for p in s.points))
-                assert(all(len(p.xErrs) == 2 for p in sref.points))
                 norm = sum(p.y * sum(p.xErrs) for i, p in enumerate(s.points) if matchpoint(i, p))
                 if norm == 0:
                     print "ERROR: Normalisation of given range is 0; cannot rescale this to a finite value. Result will be unscaled"
@@ -203,6 +202,7 @@ for infile in args:
                 elif mode == "=":
                     sf = factor/norm
                 elif mode == "x":
+                    assert(all(len(p.xErrs) == 2 for p in sref.points))
                     refnorm = sum(p.y * sum(p.xErrs) for i, p in enumerate(sref.points) if matchpoint(i, p))
                     sf = factor*refnorm/norm
             #
@@ -212,7 +212,6 @@ for infile in args:
                 if opts.VERBOSITY > 0:
                     print "WARNING: Point/bin range restrictions are not yet implemented for 2D scatter / 3D histo types"
                 assert(all(len(p.xErrs) == 2 and len(p.yErrs) == 2) for p in s.points)
-                assert(all(len(p.xErrs) == 2 and len(p.yErrs) == 2) for p in sref.points)
                 norm = sum(p.z * sum(p.xErrs) * sum(p.yErrs) for p in s.points)
                 if norm == 0:
                     print "ERROR: Normalisation of given range is 0; cannot rescale this to a finite value. Result will be unscaled"
@@ -220,6 +219,7 @@ for infile in args:
                 elif mode == "=":
                     sf = factor/norm
                 elif mode == "x":
+                    assert(all(len(p.xErrs) == 2 and len(p.yErrs) == 2) for p in sref.points)
                     refnorm = sum(p.z * sum(p.xErrs) * sum(p.yErrs) for p in sref.points)
                     sf = factor*refnorm/norm
 
@@ -229,8 +229,14 @@ for infile in args:
             print "DEBUG: '%s' rescaled by factor %.3g" % (aopath, sf)
         if type(ao) in (yoda.Histo1D, yoda.Histo2D):
             ao.scaleW(sf)
-        elif type(ao) in (yoda.Profile1D, yoda.Profile2D):
-            ao.scaleY(sf)
+        elif type(ao) is yoda.Profile1D:
+            # TODO: Add this scaleY function
+            print "WARNING:", ao.path, "Can't yet scale the y-axis in Profile1D"
+            #ao.scaleY(sf)
+        elif type(ao) in yoda.Profile2D:
+            # TODO: Add this scaleZ function
+            print "WARNING:", ao.path, "Can't yet scale the z-axis in Profile2D"
+            #ao.scaleZ(sf)
         elif type(ao) is yoda.Scatter2D:
             ao.scale(1, sf)
         elif type(ao) is yoda.Scatter3D:
