@@ -238,11 +238,11 @@ cdef class Histo1D(AnalysisObject):
             self.h1ptr().addBin(a, b)
 
 
-    def mkScatter(self):
+    def mkScatter(self, usefocus=False):
         """None -> Scatter2D.
         Convert this Histo1D to a Scatter2D, with y representing bin heights
         (not sumW) and height errors."""
-        cdef c.Scatter2D s2 = c.mkScatter_Histo1D(deref(self.h1ptr()))
+        cdef c.Scatter2D s2 = c.mkScatter_Histo1D(deref(self.h1ptr()), usefocus)
         return cutil.new_owned_cls(Scatter2D, s2.newclone())
 
 

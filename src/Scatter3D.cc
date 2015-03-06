@@ -27,28 +27,24 @@ namespace YODA {
   //////////////////////////
 
 
-  Scatter3D mkScatter(const Histo2D& h) {
+  Scatter3D mkScatter(const Histo2D& h, bool usefocus) {
     Scatter3D rtn;
     BOOST_FOREACH (const std::string& a, h.annotations())
       rtn.setAnnotation(a, h.annotation(a));
     rtn.setAnnotation("Type", h.type());
     for (size_t i = 0; i < h.numBins(); ++i) {
-      const HistoBin2D& bin = h.bin(i);
+      const HistoBin2D& b = h.bin(i);
 
-      /// @todo Add a flag to allow optionally using the focus rather than midpoint
-      // const double x = bin.xFocus();
-      // const double y = bin.yFocus();
-      const double x = bin.xMid();
-      const double y = bin.yMid();
+      const double x = usefocus ? b.xFocus() : b.xMid();
+      const double exminus = x - b.xMin();
+      const double explus = b.xMax() - x;
 
-      const double exminus = x - bin.xMin();
-      const double explus = bin.xMax() - x;
+      const double y = usefocus ? b.yFocus() : b.yMid();
+      const double eyminus = y - b.yMin();
+      const double eyplus = b.yMax() - y;
 
-      const double eyminus = y - bin.yMin();
-      const double eyplus = bin.yMax() - y;
-
-      const double z = bin.height();
-      const double ez = bin.heightErr();
+      const double z = b.height();
+      const double ez = b.heightErr();
 
       rtn.addPoint(x, y, z, exminus, explus, eyminus, eyplus, ez, ez);
     }
@@ -57,35 +53,31 @@ namespace YODA {
   }
 
 
-  Scatter3D mkScatter(const Profile2D& h) {
+  Scatter3D mkScatter(const Profile2D& h, bool usefocus) {
     Scatter3D rtn;
     BOOST_FOREACH (const std::string& a, h.annotations())
       rtn.setAnnotation(a, h.annotation(a));
     rtn.setAnnotation("Type", h.type());
     for (size_t i = 0; i < h.numBins(); ++i) {
-      const ProfileBin2D& bin = h.bin(i);
+      const ProfileBin2D& b = h.bin(i);
 
-      /// @todo Add a flag to allow optionally using the focus rather than midpoint
-      // const double x = bin.xFocus();
-      // const double y = bin.yFocus();
-      const double x = bin.xMid();
-      const double y = bin.yMid();
+      const double x = usefocus ? b.xFocus() : b.xMid();
+      const double exminus = x - b.xMin();
+      const double explus = b.xMax() - x;
 
-      const double exminus = x - bin.xMin();
-      const double explus = bin.xMax() - x;
-
-      const double eyminus = y - bin.yMin();
-      const double eyplus = bin.yMax() - y;
+      const double y = usefocus ? b.yFocus() : b.yMid();
+      const double eyminus = y - b.yMin();
+      const double eyplus = b.yMax() - y;
 
       double z;
       try {
-        z = bin.mean();
+        z = b.mean();
       } catch (const LowStatsError& lse) {
         z = 0.0;
       }
       double ez;
       try {
-        ez = bin.stdErr();
+        ez = b.stdErr();
       } catch (const LowStatsError& lse) {
         ez = 0.0;
       }

@@ -228,11 +228,11 @@ cdef class Histo2D(AnalysisObject):
     #     self.h2ptr().rebin(n)
 
 
-    def mkScatter(self):
+    def mkScatter(self, usefocus=False):
         """None -> Scatter3D.
         Convert this Histo2D to a Scatter3D, with y representing bin heights
         (not sumW) and height errors."""
-        cdef c.Scatter3D s3 = c.mkScatter_Histo2D(deref(self.h2ptr()))
+        cdef c.Scatter3D s3 = c.mkScatter_Histo2D(deref(self.h2ptr()), usefocus)
         return cutil.new_owned_cls(Scatter3D, s3.newclone())
 
     def divideBy(self, Histo2D h, efficiency=False):

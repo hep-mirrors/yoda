@@ -299,16 +299,16 @@ namespace YODA {
   //@{
 
   /// Make a Scatter2D representation of a Histo1D
-  Scatter2D mkScatter(const Histo1D& h);
+  Scatter2D mkScatter(const Histo1D& h, bool usefocus=false);
 
   /// Make a Scatter2D representation of a Profile1D
-  Scatter2D mkScatter(const Profile1D& p);
+  Scatter2D mkScatter(const Profile1D& p, bool usefocus=false);
 
   /// Make a Scatter2D representation of... erm, a Scatter2D!
   /// @note Mainly exists to allow mkScatter to be called on any AnalysisObject type
-  inline Scatter2D mkScatter(const Scatter2D& s) {
-    return Scatter2D(s);
-  }
+  inline Scatter2D mkScatter(const Scatter2D& s) { return Scatter2D(s); }
+  // /// @note The usefocus arg is just for consistency and has no effect for Scatter -> Scatter
+  // inline Scatter2D mkScatter(const Scatter2D& s, bool) { return mkScatter(s); }
 
   //@}
 

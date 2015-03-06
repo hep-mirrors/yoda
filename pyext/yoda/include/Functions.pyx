@@ -1,7 +1,10 @@
-def mkScatter(ao):
+def mkScatter(ao, usefocus=False):
     """AnalysisObject -> Scatter{1,2,3}D
     Convert an AnalysisObject to a Scatter, using the logic of the bound mkScatter methods."""
-    return ao.mkScatter()
+    try:
+        return ao.mkScatter(usefocus)
+    except:
+        return ao.mkScatter()
 
 
 def divide(ao1, ao2):

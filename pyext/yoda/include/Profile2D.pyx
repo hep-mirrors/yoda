@@ -209,11 +209,11 @@ cdef class Profile2D(AnalysisObject):
     #     self.p2ptr().rebin(n)
 
 
-    def mkScatter(self):
+    def mkScatter(self, usefocus=False):
         """None -> Scatter3D.
         Convert this Profile2D to a Scatter3D, with z representing
         mean bin y values and their standard errors."""
-        cdef c.Scatter3D s3 = c.mkScatter_Profile2D(deref(self.p2ptr()))
+        cdef c.Scatter3D s3 = c.mkScatter_Profile2D(deref(self.p2ptr()), usefocus)
         return cutil.new_owned_cls(Scatter3D, s3.newclone())
 
     def divideBy(self, Profile2D h):
