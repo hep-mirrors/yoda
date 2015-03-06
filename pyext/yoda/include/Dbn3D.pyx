@@ -22,7 +22,9 @@ cdef class Dbn3D(util.Base):
         cutil.set_owned_ptr(self, new c.Dbn3D())
 
     def __repr__(self):
-        return 'Dbn3D(mean=(%g, %g), stdDev=(%g, %g))' % (self.mean + self.stdDev)
+        mean = self.mean if self.sumW > 0 else None
+        sd = self.stdDev if self.sumW > 0 else None
+        return 'Dbn3D(mean=%s, stddev=%s)' % (mean, sd)
 
 
     def copy(self):

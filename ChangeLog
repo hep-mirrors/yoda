@@ -1,5 +1,7 @@
 2015-03-06  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Fix formatting and error handling in Python Bin and Dbn __repr__ methods.
+
 	* Add a -i/--in-place option pair on yodascale.
 
 2015-02-05  Andy Buckley  <andy.buckley@cern.ch>

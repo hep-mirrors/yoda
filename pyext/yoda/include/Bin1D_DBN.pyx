@@ -17,7 +17,7 @@ cdef class Bin1D_${DBN}(Bin):
         cutil.set_owned_ptr(self, new c.Bin1D_${DBN}(pair[double, double](xlow, xhigh)))
 
     def __repr__(self):
-        return '<%s[%g, %g)>' % ((self.__class__.__name__,) + self.edges)
+        return '<%s x=[%g, %g)>' % (self.__class__.__name__, self.xMin, self.xMax)
 
 
     def scaleX(self, ax):

@@ -7,7 +7,7 @@ cdef class HistoBin2D(Bin2D_Dbn2D):
     def __init__(self, xlow, xhigh, ylow, yhigh):
         cutil.set_owned_ptr(
             self, new c.HistoBin2D(xlow, xhigh, ylow, yhigh))
-        
+
     def fill(self, x, y, weight=1.0):
         self._HistoBin2D().fill(x, y, weight)
 
@@ -31,7 +31,7 @@ cdef class HistoBin2D(Bin2D_Dbn2D):
         return cutil.new_owned_cls(
             HistoBin2D,
             new c.HistoBin2D(
-                deref(a._HistoBin2D()) + 
+                deref(a._HistoBin2D()) +
                 deref(b._HistoBin2D())))
 
     def __sub__(HistoBin2D a, HistoBin2D b):

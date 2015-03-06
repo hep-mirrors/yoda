@@ -13,6 +13,9 @@ cdef class Bin2D_${DBN}(Bin):
         cutil.set_owned_ptr(self, new c.Bin2D_${DBN}( pair[double, double](xlow, xhigh),
                                                       pair[double, double](ylow, yhigh) ))
 
+    def __repr__(self):
+        return '<%s x=[%g, %g), y=[%g, %g)>' % (self.__class__.__name__, self.xMin, self.xMax, self.yMin, self.yMax)
+
 
     def scaleXY(self, x=1.0, y=1.0):
         self.b2ptr().scaleXY(x, y)
