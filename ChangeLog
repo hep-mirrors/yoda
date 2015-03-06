@@ -1,3 +1,7 @@
+2015-03-06  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Add a -i/--in-place option pair on yodascale.
+
 2015-02-05  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Convert script matching options to use re search rather than match.

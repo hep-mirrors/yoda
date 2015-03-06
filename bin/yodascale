@@ -10,7 +10,7 @@ Examples:
 
 %prog run1.yoda run2.yoda -r refdir/ -r reffile.yoda
   Rescales histograms in run1 and run2 to their namesakes in the given ref files
-  (including all .yoda found in refdir). Writes out to run{1,2}-rescaled.yoda
+  (including all .yoda found in refdir). Writes out to run{1,2}-scaled.yoda
 
 %prog -c '.* 0.123x' foo.yoda
   Rescales all histograms in foo.yoda by the factor 0.123.
@@ -68,8 +68,8 @@ op.add_option("-c", "--spec", dest="SPECS", metavar="SPECSTR", action="append", 
               "may be given. Specs will be _appended_ to any read from a file with -f/--specfile")
 op.add_option("-f", "--specfile", dest="SPECFILE", metavar="FILE", default=None,
               help="Specify a file with histogram path patterns (and bin ranges) that are to be normalised")
-# op.add_option("-i", "--in-place", dest="IN_PLACE", default=False, action="store_true",
-#               help="Overwrite input file rather than making input-rescaled.yoda")
+op.add_option("-i", "--in-place", dest="IN_PLACE", default=False, action="store_true",
+              help="Overwrite input file(s) rather than making <input>-scaled.yoda")
 op.add_option("-q", "--quiet", dest="VERBOSITY", action="store_const", const=0, default=1,
               help="Reduce printouts to errors-only")
 op.add_option("-v", "--debug", dest="VERBOSITY", action="store_const", const=2, default=1,
@@ -284,6 +284,10 @@ for infile in args:
         # TODO: should apply scaling to original type or to the scatter?
         aos_out[aopath] = ao
 
-    infileparts = os.path.splitext( os.path.basename(infile) )
-    outfile = infileparts[0] + "-rescaled.yoda"
+    ## Write out rescaled file, possibly in-place (i.e. replace input -- not the default behaviour!)
+    if not opts.IN_PLACE:
+        infileparts = os.path.splitext( os.path.basename(infile) )
+        outfile = infileparts[0] + "-scaled.yoda"
+    else:
+        outfile = infile
     yoda.write(sorted(aos_out.values()), outfile)
