@@ -359,8 +359,8 @@ cdef extern from "YODA/Bin1D.h" namespace "YODA":
 
         #We're fine as long as we don't try to instantiate these from Python
 
-        void scaleW(double scale) except +yodaerr
-        void scaleX(double scale) except +yodaerr
+        # void scaleW(double scale) except +yodaerr
+        # void scaleX(double scale) except +yodaerr
         void reset()  except +yodaerr
 
         pair[double, double] edges() except +yodaerr
@@ -407,8 +407,8 @@ cdef extern from "YODA/Bin2D.h" namespace "YODA":
         Bin2D() # (DO NOT CALL DO NOT CALL)
         ################################################
 
-        void scaleW(double scale) except +yodaerr
-        void scaleXY(double, double) except +yodaerr
+        # void scaleW(double scale) except +yodaerr
+        # void scaleXY(double, double) except +yodaerr
         void reset()  except +yodaerr
 
         pair[double, double] xEdges() except +yodaerr
@@ -470,8 +470,8 @@ cdef extern from "YODA/ProfileBin1D.h" namespace "YODA":
     cdef cppclass ProfileBin1D(Bin1D_Dbn2D):
         ProfileBin1D(ProfileBin1D) except +yodaerr
         ProfileBin1D(double, double) except +yodaerr
-        void fill(double x, double y, double weight) except +yodaerr
-        void fillBin(double y, double weight) except +yodaerr
+        #void fill(double x, double y, double weight) except +yodaerr
+        #void fillBin(double y, double weight) except +yodaerr
         void reset() except +yodaerr
 
         double mean() except +yodaerr
@@ -485,8 +485,7 @@ cdef extern from "YODA/ProfileBin1D.h" namespace "YODA":
         ProfileBin1D operator + (ProfileBin1D) except +yodaerr
         ProfileBin1D operator - (ProfileBin1D) except +yodaerr
 
-        void scaleY(double) except +yodaerr
-        void scaleXY(double) except +yodaerr
+        # void scaleY(double) except +yodaerr
 
 # }}} ProfileBin1D
 
@@ -506,8 +505,8 @@ cdef extern from "YODA/ProfileBin2D.h" namespace "YODA":
     cdef cppclass ProfileBin2D(Bin2D_Dbn3D):
         ProfileBin2D (ProfileBin2D h) except +yodaerr
         ProfileBin2D (double, double, double, double) except +yodaerr
-        void fill(double x, double y, double z, double weight) except +yodaerr
-        void fillBin(double z, double weight) except +yodaerr
+        # void fill(double x, double y, double z, double weight) except +yodaerr
+        # void fillBin(double z, double weight) except +yodaerr
 
         double mean() except +yodaerr
         double stdDev() except +yodaerr
@@ -520,6 +519,8 @@ cdef extern from "YODA/ProfileBin2D.h" namespace "YODA":
         ProfileBin2D operator + (ProfileBin2D) except +yodaerr
         ProfileBin2D operator - (ProfileBin2D) except +yodaerr
 
+        # void scaleZ(double) except +yodaerr
+
 # }}} ProfileBin2D
 
 
@@ -528,8 +529,8 @@ cdef extern from "YODA/HistoBin1D.h" namespace "YODA":
     cdef cppclass HistoBin1D(Bin1D_Dbn1D):
         HistoBin1D(double lowedge, double highedge) except +yodaerr
         HistoBin1D(HistoBin1D) except +yodaerr
-        void fill(double x, double weight) except +yodaerr
-        void fillBin(double weight) except +yodaerr
+        # void fill(double x, double weight) except +yodaerr
+        # void fillBin(double weight) except +yodaerr
 
         double area() except +yodaerr
         double height() except +yodaerr
@@ -558,8 +559,8 @@ cdef extern from "YODA/HistoBin2D.h" namespace "YODA":
         HistoBin2D(double xmin, double xmax, double ymin, double ymax) except +yodaerr
         HistoBin2D(HistoBin2D) except +yodaerr
 
-        void fill(double x, double y, double weight) except +yodaerr
-        void fillBin(double weight) except +yodaerr
+        # void fill(double x, double y, double weight) except +yodaerr
+        # void fillBin(double weight) except +yodaerr
         void reset()
 
         # Accessors
@@ -863,6 +864,8 @@ cdef extern from "YODA/Profile1D.h" namespace "YODA":
         void fillBin(size_t i, double y, double weight) except +yodaerr
 
         void scaleW(double s) except +yodaerr
+        void scaleY(double s) except +yodaerr
+
         void mergeBins(size_t, size_t) except +yodaerr
         void rebin(int n) except +yodaerr
 

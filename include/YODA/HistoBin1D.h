@@ -64,14 +64,18 @@ namespace YODA {
     /// @name Modifiers
     //@{
 
+
+
     /// Fill this bin with weight @a weight at position @a x.
-    /// @todo Need to also fill the totalDbn...
+    ///
+    /// @note This should not be used, since it breaks histogram consistency. It will be removed in a future version.
     void fill(double x, double weight=1.0) {
       _dbn.fill(x, weight);
     }
 
     /// Fill this bin with weight @a weight.
-    /// @todo Need to also fill the totalDbn...
+    ///
+    /// @note This should not be used, since it breaks histogram consistency. It will be removed in a future version.
     void fillBin(double weight=1.0) {
       fill(xMid(), weight);
     }

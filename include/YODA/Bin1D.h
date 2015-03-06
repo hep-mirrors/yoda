@@ -88,11 +88,15 @@ namespace YODA {
     }
 
     /// Rescale as if all fill weights had been different by factor @a scalefactor
+    ///
+    /// @note This should not be used, since it breaks histogram consistency. It will be removed in a future version.
     void scaleW(double scalefactor) {
       _dbn.scaleW(scalefactor);
     }
 
     /// Scale the x dimension
+    ///
+    /// @note This should not be used, since it breaks histogram consistency. It will be removed in a future version.
     void scaleX(double factor) {
       _edges.first *= factor;
       _edges.second *= factor;

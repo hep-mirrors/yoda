@@ -143,6 +143,11 @@ cdef class Profile1D(AnalysisObject):
         Rescale the weights in this histogram by the factor w."""
         self.p1ptr().scaleW(w)
 
+    def scaleY(self, double f):
+        """(float) -> None.
+        Scale the y-direction (profiled value) in this histogram by the factor f."""
+        self.p1ptr().scaleY(f)
+
 
     @property
     def numBins(self):

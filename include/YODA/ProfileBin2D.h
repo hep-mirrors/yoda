@@ -63,19 +63,22 @@ namespace YODA {
     //@{
 
     /// Fill by x, y, z values and weight
-    /// @todo Need to also fill the totalDbn...
+    ///
+    /// @note This should not be used, since it breaks histogram consistency. It will be removed in a future version.
     void fill(double x, double y, double z, double weight=1.0) {
       _dbn.fill(x, y, z, weight);
     }
 
     /// A fill() function accepting the x,y coordinates as std::pair
-    /// @todo Need to also fill the totalDbn...
+    ///
+    /// @note This should not be used, since it breaks histogram consistency. It will be removed in a future version.
     void fill(std::pair<double,double> coords, double z, double weight=1.0) {
-      _dbn.fill(coords.first, coords.second, z, weight);
+      fill(coords.first, coords.second, z, weight);
     }
 
     /// Fill the bin at the midpoint with a given z value
-    /// @todo Need to also fill the totalDbn...
+    ///
+    /// @note This should not be used, since it breaks histogram consistency. It will be removed in a future version.
     void fillBin(double z, double weight=1.0){
       fill(xyMid(), z, weight);
     }
@@ -87,7 +90,27 @@ namespace YODA {
 
     //@}
 
-  public:
+
+    /// @name Bin scaling (x,y scaling is inherited)
+    //@{
+
+    /// Scale the z (profiled) dimension
+    ///
+    /// @note This should not be used, since it breaks histogram consistency. It will be removed in a future version.
+    inline void scaleZ(double az) {
+      _dbn.scaleZ(az);
+    }
+
+    /// Scale the x, y and z dimensions
+    ///
+    /// @note This should not be used, since it breaks histogram consistency. It will be removed in a future version.
+    inline void scaleXYZ(double ax, double ay, double az) {
+      scaleXY(ax, ay);
+      scaleZ(az);
+    }
+
+    //@}
+
 
     /// @name Bin content info
     //@{

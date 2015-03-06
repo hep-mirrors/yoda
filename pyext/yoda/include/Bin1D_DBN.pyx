@@ -20,19 +20,19 @@ cdef class Bin1D_${DBN}(Bin):
         return '<%s x=[%g, %g)>' % (self.__class__.__name__, self.xMin, self.xMax)
 
 
-    def scaleX(self, ax):
-        """
-        float -> None
-        Scale this bin's x arguments by ax.
-        """
-        self.b1ptr().scaleX(ax)
+    # def scaleX(self, ax):
+    #     """
+    #     float -> None
+    #     Scale this bin's x arguments by ax.
+    #     """
+    #     self.b1ptr().scaleX(ax)
 
-    def scaleW(self, a):
-        """
-        float -> None
-        Scale this bin's weights by a.
-        """
-        self.b1ptr().scaleW(a)
+    # def scaleW(self, a):
+    #     """
+    #     float -> None
+    #     Scale this bin's weights by a.
+    #     """
+    #     self.b1ptr().scaleW(a)
 
 
     @property

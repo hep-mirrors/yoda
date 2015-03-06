@@ -61,21 +61,24 @@ namespace YODA {
     //@{
 
     /// A fill() function accepting coordinates as spearate numbers
-    /// @todo Need to also fill the totalDbn...
+    ///
+    /// @note This should not be used, since it breaks histogram consistency. It will be removed in a future version.
     void fill(double x, double y, double weight=1.0) {
       _dbn.fill(x, y, weight);
     }
 
     /// A fill() function accepting the coordinates as std::pair
-    /// @todo Need to also fill the totalDbn...
+    ///
+    /// @note This should not be used, since it breaks histogram consistency. It will be removed in a future version.
     void fill(std::pair<double,double> coords, double weight=1.0) {
-      _dbn.fill(coords.first, coords.second, weight);
+      fill(coords.first, coords.second, weight);
     }
 
     /// A function that fills this particular bin.
-    /// @todo Need to also fill the totalDbn...
+    ///
+    /// @note This should not be used, since it breaks histogram consistency. It will be removed in a future version.
     void fillBin(double weight=1.0) {
-      _dbn.fill(xyMid(), weight);
+      fill(xyMid(), weight);
     }
 
     /// A reset function

@@ -17,11 +17,11 @@ cdef class Bin2D_${DBN}(Bin):
         return '<%s x=[%g, %g), y=[%g, %g)>' % (self.__class__.__name__, self.xMin, self.xMax, self.yMin, self.yMax)
 
 
-    def scaleXY(self, x=1.0, y=1.0):
-        self.b2ptr().scaleXY(x, y)
+    # def scaleXY(self, x=1.0, y=1.0):
+    #     self.b2ptr().scaleXY(x, y)
 
-    def scaleW(self, w):
-        self.b2ptr().scaleW(w)
+    # def scaleW(self, w):
+    #     self.b2ptr().scaleW(w)
 
 
     @property

@@ -99,11 +99,15 @@ namespace YODA {
     }
 
     /// Rescale as if all fill weights had been different by factor @a scalefactor
+    ///
+    /// @note This should not be used, since it breaks histogram consistency. It will be removed in a future version.
     void scaleW(double scalefactor) {
       _dbn.scaleW(scalefactor);
     }
 
     /// Scale the x and y coordinates and distributions.
+    ///
+    /// @note This should not be used, since it breaks histogram consistency. It will be removed in a future version.
     void scaleXY(double scaleX, double scaleY) {
       _xedges.first *= scaleX;
       _xedges.second *= scaleX;

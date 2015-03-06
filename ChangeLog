@@ -1,5 +1,9 @@
 2015-03-06  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Cleaning up some Python mappings of 2D histogram bin classes.
+
+	* Removing mappings of bin-level fill and scale operations in Python.
+
 	* Fix formatting and error handling in Python Bin and Dbn __repr__ methods.
 
 	* Add a -i/--in-place option pair on yodascale.

@@ -65,13 +65,15 @@ namespace YODA {
     //@{
 
     /// Fill histo by x and y values and weight.
-    /// @todo Need to also fill the totalDbn...
+    ///
+    /// @note This should not be used, since it breaks histogram consistency. It will be removed in a future version.
     void fill(double x, double y, double weight=1.0) {
       _dbn.fill(x, y, weight);
     }
 
     /// Fill histo with @a weight and y-value @c y at x = bin midpoint.
-    /// @todo Need to also fill the totalDbn...
+    ///
+    /// @note This should not be used, since it breaks histogram consistency. It will be removed in a future version.
     void fillBin(double y, double weight=1.0) {
       fill(xMid(), y, weight);
     }
@@ -82,12 +84,16 @@ namespace YODA {
     /// @name Bin scaling (x scaling is inherited)
     //@{
 
-    /// Scale the y dimension
+    /// Scale the y (profiled) dimension
+    ///
+    /// @note This should not be used, since it breaks histogram consistency. It will be removed in a future version.
     inline void scaleY(double ay) {
       _dbn.scaleY(ay);
     }
 
     /// Scale the x and y dimensions
+    ///
+    /// @note This should not be used, since it breaks histogram consistency. It will be removed in a future version.
     inline void scaleXY(double ax, double ay) {
       scaleX(ax);
       scaleY(ay);

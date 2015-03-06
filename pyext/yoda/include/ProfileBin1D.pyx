@@ -18,26 +18,26 @@ cdef class ProfileBin1D(Bin1D_Dbn2D):
         cutil.set_owned_ptr(self, new c.ProfileBin1D(a, b))
 
 
-    def fill(self, x, y, weight=1.0):
-        """
-        (x, y, weight=1.0) -> None. Fill this bin with given values and weight.
-        """
-        self.pb1ptr().fill(x, y, weight)
+    # def fill(self, x, y, weight=1.0):
+    #     """
+    #     (x, y, weight=1.0) -> None. Fill this bin with given values and weight.
+    #     """
+    #     self.pb1ptr().fill(x, y, weight)
 
-    def fillBin(self, y, weight=1.0):
-        """
-        (y, weight=1.0) -> None. Fill this bin with given y-value and weight.
-        """
-        self.pb1ptr().fillBin(y, weight)
+    # def fillBin(self, y, weight=1.0):
+    #     """
+    #     (y, weight=1.0) -> None. Fill this bin with given y-value and weight.
+    #     """
+    #     self.pb1ptr().fillBin(y, weight)
 
 
-    def scaleY(self, ay):
-        """
-        float -> None
+    # def scaleY(self, ay):
+    #     """
+    #     float -> None
 
-        Scale y values by ay.
-        """
-        self.pb1ptr().scaleY(ay)
+    #     Scale y values by ay.
+    #     """
+    #     self.pb1ptr().scaleY(ay)
 
 
     @property
@@ -54,11 +54,13 @@ cdef class ProfileBin1D(Bin1D_Dbn2D):
     def stdDev(self):
         """The standard deviation of the y-values that have filled the bin."""
         return self.pb1ptr().stdDev()
+    stddev = stdDev
 
     @property
     def stdErr(self):
         """The standard error of the y-values that have filled the bin."""
         return self.pb1ptr().stdErr()
+    stderr = stdErr
 
     @property
     def rms(self):

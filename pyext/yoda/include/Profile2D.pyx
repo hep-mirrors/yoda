@@ -120,6 +120,11 @@ cdef class Profile2D(AnalysisObject):
         Rescale the weights in this histogram by the factor w."""
         self.p2ptr().scaleW(w)
 
+    def scaleZ(self, double f):
+        """(float) -> None.
+        Scale the z-direction (profiled value) in this histogram by the factor f."""
+        self.p1ptr().scaleZ(f)
+
 
     @property
     def xMin(self):

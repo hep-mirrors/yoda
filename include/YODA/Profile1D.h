@@ -150,6 +150,16 @@ namespace YODA {
     }
 
 
+    /// Rescale as if all y values had been different by factor @a scalefactor.
+    void scaleY(double scalefactor) {
+      _axis.totalDbn().scaleY(scalefactor);
+      _axis.overflow().scaleY(scalefactor);
+      _axis.underflow().scaleY(scalefactor);
+      for (size_t i = 0; i < bins().size(); ++i)
+        bin(i).scaleY(scalefactor);
+    }
+
+
     /// Merge together the bin range with indices from @a from to @a to, inclusive
     void mergeBins(size_t from, size_t to) {
       _axis.mergeBins(from, to);
