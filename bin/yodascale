@@ -3,14 +3,54 @@
 """\
 Usage: %prog <yodafile1> [<yodafile2> ...] -r <yodareffile_or_dir> [-r ...]
 
-Rescale YODA histograms to match a reference file
+Rescale YODA histograms by constant factors or to match (partial) normalizations
+of histos in a reference file.
 
-Example:
-  %prog run1.yoda run2.yoda -r refdir/ -r reffile.yoda
-  rescale histograms in run1 and run2 to ref files (including all
-  .yoda found in refdir, and writes out to run{1,2}-rescaled.yoda)
+Examples:
+
+%prog run1.yoda run2.yoda -r refdir/ -r reffile.yoda
+  Rescales histograms in run1 and run2 to their namesakes in the given ref files
+  (including all .yoda found in refdir). Writes out to run{1,2}-rescaled.yoda
+
+%prog -c '.* 0.123x' foo.yoda
+  Rescales all histograms in foo.yoda by the factor 0.123.
+
+This latter example is a demonstration of the general scaling specification
+syntax, many of which can be either given with -c/--spec command-line options,
+or can be placed in a file read by the -f/--specfile options.
+
+The scaling specification syntax is a histogram path pattern followed by a
+definition of the scaling to be done on that histogram (or histograms). The path
+pattern consists of a regular expression, optionally followed by a range
+specifier. The best explanation is probably a few examples:
+  /path/to/hist      (match all bins in that particular histogram)
+  /.*pt              (match all bins in histograms ending in 'pt')
+  /myhist@5          (match bins with high edge >= 5 in /myhist)
+  /myhist@@10        (match bins with low edge <= 10 in /myhist)
+  /myhist@3@10       (match bins with edges within 3-10 in /myhist)
+  /myhist#3:10       (match bins with index 3-10 inclusive in /myhist)
+  /myhist#5          (match bins with index >= 5 in /myhist)
+  /myhist##10        (match bins with index <= 10 in /myhist)
+Mixing of bin index and bin position range locators is not currently allowed.
+
+The scaling definition which follows this path pattern can also take several
+forms. Again, examples:
+  10         (scale the matching histos/bin ranges to normalize to 10)
+  2x         (scale the matching histos by a factor of 2)
+  2xREF      (scale the matching histos/ranges to 2x the normalization of
+              their reference namesake)
+  3.14x/some/other/path  (rescale to the normalization of a different ref histo)
+
+This scheme is fairly complex and may evolve slightly as we try to make the
+syntax as natural as possible, particularly for the simplest & most common cases,
+while retaining the general power evident from the examples above. Please report
+bugs and wishes to the YODA authors at yoda@projects.hepforge.org
 
 TODO:
+ * x scaling of only the given range?
+ * check that ref norm scaling respects the range limits
+ * check that ranges can also be given on the RHS path
+ * y-scaling of profile histograms (requires scaleY & scaleZ etc. methods)
  * add overflow inclusion in normalization for binned types
 """
 
@@ -20,19 +60,16 @@ import optparse
 op = optparse.OptionParser(usage=__doc__)
 # TODO: how to look up ref histos?
 op.add_option("-r", "--ref", dest="REFS", action="append", default=[],
-                  help="File or folder with reference histos")
+              help="File or folder with reference histos")
 op.add_option("--ref-prefix", dest="REF_PREFIX", metavar="NAME", default="REF",
-                  help="Treat /NAME/foo as a reference plot for /foo, and don't rescale /NAME histos")
-# op.add_option("--mode", dest="MODE", default="norm",
-#                   help="Shortcuts for modes. Allowed values: norm|normfirst|multiply")
+              help="Treat /NAME/foo as a reference plot for /foo, and don't rescale /NAME histos")
 op.add_option("-c", "--spec", dest="SPECS", metavar="SPECSTR", action="append", default=[],
-                  help="Provide a single scaling specification on the command line. Multiple -c options " +
-                  "may be given. Specs will be _appended_ to any read from a file with -f/--specfile")
+              help="Provide a single scaling specification on the command line. Multiple -c options " +
+              "may be given. Specs will be _appended_ to any read from a file with -f/--specfile")
 op.add_option("-f", "--specfile", dest="SPECFILE", metavar="FILE", default=None,
-                  help="Specify a file with histogram path patterns (and bin ranges) that are to be normalised")
-# PATT:1:2   2xREF:x:y
+              help="Specify a file with histogram path patterns (and bin ranges) that are to be normalised")
 # op.add_option("-i", "--in-place", dest="IN_PLACE", default=False, action="store_true",
-#                   help="Overwrite input file rather than making input-rescaled.yoda")
+#               help="Overwrite input file rather than making input-rescaled.yoda")
 op.add_option("-q", "--quiet", dest="VERBOSITY", action="store_const", const=0, default=1,
               help="Reduce printouts to errors-only")
 op.add_option("-v", "--debug", dest="VERBOSITY", action="store_const", const=2, default=1,
