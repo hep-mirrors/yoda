@@ -1,5 +1,7 @@
 2015-03-06  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Adding usefocus optional argument to some mkScatter functions, plus the Python bindings.
+
 	* Cleaning up some Python mappings of 2D histogram bin classes.
 
 	* Removing mappings of bin-level fill and scale operations in Python.
