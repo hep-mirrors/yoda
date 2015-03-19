@@ -10,7 +10,10 @@ class NumpyHist(object):
             raise Exception("ao argument must be a YODA AnalysisObject; this is a %s" % type(ao))
         ## Get annotations
         self.path = ao.path
-        self.annotations = {aname : ao.annotation(aname) for aname in ao.annotations}
+        #self.annotations = {aname : ao.annotation(aname) for aname in ao.annotations}
+        self.annotations = {}
+        for aname in ao.annotations:
+            self.annotations[aname] = ao.annotation(aname)
         ## Convert to Scatter and set dimensionality & recarray column names
         s = ao.mkScatter()
         names = ['x', 'y', 'exminus', 'explus', 'eyminus', 'eyplus']

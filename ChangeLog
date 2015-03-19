@@ -1,3 +1,7 @@
+2015-03-19  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Bump version for 1.3.1 release.
+
 2015-03-06  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Adding usefocus optional argument to some mkScatter functions, plus the Python bindings.
