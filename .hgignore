@@ -67,3 +67,5 @@ Doxyfile$
 ^a.out$
 ^testplotting$
 ^sphinxdoc/_build$
+^tmp/
+^pydoc/
