@@ -1138,7 +1138,7 @@ cdef extern from "YODA/Histo2D.h" namespace "YODA":
         size_t numBinsX() except +yodaerr
         size_t numBinsY() except +yodaerr
 
-        vector[HistoBin1D]& bins() #except +yodaerr
+        vector[HistoBin2D]& bins() #except +yodaerr
         int binIndexAt(double x, double y) except +yodaerr
         HistoBin2D& bin(size_t ix) #except +yodaerr
         HistoBin2D& binAt(double x, double y) #except +yodaerr
