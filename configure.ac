@@ -93,8 +93,8 @@ BOOST_FIND_HEADER([boost/assign.hpp])
 BOOST_FIND_HEADER([boost/spirit/include/qi.hpp])
 BOOST_FIND_HEADER([boost/spirit/include/phoenix_operator.hpp])
 BOOST_FIND_HEADER([boost/fusion/include/adapt_struct.hpp])
-
 BOOST_BUG_IN_FOREACH
+
 
 ## Optional ROOT compatibility
 AC_ARG_ENABLE([root], [AC_HELP_STRING(--enable-root,
@@ -139,6 +139,7 @@ if test x$enable_root = xyes; then
 else
   AC_MSG_NOTICE([Not building extra ROOT compatibility tools])
 fi
+
 
 ## Python extension
 AC_ARG_ENABLE(pyext, [AC_HELP_STRING(--disable-pyext,
@@ -185,7 +186,7 @@ AM_CONDITIONAL(ENABLE_PYEXT, [test x$enable_pyext == xyes])
 
 ## Cython checks
 if test x$enable_pyext == xyes; then
-  AM_CHECK_CYTHON([0.18], [:], [:])
+  AM_CHECK_CYTHON([0.20], [:], [:])
   if test x$CYTHON_FOUND = xyes; then
     AC_MSG_NOTICE([Cython >= 0.18 found: Python extension source can be rebuilt (for developers)])
   fi
