@@ -1,3 +1,9 @@
+2015-03-27  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Fix a harmless possibility to raise an FPE exception in the
+	BinSearcher. Thanks to Leif Lonnblad for the discovery, debug and
+	patch!
+
 2015-03-19  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Bump version for 1.3.1 release.

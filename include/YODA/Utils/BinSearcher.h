@@ -143,7 +143,7 @@ namespace YODA {
       /// Default constructor
       /// @todo What's the point?
       BinSearcher() {
-        _est.reset(new LinEstimator(0, 1, 1));
+        _est.reset(new LinEstimator(1, 0, 1));
       }
 
       /// Copy constructor
