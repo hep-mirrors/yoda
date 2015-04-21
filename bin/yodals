@@ -32,6 +32,6 @@ for i, f in enumerate(filenames):
     filter_aos(aodict, opts.MATCH, opts.UNMATCH)
     for p, ao in sorted(aodict.iteritems()):
         extrainfo = ""
-        if opts.VERBOSITY >= 2:
+        if opts.VERBOSITY >= 2 and hasattr(ao, "sumW"):
             extrainfo = " sumW={sumw:.3g}".format(sumw=ao.sumW())
         print "{path:<50} {type:<10} {nobjs:4d} bins/pts".format(path=p, type=ao.type, nobjs=len(ao)), extrainfo
