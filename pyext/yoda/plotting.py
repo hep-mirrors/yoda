@@ -175,7 +175,7 @@ def read_plot_keys(datfile):
 
 import matplotlib as mpl
 
-def setup_mpl(engine="PGF", font="TeX Gyre Pagella", mfont=None, textfigs=True):
+def setup_mpl(engine="PGF", font="TeX Gyre Pagella", fontsize=17, mfont=None, textfigs=True):
     """One-liner matplotlib (mpl) setup.
 
     By default mpl will be configured with the TeX PGF rendering backend, and a
@@ -195,8 +195,8 @@ def setup_mpl(engine="PGF", font="TeX Gyre Pagella", mfont=None, textfigs=True):
     # import matplotlib as mpl
     mpl.rcParams.update({
         "text.usetex" : (engine != "MPL"),
-        "font.size"   : 17,
-        "font.family" : "serif",
+        "font.size"   : int(fontsize),
+        "font.family" : "serif", #< TODO: make configurable? auto-detect?
         })
 
     texpreamble = [r"\usepackage{amsmath,amssymb}", r"\usepackage{mathspec}"]
