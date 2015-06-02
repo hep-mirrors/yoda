@@ -10,18 +10,23 @@ potential memory limits.
 import sys
 
 ## Make a Python list of analysis objects from a C++ vector of them
-cdef list _aobjects_to_list(vector[c.AnalysisObject*]* aobjects):
+cdef list _aobjects_to_list(vector[c.AnalysisObject*]* aobjects, str pattern):
     cdef list out = []
     cdef c.AnalysisObject* ao
     cdef size_t i
     for i in xrange(aobjects.size()):
         ao = deref(aobjects)[i]
         ## NOTE: automatic type conversion by passing the type() as a key to globals()
-        out.append(cutil.new_owned_cls(globals()[ao.type()], ao))
+        newao = cutil.new_owned_cls(globals()[ao.type()], ao)
+        if pattern is not None:
+            import re
+            if not re.match(pattern, newao.path):
+                continue
+        out.append(newao)
     return out
 
 ## Make a Python dict of analysis objects from a C++ vector of them
-cdef dict _aobjects_to_dict(vector[c.AnalysisObject*]* aobjects):
+cdef dict _aobjects_to_dict(vector[c.AnalysisObject*]* aobjects, str pattern):
     cdef dict out = {}
     cdef c.AnalysisObject* ao
     cdef size_t i
@@ -29,6 +34,10 @@ cdef dict _aobjects_to_dict(vector[c.AnalysisObject*]* aobjects):
         ao = deref(aobjects)[i]
         ## NOTE: automatic type conversion by passing the type() as a key to globals()
         newao = cutil.new_owned_cls( globals()[ao.type()], ao)
+        if pattern is not None:
+            import re
+            if not re.match(pattern, newao.path):
+                continue
         out[newao.path] = newao
     return out
 
@@ -67,7 +76,7 @@ def _str_to_file(s, file_or_filename):
 ## Readers
 ##
 
-def read(filename, asdict=True):
+def read(filename, asdict=True, pattern=None):
     """
     Read data objects from the provided filename, auto-determining the format
     from the file extension.
@@ -81,10 +90,10 @@ def read(filename, asdict=True):
     f.close()
     _make_iss(iss, s)
     c.Reader_create(filename).read(iss, aobjects)
-    return _aobjects_to_dict(&aobjects) if asdict else _aobjects_to_list(&aobjects)
+    return _aobjects_to_dict(&aobjects, pattern) if asdict else _aobjects_to_list(&aobjects, pattern)
 
 
-def readYODA(file_or_filename, asdict=True):
+def readYODA(file_or_filename, asdict=True, pattern=None):
     """
     Read data objects from the provided YODA-format file.
 
@@ -96,10 +105,10 @@ def readYODA(file_or_filename, asdict=True):
     _make_iss(iss, s)
     c.ReaderYODA_create().read(iss, aobjects)
     # TODO: Add optional filter pattern in conversion to Python iterable (also for all other read functions)
-    return _aobjects_to_dict(&aobjects) if asdict else _aobjects_to_list(&aobjects)
+    return _aobjects_to_dict(&aobjects, pattern) if asdict else _aobjects_to_list(&aobjects, pattern)
 
 
-def readFLAT(file_or_filename, asdict=True):
+def readFLAT(file_or_filename, asdict=True, pattern=None):
     """
     Read data objects from the provided FLAT-format file.
 
@@ -110,10 +119,10 @@ def readFLAT(file_or_filename, asdict=True):
     s = _str_from_file(file_or_filename)
     _make_iss(iss, s)
     c.ReaderFLAT_create().read(iss, aobjects)
-    return _aobjects_to_dict(&aobjects) if asdict else _aobjects_to_list(&aobjects)
+    return _aobjects_to_dict(&aobjects, pattern) if asdict else _aobjects_to_list(&aobjects, pattern)
 
 
-def readAIDA(file_or_filename, asdict=True):
+def readAIDA(file_or_filename, asdict=True, pattern=None):
     """
     Read data objects from the provided AIDA-format file.
 
@@ -124,7 +133,7 @@ def readAIDA(file_or_filename, asdict=True):
     s = _str_from_file(file_or_filename)
     _make_iss(iss, s)
     c.ReaderAIDA_create().read(iss, aobjects)
-    return _aobjects_to_dict(&aobjects) if asdict else _aobjects_to_list(&aobjects)
+    return _aobjects_to_dict(&aobjects, pattern) if asdict else _aobjects_to_list(&aobjects, pattern)
 
 
 ##
