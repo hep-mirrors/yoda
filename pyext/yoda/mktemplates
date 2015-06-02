@@ -11,7 +11,7 @@ TODO: is the situation better now?
 from string import Template
 from itertools import izip
 from os.path import join
-import os
+import os, sys
 import errno
 
 def product(*args, **kwds):
@@ -24,7 +24,8 @@ def product(*args, **kwds):
     for prod in result:
         yield tuple(prod)
 
-GENERATED_HEADER = Template("""
+GENERATED_HEADER = Template(
+"""\
 #################################################
 #############       WARNING      ################
 #################################################
@@ -32,16 +33,17 @@ GENERATED_HEADER = Template("""
 # Any changes you make here will get overridden.
 # Instead, make your changes in ${filename}.pyx
 #################################################
+""")
 
-""".lstrip())
+def make_templates(full_filename, *args, **kwargs):
+    individuals = args or [dict(izip(kwargs, line)) 
+                           for line in product(*kwargs.itervalues())]
 
-def make_templates(filename, *args, **kwargs):
-    individuals = args or [dict(izip(kwargs, line)) for line in product(*kwargs.itervalues())]
-
-    full_filename = join("include", filename + '.pyx')
     f = open(full_filename)
     template = Template(f.read())
     f.close()
+
+    filename = os.path.basename(full_filename)[:-4]
 
     plain_name = filename
     for i in individuals[0]:
@@ -50,7 +52,7 @@ def make_templates(filename, *args, **kwargs):
     #print plain_name
 
     try:
-        os.mkdir("include/generated")
+        os.makedirs("include/generated")
     except OSError as exc: # Python >2.5
         if exc.errno != errno.EEXIST or not os.path.isdir("include/generated"):
             raise
@@ -77,10 +79,13 @@ def make_templates(filename, *args, **kwargs):
 
 ##############
 
+# fragile, depends on Makefile.am order
+bin1d_dbn, bin2d_dbn, axis1d_bin1d_dbn, axis2d_bin2d_dbn = sys.argv[1:]
+
 ## Make instantiations of Cython mapping templates for axes with different DBN types
-make_templates('Bin1D_DBN', DBN=('Dbn1D', 'Dbn2D'))
-make_templates('Bin2D_DBN', DBN=('Dbn2D', 'Dbn3D'))
-make_templates('Axis1D_BIN1D_DBN', dict(DBN='Dbn1D', BIN1D='HistoBin1D'))
-make_templates('Axis1D_BIN1D_DBN', dict(DBN='Dbn2D', BIN1D='ProfileBin1D'))
-make_templates('Axis2D_BIN2D_DBN', dict(DBN='Dbn2D', BIN2D='HistoBin2D'))
-make_templates('Axis2D_BIN2D_DBN', dict(DBN='Dbn3D', BIN2D='ProfileBin2D'))
+make_templates(bin1d_dbn, DBN=('Dbn1D', 'Dbn2D'))
+make_templates(bin2d_dbn, DBN=('Dbn2D', 'Dbn3D'))
+make_templates(axis1d_bin1d_dbn, dict(DBN='Dbn1D', BIN1D='HistoBin1D'))
+make_templates(axis1d_bin1d_dbn, dict(DBN='Dbn2D', BIN1D='ProfileBin1D'))
+make_templates(axis2d_bin2d_dbn, dict(DBN='Dbn2D', BIN2D='HistoBin2D'))
+make_templates(axis2d_bin2d_dbn, dict(DBN='Dbn3D', BIN2D='ProfileBin2D'))

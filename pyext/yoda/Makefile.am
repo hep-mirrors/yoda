@@ -44,45 +44,39 @@ CYTHON_SRC = \
 EXTRA_DIST += \
     $(CYTHON_SRC) \
     mktemplates \
-    core.cpp core.h util.cpp
+    core.cpp core.h util.cpp \
+    rootcompat.cpp \
+    .made_pyx_templates
 
 
 if WITH_CYTHON
+
 core.cpp core.h: $(CYTHON_SRC) .made_pyx_templates
-	cython core.pyx --cplus
+	cython $(srcdir)/core.pyx --cplus -I $(builddir) -o $@
+
+util.cpp: util.pxd util.pyx .made_pyx_templates
+	cython $(srcdir)/util.pyx --cplus -I $(builddir) -o $@
+
+rootcompat.cpp: util.pxd rootcompat.pxd rootcompat.pyx .made_pyx_templates
+	cython $(srcdir)/rootcompat.pyx --cplus -I $(builddir) -o $@
+
 else
+
 core.cpp core.h: $(CYTHON_SRC)
 	@echo "Not (re)generating core.cpp since Cython is not installed"
-endif
 
-
-if WITH_CYTHON
-util.cpp: util.pxd util.pyx .made_pyx_templates
-	cython util.pyx --cplus
-else
 util.cpp: util.pxd util.pyx
 	@echo "Not (re)generating util.cpp since Cython is not installed"
-endif
 
-
-## Always include rootcompat.cpp in the dist... only developers should be building dist tarballs
-EXTRA_DIST += rootcompat.cpp
-
-all-local: core.cpp util.cpp rootcompat.cpp
-	@true
-
-if WITH_CYTHON
-rootcompat.cpp: util.pxd rootcompat.pxd rootcompat.pyx .made_pyx_templates
-	cython rootcompat.pyx --cplus
-else
 rootcompat.cpp: util.pxd rootcompat.pxd rootcompat.pyx
 	@echo "Not (re)generating rootcompat.cpp since Cython is not installed"
+
 endif
 
 
 ## Make text-substitution .pyx files from templates -- should only run once
 .made_pyx_templates: include/Bin1D_DBN.pyx include/Bin2D_DBN.pyx include/Axis1D_BIN1D_DBN.pyx include/Axis2D_BIN2D_DBN.pyx
-	./mktemplates
+	$(srcdir)/mktemplates $^
 	touch $@
 
 
