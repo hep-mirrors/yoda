@@ -72,11 +72,17 @@ virtue of a `from yoda.core import *` in the `yoda` package.
 Tips and tricks
 ---------------
 
-- Filtering analysis objects by path::
+- Filtering analysis objects by path: ::
 
+      aos = yoda.read("mydata.yoda")
       hs = [h for h in aos.values() if "foo" in h.path]
 
-- Summing histograms::
+  or, if you have YODA version >= 1.3.2, you can do regex filtering inline
+  during analysis object reading from file: ::
+
+      aos = yoda.read("mydata.yoda", ".*foo.*")
+
+- Summing histograms: ::
 
       import operator
       hsum = reduce(operator.add, hs)

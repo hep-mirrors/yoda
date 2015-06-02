@@ -58,12 +58,14 @@ cdef class Histo1D(AnalysisObject):
 
 
     def __len__(self):
-        return self.h1ptr().numBins()
+        "DEPRECATED!"
+        return self.numBins
 
-    def __getitem__(self, py_ix):
-        cdef size_t i = cutil.pythonic_index(py_ix, self.h1ptr().numBins())
-        return cutil.new_borrowed_cls(HistoBin1D, & self.h1ptr().bin(i), self)
-
+    def __getitem__(self, i):
+        "DEPRECATED! But bins() = list(self) depends on it, so removing is not trivial"
+        # return self.bins[i]
+        cdef size_t ii = cutil.pythonic_index(i, self.h1ptr().numBins())
+        return cutil.new_borrowed_cls(HistoBin1D, & self.h1ptr().bin(ii), self)
 
     def __repr__(self):
         xmean = None
@@ -175,12 +177,6 @@ cdef class Histo1D(AnalysisObject):
 
 
     @property
-    def numBins(self):
-        """() -> int
-        Number of bins (not including overflows)."""
-        return self.h1ptr().numBins()
-
-    @property
     def xMin(self):
         """Low x edge of the histo."""
         return self.h1ptr().xMin()
@@ -190,20 +186,32 @@ cdef class Histo1D(AnalysisObject):
         """High x edge of the histo."""
         return self.h1ptr().xMax()
 
+
+    @property
+    def numBins(self):
+        """() -> int
+        Number of bins (not including overflows)."""
+        return self.h1ptr().numBins()
+
     @property
     def bins(self):
         """Access the ordered bins list."""
         return list(self)
 
-    def mergeBins(self, ia, ib):
-        """mergeBins(ia, ib) -> None.
-        Merge bins from indices ia through ib."""
-        self.h1ptr().mergeBins(ia, ib)
+    def bin(self, i):
+        """Get the i'th bin (equivalent to bins[i]"""
+        # cdef size_t ii = cutil.pythonic_index(i, self.h1ptr().numBins())
+        return cutil.new_borrowed_cls(HistoBin1D, & self.h1ptr().bin(i), self)
 
-    def rebin(self, n):
-        """(n) -> None.
-        Merge every group of n bins together."""
-        self.h1ptr().rebin(n)
+    def binIndexAt(self, x):
+        """Get the bin index containing position x"""
+        return self.h1ptr().binIndexAt(x)
+
+    # TODO: what's the problem?
+    # def binAt(self, x):
+    #     """Get the bin containing position x"""
+    #     return cutil.new_borrowed_cls(HistoBin1D, & self.h1ptr().binAt(x), self)
+
 
     def addBin(self, low, high):
         """(low, high) -> None.
@@ -236,6 +244,17 @@ cdef class Histo1D(AnalysisObject):
         cdef double a, b
         for a, b in tuples:
             self.h1ptr().addBin(a, b)
+
+
+    def mergeBins(self, ia, ib):
+        """mergeBins(ia, ib) -> None.
+        Merge bins from indices ia through ib."""
+        self.h1ptr().mergeBins(ia, ib)
+
+    def rebin(self, n):
+        """(n) -> None.
+        Merge every group of n bins together."""
+        self.h1ptr().rebin(n)
 
 
     def mkScatter(self, usefocus=False):

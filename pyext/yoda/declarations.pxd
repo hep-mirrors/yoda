@@ -878,10 +878,10 @@ cdef extern from "YODA/Profile1D.h" namespace "YODA":
 
         size_t numBins() except +yodaerr
 
-        vector[ProfileBin1D] bins()
+        vector[ProfileBin1D] bins() #except +yodaerr
         int binIndexAt(double x) except +yodaerr
-        ProfileBin1D bin(size_t ix) except +yodaerr
-        ProfileBin1D binAt(double x) except +yodaerr
+        const ProfileBin1D& bin(size_t ix) #except +yodaerr
+        const ProfileBin1D& binAt(double x) #except +yodaerr
 
         # The trick here is to treat these not as references.
         # I suppose when you think about it, it makes sense
@@ -958,8 +958,8 @@ cdef extern from "YODA/Profile2D.h" namespace "YODA":
 
         vector[ProfileBin2D]& bins() #except +yodaerr
         int binIndexAt(double x, double y) except +yodaerr
-        ProfileBin2D& bin(size_t ix) #except +yodaerr
-        ProfileBin2D& binAt(double x, y) #except +yodaerr
+        const ProfileBin2D& bin(size_t ix) #except +yodaerr
+        const ProfileBin2D& binAt(double x, y) #except +yodaerr
 
         void addBin(const pair[double, double]&, const pair[double, double]&) except +yodaerr
         void addBins(const vector[double]&, const vector[double]&) except +yodaerr
@@ -1047,8 +1047,8 @@ cdef extern from "YODA/Histo1D.h" namespace "YODA":
 
         vector[HistoBin1D]& bins()
         int binIndexAt(double x) except +yodaerr
-        HistoBin1D& bin(size_t ix)
-        HistoBin1D binAt(double x) except +yodaerr
+        const HistoBin1D& bin(size_t ix)
+        const HistoBin1D& binAt(double x) except +yodaerr
 
         # TODO: Some Cython mapping problem?
         Dbn1D& totalDbn()
@@ -1140,8 +1140,8 @@ cdef extern from "YODA/Histo2D.h" namespace "YODA":
 
         vector[HistoBin2D]& bins() #except +yodaerr
         int binIndexAt(double x, double y) except +yodaerr
-        HistoBin2D& bin(size_t ix) #except +yodaerr
-        HistoBin2D& binAt(double x, double y) #except +yodaerr
+        const HistoBin2D& bin(size_t ix) #except +yodaerr
+        const HistoBin2D& binAt(double x, double y) #except +yodaerr
 
         void addBin(const pair[double, double]&, const pair[double, double]&)
         void addBins(const vector[HistoBin2D]&)

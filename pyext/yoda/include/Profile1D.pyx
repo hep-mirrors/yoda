@@ -59,12 +59,13 @@ cdef class Profile1D(AnalysisObject):
         cutil.set_owned_ptr(
             self, new c.Profile1D(nbins, lower, upper, string(path), string(title)))
 
+
     def __len__(self):
         return self.p1ptr().bins().size()
 
-    def __getitem__(self, py_ix):
-        cdef size_t i = cutil.pythonic_index(py_ix, self.p1ptr().bins().size())
-        return cutil.new_borrowed_cls(ProfileBin1D, & self.p1ptr().bins().at(i), self)
+    def __getitem__(self, i):
+        cdef size_t ii = cutil.pythonic_index(i, self.p1ptr().bins().size())
+        return cutil.new_borrowed_cls(ProfileBin1D, & self.p1ptr().bin(ii), self)
 
 
     def __repr__(self):
@@ -150,12 +151,6 @@ cdef class Profile1D(AnalysisObject):
 
 
     @property
-    def numBins(self):
-        """() -> int
-        Number of bins (not including overflows)."""
-        return self.p1ptr().numBins()
-
-    @property
     def xMin(self):
         """Low x edge of the histo."""
         return self.p1ptr().xMin()
@@ -165,10 +160,26 @@ cdef class Profile1D(AnalysisObject):
         """High x edge of the histo."""
         return self.p1ptr().xMax()
 
+
+    @property
+    def numBins(self):
+        """() -> int
+        Number of bins (not including overflows)."""
+        return self.p1ptr().numBins()
+
     @property
     def bins(self):
         """Access the ordered bins list."""
         return list(self)
+
+    def binIndexAt(self, x):
+        """Get the bin index containing position x"""
+        return self.p1ptr().binIndexAt(x)
+
+    # TODO: what's the problem?
+    # def binAt(self, x):
+    #     """Get the bin containing position x"""
+    #     return cutil.new_borrowed_cls(ProfileBin1D, & self.p1ptr().binAt(x), self)
 
     def addBin(self, low, high):
         """Add a bin."""

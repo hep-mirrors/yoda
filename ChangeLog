@@ -1,5 +1,8 @@
 2015-06-02  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Adding missing binAt and binIndexAt methods to Histo1D and
+	Profile1D, plus other minor Python mapping tweaks.
+
 	* Add a regex pattern match optional argument to the IO.read()
 	Python functions, for pre-emptive filtering.
 
