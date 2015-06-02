@@ -69,6 +69,19 @@ virtue of a `from yoda.core import *` in the `yoda` package.
    :members:
 
 
+Tips and tricks
+---------------
+
+- Filtering analysis objects by path::
+
+      hs = [h for h in aos.values() if "foo" in h.path]
+
+- Summing histograms::
+
+      import operator
+      hsum = reduce(operator.add, hs)
+
+
 Bin/point path searching
 ------------------------
 
