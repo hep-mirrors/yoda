@@ -52,13 +52,13 @@ EXTRA_DIST += \
 if WITH_CYTHON
 
 core.cpp core.h: $(CYTHON_SRC) .made_pyx_templates
-	cython $(srcdir)/core.pyx --cplus -I $(builddir) -o $@
+	cython $(srcdir)/core.pyx --cplus -I $(builddir) -I $(builddir)/include -o $@
 
 util.cpp: util.pxd util.pyx .made_pyx_templates
-	cython $(srcdir)/util.pyx --cplus -I $(builddir) -o $@
+	cython $(srcdir)/util.pyx --cplus -I $(builddir) -I $(builddir)/include -o $@
 
 rootcompat.cpp: util.pxd rootcompat.pxd rootcompat.pyx .made_pyx_templates
-	cython $(srcdir)/rootcompat.pyx --cplus -I $(builddir) -o $@
+	cython $(srcdir)/rootcompat.pyx --cplus -I $(builddir) -I $(builddir)/include -o $@
 
 else
 
