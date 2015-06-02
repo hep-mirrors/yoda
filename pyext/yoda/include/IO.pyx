@@ -95,6 +95,7 @@ def readYODA(file_or_filename, asdict=True):
     s = _str_from_file(file_or_filename)
     _make_iss(iss, s)
     c.ReaderYODA_create().read(iss, aobjects)
+    # TODO: Add optional filter pattern in conversion to Python iterable (also for all other read functions)
     return _aobjects_to_dict(&aobjects) if asdict else _aobjects_to_list(&aobjects)
 
 
