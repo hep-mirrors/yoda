@@ -203,9 +203,21 @@ cdef class Histo2D(AnalysisObject):
         """Access the ordered bins list."""
         return list(self)
 
-    # TODO: add bin(ix, iy) and bin(iglobal)
+    def bin(self, i):
+        """Get the i'th bin"""
+        # cdef size_t ii = cutil.pythonic_index(i, self.h2ptr().numBins())
+        return cutil.new_borrowed_cls(HistoBin2D, & self.h2ptr().bin(i), self)
 
-    # TODO: add binAt and binIndexAt and binIndexX,Y
+    # TODO: it's more intuitive to have an index for each axis
+    # def bin(self, i, j):
+    #     """Get the (i,j)'th bin"""
+    #     # cdef size_t ii = cutil.pythonic_index(i, self.h2ptr().numBins())
+    #     # cdef size_t jj = cutil.pythonic_index(j, self.h2ptr().numBins())
+    #     return cutil.new_borrowed_cls(HistoBin2D, & self.h2ptr().bin(i,j), self)
+
+    def binIndexAt(self, x, y):
+        """Get the bin index pair containing position (x,y)"""
+        return self.h2ptr().binIndexAt(x, y)
 
 
     def addBin(self, xlow, xhigh, ylow, yhigh):

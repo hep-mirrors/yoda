@@ -174,13 +174,21 @@ cdef class Profile2D(AnalysisObject):
         """Access the ordered bins list."""
         return list(self)
 
-    # TODO: add bin(ix, iy) and bin(iglobal)
+    def bin(self, i):
+        """Get the i'th bin"""
+        # cdef size_t ii = cutil.pythonic_index(i, self.p2ptr().numBins())
+        return cutil.new_borrowed_cls(ProfileBin2D, & self.p2ptr().bin(i), self)
 
-    # TODO: add binAt and binIndexAt and binIndexX,Y
-    # def binAt(self, x, y):
-    #     cdef int index = self.p2ptr().binIndexAt(x, y)
-    #     print index
-    #     return self[index]
+    # TODO: it's more intuitive to have an index for each axis
+    # def bin(self, i, j):
+    #     """Get the (i,j)'th bin"""
+    #     # cdef size_t ii = cutil.pythonic_index(i, self.p2ptr().numBins())
+    #     # cdef size_t jj = cutil.pythonic_index(j, self.p2ptr().numBins())
+    #     return cutil.new_borrowed_cls(ProfileBin2D, & self.p2ptr().bin(i,j), self)
+
+    def binIndexAt(self, x, y):
+        """Get the bin index pair containing position (x,y)"""
+        return self.p2ptr().binIndexAt(x, y)
 
 
     def addBin(self, double xlow, double xhigh, double ylow, double yhigh):
