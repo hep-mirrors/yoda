@@ -195,6 +195,7 @@ namespace YODA {
 
 
     /// Access a bin index by coordinate
+    /// @todo Convert to ssize_t?
     int binIndexAt(double x) {
       return _axis.binIndexAt(x);
     }
@@ -241,20 +242,20 @@ namespace YODA {
     /// @name Whole histo data
     //@{
 
-    /// Get the total area of the histogram
+    /// Get the total area (sumW) of the histogram
     double integral(bool includeoverflows=true) const { return sumW(includeoverflows); }
 
     /// @brief Get the integrated area of the histogram between bins @a binindex1 and @a binindex2.
     ///
-    /// @note The area of bin @a binindex2 is _not_ included in the returned
+    /// @note The area of bin @a binindex2 _is_ included in the returned
     /// value. To include the underflow and overflow areas, you should add them
     /// explicitly with the underflow() and overflow() methods.
     ///
     /// @todo Allow int bin index args for type compatibility with binIndexAt()?
-    double integral(size_t binindex1, size_t binindex2) const {
+    double integralRange(size_t binindex1, size_t binindex2) const {
       assert(binindex2 >= binindex1);
       if (binindex1 >= numBins()) throw RangeError("binindex1 is out of range");
-      if (binindex2 > numBins()) throw RangeError("binindex2 is out of range");
+      if (binindex2 >= numBins()) throw RangeError("binindex2 is out of range");
       double rtn = 0;
       for (size_t i = binindex1; i < binindex2; ++i) {
         rtn += bin(i).sumW();
@@ -264,21 +265,37 @@ namespace YODA {
 
     /// @brief Get the integrated area of the histogram up to bin @a binindex.
     ///
-    /// @note The area of bin @a binindex is _not_ included in the returned
+    /// @note The area of bin @a binindex _is_ included in the returned
     /// value. To not include the underflow, set includeunderflow=false.
-    double integral(size_t binindex, bool includeunderflow=true) const {
+    ///
+    /// @todo Allow int bin index args for type compatibility with binIndexAt()?
+    double integralTo(size_t binindex, bool includeunderflow=true) const {
       double rtn = includeunderflow ? underflow().sumW() : 0;
-      rtn += integral(0, binindex);
+      rtn += integralRange(0, binindex);
       return rtn;
     }
 
     /// Get the number of fills
     /// @todo Add an includeoverflows argument
-    double numEntries() const { return totalDbn().numEntries(); }
+    int numEntries(bool includeoverflows=true) const {
+      if (includeoverflows) return totalDbn().numEntries();
+      int rtn = 0;
+      for (size_t i = 0; i < numBins(); ++i) {
+        rtn += bin(i).numEntries();
+      }
+      return rtn;
+    }
 
     /// Get the effective number of fills
     /// @todo Add an includeoverflows argument
-    double effNumEntries() const { return totalDbn().effNumEntries(); }
+    double effNumEntries(bool includeoverflows=true) const {
+      if (includeoverflows) return totalDbn().effNumEntries();
+      double rtn = 0;
+      for (size_t i = 0; i < numBins(); ++i) {
+        rtn += bin(i).effNumEntries();
+      }
+      return rtn;
+    }
 
     /// Get sum of weights in histo
     double sumW(bool includeoverflows=true) const;

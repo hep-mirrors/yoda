@@ -119,50 +119,60 @@ cdef class Histo1D(AnalysisObject):
         return cutil.new_borrowed_cls(Dbn1D, &self.h1ptr().overflow(), self)
 
 
-    def integral(self, overflows=True):
+    def integral(self, includeoverflows=True):
         """([bool]) -> float
         Histogram integral, optionally excluding the overflows."""
-        return self.h1ptr().integral(overflows)
+        return self.h1ptr().integral(includeoverflows)
 
-    def numEntries(self): # add overflows arg
-        """None -> int
-        Number of times this histogram was filled."""
-        return int(self.h1ptr().numEntries())
+    def integralRange(self, int ia, int ib):
+        """(int, int) -> float
+        Integral between bins ia..ib inclusive"""
+        return self.h1ptr().integralRange(ia, ib)
 
-    def effNumEntries(self): # add overflows arg
-        """None -> float
-        Effective number of times this histogram was filled, computed from weights."""
-        return self.h1ptr().effNumEntries()
+    def integralTo(self, int ia, includeunderflow=True):
+        """(int, [bool]) -> float
+        Integral up to bin ia inclusive, optionally excluding the underflow"""
+        return self.h1ptr().integralRange(ia, includeunderflow)
 
-    def sumW(self, overflows=True):
+    def numEntries(self, includeoverflows=True):
+        """([bool]) -> int
+        Number of times this histogram was filled, optionally excluding the overflows."""
+        return self.h1ptr().numEntries(includeoverflows)
+
+    def effNumEntries(self, includeoverflows=True):
+        """([bool]) -> float
+        Effective number of times this histogram was filled, computed from weights, and optionally excluding the overflows."""
+        return self.h1ptr().effNumEntries(includeoverflows)
+
+    def sumW(self, includeoverflows=True):
         """([bool]) -> float
         Sum of weights filled into this histogram, optionally excluding the overflows."""
-        return self.h1ptr().sumW(overflows)
+        return self.h1ptr().sumW(includeoverflows)
 
-    def sumW2(self, overflows=True):
+    def sumW2(self, includeoverflows=True):
         """([bool]) -> float
         Sum of weights filled into this histogram, optionally excluding the overflows."""
-        return self.h1ptr().sumW2(overflows)
+        return self.h1ptr().sumW2(includeoverflows)
 
-    def xMean(self, overflows=True):
+    def xMean(self, includeoverflows=True):
         """([bool]) -> float
         Mean x of the histogram, optionally excluding the overflows."""
-        return self.h1ptr().xMean(overflows)
+        return self.h1ptr().xMean(includeoverflows)
 
-    def xVariance(self, overflows=True):
+    def xVariance(self, includeoverflows=True):
         """([bool]) -> float
         Variance in x of the histogram, optionally excluding the overflows."""
-        return self.h1ptr().xVariance(overflows)
+        return self.h1ptr().xVariance(includeoverflows)
 
-    def xStdDev(self, overflows=True):
+    def xStdDev(self, includeoverflows=True):
         """([bool]) -> float
         Standard deviation in x of the histogram, optionally excluding the overflows."""
-        return self.h1ptr().xStdDev(overflows)
+        return self.h1ptr().xStdDev(includeoverflows)
 
-    def xStdErr(self, overflows=True):
+    def xStdErr(self, includeoverflows=True):
         """([bool]) -> float
         Standard error on the mean x of the histogram, optionally excluding the overflows."""
-        return self.h1ptr().xStdErr(overflows)
+        return self.h1ptr().xStdErr(includeoverflows)
 
 
     def scaleW(self, w):
@@ -170,10 +180,10 @@ cdef class Histo1D(AnalysisObject):
         Rescale the weights in this histogram by the factor w."""
         self.h1ptr().scaleW(w)
 
-    def normalize(self, normto=1.0, overflows=True):
+    def normalize(self, normto=1.0, includeoverflows=True):
         """ (float, bool) -> None.
         Normalize the histogram."""
-        self.h1ptr().normalize(normto, overflows)
+        self.h1ptr().normalize(normto, includeoverflows)
 
 
     @property

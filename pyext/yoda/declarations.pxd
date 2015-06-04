@@ -1057,8 +1057,10 @@ cdef extern from "YODA/Histo1D.h" namespace "YODA":
 
         # Whole histo data
         double integral(bool)
-        double numEntries() # @todo Add bool arg
-        double effNumEntries() # @todo Add bool arg
+        double integralTo(int, bool)
+        double integralRange(int, int)
+        double numEntries(bool)
+        double effNumEntries(bool)
         double sumW(bool)
         double sumW2(bool)
         double xMean(bool)
