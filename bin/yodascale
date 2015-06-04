@@ -270,7 +270,7 @@ for infile in args:
             # TODO: Add this scaleY function
             print "WARNING:", ao.path, "Can't yet scale the y-axis in Profile1D"
             #ao.scaleY(sf)
-        elif type(ao) in yoda.Profile2D:
+        elif type(ao) is yoda.Profile2D:
             # TODO: Add this scaleZ function
             print "WARNING:", ao.path, "Can't yet scale the z-axis in Profile2D"
             #ao.scaleZ(sf)
