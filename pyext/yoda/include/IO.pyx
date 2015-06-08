@@ -9,6 +9,7 @@ potential memory limits.
 
 import sys
 
+## Check if a string matches any of the given patterns, and that it doesn't match any unpatterns (for path filtering)
 def _pattern_check(name, patterns, unpatterns):
     import re
     if patterns:
@@ -24,7 +25,6 @@ def _pattern_check(name, patterns, unpatterns):
         if any(re.compile(patt).match(name) for patt in unpatterns):
             return False
     return True
-
 
 ## Make a Python list of analysis objects from a C++ vector of them
 cdef list _aobjects_to_list(vector[c.AnalysisObject*]* aobjects, patterns, unpatterns):
@@ -92,6 +92,12 @@ def read(filename, asdict=True, patterns=None, unpatterns=None):
     Read data objects from the provided filename, auto-determining the format
     from the file extension.
 
+    The loaded data objects can be filtered on their path strings, using the
+    optional patterns and unpatterns arguments. These can be strings, compiled
+    regex objects with a 'match' method, or any iterable of those types. If
+    given, only analyses with paths which match at least one pattern, and do not
+    match any unpatterns, will be returned.
+
     Returns a dict or list of analysis objects depending on the asdict argument.
     """
     cdef c.istringstream iss
@@ -108,6 +114,12 @@ def readYODA(file_or_filename, asdict=True, patterns=None, unpatterns=None):
     """
     Read data objects from the provided YODA-format file.
 
+    The loaded data objects can be filtered on their path strings, using the
+    optional patterns and unpatterns arguments. These can be strings, compiled
+    regex objects with a 'match' method, or any iterable of those types. If
+    given, only analyses with paths which match at least one pattern, and do not
+    match any unpatterns, will be returned.
+
     Returns a dict or list of analysis objects depending on the asdict argument.
     """
     cdef c.istringstream iss
@@ -123,6 +135,12 @@ def readFLAT(file_or_filename, asdict=True, patterns=None, unpatterns=None):
     """
     Read data objects from the provided FLAT-format file.
 
+    The loaded data objects can be filtered on their path strings, using the
+    optional patterns and unpatterns arguments. These can be strings, compiled
+    regex objects with a 'match' method, or any iterable of those types. If
+    given, only analyses with paths which match at least one pattern, and do not
+    match any unpatterns, will be returned.
+
     Returns a dict or list of analysis objects depending on the asdict argument.
     """
     cdef c.istringstream iss
@@ -137,7 +155,15 @@ def readAIDA(file_or_filename, asdict=True, patterns=None, unpatterns=None):
     """
     Read data objects from the provided AIDA-format file.
 
+    The loaded data objects can be filtered on their path strings, using the
+    optional patterns and unpatterns arguments. These can be strings, compiled
+    regex objects with a 'match' method, or any iterable of those types. If
+    given, only analyses with paths which match at least one pattern, and do not
+    match any unpatterns, will be returned.
+
     Returns a dict or list of analysis objects depending on the asdict argument.
+
+    DEPRECATED: AIDA is a dead format. At some point we will stop supporting it.
     """
     cdef c.istringstream iss
     cdef vector[c.AnalysisObject*] aobjects
