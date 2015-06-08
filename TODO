@@ -8,6 +8,14 @@ YODA TODO list
 
 * YODA persistence to read Scatter1D and Counter
 
+* Add a goodness of fit test collection (AB)
+   Simple GoF measures, such as chi2 of a bin and of a histo (chained), for 1D
+   and 2D Histos, Profiles and Scatters. Also KS (later)?
+
+* Add an inverse transform sampling function.
+   Via Scatter objects with manually computed integral histo? 2D histo and
+   profile don't have integral/CDF methods.
+
 * 2D histogram outflow improvements
    Store full sets of outflow bins corresponding to an extended grid, and
    provide neat access to them.
@@ -37,13 +45,27 @@ LATER
 
 * Add pytest-p1d and pytest-s{1,2,3}d
 
-* Add a goodness of fit test collection (AB)
-   Simple GoF measures, such as chi2 of a bin and of a histo (chained), for 1D
-   and 2D Histos, Profiles and Scatters. Also KS (later)?
 
 
 2.0.0
 -----
+
+* "Infinite binning" scheme
+   Rewrite of internals to base all binning on N+2 bin lookup, where each axis
+   has an underflow and overflow to infinity as fully fledged bins. This binning
+   is to be generically templated for 1 and 2 dims and exposed in the API, to
+   allow BinnedValue1D,2D and completely arbitrary types as well as fillable
+   histograms.
+
+   Official types will use Binning1D,2D internally. Binned1D,2D base types to be
+   introduced, to reduce duplication of bin-edge etc. method
+   declarations. Direct bin access and fill methods, plus specialist features,
+   need to be re-implemented... and maybe use multiple inheritance to provide
+   common functions like Profile and Histo 'dimensionless' functionality.
+
+   Now return underflow and overflow as (const) Bins rather than Dbns, or
+   continue accessing via Dbns? I like the uniformity of everything being a
+   Bin, and the bin edges are not invalid, just not very helpful.
 
 * ROOT Reader/Writer
 
