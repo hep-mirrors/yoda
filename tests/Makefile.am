@@ -8,6 +8,7 @@ EXTRA_DIST = \
   pytest-s1d \
   pytest-s2d \
   pytest-div \
+  pytest-iofilter \
   pytest-operators \
   shtest-yodamerge \
   shtest-yoda2root \
@@ -99,6 +100,7 @@ TESTS = \
   pytest-s1d \
   pytest-s2d \
   pytest-div \
+  pytest-iofilter \
   pytest-operators \
   shtest-yodamerge
 

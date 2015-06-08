@@ -9,8 +9,25 @@ potential memory limits.
 
 import sys
 
+def _pattern_check(name, patterns, unpatterns):
+    import re
+    if patterns:
+        if not hasattr(patterns, "__iter__"):
+            patterns = [patterns]
+        ## Compile on the fly: works because compile(compiled_re) -> compiled_re
+        if not any(re.compile(patt).match(name) for patt in patterns):
+            return False
+    if unpatterns:
+        if not hasattr(unpatterns, "__iter__"):
+            unpatterns = [unpatterns]
+        ## Compile on the fly: works because compile(compiled_re) -> compiled_re
+        if any(re.compile(patt).match(name) for patt in unpatterns):
+            return False
+    return True
+
+
 ## Make a Python list of analysis objects from a C++ vector of them
-cdef list _aobjects_to_list(vector[c.AnalysisObject*]* aobjects, str pattern):
+cdef list _aobjects_to_list(vector[c.AnalysisObject*]* aobjects, patterns, unpatterns):
     cdef list out = []
     cdef c.AnalysisObject* ao
     cdef size_t i
@@ -18,15 +35,12 @@ cdef list _aobjects_to_list(vector[c.AnalysisObject*]* aobjects, str pattern):
         ao = deref(aobjects)[i]
         ## NOTE: automatic type conversion by passing the type() as a key to globals()
         newao = cutil.new_owned_cls(globals()[ao.type()], ao)
-        if pattern is not None:
-            import re
-            if not re.match(pattern, newao.path):
-                continue
-        out.append(newao)
+        if _pattern_check(newao.path, patterns, unpatterns):
+            out.append(newao)
     return out
 
 ## Make a Python dict of analysis objects from a C++ vector of them
-cdef dict _aobjects_to_dict(vector[c.AnalysisObject*]* aobjects, str pattern):
+cdef dict _aobjects_to_dict(vector[c.AnalysisObject*]* aobjects, patterns, unpatterns):
     cdef dict out = {}
     cdef c.AnalysisObject* ao
     cdef size_t i
@@ -34,11 +48,8 @@ cdef dict _aobjects_to_dict(vector[c.AnalysisObject*]* aobjects, str pattern):
         ao = deref(aobjects)[i]
         ## NOTE: automatic type conversion by passing the type() as a key to globals()
         newao = cutil.new_owned_cls( globals()[ao.type()], ao)
-        if pattern is not None:
-            import re
-            if not re.match(pattern, newao.path):
-                continue
-        out[newao.path] = newao
+        if _pattern_check(newao.path, patterns, unpatterns):
+            out[newao.path] = newao
     return out
 
 ## Set a istringstream's string from a C/Python string
@@ -76,7 +87,7 @@ def _str_to_file(s, file_or_filename):
 ## Readers
 ##
 
-def read(filename, asdict=True, pattern=None):
+def read(filename, asdict=True, patterns=None, unpatterns=None):
     """
     Read data objects from the provided filename, auto-determining the format
     from the file extension.
@@ -90,10 +101,10 @@ def read(filename, asdict=True, pattern=None):
     f.close()
     _make_iss(iss, s)
     c.Reader_create(filename).read(iss, aobjects)
-    return _aobjects_to_dict(&aobjects, pattern) if asdict else _aobjects_to_list(&aobjects, pattern)
+    return _aobjects_to_dict(&aobjects, patterns, unpatterns) if asdict else _aobjects_to_list(&aobjects, patterns, unpatterns)
 
 
-def readYODA(file_or_filename, asdict=True, pattern=None):
+def readYODA(file_or_filename, asdict=True, patterns=None, unpatterns=None):
     """
     Read data objects from the provided YODA-format file.
 
@@ -105,10 +116,10 @@ def readYODA(file_or_filename, asdict=True, pattern=None):
     _make_iss(iss, s)
     c.ReaderYODA_create().read(iss, aobjects)
     # TODO: Add optional filter pattern in conversion to Python iterable (also for all other read functions)
-    return _aobjects_to_dict(&aobjects, pattern) if asdict else _aobjects_to_list(&aobjects, pattern)
+    return _aobjects_to_dict(&aobjects, patterns, unpatterns) if asdict else _aobjects_to_list(&aobjects, patterns, unpatterns)
 
 
-def readFLAT(file_or_filename, asdict=True, pattern=None):
+def readFLAT(file_or_filename, asdict=True, patterns=None, unpatterns=None):
     """
     Read data objects from the provided FLAT-format file.
 
@@ -119,10 +130,10 @@ def readFLAT(file_or_filename, asdict=True, pattern=None):
     s = _str_from_file(file_or_filename)
     _make_iss(iss, s)
     c.ReaderFLAT_create().read(iss, aobjects)
-    return _aobjects_to_dict(&aobjects, pattern) if asdict else _aobjects_to_list(&aobjects, pattern)
+    return _aobjects_to_dict(&aobjects, patterns, unpatterns) if asdict else _aobjects_to_list(&aobjects, patterns, unpatterns)
 
 
-def readAIDA(file_or_filename, asdict=True, pattern=None):
+def readAIDA(file_or_filename, asdict=True, patterns=None, unpatterns=None):
     """
     Read data objects from the provided AIDA-format file.
 
@@ -133,7 +144,7 @@ def readAIDA(file_or_filename, asdict=True, pattern=None):
     s = _str_from_file(file_or_filename)
     _make_iss(iss, s)
     c.ReaderAIDA_create().read(iss, aobjects)
-    return _aobjects_to_dict(&aobjects, pattern) if asdict else _aobjects_to_list(&aobjects, pattern)
+    return _aobjects_to_dict(&aobjects, patterns, unpatterns) if asdict else _aobjects_to_list(&aobjects, patterns, unpatterns)
 
 
 ##

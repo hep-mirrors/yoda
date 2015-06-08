@@ -1,3 +1,8 @@
+2015-06-08  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Adding unpatterns arguments to Python read functions, and
+	auto-conversion from single strings and re.compile()d strs.
+
 2015-06-04  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Add binAt(x,y) and binIndexAt(iglobal) Python methods for 2D
