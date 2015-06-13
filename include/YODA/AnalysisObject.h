@@ -218,6 +218,16 @@ namespace YODA {
       setAnnotation("Path", path);
     }
 
+
+    /// Get the AO name -- the last part of the path.
+    /// Returns a null string if path is undefined
+    const std::string name() const {
+      const std::string p = path();
+      const size_t lastslash = p.rfind("/");
+      if (lastslash == std::string::npos) return p;
+      return p.substr(lastslash+1);
+    }
+
     //@}
 
 

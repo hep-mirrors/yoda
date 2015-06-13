@@ -582,13 +582,8 @@ cdef extern from "YODA/HistoBin2D.h" namespace "YODA":
 cdef extern from "YODA/AnalysisObject.h" namespace "YODA":
     cdef cppclass AnalysisObject:
         # Constructors
-        AnalysisObject(string type,
-                       string path,
-                       string title) except +yodaerr
-        AnalysisObject(string type,
-                       string path,
-                       AnalysisObject ao,
-                       string title) except +yodaerr
+        AnalysisObject(string type, string path, string title) except +yodaerr
+        AnalysisObject(string type, string path, AnalysisObject ao, string title) except +yodaerr
         AnalysisObject()
         #AnalysisObject* newclone() except +yodaerr
 
@@ -609,6 +604,7 @@ cdef extern from "YODA/AnalysisObject.h" namespace "YODA":
         void setTitle(string title) except +yodaerr
         string path() except +yodaerr
         void setPath(string title) except +yodaerr
+        string name() except +yodaerr
 # }}} AnalysisObject
 
 
