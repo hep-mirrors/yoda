@@ -1,3 +1,9 @@
+2015-06-13  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Adding an optional usestddev argument to mkScatter for profile
+	types, so the error bars can represent distribution width rather
+	than uncertainty on the mean. Mapped to Python.
+
 2015-06-08  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Adding unpatterns arguments to Python read functions, and

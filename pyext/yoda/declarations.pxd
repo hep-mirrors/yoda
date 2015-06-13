@@ -910,7 +910,7 @@ cdef extern from "merge.hh":
     Profile1D* Profile1D_div_Profile1D "cython_div" (Profile1D*, Profile1D*)
 
 cdef extern from "YODA/Scatter2D.h" namespace "YODA":
-    Scatter2D mkScatter_Profile1D "YODA::mkScatter" (const Profile1D&, bool) except +yodaerr
+    Scatter2D mkScatter_Profile1D "YODA::mkScatter" (const Profile1D&, bool, bool) except +yodaerr
 
 #}}} Profile1D
 
@@ -995,7 +995,7 @@ cdef extern from "merge.hh":
     Profile2D* Profile2D_div_Profile2D "cython_div" (Profile2D*, Profile2D*)
 
 cdef extern from "YODA/Scatter3D.h" namespace "YODA":
-    Scatter3D mkScatter_Profile2D "YODA::mkScatter" (const Profile2D&, bool) except +yodaerr
+    Scatter3D mkScatter_Profile2D "YODA::mkScatter" (const Profile2D&, bool, bool) except +yodaerr
 
 #}}} Profile2D
 

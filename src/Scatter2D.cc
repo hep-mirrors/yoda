@@ -38,7 +38,7 @@ namespace YODA {
 
 
   /// Make a Scatter2D representation of a Profile1D
-  Scatter2D mkScatter(const Profile1D& p, bool usefocus) {
+  Scatter2D mkScatter(const Profile1D& p, bool usefocus, bool usestddev) {
     Scatter2D rtn;
     BOOST_FOREACH (const std::string& a, p.annotations())
       rtn.setAnnotation(a, p.annotation(a));
@@ -56,7 +56,7 @@ namespace YODA {
       }
       double ey;
       try {
-        ey = b.stdErr();
+        ey = usestddev ? b.stdDev() : b.stdErr(); ///< Control y-error scheme via usestddev arg
       } catch (const Exception&) { // LowStatsError or WeightError
         ey = 0.0;
       }

@@ -53,7 +53,7 @@ namespace YODA {
   }
 
 
-  Scatter3D mkScatter(const Profile2D& h, bool usefocus) {
+  Scatter3D mkScatter(const Profile2D& h, bool usefocus, bool usestddev) {
     Scatter3D rtn;
     BOOST_FOREACH (const std::string& a, h.annotations())
       rtn.setAnnotation(a, h.annotation(a));
@@ -77,7 +77,7 @@ namespace YODA {
       }
       double ez;
       try {
-        ez = b.stdErr();
+        ez = usestddev ? b.stdDev() : b.stdErr(); ///< Control z-error scheme via usestddev arg
       } catch (const LowStatsError& lse) {
         ez = 0.0;
       }

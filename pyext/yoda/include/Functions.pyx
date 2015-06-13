@@ -1,10 +1,16 @@
-def mkScatter(ao, usefocus=False):
+def mkScatter(ao, usefocus=False, usestddev=False):
     """AnalysisObject -> Scatter{1,2,3}D
-    Convert an AnalysisObject to a Scatter, using the logic of the bound mkScatter methods."""
+    Convert an AnalysisObject to a Scatter, using the logic of the bound mkScatter methods.
+
+    @todo This falls back on use of optional args until we find one that works: is there a nicer way?
+    """
     try:
-        return ao.mkScatter(usefocus)
+        return ao.mkScatter(usefocus, usestddev)
     except:
-        return ao.mkScatter()
+        try:
+            return ao.mkScatter(usefocus)
+        except:
+            return ao.mkScatter()
 
 
 def divide(ao1, ao2):

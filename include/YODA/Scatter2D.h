@@ -299,10 +299,18 @@ namespace YODA {
   //@{
 
   /// Make a Scatter2D representation of a Histo1D
+  ///
+  /// Optional @c usefocus argument can be used to position the point at the bin
+  /// focus rather than geometric midpoint.
   Scatter2D mkScatter(const Histo1D& h, bool usefocus=false);
 
   /// Make a Scatter2D representation of a Profile1D
-  Scatter2D mkScatter(const Profile1D& p, bool usefocus=false);
+  ///
+  /// Optional @c usefocus argument can be used to position the point at the bin
+  /// focus rather than geometric midpoint. Optional @c usestddev argument can
+  /// be used to draw the y-distribution sigma rather than the standard error on
+  /// the mean as the y-error bar size.
+  Scatter2D mkScatter(const Profile1D& p, bool usefocus=false, bool usestddev=false);
 
   /// Make a Scatter2D representation of... erm, a Scatter2D!
   /// @note Mainly exists to allow mkScatter to be called on any AnalysisObject type
