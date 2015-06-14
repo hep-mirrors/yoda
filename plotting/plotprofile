@@ -1,0 +1,67 @@
+#! /usr/bin/env python
+
+## Read command line
+import sys,os
+assert len(sys.argv) > 1
+INFILES = sys.argv[1:]
+
+
+## Plotting function for profiles
+def plot_profile(p, name=None):
+    import pylab as pl
+
+    # print p.path, p.name
+    if not name:
+        name = p.path.replace("/", "_").strip("_")
+    print "Plotting", name
+
+    # TODO: Use this in future
+    # s = p.mkScatter(usestddev=True)
+    # print s
+
+    ## Get data points and errors
+    xs, ys, exs, eys, sigys = [], [], [], [], []
+    step_xs, step_ys = [], []
+    for b in p.bins:
+        if b.sumW:
+            xs.append(b.xMid)
+            step_xs += [b.xMin, b.xMax]
+            step_ys += [b.mean, b.mean]
+            #exs.append(b.xWidth/2)
+            exs.append([b.xMid-b.xMin, b.xMax-b.xMid])
+            ys.append(b.mean)
+            eys.append(b.stdErr)
+            sigys.append(b.stdDev)
+    exs = zip(*exs) #< Transpose exs
+    #exs = pl.array(exs).T #< Transpose exs via numpy
+
+    ## Plot
+    pl.clf()
+    pl.hold(True)
+    #
+    ## Step plot, with optional errs
+    #pl.plot(step_xs, step_ys, marker="None", drawstyle="steps-post", color="red")
+    #pl.errorbar(xs, ys, yerr=sigys, marker="o", ls="None", color="red", markeredgecolor="red", capsize=0, ecolor="red")
+    #
+    ## Data point plot with x and y errs
+    pl.errorbar(xs, ys, xerr=exs, yerr=sigys, marker="o", color="black", markeredgecolor="black", ls="None", ecolor="black")
+    #
+    # pl.errorbar(xs, ys, xerr=exs, yerr=eys, marker="o", color="black", ls="None", ecolor="red")
+    # pl.plot(xs, ys, "o", color="black")
+    #
+    pl.title(os.path.basename(p.path))
+    pl.xlabel("$x$")
+    pl.ylabel("$y$")
+    pl.savefig(name + ".pdf")
+
+
+## Load a profile histo
+import yoda
+for infile in INFILES:
+    aos = yoda.read(infile)
+    for p in aos.values():
+        assert type(p) is yoda.Profile1D
+        #print p.path
+        name = infile.replace(".yoda", "_") + p.path.replace("/", "_").strip("_")
+        # print name
+        plot_profile(p, name)
