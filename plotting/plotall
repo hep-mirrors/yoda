@@ -1,57 +1,60 @@
 #! /usr/bin/env python
 
 ## Read command line
-import sys,os
+import sys, os
 assert len(sys.argv) > 1
 INFILES = sys.argv[1:]
 
 
-## Plotting function for profiles
-def plot_profile(p, name=None):
-    import pylab as pl
-
-    # print p.path, p.name
-    if not name:
-        name = p.path.replace("/", "_").strip("_")
-    print "Plotting", name
-
-    # TODO: Use this in future
-    # s = p.mkScatter(usestddev=True)
-    # print s
-
-    ## Get data points and errors
+def mk_mpl_arrays_1d(ao):
+    "Get data points and errors in array formats usable by matplotlib's plotting functions"
+    ## Convert the 1D AO to a 2D scatter
+    s = ao.mkScatter(usestddev=True)
+    # TODO: Detect if bins aren't contiguous and indicate the gap in the plot somehow
     xs, ys, exs, eys, sigys = [], [], [], [], []
     step_xs, step_ys = [], []
-    for b in p.bins:
-        if b.sumW:
-            xs.append(b.xMid)
-            step_xs += [b.xMin, b.xMax]
-            step_ys += [b.mean, b.mean]
-            #exs.append(b.xWidth/2)
-            exs.append([b.xMid-b.xMin, b.xMax-b.xMid])
-            ys.append(b.mean)
-            eys.append(b.stdErr)
-            sigys.append(b.stdDev)
-    exs = zip(*exs) #< Transpose exs
-    #exs = pl.array(exs).T #< Transpose exs via numpy
+    for p in s.points:
+        xs.append(p.x)
+        exs.append(p.xErrs)
+        ys.append(p.y)
+        eys.append(p.yErrs)
+        step_xs += [p.xMin, p.xMax]
+        step_ys += [p.y, p.y]
+    exs, eys = zip(*exs), zip(*eys) #< Transpose err arrays
+    return xs, exs, ys, eys, step_xs, step_ys
+
+
+def plot_ao_1d(ao, name=None, usefocus=False, usestddev=False, style="point", errs=True, marker="o", color="black"):
+    "Plotting function for general 1D AOs, via Scatter2D"
+    if not name:
+        name = ao.path.replace("/", "_").strip("_")
+
+    ## Get arrays of plotting coordinates
+    xs, exs, ys, eys, step_xs, step_ys = mk_mpl_arrays_1d(ao)
 
     ## Plot
+    import pylab as pl
     pl.clf()
     pl.hold(True)
     #
     ## Step plot, with optional errs
-    #pl.plot(step_xs, step_ys, marker="None", drawstyle="steps-post", color="red")
-    #pl.errorbar(xs, ys, yerr=sigys, marker="o", ls="None", color="red", markeredgecolor="red", capsize=0, ecolor="red")
-    #
+    if style == "step":
+        pl.plot(step_xs, step_ys, marker="None", drawstyle="steps-post", color=color)
+        if errs:
+            pl.errorbar(xs, ys, yerr=sigys, marker="None", ls="None", color=color, markeredgecolor=color, capsize=0, ecolor=color)
     ## Data point plot with x and y errs
-    pl.errorbar(xs, ys, xerr=exs, yerr=sigys, marker="o", color="black", markeredgecolor="black", ls="None", ecolor="black")
+    elif style == "point":
+        if errs:
+            pl.errorbar(xs, ys, xerr=exs, yerr=eys, marker=marker, color=color, markeredgecolor=color, ls="None", ecolor=color)
+        else:
+            pl.errorbar(xs, ys, marker=marker, color=color, markeredgecolor=color, ls="None")
     #
     # pl.errorbar(xs, ys, xerr=exs, yerr=eys, marker="o", color="black", ls="None", ecolor="red")
     # pl.plot(xs, ys, "o", color="black")
     #
-    pl.title(os.path.basename(p.path))
-    pl.xlabel("$x$")
-    pl.ylabel("$y$")
+    #pl.title(os.path.basename(ao.path))
+    pl.xlabel(ao.annotation("XLabel"))
+    pl.ylabel(ao.annotation("YLabel"))
     pl.savefig(name + ".pdf")
 
 
@@ -59,9 +62,8 @@ def plot_profile(p, name=None):
 import yoda
 for infile in INFILES:
     aos = yoda.read(infile)
-    for p in aos.values():
-        assert type(p) is yoda.Profile1D
-        #print p.path
-        name = infile.replace(".yoda", "_") + p.path.replace("/", "_").strip("_")
-        # print name
-        plot_profile(p, name)
+    for ao in aos.values():
+        # assert type(ao) is yoda.Profile1D
+        name = os.path.basename(infile).replace(".yoda", "_") + ao.path.replace("/", "_").strip("_")
+        print "Plotting", name
+        plot_ao_1d(ao, name)

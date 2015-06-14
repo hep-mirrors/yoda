@@ -62,6 +62,6 @@ for infile in INFILES:
     for p in aos.values():
         assert type(p) is yoda.Profile1D
         #print p.path
-        name = infile.replace(".yoda", "_") + p.path.replace("/", "_").strip("_")
+        name = os.path.basename(infile).replace(".yoda", "_") + p.path.replace("/", "_").strip("_")
         # print name
         plot_profile(p, name)
