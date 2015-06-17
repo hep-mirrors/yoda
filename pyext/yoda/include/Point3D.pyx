@@ -75,20 +75,20 @@ cdef class Point3D(util.Base):
     @property
     def xMin(self):
         """The minimum x position, i.e. lowest error"""
-        return self._Point2D().xMin()
+        return self._Point3D().xMin()
     @property
     def xMax(self):
         """The maximum x position, i.e. highest error"""
-        return self._Point2D().xMax()
+        return self._Point3D().xMax()
 
     @property
     def yMin(self):
         """The minimum y position, i.e. lowest error"""
-        return self._Point2D().yMin()
+        return self._Point3D().yMin()
     @property
     def yMax(self):
         """The maximum y position, i.e. highest error"""
-        return self._Point2D().yMax()
+        return self._Point3D().yMax()
 
     @property
     def zMin(self):

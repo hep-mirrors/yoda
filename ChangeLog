@@ -1,3 +1,8 @@
+2015-06-18  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Fix typos in Point3D Python mapping (accidentally trying to get
+	the ptr via _Point2D rather than _Point3D).
+
 2015-06-13  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Adding an AnalysisObject::name() method, to return the last part
