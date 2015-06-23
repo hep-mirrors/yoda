@@ -25,15 +25,27 @@ cdef class Bin2D_${DBN}(Bin):
 
 
     @property
-    def edges(self):
+    def xEdges(self):
         """
-        The lower and upper edges.
-
-        TODO: Do this in Python, minimise the intelligence in Cython.
+        The lower and upper x edges.
         """
         cdef pair[double, double] x = self.b2ptr().xEdges()
+        return (x.first, x.second)
+
+    @property
+    def yEdges(self):
+        """
+        The lower and upper y edges.
+        """
         cdef pair[double, double] y = self.b2ptr().yEdges()
-        return util.XY((x.first, x.second), (y.first, y.second))
+        return (y.first, y.second)
+
+    @property
+    def xyEdges(self):
+        """
+        The lower and upper x,y edge pairs.
+        """
+        return util.XY(self.xEdges, self.yEdges)
 
 
     @property
@@ -42,20 +54,30 @@ cdef class Bin2D_${DBN}(Bin):
         return self.b2ptr().xMin()
 
     @property
-    def xMax(self):
-        """High edge in x."""
-        return self.b2ptr().xMax()
-
-
-    @property
     def yMin(self):
         """Low edge in y."""
         return self.b2ptr().yMin()
 
     @property
+    def xyMin(self):
+        """Low edges in x,y."""
+        return util.XY(self.xMin, self.yMin)
+
+
+    @property
+    def xMax(self):
+        """High edge in x."""
+        return self.b2ptr().xMax()
+
+    @property
     def yMax(self):
         """High edge in y."""
         return self.b2ptr().yMax()
+
+    @property
+    def xyMax(self):
+        """High edges in x,y."""
+        return util.XY(self.xMax, self.yMax)
 
 
     @property
@@ -91,11 +113,19 @@ cdef class Bin2D_${DBN}(Bin):
 
 
     @property
+    def xFocus(self):
+        """Focus of the bin in x"""
+        return self.b2ptr().xFocus()
+
+    @property
+    def yFocus(self):
+        """Focus of the bin in y"""
+        return self.b2ptr().yFocus()
+
+    @property
     def xyFocus(self):
         """The focus of the bin in the x- and y-dimensions"""
-        cdef pair[double, double] f = self.b2ptr().xyFocus()
-        return util.XY(f.first, f.second)
-
+        return util.XY(self.xFocus, self.yFocus)
 
 
     @property
@@ -112,6 +142,19 @@ cdef class Bin2D_${DBN}(Bin):
 
 
     @property
+    def xVariance(self):
+        return self.b2ptr().xVariance()
+
+    @property
+    def yVariance(self):
+        return self.b2ptr().xVariance()
+
+    @property
+    def xyVariance(self):
+        return util.XY(self.xVariance, self.yVariance)
+
+
+    @property
     def xStdDev(self):
         return self.b2ptr().xStdDev()
 
@@ -120,8 +163,9 @@ cdef class Bin2D_${DBN}(Bin):
         return self.b2ptr().yStdDev()
 
     @property
-    def stdDev(self):
-        return util.XY(self.b2ptr().xStdDev(), self.b2ptr().yStdDev())
+    def xyStdDev(self):
+        return util.XY(self.xStdDev, self.yStdDev)
+
 
     @property
     def xStdErr(self):
@@ -132,8 +176,9 @@ cdef class Bin2D_${DBN}(Bin):
         return self.b2ptr().yStdErr()
 
     @property
-    def stdErr(self):
-        return util.XY(self.b2ptr().xStdErr(), self.b2ptr().yStdErr())
+    def xyStdErr(self):
+        return util.XY(self.xStdErr, self.yStdErr)
+
 
     @property
     def xRMS(self):
@@ -144,28 +189,12 @@ cdef class Bin2D_${DBN}(Bin):
         return self.b2ptr().yRMS()
 
     @property
-    def rms(self):
-        return util.XY(self.b2ptr().xRMS(), self.b2ptr().yRMS())
+    def xyRMS(self):
+        return util.XY(self.xRMS, self.yRMS)
 
 
     # Raw statistics #
     ##################
-
-    @property
-    def numEntries(self):
-        return int(self.b2ptr().numEntries())
-
-    @property
-    def effNumEntries(self):
-        return self.b2ptr().effNumEntries()
-
-    @property
-    def sumW(self):
-        return self.b2ptr().sumW()
-
-    @property
-    def sumW2(self):
-        return self.b2ptr().sumW2()
 
     @property
     def sumWX(self):

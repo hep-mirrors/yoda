@@ -1,5 +1,7 @@
 2015-06-23  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Renaming, tidying, completing, etc. the Python-mapped methods on Bin1D and Bin2D.
+
 	* Rename Python Histo2D mean, variance, etc. pair-returning
 	methods to xyMean, xyVariance, etc., to distinguish from Profile2D
 	mean, variance, etc.

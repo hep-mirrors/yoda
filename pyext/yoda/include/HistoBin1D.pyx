@@ -36,7 +36,6 @@ cdef class HistoBin1D(Bin1D_Dbn1D):
         """
         return self.hb1ptr().area()
 
-
     @property
     def height(self):
         """
@@ -47,7 +46,6 @@ cdef class HistoBin1D(Bin1D_Dbn1D):
         """
         return self.hb1ptr().height()
 
-
     @property
     def areaErr(self):
         """
@@ -55,7 +53,6 @@ cdef class HistoBin1D(Bin1D_Dbn1D):
         weights, i.e. s.areaErr = sqrt(s.sumW2)
         """
         return self.hb1ptr().areaErr()
-
 
     @property
     def heightErr(self):
@@ -65,13 +62,13 @@ cdef class HistoBin1D(Bin1D_Dbn1D):
         """
         return self.hb1ptr().heightErr()
 
-
     @property
     def relErr(self):
         """
         Relative error - same for either area or height interpretations.
         """
         return self.hb1ptr().relErr()
+
 
 
     def __iadd__(HistoBin1D self, HistoBin1D other):

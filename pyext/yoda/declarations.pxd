@@ -460,6 +460,61 @@ ctypedef Bin2D[Dbn3D] Bin2D_Dbn3D
 # }}} Bin2D
 
 
+
+# HistoBin1D {{{
+cdef extern from "YODA/HistoBin1D.h" namespace "YODA":
+    cdef cppclass HistoBin1D(Bin1D_Dbn1D):
+        HistoBin1D(double lowedge, double highedge) except +yodaerr
+        HistoBin1D(HistoBin1D) except +yodaerr
+        # void fill(double x, double weight) except +yodaerr
+        # void fillBin(double weight) except +yodaerr
+
+        double area() except +yodaerr
+        double height() except +yodaerr
+        double areaErr() except +yodaerr
+        double heightErr() except +yodaerr
+        double relErr() except +yodaerr
+
+        HistoBin1D operator+(HistoBin1D) except +yodaerr
+        HistoBin1D operator-(HistoBin1D) except +yodaerr
+
+#}}} HistoBin1D
+
+cdef extern from "merge.hh":
+    void HistoBin1D_iadd_HistoBin1D "cython_iadd" (HistoBin1D*, HistoBin1D*)
+    void HistoBin1D_isub_HistoBin1D "cython_isub" (HistoBin1D*, HistoBin1D*)
+    # void HistoBin1D_imul_dbl "cython_imul_dbl" (HistoBin1D*, double)
+    # void HistoBin1D_idiv_dbl "cython_idiv_dbl" (HistoBin1D*, double)
+    HistoBin1D* HistoBin1D_add_HistoBin1D "cython_add" (HistoBin1D*, HistoBin1D*)
+    HistoBin1D* HistoBin1D_sub_HistoBin1D "cython_sub" (HistoBin1D*, HistoBin1D*)
+    HistoBin1D* HistoBin1D_div_HistoBin1D "cython_div" (HistoBin1D*, HistoBin1D*)
+
+
+# HistoBin2D {{{
+cdef extern from "YODA/HistoBin2D.h" namespace "YODA":
+    cdef cppclass HistoBin2D(Bin2D_Dbn2D):
+        HistoBin2D(double xmin, double xmax, double ymin, double ymax) except +yodaerr
+        HistoBin2D(HistoBin2D) except +yodaerr
+
+        # void fill(double x, double y, double weight) except +yodaerr
+        # void fillBin(double weight) except +yodaerr
+        void reset()
+
+        # Accessors
+        double volume() except +yodaerr
+        double volumeErr() except +yodaerr
+        double height() except +yodaerr
+        double heightErr() except +yodaerr
+        double relErr() except +yodaerr
+
+        HistoBin2D operator+(HistoBin2D) except +yodaerr
+        HistoBin2D operator-(HistoBin2D) except +yodaerr
+
+        #Bin2D_Dbn2D merge(HistoBin2D b)
+#}}} HistoBin2D
+
+
+
 # ProfileBin1D {{{
 cdef extern from "YODA/ProfileBin1D.h" namespace "YODA":
 
@@ -518,58 +573,6 @@ cdef extern from "YODA/ProfileBin2D.h" namespace "YODA":
         # void scaleZ(double) except +yodaerr
 
 # }}} ProfileBin2D
-
-
-# HistoBin1D {{{
-cdef extern from "YODA/HistoBin1D.h" namespace "YODA":
-    cdef cppclass HistoBin1D(Bin1D_Dbn1D):
-        HistoBin1D(double lowedge, double highedge) except +yodaerr
-        HistoBin1D(HistoBin1D) except +yodaerr
-        # void fill(double x, double weight) except +yodaerr
-        # void fillBin(double weight) except +yodaerr
-
-        double area() except +yodaerr
-        double height() except +yodaerr
-        double areaErr() except +yodaerr
-        double heightErr() except +yodaerr
-        double relErr() except +yodaerr
-
-        HistoBin1D operator+(HistoBin1D) except +yodaerr
-        HistoBin1D operator-(HistoBin1D) except +yodaerr
-
-#}}} HistoBin1D
-
-cdef extern from "merge.hh":
-    void HistoBin1D_iadd_HistoBin1D "cython_iadd" (HistoBin1D*, HistoBin1D*)
-    void HistoBin1D_isub_HistoBin1D "cython_isub" (HistoBin1D*, HistoBin1D*)
-    # void HistoBin1D_imul_dbl "cython_imul_dbl" (HistoBin1D*, double)
-    # void HistoBin1D_idiv_dbl "cython_idiv_dbl" (HistoBin1D*, double)
-    HistoBin1D* HistoBin1D_add_HistoBin1D "cython_add" (HistoBin1D*, HistoBin1D*)
-    HistoBin1D* HistoBin1D_sub_HistoBin1D "cython_sub" (HistoBin1D*, HistoBin1D*)
-    HistoBin1D* HistoBin1D_div_HistoBin1D "cython_div" (HistoBin1D*, HistoBin1D*)
-
-
-# HistoBin2D {{{
-cdef extern from "YODA/HistoBin2D.h" namespace "YODA":
-    cdef cppclass HistoBin2D(Bin2D_Dbn2D):
-        HistoBin2D(double xmin, double xmax, double ymin, double ymax) except +yodaerr
-        HistoBin2D(HistoBin2D) except +yodaerr
-
-        # void fill(double x, double y, double weight) except +yodaerr
-        # void fillBin(double weight) except +yodaerr
-        void reset()
-
-        # Accessors
-        double volume() except +yodaerr
-        double volumeErr() except +yodaerr
-        double height() except +yodaerr
-        double heightErr() except +yodaerr
-
-        HistoBin2D operator+(HistoBin2D) except +yodaerr
-        HistoBin2D operator-(HistoBin2D) except +yodaerr
-
-        #Bin2D_Dbn2D merge(HistoBin2D b)
-#}}} HistoBin2D
 
 
 

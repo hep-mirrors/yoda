@@ -36,6 +36,11 @@ cdef class Bin1D_${DBN}(Bin):
 
 
     @property
+    def xEdges(self):
+        """The lower and upper edges."""
+        return (self.xMin, self.xMax)
+
+    @property
     def xMin(self):
         """The lower bin edge."""
         return self.b1ptr().xMin()
@@ -45,22 +50,15 @@ cdef class Bin1D_${DBN}(Bin):
         """The upper bin edge."""
         return self.b1ptr().xMax()
 
-
-    @property
-    def xEdges(self):
-        """The lower and upper edges."""
-        return (self.xMin, self.xMax)
-
-    @property
-    def xWidth(self):
-        """The width of the bin."""
-        return self.b1ptr().xWidth()
-
     @property
     def xMid(self):
         """The midpoint of the bin."""
         return self.b1ptr().xMid()
 
+    @property
+    def xWidth(self):
+        """The width of the bin."""
+        return self.b1ptr().xWidth()
 
     @property
     def xMean(self):
@@ -75,6 +73,13 @@ cdef class Bin1D_${DBN}(Bin):
         then the focus is the midpoint of the bin.
         """
         return self.b1ptr().xFocus()
+
+    @property
+    def xVariance(self):
+        """
+        The variance of the x-values that have filled the bin.
+        """
+        return self.b1ptr().xVariance()
 
     @property
     def xStdDev(self):
@@ -98,36 +103,6 @@ cdef class Bin1D_${DBN}(Bin):
         return self.b1ptr().xRMS()
 
 
-    @property
-    def numEntries(self):
-        """
-        The number of entries that have filled the bin.
-        """
-        return int(self.b1ptr().numEntries())
-
-    @property
-    def effNumEntries(self):
-        """
-        The effective number of entries in the bin.
-
-        s.effNumEntries <==> (s.sumW ** 2) / s.sumW2
-        """
-        return self.b1ptr().effNumEntries()
-
-
-    @property
-    def sumW(self):
-        """
-        The sum of weights: sum(weights).
-        """
-        return self.b1ptr().sumW()
-
-    @property
-    def sumW2(self):
-        """
-        The sum of weights-squared: sum(weights * weights)
-        """
-        return self.b1ptr().sumW2()
 
     @property
     def sumWX(self):
@@ -143,7 +118,6 @@ cdef class Bin1D_${DBN}(Bin):
         """
         return self.b1ptr().sumWX2()
 
-
     def merge(Bin1D_${DBN} self, Bin1D_${DBN} other):
         """
         merge(other) -> Bin1D_${DBN}. Merge this bin with another of the
@@ -152,6 +126,7 @@ cdef class Bin1D_${DBN}(Bin):
         """
         self.b1ptr().merge(deref(other.b1ptr()))
         return self
+
 
 
     def __add__(Bin1D_${DBN} self, Bin1D_${DBN} other):

@@ -10,6 +10,7 @@ cdef class HistoBin2D(Bin2D_Dbn2D):
     def __init__(self, xlow, xhigh, ylow, yhigh):
         cutil.set_owned_ptr(self, new c.HistoBin2D(xlow, xhigh, ylow, yhigh))
 
+
     # def fill(self, x, y, weight=1.0):
     #     self.hb2ptr().fill(x, y, weight)
 
@@ -28,6 +29,11 @@ cdef class HistoBin2D(Bin2D_Dbn2D):
     @property
     def heightErr(self):
         return self.hb2ptr().heightErr()
+
+    @property
+    def relErr(self):
+        return self.hb2ptr().relErr()
+
 
     def __add__(HistoBin2D a, HistoBin2D b):
         return cutil.new_owned_cls(HistoBin2D, new c.HistoBin2D(deref(a.hb2ptr()) + deref(b.hb2ptr())))
