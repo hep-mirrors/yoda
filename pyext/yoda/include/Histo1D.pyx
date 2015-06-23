@@ -134,6 +134,7 @@ cdef class Histo1D(AnalysisObject):
         Integral up to bin ia inclusive, optionally excluding the underflow"""
         return self.h1ptr().integralRange(ia, includeunderflow)
 
+
     def numEntries(self, includeoverflows=True):
         """([bool]) -> int
         Number of times this histogram was filled, optionally excluding the overflows."""
@@ -154,6 +155,7 @@ cdef class Histo1D(AnalysisObject):
         Sum of weights filled into this histogram, optionally excluding the overflows."""
         return self.h1ptr().sumW2(includeoverflows)
 
+
     def xMean(self, includeoverflows=True):
         """([bool]) -> float
         Mean x of the histogram, optionally excluding the overflows."""
@@ -173,6 +175,11 @@ cdef class Histo1D(AnalysisObject):
         """([bool]) -> float
         Standard error on the mean x of the histogram, optionally excluding the overflows."""
         return self.h1ptr().xStdErr(includeoverflows)
+
+    def xRMS(self, includeoverflows=True):
+        """([bool]) -> float
+        RMS in x of the histogram, optionally excluding the overflows."""
+        return self.h1ptr().xRMS(includeoverflows)
 
 
     def scaleW(self, w):

@@ -38,6 +38,9 @@ namespace YODA {
     /// The number of entries
     virtual unsigned long numEntries() const = 0;
 
+    /// The effective number of entries
+    virtual double effNumEntries() const = 0;
+
     /// The sum of weights
     virtual double sumW() const = 0;
 

@@ -1,3 +1,19 @@
+2015-06-23  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Rename Python Histo2D mean, variance, etc. pair-returning
+	methods to xyMean, xyVariance, etc., to distinguish from Profile2D
+	mean, variance, etc.
+
+	* Add Python mappings of all the methods below.
+
+	* Add full set of {x,y}{Mean,Variance,StdDev,StdErr,RMS} to 1D and
+	2D binned distributions.
+
+	* Add optional includeoverflows=True argument to all binned AO
+	numEntries and effNumEntries.
+
+	* Fix type of numEntries to always be unsigned long.
+
 2015-06-18  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Fix typos in Point3D Python mapping (accidentally trying to get

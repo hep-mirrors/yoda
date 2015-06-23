@@ -299,10 +299,10 @@ namespace YODA {
     double integral(bool includeoverflows=true) const { return sumW(includeoverflows); }
 
     /// Get the number of fills
-    double numEntries() const { return totalDbn().numEntries(); }
+    unsigned long numEntries(bool includeoverflows=true) const;
 
     /// Get the effective number of fills
-    double effNumEntries() const { return totalDbn().effNumEntries(); }
+    double effNumEntries(bool includeoverflows=true) const;
 
     /// Get the sum of weights in histo
     double sumW(bool includeoverflows=true) const;

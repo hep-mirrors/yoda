@@ -276,26 +276,10 @@ namespace YODA {
     }
 
     /// Get the number of fills
-    /// @todo Add an includeoverflows argument
-    int numEntries(bool includeoverflows=true) const {
-      if (includeoverflows) return totalDbn().numEntries();
-      int rtn = 0;
-      for (size_t i = 0; i < numBins(); ++i) {
-        rtn += bin(i).numEntries();
-      }
-      return rtn;
-    }
+    unsigned long numEntries(bool includeoverflows=true) const;
 
     /// Get the effective number of fills
-    /// @todo Add an includeoverflows argument
-    double effNumEntries(bool includeoverflows=true) const {
-      if (includeoverflows) return totalDbn().effNumEntries();
-      double rtn = 0;
-      for (size_t i = 0; i < numBins(); ++i) {
-        rtn += bin(i).effNumEntries();
-      }
-      return rtn;
-    }
+    double effNumEntries(bool includeoverflows=true) const;
 
     /// Get sum of weights in histo
     double sumW(bool includeoverflows=true) const;
@@ -303,20 +287,23 @@ namespace YODA {
     /// Get sum of squared weights in histo
     double sumW2(bool includeoverflows=true) const;
 
-    /// Get the mean
+    /// Get the mean in x
     double xMean(bool includeoverflows=true) const;
 
-    /// Get the variance
+    /// Get the variance in x
     double xVariance(bool includeoverflows=true) const;
 
-    /// Get the standard deviation
+    /// Get the standard deviation in x
     double xStdDev(bool includeoverflows=true) const {
       if (includeoverflows) return _axis.totalDbn().xStdDev();
       return std::sqrt(xVariance(includeoverflows));
     }
 
-    /// Get the standard error
+    /// Get the standard error in x
     double xStdErr(bool includeoverflows=true) const;
+
+    /// Get the RMS in x
+    double xRMS(bool includeoverflows=true) const;
 
     //@}
 

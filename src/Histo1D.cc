@@ -43,16 +43,29 @@ namespace YODA {
   }
 
 
-  /// @todo Improve/centralise this statistical aggregation by exposing the Dbn1D/2D objects
-  /// in the bins and using their native += operators to do the aggregation.
+
+  /////////////// COMMON TO ALL BINNED
+
+  unsigned long Histo1D::numEntries(bool includeoverflows) const {
+    if (includeoverflows) return totalDbn().numEntries();
+    unsigned long n = 0;
+    BOOST_FOREACH (const Bin& b, bins()) n += b.numEntries();
+    return n;
+  }
+
+
+  double Histo1D::effNumEntries(bool includeoverflows) const {
+    if (includeoverflows) return totalDbn().effNumEntries();
+    double n = 0;
+    BOOST_FOREACH (const Bin& b, bins()) n += b.effNumEntries();
+    return n;
+  }
 
 
   double Histo1D::sumW(bool includeoverflows) const {
     if (includeoverflows) return _axis.totalDbn().sumW();
     double sumw = 0;
-    BOOST_FOREACH (const Bin& b, bins()) {
-      sumw += b.sumW();
-    }
+    BOOST_FOREACH (const Bin& b, bins()) sumw += b.sumW();
     return sumw;
   }
 
@@ -60,44 +73,42 @@ namespace YODA {
   double Histo1D::sumW2(bool includeoverflows) const {
     if (includeoverflows) return _axis.totalDbn().sumW2();
     double sumw2 = 0;
-    BOOST_FOREACH (const Bin& b, bins()) {
-      sumw2 += b.sumW2();
-    }
+    BOOST_FOREACH (const Bin& b, bins()) sumw2 += b.sumW2();
     return sumw2;
   }
+
+  // ^^^^^^^^^^^^^
 
 
   double Histo1D::xMean(bool includeoverflows) const {
     if (includeoverflows) return _axis.totalDbn().xMean();
-    double sumwx = 0;
-    double sumw  = 0;
-    BOOST_FOREACH (const Bin& b, bins()) {
-      sumwx += b.sumWX();
-      sumw  += b.sumW();
-    }
-    if ( sumw == 0 ) {
-      throw LowStatsError("Requested mean of a Histo1D with no net fill weights");
-    }
-    return sumwx/sumw;
+    Dbn1D dbn;
+    BOOST_FOREACH (const HistoBin1D& b, bins()) dbn += b.dbn();
+    return dbn.xMean();
   }
 
 
   double Histo1D::xVariance(bool includeoverflows) const {
     if (includeoverflows) return _axis.totalDbn().xVariance();
-    double sigma2 = 0;
-    const double mean = this->xMean();
-    BOOST_FOREACH (const HistoBin1D& b, bins()) {
-      const double diff = b.xFocus() - mean;
-      sigma2 += diff * diff * b.sumW();
-    }
-    return sigma2/sumW();
+    Dbn1D dbn;
+    BOOST_FOREACH (const HistoBin1D& b, bins()) dbn += b.dbn();
+    return dbn.xVariance();
   }
 
 
   double Histo1D::xStdErr(bool includeoverflows) const {
     if (includeoverflows) return _axis.totalDbn().xStdErr();
-    const double effNumEntries = sumW(false)*sumW(false)/sumW2(false);
-    return std::sqrt(xVariance(false) / effNumEntries);
+    Dbn1D dbn;
+    BOOST_FOREACH (const HistoBin1D& b, bins()) dbn += b.dbn();
+    return dbn.xStdErr();
+  }
+
+
+  double Histo1D::xRMS(bool includeoverflows) const {
+    if (includeoverflows) return _axis.totalDbn().xRMS();
+    Dbn1D dbn;
+    BOOST_FOREACH (const HistoBin1D& b, bins()) dbn += b.dbn();
+    return dbn.xRMS();
   }
 
 

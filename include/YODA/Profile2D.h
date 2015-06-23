@@ -292,10 +292,10 @@ namespace YODA {
     //@{
 
     /// Get the number of fills
-    double numEntries() const { return totalDbn().numEntries(); }
+    unsigned long numEntries(bool includeoverflows=true) const;
 
     /// Get the effective number of fills
-    double effNumEntries() const { return totalDbn().effNumEntries(); }
+    double effNumEntries(bool includeoverflows=true) const;
 
     /// Get sum of weights in histo
     double sumW(bool includeoverflows=true) const;
@@ -331,13 +331,11 @@ namespace YODA {
     /// Get the standard error on <y>
     double yStdErr(bool includeoverflows=true) const;
 
-    /// @todo TODO
-    // /// Get the RMS in x
-    // double xRMS(bool includeoverflows=true) const;
+    /// Get the RMS in x
+    double xRMS(bool includeoverflows=true) const;
 
-    /// @todo TODO
-    // /// Get the RMS in y
-    // double yRMS(bool includeoverflows=true) const;
+    /// Get the RMS in y
+    double yRMS(bool includeoverflows=true) const;
 
     //@}
 

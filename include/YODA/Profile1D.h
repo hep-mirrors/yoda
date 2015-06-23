@@ -244,16 +244,33 @@ namespace YODA {
     /// @todo Add integrals? Or are they too ambiguous to make a core function?
 
     /// Get the number of fills
-    double numEntries() const { return totalDbn().numEntries(); }
+    unsigned long numEntries(bool includeoverflows=true) const;
 
     /// Get the effective number of fills
-    double effNumEntries() const { return totalDbn().effNumEntries(); }
+    double effNumEntries(bool includeoverflows=true) const;
 
     /// Get sum of weights in histo.
     double sumW(bool includeoverflows=true) const;
 
     /// Get sum of squared weights in histo.
     double sumW2(bool includeoverflows=true) const;
+
+    /// Get the mean x
+    double xMean(bool includeoverflows=true) const;
+
+    /// Get the variance in x
+    double xVariance(bool includeoverflows=true) const;
+
+    /// Get the standard deviation in x
+    double xStdDev(bool includeoverflows=true) const {
+      return std::sqrt(xVariance(includeoverflows));
+    }
+
+    /// Get the standard error on <x>
+    double xStdErr(bool includeoverflows=true) const;
+
+    /// Get the RMS in x
+    double xRMS(bool includeoverflows=true) const;
 
     //@}
 

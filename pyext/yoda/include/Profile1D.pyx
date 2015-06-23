@@ -118,25 +118,51 @@ cdef class Profile1D(AnalysisObject):
             Dbn2D, &self.p1ptr().overflow(), self)
 
 
-    def numEntries(self): # add overflows arg
+    def numEntries(self, includeoverflows=True):
         """([bool]) -> int
-        Number of times this histogram was filled."""
-        return int(self.p1ptr().numEntries())
+        Number of times this histogram was filled, optionally excluding the overflows."""
+        return self.p1ptr().numEntries(includeoverflows)
 
-    def effNumEntries(self): # add overflows arg
+    def effNumEntries(self, includeoverflows=True):
         """([bool]) -> float
-        Effective number of times this histogram was filled, computed from weights."""
-        return self.p1ptr().effNumEntries()
+        Effective number of times this histogram was filled, computed from weights and optionally excluding the overflows."""
+        return self.p1ptr().effNumEntries(includeoverflows)
 
-    def sumW(self, overflows=True):
-        """([bool]) -> float
-        Sum of weights filled into this histogram."""
-        return self.p1ptr().sumW(overflows)
-
-    def sumW2(self, overflows=True):
+    def sumW(self, includeoverflows=True):
         """([bool]) -> float
         Sum of weights filled into this histogram."""
-        return self.p1ptr().sumW2(overflows)
+        return self.p1ptr().sumW(includeoverflows)
+
+    def sumW2(self, includeoverflows=True):
+        """([bool]) -> float
+        Sum of weights filled into this histogram."""
+        return self.p1ptr().sumW2(includeoverflows)
+
+
+    def xMean(self, includeoverflows=True):
+        """([bool]) -> float
+        Mean x of the histogram, optionally excluding the overflows."""
+        return self.p1ptr().xMean(includeoverflows)
+
+    def xVariance(self, includeoverflows=True):
+        """([bool]) -> float
+        Variance in x of the histogram, optionally excluding the overflows."""
+        return self.p1ptr().xVariance(includeoverflows)
+
+    def xStdDev(self, includeoverflows=True):
+        """([bool]) -> float
+        Standard deviation in x of the histogram, optionally excluding the overflows."""
+        return self.p1ptr().xStdDev(includeoverflows)
+
+    def xStdErr(self, includeoverflows=True):
+        """([bool]) -> float
+        Standard error on the mean x of the histogram, optionally excluding the overflows."""
+        return self.p1ptr().xStdErr(includeoverflows)
+
+    def xRMS(self, includeoverflows=True):
+        """([bool]) -> float
+        RMS in x of the histogram, optionally excluding the overflows."""
+        return self.p1ptr().xRMS(includeoverflows)
 
 
     def scaleW(self, double w):

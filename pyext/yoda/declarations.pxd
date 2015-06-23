@@ -342,8 +342,12 @@ cdef extern from "YODA/Point3D.h" namespace "YODA":
 # Bin {{{
 cdef extern from "YODA/Bin.h" namespace "YODA":
     cdef cppclass Bin:
-        pass
+        unsigned long numEntries() except +yodaerr
+        double effNumEntries() except +yodaerr
+        double sumW() except +yodaerr
+        double sumW2() except +yodaerr
 # }}} Bin
+
 
 
 #Bin1D {{{
@@ -380,10 +384,6 @@ cdef extern from "YODA/Bin1D.h" namespace "YODA":
         double xRMS() except +yodaerr
 
         # raw statistics
-        unsigned long numEntries() except +yodaerr
-        double effNumEntries() except +yodaerr
-        double sumW() except +yodaerr
-        double sumW2() except +yodaerr
         double sumWX() except +yodaerr
         double sumWX2() except +yodaerr
 
@@ -443,10 +443,6 @@ cdef extern from "YODA/Bin2D.h" namespace "YODA":
         double yRMS() except +yodaerr
 
         # Raw statistics
-        unsigned long numEntries() except +yodaerr
-        double effNumEntries() except +yodaerr
-        double sumW() except +yodaerr
-        double sumW2() except +yodaerr
         double sumWX() except +yodaerr
         double sumWY() except +yodaerr
         double sumWXY() except +yodaerr
@@ -635,7 +631,7 @@ cdef extern from "YODA/Counter.h" namespace "YODA":
 
         void fill(double weight) except +yodaerr
 
-        double numEntries() except +yodaerr
+        unsigned long numEntries() except +yodaerr
         double effNumEntries() except +yodaerr
 
         double sumW() except +yodaerr
@@ -827,174 +823,6 @@ cdef extern from "YODA/Scatter3D.h" namespace "YODA":
 
 
 
-# Profile1D {{{
-cdef extern from "YODA/Profile1D.h" namespace "YODA":
-    cdef cppclass Profile1D(AnalysisObject):
-        Profile1D() except +yodaerr
-
-        Profile1D(string path, string title) except +yodaerr
-
-        Profile1D(size_t nxbins,
-                double xlower,
-                double xupper,
-                string path,
-                string title) except +yodaerr
-
-        Profile1D(vector[double] xbinedges,
-                string path,
-                string title) except +yodaerr
-
-        Profile1D(Profile1D p, string path) except +yodaerr
-
-        Profile1D(Scatter2D s, string path) except +yodaerr
-
-        #Profile1D(Histo1D p, string path)
-
-        Profile1D clone() except +yodaerr
-        Profile1D* newclone() except +yodaerr
-
-
-        void reset() except +yodaerr
-
-        void fill(double x, double y, double weight) except +yodaerr
-        void fillBin(size_t i, double y, double weight) except +yodaerr
-
-        void scaleW(double s) except +yodaerr
-        void scaleY(double s) except +yodaerr
-
-        void mergeBins(size_t, size_t) except +yodaerr
-        void rebin(int n) except +yodaerr
-
-        void addBin(double, double) except +yodaerr
-        void addBins(vector[double] edges) except +yodaerr
-        # void eraseBin(size_t index) except +yodaerr
-
-        double xMin() except +yodaerr
-        double xMax() except +yodaerr
-
-        size_t numBins() except +yodaerr
-
-        vector[ProfileBin1D] bins() #except +yodaerr
-        int binIndexAt(double x) except +yodaerr
-        const ProfileBin1D& bin(size_t ix) #except +yodaerr
-        const ProfileBin1D& binAt(double x) #except +yodaerr
-
-        # The trick here is to treat these not as references.
-        # I suppose when you think about it, it makes sense
-        Dbn2D& totalDbn()
-        Dbn2D& underflow()
-        Dbn2D& overflow()
-
-        double numEntries() # @todo Add bool arg
-        double effNumEntries() # @todo Add bool arg
-        double sumW(bool)
-        double sumW2(bool)
-
-        operator + (Profile1D)
-        operator - (Profile1D)
-        operator / (Profile1D)
-
-    Scatter2D Profile1D_div_Profile1D "divide" (const Profile1D&, const Profile1D&) except +yodaerr
-
-cdef extern from "merge.hh":
-    void Profile1D_iadd_Profile1D "cython_iadd" (Profile1D*, Profile1D*)
-    void Profile1D_isub_Profile1D "cython_isub" (Profile1D*, Profile1D*)
-    # void Profile1D_imul_dbl "cython_imul_dbl" (Profile1D*, double)
-    # void Profile1D_idiv_dbl "cython_idiv_dbl" (Profile1D*, double)
-    Profile1D* Profile1D_add_Profile1D "cython_add" (Profile1D*, Profile1D*)
-    Profile1D* Profile1D_sub_Profile1D "cython_sub" (Profile1D*, Profile1D*)
-    Profile1D* Profile1D_div_Profile1D "cython_div" (Profile1D*, Profile1D*)
-
-cdef extern from "YODA/Scatter2D.h" namespace "YODA":
-    Scatter2D mkScatter_Profile1D "YODA::mkScatter" (const Profile1D&, bool, bool) except +yodaerr
-
-#}}} Profile1D
-
-
-
-# Profile2D {{{
-cdef extern from "YODA/Profile2D.h" namespace "YODA":
-    cdef cppclass Profile2D(AnalysisObject):
-        Profile2D() except +yodaerr
-
-        Profile2D(string path, string title) except +yodaerr
-
-        Profile2D(size_t nbinsX, double lowerX, double upperX,
-                  size_t nbinsY, double lowerY, double upperY,
-                  string path, string title) except +yodaerr
-
-        Profile2D(vector[double] xedges, vector[double] yedges,
-                  string path, string title) except +yodaerr
-
-        Profile2D(Profile2D p, string path) except +yodaerr
-
-        #Profile2D(Scatter3D s, string path) except +yodaerr
-
-        #Profile2D(Histo2D p, string path)
-
-        Profile2D clone() except +yodaerr
-        Profile2D* newclone() except +yodaerr
-
-        # TODO: add missing functions and enable refs + exceptions when Cython allows
-
-        void reset() except +yodaerr
-
-        void fill(double x, double y, double z, double weight) except +yodaerr
-        void fillBin(size_t i, double z, double weight) except +yodaerr
-
-        void scaleW(double s) except +yodaerr
-        void scaleXY(double, double)
-
-        # void mergeBins(size_t, size_t) except +yodaerr
-        # void rebin(int n) except +yodaerr
-
-        size_t numBins() except +yodaerr
-        size_t numBinsX() except +yodaerr
-        size_t numBinsY() except +yodaerr
-
-        vector[ProfileBin2D]& bins() #except +yodaerr
-        int binIndexAt(double x, double y) except +yodaerr
-        const ProfileBin2D& bin(size_t ix) #except +yodaerr
-        const ProfileBin2D& binAt(double x, y) #except +yodaerr
-
-        void addBin(const pair[double, double]&, const pair[double, double]&) except +yodaerr
-        void addBins(const vector[double]&, const vector[double]&) except +yodaerr
-        # void eraseBin(size_t index) except +yodaerr
-
-        double xMin() except +yodaerr
-        double xMax() except +yodaerr
-        double yMin() except +yodaerr
-        double yMax() except +yodaerr
-
-        # Dbn3D& outflow(int, int) #except +yodaerr
-
-        # Whole histo data
-        Dbn3D& totalDbn() #except +yodaerr
-        double numEntries() # @todo Add bool arg
-        double effNumEntries() # @todo Add bool arg
-        double sumW(bool)
-        double sumW2(bool)
-
-        operator + (Profile2D)
-        operator - (Profile2D)
-        operator / (Profile2D)
-
-    Scatter3D Profile2D_div_Profile2D "divide" (const Profile2D&, const Profile2D&) except +yodaerr
-
-cdef extern from "merge.hh":
-    void Profile2D_iadd_Profile2D "cython_iadd" (Profile2D*, Profile2D*)
-    void Profile2D_isub_Profile2D "cython_isub" (Profile2D*, Profile2D*)
-    # void Profile2D_imul_dbl "cython_imul_dbl" (Profile2D*, double)
-    # void Profile2D_idiv_dbl "cython_idiv_dbl" (Profile2D*, double)
-    Profile2D* Profile2D_add_Profile2D "cython_add" (Profile2D*, Profile2D*)
-    Profile2D* Profile2D_sub_Profile2D "cython_sub" (Profile2D*, Profile2D*)
-    Profile2D* Profile2D_div_Profile2D "cython_div" (Profile2D*, Profile2D*)
-
-cdef extern from "YODA/Scatter3D.h" namespace "YODA":
-    Scatter3D mkScatter_Profile2D "YODA::mkScatter" (const Profile2D&, bool, bool) except +yodaerr
-
-#}}} Profile2D
-
 
 
 # Histo1D#{{{
@@ -1033,8 +861,13 @@ cdef extern from "YODA/Histo1D.h" namespace "YODA":
 
         void scaleW(double s) except +yodaerr
         void normalize(double normto, bool includeoverflows) except +yodaerr
+
         void mergeBins(size_t, size_t) except +yodaerr
         void rebin(int n) except +yodaerr
+
+        void addBin(double, double) except +yodaerr
+        void addBins(vector[double] edges) except +yodaerr
+        void eraseBin(size_t index) except +yodaerr
 
         double xMin() except +yodaerr
         double xMax() except +yodaerr
@@ -1055,18 +888,17 @@ cdef extern from "YODA/Histo1D.h" namespace "YODA":
         double integral(bool)
         double integralTo(int, bool)
         double integralRange(int, int)
-        double numEntries(bool)
+
+        unsigned long numEntries(bool)
         double effNumEntries(bool)
         double sumW(bool)
         double sumW2(bool)
+
         double xMean(bool)
         double xVariance(bool)
         double xStdDev(bool)
         double xStdErr(bool)
-
-        void addBin(double, double) except +yodaerr
-        void addBins(vector[double] edges) except +yodaerr
-        void eraseBin(size_t index) except +yodaerr
+        double xRMS(bool)
 
         # operator == (Histo1D)
         # operator != (Histo1D)
@@ -1157,10 +989,11 @@ cdef extern from "YODA/Histo2D.h" namespace "YODA":
         # Whole histo data
         Dbn2D& totalDbn() #except +yodaerr
         double integral(bool)
-        double numEntries() # @todo Add bool arg
-        double effNumEntries() # @todo Add bool arg
+        unsigned long numEntries(bool)
+        double effNumEntries(bool)
         double sumW(bool)
         double sumW2(bool)
+
         double xMean(bool)
         double yMean(bool)
         double xVariance(bool)
@@ -1169,6 +1002,8 @@ cdef extern from "YODA/Histo2D.h" namespace "YODA":
         double yStdDev(bool)
         double xStdErr(bool)
         double yStdErr(bool)
+        double xRMS(bool)
+        double yRMS(bool)
 
         # operator == (Histo2D)
         # operator != (Histo2D)
@@ -1192,6 +1027,198 @@ cdef extern from "YODA/Scatter3D.h" namespace "YODA":
     Scatter3D mkScatter_Histo2D "YODA::mkScatter" (const Histo2D&, bool) except +yodaerr
 
 # Histo2D }}}
+
+
+
+
+
+# Profile1D {{{
+cdef extern from "YODA/Profile1D.h" namespace "YODA":
+    cdef cppclass Profile1D(AnalysisObject):
+        Profile1D() except +yodaerr
+
+        Profile1D(string path, string title) except +yodaerr
+
+        Profile1D(size_t nxbins,
+                double xlower,
+                double xupper,
+                string path,
+                string title) except +yodaerr
+
+        Profile1D(vector[double] xbinedges,
+                string path,
+                string title) except +yodaerr
+
+        Profile1D(Profile1D p, string path) except +yodaerr
+
+        Profile1D(Scatter2D s, string path) except +yodaerr
+
+        #Profile1D(Histo1D p, string path)
+
+        Profile1D clone() except +yodaerr
+        Profile1D* newclone() except +yodaerr
+
+
+        void reset() except +yodaerr
+
+        void fill(double x, double y, double weight) except +yodaerr
+        void fillBin(size_t i, double y, double weight) except +yodaerr
+
+        void scaleW(double s) except +yodaerr
+        void scaleY(double s) except +yodaerr
+
+        void mergeBins(size_t, size_t) except +yodaerr
+        void rebin(int n) except +yodaerr
+
+        void addBin(double, double) except +yodaerr
+        void addBins(vector[double] edges) except +yodaerr
+        # TODO: void eraseBin(size_t index) except +yodaerr
+
+        double xMin() except +yodaerr
+        double xMax() except +yodaerr
+
+        size_t numBins() except +yodaerr
+
+        vector[ProfileBin1D] bins() #except +yodaerr
+        int binIndexAt(double x) except +yodaerr
+        const ProfileBin1D& bin(size_t ix) #except +yodaerr
+        const ProfileBin1D& binAt(double x) #except +yodaerr
+
+        # The trick here is to treat these not as references.
+        # I suppose when you think about it, it makes sense
+        Dbn2D& totalDbn()
+        Dbn2D& underflow()
+        Dbn2D& overflow()
+
+        unsigned long numEntries(bool)
+        double effNumEntries(bool)
+        double sumW(bool)
+        double sumW2(bool)
+
+        double xMean(bool)
+        double xVariance(bool)
+        double xStdDev(bool)
+        double xStdErr(bool)
+        double xRMS(bool)
+
+        operator + (Profile1D)
+        operator - (Profile1D)
+        operator / (Profile1D)
+
+    Scatter2D Profile1D_div_Profile1D "divide" (const Profile1D&, const Profile1D&) except +yodaerr
+
+cdef extern from "merge.hh":
+    void Profile1D_iadd_Profile1D "cython_iadd" (Profile1D*, Profile1D*)
+    void Profile1D_isub_Profile1D "cython_isub" (Profile1D*, Profile1D*)
+    # void Profile1D_imul_dbl "cython_imul_dbl" (Profile1D*, double)
+    # void Profile1D_idiv_dbl "cython_idiv_dbl" (Profile1D*, double)
+    Profile1D* Profile1D_add_Profile1D "cython_add" (Profile1D*, Profile1D*)
+    Profile1D* Profile1D_sub_Profile1D "cython_sub" (Profile1D*, Profile1D*)
+    Profile1D* Profile1D_div_Profile1D "cython_div" (Profile1D*, Profile1D*)
+
+cdef extern from "YODA/Scatter2D.h" namespace "YODA":
+    Scatter2D mkScatter_Profile1D "YODA::mkScatter" (const Profile1D&, bool, bool) except +yodaerr
+
+#}}} Profile1D
+
+
+
+# Profile2D {{{
+cdef extern from "YODA/Profile2D.h" namespace "YODA":
+    cdef cppclass Profile2D(AnalysisObject):
+        Profile2D() except +yodaerr
+
+        Profile2D(string path, string title) except +yodaerr
+
+        Profile2D(size_t nbinsX, double lowerX, double upperX,
+                  size_t nbinsY, double lowerY, double upperY,
+                  string path, string title) except +yodaerr
+
+        Profile2D(vector[double] xedges, vector[double] yedges,
+                  string path, string title) except +yodaerr
+
+        Profile2D(Profile2D p, string path) except +yodaerr
+
+        #Profile2D(Scatter3D s, string path) except +yodaerr
+
+        #Profile2D(Histo2D p, string path)
+
+        Profile2D clone() except +yodaerr
+        Profile2D* newclone() except +yodaerr
+
+        # TODO: add missing functions and enable refs + exceptions when Cython allows
+
+        void reset() except +yodaerr
+
+        void fill(double x, double y, double z, double weight) except +yodaerr
+        void fillBin(size_t i, double z, double weight) except +yodaerr
+
+        void scaleW(double s) except +yodaerr
+        void scaleXY(double, double)
+
+        # void mergeBins(size_t, size_t) except +yodaerr
+        # void rebin(int n) except +yodaerr
+
+        size_t numBins() except +yodaerr
+        size_t numBinsX() except +yodaerr
+        size_t numBinsY() except +yodaerr
+
+        vector[ProfileBin2D]& bins() #except +yodaerr
+        int binIndexAt(double x, double y) except +yodaerr
+        const ProfileBin2D& bin(size_t ix) #except +yodaerr
+        const ProfileBin2D& binAt(double x, y) #except +yodaerr
+
+        void addBin(const pair[double, double]&, const pair[double, double]&) except +yodaerr
+        void addBins(const vector[double]&, const vector[double]&) except +yodaerr
+        # void eraseBin(size_t index) except +yodaerr
+
+        double xMin() except +yodaerr
+        double xMax() except +yodaerr
+        double yMin() except +yodaerr
+        double yMax() except +yodaerr
+
+        # Dbn3D& outflow(int, int) #except +yodaerr
+
+        # Whole histo data
+        Dbn3D& totalDbn() #except +yodaerr
+
+        unsigned long numEntries(bool)
+        double effNumEntries(bool)
+        double sumW(bool)
+        double sumW2(bool)
+
+        double xMean(bool)
+        double yMean(bool)
+        double xVariance(bool)
+        double yVariance(bool)
+        double xStdDev(bool)
+        double yStdDev(bool)
+        double xStdErr(bool)
+        double yStdErr(bool)
+        double xRMS(bool)
+        double yRMS(bool)
+
+        operator + (Profile2D)
+        operator - (Profile2D)
+        operator / (Profile2D)
+
+    Scatter3D Profile2D_div_Profile2D "divide" (const Profile2D&, const Profile2D&) except +yodaerr
+
+cdef extern from "merge.hh":
+    void Profile2D_iadd_Profile2D "cython_iadd" (Profile2D*, Profile2D*)
+    void Profile2D_isub_Profile2D "cython_isub" (Profile2D*, Profile2D*)
+    # void Profile2D_imul_dbl "cython_imul_dbl" (Profile2D*, double)
+    # void Profile2D_idiv_dbl "cython_idiv_dbl" (Profile2D*, double)
+    Profile2D* Profile2D_add_Profile2D "cython_add" (Profile2D*, Profile2D*)
+    Profile2D* Profile2D_sub_Profile2D "cython_sub" (Profile2D*, Profile2D*)
+    Profile2D* Profile2D_div_Profile2D "cython_div" (Profile2D*, Profile2D*)
+
+cdef extern from "YODA/Scatter3D.h" namespace "YODA":
+    Scatter3D mkScatter_Profile2D "YODA::mkScatter" (const Profile2D&, bool, bool) except +yodaerr
+
+#}}} Profile2D
+
+
 
 
 

@@ -94,25 +94,106 @@ cdef class Profile2D(AnalysisObject):
     #         Dbn3D, new c.Dbn3D(self.p2ptr().outflow(ix, iy)), self)
 
 
-    def numEntries(self): # add overflows arg
-        """() -> int
-        Number of times this histogram was filled."""
-        return int(self.p2ptr().numEntries())
+    def numEntries(self, includeoverflows=True):
+        """([bool]) -> int
+        Number of times this histogram was filled, optionally excluding the overflows."""
+        return self.p2ptr().numEntries(includeoverflows)
 
-    def effNumEntries(self): # add overflows arg
-        """() -> float
-        Effective number of times this histogram was filled, computed from weights."""
-        return self.p2ptr().effNumEntries()
+    def effNumEntries(self, includeoverflows=True):
+        """([bool]) -> float
+        Effective number of times this histogram was filled, computed from weights and optionally excluding the overflows."""
+        return self.p2ptr().effNumEntries(includeoverflows)
 
-    def sumW(self, overflows=True):
+    def sumW(self, includeoverflows=True):
         """([bool]) -> float
         Sum of weights filled into this histogram."""
-        return self.p2ptr().sumW(overflows)
+        return self.p2ptr().sumW(includeoverflows)
 
-    def sumW2(self, overflows=True):
+    def sumW2(self, includeoverflows=True):
         """([bool]) -> float
         Sum of squared weights filled into this histogram."""
-        return self.p2ptr().sumW2(overflows)
+        return self.p2ptr().sumW2(includeoverflows)
+
+
+    def xMean(self, includeoverflows=True):
+        """([bool]) -> float
+        Mean x of the histogram, optionally excluding the overflows."""
+        return self.p2ptr().xMean(includeoverflows)
+
+    def yMean(self, includeoverflows=True):
+        """([bool]) -> float
+        Mean y of the histogram, optionally excluding the overflows."""
+        return self.p2ptr().yMean(includeoverflows)
+
+    def xyMean(self, includeoverflows=True):
+        """([bool]) -> (float,float)
+        Mean (x,y) of the histogram, optionally excluding the overflows."""
+        return util.XY(self.xMean(includeoverflows), self.yMean(includeoverflows))
+
+
+    def xVariance(self, includeoverflows=True):
+        """([bool]) -> float
+        Variance in x of the histogram, optionally excluding the overflows."""
+        return self.p2ptr().xVariance(includeoverflows)
+
+    def yVariance(self, includeoverflows=True):
+        """([bool]) -> float
+        Variance in y of the histogram, optionally excluding the overflows."""
+        return self.p2ptr().yVariance(includeoverflows)
+
+    def xyVariance(self, includeoverflows=True):
+        """([bool]) -> (float,float)
+        Variances in (x,y) of the histogram, optionally excluding the overflows."""
+        return util.XY(self.xVariance(includeoverflows), self.yVariance(includeoverflows))
+
+
+    def xStdDev(self, includeoverflows=True):
+        """([bool]) -> float
+        Standard deviation in x of the histogram, optionally excluding the overflows."""
+        return self.p2ptr().xStdDev(includeoverflows)
+
+    def yStdDev(self, includeoverflows=True):
+        """([bool]) -> float
+        Standard deviation in y of the histogram, optionally excluding the overflows."""
+        return self.p2ptr().yStdDev(includeoverflows)
+
+    def xyStdDev(self, includeoverflows=True):
+        """([bool]) -> (float,float)
+        Standard deviations in (x,y) of the histogram, optionally excluding the overflows."""
+        return util.XY(self.xStdDev(includeoverflows), self.yStdDev(includeoverflows))
+
+
+    def xStdErr(self, includeoverflows=True):
+        """([bool]) -> float
+        Standard error on the mean x of the histogram, optionally excluding the overflows."""
+        return self.p2ptr().xStdErr(includeoverflows)
+
+    def yStdErr(self, includeoverflows=True):
+        """([bool]) -> float
+        Standard error on the mean y of the histogram, optionally excluding the overflows."""
+        return self.p2ptr().yStdErr(includeoverflows)
+
+    def xyStdErr(self, includeoverflows=True):
+        """([bool]) -> (float,float)
+        Standard errors on the mean (x,y) of the histogram, optionally excluding the overflows."""
+        return util.XY(self.xStdErr(includeoverflows), self.yStdErr(includeoverflows))
+
+
+    def xRMS(self, includeoverflows=True):
+        """([bool]) -> float
+        RMS in x of the histogram, optionally excluding the overflows."""
+        return self.p2ptr().xRMS(includeoverflows)
+
+    def yRMS(self, includeoverflows=True):
+        """([bool]) -> float
+        RMS in y of the histogram, optionally excluding the overflows."""
+        return self.p2ptr().yRMS(includeoverflows)
+
+    def xyRMS(self, includeoverflows=True):
+        """([bool]) -> (float,float)
+        RMS in (x,y) of the histogram, optionally excluding the overflows."""
+        return util.XY(self.xRMS(includeoverflows), self.yRMS(includeoverflows))
+
 
 
     def scaleW(self, w):

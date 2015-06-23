@@ -43,12 +43,29 @@ namespace YODA {
   }
 
 
+
+  /////////////// COMMON TO ALL BINNED
+
+  unsigned long Profile1D::numEntries(bool includeoverflows) const {
+    if (includeoverflows) return totalDbn().numEntries();
+    unsigned long n = 0;
+    BOOST_FOREACH (const Bin& b, bins()) n += b.numEntries();
+    return n;
+  }
+
+
+  double Profile1D::effNumEntries(bool includeoverflows) const {
+    if (includeoverflows) return totalDbn().effNumEntries();
+    double n = 0;
+    BOOST_FOREACH (const Bin& b, bins()) n += b.effNumEntries();
+    return n;
+  }
+
+
   double Profile1D::sumW(bool includeoverflows) const {
     if (includeoverflows) return _axis.totalDbn().sumW();
     double sumw = 0;
-    BOOST_FOREACH (const ProfileBin1D& b, bins()) {
-      sumw += b.sumW();
-    }
+    BOOST_FOREACH (const Bin& b, bins()) sumw += b.sumW();
     return sumw;
   }
 
@@ -56,10 +73,42 @@ namespace YODA {
   double Profile1D::sumW2(bool includeoverflows) const {
     if (includeoverflows) return _axis.totalDbn().sumW2();
     double sumw2 = 0;
-    BOOST_FOREACH (const ProfileBin1D& b, bins()) {
-      sumw2 += b.sumW2();
-    }
+    BOOST_FOREACH (const Bin& b, bins()) sumw2 += b.sumW2();
     return sumw2;
+  }
+
+  // ^^^^^^^^^^^^^^^^^^
+
+
+  double Profile1D::xMean(bool includeoverflows) const {
+    if (includeoverflows) return _axis.totalDbn().xMean();
+    Dbn2D dbn;
+    BOOST_FOREACH (const ProfileBin1D& b, bins()) dbn += b.dbn();
+    return dbn.xMean();
+  }
+
+
+  double Profile1D::xVariance(bool includeoverflows) const {
+    if (includeoverflows) return _axis.totalDbn().xVariance();
+    Dbn2D dbn;
+    BOOST_FOREACH (const ProfileBin1D& b, bins()) dbn += b.dbn();
+    return dbn.xVariance();
+  }
+
+
+  double Profile1D::xStdErr(bool includeoverflows) const {
+    if (includeoverflows) return _axis.totalDbn().xStdErr();
+    Dbn2D dbn;
+    BOOST_FOREACH (const ProfileBin1D& b, bins()) dbn += b.dbn();
+    return dbn.xStdErr();
+  }
+
+
+  double Profile1D::xRMS(bool includeoverflows) const {
+    if (includeoverflows) return _axis.totalDbn().xRMS();
+    Dbn2D dbn;
+    BOOST_FOREACH (const ProfileBin1D& b, bins()) dbn += b.dbn();
+    return dbn.xRMS();
   }
 
 
