@@ -14,7 +14,7 @@ int main() {
   MSG_GREEN("PASS");
 
   MSG_(PAD(70) << "Trying to fill the sample histogram: ");
-  h.fill(0,2);
+  h.fill(0, 2);
   MSG_GREEN("PASS");
 
   MSG_(PAD(70) << "Checking sumW: ");
@@ -42,22 +42,36 @@ int main() {
   }
   MSG_GREEN("PASS");
 
-  MSG_(PAD(70) << "Checking variance: ");
-  if (!fuzzyEquals(25, h.xVariance(false))) {
+  MSG_(PAD(70) << "Checking variance (total): ");
+  if (!fuzzyEquals(50, h.xVariance())) { //< Note the effective / (N-1) for unbiasing
     MSG_RED("FAIL");
     return -1;
   }
   MSG_GREEN("PASS");
 
-  MSG_(PAD(70) << "Checking standard deviation: ");
-  if (!fuzzyEquals(5, h.xStdDev(false))) {
+  MSG_(PAD(70) << "Checking variance (sum): ");
+  if (!fuzzyEquals(50, h.xVariance(false))) { //< Note the effective / (N-1) for unbiasing
+    MSG_RED("FAIL");
+    return -1;
+  }
+  MSG_GREEN("PASS");
+
+  MSG_(PAD(70) << "Checking standard deviation (total): ");
+  if (!fuzzyEquals(sqrt(50), h.xStdDev())) {
+    MSG_RED("FAIL");
+    return -1;
+  }
+  MSG_GREEN("PASS");
+
+  MSG_(PAD(70) << "Checking standard deviation (sum): ");
+  if (!fuzzyEquals(sqrt(50), h.xStdDev(false))) {
     MSG_RED("FAIL");
     return -1;
   }
   MSG_GREEN("PASS");
 
   MSG_(PAD(70) << "Checking bin index lookup: ");
-  const int i = h.binIndexAt(74);
+  const int i = h.binIndexAt(74.5);
   if (i != 74) {
     MSG_RED("FAIL");
     return -1;
