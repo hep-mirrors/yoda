@@ -202,10 +202,12 @@ cdef class Profile1D(AnalysisObject):
         """Get the bin index containing position x"""
         return self.p1ptr().binIndexAt(x)
 
-    # TODO: what's the problem?
-    # def binAt(self, x):
-    #     """Get the bin containing position x"""
-    #     return cutil.new_borrowed_cls(ProfileBin1D, & self.p1ptr().binAt(x), self)
+    def binAt(self, x):
+        """Get the bin containing position x"""
+        # TODO: what's the problem with this direct mapping? Produces compile error re. no default constructor...
+        # return cutil.new_borrowed_cls(ProfileBin1D, & self.p1ptr().binAt(x), self)
+        # TODO: need out-of-range check to return None?
+        return self.bin(self.binIndexAt(x))
 
     def addBin(self, low, high):
         """Add a bin."""

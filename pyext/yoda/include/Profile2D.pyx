@@ -271,6 +271,13 @@ cdef class Profile2D(AnalysisObject):
         """Get the bin index pair containing position (x,y)"""
         return self.p2ptr().binIndexAt(x, y)
 
+    def binAt(self, x, y):
+        """Get the bin containing position (x,y)"""
+        # TODO: what's the problem with this direct mapping? Produces compile error re. no default constructor...
+        #return cutil.new_borrowed_cls(ProfileBin2D, & self.p2ptr().binAt(x,y), self)
+        # TODO: need out-of-range check to return None?
+        return self.bin(self.binIndexAt(x,y))
+
 
     def addBin(self, double xlow, double xhigh, double ylow, double yhigh):
         """Add a bin."""

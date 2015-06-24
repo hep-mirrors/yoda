@@ -272,6 +272,13 @@ cdef class Histo2D(AnalysisObject):
         """Get the bin index pair containing position (x,y)"""
         return self.h2ptr().binIndexAt(x, y)
 
+    def binAt(self, x, y):
+        """Get the bin containing position (x,y)"""
+        # TODO: what's the problem with this direct mapping? Produces compile error re. no default constructor...
+        #return cutil.new_borrowed_cls(HistoBin2D, & self.h2ptr().binAt(x,y), self)
+        # TODO: need out-of-range check to return None?
+        return self.bin(self.binIndexAt(x,y))
+
 
     def addBin(self, xlow, xhigh, ylow, yhigh):
         """Add a bin."""

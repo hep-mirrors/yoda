@@ -1,3 +1,9 @@
+2015-06-24  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Adding workaround versions of binAt to all the Python histo
+	types (for some reason the direct mapping that works for bin(i)
+	produces a compile error for binAt(x) :-/
+
 2015-06-23  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Renaming, tidying, completing, etc. the Python-mapped methods on Bin1D and Bin2D.
