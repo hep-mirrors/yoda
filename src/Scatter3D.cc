@@ -6,22 +6,22 @@
 namespace YODA {
 
 
-  // Add two scatters
-  Scatter3D add(const Scatter3D& , const Scatter3D& ) {
-    /// @todo Implement
-    throw Exception("Implement me!");
-    Scatter3D tmp;
-    return tmp;
-  }
+  // // Add two scatters
+  // Scatter3D add(const Scatter3D& , const Scatter3D& ) {
+  //   /// @todo Implement
+  //   throw Exception("Implement me!");
+  //   Scatter3D tmp;
+  //   return tmp;
+  // }
 
 
-  // Subtract two scatters
-  Scatter3D subtract(const Scatter3D& , const Scatter3D& ) {
-    /// @todo Implement
-    throw Exception("Implement me!");
-    Scatter3D tmp;
-    return tmp;
-  }
+  // // Subtract two scatters
+  // Scatter3D subtract(const Scatter3D& , const Scatter3D& ) {
+  //   /// @todo Implement
+  //   throw Exception("Implement me!");
+  //   Scatter3D tmp;
+  //   return tmp;
+  // }
 
 
   //////////////////////////
@@ -89,44 +89,44 @@ namespace YODA {
   }
 
 
-  /// Divide two scatters
-  Scatter3D divide(const Scatter3D& numer, const Scatter3D& denom) {
-    Scatter3D tmp;
-    for (size_t i = 0; i < numer.numPoints(); ++i) {
-      const Point3D& p1 = numer.point(i);
-      const Point3D& p2 = denom.point(i);
+  // /// Divide two scatters
+  // Scatter3D divide(const Scatter3D& numer, const Scatter3D& denom) {
+  //   Scatter3D tmp;
+  //   for (size_t i = 0; i < numer.numPoints(); ++i) {
+  //     const Point3D& p1 = numer.point(i);
+  //     const Point3D& p2 = denom.point(i);
 
-      // Assemble the x value and error
-      if (!fuzzyEquals(p1.xMin(), p2.xMin()) || !fuzzyEquals(p1.xMax(), p2.xMax()))
-        throw BinningError("Point x 'bins' are not equivalent");
-      // Use the midpoint of the "bin" for the new central x value, in the absence of better information
-      const double x = (p1.xMin() + p1.xMax()) / 2.0;
-      const double exminus = x - p1.xMin();
-      const double explus  = p1.xMax() - x;
+  //     // Assemble the x value and error
+  //     if (!fuzzyEquals(p1.xMin(), p2.xMin()) || !fuzzyEquals(p1.xMax(), p2.xMax()))
+  //       throw BinningError("Point x 'bins' are not equivalent");
+  //     // Use the midpoint of the "bin" for the new central x value, in the absence of better information
+  //     const double x = (p1.xMin() + p1.xMax()) / 2.0;
+  //     const double exminus = x - p1.xMin();
+  //     const double explus  = p1.xMax() - x;
 
-      // Assemble the y value and error
-      if (!fuzzyEquals(p1.yMin(), p2.yMin()) || !fuzzyEquals(p1.yMax(), p2.yMax()))
-        throw BinningError("Point x 'bins' are not equivalent");
-      // Use the midpoint of the "bin" for the new central x value, in the absence of better information
-      const double y = (p1.yMin() + p1.yMax()) / 2.0;
-      const double eyminus = y - p1.yMin();
-      const double eyplus  = p1.yMax() - y;
+  //     // Assemble the y value and error
+  //     if (!fuzzyEquals(p1.yMin(), p2.yMin()) || !fuzzyEquals(p1.yMax(), p2.yMax()))
+  //       throw BinningError("Point x 'bins' are not equivalent");
+  //     // Use the midpoint of the "bin" for the new central x value, in the absence of better information
+  //     const double y = (p1.yMin() + p1.yMax()) / 2.0;
+  //     const double eyminus = y - p1.yMin();
+  //     const double eyplus  = p1.yMax() - y;
 
-      double z = 0;
-      double ez = 0;
-      if (p1.z() == 0 || p2.z() == 0) {
-        /// @todo find a nicer solution than setting the bin to zero
-        //throw LowStatsError("Requested division of empty bin");
-      } else {
-        z = p1.z() / p2.z();
-        /// @todo Generally deal with +/- errors separately
-        ez = z * sqrt( sqr(p1.yErrAvg()/p1.z()) + sqr(p2.yErrAvg()/p2.z()) );
-      }
-      tmp.addPoint(x, y, z, exminus, explus, eyminus, eyplus, ez, ez);
-    }
-    assert(tmp.numPoints() == numer.numPoints());
-    return tmp;
-  }
+  //     double z = 0;
+  //     double ez = 0;
+  //     if (p1.z() == 0 || p2.z() == 0) {
+  //       /// @todo find a nicer solution than setting the bin to zero
+  //       //throw LowStatsError("Requested division of empty bin");
+  //     } else {
+  //       z = p1.z() / p2.z();
+  //       /// @todo Generally deal with +/- errors separately
+  //       ez = z * sqrt( sqr(p1.yErrAvg()/p1.z()) + sqr(p2.yErrAvg()/p2.z()) );
+  //     }
+  //     tmp.addPoint(x, y, z, exminus, explus, eyminus, eyplus, ez, ez);
+  //   }
+  //   assert(tmp.numPoints() == numer.numPoints());
+  //   return tmp;
+  // }
 
 
 }

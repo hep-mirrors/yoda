@@ -757,9 +757,9 @@ cdef extern from "YODA/Scatter2D.h" namespace "YODA":
 
 #}}} Scatter2D
 
-cdef extern from "merge.hh":
-    Scatter2D* Scatter2D_add_Scatter2D "cython_add" (Scatter2D*, Scatter2D*)
-    Scatter2D* Scatter2D_sub_Scatter2D "cython_sub" (Scatter2D*, Scatter2D*)
+# cdef extern from "merge.hh":
+#     Scatter2D* Scatter2D_add_Scatter2D "cython_add" (Scatter2D*, Scatter2D*)
+#     Scatter2D* Scatter2D_sub_Scatter2D "cython_sub" (Scatter2D*, Scatter2D*)
 
 cdef extern from "YODA/Scatter2D.h" namespace "YODA":
     Scatter2D mkScatter_Scatter2D "YODA::mkScatter" (const Scatter2D&) except +yodaerr
@@ -817,9 +817,9 @@ cdef extern from "YODA/Scatter3D.h" namespace "YODA":
 
 #}}} Scatter3D
 
-cdef extern from "merge.hh":
-    Scatter3D* Scatter3D_add_Scatter3D "cython_add" (Scatter3D*, Scatter3D*)
-    Scatter3D* Scatter3D_sub_Scatter3D "cython_sub" (Scatter3D*, Scatter3D*)
+# cdef extern from "merge.hh":
+#     Scatter3D* Scatter3D_add_Scatter3D "cython_add" (Scatter3D*, Scatter3D*)
+#     Scatter3D* Scatter3D_sub_Scatter3D "cython_sub" (Scatter3D*, Scatter3D*)
 
 cdef extern from "YODA/Scatter3D.h" namespace "YODA":
     Scatter3D mkScatter_Scatter3D "YODA::mkScatter" (const Scatter3D&) except +yodaerr

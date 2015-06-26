@@ -1,3 +1,10 @@
+2015-06-26  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Removing add, subtract, and divide functions and operators on
+	Scatter types, and re-implementing Histo and Profile divide
+	functions explicitly rather than via mkScatter. Also removed from
+	the Python interface. The combine() methods remain.
+
 2015-06-24  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Adding workaround versions of binAt to all the Python histo

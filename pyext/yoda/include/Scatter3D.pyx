@@ -167,10 +167,10 @@ cdef class Scatter3D(AnalysisObject):
         c.Scatter3D_transformZ(deref(self._Scatter3D()), fptr)
 
 
-    # TODO: remove?
-    def __add__(Scatter3D self, Scatter3D other):
-        return cutil.new_owned_cls(Scatter3D, c.Scatter3D_add_Scatter3D(self._Scatter3D(), other._Scatter3D()))
+    # # TODO: remove?
+    # def __add__(Scatter3D self, Scatter3D other):
+    #     return cutil.new_owned_cls(Scatter3D, c.Scatter3D_add_Scatter3D(self._Scatter3D(), other._Scatter3D()))
 
-    # TODO: remove?
-    def __sub__(Scatter3D self, Scatter3D other):
-        return cutil.new_owned_cls(Scatter3D, c.Scatter3D_sub_Scatter3D(self._Scatter3D(), other._Scatter3D()))
+    # # TODO: remove?
+    # def __sub__(Scatter3D self, Scatter3D other):
+    #     return cutil.new_owned_cls(Scatter3D, c.Scatter3D_sub_Scatter3D(self._Scatter3D(), other._Scatter3D()))

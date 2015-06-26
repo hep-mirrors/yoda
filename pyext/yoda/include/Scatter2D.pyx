@@ -152,10 +152,10 @@ cdef class Scatter2D(AnalysisObject):
         c.Scatter2D_transformY(deref(self._Scatter2D()), fptr)
 
 
-    # TODO: remove?
-    def __add__(Scatter2D self, Scatter2D other):
-        return cutil.new_owned_cls(Scatter2D, c.Scatter2D_add_Scatter2D(self._Scatter2D(), other._Scatter2D()))
+    # # TODO: remove?
+    # def __add__(Scatter2D self, Scatter2D other):
+    #     return cutil.new_owned_cls(Scatter2D, c.Scatter2D_add_Scatter2D(self._Scatter2D(), other._Scatter2D()))
 
-    # TODO: remove?
-    def __sub__(Scatter2D self, Scatter2D other):
-        return cutil.new_owned_cls(Scatter2D, c.Scatter2D_sub_Scatter2D(self._Scatter2D(), other._Scatter2D()))
+    # # TODO: remove?
+    # def __sub__(Scatter2D self, Scatter2D other):
+    #     return cutil.new_owned_cls(Scatter2D, c.Scatter2D_sub_Scatter2D(self._Scatter2D(), other._Scatter2D()))

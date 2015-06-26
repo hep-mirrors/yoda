@@ -324,40 +324,40 @@ namespace YODA {
   /////////////////////////////////
 
 
-  /// @name Combining scatters: global operators, assuming aligned points
-  /// @todo This "1D histo-like behaviour" breaks the x/y symmetry... is there another way?
-  //@{
+  // /// @name Combining scatters: global operators, assuming aligned points
+  // /// @todo This "1D histo-like behaviour" breaks the x/y symmetry... is there another way?
+  // //@{
 
-  /// Add two scatters
-  Scatter2D add(const Scatter2D& first, const Scatter2D& second);
-
-
-  /// Add two scatters
-  inline Scatter2D operator + (const Scatter2D& first, const Scatter2D& second) {
-    return add(first, second);
-  }
+  // /// Add two scatters
+  // Scatter2D add(const Scatter2D& first, const Scatter2D& second);
 
 
-  /// Subtract two scatters
-  Scatter2D subtract(const Scatter2D& first, const Scatter2D& second);
+  // /// Add two scatters
+  // inline Scatter2D operator + (const Scatter2D& first, const Scatter2D& second) {
+  //   return add(first, second);
+  // }
 
 
-  /// Subtract two scatters
-  inline Scatter2D operator - (const Scatter2D& first, const Scatter2D& second) {
-    return subtract(first, second);
-  }
+  // /// Subtract two scatters
+  // Scatter2D subtract(const Scatter2D& first, const Scatter2D& second);
 
 
-  /// Divide two scatters
-  Scatter2D divide(const Scatter2D& numer, const Scatter2D& denom);
+  // /// Subtract two scatters
+  // inline Scatter2D operator - (const Scatter2D& first, const Scatter2D& second) {
+  //   return subtract(first, second);
+  // }
 
 
-  /// Divide two scatters
-  inline Scatter2D operator / (const Scatter2D& numer, const Scatter2D& denom) {
-    return divide(numer, denom);
-  }
+  // /// Divide two scatters
+  // Scatter2D divide(const Scatter2D& numer, const Scatter2D& denom);
 
-  //@}
+
+  // /// Divide two scatters
+  // inline Scatter2D operator / (const Scatter2D& numer, const Scatter2D& denom) {
+  //   return divide(numer, denom);
+  // }
+
+  // //@}
 
 
   /// @name Transforming operations on Scatter2D

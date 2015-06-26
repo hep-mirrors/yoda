@@ -152,8 +152,45 @@ namespace YODA {
 
   // Divide two histograms
   Scatter2D divide(const Histo1D& numer, const Histo1D& denom) {
-    /// @todo Is this really an appropriate definition? Should Scatter/Scatter even exist?!?
-    return divide(mkScatter(numer), mkScatter(denom));
+    Scatter2D rtn;
+
+    for (size_t i = 0; i < numer.numBins(); ++i) {
+      const HistoBin1D& b1 = numer.bin(i);
+      const HistoBin1D& b2 = denom.bin(i);
+
+      /// @todo Create a compatibleBinning function? Or just compare vectors of edges().
+      if (!fuzzyEquals(b1.xMin(), b2.xMin()) || !fuzzyEquals(b1.xMax(), b2.xMax()))
+        throw BinningError("x binnings are not equivalent in " + numer.path() + " / " + denom.path());
+
+      // Assemble the x value and error
+      // Use the midpoint of the "bin" for the new central x value, in the absence of better information
+      const double x = b1.xMid();
+      const double exminus = x - b1.xMin();
+      const double explus  = b1.xMax() - x;
+
+      // Assemble the y value and error
+      double y = 0;
+      double ey = 0;
+      if (b2.height() == 0 || (b1.height() == 0 && b1.heightErr() != 0)) { ///< @todo Ok?
+        /// @todo Provide optional alt behaviours to fill with NaN or remove the invalid point or throw
+        /// @todo Don't throw here: set a flag and throw after all bins have been handled.
+        // throw LowStatsError("Requested division of empty bin");
+      } else {
+        y = b1.height() / b2.height();
+        /// @todo Is this the exact error treatment for all (uncorrelated) cases? Behaviour around 0? +1 and -1 fills?
+        const double relerr_1 = b1.heightErr() != 0 ? b1.relErr() : 0;
+        const double relerr_2 = b2.heightErr() != 0 ? b2.relErr() : 0;
+        ey = y * sqrt(sqr(relerr_1) + sqr(relerr_2));
+      }
+      /// Deal with +/- errors separately, inverted for the denominator contributions:
+      /// @todo check correctness with different signed numerator and denominator.
+      //const double eyplus = y * sqrt( sqr(p1.yErrPlus()/p1.y()) + sqr(p2.yErrMinus()/p2.y()) );
+      //const double eyminus = y * sqrt( sqr(p1.yErrMinus()/p1.y()) + sqr(p2.yErrPlus()/p2.y()) );
+      rtn.addPoint(x, y, exminus, explus, ey, ey);
+    }
+
+    assert(rtn.numPoints() == numer.numBins());
+    return rtn;
   }
 
 

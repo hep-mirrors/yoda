@@ -458,10 +458,12 @@ namespace YODA {
   }
 
 
-  /// @todo Add multiply histograms -> Scatter3D
+  /// @todo Add multiply(H2, H2) -> Scatter3D?
 
 
   /// @brief Divide two histograms, with an uncorrelated error treatment
+  ///
+  /// @todo Wouldn't it be nice to be able to supply a correlation matrix or function as optional arg?
   ///
   /// @note The two histos must have _exactly_ the same binning.
   Scatter3D divide(const Histo2D& numer, const Histo2D& denom);
