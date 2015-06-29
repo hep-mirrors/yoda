@@ -1,3 +1,8 @@
+2015-06-30  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Change yodamerge norm-detection heuristic to just look for a
+	ScaledBy attribute rather than fuzzily compare norms.
+
 2015-06-26  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Removing add, subtract, and divide functions and operators on

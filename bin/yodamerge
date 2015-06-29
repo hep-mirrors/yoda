@@ -42,21 +42,18 @@ NORMALIZED, UNNORMALIZED, OR A MIX?
   An important detail in histogram merging is whether a statistical treatment
   for normalized or unnormalized histograms should be used: in the former case
   the normalization scaling must be undone *before* the histograms are added
-  together, and then re-applied afterwards. By default this script attempts to
-  work out whether histograms with a common name have been normalized by
-  checking whether their normalizations are all the same.
+  together, and then re-applied afterwards. This script examines the ScaledBy
+  attribute each histograms to determine if it has been normalized. We make the
+  assumption that if ScaledBy exists (i.e. h.scaleW has been called) then the
+  histogram is normalized and we normalize the resulting merged histogram to the
+  weighted average of input norms; if there is no ScaledBy, we assume that the
+  histogram is not normalised.
 
-  This is not an infallible approach -- in particular if the normalization is to
-  a quantity which might fluctuate between runs (a Monte Carlo cross-section
-  estimate, for example) then the inputs might be incorrectly identified as
-  unnormalized. The --assume-normalized option, which bypasses the 'common norm'
-  heuristic, may be used if you know that all the histograms in the file you are
-  attempting to merge are normalized... but it will fail on files which contain
-  a mixture of normalized and unnormalized plots (the latter do not have
-  ScaledBy attributes).
-
-  In such complicated situations you will again be better off writing your own
-  script or program to do the merging.
+  This is not an infallible approach, but we believe is more robust than heuristics
+  to determine whether norms are sufficiently close to be considered equal.
+  In complicated situations you will again be better off writing your own
+  script or program to do the merging: the merging machinery of this script is
+  available directly in the yoda Python module.
 
 See the source of this script (e.g. use 'less `which %prog`) for more discussion.
 """
@@ -106,7 +103,8 @@ import yoda, optparse, sys, math
 
 parser = optparse.OptionParser(usage=__doc__)
 parser.add_option('-o', '--output', default='-', dest='OUTPUT_FILE')
-parser.add_option('--assume-normalized', action="store_true", default=False, dest='ASSUME_NORMALIZED')
+parser.add_option('--assume-normalized', action="store_true", default=False, dest='ASSUME_NORMALIZED',
+                  help="DEPRECATED, AND DOES NOTHING. This option _used_ to bypass the detection heuristic for unnormalized histograms")
 opts, fileargs = parser.parse_args()
 
 ## Put the incoming objects into a dict from each path to a list of histos and scalings
@@ -127,24 +125,7 @@ for fa in fileargs:
 analysisobjects_out = {}
 for p, aos in analysisobjects_in.iteritems():
 
-    ## Check whether normalizations match (possible for histograms via the sumW/integral attrs)
-    ## In the absence of better info, we use the norm as a heuristic to change the merging behaviour
-    # TODO: Could we just test for a ScaledBy attribute?
-    normto = None
-    if len(aos) > 1 and all(hasattr(ao, "sumW") for ao in aos):
-        ## Check that there are some non-empty input histograms
-        nonzero_sumws = [ao.sumW() for ao in aos if ao.sumW() != 0]
-        sumw_ref = nonzero_sumws[0] if nonzero_sumws else None
-        ## Use the first non-empty histogram (if there is one) as a reference for norm comparisons
-        same_norms = sumw_ref and all(abs(ao.sumW()/sumw_ref - 1) < 1e-3 for ao in aos)
-        ## Set the normto flag if possible (either because norms match or user-forced)
-        if same_norms or opts.ASSUME_NORMALIZED:
-            if not all("ScaledBy" in ao.annotations for ao in aos):
-                print "WARNING: Abandoning normalized merge of path %s because not all inputs have ScaledBy attributes" % p
-            else:
-                ## Try to compute a target normalization from the 1/scalefactor-weighted norms of each run
-                wtot = sum(1/float(ao.annotation("ScaledBy")) for ao in aos)
-                normto = sum(ao.sumW() / float(ao.annotation("ScaledBy")) for ao in aos) / wtot
+    # TODO: Move merging tool code blocks into Python library
 
     ## Check that types match, and just output the first one if they don't
     if not all(type(ao) is type(aos[0]) for ao in aos[1:]):
@@ -152,9 +133,25 @@ for p, aos in analysisobjects_in.iteritems():
         analysisobjects_out[p] = aos[0]
         continue
 
+    ## Check whether normalizations match (possible for histograms via the sumW/integral attrs)
+    ## In the absence of better info, we use the norm as a heuristic to change the merging behaviour
+    # TODO: Can this cause problems for profiles?
+    normto = None
+    if len(aos) > 1 and all(hasattr(ao, "sumW") for ao in aos):
+        if all("ScaledBy" in ao.annotations for ao in aos):
+            ## Try to compute a target normalization from the 1/scalefactor-weighted norms of each run
+            # TODO: Should this also include the yodamerge_scale user scalefactor?
+            wtot = sum(1/float(ao.annotation("ScaledBy")) for ao in aos)
+            normto = sum(ao.sumW() / float(ao.annotation("ScaledBy")) for ao in aos) / wtot
+        elif all("ScaledBy" not in ao.annotations for ao in aos):
+            pass #< leave normto == None
+        else:
+            print "WARNING: Abandoning normalized merge of path %s because not all inputs have ScaledBy attributes" % p
+
     ## If target should be normalized, undo the normalization scaling now
     if normto:
         for ao in aos:
+            assert hasattr(ao, "scaleW"):
             ao.scaleW(1/float(ao.annotation("ScaledBy")))
 
     ## Now that the normalization-identifying heuristic is done, apply user scalings
@@ -165,11 +162,9 @@ for p, aos in analysisobjects_in.iteritems():
             ao.scaleW(scale)
 
     ## Make a copy of the (scaled & unnormalized) first object as the basis for the output
+    ## and merge for histograms (including weights, normalization, and user scaling)
     ao_out = aos[0].clone()
     ao_out.rmAnnotation("yodamerge_scale")
-
-
-    ## Merge for histograms (including weights, normalization, and user scaling)
     if hasattr(ao_out, "__iadd__"):
         for ao in aos[1:]:
             ao_out += ao
@@ -177,6 +172,7 @@ for p, aos in analysisobjects_in.iteritems():
             ao_out.normalize(normto)
 
     ## Merge for Scatter2D (assuming equal run sizes, and applying user scaling)
+    # TODO: Drop this completely, or add a flag to disable?
     elif type(ao_out) is yoda.Scatter2D:
         msg = "WARNING: Scatter2D %s merge assumes equal run sizes" % p
         if any(float(ao.annotation("yodamerge_scale")) != 1.0 for ao in aos):
