@@ -139,7 +139,7 @@ for p, aos in analysisobjects_in.iteritems():
 
 
     ## Histogram & profile merging
-    if hasattr(ao, "scaleW"): #< restrict "full" merging to histo types
+    if hasattr(aos[0], "scaleW"): #< restrict "full" merging to histo types
 
         ## Identify a target rescaling factor from the 1/scalefactor-weighted norms of each run
         rescale = None
