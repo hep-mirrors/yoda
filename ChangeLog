@@ -1,5 +1,9 @@
 2015-06-30  Andy Buckley  <andy.buckley@cern.ch>
 
+	* More tweaks to yodamerge: adding control of S2D merging
+	strategy, and now performing weighted normalized histo merges
+	without reference to an absolute normalization.
+
 	* Change yodamerge norm-detection heuristic to just look for a
 	ScaledBy attribute rather than fuzzily compare norms.
 
