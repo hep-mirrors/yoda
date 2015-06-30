@@ -39,7 +39,15 @@ CYTHON_SRC = \
     include/ProfileBin2D.pyx \
     include/Scatter1D.pyx \
     include/Scatter2D.pyx \
-    include/Scatter3D.pyx
+    include/Scatter3D.pyx \
+    include/Bin1D.pxi \
+    include/Bin2D.pxi \
+    include/Axis1D.pxi \
+    include/Axis2D.pxi \
+	include/generated/Bin1D_Dbn1D.pyx \
+	include/generated/Bin1D_Dbn2D.pyx \
+	include/generated/Bin2D_Dbn2D.pyx \
+	include/generated/Bin2D_Dbn3D.pyx
 
 EXTRA_DIST += \
     $(CYTHON_SRC) \
@@ -52,13 +60,13 @@ EXTRA_DIST += \
 if WITH_CYTHON
 
 core.cpp core.h: $(CYTHON_SRC) .made_pyx_templates
-	cython $(srcdir)/core.pyx --cplus -I $(builddir) -I $(builddir)/include -o $@
+	cython $(srcdir)/core.pyx --cplus -I $(srcdir) -I $(srcdir)/include -I $(builddir) -I $(builddir)/include -o $@
 
 util.cpp: util.pxd util.pyx .made_pyx_templates
-	cython $(srcdir)/util.pyx --cplus -I $(builddir) -I $(builddir)/include -o $@
+	cython $(srcdir)/util.pyx --cplus -I $(srcdir) -I $(srcdir)/include -I $(builddir) -I $(builddir)/include -o $@
 
 rootcompat.cpp: util.pxd rootcompat.pxd rootcompat.pyx .made_pyx_templates
-	cython $(srcdir)/rootcompat.pyx --cplus -I $(builddir) -I $(builddir)/include -o $@
+	cython $(srcdir)/rootcompat.pyx --cplus -I $(srcdir) -I $(srcdir)/include -I $(builddir) -I $(builddir)/include -o $@
 
 else
 
@@ -103,4 +111,4 @@ clean-local: fix-out-of-source
 	rm -f $<
 
 distclean-local:
-	rm -f core.cpp core.h util.cpp rootcompat.cpp include/generated/* .made_pyx_templates
+	rm -f core.cpp core.h util.cpp rootcompat.cpp include/generated/* include/*.pxi .made_pyx_templates

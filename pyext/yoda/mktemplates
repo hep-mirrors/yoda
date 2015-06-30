@@ -36,7 +36,7 @@ GENERATED_HEADER = Template(
 """)
 
 def make_templates(full_filename, *args, **kwargs):
-    individuals = args or [dict(izip(kwargs, line)) 
+    individuals = args or [dict(izip(kwargs, line))
                            for line in product(*kwargs.itervalues())]
 
     f = open(full_filename)
@@ -71,7 +71,6 @@ def make_templates(full_filename, *args, **kwargs):
         includes.append(out_filename)
 
         inc_filename = join("include", plain_name + '.pxi')
-
         f = open(inc_filename, 'w')
         f.write(GENERATED_HEADER.substitute(filename=filename))
         f.write("\n".join('include "%s"' % i for i in includes))
