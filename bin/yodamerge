@@ -139,7 +139,8 @@ for p, aos in analysisobjects_in.iteritems():
 
 
     ## Histogram & profile merging
-    if hasattr(aos[0], "scaleW"): #< restrict "full" merging to histo types
+    if type(aos[0]) in (yoda.Histo1D, yoda.Histo2D):
+    # if hasattr(aos[0], "scaleW"): #< restrict "full" merging to histo types
 
         ## Identify a target rescaling factor from the 1/scalefactor-weighted norms of each run
         rescale = None
@@ -168,7 +169,7 @@ for p, aos in analysisobjects_in.iteritems():
 
     ## Merge for Scatter2D (assuming equal run sizes, and applying user scaling)
     # TODO: Drop this completely, or add a flag to disable?
-    elif type(ao_out) is yoda.Scatter2D:
+    elif type(aos[0]) is yoda.Scatter2D:
 
         ## Make a copy of the first object as the basis for merging
         ao_out = aos[0].clone()
@@ -206,7 +207,8 @@ for p, aos in analysisobjects_in.iteritems():
         elif opts.S2D_MODE == "first":
             pass
 
-        raise Exception("Unknown S2D merging mode")
+        else:
+            raise Exception("Unknown S2D merging mode")
 
 
     ## Other data types (just warn, and write out the first object)

@@ -32,7 +32,7 @@ def eq(a, b):
     if a == b:
         return True
     from math import isnan
-    if isnan(a) and isnan(b):
+    if type(a) is type(b) is float and isnan(a) and isnan(b):
         return True
     ## Type-check: be a bit careful re. int vs. float
     if type(a) is not type(b) and not all(type(x) in (int, float) for x in (a,b)):
