@@ -69,3 +69,4 @@ Doxyfile$
 ^sphinxdoc/_build$
 ^tmp/
 ^pydoc/
+^pyext/yoda/.made_pyx_templates$
