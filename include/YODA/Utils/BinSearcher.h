@@ -143,7 +143,7 @@ namespace YODA {
       /// Default constructor
       /// @todo What's the point?
       BinSearcher() {
-        _est.reset(new LinEstimator(1, 0, 1));
+        _est.reset(new LinEstimator(0, 0, 1));
       }
 
       /// Copy constructor
@@ -168,7 +168,7 @@ namespace YODA {
         _updateEdges(edges);
 
         if (edges.empty()) {
-          _est.reset(new LinEstimator(0, 0, 0));
+          _est.reset(new LinEstimator(0, 0, 1));
         } else if (edges.front() <= 0.0) {
           _est.reset(new LinEstimator(edges.size()-1,
 				      edges.front(), edges.back()));
