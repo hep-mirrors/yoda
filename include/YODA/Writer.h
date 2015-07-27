@@ -84,9 +84,14 @@ namespace YODA {
                const AOITER& begin,
                const AOITER& end) {
       std::ofstream outstream;
-      outstream.open(filename.c_str());
-      write(outstream, begin, end);
-      outstream.close();
+      outstream.exceptions ( std::ifstream::failbit | std::ifstream::badbit );
+      try{
+        outstream.open(filename.c_str());
+        write(outstream, begin, end);
+        outstream.close();
+      } catch(std::ifstream::failure e) {
+        throw WriteError("writing to filename " + filename + " failed: " + e.what());
+      }
     }
 
 
