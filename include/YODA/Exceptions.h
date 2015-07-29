@@ -89,6 +89,13 @@ namespace YODA {
   };
 
 
+  /// Error for file writing errors
+  class WriteError : public Exception {
+  public:
+    WriteError(const std::string& what) : Exception(what) {}
+  };
+
+
   /// Error for problems introduced outside YODA, to put it nicely.
   class UserError : public Exception {
   public:

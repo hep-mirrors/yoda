@@ -1,3 +1,8 @@
+2015-07-29  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Add configuration of output streams to throw exceptions on
+	bad/fail state (based on patch from Lukas Heinrich).
+
 2015-07-01  Andy Buckley  <andy.buckley@cern.ch>
 
 	* 1.4.0 release.
