@@ -47,6 +47,10 @@ namespace YODA {
     }
   }
 
+  void Writer::writeBody(std::ostream& stream, const AnalysisObject* ao) {
+    if(!ao) throw WriteError("attempting to write a null AnalysisObject");
+    writeBody(stream,*ao);
+  }
 
   void Writer::writeBody(std::ostream& stream, const AnalysisObject& ao) {
     const string aotype = ao.type();

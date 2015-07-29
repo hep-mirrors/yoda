@@ -15,8 +15,10 @@
 #include "YODA/Scatter1D.h"
 #include "YODA/Scatter2D.h"
 #include "YODA/Scatter3D.h"
+#include "YODA/Utils/Traits.h"
 
 #include "boost/range.hpp"
+#include "boost/utility/enable_if.hpp"
 
 #include <string>
 #include <fstream>
@@ -48,14 +50,19 @@ namespace YODA {
     //@{
 
     /// Write out a collection of objects @a objs to output stream @a stream.
+    /// Note: the enable_if call checks whether RANGE is const_iterable, if yes the return
+    ///       type is void. If not, this template will not be a candidate in the lookup
     template <typename RANGE>
-    void write(std::ostream& stream, const RANGE& aos) {
+    typename boost::enable_if_c<Iterable<RANGE>::value>::type
+    write(std::ostream& stream, const RANGE& aos) {
       //typedef typename boost::range_iterator<const RANGE>::type const_iterator;
       write(stream, boost::begin(aos), boost::end(aos));
     }
+
     /// Write out a collection of objects @a objs to file @a filename.
     template <typename RANGE>
-    void write(const std::string& filename, const RANGE& aos) {
+    typename boost::enable_if_c<Iterable<RANGE>::value>::type
+    write(const std::string& filename, const RANGE& aos) {
       //typedef typename boost::range_iterator<const RANGE>::type const_iterator;
       write(filename, boost::begin(aos), boost::end(aos));
     }
@@ -72,7 +79,7 @@ namespace YODA {
     void write(std::ostream& stream, const AOITER& begin, const AOITER& end) {
       writeHeader(stream);
       for (AOITER ipao = begin; ipao != end; ++ipao) {
-        writeBody(stream, **ipao);
+        writeBody(stream, *ipao);
       }
       writeFooter(stream);
     }
@@ -94,7 +101,6 @@ namespace YODA {
       }
     }
 
-
     //@}
 
 
@@ -108,6 +114,7 @@ namespace YODA {
 
     /// Main writer elements
     virtual void writeHeader(std::ostream& stream) = 0;
+    virtual void writeBody(std::ostream& stream, const AnalysisObject* ao);
     virtual void writeBody(std::ostream& stream, const AnalysisObject& ao);
     virtual void writeFooter(std::ostream& stream) = 0;
 

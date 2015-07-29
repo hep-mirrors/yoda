@@ -3,7 +3,6 @@
 // the Writer base class, but code duplication can't be avoided without a
 // preprocessor hack like this, AFAIK.
 
-
 /// @name Writing a single analysis object.
 //@{
 

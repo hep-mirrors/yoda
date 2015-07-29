@@ -25,6 +25,7 @@ nobase_pkginclude_HEADERS = \
 	Utils/Formatting.h \
 	Utils/Predicates.h \
 	Utils/BinSearcher.h \
+	Utils/Traits.h \
 	Utils/sortedvector.h \
 	Utils/cachedvector.h \
 	Utils/indexedset.h \

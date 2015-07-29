@@ -1,5 +1,11 @@
 2015-07-29  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Add SFINAE trait magic to restrict write(RANGE) functions to
+	accepting iterables. Also generalising to allow either
+	container-of-objects or container-of-pointers args by providing a
+	writeBody(AO*) function to complement writeBody(AO&). Based on a
+	patch from Lukas Heinrich.
+
 	* Add configuration of output streams to throw exceptions on
 	bad/fail state (based on patch from Lukas Heinrich).
 
