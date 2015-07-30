@@ -1,3 +1,8 @@
+2015-07-30  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Remove # markers from YODA format BEGIN/END output. The parser
+	will continue to accept them.
+
 2015-07-29  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Add SFINAE trait magic to restrict write(RANGE) functions to
