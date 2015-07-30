@@ -5,7 +5,7 @@ lib_LTLIBRARIES = libYODA.la
 ## Compile ReaderYODA and ReaderFLAT first: they take longest so this speeds up -jN compilation!
 libYODA_la_SOURCES = \
     Reader.cc \
-    ReaderYODA.cc \
+    ReaderYODA2.cc \
     ReaderFLAT.cc \
     ReaderAIDA.cc \
     Writer.cc \
