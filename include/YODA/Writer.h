@@ -101,6 +101,7 @@ namespace YODA {
       }
     }
 
+
     //@}
 
 
@@ -114,6 +115,15 @@ namespace YODA {
 
     /// Main writer elements
     virtual void writeHeader(std::ostream& stream) = 0;
+
+    
+    //note: DerefAO<T> is a trait that's true if T has a derefence operator 
+    //      that is convertible to an AnalysisObject
+    template<typename T>
+    typename boost::enable_if_c<DerefAO<T>::value>::type writeBody(std::ostream& stream, const T& ao){
+      writeBody(stream,*ao);
+    }
+  
     virtual void writeBody(std::ostream& stream, const AnalysisObject* ao);
     virtual void writeBody(std::ostream& stream, const AnalysisObject& ao);
     virtual void writeFooter(std::ostream& stream) = 0;
