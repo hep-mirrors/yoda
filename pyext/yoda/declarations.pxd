@@ -1242,7 +1242,7 @@ cdef extern from "YODA/Reader.h" namespace "YODA":
     cdef cppclass Reader:
         void read(istringstream&, vector[AnalysisObject*]&) except +yodaerr
 
-cdef extern from "YODA/ReaderYODA.h" namespace "YODA":
+cdef extern from "YODA/ReaderYODA2.h" namespace "YODA":
     Reader& ReaderYODA_create "YODA::ReaderYODA::create" ()
 
 cdef extern from "YODA/ReaderFLAT.h" namespace "YODA":
