@@ -12,7 +12,7 @@
 namespace YODA {
 
 
-  /// Persistency reader from YODA flat text data format.
+  /// Persistency reader from YODA text data format.
   class ReaderYODA : public Reader {
   public:
 
