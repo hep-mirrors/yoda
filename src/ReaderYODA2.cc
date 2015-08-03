@@ -71,13 +71,22 @@ namespace YODA {
                    HISTO1D, HISTO2D,
                    PROFILE1D, PROFILE2D };
 
-
-    /// @todo Need some "current AO" objects/ptrs, with complete types
-
-    // Loop over all lines of the input file
+    /// State of the parser: line number, line, parser context, and pointer(s) to the object currently being assembled
     unsigned int nline = 0;
     string s;
     Context context = NONE;
+    //
+    AnalysisObject* aocurr = NULL; //< Generic current AO pointer (useful or not?)
+    Counter* cncurr = NULL;
+    Histo1D* h1curr = NULL;
+    Histo2D* h2curr = NULL;
+    Profile1D* p1curr = NULL;
+    Profile2D* p2curr = NULL;
+    Scatter1D* s1curr = NULL;
+    Scatter2D* s2curr = NULL;
+    Scatter3D* s3curr = NULL;
+
+    // Loop over all lines of the input file
     while (safe_getline(stream, s)) {
       nline += 1;
 
@@ -107,16 +116,44 @@ namespace YODA {
         // Extract context from BEGIN type
         assert(parts.size() >= 2 && parts[0] == "BEGIN");
         const string ctxstr = parts[1];
-        if      (ctxstr == "YODA_SCATTER1D") context = SCATTER1D;
-        else if (ctxstr == "YODA_SCATTER2D") context = SCATTER2D;
-        else if (ctxstr == "YODA_SCATTER3D") context = SCATTER2D;
-        else if (ctxstr == "YODA_COUNTER")   context = COUNTER;
-        else if (ctxstr == "YODA_HISTO1D")   context = HISTO1D;
-        else if (ctxstr == "YODA_HISTO2D")   context = HISTO2D;
-        else if (ctxstr == "YODA_PROFILE1D") context = PROFILE1D;
-        else if (ctxstr == "YODA_PROFILE2D") context = PROFILE2D;
 
-        /// @todo Note block name if possible... as "global"?
+        // Get block path if possible
+        const string path = (parts.size() >= 3) ? parts[2] : "";
+
+        // Set the new context and create a new AO to populate
+        if (ctxstr == "YODA_COUNTER") {
+          context = COUNTER;
+          cncurr = new Counter(path);
+          aocurr = cncurr;
+        } else if (ctxstr == "YODA_SCATTER1D") {
+          context = SCATTER1D;
+          s1curr = new Scatter1D(path);
+          aocurr = s1curr;
+        } else if (ctxstr == "YODA_SCATTER2D") {
+          context = SCATTER2D;
+          s2curr = new Scatter2D(path);
+          aocurr = s2curr;
+        } else if (ctxstr == "YODA_SCATTER3D") {
+          context = SCATTER2D;
+          s3curr = new Scatter3D(path);
+          aocurr = s3curr;
+        } else if (ctxstr == "YODA_HISTO1D") {
+          context = HISTO1D;
+          h1curr = new Histo1D(path);
+          aocurr = h1curr;
+        } else if (ctxstr == "YODA_HISTO2D") {
+          context = HISTO2D;
+          h2curr = new Histo2D(path);
+          aocurr = h2curr;
+        } else if (ctxstr == "YODA_PROFILE1D") {
+          context = PROFILE1D;
+          p1curr = new Profile1D(path);
+          aocurr = p1curr;
+        } else if (ctxstr == "YODA_PROFILE2D") {
+          context = PROFILE2D;
+          p2curr = new Profile2D(path);
+          aocurr = p2curr;
+        }
 
       } else {
 
@@ -130,21 +167,21 @@ namespace YODA {
         case SCATTER1D:
         case SCATTER2D:
         case SCATTER3D:
-          cout << "Scatter " << context << endl;
+          cout << "Scatter " << aocurr->path() << " " << nline << " " << context << endl;
           break;
         case COUNTER:
-          cout << "Counter " << context << endl;
+          cout << "Counter " << aocurr->path() << " " << nline << " " << context << endl;
           break;
         case HISTO1D:
         case HISTO2D:
-          cout << "Histo " << context << endl;
+          cout << "Histo " << aocurr->path() << " " << nline << " " << context << endl;
           break;
         case PROFILE1D:
         case PROFILE2D:
-          cout << "Profile " << context << endl;
+          cout << "Profile " << aocurr->path() << " " << nline << " " << context << endl;
           break;
         default:
-          throw ReadError("Unknown context number in YODA format parsing: how did this happen?");
+          throw ReadError("Unknown context in YODA format parsing: how did this happen?");
         }
 
         // case -1: // we left YODA_HISTO1D
