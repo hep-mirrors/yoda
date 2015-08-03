@@ -53,14 +53,14 @@ namespace YODA {
     /// Note: the enable_if call checks whether RANGE is const_iterable, if yes the return
     ///       type is void. If not, this template will not be a candidate in the lookup
     template <typename RANGE>
-    typename std::enable_if<Iterable<RANGE>::value,void>::type  write(std::ostream& stream, const RANGE& aos) {
+    typename boost::enable_if_c<Iterable<RANGE>::value>::type  write(std::ostream& stream, const RANGE& aos) {
       //typedef typename boost::range_iterator<const RANGE>::type const_iterator;
       write(stream, boost::begin(aos), boost::end(aos));
     }
 
     /// Write out a collection of objects @a objs to file @a filename.
     template <typename RANGE>
-    typename std::enable_if<Iterable<RANGE>::value,void>::type write(const std::string& filename, const RANGE& aos) {
+    typename boost::enable_if_c<Iterable<RANGE>::value>::type write(const std::string& filename, const RANGE& aos) {
       //typedef typename boost::range_iterator<const RANGE>::type const_iterator;
       write(filename, boost::begin(aos), boost::end(aos));
     }
@@ -113,6 +113,15 @@ namespace YODA {
 
     /// Main writer elements
     virtual void writeHeader(std::ostream& stream) = 0;
+
+    
+    //note: DerefAO<T> is a trait that's true if T has a derefence operator 
+    //      that is convertible to an AnalysisObject
+    template<typename T>
+    typename boost::enable_if_c<DerefAO<T>::value>::type writeBody(std::ostream& stream, const T& ao){
+      writeBody(stream,*ao);
+    }
+  
     virtual void writeBody(std::ostream& stream, const AnalysisObject* ao);
     virtual void writeBody(std::ostream& stream, const AnalysisObject& ao);
     virtual void writeFooter(std::ostream& stream) = 0;

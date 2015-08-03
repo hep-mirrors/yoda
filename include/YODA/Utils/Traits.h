@@ -6,6 +6,8 @@
 #ifndef YODA_TRAITS_H
 #define YODA_TRAITS_H
 
+#include <boost/type_traits/has_dereference.hpp>
+
 namespace YODA{
   //SFINAE struct to check for iterator concept at compile time
   template<typename T>
@@ -14,6 +16,11 @@ namespace YODA{
     template <typename C> static yes& test(typename C::const_iterator*  c);
     template <typename> static no& test(...);
     static const bool value = sizeof(test<T>(0)) == sizeof(yes);
+  };
+
+  template<typename T>
+  struct DerefAO{
+    static const bool value = boost::has_dereference<T,const YODA::AnalysisObject&>::value;
   };
 }
 #endif
