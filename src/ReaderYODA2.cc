@@ -156,19 +156,39 @@ namespace YODA {
         }
 
       } else {
+        /// @todo Flatten conditional blocks with more else-ifs?
 
-        /// @todo Throw error if a BEGIN line is found
+        // Throw error if a BEGIN line is found
+        if (s.find("BEGIN ") != string::npos) throw ReadError("Unexpected BEGIN line in YODA format parsing before ending current BEGIN..END block");
 
-        /// @todo Clear/reset context and register AO if END line is found, throw error if mismatch between BEGIN (context) and END types
+        // Clear/reset context and register AO if END line is found
+        /// @todo Throw error if mismatch between BEGIN (context) and END types
+        if (s.find("END ") != string::npos) {
+          aos.push_back(aocurr);
+          context = NONE;
+          aocurr = NULL;
+          cncurr = NULL;
+          h1curr = NULL;
+          h2curr = NULL;
+          p1curr = NULL;
+          p2curr = NULL;
+          s1curr = NULL;
+          s2curr = NULL;
+          s3curr = NULL;
+          continue; ///< @todo Improve... would be good to avoid these continues
+        }
 
-        /// @todo Extract annotations for all types
+        // Extract annotations for all types
+        const size_t ieq = s.find("=");
+        if (ieq != string::npos) {
+          const string akey = s.substr(0, ieq);
+          const string aval = s.substr(ieq+1);
+          aocurr->setAnnotation(akey, aval);
+          continue; ///< @todo Improve... would be good to avoid these continues
+        }
 
+        // Populate the data lines for points, bins, etc.
         switch (context) {
-        case SCATTER1D:
-        case SCATTER2D:
-        case SCATTER3D:
-          cout << "Scatter " << aocurr->path() << " " << nline << " " << context << endl;
-          break;
         case COUNTER:
           cout << "Counter " << aocurr->path() << " " << nline << " " << context << endl;
           break;
@@ -179,6 +199,12 @@ namespace YODA {
         case PROFILE1D:
         case PROFILE2D:
           cout << "Profile " << aocurr->path() << " " << nline << " " << context << endl;
+          break;
+        case SCATTER1D:
+        case SCATTER2D:
+        case SCATTER3D:
+          /// @todo Can we do single-line streaming to multiple numeric variables?
+          cout << "Scatter " << aocurr->path() << " " << nline << " " << context << endl;
           break;
         default:
           throw ReadError("Unknown context in YODA format parsing: how did this happen?");
