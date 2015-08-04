@@ -154,6 +154,7 @@ namespace YODA {
           p2curr = new Profile2D(path);
           aocurr = p2curr;
         }
+        cout << aocurr->path() << " " << nline << " " << context << endl;
 
       } else {
         /// @todo Flatten conditional blocks with more else-ifs?
@@ -188,103 +189,92 @@ namespace YODA {
         }
 
         // Populate the data lines for points, bins, etc.
+        istringstream iss(s);
+        string xoflow1, xoflow2, yoflow1, yoflow2; double xmin, xmax, ymin, ymax;
+        double sumw, sumw2, sumwx, sumwx2, sumwy, sumwy2, sumwz, sumwz2, sumwxy, sumwxz, sumwyz; int n;
+        double x, y, z, exm, exp, eym, eyp, ezm, ezp;
         switch (context) {
         case COUNTER:
-          cout << "Counter " << aocurr->path() << " " << nline << " " << context << endl;
+          //double sumw, sumw2; int n;
+          iss >> sumw2 >> sumw2 >> n;
+          /// @todo Fill counter
           break;
         case HISTO1D:
+          //string xoflow1, xoflow2; double xmin, xmax; double sumw, sumw2, sumwx, sumwx2; int n;
+          /// @todo Improve/factor this "bin" string-or-float parsing... esp for mixed case of 2D overflows
+          /// @todo When outflows are treated as "infinity bins" and don't require a distinct type, string replace under/over -> -+inf
+          if (s.find("Total") != string::npos || s.find("Underflow") != string::npos || s.find("Overflow") != string::npos) {
+            iss >> xoflow1 >> xoflow2;
+          } else {
+            iss >> xmin >> xmax;
+          }
+          // The rest is the same for overflows and in-range bins
+          iss >> sumw >> sumw2 >> sumwx >> sumwx2 >> n;
+          /// @todo Make and fill bins/overflows
+          break;
         case HISTO2D:
-          cout << "Histo " << aocurr->path() << " " << nline << " " << context << endl;
+          //string xoflow1, xoflow2, yoflow1, yoflow2; double xmin, xmax, ymin, ymax;
+          //double sumw, sumw2, sumwx, sumwx2, sumwy, sumwy2, sumwxy; int n;
+          /// @todo Improve/factor this "bin" string-or-float parsing... esp for mixed case of 2D overflows
+          /// @todo When outflows are treated as "infinity bins" and don't require a distinct type, string replace under/over -> -+inf
+          if (s.find("Total") != string::npos || s.find("Underflow") != string::npos || s.find("Overflow") != string::npos) {
+            throw ReadError("2D histogram overflow syntax is not yet defined / handled");
+            // iss >> xoflow1 >> xoflow2 >> yoflow1 >> yoflow2;
+          } else {
+            iss >> xmin >> xmax >> ymin >> ymax;
+          }
+          // The rest is the same for overflows and in-range bins
+          iss >> sumw >> sumw2 >> sumwx >> sumwx2 >> sumwy >> sumwy2 >> sumwxy >> n;
+          /// @todo Make and fill bins/overflows
           break;
         case PROFILE1D:
+          //string xoflow1, xoflow2; double xmin, xmax; double sumw, sumw2, sumwx, sumwx2, sumwy, sumwy2; int n;
+          /// @todo Improve/factor this "bin" string-or-float parsing... esp for mixed case of 2D overflows
+          /// @todo When outflows are treated as "infinity bins" and don't require a distinct type, string replace under/over -> -+inf
+          if (s.find("Total") != string::npos || s.find("Underflow") != string::npos || s.find("Overflow") != string::npos) {
+            iss >> xoflow1 >> xoflow2;
+          } else {
+            iss >> xmin >> xmax;
+          }
+          // The rest is the same for overflows and in-range bins
+          iss >> sumw >> sumw2 >> sumwx >> sumwx2 >> sumwy >> sumwy2 >> n;
+          /// @todo Make and fill bins/overflows
+          break;
         case PROFILE2D:
-          cout << "Profile " << aocurr->path() << " " << nline << " " << context << endl;
+          // string xoflow1, xoflow2, yoflow1, yoflow2; double xmin, xmax, ymin, ymax;
+          // double sumw, sumw2, sumwx, sumwx2, sumwy, sumwy2, sumwxy, sumwxz, sumwyz; int n;
+          /// @todo Improve/factor this "bin" string-or-float parsing... esp for mixed case of 2D overflows
+          /// @todo When outflows are treated as "infinity bins" and don't require a distinct type, string replace under/over -> -+inf
+          if (s.find("Total") != string::npos || s.find("Underflow") != string::npos || s.find("Overflow") != string::npos) {
+            throw ReadError("2D profile overflow syntax is not yet defined / handled");
+            // iss >> xoflow1 >> xoflow2 >> yoflow1 >> yoflow2;
+          } else {
+            iss >> xmin >> xmax >> ymin >> ymax;
+          }
+          // The rest is the same for overflows and in-range bins
+          iss >> sumw >> sumw2 >> sumwx >> sumwx2 >> sumwy >> sumwy2 >> sumwz >> sumwz2 >> sumwxy >> sumwxz >> sumwyz >> n;
+          /// @todo Make and fill bins/overflows
           break;
         case SCATTER1D:
+          // double x, exm, exp;
+          iss >> x >> exm >> exp;
+          /// @todo Add point
+          break;
         case SCATTER2D:
+          /// @todo Need to improve this format for multi-err points
+          // double x, y, exm, exp, eym, eyp;
+          iss >> x >> exm >> exp >> y >> eym >> eyp;
+          /// @todo Add point
+          break;
         case SCATTER3D:
-          /// @todo Can we do single-line streaming to multiple numeric variables?
-          cout << "Scatter " << aocurr->path() << " " << nline << " " << context << endl;
+          /// @todo Need to improve this format for multi-err points
+          // double x, y, z, exm, exp, eym, eyp, ezm, ezp;
+          iss >> x >> exm >> exp >> y >> eym >> eyp >> z >> ezm >> ezp;
+          /// @todo Add point
           break;
         default:
           throw ReadError("Unknown context in YODA format parsing: how did this happen?");
         }
-
-        // case -1: // we left YODA_HISTO1D
-        //   if (contextchange) {
-        //     YODA::AnalysisObject* ao = new YODA::Histo1D(_histo1d.bins, _histo1d.dbn_tot, _histo1d.dbn_uflow, _histo1d.dbn_oflow);
-        //     pair<string, string> pss;  // to make boost's BOOST_FOREACH happy
-        //     BOOST_FOREACH (pss, _annotations)
-        //       ao->setAnnotation(pss.first, pss.second);
-        //     aos.push_back(ao);
-        //     cleanup();
-        //     contextchange = false;
-        //   }
-        //   break;
-        // case -2: // we left YODA_HISTO2D
-        //   if (contextchange) {
-        //     /// @todo For now just create 8 fake entries: needs to be greatly generalised for final form
-        //     _histo2d.dbns_oflow.clear(); _histo2d.dbns_oflow.resize(8);
-        //     YODA::AnalysisObject* ao = new YODA::Histo2D(_histo2d.bins, _histo2d.dbn_tot, _histo2d.dbns_oflow);
-        //     pair<string, string> pss;  // to make boost's BOOST_FOREACH happy
-        //     BOOST_FOREACH (pss, _annotations)
-        //       ao->setAnnotation(pss.first, pss.second);
-        //     aos.push_back(ao);
-        //     cleanup();
-        //     contextchange = false;
-        //   }
-        //   break;
-        // case -3: // we left YODA_PROFILE1D
-        //   if (contextchange) {
-        //     YODA::AnalysisObject* ao = new YODA::Profile1D(_profile1d.bins, _profile1d.dbn_tot, _profile1d.dbn_uflow, _profile1d.dbn_oflow);
-        //     pair<string, string> pss;  // to make boost's BOOST_FOREACH happy
-        //     BOOST_FOREACH (pss, _annotations)
-        //       ao->setAnnotation(pss.first, pss.second);
-        //     aos.push_back(ao);
-        //     cleanup();
-        //     contextchange = false;
-        //   }
-        //   break;
-        // case -4: // we left YODA_PROFILE2D
-        //   if (contextchange) {
-        //     /// @todo For now just create 8 fake entries: needs to be greatly generalised for final form
-        //     _profile2d.dbns_oflow.clear(); _profile2d.dbns_oflow.resize(8);
-        //     YODA::AnalysisObject* ao = new YODA::Profile2D(_profile2d.bins, _profile2d.dbn_tot, _profile2d.dbns_oflow);
-        //     pair<string, string> pss;  // to make boost's BOOST_FOREACH happy
-        //     BOOST_FOREACH (pss, _annotations)
-        //       ao->setAnnotation(pss.first, pss.second);
-        //     aos.push_back(ao);
-        //     cleanup();
-        //     contextchange = false;
-        //   }
-        //   break;
-        // case -5: // we left YODA_SCATTER1D
-        //   if (contextchange) {
-        //     YODA::AnalysisObject* ao = new YODA::Scatter1D(_scatter1d.points);
-        //     pair<string, string> pss;  // to make boost's BOOST_FOREACH happy
-        //     BOOST_FOREACH (pss, _annotations)
-        //       ao->setAnnotation(pss.first, pss.second);
-        //     aos.push_back(ao);
-        //     cleanup();
-        //     contextchange = false;
-        //   }
-        //   break;
-        // case -6: // we left YODA_SCATTER2D
-        //   if (contextchange) {
-        //     YODA::AnalysisObject* ao = new YODA::Scatter2D(_scatter2d.points);
-        //     pair<string, string> pss;  // to make boost's BOOST_FOREACH happy
-        //     BOOST_FOREACH (pss, _annotations)
-        //       ao->setAnnotation(pss.first, pss.second);
-        //     aos.push_back(ao);
-        //     cleanup();
-        //     contextchange = false;
-        //   }
-        //   break;
-        //   // case -7: // we left YODA_SCATTER3D
-        //   /// @todo We need to iprove the parser to read Scatter3D, since it has the same number of line items as a profile type
-        //   cerr << "YODA WARNING: Scatter3D can't currently be read from .yoda format. "
-        //        << "This should be fixed soon: please complain to the authors!" << endl;
-        // }
 
       }
     }
