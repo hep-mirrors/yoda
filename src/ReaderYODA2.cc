@@ -190,9 +190,9 @@ namespace YODA {
 
         // Populate the data lines for points, bins, etc.
         istringstream iss(s);
-        string xoflow1, xoflow2, yoflow1, yoflow2; double xmin, xmax, ymin, ymax;
-        double sumw, sumw2, sumwx, sumwx2, sumwy, sumwy2, sumwz, sumwz2, sumwxy, sumwxz, sumwyz; int n;
-        double x, y, z, exm, exp, eym, eyp, ezm, ezp;
+        string xoflow1, xoflow2, yoflow1, yoflow2; double xmin(0), xmax(0), ymin(0), ymax(0);
+        double sumw(0), sumw2(0), sumwx(0), sumwx2(0), sumwy(0), sumwy2(0), sumwz(0), sumwz2(0), sumwxy(0), sumwxz(0), sumwyz(0); int n(0);
+        double x(0), y(0), z(0), exm(0), exp(0), eym(0), eyp(0), ezm(0), ezp(0);
         switch (context) {
         case COUNTER:
           //double sumw, sumw2; int n;
@@ -277,7 +277,7 @@ namespace YODA {
         }
 
         cout << "AO CONTENT " << nline << endl;
-        cout << "  " << xoflow1 << " " << xoflow2 << " " << yoflow1 << " " << yoflow2 << " " << xmin << " " << xmax << " " << ymin << " " << ymax << endl;
+        cout << "  " << xmin << " " << xmax << " " << ymin << " " << ymax << " / '" << xoflow1 << "' '" << xoflow2 << "' '" << yoflow1 << "' '" << yoflow2 << "'" << endl;
         cout << "  " << sumw << " " << sumw2 << " " << sumwx << " " << sumwx2 << " " << sumwy << " " << sumwy2 << " " << sumwz << " " << sumwz2 << " " << sumwxy << " " << sumwxz << " " << sumwyz << " " << n << endl;
         cout << "  " << x << " " << y << " " << z << " " << exm << " " << exp << " " << eym << " " << eyp << " " << ezm << " " << ezp << endl;
 
