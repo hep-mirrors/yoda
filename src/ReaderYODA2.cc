@@ -258,19 +258,19 @@ namespace YODA {
         case SCATTER1D:
           // double x, exm, exp;
           iss >> x >> exm >> exp;
-          /// @todo Add point
+          s1curr->addPoint(Point1D(x, exm, exp));
           break;
         case SCATTER2D:
           /// @todo Need to improve this format for multi-err points
           // double x, y, exm, exp, eym, eyp;
           iss >> x >> exm >> exp >> y >> eym >> eyp;
-          /// @todo Add point
+          s2curr->addPoint(Point2D(x, y, exm, exp, eym, eyp));
           break;
         case SCATTER3D:
           /// @todo Need to improve this format for multi-err points
           // double x, y, z, exm, exp, eym, eyp, ezm, ezp;
           iss >> x >> exm >> exp >> y >> eym >> eyp >> z >> ezm >> ezp;
-          /// @todo Add point
+          s3curr->addPoint(Point3D(x, y, z, exm, exp, eym, eyp, ezm, ezp));
           break;
         default:
           throw ReadError("Unknown context in YODA format parsing: how did this happen?");
