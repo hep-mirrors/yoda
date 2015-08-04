@@ -139,7 +139,27 @@ namespace YODA {
     //@}
 
 
-  public:
+    /// @name Internal state access and modification (mainly for persistency use)
+    //@{
+
+    /// Get the internal distribution object
+    const Dbn0D& dbn() const {
+      return _dbn;
+    }
+
+    /// Set the internal distribution object
+    void setDbn(const Dbn0D& dbn) {
+      _dbn = dbn;
+    }
+
+    // /// Set the whole object state
+    // void setState(const Dbn0D& dbn, const AnalysisObject::Annotations& anns=AnalysisObject::Annotations()) {
+    //   setDbn(dbn);
+    //   setAnnotations(anns);
+    // }
+
+    //@}
+
 
     /// @name Adding and subtracting counters
     //@{
