@@ -189,87 +189,128 @@ namespace YODA {
         }
 
         // Populate the data lines for points, bins, etc.
+        // string xoflow1, xoflow2, yoflow1, yoflow2; double xmin(0), xmax(0), ymin(0), ymax(0);
+        // double sumw(0), sumw2(0), sumwx(0), sumwx2(0), sumwy(0), sumwy2(0), sumwz(0), sumwz2(0), sumwxy(0), sumwxz(0), sumwyz(0); unsigned long n(0);
+        // double x(0), y(0), z(0), exm(0), exp(0), eym(0), eyp(0), ezm(0), ezp(0);
         istringstream iss(s);
-        string xoflow1, xoflow2, yoflow1, yoflow2; double xmin(0), xmax(0), ymin(0), ymax(0);
-        double sumw(0), sumw2(0), sumwx(0), sumwx2(0), sumwy(0), sumwy2(0), sumwz(0), sumwz2(0), sumwxy(0), sumwxz(0), sumwyz(0); unsigned long n(0);
-        double x(0), y(0), z(0), exm(0), exp(0), eym(0), eyp(0), ezm(0), ezp(0);
         switch (context) {
+
         case COUNTER:
-          iss >> sumw2 >> sumw2 >> n;
-          cncurr->setDbn(Dbn0D(n, sumw, sumw2));
+          {
+            double sumw(0), sumw2(0); unsigned long n(0);
+            iss >> sumw2 >> sumw2 >> n;
+            cncurr->setDbn(Dbn0D(n, sumw, sumw2));
+          }
           break;
+
         case HISTO1D:
-          /// @todo Improve/factor this "bin" string-or-float parsing... esp for mixed case of 2D overflows
-          /// @todo When outflows are treated as "infinity bins" and don't require a distinct type, string replace under/over -> -+inf
-          if (s.find("Total") != string::npos || s.find("Underflow") != string::npos || s.find("Overflow") != string::npos) {
-            iss >> xoflow1 >> xoflow2;
-          } else {
-            iss >> xmin >> xmax;
+          {
+            string xoflow1, xoflow2; double xmin(0), xmax(0);
+            double sumw(0), sumw2(0), sumwx(0), sumwx2(0); unsigned long n(0);
+            /// @todo Improve/factor this "bin" string-or-float parsing... esp for mixed case of 2D overflows
+            /// @todo When outflows are treated as "infinity bins" and don't require a distinct type, string replace under/over -> -+inf
+            if (s.find("Total") != string::npos || s.find("Underflow") != string::npos || s.find("Overflow") != string::npos) {
+              iss >> xoflow1 >> xoflow2;
+            } else {
+              iss >> xmin >> xmax;
+            }
+            // The rest is the same for overflows and in-range bins
+            iss >> sumw >> sumw2 >> sumwx >> sumwx2 >> n;
+            const Dbn1D dbn(n, sumw, sumw2, sumwx, sumwx2);
+            if (xoflow1 == "Total") h1curr->setTotalDbn(dbn);
+            else if (xoflow1 == "Underflow") h1curr->setUnderflow(dbn);
+            else if (xoflow1 == "Overflow")  h1curr->setOverflow(dbn);
+            else h1curr->addBin(HistoBin1D(std::make_pair(xmin,xmax), dbn));
           }
-          // The rest is the same for overflows and in-range bins
-          iss >> sumw >> sumw2 >> sumwx >> sumwx2 >> n;
-          /// @todo Make and fill bins/overflows
           break;
+
         case HISTO2D:
-          /// @todo Improve/factor this "bin" string-or-float parsing... esp for mixed case of 2D overflows
-          /// @todo When outflows are treated as "infinity bins" and don't require a distinct type, string replace under/over -> -+inf
-          if (s.find("Total") != string::npos || s.find("Underflow") != string::npos || s.find("Overflow") != string::npos) {
-            throw ReadError("2D histogram overflow syntax is not yet defined / handled");
-            // iss >> xoflow1 >> xoflow2 >> yoflow1 >> yoflow2;
-          } else {
-            iss >> xmin >> xmax >> ymin >> ymax;
+          {
+            string xoflow1, xoflow2, yoflow1, yoflow2; double xmin(0), xmax(0), ymin(0), ymax(0);
+            double sumw(0), sumw2(0), sumwx(0), sumwx2(0), sumwy(0), sumwy2(0), sumwxy(0); unsigned long n(0);
+            /// @todo Improve/factor this "bin" string-or-float parsing... esp for mixed case of 2D overflows
+            /// @todo When outflows are treated as "infinity bins" and don't require a distinct type, string replace under/over -> -+inf
+            if (s.find("Total") != string::npos || s.find("Underflow") != string::npos || s.find("Overflow") != string::npos) {
+              throw ReadError("2D histogram overflow syntax is not yet defined / handled");
+              // iss >> xoflow1 >> xoflow2 >> yoflow1 >> yoflow2;
+            } else {
+              iss >> xmin >> xmax >> ymin >> ymax;
+            }
+            // The rest is the same for overflows and in-range bins
+            iss >> sumw >> sumw2 >> sumwx >> sumwx2 >> sumwy >> sumwy2 >> sumwxy >> n;
+            /// @todo Make and fill bins/overflows
           }
-          // The rest is the same for overflows and in-range bins
-          iss >> sumw >> sumw2 >> sumwx >> sumwx2 >> sumwy >> sumwy2 >> sumwxy >> n;
-          /// @todo Make and fill bins/overflows
           break;
+
         case PROFILE1D:
-          /// @todo Improve/factor this "bin" string-or-float parsing... esp for mixed case of 2D overflows
-          /// @todo When outflows are treated as "infinity bins" and don't require a distinct type, string replace under/over -> -+inf
-          if (s.find("Total") != string::npos || s.find("Underflow") != string::npos || s.find("Overflow") != string::npos) {
-            iss >> xoflow1 >> xoflow2;
-          } else {
-            iss >> xmin >> xmax;
+          {
+            string xoflow1, xoflow2; double xmin(0), xmax(0);
+            double sumw(0), sumw2(0), sumwx(0), sumwx2(0), sumwy(0), sumwy2(0); unsigned long n(0);
+            /// @todo Improve/factor this "bin" string-or-float parsing... esp for mixed case of 2D overflows
+            /// @todo When outflows are treated as "infinity bins" and don't require a distinct type, string replace under/over -> -+inf
+            if (s.find("Total") != string::npos || s.find("Underflow") != string::npos || s.find("Overflow") != string::npos) {
+              iss >> xoflow1 >> xoflow2;
+            } else {
+              iss >> xmin >> xmax;
+            }
+            // The rest is the same for overflows and in-range bins
+            iss >> sumw >> sumw2 >> sumwx >> sumwx2 >> sumwy >> sumwy2 >> n;
+            /// @todo Make and fill bins/overflows
           }
-          // The rest is the same for overflows and in-range bins
-          iss >> sumw >> sumw2 >> sumwx >> sumwx2 >> sumwy >> sumwy2 >> n;
-          /// @todo Make and fill bins/overflows
           break;
+
         case PROFILE2D:
-          /// @todo Improve/factor this "bin" string-or-float parsing... esp for mixed case of 2D overflows
-          /// @todo When outflows are treated as "infinity bins" and don't require a distinct type, string replace under/over -> -+inf
-          if (s.find("Total") != string::npos || s.find("Underflow") != string::npos || s.find("Overflow") != string::npos) {
-            throw ReadError("2D profile overflow syntax is not yet defined / handled");
-            // iss >> xoflow1 >> xoflow2 >> yoflow1 >> yoflow2;
-          } else {
-            iss >> xmin >> xmax >> ymin >> ymax;
+          {
+            string xoflow1, xoflow2, yoflow1, yoflow2; double xmin(0), xmax(0), ymin(0), ymax(0);
+            double sumw(0), sumw2(0), sumwx(0), sumwx2(0), sumwy(0), sumwy2(0), sumwz(0), sumwz2(0), sumwxy(0), sumwxz(0), sumwyz(0); unsigned long n(0);
+            /// @todo Improve/factor this "bin" string-or-float parsing... esp for mixed case of 2D overflows
+            /// @todo When outflows are treated as "infinity bins" and don't require a distinct type, string replace under/over -> -+inf
+            if (s.find("Total") != string::npos || s.find("Underflow") != string::npos || s.find("Overflow") != string::npos) {
+              throw ReadError("2D profile overflow syntax is not yet defined / handled");
+              // iss >> xoflow1 >> xoflow2 >> yoflow1 >> yoflow2;
+            } else {
+              iss >> xmin >> xmax >> ymin >> ymax;
+            }
+            // The rest is the same for overflows and in-range bins
+            iss >> sumw >> sumw2 >> sumwx >> sumwx2 >> sumwy >> sumwy2 >> sumwz >> sumwz2 >> sumwxy >> sumwxz >> sumwyz >> n;
+            /// @todo Make and fill bins/overflows
           }
-          // The rest is the same for overflows and in-range bins
-          iss >> sumw >> sumw2 >> sumwx >> sumwx2 >> sumwy >> sumwy2 >> sumwz >> sumwz2 >> sumwxy >> sumwxz >> sumwyz >> n;
-          /// @todo Make and fill bins/overflows
           break;
+
         case SCATTER1D:
-          iss >> x >> exm >> exp;
-          s1curr->addPoint(Point1D(x, exm, exp));
+          {
+            double x(0), exm(0), exp(0);
+            iss >> x >> exm >> exp;
+            s1curr->addPoint(Point1D(x, exm, exp));
+          }
           break;
+
         case SCATTER2D:
-          /// @todo Need to improve this format for multi-err points
-          iss >> x >> exm >> exp >> y >> eym >> eyp;
-          s2curr->addPoint(Point2D(x, y, exm, exp, eym, eyp));
+          {
+            double x(0), y(0), exm(0), exp(0), eym(0), eyp(0);
+            /// @todo Need to improve this format for multi-err points
+            iss >> x >> exm >> exp >> y >> eym >> eyp;
+            s2curr->addPoint(Point2D(x, y, exm, exp, eym, eyp));
+          }
           break;
+
         case SCATTER3D:
-          /// @todo Need to improve this format for multi-err points
-          iss >> x >> exm >> exp >> y >> eym >> eyp >> z >> ezm >> ezp;
-          s3curr->addPoint(Point3D(x, y, z, exm, exp, eym, eyp, ezm, ezp));
+          {
+            double x(0), y(0), z(0), exm(0), exp(0), eym(0), eyp(0), ezm(0), ezp(0);
+            /// @todo Need to improve this format for multi-err points
+            iss >> x >> exm >> exp >> y >> eym >> eyp >> z >> ezm >> ezp;
+            s3curr->addPoint(Point3D(x, y, z, exm, exp, eym, eyp, ezm, ezp));
+          }
           break;
+
         default:
           throw ReadError("Unknown context in YODA format parsing: how did this happen?");
         }
 
-        cout << "AO CONTENT " << nline << endl;
-        cout << "  " << xmin << " " << xmax << " " << ymin << " " << ymax << " / '" << xoflow1 << "' '" << xoflow2 << "' '" << yoflow1 << "' '" << yoflow2 << "'" << endl;
-        cout << "  " << sumw << " " << sumw2 << " " << sumwx << " " << sumwx2 << " " << sumwy << " " << sumwy2 << " " << sumwz << " " << sumwz2 << " " << sumwxy << " " << sumwxz << " " << sumwyz << " " << n << endl;
-        cout << "  " << x << " " << y << " " << z << " " << exm << " " << exp << " " << eym << " " << eyp << " " << ezm << " " << ezp << endl;
+        // cout << "AO CONTENT " << nline << endl;
+        // cout << "  " << xmin << " " << xmax << " " << ymin << " " << ymax << " / '" << xoflow1 << "' '" << xoflow2 << "' '" << yoflow1 << "' '" << yoflow2 << "'" << endl;
+        // cout << "  " << sumw << " " << sumw2 << " " << sumwx << " " << sumwx2 << " " << sumwy << " " << sumwy2 << " " << sumwz << " " << sumwz2 << " " << sumwxy << " " << sumwxz << " " << sumwyz << " " << n << endl;
+        // cout << "  " << x << " " << y << " " << z << " " << exm << " " << exp << " " << eym << " " << eyp << " " << ezm << " " << ezp << endl;
 
       }
     }

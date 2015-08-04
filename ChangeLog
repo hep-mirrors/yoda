@@ -1,6 +1,7 @@
 2015-08-04  Andy Buckley  <andy.buckley@cern.ch>
 
-	* Add direct access to Counter internal state, mainly for new persistency.
+	* Add methods for Counter, Axis and Histo1D internal state
+	access/setting, mainly for new persistency. NEEDS PRE-RELEASE TESTING!!!
 
 2015-07-30  Andy Buckley  <andy.buckley@cern.ch>
 

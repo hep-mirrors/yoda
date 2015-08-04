@@ -147,7 +147,7 @@ namespace YODA {
       return _dbn;
     }
 
-    /// Set the internal distribution object
+    /// Set the internal distribution object: CAREFUL!
     void setDbn(const Dbn0D& dbn) {
       _dbn = dbn;
     }

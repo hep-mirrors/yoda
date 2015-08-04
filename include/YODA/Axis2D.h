@@ -363,10 +363,13 @@ namespace YODA {
     DBN& totalDbn() {
       return _dbn;
     }
-
     /// Return the total distribution (const)
     const DBN& totalDbn() const {
       return _dbn;
+    }
+    /// Set the total distribution: CAREFUL!
+    void setTotalDbn(const DBN& dbn) {
+      _dbn = dbn;
     }
 
 

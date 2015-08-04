@@ -208,25 +208,34 @@ namespace YODA {
     Dbn1D& totalDbn() { return _axis.totalDbn(); }
     /// Access summary distribution, including gaps and overflows (const version)
     const Dbn1D& totalDbn() const { return _axis.totalDbn(); }
+    /// Set summary distribution, mainly for persistency: CAREFUL!
+    void setTotalDbn(const Dbn1D& dbn) { _axis.setTotalDbn(dbn); }
 
 
     /// Access underflow (non-const version)
     Dbn1D& underflow() { return _axis.underflow(); }
     /// Access underflow (const version)
     const Dbn1D& underflow() const { return _axis.underflow(); }
+    /// Set underflow distribution, mainly for persistency: CAREFUL!
+    void setUnderflow(const Dbn1D& dbn) { _axis.setUnderflow(dbn); }
 
 
     /// Access overflow (non-const version)
     Dbn1D& overflow() { return _axis.overflow(); }
     /// Access overflow (const version)
     const Dbn1D& overflow() const { return _axis.overflow(); }
+    /// Set overflow distribution, mainly for persistency: CAREFUL!
+    void setOverflow(const Dbn1D& dbn) { _axis.setOverflow(dbn); }
 
 
     /// Add a new bin specifying its lower and upper bound
     void addBin(double from, double to) { _axis.addBin(from, to); }
 
-    /// Add a new bin specifying a vector of edges
+    /// Add new bins by specifying a vector of edges
     void addBins(std::vector<double> edges) { _axis.addBins(edges); }
+
+    /// Add a new bin, perhaps already populated: CAREFUL!
+    void addBin(const HistoBin1D& b) { _axis.addBin(b); }
 
     // /// Add new bins specifying a beginning and end of each of them
     // void addBins(std::vector<std::pair<double,double> > edges) {

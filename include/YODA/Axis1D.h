@@ -147,32 +147,40 @@ namespace YODA {
     const DBN& totalDbn() const {
       return _dbn;
     }
-
     /// Return the total distribution (non-const)
     DBN& totalDbn() {
       return _dbn;
+    }
+    /// Set the total distribution: CAREFUL!
+    void setTotalDbn(const DBN& dbn) {
+      _dbn = dbn;
     }
 
     /// Return underflow (const)
     const DBN& underflow() const {
       return _underflow;
     }
-
     /// Return underflow (non-const)
     DBN& underflow() {
       return _underflow;
+    }
+    /// Set the underflow distribution: CAREFUL!
+    void setUnderflow(const DBN& dbn) {
+      _underflow = dbn;
     }
 
     /// Return overflow (const)
     const DBN& overflow() const {
       return _overflow;
     }
-
     /// Return overflow (non-const)
     DBN& overflow() {
       return _overflow;
     }
-
+    /// Set the overflow distribution: CAREFUL!
+    void setOverflow(const DBN& dbn) {
+      _overflow = dbn;
+    }
 
     //@}
 
@@ -227,24 +235,29 @@ namespace YODA {
       }
     }
 
+
+    /// Add a bin, passed explicitly
+    void addBin(const Bin& b) {
+      /// @todo Efficiency?
+      Bins newBins(_bins);
+      newBins.push_back(b);
+      _updateAxis(newBins);
+    }
+
     /// Add a bin, providing its low and high edge
     void addBin(double low, double high) {
-      Bins newBins(_bins);
-      newBins.push_back(Bin(low, high));
-      _updateAxis(newBins);
+      addBin(Bin(low, high));
     }
 
 
     /// Add a contiguous set of bins to an axis, via their list of edges
     void addBins(const std::vector<double>& binedges) {
       Bins newBins(_bins);
-      if (binedges.size() == 0)
-        return;
+      if (binedges.size() == 0) return;
 
       double low = binedges.front();
-
       for (size_t i = 1; i < binedges.size(); i++) {
-        double high = binedges[i];
+        const double high = binedges[i];
         newBins.push_back(Bin(low, high));
         low = high;
       }
