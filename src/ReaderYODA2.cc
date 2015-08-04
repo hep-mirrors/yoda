@@ -276,6 +276,11 @@ namespace YODA {
           throw ReadError("Unknown context in YODA format parsing: how did this happen?");
         }
 
+        cout << "AO CONTENT " << nline << endl;
+        cout << "  " << xoflow1 << " " << xoflow2 << " " << yoflow1 << " " << yoflow2 << " " << xmin << " " << xmax << " " << ymin << " " << ymax << endl;
+        cout << "  " << sumw << " " << sumw2 << " " << sumwx << " " << sumwx2 << " " << sumwy << " " << sumwy2 << " " << sumwz << " " << sumwz2 << " " << sumwxy << " " << sumwxz << " " << sumwyz << " " << n << endl;
+        cout << "  " << x << " " << y << " " << z << " " << exm << " " << exp << " " << eym << " " << eyp << " " << ezm << " " << ezp << endl;
+
       }
     }
 
