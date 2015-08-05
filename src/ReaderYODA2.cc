@@ -154,7 +154,7 @@ namespace YODA {
           p2curr = new Profile2D(path);
           aocurr = p2curr;
         }
-        cout << aocurr->path() << " " << nline << " " << context << endl;
+        // cout << aocurr->path() << " " << nline << " " << context << endl;
 
       } else {
         /// @todo Flatten conditional blocks with more else-ifs?
