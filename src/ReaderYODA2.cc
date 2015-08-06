@@ -5,6 +5,7 @@
 //
 #include "YODA/ReaderYODA2.h"
 #include "YODA/Utils/StringUtils.h"
+#include "YODA/Utils/getline.h"
 #include "YODA/Exceptions.h"
 
 #include "YODA/Counter.h"
@@ -22,45 +23,6 @@ using namespace std;
 namespace YODA {
 
 
-  namespace {
-
-    /// @todo Move to Utils?
-    // Portable version of getline taken from
-    // http://stackoverflow.com/questions/6089231/getting-std-ifstream-to-handle-lf-cr-and-crlf
-    istream& safe_getline(istream& is, string& t) {
-      t.clear();
-
-      // The characters in the stream are read one-by-one using a std::streambuf.
-      // That is faster than reading them one-by-one using the std::istream.
-      // Code that uses streambuf this way must be guarded by a sentry object.
-      // The sentry object performs various tasks,
-      // such as thread synchronization and updating the stream state.
-      istream::sentry se(is, true);
-      streambuf* sb = is.rdbuf();
-
-      for (;;) {
-        int c = sb->sbumpc();
-        switch (c) {
-        case '\n':
-          return is;
-        case '\r':
-          if (sb->sgetc() == '\n')
-            sb->sbumpc();
-          return is;
-        case EOF:
-          // Also handle the case when the last line has no line ending
-          if (t.empty())
-            is.setstate(ios::eofbit);
-          return is;
-        default:
-          t += (char)c;
-        }
-      }
-    }
-
-  }
-
-
   void ReaderYODA::read(istream& stream, vector<AnalysisObject*>& aos) {
 
     // Data format parsing states, representing current data type
@@ -76,7 +38,7 @@ namespace YODA {
     string s;
     Context context = NONE;
     //
-    AnalysisObject* aocurr = NULL; //< Generic current AO pointer (useful or not?)
+    AnalysisObject* aocurr = NULL; //< Generic current AO pointer
     Counter* cncurr = NULL;
     Histo1D* h1curr = NULL;
     Histo2D* h2curr = NULL;
@@ -87,7 +49,7 @@ namespace YODA {
     Scatter3D* s3curr = NULL;
 
     // Loop over all lines of the input file
-    while (safe_getline(stream, s)) {
+    while (Utils::getline(stream, s)) {
       nline += 1;
 
       /// @todo Trim the line
@@ -167,15 +129,9 @@ namespace YODA {
         if (s.find("END ") != string::npos) {
           aos.push_back(aocurr);
           context = NONE;
-          aocurr = NULL;
-          cncurr = NULL;
-          h1curr = NULL;
-          h2curr = NULL;
-          p1curr = NULL;
-          p2curr = NULL;
-          s1curr = NULL;
-          s2curr = NULL;
-          s3curr = NULL;
+          aocurr = NULL; cncurr = NULL;
+          h1curr = NULL; h2curr = NULL; p1curr = NULL; p2curr = NULL;
+          s1curr = NULL; s2curr = NULL; s3curr = NULL;
           continue; ///< @todo Improve... would be good to avoid these continues
         }
 

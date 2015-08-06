@@ -31,5 +31,6 @@ nobase_pkginclude_HEADERS = \
 	Utils/indexedset.h \
 	Utils/ndarray.h \
 	Utils/fastlog.h \
+	Utils/getline.h \
 	Config/YodaConfig.h \
 	Config/BuildConfig.h
