@@ -3,8 +3,8 @@
 // This file is part of YODA -- Yet more Objects for Data Analysis
 // Copyright (C) 2008-2015 The YODA collaboration (see AUTHORS for details)
 //
-#ifndef YODA_Reader_h
-#define YODA_Reader_h
+#ifndef YODA_READER_H
+#define YODA_READER_H
 
 #include "YODA/AnalysisObject.h"
 #include <string>
@@ -51,7 +51,6 @@ namespace YODA {
     /// This version fills (actually, appends to) a supplied vector, avoiding copying,
     /// and is hence CPU efficient.
     ///
-    
     virtual void read(std::istream& stream, std::vector<AnalysisObject*>& aos) = 0;
 
     /// @brief Read in a collection of objects from output stream @a stream.
