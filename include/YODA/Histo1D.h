@@ -234,13 +234,13 @@ namespace YODA {
     /// Add new bins by specifying a vector of edges
     void addBins(std::vector<double> edges) { _axis.addBins(edges); }
 
-    /// Add a new bin, perhaps already populated: CAREFUL!
-    void addBin(const HistoBin1D& b) { _axis.addBin(b); }
-
     // /// Add new bins specifying a beginning and end of each of them
     // void addBins(std::vector<std::pair<double,double> > edges) {
     //   _axis.addBins(edges);
     // }
+
+    /// Add a new bin, perhaps already populated: CAREFUL!
+    void addBin(const HistoBin1D& b) { _axis.addBin(b); }
 
     /// Remove a bin
     void eraseBin(size_t index) { _axis.eraseBin(index); }

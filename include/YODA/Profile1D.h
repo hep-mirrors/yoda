@@ -186,6 +186,9 @@ namespace YODA {
     //   _axis.addBins(edges);
     // }
 
+    /// Add a new bin, perhaps already populated: CAREFUL!
+    void addBin(const ProfileBin1D& b) { _axis.addBin(b); }
+
     //@}
 
 
@@ -220,20 +223,29 @@ namespace YODA {
     /// Access a bin by x-coordinate (const version)
     const ProfileBin1D& binAt(double x) const { return _axis.binAt(x); }
 
+
     /// Access summary distribution, including gaps and overflows (non-const version)
     Dbn2D& totalDbn() { return _axis.totalDbn(); }
     /// Access summary distribution, including gaps and overflows (const version)
     const Dbn2D& totalDbn() const { return _axis.totalDbn(); }
+    /// Set summary distribution, mainly for persistency: CAREFUL!
+    void setTotalDbn(const Dbn2D& dbn) { _axis.setTotalDbn(dbn); }
+
 
     /// Access underflow (non-const version)
     Dbn2D& underflow() { return _axis.underflow(); }
     /// Access underflow (const version)
     const Dbn2D& underflow() const { return _axis.underflow(); }
+    /// Set underflow distribution, mainly for persistency: CAREFUL!
+    void setUnderflow(const Dbn2D& dbn) { _axis.setUnderflow(dbn); }
+
 
     /// Access overflow (non-const version)
     Dbn2D& overflow() { return _axis.overflow(); }
     /// Access overflow (const version)
     const Dbn2D& overflow() const { return _axis.overflow(); }
+    /// Set overflow distribution, mainly for persistency: CAREFUL!
+    void setOverflow(const Dbn2D& dbn) { _axis.setOverflow(dbn); }
 
     //@}
 
