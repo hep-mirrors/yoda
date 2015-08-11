@@ -177,11 +177,17 @@ namespace YODA {
 
     // /// @brief Bin addition operator
     // ///
-    // /// Add a bin to an axis described by its x and y ranges.
+    // /// Add a bin to the axis, described by its x and y ranges.
     void addBin(Axis::EdgePair1D xrange, Axis::EdgePair1D yrange) {
        _axis.addBin(xrange, yrange);
-     }
+    }
 
+    // /// @brief Bin addition operator
+    // ///
+    // /// Add a bin to the axis, possibly pre-populated
+    void addBin(const Bin& bin) {
+       _axis.addBin(bin);
+    }
 
     /// @brief Bins addition operator
     ///
@@ -267,6 +273,9 @@ namespace YODA {
 
     /// Access summary distribution, including gaps and overflows (const version)
     const Dbn3D& totalDbn() const { return _axis.totalDbn(); }
+
+    /// Set summary distribution, including gaps and overflows
+    void setTotalDbn(const Dbn3D& dbn) { _axis.setTotalDbn(dbn); }
 
 
     // /// @brief Access an outflow (non-const)
