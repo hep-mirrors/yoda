@@ -195,7 +195,14 @@ namespace YODA {
             }
             // The rest is the same for overflows and in-range bins
             iss >> sumw >> sumw2 >> sumwx >> sumwx2 >> sumwy >> sumwy2 >> sumwxy >> n;
-            /// @todo Make and fill bins/overflows
+            const Dbn2D dbn(n, sumw, sumw2, sumwx, sumwx2, sumwy, sumwy2, sumwxy);
+            if (xoflow1 == "Total") h2curr->setTotalDbn(dbn);
+            // else if (xoflow1 == "Underflow") p1curr->setUnderflow(dbn);
+            // else if (xoflow1 == "Overflow")  p1curr->setOverflow(dbn);
+            else {
+              assert(xoflow1.empty());
+              h2curr->addBin(HistoBin2D(std::make_pair(xmin,xmax), std::make_pair(ymin,ymax), dbn));
+            }
           }
           break;
 

@@ -292,17 +292,23 @@ namespace YODA {
       _updateAxis(newBins);
     }
 
+    /// Add a pre-made bin
+    void addBin(const Bin& bin) {
+      _checkUnlocked();
+      Bins newBins = _bins;
+      newBins.push_back(bin);
+      _updateAxis(newBins);
+    }
+
     /// Add a vector of pre-made bins
     void addBins(const Bins& bins) {
       if (bins.size() == 0) return;
       _checkUnlocked();
-
       Bins newBins = _bins;
-      BOOST_FOREACH(const Bin& b, bins) newBins.push_back(b);
-
+      BOOST_FOREACH(const Bin& b, bins)
+        newBins.push_back(b);
       _updateAxis(newBins);
     }
-
 
     /// Add a contiguous set of bins to an axis, via their list of edges
     void addBins(const std::vector<double>& xedges, const std::vector<double>& yedges) {
