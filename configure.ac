@@ -90,9 +90,9 @@ BOOST_FOREACH
 BOOST_SMART_PTR
 BOOST_FIND_HEADER([boost/lexical_cast.hpp])
 BOOST_FIND_HEADER([boost/assign.hpp])
-BOOST_FIND_HEADER([boost/spirit/include/qi.hpp])
-BOOST_FIND_HEADER([boost/spirit/include/phoenix_operator.hpp])
-BOOST_FIND_HEADER([boost/fusion/include/adapt_struct.hpp])
+dnl BOOST_FIND_HEADER([boost/spirit/include/qi.hpp])
+dnl BOOST_FIND_HEADER([boost/spirit/include/phoenix_operator.hpp])
+dnl BOOST_FIND_HEADER([boost/fusion/include/adapt_struct.hpp])
 BOOST_BUG_IN_FOREACH
 
 
