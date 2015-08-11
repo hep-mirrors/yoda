@@ -4,7 +4,7 @@ lib_LTLIBRARIES = libYODA.la
 
 libYODA_la_SOURCES = \
     Reader.cc \
-    ReaderYODA2.cc \
+    ReaderYODA.cc \
     ReaderFLAT.cc \
     ReaderAIDA.cc \
     Writer.cc \

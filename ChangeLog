@@ -1,3 +1,11 @@
+2015-08-11  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Replace old Spirit-based ReaderYODA with the new hand-rolled one.
+
+	* Adding filling of Histo1D, Profile1D, Histo2D and Profile2D in
+	new ReaderYODA. More hacking of Axis and Histo/Profile
+	interfaces... needs clean-up, and infinite binning implementation.
+
 2015-08-07  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Convert the ReaderFLAT parser to also use a simple hand-written parser rather than Spirit.
