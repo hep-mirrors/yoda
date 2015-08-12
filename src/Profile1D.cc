@@ -170,18 +170,23 @@ namespace YODA {
       const double explus  = b1.xMax() - x;
 
       // Assemble the y value and error
+      /// @todo Provide optional alt behaviours to fill with NaN or remove the invalid point or throw
       double y = 0;
       double ey = 0;
-      if (b2.mean() == 0 || (b1.mean() == 0 && b1.stdErr() != 0)) { ///< @todo Ok?
-        /// @todo Provide optional alt behaviours to fill with NaN or remove the invalid point or throw
-        /// @todo Don't throw here: set a flag and throw after all bins have been handled.
-        // throw LowStatsError("Requested division of empty bin");
-      } else {
-        y = b1.mean() / b2.mean();
-        /// @todo Is this the exact error treatment for all (uncorrelated) cases? Behaviour around 0? +1 and -1 fills?
-        const double relerr_1 = b1.stdErr() != 0 ? b1.stdErr()/b1.mean() : 0;
-        const double relerr_2 = b2.stdErr() != 0 ? b1.stdErr()/b1.mean() : 0;
-        ey = y * sqrt(sqr(relerr_1) + sqr(relerr_2));
+      try {
+        if (b2.mean() == 0 || (b1.mean() == 0 && b1.stdErr() != 0)) { ///< @todo Ok?
+          /// @todo Don't throw here: set a flag and throw after all bins have been handled.
+          // throw LowStatsError("Requested division by zero-valued bin");
+        } else {
+          y = b1.mean() / b2.mean();
+          /// @todo Is this the exact error treatment for all (uncorrelated) cases? Behaviour around 0? +1 and -1 fills?
+          const double relerr_1 = b1.stdErr() != 0 ? b1.stdErr()/b1.mean() : 0;
+          const double relerr_2 = b2.stdErr() != 0 ? b2.stdErr()/b2.mean() : 0;
+          ey = y * sqrt(sqr(relerr_1) + sqr(relerr_2));
+        }
+      } catch (const LowStatsError& e) {
+        // Leave them set at zero
+        /// @todo Handle this better!
       }
       /// Deal with +/- errors separately, inverted for the denominator contributions:
       /// @todo check correctness with different signed numerator and denominator.

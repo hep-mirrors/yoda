@@ -169,10 +169,10 @@ namespace YODA {
       const double explus  = b1.xMax() - x;
 
       // Assemble the y value and error
+      /// @todo Provide optional alt behaviours to fill with NaN or remove the invalid point or throw
       double y = 0;
       double ey = 0;
       if (b2.height() == 0 || (b1.height() == 0 && b1.heightErr() != 0)) { ///< @todo Ok?
-        /// @todo Provide optional alt behaviours to fill with NaN or remove the invalid point or throw
         /// @todo Don't throw here: set a flag and throw after all bins have been handled.
         // throw LowStatsError("Requested division of empty bin");
       } else {

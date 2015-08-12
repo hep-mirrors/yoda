@@ -27,7 +27,7 @@ namespace YODA {
     os << scientific << setprecision(_precision);
     BOOST_FOREACH (const string& a, ao.annotations()) {
       if (a.empty()) continue;
-      /// @todo Should write out floating point annotations as scientific notation...
+      /// @todo Write out floating point annotations as scientific notation
       os << a << "=" << ao.annotation(a) << "\n";
     }
   }
