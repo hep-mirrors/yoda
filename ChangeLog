@@ -1,3 +1,9 @@
+2015-08-17  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Add some protection against calling matplotlib's legend() method
+	if there are no valid labels to display, to suppress an MPL
+	warning message when using yoda.plot().
+
 2015-08-12  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Fix cut & paste typo, and add LowStatsError catching in Profile division.

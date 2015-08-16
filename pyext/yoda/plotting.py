@@ -440,13 +440,18 @@ def plot_hists_1d(hs, outfile=None, ratio=None, plotkeys={}):
         axratio.axhline(1.0, color="gray")
 
     ## Dataset plotting
+    some_valid_label = False
     for ih, h in enumerate(hs):
         #print ih, h.path
-        plot_hist_on_axes_1d(axmain, axratio, h, href)
+        aa = plot_hist_on_axes_1d(axmain, axratio, h, href)
+        if aa and not aa[0].get_label().startswith("_"):
+            # print "@@@", aa[0].get_label()
+            some_valid_label = True
 
     ## Legend
     # TODO: allow excluding and specify order via LegendIndex
-    axmain.legend(loc=plotkeys.get("LegendPos", "best"), fontsize=plotkeys.get("LegendFontSize", "x-small"), frameon=False)
+    if some_valid_label: #< No point in writing a legend if there are no labels
+        pass #axmain.legend(loc=plotkeys.get("LegendPos", "best"), fontsize=plotkeys.get("LegendFontSize", "x-small"), frameon=False)
 
     ## Tweak layout now that everything is in place
     # TODO: merge tight_layout() into the Figure constructor, and maybe the ratio ticker when retrospectively drawing the zorder'ed err band
