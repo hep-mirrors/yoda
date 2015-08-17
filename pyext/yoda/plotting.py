@@ -17,6 +17,7 @@ class NumpyHist(object):
         ## Convert to Scatter and set dimensionality & recarray column names
         s = ao.mkScatter()
         names = ['x', 'y', 'exminus', 'explus', 'eyminus', 'eyplus']
+        # TODO: also Scatter1D
         if type(s) is yoda.Scatter2D:
             self.dim = 2
         elif type(s) is yoda.Scatter3D:
