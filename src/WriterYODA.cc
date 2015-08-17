@@ -227,9 +227,9 @@ namespace YODA {
     _writeAnnotations(os, s);
     os << "# xval\t xerr-\t xerr+\n";
     BOOST_FOREACH (const Point1D& pt, s.points()) {
-      os << pt.x() << "\t" << pt.xErrMinus() << "\t" << pt.xErrMinus() << "\t";
+      os << pt.x() << "\t" << pt.xErrMinus() << "\t" << pt.xErrMinus() << "\n";
     }
-    os << "END YODA_SCATTER1D\n";
+    os << "END YODA_SCATTER1D\n\n";
 
     os << flush;
     os.flags(oldflags);
