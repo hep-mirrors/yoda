@@ -10,7 +10,7 @@ namespace YODA {
   namespace Utils {
 
 
-    /// Replace
+    /// Replace XML reserved characters with &XXXX; encodings
     inline std::string encodeForXML(const std::string& in) {
       std::string out = in;
       typedef std::pair<std::string, std::string> CharsToEntities;
@@ -26,6 +26,43 @@ namespace YODA {
         }
       }
       return out;
+    }
+
+
+    /// In-place trim from start
+    inline std::string& iltrim(std::string& s) {
+      s.erase(s.begin(), std::find_if(s.begin(), s.end(), std::not1(std::ptr_fun<int, int>(std::isspace))));
+      return s;
+    }
+
+    /// In-place trim from end
+    inline std::string& irtrim(std::string& s) {
+        s.erase(std::find_if(s.rbegin(), s.rend(), std::not1(std::ptr_fun<int, int>(std::isspace))).base(), s.end());
+        return s;
+    }
+
+    /// In-place trim from both ends
+    inline std::string& itrim(std::string& s) {
+      return iltrim(irtrim(s));
+    }
+
+
+    /// Trim from start
+    inline std::string ltrim(const std::string& s) { //< @note Could just pass by value, but const& sends a symbolic message
+      std::string s2 = s;
+      return iltrim(s2);
+    }
+
+    /// Trim from end
+    inline std::string rtrim(const std::string& s) { //< @note Could just pass by value, but const& sends a symbolic message
+      std::string s2 = s;
+      return irtrim(s2);
+    }
+
+    /// Trim from both ends
+    inline std::string trim(const std::string& s) { //< @note Could just pass by value, but const& sends a symbolic message
+      std::string s2 = s;
+      return itrim(s2);
     }
 
 

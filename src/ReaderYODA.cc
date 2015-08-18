@@ -52,8 +52,8 @@ namespace YODA {
     while (Utils::getline(stream, s)) {
       nline += 1;
 
-      /// @todo Trim the line
-      // ...
+      /// Trim the line
+      Utils::itrim(s);
 
       // Ignore blank lines
       if (s.empty()) continue;
@@ -66,17 +66,24 @@ namespace YODA {
       if (context == NONE) {
 
         // We require a BEGIN line to start a context
-        if (s.find("BEGIN ") == string::npos) throw ReadError("Unexpected line in YODA format parsing when BEGIN expected");
+        if (s.find("BEGIN ") == string::npos) {
+          stringstream s;
+          s << "Unexpected line in YODA format parsing when BEGIN expected: '" << s << "' on line " << nline;
+          throw ReadError(s.str());
+        }
 
         // Split into parts
         vector<string> parts;
         istringstream iss(s); string tmp;
         while (iss >> tmp) {
-          if (tmp != "#") parts.push_back(tmp);
+          if (tmp.find("#") != 0) parts.push_back(tmp);
         }
 
         // Extract context from BEGIN type
-        assert(parts.size() >= 2 && parts[0] == "BEGIN");
+        if (parts.size() < 2 || parts[0] != "BEGIN")
+          throw ReadError("Unexpected BEGIN line structure in YODA format parsing: '" + s + "'");
+
+        // Second part is the context name
         const string ctxstr = parts[1];
 
         // Get block path if possible
