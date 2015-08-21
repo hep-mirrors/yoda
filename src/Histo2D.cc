@@ -6,7 +6,7 @@
 #include "YODA/Histo2D.h"
 #include "YODA/Profile2D.h"
 #include "YODA/Scatter3D.h"
-#include <cmath>
+#include "YODA/Utils/StringUtils.h"
 
 using namespace std;
 
@@ -373,21 +373,28 @@ namespace YODA {
 
       /// BEGIN DIMENSIONALITY-INDEPENDENT BIT TO SHARE WITH H1
 
-      // Check that the numerator is consistent with being a subset of the denominator (NOT effNumEntries here!)
-      if (b_acc.numEntries() > b_tot.numEntries() || b_acc.sumW() > b_tot.sumW())
-        throw UserError("Attempt to calculate an efficiency when the numerator is not a subset of the denominator");
+      // Check that the numerator is consistent with being a subset of the denominator
+      /// @note Neither effNumEntries nor sumW are guaranteed to satisfy num <= den for general weights!
+      if (b_acc.numEntries() > b_tot.numEntries())
+        throw UserError("Attempt to calculate an efficiency when the numerator is not a subset of the denominator: "
+                        + Utils::toStr(b_acc.numEntries()) + " entries / " + Utils::toStr(b_tot.numEntries()) + " entries");
 
       // If no entries on the denominator, set eff = err = 0 and move to the next bin
       /// @todo Provide optional alt behaviours to fill with NaN or remove the invalid point, or...
-      /// @todo Or throw a LowStatsError exception if h.effNumEntries() (or sumW()?) == 0?
+      /// @todo Or throw a LowStatsError exception if h.effNumEntries() or sumW() == 0?
       double eff = 0, err = 0;
-      if (b_tot.sumW() != 0) {
-        // Calculate the values and errors
-        // const double eff = b_acc.effNumEntries() / b_tot.effNumEntries();
-        // const double ey = sqrt( b_acc.effNumEntries() * (1 - b_acc.effNumEntries()/b_tot.effNumEntries()) ) / b_tot.effNumEntries();
-        eff = b_acc.sumW() / b_tot.sumW(); //< Actually this is already calculated by the division...
-        err = sqrt(abs( ((1-2*eff)*b_acc.sumW2() + sqr(eff)*b_tot.sumW2()) / sqr(b_tot.sumW()) ));
-        // assert(point.y() == eff); //< @todo Correct? So we don't need to reset the eff on the next line?
+      try {
+        if (b_tot.sumW() != 0) {
+          // Calculate the values and errors
+          // const double eff = b_acc.effNumEntries() / b_tot.effNumEntries();
+          // const double ey = sqrt( b_acc.effNumEntries() * (1 - b_acc.effNumEntries()/b_tot.effNumEntries()) ) / b_tot.effNumEntries();
+          eff = b_acc.sumW() / b_tot.sumW(); //< Actually this is already calculated by the division...
+          err = sqrt(abs( ((1-2*eff)*b_acc.sumW2() + sqr(eff)*b_tot.sumW2()) / sqr(b_tot.sumW()) ));
+          // assert(point.y() == eff); //< @todo Correct? So we don't need to reset the eff on the next line?
+        }
+      } catch (const LowStatsError& e) {
+        // Leave them set at zero
+        /// @todo Handle this better!
       }
 
       /// END DIMENSIONALITY-INDEPENDENT BIT TO SHARE WITH H1

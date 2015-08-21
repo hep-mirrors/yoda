@@ -470,12 +470,14 @@ def plot_hists_1d(hs, outfile=None, ratio=None, plotkeys={}):
 
 
 # TODO: Add arg for MPL setup?
+# TODO: plotkeys -> kwargs via lower-casing
 def plot_hist_1d(h, outfile=None, plotkeys={}):
     "Plot the given histogram on a single figure without a ratio plot, returning the 2-tuple of (fig, main_axis)."
     f, ax, _ = plot_hists_1d([h,], outfile=outfile, ratio=False, plotkeys=plotkeys)
     return f, ax
 
 
+# TODO: plotkeys -> kwargs via lower-casing
 def plot(hs, outfile=None, plotkeys={}, ratio=None):
     """Plot the given histogram(s) on a single figure, maybe with a ratio plot,
     and return the 2-tuple of (fig, (main_axis,ratio_axis)). If an outfile is

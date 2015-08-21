@@ -6,8 +6,18 @@
 #ifndef YODA_STRINGUTILS_H
 #define YODA_STRINGUTILS_H
 
+#include <sstream>
+
 namespace YODA {
   namespace Utils {
+
+
+    /// Generic convenient conversion to string
+    template <typename T>
+    inline std::string toStr(const T& x) {
+      std::ostringstream ss; ss << x;
+      return ss.str();
+    }
 
 
     /// Replace XML reserved characters with &XXXX; encodings
@@ -67,6 +77,29 @@ namespace YODA {
 
 
   }
+
+
+  // Annoyingly, this doesn't work without significant SFINAE etc., due to clashes with existing string & stream operators
+  // /// string + any appending operator for convenience in the YODA namespace
+  // template <typename T>
+  // std::string& operator + (std::string& s, const T& x) {
+  //   s += Utils::toStr(x);
+  //   return s;
+  // }
+  // template <typename T>
+  // std::string operator + (const T& x, std::string& s) {
+  //   return Utils::toStr(x) + s;
+  // }
+  // template <typename T>
+  // std::string operator + (const char* s, const T& x) {
+  //   return s + Utils::toStr(x);
+  // }
+  // template <typename T>
+  // std::string operator + (const T& x, const char* s) {
+  //   return Utils::toStr(x) + x;
+  // }
+
+
 }
 
 #endif
