@@ -52,7 +52,7 @@ namespace YODA {
     while (Utils::getline(stream, s)) {
       nline += 1;
 
-      /// Trim the line
+      // Trim the line
       Utils::itrim(s);
 
       // Ignore blank lines
@@ -89,7 +89,11 @@ namespace YODA {
         // Get block path if possible
         const string path = (parts.size() >= 3) ? parts[2] : "";
 
+        // Get block format version if possible
+        const string fmt = (parts.size() >= 4) ? parts[3] : "1";
+
         // Set the new context and create a new AO to populate
+        /// @todo Store the block format version and use it to allow (occasional, careful) format evolution
         if (ctxstr == "YODA_COUNTER") {
           context = COUNTER;
           cncurr = new Counter(path);

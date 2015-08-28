@@ -39,8 +39,8 @@ namespace YODA {
     while (Utils::getline(stream, s)) {
       nline += 1;
 
-      /// @todo Trim the line
-      // ...
+      // Trim the line
+      Utils::itrim(s);
 
       // Ignore blank lines
       if (s.empty()) continue;
