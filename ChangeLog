@@ -1,3 +1,8 @@
+2015-08-28  Peter Richardson  <Peter.Richardson@durham.ac.uk>
+
+	* Catch LowStatsError when writing multiple histograms so only the
+	histogram with the problem is not written
+
 2015-08-28  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Version 1.5.0 release.

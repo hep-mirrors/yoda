@@ -29,7 +29,6 @@ namespace YODA {
     const double num = sumWX2()*sumW() - sqr(sumWX());
     const double den = sqr(sumW()) - sumW2();
     if (den==0.) {
-      std::cerr << "testing is this the problem ??? " << num << " " << den << "\n";
       throw WeightError("Undefined weighted variance");
     }
     /// @todo Isn't this sensitive to the overall scale of the weights?

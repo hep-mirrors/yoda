@@ -79,7 +79,14 @@ namespace YODA {
     void write(std::ostream& stream, const AOITER& begin, const AOITER& end) {
       writeHeader(stream);
       for (AOITER ipao = begin; ipao != end; ++ipao) {
-        writeBody(stream, *ipao);
+	try {
+	  writeBody(stream, *ipao);
+	}
+	catch (const LowStatsError & ex) {
+	  std::cerr << "Not writing out Analysis Object " << (**ipao).title()
+	       << " as caught LowStatsError. The exception was\n "
+		    << ex.what() << "\n";
+	}
       }
       writeFooter(stream);
     }
