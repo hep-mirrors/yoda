@@ -28,9 +28,6 @@ cdef class Histo1D(AnalysisObject):
 
     cdef inline c.Histo1D* h1ptr(self) except NULL:
         return <c.Histo1D*> self.ptr()
-    # TODO: remove
-    cdef inline c.Histo1D* _Histo1D(self) except NULL:
-        return <c.Histo1D*> self.ptr()
 
 
     def __init__(self, *args, **kwargs):

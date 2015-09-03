@@ -1,3 +1,9 @@
+2015-09-03  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Version 1.5.1 release.
+
+	* Fix bugs in Python wrapper for Point3D.
+
 2015-08-28  Peter Richardson  <Peter.Richardson@durham.ac.uk>
 
 	* Catch LowStatsError when writing multiple histograms so only the

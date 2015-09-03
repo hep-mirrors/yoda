@@ -5,9 +5,6 @@ cdef class Point1D(util.Base):
 
     cdef c.Point1D* p1ptr(self) except NULL:
         return <c.Point1D*> self.ptr()
-    # TODO: remove
-    cdef c.Point1D* _Point1D(self) except NULL:
-        return <c.Point1D*> self.ptr()
 
     def __dealloc__(self):
         cdef c.Point1D *p = self.p1ptr()

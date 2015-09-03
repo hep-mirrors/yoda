@@ -29,9 +29,6 @@ cdef class Profile2D(AnalysisObject):
 
     cdef inline c.Profile2D* p2ptr(self) except NULL:
         return <c.Profile2D*> self.ptr()
-    # TODO: Remove
-    cdef inline c.Profile2D* _Profile2D(self) except NULL:
-        return <c.Profile2D*> self.ptr()
 
 
     def __init__(self, *args, **kwargs):
