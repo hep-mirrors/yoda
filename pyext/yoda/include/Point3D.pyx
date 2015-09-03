@@ -3,45 +3,46 @@ cdef class Point3D(util.Base):
     A 3D point with errors, used by the Scatter3D class.
     """
 
-    cdef c.Point3D *_Point3D(self) except NULL:
-        return <c.Point3D *> self.ptr()
+    cdef c.Point3D* p3ptr(self) except NULL:
+        return <c.Point3D*> self.ptr()
 
     def __dealloc__(self):
-        cdef c.Point3D *p = self._Point3D()
+        cdef c.Point3D* p = self.p3ptr()
         if self._deallocate:
             del p
 
 
-    def __init__(self, x=0, y=0, xerrs=0, yerrs=0):
+    def __init__(self, x=0, y=0, z=0, xerrs=0, yerrs=0, zerrs=0):
         cutil.set_owned_ptr(self, new c.Point3D())
-        self.xy = x, y
+        self.xyz = x, y
         self.xerrs = xerrs
         self.yerrs = yerrs
+        self.zerrs = zerrs
 
     def copy(self):
-        return cutil.new_owned_cls(Point3D, new c.Point3D(deref(self._Point3D())))
+        return cutil.new_owned_cls(Point3D, new c.Point3D(deref(self.p3ptr())))
 
 
     property x:
         """x coordinate"""
         def __get__(self):
-            return self._Point3D().x()
+            return self.p3ptr().x()
         def __set__(self, x):
-            self._Point3D().setX(x)
+            self.p3ptr().setX(x)
 
     property y:
         """y coordinate"""
         def __get__(self):
-            return self._Point3D().y()
+            return self.p3ptr().y()
         def __set__(self, y):
-            self._Point3D().setY(y)
+            self.p3ptr().setY(y)
 
     property z:
         """y coordinate"""
         def __get__(self):
-            return self._Point3D().z()
+            return self.p3ptr().z()
         def __set__(self, z):
-            self._Point3D().setZ(z)
+            self.p3ptr().setZ(z)
 
     property xyz:
         def __get__(self):
@@ -53,64 +54,64 @@ cdef class Point3D(util.Base):
     # TODO: How does this fit into the multi-error API? Still useful, but just reports first errs... how to get _all_ +- err pairs?
     property xErrs:
         def __get__(self):
-            return util.read_error_pair(self._Point3D().xErrs())
+            return util.read_error_pair(self.p3ptr().xErrs())
         def __set__(self, val):
-            self._Point3D().setXErr(util.read_symmetric(val))
+            self.p3ptr().setXErr(util.read_symmetric(val))
 
     # TODO: How does this fit into the multi-error API? Still useful, but just reports first errs... how to get _all_ +- err pairs?
     property yErrs:
         def __get__(self):
-            return util.read_error_pair(self._Point3D().yErrs())
+            return util.read_error_pair(self.p3ptr().yErrs())
         def __set__(self, val):
-            self._Point3D().setYErr(util.read_symmetric(val))
+            self.p3ptr().setYErr(util.read_symmetric(val))
 
     # TODO: How does this fit into the multi-error API? Still useful, but just reports first errs... how to get _all_ +- err pairs?
     property zErrs:
         def __get__(self):
-            return util.read_error_pair(self._Point3D().zErrs())
+            return util.read_error_pair(self.p3ptr().zErrs())
         def __set__(self, val):
-            self._Point3D().setZErr(util.read_symmetric(val))
+            self.p3ptr().setZErr(util.read_symmetric(val))
 
 
     @property
     def xMin(self):
         """The minimum x position, i.e. lowest error"""
-        return self._Point3D().xMin()
+        return self.p3ptr().xMin()
     @property
     def xMax(self):
         """The maximum x position, i.e. highest error"""
-        return self._Point3D().xMax()
+        return self.p3ptr().xMax()
 
     @property
     def yMin(self):
         """The minimum y position, i.e. lowest error"""
-        return self._Point3D().yMin()
+        return self.p3ptr().yMin()
     @property
     def yMax(self):
         """The maximum y position, i.e. highest error"""
-        return self._Point3D().yMax()
+        return self.p3ptr().yMax()
 
     @property
     def zMin(self):
         """The minimum z position, i.e. lowest error"""
-        return self._Point3D().zMin()
+        return self.p3ptr().zMin()
     @property
     def zMax(self):
         """The maximum z position, i.e. highest error"""
-        return self._Point3D().zMax()
+        return self.p3ptr().zMax()
 
 
     property xErrAvg:
         def __get__(self):
-            return self._Point3D().xErrAvg()
+            return self.p3ptr().xErrAvg()
 
     property yErrAvg:
         def __get__(self):
-            return self._Point3D().yErrAvg()
+            return self.p3ptr().yErrAvg()
 
     property zErrAvg:
         def __get__(self):
-            return self._Point3D().zErrAvg()
+            return self.p3ptr().zErrAvg()
 
 
     def scaleX(self, ax):
@@ -118,28 +119,28 @@ cdef class Point3D(util.Base):
         (float) -> None
         Scale the x point coordinates by the given factor.
         """
-        self._Point3D().scaleX(ax)
+        self.p3ptr().scaleX(ax)
 
     def scaleY(self, ay):
         """
         (float) -> None
         Scale the y point coordinates by the given factor.
         """
-        self._Point3D().scaleY(ay)
+        self.p3ptr().scaleY(ay)
 
     def scaleZ(self, az):
         """
         (float) -> None
         Scale the z point coordinates by the given factor.
         """
-        self._Point3D().scaleZ(az)
+        self.p3ptr().scaleZ(az)
 
     def scaleXYZ(self, ax=1.0, ay=1.0, az=1.0):
         """
         (float=1.0, float=1.0, float=1.0) -> None
         Scale the point coordinates by the given factors.
         """
-        self._Point3D().scaleXYZ(ax, ay, az)
+        self.p3ptr().scaleXYZ(ax, ay, az)
 
     # TODO: remove
     def scaleXYZ(self, ax=1.0, ay=1.0, az=1.0):
@@ -159,14 +160,14 @@ cdef class Point3D(util.Base):
 
     def __richcmp__(Point3D self, Point3D other, int op):
         if op == 0:
-            return deref(self._Point3D()) < deref(other._Point3D())
+            return deref(self.p3ptr()) < deref(other.p3ptr())
         elif op == 1:
-            return deref(self._Point3D()) <= deref(other._Point3D())
+            return deref(self.p3ptr()) <= deref(other.p3ptr())
         elif op == 2:
-            return deref(self._Point3D()) == deref(other._Point3D())
+            return deref(self.p3ptr()) == deref(other.p3ptr())
         elif op == 3:
-            return deref(self._Point3D()) != deref(other._Point3D())
+            return deref(self.p3ptr()) != deref(other.p3ptr())
         elif op == 4:
-            return deref(self._Point3D()) > deref(other._Point3D())
+            return deref(self.p3ptr()) > deref(other.p3ptr())
         elif op == 5:
-            return deref(self._Point3D()) >= deref(other._Point3D())
+            return deref(self.p3ptr()) >= deref(other.p3ptr())
