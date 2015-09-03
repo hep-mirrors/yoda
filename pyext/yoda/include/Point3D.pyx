@@ -14,10 +14,10 @@ cdef class Point3D(util.Base):
 
     def __init__(self, x=0, y=0, z=0, xerrs=0, yerrs=0, zerrs=0):
         cutil.set_owned_ptr(self, new c.Point3D())
-        self.xyz = x, y
-        self.xerrs = xerrs
-        self.yerrs = yerrs
-        self.zerrs = zerrs
+        self.xyz = x, y, z
+        self.xErrs = xerrs
+        self.yErrs = yerrs
+        self.zErrs = zerrs
 
     def copy(self):
         return cutil.new_owned_cls(Point3D, new c.Point3D(deref(self.p3ptr())))
