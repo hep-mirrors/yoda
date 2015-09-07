@@ -67,9 +67,9 @@ namespace YODA {
 
         // We require a BEGIN line to start a context
         if (s.find("BEGIN ") == string::npos) {
-          stringstream s;
-          s << "Unexpected line in YODA format parsing when BEGIN expected: '" << s << "' on line " << nline;
-          throw ReadError(s.str());
+          stringstream ss;
+          ss << "Unexpected line in YODA format parsing when BEGIN expected: '" << s << "' on line " << nline;
+          throw ReadError(ss.str());
         }
 
         // Split into parts
