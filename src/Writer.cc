@@ -38,7 +38,7 @@ namespace YODA {
   void Writer::write(const std::string& filename, const AnalysisObject& ao) {
     ofstream outstream;
     outstream.exceptions ( std::ifstream::failbit | std::ifstream::badbit );
-    try{
+    try {
       outstream.open(filename.c_str());
       write(outstream, ao);
       outstream.close();

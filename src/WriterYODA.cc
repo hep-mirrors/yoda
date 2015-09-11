@@ -53,10 +53,11 @@ namespace YODA {
 
     os << "BEGIN YODA_HISTO1D " << h.path() << "\n";
     _writeAnnotations(os, h);
-    if ( h.totalDbn().effNumEntries() > 0 ) {
+    try {
+      //if ( h.totalDbn().effNumEntries() > 0 ) {
       os << "# Mean: " << h.xMean() << "\n";
-    }
-    os << "# Area: " << h.integral() << "\n";
+      os << "# Area: " << h.integral() << "\n";
+    } catch (LowStatsError& e) { }
     os << "# ID\t ID\t sumw\t sumw2\t sumwx\t sumwx2\t numEntries\n";
     os << "Total   \tTotal   \t";
     os << h.totalDbn().sumW()  << "\t" << h.totalDbn().sumW2()  << "\t";
@@ -89,9 +90,11 @@ namespace YODA {
 
     os << "BEGIN YODA_HISTO2D " << h.path() << "\n";
     _writeAnnotations(os, h);
-    if ( h.totalDbn().numEntries() > 0 )
+    try {
+      //if ( h.totalDbn().numEntries() > 0 )
       os << "# Mean: (" << h.xMean() << ", " << h.yMean() << ")\n";
-    os << "# Volume: " << h.integral() << "\n";
+      os << "# Volume: " << h.integral() << "\n";
+    } catch (LowStatsError& e) { }
     os << "# ID\t ID\t sumw\t sumw2\t sumwx\t sumwx2\t sumwy\t sumwy2\t sumwxy\t numEntries\n";
     // Total distribution
     const Dbn2D& td = h.totalDbn();
