@@ -55,7 +55,7 @@ class PointMatcher(object):
 
         TODO: Use open ranges to include underflow and overflow
 
-        TODO: Allow negative indices in Python style, and use index=!
+        TODO: Allow negative indices in Python style, and use index=-1
         to mean the N+1 index needed to include the last bin without
         picking up the overflow, too.
 
