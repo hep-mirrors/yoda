@@ -72,12 +72,13 @@ namespace YODA {
           throw ReadError(ss.str());
         }
 
+        // Remove a (possibly non-space-separated) leading # if necessary
+        if (s.find("#") == 0) s = Utils::trim(s.substr(1));
+
         // Split into parts
         vector<string> parts;
         istringstream iss(s); string tmp;
-        while (iss >> tmp) {
-          if (tmp.find("#") != 0) parts.push_back(tmp);
-        }
+        while (iss >> tmp) parts.push_back(tmp);
 
         // Extract context from BEGIN type
         if (parts.size() < 2 || parts[0] != "BEGIN")
@@ -137,6 +138,7 @@ namespace YODA {
 
         // Clear/reset context and register AO if END line is found
         /// @todo Throw error if mismatch between BEGIN (context) and END types
+        /// @todo More explicitly handle leading #'s?
         if (s.find("END ") != string::npos) {
           aos.push_back(aocurr);
           context = NONE;

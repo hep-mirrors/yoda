@@ -2,6 +2,9 @@
 
 	* Version 1.5.2 release.
 
+	* Tolerate leading # symbols without separating whitespace on
+	BEGIN lines in YODA format parsing.
+
 	* Further improvements to handling LowStatsErrors in YODA format writing.
 
 	* Fix shadowed variables that made ReaderYODA unhappy.
