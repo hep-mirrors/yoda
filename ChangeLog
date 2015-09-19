@@ -1,3 +1,8 @@
+2015-09-19  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Further improvements to handling leading *multiple* # marks on
+	YODA format BEGIN lines.
+
 2015-09-11  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Version 1.5.2 release.

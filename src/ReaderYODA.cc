@@ -72,8 +72,8 @@ namespace YODA {
           throw ReadError(ss.str());
         }
 
-        // Remove a (possibly non-space-separated) leading # if necessary
-        if (s.find("#") == 0) s = Utils::trim(s.substr(1));
+        // Remove leading #s from the BEGIN line if necessary
+        while (s.find("#") == 0) s = Utils::trim(s.substr(1));
 
         // Split into parts
         vector<string> parts;
@@ -81,8 +81,11 @@ namespace YODA {
         while (iss >> tmp) parts.push_back(tmp);
 
         // Extract context from BEGIN type
-        if (parts.size() < 2 || parts[0] != "BEGIN")
-          throw ReadError("Unexpected BEGIN line structure in YODA format parsing: '" + s + "'");
+        if (parts.size() < 2 || parts[0] != "BEGIN") {
+          stringstream ss;
+          ss << "Unexpected BEGIN line structure when BEGIN expected: '" << s << "' on line " << nline;
+          throw ReadError(ss.str());
+        }
 
         // Second part is the context name
         const string ctxstr = parts[1];
