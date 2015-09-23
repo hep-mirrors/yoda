@@ -1,7 +1,7 @@
 ## Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.59)
-AC_INIT([YODA],[1.5.2],[yoda@projects.hepforge.org],[YODA])
+AC_INIT([YODA],[1.5.3],[yoda@projects.hepforge.org],[YODA])
 
 ## Check and block installation into the src/build dir
 if test "$prefix" = "$PWD"; then
@@ -85,14 +85,12 @@ fi
 
 
 ## Required Boost C++ utility library
-BOOST_REQUIRE([1.41.0])
+BOOST_REQUIRE([1.48.0])
 BOOST_FOREACH
 BOOST_SMART_PTR
 BOOST_FIND_HEADER([boost/lexical_cast.hpp])
 BOOST_FIND_HEADER([boost/assign.hpp])
-dnl BOOST_FIND_HEADER([boost/spirit/include/qi.hpp])
-dnl BOOST_FIND_HEADER([boost/spirit/include/phoenix_operator.hpp])
-dnl BOOST_FIND_HEADER([boost/fusion/include/adapt_struct.hpp])
+BOOST_FIND_HEADER([boost/type_traits/has_dereference.hpp])
 BOOST_BUG_IN_FOREACH
 
 
