@@ -3,6 +3,7 @@ import numpy as np
 import sys
 
 
+# TODO: need a better name... MiniHist, PlotData?
 class NumpyHist(object):
 
     def __init__(self, ao):
