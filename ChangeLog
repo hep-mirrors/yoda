@@ -1,3 +1,8 @@
+2015-10-01  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Expose the yoda.plot() Python function in a way that doesn't
+	automatically induce a dependence on matplotlib.
+
 2015-09-30  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Fix yodals to work with Counters.
