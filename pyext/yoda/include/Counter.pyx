@@ -91,11 +91,11 @@ cdef class Counter(AnalysisObject):
         self.cptr().scaleW(w)
 
 
-    # def mkScatter(self):
-    #     """None -> Scatter1D.
-    #     Convert this Counter to a Scatter1D, with x representing the value and error."""
-    #     cdef c.Scatter1D s1 = c.mkScatter_Counter(deref(self.cptr()))
-    #     return cutil.new_owned_cls(Scatter1D, s1.newclone())
+    def mkScatter(self):
+        """None -> Scatter1D.
+        Convert this Counter to a Scatter1D, with x representing the value and error."""
+        cdef c.Scatter1D s1 = c.mkScatter_Counter(deref(self.cptr()))
+        return cutil.new_owned_cls(Scatter1D, s1.newclone())
 
     # def divide(self, Counter c, efficiency=False):
     #     cdef c.Scatter1D s1

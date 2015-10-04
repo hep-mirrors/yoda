@@ -657,7 +657,11 @@ cdef extern from "merge.hh":
     Counter* Counter_add_Counter "cython_add" (Counter*, Counter*)
     Counter* Counter_sub_Counter "cython_sub" (Counter*, Counter*)
 
-# TODO: add counter division and efficiency calculations and mkScatter -> Scatter1D
+cdef extern from "YODA/Scatter1D.h" namespace "YODA":
+    Scatter1D mkScatter_Counter "YODA::mkScatter" (const Counter&) except +yodaerr
+
+# TODO: add counter division and efficiency calculations
+
 
 
 # Scatter1D {{{

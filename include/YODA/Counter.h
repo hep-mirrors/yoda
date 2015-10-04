@@ -228,7 +228,6 @@ namespace YODA {
     return tmp;
   }
 
-
   /// Add two counters
   inline Counter operator + (const Counter& first, const Counter& second) {
     return add(first, second);
@@ -242,7 +241,6 @@ namespace YODA {
     return tmp;
   }
 
-
   /// Subtract two counters
   inline Counter operator - (const Counter& first, const Counter& second) {
     return subtract(first, second);
@@ -253,15 +251,11 @@ namespace YODA {
   /// @todo Or just return a Point1D?
   Scatter1D divide(const Counter& numer, const Counter& denom);
 
-
   /// Divide two counters, with an uncorrelated error treatment
   /// @todo Or just return a Point1D?
   inline Scatter1D operator / (const Counter& numer, const Counter& denom) {
     return divide(numer, denom);
   }
-
-
-  /// @todo Add mkScatter
 
   /// @todo Add divide functions/operators on pointers
 

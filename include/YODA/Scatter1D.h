@@ -281,42 +281,6 @@ namespace YODA {
   /////////////////////////////////
 
 
-  // /// @name Combining scatters: global operators, assuming aligned points
-  // /// @todo This "1D histo-like behaviour" breaks the x/y symmetry... is there another way?
-  // //@{
-
-  // /// Add two scatters
-  // Scatter1D add(const Scatter1D& first, const Scatter1D& second);
-
-
-  // /// Add two scatters
-  // inline Scatter1D operator + (const Scatter1D& first, const Scatter1D& second) {
-  //   return add(first, second);
-  // }
-
-
-  // /// Subtract two scatters
-  // Scatter1D subtract(const Scatter1D& first, const Scatter1D& second);
-
-
-  // /// Subtract two scatters
-  // inline Scatter1D operator - (const Scatter1D& first, const Scatter1D& second) {
-  //   return subtract(first, second);
-  // }
-
-
-  // /// Divide two scatters
-  // Scatter1D divide(const Scatter1D& numer, const Scatter1D& denom);
-
-
-  // /// Divide two scatters
-  // inline Scatter1D operator / (const Scatter1D& numer, const Scatter1D& denom) {
-  //   return divide(numer, denom);
-  // }
-
-  // //@}
-
-
   /// @name Transforming operations on Scatter1D
   //@{
 
