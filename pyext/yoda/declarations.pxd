@@ -592,6 +592,9 @@ cdef extern from "YODA/AnalysisObject.h" namespace "YODA":
         ## String used in automatic type determination
         string type() except +yodaerr
 
+        ## Data object fill- or plot-space dimension
+        int dim() except +yodaerr
+
         ## Annotations
         vector[string] annotations() except +yodaerr
         bool hasAnnotation(string key) except +yodaerr

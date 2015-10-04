@@ -233,13 +233,19 @@ namespace YODA {
 
   public:
 
-    /// @name Persistency hooks
+    /// @name Persistency hooks / object type info
     //@{
 
-    /// Get name of the analysis object type, for persistency
+    /// Get name of the analysis object type
     virtual std::string type() const {
       return annotation("Type");
     }
+
+    /// @brief Get the dimension of the analysis object type
+    ///
+    /// @note For fillable types this is the dimension of the fill space (e.g. Histo1D -> dim=1).
+    ///    For scatter types, it is the total dimension of the points (e.g. Scatter3D -> dim=3).
+    virtual int dim() const = 0;
 
     //@}
 

@@ -117,13 +117,8 @@ namespace YODA {
     //@}
 
 
-    /// @name Persistency hooks
-    //@{
-
-    /// Get name of the analysis object type for persisting
-    std::string type() const { return "Profile2D"; }
-
-    //@}
+    /// Fill dimension of this data object
+    int dim() const { return 2; }
 
 
     /// @name Modifiers

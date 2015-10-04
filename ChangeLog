@@ -1,5 +1,7 @@
 2015-10-04  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Adding dim() function and corresponding Python attribute to AnalysisObject.
+
 	* Map Counter arithmetic operations into Python.
 
 	* Map Counter mkScatter() into Python (as bound method).

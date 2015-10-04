@@ -113,17 +113,8 @@ namespace YODA {
     //@}
 
 
-    /// @name Persistency hooks
-    //@{
-
-    /// Get name of the analysis object type, for persisting
-    std::string type() const { return "Profile1D"; }
-
-    /// Set the state of the profile object, for unpersisting
-    /// @todo Need to set annotations (do that on AO), all-histo Dbns, and dbns for every bin. Delegate!
-    // void _setstate() = 0;
-
-    //@}
+    /// Fill dimension of this data object
+    int dim() const { return 1; }
 
 
     /// @name Modifiers
