@@ -1,5 +1,7 @@
 2015-10-04  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Map Counter arithmetic operations into Python.
+
 	* Map Counter mkScatter() into Python (as bound method).
 
 	* Add a YODA::version() function, mapped into Python and used to

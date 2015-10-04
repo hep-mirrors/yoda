@@ -649,19 +649,25 @@ cdef extern from "YODA/Counter.h" namespace "YODA":
 
         void scaleW(double) except +yodaerr
 
-        # TODO: += and -=
+        # operator += (Counter)
+        # operator -= (Counter)
 
-#}}} Counter
+    Scatter1D Counter_div_Counter "divide" (const Counter&, const Counter&) except +yodaerr
+    Scatter1D Counter_eff_Counter "efficiency" (const Counter&, const Counter&) except +yodaerr
 
 cdef extern from "merge.hh":
+    void Counter_iadd_Counter "cython_iadd" (Counter*, Counter*)
+    void Counter_isub_Counter "cython_isub" (Counter*, Counter*)
+    # void Counter_imul_dbl "cython_imul_dbl" (Counter*, double)
+    # void Counter_idiv_dbl "cython_idiv_dbl" (Counter*, double)
     Counter* Counter_add_Counter "cython_add" (Counter*, Counter*)
     Counter* Counter_sub_Counter "cython_sub" (Counter*, Counter*)
+    #Counter* Counter_div_Counter "cython_div" (Counter*, Counter*)
 
 cdef extern from "YODA/Scatter1D.h" namespace "YODA":
     Scatter1D mkScatter_Counter "YODA::mkScatter" (const Counter&) except +yodaerr
 
-# TODO: add counter division and efficiency calculations
-
+#}}} Counter
 
 
 # Scatter1D {{{

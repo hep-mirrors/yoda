@@ -334,11 +334,11 @@ cdef class Histo1D(AnalysisObject):
 
     ## Unbound special methods
 
-    # TODO: only to bootstrap sum(), but doesn't work properly? Seems to treat *self* as the int...
-    def __radd__(Histo1D self, zero):
-        #assert zero == 0
-        print "FOO"
-        return self.clone()
+    # # TODO: only to bootstrap sum(), but doesn't work properly? Seems to treat *self* as the int...
+    # def __radd__(Histo1D self, zero):
+    #     #assert zero == 0
+    #     print "FOO"
+    #     return self.clone()
 
     def __add__(Histo1D self, Histo1D other):
         # print "BAR"
