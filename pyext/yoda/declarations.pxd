@@ -5,6 +5,10 @@ from libcpp cimport bool
 from libcpp.string cimport string
 from cython.operator cimport dereference as deref
 
+cdef extern from "YODA/Config/YodaConfig.h" namespace "YODA":
+     string version()
+
+
 # Import the error handling C++ routine
 cdef extern from "errors.hh":
     # Have a look in errors.cpp for implementation specifics
@@ -26,7 +30,6 @@ cdef extern from "YODA/Utils/MathUtils.h" namespace "YODA":
     double mean(vector[int]& sample)
     double covariance(vector[int]& sample1, vector[int]& sample2)
     double correlation(vector[int]& sample1, vector[int]& sample2)
-
 # }}}
 
 

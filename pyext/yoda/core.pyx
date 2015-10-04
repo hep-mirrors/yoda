@@ -16,6 +16,10 @@ import yoda.util as util
 from itertools import repeat, imap
 from operator import attrgetter
 
+def version():
+    "Return YODA library version as a string"
+    return c.version()
+
 include "include/Errors.pyx"
 include "include/Dbn0D.pyx"
 include "include/Dbn1D.pyx"
