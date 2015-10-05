@@ -8,13 +8,23 @@ ca.fill(5)
 cb = yoda.Counter("/c/filled")
 cb.fill(10)
 
-h1empty = yoda.Histo1D(10, 0, 1, "/h/empty")
-h1a = yoda.Histo1D(10, 0, 1, "/h/filled")
+h1empty = yoda.Histo1D(10, 0, 1, "/h1/empty")
+h1a = yoda.Histo1D(10, 0, 1, "/h1/filled")
 for x in [0.1, 0.5, 0.55]:
     h1a.fill(x)
-h1b = yoda.Histo1D(10, 0, 1, "/h/filled")
+h1b = yoda.Histo1D(10, 0, 1, "/h1/filled")
 for x in [0.3, 0.5, 0.7]:
     h1b.fill(x)
+
+h2empty = yoda.Histo2D(10, 0, 1, 5, 0, 1, "/h2/empty")
+h2a = yoda.Histo2D(10, 0, 1, 5, 0, 1, "/h2/filled")
+for xy in [(0.1,0.6), (0.5,0.1), (0.55,0.55)]:
+    h2a.fill(*xy)
+h2b = yoda.Histo2D(10, 0, 1, 5, 0, 1, "/h2/filled")
+for x in [(0.3,0.2), (0.5,0.1), (0.7,1.15)]:
+    h2b.fill(*xy)
+
+# TODO: Profiles
 
 s1a = ca.mkScatter()
 s1a.path = "/s1"
@@ -26,5 +36,10 @@ s2a.path = "/s2"
 s2b = h1b.mkScatter()
 s2b.path = "/s2"
 
-yoda.write([cempty, ca, h1empty, h1a, s1a, s2a], "merge1.yoda")
-yoda.write([cempty, cb, h1empty, h1b, s1b, s2b], "merge2.yoda")
+s3a = h2a.mkScatter()
+s3a.path = "/s3"
+s3b = h2b.mkScatter()
+s3b.path = "/s3"
+
+yoda.write([cempty, ca, h1empty, h1a, h2a, s1a, s2a, s3a], "merge1.yoda")
+yoda.write([cempty, cb, h1empty, h1b, h2b, s1b, s2b, s3b], "merge2.yoda")

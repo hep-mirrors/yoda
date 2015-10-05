@@ -1,6 +1,6 @@
 2015-10-06  Andy Buckley  <andy.buckley@cern.ch>
 
-	* Typo fix in ReaderYODA Counter filling of sumW.
+	* ReaderYODA: Typo fixes in Counter filling of sumW and Scatter3D reader state flag.
 
 	* yodamerge: add merging heuristics for Scatter1D and Scatter3D (needs unification)
 

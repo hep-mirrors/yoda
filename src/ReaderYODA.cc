@@ -111,7 +111,7 @@ namespace YODA {
           s2curr = new Scatter2D(path);
           aocurr = s2curr;
         } else if (ctxstr == "YODA_SCATTER3D") {
-          context = SCATTER2D;
+          context = SCATTER3D;
           s3curr = new Scatter3D(path);
           aocurr = s3curr;
         } else if (ctxstr == "YODA_HISTO1D") {
