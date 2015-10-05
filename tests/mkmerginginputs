@@ -1,0 +1,30 @@
+#! /usr/bin/env python
+
+import yoda
+
+cempty = yoda.Counter("/c/empty")
+ca = yoda.Counter("/c/filled")
+ca.fill(5)
+cb = yoda.Counter("/c/filled")
+cb.fill(10)
+
+h1empty = yoda.Histo1D(10, 0, 1, "/h/empty")
+h1a = yoda.Histo1D(10, 0, 1, "/h/filled")
+for x in [0.1, 0.5, 0.55]:
+    h1a.fill(x)
+h1b = yoda.Histo1D(10, 0, 1, "/h/filled")
+for x in [0.3, 0.5, 0.7]:
+    h1b.fill(x)
+
+s1a = ca.mkScatter()
+s1a.path = "/s1"
+s1b = cb.mkScatter()
+s1b.path = "/s1"
+
+s2a = h1a.mkScatter()
+s2a.path = "/s2"
+s2b = h1b.mkScatter()
+s2b.path = "/s2"
+
+yoda.write([cempty, ca, h1empty, h1a, s1a, s2a], "merge1.yoda")
+yoda.write([cempty, cb, h1empty, h1b, s1b, s2b], "merge2.yoda")

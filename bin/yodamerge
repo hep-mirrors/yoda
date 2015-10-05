@@ -140,7 +140,7 @@ for p, aos in analysisobjects_in.iteritems():
 
     ## Check that types match, and just output the first one if they don't
     if not all(type(ao) is aotype for ao in aos):
-        print "WARNING: Several types of analysis object found at path %s: cannot be merged"
+        sys.stderr.write("WARNING: Several types of analysis object found at path %s: cannot be merged\n")
         analysisobjects_out[p] = aos[0]
         continue
 
@@ -166,7 +166,7 @@ for p, aos in analysisobjects_in.iteritems():
         elif all("ScaledBy" not in ao.annotations for ao in aos):
             pass
         else:
-            print "WARNING: Abandoning normalized merge of path %s because some but not all inputs have ScaledBy attributes" % p
+            sys.stderr.write("WARNING: Abandoning normalized merge of path %s because some but not all inputs have ScaledBy attributes\n" % p)
 
         ## Now that the normalization-identifying heuristic is done, apply user scalings and undo the normalization scaling if appropriate
         for ao in aos:
@@ -204,7 +204,7 @@ for p, aos in analysisobjects_in.iteritems():
                 if any(float(ao.annotation("yodamerge_scale")) != 1.0 for ao in aos):
                     msg += " (+ user scaling)"
                 if len(aos) > 1:
-                    print msg
+                    sys.stderr.write(msg + "\n")
                 npoints = len(ao_out.points)
                 for i in xrange(npoints):
                     val_i = ep_i = em_i = scalesum = 0.0
@@ -243,7 +243,7 @@ for p, aos in analysisobjects_in.iteritems():
                 if any(float(ao.annotation("yodamerge_scale")) != 1.0 for ao in aos):
                     msg += " (+ user scaling)"
                 if len(aos) > 1:
-                    print msg
+                    sys.stderr.write(msg + "\n")
                 npoints = len(ao_out.points)
                 for i in xrange(npoints):
                     val_i = ep_i = em_i = scalesum = 0.0
@@ -282,7 +282,7 @@ for p, aos in analysisobjects_in.iteritems():
                 if any(float(ao.annotation("yodamerge_scale")) != 1.0 for ao in aos):
                     msg += " (+ user scaling)"
                 if len(aos) > 1:
-                    print msg
+                    sys.stderr.write(msg + "\n")
                 npoints = len(ao_out.points)
                 for i in xrange(npoints):
                     val_i = ep_i = em_i = scalesum = 0.0
@@ -313,7 +313,7 @@ for p, aos in analysisobjects_in.iteritems():
 
         ## Other data types (just warn, and write out the first object)
         else:
-            print "WARNING: Analysis object %s of type %s cannot be merged" % (p, str(aotype))
+            sys.stderr.write("WARNING: Analysis object %s of type %s cannot be merged\n" % (p, str(aotype)))
 
 
     ## Put the output AO into the output dict
