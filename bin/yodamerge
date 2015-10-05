@@ -130,6 +130,11 @@ for p, aos in analysisobjects_in.iteritems():
 
     # TODO: Move merging tool code blocks into Python library
 
+    ## Identify (non-)empty histograms, to avoid undefined norm gotchas
+    aos_nonzero = []
+    if type(aos[0]) in (yoda.Histo1D, yoda.Histo2D):
+        nonzero_aos = [ao for ao in aos if ao.sumW() != 0]
+
 
     ## Check that types match, and just output the first one if they don't
     if not all(type(ao) is type(aos[0]) for ao in aos[1:]):
@@ -142,26 +147,31 @@ for p, aos in analysisobjects_in.iteritems():
     if type(aos[0]) in (yoda.Histo1D, yoda.Histo2D):
     # if hasattr(aos[0], "scaleW"): #< restrict "full" merging to histo types
 
+        ## Skip this observable merging if no runs had non-empty histos
+        if len(aos_nonzero) == 0:
+            continue
+
         ## Identify a target rescaling factor from the 1/scalefactor-weighted norms of each run
         rescale = None
-        if all("ScaledBy" in ao.annotations for ao in aos):
-            rescale = 1.0 / sum( float(ao.annotation("yodamerge_scale"))/float(ao.annotation("ScaledBy")) for ao in aos)
-        elif all("ScaledBy" not in ao.annotations for ao in aos):
-            rescale == None
+        if all("ScaledBy" in ao.annotations for ao in aos_nonzero):
+            rescale = 1.0 / sum( float(ao.annotation("yodamerge_scale"))/float(ao.annotation("ScaledBy")) for ao in aos_nonzero)
+        elif all("ScaledBy" not in ao.annotations for ao in aos_nonzero):
+            # TODO: ???
+            rescale = None
         else:
             print "WARNING: Abandoning normalized merge of path %s because not all inputs have ScaledBy attributes" % p
 
         ## Now that the normalization-identifying heuristic is done, apply user scalings and undo the normalization scaling if appropriate
-        for ao in aos:
+        for ao in aos_nonzero:
             ao.scaleW( float(ao.annotation("yodamerge_scale")) )
             if rescale:
                 ao.scaleW( 1.0/float(ao.annotation("ScaledBy")) )
 
         ## Make a copy of the (scaled & unnormalized) first object as the basis for the output
         ## and merge for histograms (including weights, normalization, and user scaling)
-        ao_out = aos[0].clone()
+        ao_out = aos_nonzero[0].clone()
         ao_out.rmAnnotation("yodamerge_scale")
-        for ao in aos[1:]:
+        for ao in aos_nonzero[1:]:
             ao_out += ao
         if rescale:
             ao_out.scaleW(rescale)

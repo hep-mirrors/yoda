@@ -1,3 +1,8 @@
+2015-10-05  Andy Buckley  <andy.buckley@cern.ch>
+
+	* yodamerge: add a fix for empty-in-all-runs histo merging; thanks
+	to Daniel Rauch.
+
 2015-10-04  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Adding dim() function and corresponding Python attribute to AnalysisObject.
