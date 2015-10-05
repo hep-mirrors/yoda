@@ -1,5 +1,7 @@
 2015-10-06  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Typo fix in ReaderYODA Counter filling of sumW.
+
 	* yodamerge: add merging heuristics for Scatter1D and Scatter3D (needs unification)
 
 2015-10-05  Andy Buckley  <andy.buckley@cern.ch>

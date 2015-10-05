@@ -170,7 +170,7 @@ namespace YODA {
         case COUNTER:
           {
             double sumw(0), sumw2(0); unsigned long n(0);
-            iss >> sumw2 >> sumw2 >> n;
+            iss >> sumw >> sumw2 >> n;
             cncurr->setDbn(Dbn0D(n, sumw, sumw2));
           }
           break;
