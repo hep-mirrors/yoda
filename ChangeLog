@@ -1,5 +1,7 @@
 2015-10-06  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Version 1.5.4 release.
+
 	* ReaderYODA: Typo fixes in Counter filling of sumW and Scatter3D reader state flag.
 
 	* yodamerge: add merging heuristics for Scatter1D and Scatter3D (needs unification)
