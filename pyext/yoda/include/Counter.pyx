@@ -58,7 +58,7 @@ cdef class Counter(AnalysisObject):
     def sumW(self):
         """() -> float
         Sum of weights filled into this counter."""
-        return self.h1ptr().sumW()
+        return self.cptr().sumW()
 
     #@property
     def sumW2(self):

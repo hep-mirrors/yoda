@@ -1,3 +1,15 @@
+2015-10-07  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Counter.pyx: Typo fix in sumW mapping.
+
+	* yodamerge: Re-add checking for non-emptiness before merging, in
+	case the empty ones are missing a ScaledBy attribute. Won't
+	normally apply to Profiles, since they don't usually get
+	normalised, but we might as well include them in the vetoing since
+	empty histos don't contribute to the merging. Added a command-line
+	option to disable this heuristic since in very strange situations
+	a null sumW does not mean no fills.
+
 2015-10-06  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Version 1.5.4 release.
