@@ -1,4 +1,4 @@
-cdef class Point3D(util.Base):
+cdef class Point3D(Point):
     """
     A 3D point with errors, used by the Scatter3D class.
     """
@@ -56,21 +56,21 @@ cdef class Point3D(util.Base):
         def __get__(self):
             return util.read_error_pair(self.p3ptr().xErrs())
         def __set__(self, val):
-            self.p3ptr().setXErr(util.read_symmetric(val))
+            self.p3ptr().setXErrs(util.read_symmetric(val))
 
     # TODO: How does this fit into the multi-error API? Still useful, but just reports first errs... how to get _all_ +- err pairs?
     property yErrs:
         def __get__(self):
             return util.read_error_pair(self.p3ptr().yErrs())
         def __set__(self, val):
-            self.p3ptr().setYErr(util.read_symmetric(val))
+            self.p3ptr().setYErrs(util.read_symmetric(val))
 
     # TODO: How does this fit into the multi-error API? Still useful, but just reports first errs... how to get _all_ +- err pairs?
     property zErrs:
         def __get__(self):
             return util.read_error_pair(self.p3ptr().zErrs())
         def __set__(self, val):
-            self.p3ptr().setZErr(util.read_symmetric(val))
+            self.p3ptr().setZErrs(util.read_symmetric(val))
 
 
     @property

@@ -236,12 +236,12 @@ cdef extern from "YODA/Point.h" namespace "YODA":
         double errAvg(size_t i) except +yodaerr
 
         void setErr(size_t i, double e) except +yodaerr
-        void setErr(size_t i, double eminus, double eplus) except +yodaerr
+        # void setErrs(size_t i, double e) except +yodaerr
+        # void setErrs(size_t i, double eminus, double eplus) except +yodaerr
+        void setErrs(size_t i, pair[double,double]& e) except +yodaerr
 
-        void setErr(size_t i, pair[double,double]& e) except +yodaerr
-
-        void set(size_t i, double val, double e) except +yodaerr
-        void set(size_t i, double val, double eminus, double eplus) except +yodaerr
+        # void set(size_t i, double val, double e) except +yodaerr
+        # void set(size_t i, double val, double eminus, double eplus) except +yodaerr
         void set(size_t i, double val, pair[double,double]& e) except +yodaerr
 
 #}}} Point
@@ -258,7 +258,7 @@ cdef extern from "YODA/Point1D.h" namespace "YODA":
         void setX(double x) except +yodaerr
 
         pair[double,double] xErrs() except +yodaerr
-        void setXErr(pair[double, double]&) except +yodaerr
+        void setXErrs(pair[double, double]&) except +yodaerr
         double xErrAvg() except +yodaerr
 
         double xMin() except +yodaerr
@@ -293,8 +293,8 @@ cdef extern from "YODA/Point2D.h" namespace "YODA":
 
         pair[double,double] xErrs() except +yodaerr
         pair[double,double] yErrs() except +yodaerr
-        void setXErr(pair[double, double]&) except +yodaerr
-        void setYErr(pair[double, double]&) except +yodaerr
+        void setXErrs(pair[double, double]&) except +yodaerr
+        void setYErrs(pair[double, double]&) except +yodaerr
         double xErrAvg() except +yodaerr
         double yErrAvg() except +yodaerr
 
@@ -337,9 +337,9 @@ cdef extern from "YODA/Point3D.h" namespace "YODA":
         pair[double,double] xErrs() except +yodaerr
         pair[double,double] yErrs() except +yodaerr
         pair[double,double] zErrs() except +yodaerr
-        void setXErr(pair[double, double]&) except +yodaerr
-        void setYErr(pair[double, double]&) except +yodaerr
-        void setZErr(pair[double, double]&) except +yodaerr
+        void setXErrs(pair[double, double]&) except +yodaerr
+        void setYErrs(pair[double, double]&) except +yodaerr
+        void setZErrs(pair[double, double]&) except +yodaerr
         double xErrAvg()
         double yErrAvg()
         double zErrAvg()

@@ -1,3 +1,8 @@
+2015-10-09  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Rename set*Err to set*Errs for the asymmetric variants. Plural
+	aliases are also provided for the symm case.
+
 2015-10-08  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Pass std::pairs by reference in Point*D error setting functions.

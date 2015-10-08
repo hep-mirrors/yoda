@@ -158,14 +158,19 @@ namespace YODA {
       setXErrPlus(ex);
     }
 
+    /// Set symmetric x error (alias)
+    void setXErrs(double ex) {
+      setXErr(ex);
+    }
+
     /// Set asymmetric x error
-    void setXErr(double exminus, double explus) {
+    void setXErrs(double exminus, double explus) {
       setXErrMinus(exminus);
       setXErrPlus(explus);
     }
 
     /// Set asymmetric x error
-    void setXErr(std::pair<double,double>& ex) {
+    void setXErrs(std::pair<double,double>& ex) {
       _ex = ex;
     }
 
@@ -180,20 +185,6 @@ namespace YODA {
     double xMax() const {
       return _x + _ex.second;
     }
-
-    // /// Set negative x-error via the xMin position
-    // /// @todo Remove when multiple errors are supported
-    // void setXMin(double xmin) {
-    //   if (xmin > x()) throw UserError("Attempted to set an xmin > x");
-    //   setXErrMinus(x() - xmin);
-    // }
-
-    // /// Set positive x-error via the xMax position
-    // /// @todo Remove when multiple errors are supported
-    // void setXMax(double xmax) {
-    //   if (xmax < x()) throw UserError("Attempted to set an xmax < x");
-    //   setXErrPlus(xmax - x());
-    // }
 
     //@}
 
@@ -237,14 +228,19 @@ namespace YODA {
       setYErrPlus(ey);
     }
 
+    /// Set symmetric y error (alias)
+    void setYErrs(double ey) {
+      setYErr(ey);
+    }
+
     /// Set asymmetric y error
-    void setYErr(double eyminus, double eyplus) {
+    void setYErrs(double eyminus, double eyplus) {
       setYErrMinus(eyminus);
       setYErrPlus(eyplus);
     }
 
     /// Set asymmetric y error
-    void setYErr(std::pair<double,double>& ey) {
+    void setYErrs(std::pair<double,double>& ey) {
       _ey = ey;
     }
 
@@ -260,20 +256,6 @@ namespace YODA {
       return _y + _ey.second;
     }
 
-    // /// Set negative y-error via the yMin position
-    // /// @todo Remove when multiple errors are supported
-    // void setYMin(double ymin) {
-    //   if (ymin > y()) throw UserError("Attempted to set an ymin > y");
-    //   setYErrMinus(y() - ymin);
-    // }
-
-    // /// Set positive y-error via the yMax position
-    // /// @todo Remove when multiple errors are supported
-    // void setYMax(double ymax) {
-    //   if (ymax < y()) throw UserError("Attempted to set an ymax < y");
-    //   setYErrPlus(ymax - y());
-    // }
-
     //@}
 
 
@@ -286,38 +268,38 @@ namespace YODA {
     /// Set x value and symmetric error
     void setX(double x, double ex) {
       setX(x);
-      setXErr(ex);
+      setXErrs(ex);
     }
 
     /// Set x value and asymmetric error
     void setX(double x, double exminus, double explus) {
       setX(x);
-      setXErr(exminus, explus);
+      setXErrs(exminus, explus);
     }
 
     /// Set x value and asymmetric error
     void setX(double x, std::pair<double,double>& ex) {
       setX(x);
-      setXErr(ex);
+      setXErrs(ex);
     }
 
 
     /// Set y value and symmetric error
     void setY(double y, double ey) {
       setY(y);
-      setYErr(ey);
+      setYErrs(ey);
     }
 
     /// Set y value and asymmetric error
     void setY(double y, double eyminus, double eyplus) {
       setY(y);
-      setYErr(eyminus, eyplus);
+      setYErrs(eyminus, eyplus);
     }
 
     /// Set y value and asymmetric error
     void setY(double y, std::pair<double,double>& ey) {
       setY(y);
-      setYErr(ey);
+      setYErrs(ey);
     }
 
     //@}
@@ -329,13 +311,13 @@ namespace YODA {
     /// Scaling of x axis
     void scaleX(double scalex) {
       setX(x()*scalex);
-      setXErr(xErrMinus()*scalex, xErrPlus()*scalex);
+      setXErrs(xErrMinus()*scalex, xErrPlus()*scalex);
     }
 
     /// Scaling of y axis
     void scaleY(double scaley) {
       setY(y()*scaley);
-      setYErr(yErrMinus()*scaley, yErrPlus()*scaley);
+      setYErrs(yErrMinus()*scaley, yErrPlus()*scaley);
     }
 
     /// Scaling of both axes
@@ -426,24 +408,24 @@ namespace YODA {
     /// Set symmetric error for direction @a i
     void setErr(size_t i, double e) {
       switch (i) {
-      case 1: setXErr(e);
-      case 2: setYErr(e);
+      case 1: setXErrs(e);
+      case 2: setYErrs(e);
       default: throw RangeError("Invalid axis int, must be in range 1..dim");
       }
     }
     /// Set asymmetric error for direction @a i
-    void setErr(size_t i, double eminus, double eplus) {
+    void setErrs(size_t i, double eminus, double eplus) {
       switch (i) {
-      case 1: setXErr(eminus, eplus);
-      case 2: setYErr(eminus, eplus);
+      case 1: setXErrs(eminus, eplus);
+      case 2: setYErrs(eminus, eplus);
       default: throw RangeError("Invalid axis int, must be in range 1..dim");
       }
     }
     /// Set asymmetric error for direction @a i
-    void setErr(size_t i, std::pair<double,double>& e) {
+    void setErrs(size_t i, std::pair<double,double>& e) {
       switch (i) {
-      case 1: setXErr(e);
-      case 2: setYErr(e);
+      case 1: setXErrs(e);
+      case 2: setYErrs(e);
       default: throw RangeError("Invalid axis int, must be in range 1..dim");
       }
     }

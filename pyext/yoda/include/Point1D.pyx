@@ -1,4 +1,4 @@
-cdef class Point1D(util.Base):
+cdef class Point1D(Point):
     """
     A 1D point with errors, used by the Scatter1D class.
     """
@@ -36,7 +36,7 @@ cdef class Point1D(util.Base):
         def __get__(self):
             return util.read_error_pair(self.p1ptr().xErrs())
         def __set__(self, val):
-            self.p1ptr().setXErr(util.read_symmetric(val))
+            self.p1ptr().setXErrs(util.read_symmetric(val))
 
 
     @property

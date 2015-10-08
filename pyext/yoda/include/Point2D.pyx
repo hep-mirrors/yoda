@@ -1,4 +1,4 @@
-cdef class Point2D(util.Base):
+cdef class Point2D(Point):
     """
     A 2D point with errors, used by the Scatter2D class.
     """
@@ -53,7 +53,7 @@ cdef class Point2D(util.Base):
         def __get__(self):
             return util.read_error_pair(self.p2ptr().xErrs())
         def __set__(self, val):
-            self.p2ptr().setXErr(util.read_symmetric(val))
+            self.p2ptr().setXErrs(util.read_symmetric(val))
 
     # TODO: How does this fit into the multi-error API? Still useful, but just reports first errs... how to get _all_ +- err pairs?
     property yErrs:
@@ -61,20 +61,7 @@ cdef class Point2D(util.Base):
         def __get__(self):
             return util.read_error_pair(self.p2ptr().yErrs())
         def __set__(self, val):
-            self.p2ptr().setYErr(util.read_symmetric(val))
-
-
-    # TODO: add similar to C++, plus xRanges, and xWidth(s) and map
-    # property xRange:
-    #     """The minimum and maximum points within the x errors"""
-    #     def __get__(self):
-    #         return util.EdgePair(self.p2ptr().xMin(), self.p2ptr().xMax())
-
-    # # TODO: remove! or add similar to C++ and map
-    # property yRange:
-    #     """The minimum and maximum points within the y errors"""
-    #     def __get__(self):
-    #         return util.EdgePair(self.p2ptr().yMin(), self.p2ptr().yMax())
+            self.p2ptr().setYErrs(util.read_symmetric(val))
 
 
     @property
