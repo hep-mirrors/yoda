@@ -58,9 +58,11 @@ cdef class Profile1D(AnalysisObject):
 
 
     def __len__(self):
+        "Number of bins"
         return self.p1ptr().bins().size()
 
     def __getitem__(self, i):
+        "Direct access to bins"
         cdef size_t ii = cutil.pythonic_index(i, self.p1ptr().bins().size())
         return cutil.new_borrowed_cls(ProfileBin1D, & self.p1ptr().bin(ii), self)
 

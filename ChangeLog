@@ -1,5 +1,7 @@
 2015-10-09  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Reinstate __getitem__  special methods for Scatters in Python.
+
 	* Provide dim() methods/attributes for the Point and Bin base classes.
 
 	* Rename set*Err to set*Errs for the asymmetric variants. Plural

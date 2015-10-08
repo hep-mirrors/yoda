@@ -55,10 +55,9 @@ cdef class Scatter2D(AnalysisObject):
         """Access the i'th point."""
         return cutil.new_borrowed_cls(Point2D, &self.s2ptr().point(i), self)
 
-    # TODO: remove?
-    # def __getitem__(self, py_ix):
-    #     cdef size_t i = cutil.pythonic_index(py_ix, self.s2ptr().numPoints())
-    #     return cutil.new_borrowed_cls(Point2D, &self.s2ptr().point(i), self)
+    def __getitem__(self, py_ix):
+        cdef size_t i = cutil.pythonic_index(py_ix, self.s2ptr().numPoints())
+        return cutil.new_borrowed_cls(Point2D, &self.s2ptr().point(i), self)
 
 
     def addPoint(self, *args, **kwargs):

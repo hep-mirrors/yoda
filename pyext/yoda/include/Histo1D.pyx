@@ -55,14 +55,14 @@ cdef class Histo1D(AnalysisObject):
 
 
     def __len__(self):
-        "DEPRECATED!"
+        "Number of bins"
         return self.numBins
 
     def __getitem__(self, i):
-        "DEPRECATED! But bins() = list(self) depends on it, so removing is not trivial"
-        # return self.bins[i]
+        "Direct access to bins"
         cdef size_t ii = cutil.pythonic_index(i, self.h1ptr().numBins())
         return cutil.new_borrowed_cls(HistoBin1D, & self.h1ptr().bin(ii), self)
+
 
     def __repr__(self):
         xmean = None
