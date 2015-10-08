@@ -1,3 +1,10 @@
+2015-10-08  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Pass std::pairs by reference in Point*D error setting functions.
+
+	* Add Point base class with generic accessors to Point*D
+	properties via an integer axis ID argument.
+
 2015-10-07  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Version 1.5.5 release.

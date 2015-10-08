@@ -78,7 +78,7 @@ namespace YODA {
 
 
     /// Fill dimension of this data object
-    int dim() const { return 0; }
+    size_t dim() const { return 0; }
 
 
     /// @name Modifiers

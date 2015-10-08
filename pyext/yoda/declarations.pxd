@@ -220,9 +220,36 @@ cdef extern from "YODA/Dbn3D.h" namespace "YODA":
 #}}} Dbn3D
 
 
+# Point {{{
+
+cdef extern from "YODA/Point.h" namespace "YODA":
+    cdef cppclass Point:
+
+        double val(size_t i) except +yodaerr
+        void setVal(size_t i, double val) except +yodaerr
+
+        pair[double,double] errs(size_t i) except +yodaerr
+        double errMinus(size_t i) except +yodaerr
+        void setErrMinus(size_t i, double eminus) except +yodaerr
+        double errPlus(size_t i) except +yodaerr
+        void setErrPlus(size_t i, double eplus) except +yodaerr
+        double errAvg(size_t i) except +yodaerr
+
+        void setErr(size_t i, double e) except +yodaerr
+        void setErr(size_t i, double eminus, double eplus) except +yodaerr
+
+        void setErr(size_t i, pair[double,double]& e) except +yodaerr
+
+        void set(size_t i, double val, double e) except +yodaerr
+        void set(size_t i, double val, double eminus, double eplus) except +yodaerr
+        void set(size_t i, double val, pair[double,double]& e) except +yodaerr
+
+#}}} Point
+
+
 # Point1D {{{
 cdef extern from "YODA/Point1D.h" namespace "YODA":
-    cdef cppclass Point1D:
+    cdef cppclass Point1D(Point):
         Point1D () except +yodaerr
         Point1D (Point1D p) except +yodaerr
         Point1D (double x, double exminus, double explus) except +yodaerr
@@ -231,7 +258,7 @@ cdef extern from "YODA/Point1D.h" namespace "YODA":
         void setX(double x) except +yodaerr
 
         pair[double,double] xErrs() except +yodaerr
-        void setXErr(pair[double, double]) except +yodaerr
+        void setXErr(pair[double, double]&) except +yodaerr
         double xErrAvg() except +yodaerr
 
         double xMin() except +yodaerr
@@ -250,7 +277,7 @@ cdef extern from "YODA/Point1D.h" namespace "YODA":
 
 # Point2D {{{
 cdef extern from "YODA/Point2D.h" namespace "YODA":
-    cdef cppclass Point2D:
+    cdef cppclass Point2D(Point):
         Point2D () except +yodaerr
         Point2D (Point2D p) except +yodaerr
         Point2D (double x, double y,
@@ -262,12 +289,12 @@ cdef extern from "YODA/Point2D.h" namespace "YODA":
         void setX(double x) except +yodaerr
         void setY(double y) except +yodaerr
         pair[double,double] xy() except +yodaerr
-        void setXY(pair[double,double] xy) except +yodaerr
+        void setXY(pair[double,double]&) except +yodaerr
 
         pair[double,double] xErrs() except +yodaerr
         pair[double,double] yErrs() except +yodaerr
-        void setXErr(pair[double, double]) except +yodaerr
-        void setYErr(pair[double, double]) except +yodaerr
+        void setXErr(pair[double, double]&) except +yodaerr
+        void setYErr(pair[double, double]&) except +yodaerr
         double xErrAvg() except +yodaerr
         double yErrAvg() except +yodaerr
 
@@ -292,7 +319,7 @@ cdef extern from "YODA/Point2D.h" namespace "YODA":
 
 # Point3D {{{
 cdef extern from "YODA/Point3D.h" namespace "YODA":
-    cdef cppclass Point3D:
+    cdef cppclass Point3D(Point):
         Point3D () except +yodaerr
         Point3D (Point3D& p) except +yodaerr
         Point3D (double x, double y, double z,
@@ -310,9 +337,9 @@ cdef extern from "YODA/Point3D.h" namespace "YODA":
         pair[double,double] xErrs() except +yodaerr
         pair[double,double] yErrs() except +yodaerr
         pair[double,double] zErrs() except +yodaerr
-        void setXErr(pair[double, double]) except +yodaerr
-        void setYErr(pair[double, double]) except +yodaerr
-        void setZErr(pair[double, double]) except +yodaerr
+        void setXErr(pair[double, double]&) except +yodaerr
+        void setYErr(pair[double, double]&) except +yodaerr
+        void setZErr(pair[double, double]&) except +yodaerr
         double xErrAvg()
         double yErrAvg()
         double zErrAvg()

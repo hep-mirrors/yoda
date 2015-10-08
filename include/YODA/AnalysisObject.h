@@ -245,7 +245,7 @@ namespace YODA {
     ///
     /// @note For fillable types this is the dimension of the fill space (e.g. Histo1D -> dim=1).
     ///    For scatter types, it is the total dimension of the points (e.g. Scatter3D -> dim=3).
-    virtual int dim() const = 0;
+    virtual size_t dim() const = 0;
 
     //@}
 
