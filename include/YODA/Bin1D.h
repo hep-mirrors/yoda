@@ -79,6 +79,12 @@ namespace YODA {
     //@}
 
 
+
+    /// Dimension of the fill space
+    size_t dim() { return 1; }
+
+
+
     /// @name Modifiers
     //@{
 

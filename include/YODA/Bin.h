@@ -32,6 +32,10 @@ namespace YODA {
     //@}
 
 
+    /// Dimension of the fill space
+    virtual size_t dim() = 0;
+
+
     /// @name Fill statistics
     //@{
 
@@ -48,6 +52,10 @@ namespace YODA {
     virtual double sumW2() const = 0;
 
     //@}
+
+
+    /// @todo Add integer ID access to axis quantities (i.e. min, max, mid, focus)
+
 
   };
 

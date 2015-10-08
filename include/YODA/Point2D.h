@@ -90,6 +90,10 @@ namespace YODA {
 
   public:
 
+    /// Space dimension of the point
+    size_t dim() { return 2; }
+
+
     /// @name Value accessors
     //@{
 

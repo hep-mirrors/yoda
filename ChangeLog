@@ -1,5 +1,7 @@
 2015-10-09  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Provide dim() methods/attributes for the Point and Bin base classes.
+
 	* Rename set*Err to set*Errs for the asymmetric variants. Plural
 	aliases are also provided for the symm case.
 

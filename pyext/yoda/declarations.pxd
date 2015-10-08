@@ -225,6 +225,8 @@ cdef extern from "YODA/Dbn3D.h" namespace "YODA":
 cdef extern from "YODA/Point.h" namespace "YODA":
     cdef cppclass Point:
 
+        int dim() except +yodaerr
+
         double val(size_t i) except +yodaerr
         void setVal(size_t i, double val) except +yodaerr
 
@@ -372,6 +374,7 @@ cdef extern from "YODA/Point3D.h" namespace "YODA":
 # Bin {{{
 cdef extern from "YODA/Bin.h" namespace "YODA":
     cdef cppclass Bin:
+        int dim() except +yodaerr
         unsigned long numEntries() except +yodaerr
         double effNumEntries() except +yodaerr
         double sumW() except +yodaerr
