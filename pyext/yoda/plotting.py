@@ -177,7 +177,7 @@ def read_plot_keys(datfile):
 
 import matplotlib as mpl
 
-def setup_mpl(engine="PGF", font="TeX Gyre Pagella", fontsize=17, mfont=None, textfigs=True):
+def setup_mpl(engine="MPL", font="TeX Gyre Pagella", fontsize=17, mfont=None, textfigs=True):
     """One-liner matplotlib (mpl) setup.
 
     By default mpl will be configured with the TeX PGF rendering backend, and a

@@ -1,3 +1,7 @@
+2015-10-23  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Change the default plotting backend to MPL rather than the much slower PGF.
+
 2015-10-09  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Reinstate __getitem__  special methods for Scatters in Python.
