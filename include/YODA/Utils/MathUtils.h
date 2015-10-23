@@ -27,17 +27,17 @@
 namespace YODA {
 
 
-  const double MAXDOUBLE = std::numeric_limits<double>::max();
-  const double MAXINT = std::numeric_limits<int>::max();
+  static const double MAXDOUBLE = std::numeric_limits<double>::max();
+  static const double MAXINT = std::numeric_limits<int>::max();
 
   /// A pre-defined value of \f$ \pi \f$.
-  const double PI = M_PI;
+  static const double PI = M_PI;
 
   /// A pre-defined value of \f$ 2\pi \f$.
-  const double TWOPI = 2*M_PI;
+  static const double TWOPI = 2*M_PI;
 
   /// A pre-defined value of \f$ \pi/2 \f$.
-  const double HALFPI = M_PI_2;
+  static const double HALFPI = M_PI_2;
 
   /// Enum for signs of numbers.
   enum Sign { MINUS = -1, ZERO = 0, PLUS = 1 };

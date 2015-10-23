@@ -21,7 +21,7 @@
 #include <string>
 namespace YODA {
   /// Namespaced version string function
-  std::string version() {
+  inline std::string version() {
     return YODA_VERSION;
   }
 }
