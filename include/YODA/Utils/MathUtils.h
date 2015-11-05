@@ -23,12 +23,15 @@
 #include <numeric>
 #include <cassert>
 #include <limits>
+#include <cfloat>
 
 namespace YODA {
 
 
-  static const double MAXDOUBLE = std::numeric_limits<double>::max();
-  static const double MAXINT = std::numeric_limits<int>::max();
+  /// Pre-defined numeric type limits
+  /// @deprecated Prefer the standard DBL/INT_MAX
+  const static double MAXDOUBLE = DBL_MAX; // was std::numeric_limits<double>::max(); -- warns in GCC5
+  const static double MAXINT = INT_MAX; // was std::numeric_limits<int>::max(); -- warns in GCC5
 
   /// A pre-defined value of \f$ \pi \f$.
   static const double PI = M_PI;
