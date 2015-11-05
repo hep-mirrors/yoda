@@ -6,11 +6,6 @@ cdef class Point3D(Point):
     cdef c.Point3D* p3ptr(self) except NULL:
         return <c.Point3D*> self.ptr()
 
-    def __dealloc__(self):
-        cdef c.Point3D* p = self.p3ptr()
-        if self._deallocate:
-            del p
-
 
     def __init__(self, x=0, y=0, z=0, xerrs=0, yerrs=0, zerrs=0):
         cutil.set_owned_ptr(self, new c.Point3D())

@@ -6,11 +6,6 @@ cdef class Point1D(Point):
     cdef c.Point1D* p1ptr(self) except NULL:
         return <c.Point1D*> self.ptr()
 
-    def __dealloc__(self):
-        cdef c.Point1D *p = self.p1ptr()
-        if self._deallocate:
-            del p
-
 
     def __init__(self, x=0, xerrs=0):
         cutil.set_owned_ptr(self, new c.Point1D())

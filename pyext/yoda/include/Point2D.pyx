@@ -6,11 +6,6 @@ cdef class Point2D(Point):
     cdef c.Point2D* p2ptr(self) except NULL:
         return <c.Point2D*> self.ptr()
 
-    def __dealloc__(self):
-        cdef c.Point2D* p = self.p2ptr()
-        if self._deallocate:
-            del p
-
 
     def __init__(self, x=0, y=0, xerrs=0, yerrs=0):
         cutil.set_owned_ptr(self, new c.Point2D())
