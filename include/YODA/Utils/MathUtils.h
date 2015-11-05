@@ -23,6 +23,7 @@
 #include <numeric>
 #include <cassert>
 #include <limits>
+#include <climits>
 #include <cfloat>
 
 namespace YODA {
