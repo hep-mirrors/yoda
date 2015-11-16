@@ -1,3 +1,11 @@
+2015-11-16  Andy Buckley  <andy.buckley@cern.ch>
+
+	* ROOTCnv.h: Add toScatter3D ROOT->YODA, and toNew* YODA->ROOT
+	conversion routines.
+
+	* ROOTCnv.h: Fix bug in toTH2D(const Histo2D& h) as used with
+	ROOT6. Thanks to Tim Martin.
+
 2015-11-05  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Fix double-dealloc in new Point class hierarchy Python mapping.
