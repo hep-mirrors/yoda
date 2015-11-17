@@ -82,7 +82,7 @@ namespace YODA {
       //
       const double val = th1.GetBinContent(ix) / (scalebywidth ? xwidth : 1);
       const double evalminus = th1.GetBinErrorLow(ix) / (scalebywidth ? xwidth : 1);
-      const double evalplus = th1.GetBinErrorHigh(ix) / (scalebywidth ? xwidth : 1);
+      const double evalplus = th1.GetBinErrorUp(ix) / (scalebywidth ? xwidth : 1);
       rtn.addPoint(x, val,
                    exminus, explus,
                    evalminus, evalplus);
@@ -120,15 +120,16 @@ namespace YODA {
         const double y = axy.GetBinCenter(iy);
         const double eyminus = y - axy.GetBinLowEdge(iy);
         const double eyplus = axy.GetBinUpEdge(iy) - y;
-        const double xwidth = axy.GetBinWidth(iy);
+        const double ywidth = axy.GetBinWidth(iy);
         //
         const int ixy = th2.GetBin(ix, iy);
         const double area = xwidth*ywidth;
         const double val = th2.GetBinContent(ixy) / (scalebyarea ? area : 1);
         const double evalminus = th2.GetBinErrorLow(ixy) / (scalebyarea ? area : 1);
-        const double evalplus = th2.GetBinErrorHigh(ixy) / (scalebyarea ? area : 1);
-        rtn.addPoint(x, val,
+        const double evalplus = th2.GetBinErrorUp(ixy) / (scalebyarea ? area : 1);
+        rtn.addPoint(x, y, val,
                      exminus, explus,
+                     eyminus, eyplus,
                      evalminus, evalplus);
       }
     }
@@ -193,7 +194,7 @@ namespace YODA {
 
   /// @brief Convert a YODA Histo1D to a ROOT 1D histogram as new'd pointer
   inline TH1D* toNewTH1D(const Histo1D& h, const std::string& rootname) {
-    return toTH1D(h).Clone(rootname.c_str());
+    return (TH1D*) toTH1D(h).Clone(rootname.c_str());
   }
 
 
@@ -253,7 +254,7 @@ namespace YODA {
 
   /// @brief Convert a YODA Histo2D to a ROOT 2D histogram as new'd pointer
   inline TH2D* toNewTH2D(const Histo2D& h, const std::string& rootname) {
-    return toTH2D(h).Clone(rootname.c_str());
+    return (TH2D*) toTH2D(h).Clone(rootname.c_str());
   }
 
 
@@ -345,7 +346,7 @@ namespace YODA {
 
   /// @brief Convert a YODA Profile1D to a ROOT TProfile as new'd pointer
   inline TProfile* toNewTProfile(const Profile1D& p, const std::string& rootname) {
-    return toTProfile(p).Clone(rootname.c_str());
+    return (TProfile*) toTProfile(p).Clone(rootname.c_str());
   }
 
 
@@ -382,7 +383,7 @@ namespace YODA {
 
   /// @brief Convert a YODA Scatter2D to a ROOT TGraphAsymmErrors as new'd pointer
   inline TGraphAsymmErrors* toNewTGraph(const Scatter2D& s, const std::string& rootname) {
-    return toTGraph(s).Clone(rootname.c_str());
+    return (TGraphAsymmErrors*) toTGraph(s).Clone(rootname.c_str());
   }
 
 
@@ -394,7 +395,7 @@ namespace YODA {
 
   /// @brief Convert a YODA Histo1D to a ROOT TGraphAsymmErrors as new'd pointer
   inline TGraphAsymmErrors* toNewTGraph(const Histo1D& h, const std::string& rootname) {
-    return toTGraph(h).Clone(rootname.c_str());
+    return (TGraphAsymmErrors*) toTGraph(h).Clone(rootname.c_str());
   }
 
 
@@ -406,7 +407,7 @@ namespace YODA {
 
   /// @brief Convert a YODA Profile1D to a ROOT TGraphAsymmErrors as new'd pointer
   inline TGraphAsymmErrors* toNewTGraph(const Profile1D& p, const std::string& rootname) {
-    return toTGraph(p).Clone(rootname.c_str());
+    return (TGraphAsymmErrors*) toTGraph(p).Clone(rootname.c_str());
   }
 
 

@@ -1,3 +1,7 @@
+2015-11-17  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Map new to-ROOT functions, including TGraph ones, to Python.
+
 2015-11-16  Andy Buckley  <andy.buckley@cern.ch>
 
 	* ROOTCnv.h: Add toScatter3D ROOT->YODA, and toNew* YODA->ROOT
