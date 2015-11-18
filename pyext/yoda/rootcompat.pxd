@@ -28,14 +28,17 @@ cdef extern from "TH2.h":
 
 cdef extern from "pyroot_helpers.hh":
     cpython.PyObject* root_to_py_owned(TObject* root_obj)
+    TObject* py_owned_to_root(cpython.PyObject* pyroot_obj)
 
 
 cdef extern from "YODA/ROOTCnv.h" namespace "YODA":
 
-    Scatter2D toScatter2D(TH1*)
+    Scatter2D toScatter2D(TH1D*, bool)
     Scatter2D toScatter2D(TProfile*)
-    Scatter3D toScatter3D(TH2D*)
+    # Scatter2D toScatter2D(TGraph*)
+    Scatter3D toScatter3D(TH2D*, bool)
     # Scatter3D toScatter3D(TProfile2D*)
+    # Scatter3D toScatter3D(TGraph2D*)
 
     TH1D toTH1D(Histo1D)
     TH2D toTH2D(Histo2D)

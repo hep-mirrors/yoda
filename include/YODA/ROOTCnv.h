@@ -68,7 +68,7 @@ namespace YODA {
   /////////////////////
 
 
-  /// Convert a ROOT 1D histogram (including TProfile) to a YODA Scatter2D
+  /// Convert a ROOT 1D histogram (excluding TProfile) to a YODA Scatter2D
   ///
   /// The optional bool arg specifies whether or not to divide y vals/errs by bin width.
   inline Scatter2D toScatter2D(const TH1& th1, bool scalebywidth=true) {
@@ -93,10 +93,24 @@ namespace YODA {
   }
 
 
-  /// Convert a ROOT 1D histogram (including TProfile) to a YODA Scatter2D
-  inline Scatter2D toScatter2D(const TH1* th1) {
+  /// Convert a ROOT 1D histogram (excluding TProfile) to a YODA Scatter2D
+  inline Scatter2D toScatter2D(const TH1* th1, bool scalebywidth=true) {
     if (th1 == NULL) throw UserError("Null TH1 pointer passed as argument");
-    return toScatter2D(*th1);
+    return toScatter2D(*th1, scalebywidth);
+  }
+
+
+  ////////////////
+
+
+  inline Scatter2D toScatter2D(const TProfile& tp1) {
+    return toScatter2D((TH1&)tp1, false);
+  }
+
+  /// Convert a ROOT TProfile to a YODA Scatter2D
+  inline Scatter2D toScatter2D(const TProfile* tp1) {
+    if (tp1 == NULL) throw UserError("Null TProfile pointer passed as argument");
+    return toScatter2D(*tp1); //< TProfile inherits from TH1, so this just uses the function above
   }
 
 
@@ -141,10 +155,17 @@ namespace YODA {
 
 
   /// Convert a ROOT 1D histogram (including TProfile) to a YODA Scatter2D
-  inline Scatter3D toScatter3D(const TH2* th2) {
+  inline Scatter3D toScatter3D(const TH2* th2, bool scalebyarea=true) {
     if (th2 == NULL) throw UserError("Null TH2 pointer passed as argument");
-    return toScatter3D(*th2);
+    return toScatter3D(*th2, scalebyarea);
   }
+
+
+  ////////////////////
+
+
+  /// @todo Add toScatter2D(TGraph&/*) and toScatter3D(TGraph2D&/*)
+
 
   //@}
 

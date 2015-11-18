@@ -1,5 +1,7 @@
 2015-11-17  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Map ROOT-to-YODA (as scatter) functions to Python. Phew.
+
 	* Map new to-ROOT functions, including TGraph ones, to Python.
 
 2015-11-16  Andy Buckley  <andy.buckley@cern.ch>
