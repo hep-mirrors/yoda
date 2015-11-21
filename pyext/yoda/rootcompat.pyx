@@ -8,40 +8,33 @@ from cpython.ref cimport PyObject
 #ROOT.PyConfig.IgnoreCommandLineOptions = True
 
 
-# TODO: We should find a way to restructure the YODA bindings to allow external Cython
-#   programs to get the used structs -- this requires using pxd files accordingly.
-
-#def convert_yoda():
-    #cdef cutil.Base h = yoda.Histo1D(10, 0, 1, '/test')
-    #cdef cyoda.Histo1D* hptr = <cyoda.Histo1D*> h.ptr()
-    #cdef TObject* thist = new TH1D(toTH1D(hptr[0]))
-    #return <object> (croot.root_to_py_owned(thist))
-
-#def toScatter2D(TH1*):
-
-
 
 cdef croot.TObject* py_to_root(object pyrootobj):
     cdef PyObject* ptr = <PyObject*>pyrootobj
     return croot.py_owned_to_root(ptr)
 
+cdef object root_to_py(croot.TObject* tobj):
+    return <object> croot.root_to_py_owned(tobj)
+
+
+
 cdef _TH1toS2(croot.TH1D* th1d, widthscale):
-    return cutil.new_owned_cls(yoda.Scatter2D, croot.toScatter2D(th1d, widthscale).newclone())
+    return cutil.new_owned_cls(yoda.Scatter2D, croot.toNewScatter2D(th1d, widthscale))
 
 cdef _TP1toS2(croot.TProfile* tp1):
-    return cutil.new_owned_cls(yoda.Scatter2D, croot.toScatter2D(tp1).newclone())
+    return cutil.new_owned_cls(yoda.Scatter2D, croot.toNewScatter2D(tp1))
 
 # cdef _TG1toS2(croot.TGraph* tg1):
-#     return cutil.new_owned_cls(yoda.Scatter2D, croot.toScatter2D(tg1).newclone())
+#     return cutil.new_owned_cls(yoda.Scatter2D, croot.toNewScatter2D(tg1))
 
 cdef _TH2toS3(croot.TH2D* th2, areascale):
-    return cutil.new_owned_cls(yoda.Scatter3D, croot.toScatter3D(th2, areascale).newclone())
+    return cutil.new_owned_cls(yoda.Scatter3D, croot.toNewScatter3D(th2, areascale))
 
 # cdef _TP2toS3(croot.TProfile* tp2):
-#     return cutil.new_owned_cls(yoda.Scatter3D, croot.toScatter3D(tp2).newclone())
+#     return cutil.new_owned_cls(yoda.Scatter3D, croot.toNewScatter3D(tp2))
 
 # cdef _TG2toS3(croot.TGraph2D* tg2):
-#     return cutil.new_owned_cls(yoda.Scatter3D, croot.toScatter3D(tg2).newclone())
+#     return cutil.new_owned_cls(yoda.Scatter3D, croot.toNewScatter3D(tg2))
 
 
 def to_yoda(root_obj, widthscale=True):
@@ -61,9 +54,6 @@ def to_yoda(root_obj, widthscale=True):
 
 
 
-
-cdef object root_to_py(croot.TObject* tobj):
-    return <object> croot.root_to_py_owned(tobj)
 
 cdef _H1toTH1D(cyoda.Histo1D* h1d):
     return ROOT.TH1D(root_to_py(new croot.TH1D(croot.toTH1D(deref(h1d)))))

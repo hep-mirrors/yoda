@@ -26,10 +26,13 @@ for i, o in in_out:
     of = ROOT.TFile(o, "recreate")
     analysisobjects = yoda.readYODA(i)
     filter_aos(analysisobjects, opts.MATCH, opts.UNMATCH)
-    rootobjects = [yoda.to_root(ao) for ao in analysisobjects.values()]
+    rootobjects = [yoda.root.to_root(ao) for ao in analysisobjects.values()]
 
     ## Protect against "/" in the histogram name, which ROOT does not like
     for obj in rootobjects:
+        ## It's possible for the ROOT objects to be null, if conversion failed
+        if obj is None:
+            continue
         ## Split the name on "/" directory separators
         parts = obj.GetName().split("/")
         ## Walk down dir tree, making it as we go

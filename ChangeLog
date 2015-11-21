@@ -1,3 +1,11 @@
+2015-11-21  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Add root2yoda (slow) function.
+
+	* Deprecating yoda.to_root() in favour of yoda.root module, which
+	contains to_root and to_yoda functions, as well as a ROOT file
+	walking function.
+
 2015-11-17  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Map ROOT-to-YODA (as scatter) functions to Python. Phew.

@@ -40,6 +40,13 @@ cdef extern from "YODA/ROOTCnv.h" namespace "YODA":
     # Scatter3D toScatter3D(TProfile2D*)
     # Scatter3D toScatter3D(TGraph2D*)
 
+    Scatter2D* toNewScatter2D(TH1D*, bool)
+    Scatter2D* toNewScatter2D(TProfile*)
+    # Scatter2D* toNewScatter2D(TGraph*)
+    Scatter3D* toNewScatter3D(TH2D*, bool)
+    # Scatter3D* toNewScatter3D(TProfile2D*)
+    # Scatter3D* toNewScatter3D(TGraph2D*)
+
     TH1D toTH1D(Histo1D)
     TH2D toTH2D(Histo2D)
     TProfile toTProfile(Profile1D)
