@@ -1,5 +1,7 @@
 2015-11-22  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Version 1.5.6!
+
 	* Make AO path setting and retrieval prepend a leading slash if it
 	is missing (unless the path is completely empty).
 
