@@ -217,7 +217,7 @@ namespace YODA {
     ///
     /// @note A leading / will be prepended if not already given.
     void setPath(const std::string& path) {
-      const std::string p = path.find("/") == 0 ? p : "/"+p;
+      const std::string p = (path.find("/") == 0) ? path : "/"+path;
       // if (path.length() > 0 && path.find("/") != 0) {
       //   throw AnnotationError("Histo paths must start with a slash (/) character.");
       // }
