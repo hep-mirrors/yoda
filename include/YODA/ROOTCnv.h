@@ -87,6 +87,8 @@ namespace YODA {
                    exminus, explus,
                    evalminus, evalplus);
     }
+    rtn.setPath(th1.GetName());
+    rtn.setTitle(th1.GetTitle());
     rtn.addAnnotation("XLabel", th1.GetXaxis()->GetTitle());
     rtn.addAnnotation("YLabel", th1.GetYaxis()->GetTitle());
     return rtn;
@@ -168,9 +170,11 @@ namespace YODA {
                      evalminus, evalplus);
       }
     }
+    rtn.setPath(th2.GetName());
+    rtn.setTitle(th2.GetTitle());
     rtn.addAnnotation("XLabel", th2.GetXaxis()->GetTitle());
     rtn.addAnnotation("YLabel", th2.GetYaxis()->GetTitle());
-    rtn.addAnnotation("YLabel", th2.GetZaxis()->GetTitle());
+    rtn.addAnnotation("ZLabel", th2.GetZaxis()->GetTitle());
     return rtn;
   }
 
