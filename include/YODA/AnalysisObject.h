@@ -185,8 +185,9 @@ namespace YODA {
     /// @name Standard annotations
     //@{
 
-    /// Get the AO title.
-    /// Returns a null string if undefined, rather than throwing an exception cf. the Title annotation.
+    /// @brief Get the AO title.
+    ///
+    /// Returns a null string if undefined, rather than throwing an exception cf. the annotation("Title").
     const std::string title() const {
       try {
         return annotation("Title");
@@ -200,22 +201,27 @@ namespace YODA {
       setAnnotation("Title", title);
     }
 
-    /// Get the AO path.
-    /// Returns a null string if undefined, rather than throwing an exception cf. the Title annotation.
+    /// @brief Get the AO path.
+    ///
+    /// Returns a null string if undefined, rather than throwing an exception cf. annotation("Path").
     const std::string path() const {
       try {
-        return annotation("Path");
+        const std::string p = annotation("Path");
+        return p.find("/") == 0 ? p : "/"+p; ///< @note A leading / will be prepended if not already set.
       } catch (AnnotationError& ae) {
         return "";
       }
     }
 
     /// Set the AO path
+    ///
+    /// @note A leading / will be prepended if not already given.
     void setPath(const std::string& path) {
-      if (path.length() > 0 && path.find("/") != 0) {
-        throw AnnotationError("Histo paths must start with a slash (/) character.");
-      }
-      setAnnotation("Path", path);
+      const std::string p = path.find("/") == 0 ? p : "/"+p;
+      // if (path.length() > 0 && path.find("/") != 0) {
+      //   throw AnnotationError("Histo paths must start with a slash (/) character.");
+      // }
+      setAnnotation("Path", p);
     }
 
 

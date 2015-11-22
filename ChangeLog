@@ -1,6 +1,11 @@
+2015-11-22  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Make AO path setting and retrieval prepend a leading slash if it
+	is missing (unless the path is completely empty).
+
 2015-11-21  Andy Buckley  <andy.buckley@cern.ch>
 
-	* Add root2yoda (slow) function.
+	* Add root2yoda conversion script.
 
 	* Deprecating yoda.to_root() in favour of yoda.root module, which
 	contains to_root and to_yoda functions, as well as a ROOT file
