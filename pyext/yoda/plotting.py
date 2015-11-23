@@ -312,7 +312,7 @@ def setup_axes_1d(axmain, axratio, plotkeys):
 
 
 # TODO: rename to be more obviously an ~internal helper
-def plot_hist_on_axes_1d(axmain, axratio, h, href=None):
+def plot_hist_on_axes_1d(axmain, axratio, h, href=None, default_color="black", default_linestyle="-"):
     if "plt" not in dir():
         mpl, plt = setup_mpl()
 
@@ -321,7 +321,7 @@ def plot_hist_on_axes_1d(axmain, axratio, h, href=None):
     # TODO: Split into different plot styles: line/filled/range, step/diag/smooth, ...?
 
     ## Styles
-    default_color = h.annotations.get("Color", "black")
+    default_color = h.annotations.get("Color", default_color)
     marker = h.annotations.get("Marker", h.annotations.get("PolyMarker", None)) # <- make-plots translation
     marker = {"*":"o"}.get(marker, marker) # <- make-plots translation
     mcolor = h.annotations.get("LineColor", default_color)
@@ -329,7 +329,7 @@ def plot_hist_on_axes_1d(axmain, axratio, h, href=None):
     ecolor = h.annotations.get("ErrorBarsColor", default_color)
     line = h.annotations.get("Line", None)
     lcolor = h.annotations.get("LineColor", default_color)
-    lstyle = h.annotations.get("LineStyle", "-")
+    lstyle = h.annotations.get("LineStyle", default_linestyle)
     lstyle = {"solid":"-", "dashed":"--", "dotdashed":"-.", "dashdotted":"-.", "dotted":":"}.get(lstyle, lstyle) # <- make-plots translation
     lwidth = 1.4
     msize = 7
@@ -441,11 +441,14 @@ def plot_hists_1d(hs, outfile=None, ratio=None, plotkeys={}):
         # Redraw ratio = 1 marker line:
         axratio.axhline(1.0, color="gray")
 
+    COLORS = ["red", "blue", "magenta", "orange", "green"]
+    LSTYLES = ["-", "--", "-.", ":"]
+
     ## Dataset plotting
     some_valid_label = False
     for ih, h in enumerate(hs):
         #print ih, h.path
-        aa = plot_hist_on_axes_1d(axmain, axratio, h, href)
+        aa = plot_hist_on_axes_1d(axmain, axratio, h, href, COLORS[ih % len(COLORS)], LSTYLES[ih % len(LSTYLES)])
         if aa and not aa[0].get_label().startswith("_"):
             # print "@@@", aa[0].get_label()
             some_valid_label = True
