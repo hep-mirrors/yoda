@@ -11,9 +11,10 @@ def plot(*args, **kwargs):
 ## Try to pull in optional ROOT compatibility
 try:
     import yoda.root
+    HAS_ROOT_SUPPORT = True
     # TODO: remove
     def to_root(ao):
         print "yoda.to_root() is deprecated: use yoda.root.to_root()"
         return yoda.root.to_root(ao)
 except:
-    pass
+    HAS_ROOT_SUPPORT = False
