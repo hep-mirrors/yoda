@@ -187,7 +187,7 @@ namespace YODA {
     /// @brief Bins addition operator
     ///
     /// Add multiple bins from edge cuts without resetting
-    void addBins(const Axis::Edges &xcuts, const Axis::Edges &ycuts) {
+    void addBins(const Axis::Edges& xcuts, const Axis::Edges& ycuts) {
       _axis.addBins(xcuts, ycuts);
     }
 
@@ -195,7 +195,7 @@ namespace YODA {
     /// @brief Bins addition operator
     ///
     /// Add multiple bins without resetting
-    void addBins(const Bins &bins) {
+    void addBins(const Bins& bins) {
       _axis.addBins(bins);
     }
 

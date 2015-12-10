@@ -180,6 +180,13 @@ namespace YODA {
     /// Add a new bin, perhaps already populated: CAREFUL!
     void addBin(const ProfileBin1D& b) { _axis.addBin(b); }
 
+    /// @brief Bins addition operator
+    ///
+    /// Add multiple bins without resetting
+    void addBins(const Bins& bins) {
+      _axis.addBins(bins);
+    }
+
     //@}
 
 
