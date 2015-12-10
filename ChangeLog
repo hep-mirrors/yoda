@@ -1,3 +1,10 @@
+2015-12-10  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Improve sortedvector to insert new elements into the sorted
+	position, rather than resorting the whole vector. This should be a
+	bit more efficient, but I think the asymptotic complexity is the
+	same. Might help a bit with reading big data files.
+
 2015-12-04  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Add yoda.HAS_ROOT_SUPPORT flag, for API user convenience.
