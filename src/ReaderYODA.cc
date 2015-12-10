@@ -39,6 +39,10 @@ namespace YODA {
     Context context = NONE;
     //
     AnalysisObject* aocurr = NULL; //< Generic current AO pointer
+    vector<HistoBin1D> h1binscurr; //< Current H1 bins container
+    vector<HistoBin2D> h2binscurr; //< Current H2 bins container
+    vector<ProfileBin1D> p1binscurr; //< Current P1 bins container
+    vector<ProfileBin2D> p2binscurr; //< Current P2 bins container
     Counter* cncurr = NULL;
     Histo1D* h1curr = NULL;
     Histo2D* h2curr = NULL;
@@ -137,17 +141,48 @@ namespace YODA {
         /// @todo Flatten conditional blocks with more else-ifs?
 
         // Throw error if a BEGIN line is found
-        if (s.find("BEGIN ") != string::npos) throw ReadError("Unexpected BEGIN line in YODA format parsing before ending current BEGIN..END block");
+        if (s.find("BEGIN ") != string::npos)
+          throw ReadError("Unexpected BEGIN line in YODA format parsing before ending current BEGIN..END block");
 
         // Clear/reset context and register AO if END line is found
         /// @todo Throw error if mismatch between BEGIN (context) and END types
         /// @todo More explicitly handle leading #'s?
         if (s.find("END ") != string::npos) {
+          switch (context) {
+          case COUNTER:
+            break;
+          case HISTO1D:
+            h1curr->addBins(h1binscurr);
+            h1binscurr.clear();
+            break;
+          case HISTO2D:
+            h2curr->addBins(h2binscurr);
+            h2binscurr.clear();
+            break;
+          case PROFILE1D:
+            p1curr->addBins(p1binscurr);
+            p1binscurr.clear();
+            break;
+          case PROFILE2D:
+            p2curr->addBins(p2binscurr);
+            p2binscurr.clear();
+            break;
+          case SCATTER1D:
+            break;
+          case SCATTER2D:
+            break;
+          case SCATTER3D:
+            break;
+          case NONE:
+            break;
+          }
           aos.push_back(aocurr);
-          context = NONE;
-          aocurr = NULL; cncurr = NULL;
-          h1curr = NULL; h2curr = NULL; p1curr = NULL; p2curr = NULL;
+          aocurr = NULL;
+          cncurr = NULL;
+          h1curr = NULL; h2curr = NULL;
+          p1curr = NULL; p2curr = NULL;
           s1curr = NULL; s2curr = NULL; s3curr = NULL;
+          context = NONE;
           continue; ///< @todo Improve... would be good to avoid these continues
         }
 
@@ -164,6 +199,8 @@ namespace YODA {
         // string xoflow1, xoflow2, yoflow1, yoflow2; double xmin(0), xmax(0), ymin(0), ymax(0);
         // double sumw(0), sumw2(0), sumwx(0), sumwx2(0), sumwy(0), sumwy2(0), sumwz(0), sumwz2(0), sumwxy(0), sumwxz(0), sumwyz(0); unsigned long n(0);
         // double x(0), y(0), z(0), exm(0), exp(0), eym(0), eyp(0), ezm(0), ezp(0);
+        //
+        /// @todo Use a fast numeric parser cf. LHAPDF
         istringstream iss(s);
         switch (context) {
 
@@ -192,7 +229,8 @@ namespace YODA {
             if (xoflow1 == "Total") h1curr->setTotalDbn(dbn);
             else if (xoflow1 == "Underflow") h1curr->setUnderflow(dbn);
             else if (xoflow1 == "Overflow")  h1curr->setOverflow(dbn);
-            else h1curr->addBin(HistoBin1D(std::make_pair(xmin,xmax), dbn));
+            // else h1curr->addBin(HistoBin1D(std::make_pair(xmin,xmax), dbn));
+            else h1binscurr.push_back(HistoBin1D(std::make_pair(xmin,xmax), dbn));
           }
           break;
 
@@ -217,7 +255,8 @@ namespace YODA {
             // else if (xoflow1 == "Overflow")  p1curr->setOverflow(dbn);
             else {
               assert(xoflow1.empty());
-              h2curr->addBin(HistoBin2D(std::make_pair(xmin,xmax), std::make_pair(ymin,ymax), dbn));
+              // h2curr->addBin(HistoBin2D(std::make_pair(xmin,xmax), std::make_pair(ymin,ymax), dbn));
+              h2binscurr.push_back(HistoBin2D(std::make_pair(xmin,xmax), std::make_pair(ymin,ymax), dbn));
             }
           }
           break;
@@ -240,7 +279,8 @@ namespace YODA {
             if (xoflow1 == "Total") p1curr->setTotalDbn(dbn);
             else if (xoflow1 == "Underflow") p1curr->setUnderflow(dbn);
             else if (xoflow1 == "Overflow")  p1curr->setOverflow(dbn);
-            else p1curr->addBin(ProfileBin1D(std::make_pair(xmin,xmax), dbn));
+            // else p1curr->addBin(ProfileBin1D(std::make_pair(xmin,xmax), dbn));
+            else p1binscurr.push_back(ProfileBin1D(std::make_pair(xmin,xmax), dbn));
           }
           break;
 
@@ -265,7 +305,8 @@ namespace YODA {
             // else if (xoflow1 == "Overflow")  p2curr->setOverflow(dbn);
             else {
               assert(xoflow1.empty());
-              p2curr->addBin(ProfileBin2D(std::make_pair(xmin,xmax), std::make_pair(ymin,ymax), dbn));
+              // p2curr->addBin(ProfileBin2D(std::make_pair(xmin,xmax), std::make_pair(ymin,ymax), dbn));
+              p2binscurr.push_back(ProfileBin2D(std::make_pair(xmin,xmax), std::make_pair(ymin,ymax), dbn));
             }
           }
           break;
@@ -274,6 +315,7 @@ namespace YODA {
           {
             double x(0), exm(0), exp(0);
             iss >> x >> exm >> exp;
+            /// @todo Add in batch to speed up, cf. bins?
             s1curr->addPoint(Point1D(x, exm, exp));
           }
           break;
@@ -283,6 +325,7 @@ namespace YODA {
             double x(0), y(0), exm(0), exp(0), eym(0), eyp(0);
             /// @todo Need to improve this format for multi-err points
             iss >> x >> exm >> exp >> y >> eym >> eyp;
+            /// @todo Add in batch to speed up, cf. bins?
             s2curr->addPoint(Point2D(x, y, exm, exp, eym, eyp));
           }
           break;
@@ -292,6 +335,7 @@ namespace YODA {
             double x(0), y(0), z(0), exm(0), exp(0), eym(0), eyp(0), ezm(0), ezp(0);
             /// @todo Need to improve this format for multi-err points
             iss >> x >> exm >> exp >> y >> eym >> eyp >> z >> ezm >> ezp;
+            /// @todo Add in batch to speed up, cf. bins?
             s3curr->addPoint(Point3D(x, y, z, exm, exp, eym, eyp, ezm, ezp));
           }
           break;
