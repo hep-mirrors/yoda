@@ -1,5 +1,7 @@
 2015-12-10  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Fix Counter::numEntries to return an unsigned long rather than double.
+
 	* Improve sortedvector to insert new elements into the sorted
 	position, rather than resorting the whole vector. This should be a
 	bit more efficient, but I think the asymptotic complexity is the
