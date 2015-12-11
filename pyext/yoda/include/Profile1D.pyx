@@ -222,15 +222,29 @@ cdef class Profile1D(AnalysisObject):
         self.p1ptr().addBins(cedges)
         return self
 
+
     def mergeBins(self, a, b):
         """mergeBins(ia, ib) -> None.
         Merge bins from indices ia through ib."""
         self.p1ptr().mergeBins(a, b)
 
-    def rebin(self, int n):
-        """(low, high) -> None.
-        Add a bin."""
-        self.p1ptr().rebin(n)
+    def rebinBy(self, n):
+        """(n) -> None.
+        Merge every group of n bins together."""
+        self.p1ptr().rebinBy(int(n))
+
+    def rebinTo(self, edges):
+        """([edges]) -> None.
+        Merge bins to produce the given new edges... which must be a subset of the current ones."""
+        self.p1ptr().rebinTo(edges)
+
+    def rebin(self, arg):
+        """(n) -> None or ([edges]) -> None
+        Merge bins, like rebinBy if an int argument is given; like rebinTo if an iterable is given."""
+        if hasattr(arg, "__iter__"):
+            self.rebinTo(arg)
+        else:
+            self.rebinBy(arg)
 
 
     def mkScatter(self, usefocus=False, usestddev=False):
