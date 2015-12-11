@@ -257,7 +257,7 @@ namespace YODA {
         // Primarily loop over the smaller axis, since shared_edges \in {smaller}
         const int ndiff = size() - other.size();
         const BinSearcher& larger = (ndiff > 0) ? *this : other;
-        const BinSearcher& smaller = (ndiff <= 0) ? other : *this;
+        const BinSearcher& smaller = (ndiff > 0) ? other : *this;
         size_t jmin = 1; //< current index in inner axis, to avoid unnecessary recomparisons (since vectors are sorted)
         for (size_t i = 1; i < smaller.size()-1; ++i) {
           const double x = smaller.edge(i);

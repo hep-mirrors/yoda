@@ -1,3 +1,11 @@
+2015-12-11  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Add a rebinTo() method on Axis1D, allowing rebinning to a new
+	given set of bin edges. Add an explicitly named rebinBy(), and
+	overloaded rebin() aliases for both, and pass through to Histo1D
+	and Profile1D APIs. Plus other internal tweaks to binning
+	functionality... anticipating/fuelling the fundamental rewrite.
+
 2015-12-10  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Improve ReaderYODA to use temporary bin containers, to minimise

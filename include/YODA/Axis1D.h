@@ -286,13 +286,15 @@ namespace YODA {
       if (newedges.size() < 2)
         throw UserError("Requested rebinning to an edge list which defines no bins");
       const Utils::BinSearcher newbs(newedges);
-      if (newbs.shared_edges(_binsearcher).size() != newbs.size())
+      const std::vector<double> eshared = newbs.shared_edges(_binsearcher);
+      // BOOST_FOREACH (double e, eshared) std::cout << e << std::endl;
+      if (eshared.size() != newbs.size())
         throw BinningError("Requested rebinning to incompatible edges");
       /// @todo Need to allow discarding bins at start and end (merging into overflow dbns)
       if (!fuzzyEquals(xMin(), newedges.front()) || !fuzzyEquals(xMax(), newedges.back()))
         throw BinningError("Requested rebinning to non-matching xMin and xMax (TODO: permit rebinnings that discard start/end bin trains)");
       size_t jcurr = 0;
-      for (size_t i = 1; i < newedges.size()-1; ++i) {
+      for (size_t i = 1; i < newedges.size(); ++i) { //< we already know that i=0 matches (until we support merging into overflows)
         const size_t kmatch = _binsearcher.index(newedges.at(i)) - 1; //< Will match the *next* bin, so step back one unit... and note these are BinSearcher indices
         assert(kmatch >= jcurr+1);
         mergeBins(jcurr, kmatch-1);
@@ -507,8 +509,8 @@ namespace YODA {
       /// @todo Why do we need to re-find the bin indices?
       const size_t from_ix = _binsearcher.index(bin(ifrom).xMid());
       const size_t to_ix = _binsearcher.index(bin(ito).xMid());
-      std::cout << ifrom << " vs. " << from_ix << std::endl;
-      std::cout << ito << " vs. " << to_ix << std::endl;
+      // std::cout << ifrom << " vs. " << from_ix << std::endl;
+      // std::cout << ito << " vs. " << to_ix << std::endl;
 
       for (size_t i = from_ix; i <= to_ix; i++)
       // for (size_t i = ifrom; i <= ito; i++)
