@@ -227,6 +227,79 @@ namespace YODA {
       }
 
 
+      /// Public access to the list of bin edges, including infinities at either end
+      const std::vector<double>& edges() const { return _edges; }
+
+      /// Public access to a bin edge value
+      double edge(size_t i) const { return edges().at(i); }
+
+      /// How many bin edges in this searcher?
+      size_t size() const { return _edges.size(); }
+
+
+      /// Check if two BinSearcher objects have the same edges
+      bool same_edges(const BinSearcher& other) const {
+        if (size() != other.size()) return false;
+        for (size_t i = 1; i < size()-1; i++) {
+          /// @todo Be careful about using fuzzyEquals... should be an exact comparison?
+          if (!fuzzyEquals(edge(i), other.edge(i))) return false;
+        }
+        return true;
+      }
+
+
+      /// Find edges which are shared between BinSearcher objects, within numeric tolerance
+      /// @note The return vector is sorted and includes -inf and inf
+      std::vector<double> shared_edges(const BinSearcher& other) const {
+        std::vector<double> rtn;
+        rtn.push_back(-std::numeric_limits<double>::infinity());
+
+        // Primarily loop over the smaller axis, since shared_edges \in {smaller}
+        const int ndiff = size() - other.size();
+        const BinSearcher& larger = (ndiff > 0) ? *this : other;
+        const BinSearcher& smaller = (ndiff <= 0) ? other : *this;
+        size_t jmin = 1; //< current index in inner axis, to avoid unnecessary recomparisons (since vectors are sorted)
+        for (size_t i = 1; i < smaller.size()-1; ++i) {
+          const double x = smaller.edge(i);
+          for (size_t j = jmin; j < larger.size()-1; ++j) {
+            if (fuzzyEquals(x, larger.edge(j))) {
+              rtn.push_back(x);
+              jmin = j+1;
+              break;
+            }
+          }
+        }
+
+        rtn.push_back(std::numeric_limits<double>::infinity());
+        std::sort(rtn.begin(), rtn.end());
+        return rtn;
+      }
+
+
+      // /// Check if two BinSearcher objects have compatible edges, i.e. one is a subset of the other
+      // bool subset_edges(const BinSearcher& other) const {
+      //   if (_edges.size() != other._edges.size()) return false;
+
+      //   const int ndiff = numBins() - other.numBins();
+      //   if (ndiff == 0) return same_edges(other);
+
+      //   const BinSearcher& larger = (ndiff > 0) ? *this : other;
+      //   const BinSearcher& smaller = (ndiff < 0) ? other : *this;
+      //   size_t jmin = 1; //< current index in larger axis, to avoid unnecessary recomparisons
+      //   for (size_t i = 1; i < smaller.size()-1; ++i) {
+      //     bool found_match = false;
+      //     for (size_t j = jmin; j < larger.size()-1; ++j) {
+      //       if (fuzzyEquals(smaller.edge(i), larger.edge(j))) {
+      //         found_match = true;
+      //         jmin = j+1;
+      //         break;
+      //       }
+      //     }
+      //     if (!found_match) return false;
+      //   }
+      // }
+
+
     protected:
 
       /// Set the edges array and related member variables
@@ -291,17 +364,6 @@ namespace YODA {
         }
         assert(x >= _edges[imin] && (x < _edges[imax] || std::isinf(x)));
         return _linsearch_forward(imin, x, BISECT_LINEAR_THRESHOLD);
-      }
-
-
-      /// Check if two BinSearcher objects have the same edges
-      bool sameBinning(const BinSearcher& other) const {
-        if (_edges.size() != other._edges.size()) return false;
-        for (size_t i = 1; i < _edges.size()-1; i++) {
-          /// @todo Be careful about using fuzzyEquals... should be an exact comparison?
-          if (!fuzzyEquals(_edges[i], other._edges[i])) return false;
-        }
-        return true;
       }
 
 

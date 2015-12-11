@@ -204,6 +204,46 @@ namespace YODA {
     }
 
 
+    /// Get lists of Nbins+1 edges, and Nbins+2 indices (-1 for gaps) from the current binning
+    /// @todo Push this into an abstract Binning object in v2?
+    /// @todo Should be a const ref arg?
+    std::pair< std::vector<double>, std::vector<long> > _mk_edges_indexes(Bins& bins) const {
+      std::vector<double> edges; edges.reserve(bins.size()+1); // Nbins+1 edges
+      std::vector<long> indexes; edges.reserve(bins.size()+2); // Nbins + 2*outflows
+
+      // Sort the bins
+      std::sort(bins.begin(), bins.end());
+
+      // Keep a note of the last high edge
+      double last_high = -std::numeric_limits<double>::infinity();
+
+      // Check for overlaps
+      for (size_t i = 0; i < bins.size(); ++i) {
+        Bin& currentBin = bins[i];
+        const double new_low  = currentBin.xMin();
+        const double reldiff = (new_low - last_high) / currentBin.xWidth();
+        if (reldiff < -1e-3) { //< @note If there is a "large" negative gap (i.e. overlap), throw an exception
+          std::stringstream ss;
+          ss << "Bin edges overlap: " << last_high << " -> " << new_low;
+          throw RangeError(ss.str());
+        } else if (reldiff > 1e-3) { //< @note If there is a "large" positive gap, create a bin gap
+          indexes.push_back(-1); // First index will be for underflow
+          edges.push_back(new_low); // Will include first edge
+        }
+
+        // Bins check that they are not zero or negative width. It's okay for
+        // them to throw an exception here, as we haven't changed anything yet.
+        indexes.push_back(i);
+        edges.push_back(currentBin.xMax());
+
+        last_high = currentBin.xMax();
+      }
+      indexes.push_back(-1); // Overflow
+
+      return std::make_pair(edges, indexes);
+    }
+
+
     /// Merge together the bin range with indices from @a from to @a to, inclusive.
     /// Merge a series of bins, between the bins identified by indices @a from and @a to
     void mergeBins(size_t from, size_t to) {
@@ -218,22 +258,50 @@ namespace YODA {
         throw RangeError("Bin ranges containing gaps cannot be merged");
 
       Bin& b = bin(from);
-      for (size_t i = from + 1; i <= to; i++)
+      for (size_t i = from + 1; i <= to; ++i)
         b.merge(_bins[i]);
       eraseBins(from+1, to);
     }
+
 
     /// @brief Merge every group of @a n bins, starting from the LHS
     ///
     /// If the number of bins is not a multiple of @a n, the last @a m < @a n
     /// bins on the RHS will also be merged, as the closest possible approach to
     /// factor @n rebinning everywhere.
-    void rebin(size_t n) {
-      for (size_t m = 0; m < numBins(); m++) {
+    void rebinBy(unsigned int n) {
+      for (size_t m = 0; m < numBins(); ++m) {
         const size_t end = (m + n - 1 < numBins()) ? m + n -1 : numBins() - 1;
         if (end > m) mergeBins(m, end);
       }
     }
+
+    /// @brief Overloaded alias for rebinBy
+    void rebin(unsigned int n) { rebinBy(n); }
+
+
+    /// @brief Rebin to the given list of bin edges
+    /// @todo Need to allow discarding bins at start and end (merging into overflow dbns)
+    void rebinTo(const std::vector<double>& newedges) {
+      if (newedges.size() < 2)
+        throw UserError("Requested rebinning to an edge list which defines no bins");
+      const Utils::BinSearcher newbs(newedges);
+      if (newbs.shared_edges(_binsearcher).size() != newbs.size())
+        throw BinningError("Requested rebinning to incompatible edges");
+      /// @todo Need to allow discarding bins at start and end (merging into overflow dbns)
+      if (!fuzzyEquals(xMin(), newedges.front()) || !fuzzyEquals(xMax(), newedges.back()))
+        throw BinningError("Requested rebinning to non-matching xMin and xMax (TODO: permit rebinnings that discard start/end bin trains)");
+      size_t jcurr = 0;
+      for (size_t i = 1; i < newedges.size()-1; ++i) {
+        const size_t kmatch = _binsearcher.index(newedges.at(i)) - 1; //< Will match the *next* bin, so step back one unit... and note these are BinSearcher indices
+        assert(kmatch >= jcurr+1);
+        mergeBins(jcurr, kmatch-1);
+        jcurr += 1; //< The next bin to be merged, in the new numbering
+      }
+    }
+
+    /// @brief Overloaded alias for rebinTo
+    void rebin(const std::vector<double>& newedges) { rebinTo(newedges); }
 
 
     /// Add a bin, passed explicitly
@@ -243,6 +311,7 @@ namespace YODA {
       newBins.push_back(b);
       _updateAxis(newBins);
     }
+
 
     /// Add a bin, providing its low and high edge
     void addBin(double low, double high) {
@@ -256,7 +325,7 @@ namespace YODA {
       if (binedges.size() == 0) return;
 
       double low = binedges.front();
-      for (size_t i = 1; i < binedges.size(); i++) {
+      for (size_t i = 1; i < binedges.size(); ++i) {
         const double high = binedges[i];
         newBins.push_back(Bin(low, high));
         low = high;
@@ -265,10 +334,6 @@ namespace YODA {
       _updateAxis(newBins);
     }
 
-    // (The following proposed method would drastically simplify the
-    // Python interfaces handling of bin adding -- it would also
-    // simplify some of the hurdles of bins not having default
-    // constructors)
 
     /// Add a list of bins as pairs of lowEdge, highEdge
     void addBins(const std::vector<std::pair<double, double> >& binpairs) {
@@ -276,7 +341,7 @@ namespace YODA {
       Bins newBins(_bins);
 
       // Iterate over given bins
-      for (size_t i = 0; i < binpairs.size(); i++) {
+      for (size_t i = 0; i < binpairs.size(); ++i) {
         std::pair<double, double> b = binpairs[i];
         newBins.push_back(Bin(b.first, b.second));
       }
@@ -284,11 +349,13 @@ namespace YODA {
     }
 
 
+    /// Add a list of Bin objects
     void addBins(const Bins& bins) {
       Bins newBins(_bins);
       BOOST_FOREACH(const Bin& b, bins) newBins.push_back(b);
       _updateAxis(newBins);
     }
+
 
     /// Remove a bin
     void eraseBin(const size_t i) {
@@ -303,6 +370,7 @@ namespace YODA {
       _updateAxis(_bins);
       _locked = wasLocked;
     }
+
 
     /// Remove a bin range
     void eraseBins(const size_t from, const size_t to) {
@@ -320,6 +388,7 @@ namespace YODA {
       _locked = wasLocked;
     }
 
+
     /// Scale the size of an axis by a factor
     // @todo What if somebody passes in negative scalefactor? (test idea)
     void scaleX(double scalefactor) {
@@ -330,6 +399,7 @@ namespace YODA {
         _bins[i].scaleX(scalefactor);
       _updateAxis(_bins);
     }
+
 
     /// Scale the amount of fills by a factor
     void scaleW(double scalefactor) {
@@ -342,19 +412,31 @@ namespace YODA {
     //@}
 
 
+    /// @name Comparisons to other Axis objects
+    //@{
+
+    bool sameBinning(const Axis1D& other) const {
+      if (numBins() != other.numBins()) return false;
+      if (_indexes != other._indexes) return false;
+      return _binsearcher.same_edges(other._binsearcher);
+    }
+
+    bool subsetBinning(const Axis1D& other) const {
+      const int ndiff = numBins() - other.numBins();
+      if (ndiff == 0) return sameBinning(other);
+      /// @todo Do we require the finite axis begin/end to be the same?
+      return !_binsearcher.shared_edges(other._binsearcher).empty();
+    }
+
+    //@}
+
+
     /// @name Operators
     //@{
 
-    /// Check if two of the Axis have the same binning
+    /// Check if two of the Axis have the same binning, within numeric tolerance
     bool operator == (const Axis1D& other) const {
-      if (numBins() != other.numBins())
-        return false;
-      for (size_t i = 0; i < numBins(); i++)
-        if (!(fuzzyEquals(bin(i).xMin(), other.bin(i).xMin()) &&
-              fuzzyEquals(bin(i).xMax(), other.bin(i).xMax())))
-          return false;
-
-      return true;
+      return sameBinning(other);
     }
 
 
@@ -407,42 +489,11 @@ namespace YODA {
       if (_locked) {
         throw LockError("Attempting to update a locked axis");
       }
-      // Define the new cuts and indexes
-      std::vector<double> edges; edges.reserve(bins.size()+1); // Nbins+1 edges
-      std::vector<long> indexes; edges.reserve(bins.size()+2); // Nbins + 2 outflows
 
-      // Sort the bins
-      std::sort(bins.begin(), bins.end());
-
-      // Keep a note of the last high edge
-      double last_high = -std::numeric_limits<double>::infinity();
-
-      // Check for overlaps
-      for (size_t i = 0; i < bins.size(); ++i) {
-        Bin& currentBin = bins[i];
-        const double new_low  = currentBin.xMin();
-        const double reldiff = (new_low - last_high) / currentBin.xWidth();
-        if (reldiff < -1e-3) { //< @note If there is a "large" negative gap (i.e. overlap), throw an exception
-          std::stringstream ss;
-          ss << "Bin edges overlap: " << last_high << " -> " << new_low;
-          throw RangeError(ss.str());
-        } else if (reldiff > 1e-3) { //< @note If there is a "large" positive gap, create a bin gap
-          indexes.push_back(-1); // First index will be for underflow
-          edges.push_back(new_low); // Will include first edge
-        }
-
-        // Bins check that they are not zero or negative width. It's okay for
-        // them to throw an exception here, as we haven't changed anything yet.
-        indexes.push_back(i);
-        edges.push_back(currentBin.xMax());
-
-        last_high = currentBin.xMax();
-      }
-      indexes.push_back(-1); // Overflow
-
-      // Everything was okay, so let's make our changes
-      _binsearcher = Utils::BinSearcher(edges);
-      _indexes = indexes;
+      // Get the new cuts and indexes (throws if overlaps), and set them on the searcher
+      const std::pair< std::vector<double>, std::vector<long> > es_is = _mk_edges_indexes(bins);
+      _binsearcher = Utils::BinSearcher(es_is.first);
+      _indexes = es_is.second;
       _bins = bins;
     }
 

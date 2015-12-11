@@ -912,7 +912,7 @@ cdef extern from "YODA/Histo1D.h" namespace "YODA":
         void normalize(double normto, bool includeoverflows) except +yodaerr
 
         void mergeBins(size_t, size_t) except +yodaerr
-        void rebin(int n) except +yodaerr
+        void rebin(unsigned int n) except +yodaerr
 
         void addBin(double, double) except +yodaerr
         void addBins(vector[double] edges) except +yodaerr
@@ -1011,7 +1011,7 @@ cdef extern from "YODA/Histo2D.h" namespace "YODA":
         void scaleXY(double, double)
 
         # void mergeBins(size_t, size_t) except +yodaerr
-        # void rebin(int n) except +yodaerr
+        # void rebin(unsigned int n) except +yodaerr
 
         size_t numBins() except +yodaerr
         size_t numBinsX() except +yodaerr
@@ -1117,7 +1117,7 @@ cdef extern from "YODA/Profile1D.h" namespace "YODA":
         void scaleY(double s) except +yodaerr
 
         void mergeBins(size_t, size_t) except +yodaerr
-        void rebin(int n) except +yodaerr
+        void rebin(unsigned int n) except +yodaerr
 
         void addBin(double, double) except +yodaerr
         void addBins(vector[double] edges) except +yodaerr
@@ -1206,7 +1206,7 @@ cdef extern from "YODA/Profile2D.h" namespace "YODA":
         void scaleXY(double, double)
 
         # void mergeBins(size_t, size_t) except +yodaerr
-        # void rebin(int n) except +yodaerr
+        # void rebin(unsigned int n) except +yodaerr
 
         size_t numBins() except +yodaerr
         size_t numBinsX() except +yodaerr

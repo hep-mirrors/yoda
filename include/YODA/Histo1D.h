@@ -164,8 +164,21 @@ namespace YODA {
 
 
     /// Merge every group of n bins, starting from the LHS
-    void rebin(int n) {
-      _axis.rebin(n);
+    void rebinBy(unsigned int n) {
+      _axis.rebinBy(n);
+    }
+    /// Overloaded alias for rebinBy
+    void rebin(unsigned int n) {
+      rebinBy(n);
+    }
+
+    /// Rebin to the given list of bin edges
+    void rebinTo(const std::vector<double>& newedges) {
+      _axis.rebinTo(newedges);
+    }
+    /// Overloaded alias for rebinTo
+    void rebin(const std::vector<double>& newedges) {
+      rebinTo(newedges);
     }
 
     //@}

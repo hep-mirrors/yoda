@@ -24,8 +24,8 @@ if test $# -eq 0 || test -n "$tmp"; then
     echo "  --libdir      : show the path to the directory containing the YODA libraries"
     echo "  --pythonpath  : show the path(s) to the directory containing YODA's Python package"
     echo
-    echo "  --cppflags    : returns a '-I' string for insertion into CPPFLAGS"
-    echo "  --libs        : returns a '-L/-l' string for insertion into LIBS or LIBADD"
+    echo "  --cflags|--cppflags : returns a '-I' string for insertion into CPPFLAGS or CXXFLAGS"
+    echo "  --ldflags|libs      : returns a '-L/-l' string for insertion into LIBS or LIBADD"
     echo
     echo "  --version     : returns the YODA release version number"
     exit 0
@@ -47,7 +47,7 @@ tmp=$( echo "$*" | egrep -- '--\<pythonpath\>')
 test -n "$tmp" && OUT="$OUT @YODA_PYTHONPATH@"
 
 ## "Pre-rolled" build info
-tmp=$( echo "$*" | egrep -- '--\<cppflags|cxxflags\>')
+tmp=$( echo "$*" | egrep -- '--\<cflags|cppflags|cxxflags\>')
 test -n "$tmp" && OUT="$OUT -I@includedir@ @BOOST_CPPFLAGS@"
 
 tmp=$( echo "$*" | egrep -- '--\<ldflags|libs\>')

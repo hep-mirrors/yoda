@@ -158,7 +158,7 @@ namespace YODA {
 
 
     /// Merge every group of n bins, starting from the LHS
-    void rebin(int n) {
+    void rebin(unsigned int n) {
       _axis.rebin(n);
     }
 
