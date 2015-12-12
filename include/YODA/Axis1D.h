@@ -253,9 +253,11 @@ namespace YODA {
       if (to >= numBins())
         throw RangeError("Final merge index is out of range");
       if (from > to)
-        throw RangeError("Final bin must be greater than initial bin");
+        throw RangeError("Final bin must be greater than or equal to initial bin");
       if (_gapInRange(from, to))
         throw RangeError("Bin ranges containing gaps cannot be merged");
+      if (from == to)
+        return; // nothing to be done
 
       Bin& b = bin(from);
       for (size_t i = from + 1; i <= to; ++i)
@@ -281,18 +283,36 @@ namespace YODA {
 
 
     /// @brief Rebin to the given list of bin edges
-    /// @todo Need to allow discarding bins at start and end (merging into overflow dbns)
     void rebinTo(const std::vector<double>& newedges) {
       if (newedges.size() < 2)
         throw UserError("Requested rebinning to an edge list which defines no bins");
       const Utils::BinSearcher newbs(newedges);
       const std::vector<double> eshared = newbs.shared_edges(_binsearcher);
-      // BOOST_FOREACH (double e, eshared) std::cout << e << std::endl;
       if (eshared.size() != newbs.size())
         throw BinningError("Requested rebinning to incompatible edges");
-      /// @todo Need to allow discarding bins at start and end (merging into overflow dbns)
-      if (!fuzzyEquals(xMin(), newedges.front()) || !fuzzyEquals(xMax(), newedges.back()))
-        throw BinningError("Requested rebinning to non-matching xMin and xMax (TODO: permit rebinnings that discard start/end bin trains)");
+      // std::cout << "Before merging" << std::endl;
+      // BOOST_FOREACH (double x, _binsearcher.edges()) std::cout << x << std::endl;
+      // If the new min finite edge isn't the same, merge it into the underflow
+      // NB. Edge search match the *next* bin, so step back one unit... and note these are BinSearcher indices, i.e. i+1
+      if (!fuzzyEquals(xMin(), newedges.front())) {
+        const size_t kmatch = _binsearcher.index(newedges.front()) - 1;
+        mergeBins(0, kmatch-1);
+        _underflow += bin(0).dbn();
+        eraseBin(0);
+      }
+      // std::cout << "Merged start bins" << std::endl;
+      // BOOST_FOREACH (double x, _binsearcher.edges()) std::cout << x << std::endl;
+      // Now the same for the overflow
+      if (!fuzzyEquals(xMax(), newedges.back())) {
+        const size_t kmatch = _binsearcher.index(newedges.back()) - 1;
+        std::cout << newedges.back() << " -> " << kmatch << " .. " << _bins.size()-1 << " / " << numBins() << std::endl;
+        mergeBins(kmatch, _bins.size()-1);
+        _overflow += bin(_bins.size()-1).dbn();
+        eraseBin(_bins.size()-1);
+      }
+      // std::cout << "Merged end bins" << std::endl;
+      // BOOST_FOREACH (double x, _binsearcher.edges()) std::cout << x << std::endl;
+      // Now merge the in-range bins
       size_t jcurr = 0;
       for (size_t i = 1; i < newedges.size(); ++i) { //< we already know that i=0 matches (until we support merging into overflows)
         const size_t kmatch = _binsearcher.index(newedges.at(i)) - 1; //< Will match the *next* bin, so step back one unit... and note these are BinSearcher indices
@@ -300,6 +320,8 @@ namespace YODA {
         mergeBins(jcurr, kmatch-1);
         jcurr += 1; //< The next bin to be merged, in the new numbering
       }
+      // std::cout << "After merging" << std::endl;
+      // BOOST_FOREACH (double x, _binsearcher.edges()) std::cout << x << std::endl;
     }
 
     /// @brief Overloaded alias for rebinTo
