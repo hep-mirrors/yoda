@@ -1,5 +1,8 @@
 2015-12-12  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Fix accidental use of S2D_MODE flag where S1D_MODE should have
+	been used, in yodamerge. Thanks again to Radek Podskubka.
+
 	* Allow new rebinTo() merging to restrict to a subset of the bin
 	range, merging the outside bins into the overflow distributions.
 
@@ -21,6 +24,7 @@
 	and Profile classes.
 
 	* Fix Counter::numEntries to return an unsigned long rather than double.
+	Thanks to Radek Podskubka for the bug discovery and detective work.
 
 	* Improve sortedvector to insert new elements into the sorted
 	position, rather than resorting the whole vector. This should be a

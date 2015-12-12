@@ -201,7 +201,7 @@ for p, aos in analysisobjects_in.iteritems():
         if aotype is yoda.Scatter1D:
 
             ## Use asymptotic mean+stderr convergence statistics
-            if opts.S2D_MODE == "assume_mean":
+            if opts.S1D_MODE == "assume_mean":
 
                 msg = "WARNING: Scatter1D %s merge assumes asymptotic statistics and equal run sizes" % p
                 if any(float(ao.annotation("yodamerge_scale")) != 1.0 for ao in aos):
