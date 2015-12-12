@@ -1,5 +1,8 @@
 2015-12-12  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Add a flag to yoda2root to change whether the conversion is to
+	'proper' types or to (more robustly) TGraphAsymmErrors objects.
+
 	* Fix accidental use of S2D_MODE flag where S1D_MODE should have
 	been used, in yodamerge. Thanks again to Radek Podskubka.
 
