@@ -43,6 +43,9 @@ namespace YODA {
     vector<HistoBin2D> h2binscurr; //< Current H2 bins container
     vector<ProfileBin1D> p1binscurr; //< Current P1 bins container
     vector<ProfileBin2D> p2binscurr; //< Current P2 bins container
+    vector<Point1D> pt1scurr; //< Current Point1Ds container
+    vector<Point2D> pt2scurr; //< Current Point2Ds container
+    vector<Point3D> pt3scurr; //< Current Point3Ds container
     Counter* cncurr = NULL;
     Histo1D* h1curr = NULL;
     Histo2D* h2curr = NULL;
@@ -168,10 +171,16 @@ namespace YODA {
             p2binscurr.clear();
             break;
           case SCATTER1D:
+            s1curr->addPoints(pt1scurr);
+            pt1scurr.clear();
             break;
           case SCATTER2D:
+            s2curr->addPoints(pt2scurr);
+            pt2scurr.clear();
             break;
           case SCATTER3D:
+            s3curr->addPoints(pt3scurr);
+            pt3scurr.clear();
             break;
           case NONE:
             break;
@@ -315,8 +324,8 @@ namespace YODA {
           {
             double x(0), exm(0), exp(0);
             iss >> x >> exm >> exp;
-            /// @todo Add in batch to speed up, cf. bins?
-            s1curr->addPoint(Point1D(x, exm, exp));
+            // s1curr->addPoint(Point1D(x, exm, exp));
+            pt1scurr.push_back(Point1D(x, exm, exp));
           }
           break;
 
@@ -325,8 +334,8 @@ namespace YODA {
             double x(0), y(0), exm(0), exp(0), eym(0), eyp(0);
             /// @todo Need to improve this format for multi-err points
             iss >> x >> exm >> exp >> y >> eym >> eyp;
-            /// @todo Add in batch to speed up, cf. bins?
-            s2curr->addPoint(Point2D(x, y, exm, exp, eym, eyp));
+            // s2curr->addPoint(Point2D(x, y, exm, exp, eym, eyp));
+            pt2scurr.push_back(Point2D(x, y, exm, exp, eym, eyp));
           }
           break;
 
@@ -335,8 +344,8 @@ namespace YODA {
             double x(0), y(0), z(0), exm(0), exp(0), eym(0), eyp(0), ezm(0), ezp(0);
             /// @todo Need to improve this format for multi-err points
             iss >> x >> exm >> exp >> y >> eym >> eyp >> z >> ezm >> ezp;
-            /// @todo Add in batch to speed up, cf. bins?
-            s3curr->addPoint(Point3D(x, y, z, exm, exp, eym, eyp, ezm, ezp));
+            // s3curr->addPoint(Point3D(x, y, z, exm, exp, eym, eyp, ezm, ezp));
+            pt3scurr.push_back(Point3D(x, y, z, exm, exp, eym, eyp, ezm, ezp));
           }
           break;
 

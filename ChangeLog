@@ -1,5 +1,7 @@
 2015-12-13  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Extend batch-adding in ReaderYODA to include Scatter types.
+
 	* Add a match_aos function to Python, for filtering AO lists/dicts
 	on path patterns and anti-patterns.
 
