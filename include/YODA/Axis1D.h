@@ -305,7 +305,7 @@ namespace YODA {
       // Now the same for the overflow
       if (!fuzzyEquals(xMax(), newedges.back())) {
         const size_t kmatch = _binsearcher.index(newedges.back()) - 1;
-        std::cout << newedges.back() << " -> " << kmatch << " .. " << _bins.size()-1 << " / " << numBins() << std::endl;
+        // std::cout << newedges.back() << " -> " << kmatch << " .. " << _bins.size()-1 << " / " << numBins() << std::endl;
         mergeBins(kmatch, _bins.size()-1);
         _overflow += bin(_bins.size()-1).dbn();
         eraseBin(_bins.size()-1);
