@@ -1,3 +1,8 @@
+2015-12-13  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Add a match_aos function to Python, for filtering AO lists/dicts
+	on path patterns and anti-patterns.
+
 2015-12-12  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Add a flag to yoda2root to change whether the conversion is to
