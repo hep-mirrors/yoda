@@ -198,6 +198,12 @@ namespace YODA {
     /// High edge of this histo's axis
     double xMax() const { return _axis.xMax(); }
 
+    /// All bin edges on this histo's axis
+    ///
+    /// @note This only returns the finite edges, i.e. -inf and +inf are removed
+    /// @todo Make the +-inf stripping controllable by a default-valued bool arg
+    const std::vector<double> xEdges() const { return _axis.xEdges(); }
+
 
     /// Access the bin vector
     std::vector<YODA::HistoBin1D>& bins() { return _axis.bins(); }

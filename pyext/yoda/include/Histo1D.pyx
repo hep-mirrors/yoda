@@ -200,6 +200,11 @@ cdef class Histo1D(AnalysisObject):
         """High x edge of the histo."""
         return self.h1ptr().xMax()
 
+    @property
+    def xEdges(self):
+        """All x edges of the histo."""
+        return self.h1ptr().xEdges()
+
 
     @property
     def numBins(self):

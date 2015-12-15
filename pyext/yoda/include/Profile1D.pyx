@@ -185,6 +185,11 @@ cdef class Profile1D(AnalysisObject):
         """High x edge of the histo."""
         return self.p1ptr().xMax()
 
+    @property
+    def xEdges(self):
+        """All x edges of the histo."""
+        return self.p1ptr().xEdges()
+
 
     @property
     def numBins(self):

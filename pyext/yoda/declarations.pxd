@@ -921,6 +921,7 @@ cdef extern from "YODA/Histo1D.h" namespace "YODA":
 
         double xMin() except +yodaerr
         double xMax() except +yodaerr
+        vector[double] xEdges() except +yodaerr
 
         size_t numBins() except +yodaerr
 
@@ -1127,6 +1128,8 @@ cdef extern from "YODA/Profile1D.h" namespace "YODA":
 
         double xMin() except +yodaerr
         double xMax() except +yodaerr
+
+        vector[double] xEdges() except +yodaerr
 
         size_t numBins() except +yodaerr
 
@@ -1335,6 +1338,7 @@ cdef extern from "YODA/Axis1D.h" namespace "YODA":
         vector[BIN1D]& bins()
         double xMin() except +yodaerr
         double xMax() except +yodaerr
+        vector[double] xEdges() except +yodaerr
         long getBinIndex(double)
         void reset()
         DBN& totalDbn()

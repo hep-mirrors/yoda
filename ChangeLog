@@ -1,3 +1,10 @@
+2015-12-15  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Add xEdges() methods to Axis1D and the Histo1D and Profile1D
+	that use it. The returned edge lists are finite only, i.e. they do
+	not contain the +-inf values on the ends of the internal
+	BinSearcher edges.
+
 2015-12-13  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Version 1.5.7!

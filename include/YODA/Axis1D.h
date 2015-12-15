@@ -110,6 +110,15 @@ namespace YODA {
       return bins().back().xMax();
     }
 
+    /// Return all the Nbin+1 bin edges on the axis
+    ///
+    /// @note This only returns the finite edges, i.e. -inf and +inf are removed
+    /// @todo Make the +-inf stripping controllable by a default-valued bool arg
+    std::vector<double> xEdges() const {
+      std::vector<double> rtn(_binsearcher.edges().begin()+1, _binsearcher.edges().end()-1);
+      return rtn;
+    }
+
     /// Return a bin at a given index (non-const)
     BIN1D& bin(size_t index) {
       if (index >= numBins()) throw RangeError("YODA::Histo1D: index out of range!");
