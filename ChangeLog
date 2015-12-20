@@ -2,6 +2,7 @@
 
 	* Convert linspace to use multiplication rather than repeated
 	addition to construct edge values, reducing precision errors.
+	Thanks to Holger Schulz for the suggestion.
 
 2015-12-15  Andy Buckley  <andy.buckley@cern.ch>
 
