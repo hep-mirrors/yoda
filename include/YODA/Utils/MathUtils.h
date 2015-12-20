@@ -254,10 +254,8 @@ namespace YODA {
     assert(nbins > 0);
     std::vector<double> rtn;
     const double interval = (end-start)/static_cast<double>(nbins);
-    double edge = start;
     for (size_t i = 0; i < nbins; ++i) {
-      rtn.push_back(edge);
-      edge += interval;
+      rtn.push_back(start + i*interval);
     }
     assert(rtn.size() == nbins);
     if (include_end) rtn.push_back(end); // exact end, not result of n * interval
