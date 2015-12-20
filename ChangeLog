@@ -1,5 +1,8 @@
 2015-12-20  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Convert linspace to use multiplication rather than repeated
+	addition to construct edge values, reducing precision errors.
+
 	* Change AO uncomputable division and mkScatter operations to
 	return/set NaN rather than 0 -- behaviour change requires new
 	major version series 1.6.
