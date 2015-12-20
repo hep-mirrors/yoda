@@ -339,11 +339,11 @@ namespace YODA {
       const double eyplus  = b1.yMax() - y;
 
       // Assemble the z value and error
-      double z = 0;
-      double ez = 0;
+      double z = std::numeric_limits<double>::quiet_NaN();
+      double ez = std::numeric_limits<double>::quiet_NaN();
       if (b2.height() == 0 || (b1.height() == 0 && b1.heightErr() != 0)) { ///< @todo Ok?
-        /// @todo Provide optional alt behaviours to fill with NaN or remove the invalid point or throw
-        /// @todo Don't throw here: set a flag and throw after all bins have been handled.
+        // z = std::numeric_limits<double>::quiet_NaN();
+        // ez = std::numeric_limits<double>::quiet_NaN();
         // throw LowStatsError("Requested division of empty bin");
       } else {
         z = b1.height() / b2.height();
@@ -380,21 +380,15 @@ namespace YODA {
                         + Utils::toStr(b_acc.numEntries()) + " entries / " + Utils::toStr(b_tot.numEntries()) + " entries");
 
       // If no entries on the denominator, set eff = err = 0 and move to the next bin
-      /// @todo Provide optional alt behaviours to fill with NaN or remove the invalid point, or...
-      /// @todo Or throw a LowStatsError exception if h.effNumEntries() or sumW() == 0?
-      double eff = 0, err = 0;
+      double eff = std::numeric_limits<double>::quiet_NaN();
+      double err = std::numeric_limits<double>::quiet_NaN();
       try {
         if (b_tot.sumW() != 0) {
-          // Calculate the values and errors
-          // const double eff = b_acc.effNumEntries() / b_tot.effNumEntries();
-          // const double ey = sqrt( b_acc.effNumEntries() * (1 - b_acc.effNumEntries()/b_tot.effNumEntries()) ) / b_tot.effNumEntries();
           eff = b_acc.sumW() / b_tot.sumW(); //< Actually this is already calculated by the division...
           err = sqrt(abs( ((1-2*eff)*b_acc.sumW2() + sqr(eff)*b_tot.sumW2()) / sqr(b_tot.sumW()) ));
-          // assert(point.y() == eff); //< @todo Correct? So we don't need to reset the eff on the next line?
         }
       } catch (const LowStatsError& e) {
-        // Leave them set at zero
-        /// @todo Handle this better!
+        //
       }
 
       /// END DIMENSIONALITY-INDEPENDENT BIT TO SHARE WITH H1

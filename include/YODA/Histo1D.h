@@ -491,6 +491,8 @@ namespace YODA {
   ///
   /// The includeunderflow param chooses whether the underflow bin is included
   /// in the integral numbers as an offset.
+  ///
+  /// @todo Rename/alias as mkIntegral
   Scatter2D toIntegralHisto(const Histo1D& h, bool includeunderflow=true);
 
 
@@ -505,6 +507,8 @@ namespace YODA {
   /// The includeunderflow param behaves as for toIntegral, and applies to both
   /// the initial integration and the integral used for the scaling. The
   /// includeoverflow param applies only to obtaining the scaling factor.
+  ///
+  /// @todo Rename/alias as mkIntegralEff
   Scatter2D toIntegralEfficiencyHisto(const Histo1D& h, bool includeunderflow=true, bool includeoverflow=true);
 
   //@}

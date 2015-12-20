@@ -169,10 +169,10 @@ namespace YODA {
 
       // Assemble the y value and error
       /// @todo Provide optional alt behaviours to fill with NaN or remove the invalid point or throw
-      double y = 0;
-      double ey = 0;
+      double y, ey;
       if (b2.height() == 0 || (b1.height() == 0 && b1.heightErr() != 0)) { ///< @todo Ok?
-        /// @todo Don't throw here: set a flag and throw after all bins have been handled.
+        y = std::numeric_limits<double>::quiet_NaN();
+        ey = std::numeric_limits<double>::quiet_NaN();
         // throw LowStatsError("Requested division of empty bin");
       } else {
         y = b1.height() / b2.height();
@@ -181,6 +181,7 @@ namespace YODA {
         const double relerr_2 = b2.heightErr() != 0 ? b2.relErr() : 0;
         ey = y * sqrt(sqr(relerr_1) + sqr(relerr_2));
       }
+
       /// Deal with +/- errors separately, inverted for the denominator contributions:
       /// @todo check correctness with different signed numerator and denominator.
       //const double eyplus = y * sqrt( sqr(p1.yErrPlus()/p1.y()) + sqr(p2.yErrMinus()/p2.y()) );
@@ -210,21 +211,15 @@ namespace YODA {
                         + Utils::toStr(b_acc.numEntries()) + " entries / " + Utils::toStr(b_tot.numEntries()) + " entries");
 
       // If no entries on the denominator, set eff = err = 0 and move to the next bin
-      /// @todo Provide optional alt behaviours to fill with NaN or remove the invalid point, or...
-      /// @todo Or throw a LowStatsError exception if h.effNumEntries() or sumW() == 0?
-      double eff = 0, err = 0;
+      double eff = std::numeric_limits<double>::quiet_NaN();
+      double err = std::numeric_limits<double>::quiet_NaN();
       try {
         if (b_tot.sumW() != 0) {
-          // Calculate the values and errors
-          // const double eff = b_acc.effNumEntries() / b_tot.effNumEntries();
-          // const double ey = sqrt( b_acc.effNumEntries() * (1 - b_acc.effNumEntries()/b_tot.effNumEntries()) ) / b_tot.effNumEntries();
           eff = b_acc.sumW() / b_tot.sumW(); //< Actually this is already calculated by the division...
           err = sqrt(abs( ((1-2*eff)*b_acc.sumW2() + sqr(eff)*b_tot.sumW2()) / sqr(b_tot.sumW()) ));
-          // assert(point.y() == eff); //< @todo Correct? So we don't need to reset the eff on the next line?
         }
       } catch (const LowStatsError& e) {
-        // Leave them set at zero
-        /// @todo Handle this better!
+        //
       }
 
       /// END DIMENSIONALITY-INDEPENDENT BIT TO SHARE WITH H2
@@ -253,8 +248,6 @@ namespace YODA {
   Scatter2D toIntegralEfficiencyHisto(const Histo1D& h, bool includeunderflow, bool includeoverflow) {
     Scatter2D rtn = toIntegralHisto(h, includeunderflow);
     const double integral = h.integral() - (includeoverflow ? 0 : h.overflow().sumW());
-    /// @todo Should the total integral *error* be sqrt(sumW2)? Or more complex, cf. Simon etc.?
-    const double integral_err = sqrt(integral);
 
     // If the integral is empty, the (integrated) efficiency values may as well all be zero, so return here
     /// @todo Or throw a LowStatsError exception if h.effNumEntries() == 0?
@@ -262,10 +255,12 @@ namespace YODA {
     /// @todo Need to check that bins are all positive? Integral could be zero due to large +ve/-ve in different bins :O
     if (integral == 0) return rtn;
 
+    /// @todo Should the total integral *error* be sqrt(sumW2)? Or more complex, cf. Simon etc.?
+    const double integral_err = sqrt(integral);
+
     // Normalize and compute binomial errors
     BOOST_FOREACH (Point2D& p, rtn.points()) {
       const double eff = p.y() / integral;
-      /// @todo Should the total integral error be sqrt(sumW2)? Or more complex, cf. Simon etc.?
       const double ey = sqrt(abs( ((1-2*eff)*sqr(p.y()/p.yErrAvg()) + sqr(eff)*sqr(integral_err)) / sqr(integral) ));
       p.setY(eff, ey);
     }

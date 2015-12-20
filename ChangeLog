@@ -1,3 +1,9 @@
+2015-12-20  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Change AO uncomputable division and mkScatter operations to
+	return/set NaN rather than 0 -- behaviour change requires new
+	major version series 1.6.
+
 2015-12-15  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Add xEdges() methods to Axis1D and the Histo1D and Profile1D

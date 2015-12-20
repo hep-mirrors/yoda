@@ -170,13 +170,13 @@ namespace YODA {
       const double explus  = b1.xMax() - x;
 
       // Assemble the y value and error
-      /// @todo Provide optional alt behaviours to fill with NaN or remove the invalid point or throw
-      double y = 0;
-      double ey = 0;
+      double y = std::numeric_limits<double>::quiet_NaN();
+      double ey = std::numeric_limits<double>::quiet_NaN();
       try {
         if (b2.mean() == 0 || (b1.mean() == 0 && b1.stdErr() != 0)) { ///< @todo Ok?
-          /// @todo Don't throw here: set a flag and throw after all bins have been handled.
-          // throw LowStatsError("Requested division by zero-valued bin");
+          // y = std::numeric_limits<double>::quiet_NaN();
+          // ey = std::numeric_limits<double>::quiet_NaN();
+          // throw LowStatsError("Requested division of empty bin");
         } else {
           y = b1.mean() / b2.mean();
           /// @todo Is this the exact error treatment for all (uncorrelated) cases? Behaviour around 0? +1 and -1 fills?
@@ -185,9 +185,10 @@ namespace YODA {
           ey = y * sqrt(sqr(relerr_1) + sqr(relerr_2));
         }
       } catch (const LowStatsError& e) {
-        // Leave them set at zero
-        /// @todo Handle this better!
+        // y = std::numeric_limits<double>::quiet_NaN();
+        // ey = std::numeric_limits<double>::quiet_NaN();
       }
+
       /// Deal with +/- errors separately, inverted for the denominator contributions:
       /// @todo check correctness with different signed numerator and denominator.
       //const double eyplus = y * sqrt( sqr(p1.yErrPlus()/p1.y()) + sqr(p2.yErrMinus()/p2.y()) );

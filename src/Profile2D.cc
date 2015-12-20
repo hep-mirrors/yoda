@@ -212,12 +212,12 @@ namespace YODA {
       const double eyplus  = b1.yMax() - y;
 
       // Assemble the z value and error
-      /// @todo Provide optional alt behaviours to fill with NaN or remove the invalid point or throw
-      double z = 0;
-      double ez = 0;
+      double z = std::numeric_limits<double>::quiet_NaN();
+      double ez = std::numeric_limits<double>::quiet_NaN();
       try {
         if (b2.mean() == 0 || (b1.mean() == 0 && b1.stdErr() != 0)) { ///< @todo Ok?
-          /// @todo Don't throw here: set a flag and throw after all bins have been handled.
+          // z = std::numeric_limits<double>::quiet_NaN();
+          // ez = std::numeric_limits<double>::quiet_NaN();
           // throw LowStatsError("Requested division of empty bin");
         } else {
           z = b1.mean() / b2.mean();
@@ -227,8 +227,8 @@ namespace YODA {
           ez = z * sqrt(sqr(relerr_1) + sqr(relerr_2));
         }
       } catch (const LowStatsError& e) {
-        // Leave them set at zero
-        /// @todo Handle this better!
+        // z = std::numeric_limits<double>::quiet_NaN();
+        // ez = std::numeric_limits<double>::quiet_NaN();
       }
 
       /// Deal with +/- errors separately, inverted for the denominator contributions:
