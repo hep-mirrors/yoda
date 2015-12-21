@@ -1,3 +1,7 @@
+2015-12-21  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Add missing root.py submodule file. Oops!
+
 2015-12-20  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Convert linspace to use multiplication rather than repeated

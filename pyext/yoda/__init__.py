@@ -18,7 +18,7 @@ def plot(*args, **kwargs):
 try:
     import yoda.root
     HAS_ROOT_SUPPORT = True
-    # TODO: remove
+    # TODO: remove in v2
     def to_root(ao):
         print "yoda.to_root() is deprecated: use yoda.root.to_root()"
         return yoda.root.to_root(ao)
