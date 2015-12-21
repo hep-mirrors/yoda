@@ -275,20 +275,25 @@ namespace YODA {
     }
 
 
-    /// @brief Merge every group of @a n bins, starting from the LHS
+    /// @brief Merge every group of @a n bins, from start to end inclusive
     ///
     /// If the number of bins is not a multiple of @a n, the last @a m < @a n
     /// bins on the RHS will also be merged, as the closest possible approach to
     /// factor @n rebinning everywhere.
-    void rebinBy(unsigned int n) {
-      for (size_t m = 0; m < numBins(); ++m) {
-        const size_t end = (m + n - 1 < numBins()) ? m + n -1 : numBins() - 1;
-        if (end > m) mergeBins(m, end);
+    void rebinBy(unsigned int n, size_t begin=0, size_t end=UINT_MAX) {
+      if (n < 1) throw UserError("Rebinning requested in groups of 0!");
+      for (size_t m = begin; m < end; ++m) {
+        if (m > numBins()) break;
+        const size_t myend = (m+n-1 < numBins()) ? m+n-1 : numBins()-1;
+        if (myend > m) {
+          mergeBins(m, myend);
+          end -= myend-m; //< reduce upper index by the number of removed bins
+        }
       }
     }
 
     /// @brief Overloaded alias for rebinBy
-    void rebin(unsigned int n) { rebinBy(n); }
+    void rebin(unsigned int n, size_t begin=0, size_t end=UINT_MAX) { rebinBy(n, begin, end); }
 
 
     /// @brief Rebin to the given list of bin edges

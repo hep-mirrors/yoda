@@ -164,12 +164,12 @@ namespace YODA {
 
 
     /// Merge every group of n bins, starting from the LHS
-    void rebinBy(unsigned int n) {
-      _axis.rebinBy(n);
+    void rebinBy(unsigned int n, size_t begin=0, size_t end=UINT_MAX) {
+      _axis.rebinBy(n, begin, end);
     }
     /// Overloaded alias for rebinBy
-    void rebin(unsigned int n) {
-      rebinBy(n);
+    void rebin(unsigned int n, size_t begin=0, size_t end=UINT_MAX) {
+      rebinBy(n, begin, end);
     }
 
     /// Rebin to the given list of bin edges

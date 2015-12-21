@@ -1,5 +1,11 @@
 2015-12-21  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Add a rebinning unit test, pytest-rebin.
+
+	* Add optional range arguments to rebinBy methods, allowing block
+	rebinnings to be applied only within a range of (original) bin
+	indices.
+
 	* Add missing root.py submodule file. Oops!
 
 2015-12-20  Andy Buckley  <andy.buckley@cern.ch>
