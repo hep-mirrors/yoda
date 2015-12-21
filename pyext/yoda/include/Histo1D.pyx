@@ -271,23 +271,25 @@ cdef class Histo1D(AnalysisObject):
         Merge bins from indices ia through ib."""
         self.h1ptr().mergeBins(ia, ib)
 
-    def rebinBy(self, n):
+    def rebinBy(self, n, begin=0, end=None):
         """(n) -> None.
-        Merge every group of n bins together."""
-        self.h1ptr().rebinBy(int(n))
+        Merge every group of n bins together (between begin and end, if specified)."""
+        if end is None:
+            end = self.numBins
+        self.h1ptr().rebinBy(int(n), begin, end)
 
     def rebinTo(self, edges):
         """([edges]) -> None.
         Merge bins to produce the given new edges... which must be a subset of the current ones."""
         self.h1ptr().rebinTo(edges)
 
-    def rebin(self, arg):
+    def rebin(self, arg, **kwargs):
         """(n) -> None or ([edges]) -> None
         Merge bins, like rebinBy if an int argument is given; like rebinTo if an iterable is given."""
         if hasattr(arg, "__iter__"):
-            self.rebinTo(arg)
+            self.rebinTo(arg, **kwargs)
         else:
-            self.rebinBy(arg)
+            self.rebinBy(arg, **kwargs)
 
 
     def mkScatter(self, usefocus=False):

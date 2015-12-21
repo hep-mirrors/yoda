@@ -1,7 +1,20 @@
+2015-12-21  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Version 1.5.8!
+
+	* Add a rebinning unit test, pytest-rebin.
+
+	* Add optional range arguments to rebinBy methods, allowing block
+	rebinnings to be applied only within a range of (original) bin
+	indices.
+
+	* Add missing root.py submodule file. Oops!
+
 2015-12-20  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Convert linspace to use multiplication rather than repeated
 	addition to construct edge values, reducing precision errors.
+	Thanks to Holger Schulz for the suggestion.
 
 	* Change AO uncomputable division and mkScatter operations to
 	return/set NaN rather than 0 -- behaviour change requires new
