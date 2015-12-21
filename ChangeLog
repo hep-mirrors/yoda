@@ -1,5 +1,7 @@
 2015-12-21  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Version 1.5.8!
+
 	* Add a rebinning unit test, pytest-rebin.
 
 	* Add optional range arguments to rebinBy methods, allowing block
