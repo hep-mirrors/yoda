@@ -217,7 +217,7 @@ namespace YODA {
     }
 
     /// Not equals
-    bool operator == (const Weights& other) {
+    bool operator != (const Weights& other) const {
       return !(*this == other);
     }
 
