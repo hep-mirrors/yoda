@@ -1,3 +1,7 @@
+2016-02-29  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Remove blocking of builds against ROOT6 -- it works fine.
+
 2016-02-16  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Add a --add option to yodamerge, for simple histo
