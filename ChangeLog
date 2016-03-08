@@ -1,3 +1,7 @@
+2016-03-08  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Add abs function to eq calculation in yodadiff.
+
 2016-02-29  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Remove blocking of builds against ROOT6 -- it works fine.

@@ -41,8 +41,8 @@ def eq(a, b):
     if hasattr(a, "__iter__"):
         return all(eq(*pair) for pair in zip(a, b))
     ## Finally apply a tolerant numerical comparison on numeric types
-    # TODO: Be careful with values on either side of zero. Add abs tolerance "epsilon" term?
-    return (float(a) - float(b))/(float(a) + float(b)) < opts.TOL
+    # TODO: Be careful with values on either side of zero -- abs(float(a)) etc. on denom?
+    return abs(float(a) - float(b))/(float(a) + float(b)) < opts.TOL
 
 def ptstr(pt):
     vstr1 = "{x:.2g} + {ex[0]:.2g} - {ex[1]:.2g}"
