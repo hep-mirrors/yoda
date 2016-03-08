@@ -100,9 +100,9 @@ for path in sorted(set(aodict1.keys() + aodict2.keys())):
         ok = True
         if p1.dim >= 1 and not (eq(p1.x, p2.x) and eq(p1.xErrs, p2.xErrs)):
             ok = False
-        if p1.dim >= 2 and not (eq(p1.y, p2.y) and eq(p1.yErrs, p2.yErrs)):
+        elif p1.dim >= 2 and not (eq(p1.y, p2.y) and eq(p1.yErrs, p2.yErrs)):
             ok = False
-        if p1.dim >= 3 and not (eq(p1.z, p2.z) and eq(p1.zErrs, p2.zErrs)):
+        elif p1.dim >= 3 and not (eq(p1.z, p2.z) and eq(p1.zErrs, p2.zErrs)):
             ok = False
         if not ok:
             msgs.append("  Point #%d: %s vs. %s" % (i, ptstr(p1), ptstr(p2)))
