@@ -71,3 +71,4 @@ Doxyfile$
 ^tmp/
 ^pydoc/
 ^pyext/yoda/.made_pyx_templates$
+^for\d\d\d$
