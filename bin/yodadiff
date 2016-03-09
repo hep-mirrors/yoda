@@ -74,6 +74,7 @@ for path in sorted(set(aodict1.keys() + aodict2.keys())):
         print "Data objects with path '%s' have different types (%s and %s) in %s and %s" % \
               (path, str(type(ao1)), str(type(ao2)), filenames[0], filenames[1])
         continue
+
     ## Convert to scatter representations
     try:
         s1 = ao1.mkScatter()
@@ -83,17 +84,18 @@ for path in sorted(set(aodict1.keys() + aodict2.keys())):
 
     ## Check for compatible dimensionalities (should already be ok, but just making sure)
     if s1.dim != s2.dim:
-        print "Warning: data objects with path '%s' have different scatter dimensions (%d and %d) in %s and %s" % \
+        print "Data objects with path '%s' have different scatter dimensions (%d and %d) in %s and %s" % \
               (path, s1.dim, s2.dim, filenames[0], filenames[1])
         continue
+
     ## Compare the numbers of points/bins
     if s1.numPoints != s2.numPoints:
-        print "Warning: data objects with path '%s' have different numbers of points (%d and %d) in %s and %s" % \
+        print "Data objects with path '%s' have different numbers of points (%d and %d) in %s and %s" % \
               (path, s1.numPoints, s2.numPoints, filenames[0], filenames[1])
         continue
 
     ## Compare the numeric values of each point
-    premsg = "\nData points differ for data objects with path '%s' in %s and %s:\n" % (path, filenames[0], filenames[1])
+    premsg = "Data points differ for data objects with path '%s' in %s and %s:\n" % (path, filenames[0], filenames[1])
     msgs = []
     for i, (p1, p2) in enumerate(zip(s1.points, s2.points)):
         # TODO: do this more nicely when point.val(int) and point.err(int) are mapped into Python
