@@ -1,3 +1,7 @@
+2016-04-08  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Add a --guess-prefix flag to rivet-config, cf. fastjet-config.
+
 2016-03-09  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Version 1.5.9! (oh no, we're out of convenient version number space!!)
