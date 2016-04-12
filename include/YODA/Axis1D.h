@@ -365,6 +365,7 @@ namespace YODA {
       double low = binedges.front();
       for (size_t i = 1; i < binedges.size(); ++i) {
         const double high = binedges[i];
+        assert(high>low); // Make sure binedges are meaningful
         newBins.push_back(Bin(low, high));
         low = high;
       }

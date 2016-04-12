@@ -1,7 +1,7 @@
 try:
     from yoda.rootcompat import *
 except ImportError, e:
-    print "YODA built without ROOT support"
+    #print "YODA built without ROOT support"
     raise e
 
 def getall(d, basepath="/"):

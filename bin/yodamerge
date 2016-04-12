@@ -111,6 +111,7 @@ parser.add_option('--s3dmode', default="assume_mean", dest='S3D_MODE',
                   help="choose strategy for combining Scatter3D objects: one of 'first', 'combine', 'assume_mean'")
 parser.add_option('--no-veto-empty', action="store_false", default=True, dest='VETO_EMPTY',
                   help="disable the removal of empty (sumW=0) data objects _before_ applying merge heuristics. You probably want the default!")
+parser.add_option('--add', action="store_true", default=False, dest='STACK', help="force simple stacking")
 parser.add_option('--assume-normalized', action="store_true", default=False, dest='ASSUME_NORMALIZED',
                   help="DEPRECATED, AND DOES NOTHING. This option _used_ to bypass the detection heuristic for unnormalized histograms")
 opts, fileargs = parser.parse_args()
@@ -165,7 +166,9 @@ for p, aos in analysisobjects_in.iteritems():
 
         ## Identify a target rescaling factor from the 1/scalefactor-weighted norms of each run
         rescale = None
-        if all("ScaledBy" in ao.annotations for ao in aos):
+        if len(aos) > 1 and opts.STACK:
+            pass # we're in dumb stacking mode
+        elif all("ScaledBy" in ao.annotations for ao in aos):
             rescale = 1.0 / sum(float(ao.annotation("yodamerge_scale"))/float(ao.annotation("ScaledBy")) for ao in aos)
         elif all("ScaledBy" not in ao.annotations for ao in aos):
             pass

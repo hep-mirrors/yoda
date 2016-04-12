@@ -1,3 +1,25 @@
+2016-04-08  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Add a --guess-prefix flag to rivet-config, cf. fastjet-config.
+
+2016-03-09  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Version 1.5.9! (oh no, we're out of convenient version number space!!)
+
+2016-03-08  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Add abs function to eq calculation in yodadiff.
+
+2016-02-29  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Remove blocking of builds against ROOT6 -- it works fine.
+
+2016-02-16  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Add a --add option to yodamerge, for simple histo
+	stacking. Thanks to Chris Gutschow for the patch, although my
+	spidey sense is tingling...
+
 2015-12-21  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Version 1.5.8!

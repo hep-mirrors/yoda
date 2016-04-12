@@ -28,7 +28,6 @@ cdef class Scatter1D(AnalysisObject):
         self.__init_2(path, title)
         self.addPoints(points)
 
-
     def clone(self):
         """() -> Scatter1D.
         Clone this Scatter1D."""
