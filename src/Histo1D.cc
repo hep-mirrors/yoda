@@ -48,7 +48,7 @@ namespace YODA {
   unsigned long Histo1D::numEntries(bool includeoverflows) const {
     if (includeoverflows) return totalDbn().numEntries();
     unsigned long n = 0;
-    BOOST_FOREACH (const Bin& b, bins()) n += b.numEntries();
+    for (const Bin& b : bins()) n += b.numEntries();
     return n;
   }
 
@@ -56,7 +56,7 @@ namespace YODA {
   double Histo1D::effNumEntries(bool includeoverflows) const {
     if (includeoverflows) return totalDbn().effNumEntries();
     double n = 0;
-    BOOST_FOREACH (const Bin& b, bins()) n += b.effNumEntries();
+    for (const Bin& b : bins()) n += b.effNumEntries();
     return n;
   }
 
@@ -64,7 +64,7 @@ namespace YODA {
   double Histo1D::sumW(bool includeoverflows) const {
     if (includeoverflows) return _axis.totalDbn().sumW();
     double sumw = 0;
-    BOOST_FOREACH (const Bin& b, bins()) sumw += b.sumW();
+    for (const Bin& b : bins()) sumw += b.sumW();
     return sumw;
   }
 
@@ -72,7 +72,7 @@ namespace YODA {
   double Histo1D::sumW2(bool includeoverflows) const {
     if (includeoverflows) return _axis.totalDbn().sumW2();
     double sumw2 = 0;
-    BOOST_FOREACH (const Bin& b, bins()) sumw2 += b.sumW2();
+    for (const Bin& b : bins()) sumw2 += b.sumW2();
     return sumw2;
   }
 
@@ -82,7 +82,7 @@ namespace YODA {
   double Histo1D::xMean(bool includeoverflows) const {
     if (includeoverflows) return _axis.totalDbn().xMean();
     Dbn1D dbn;
-    BOOST_FOREACH (const HistoBin1D& b, bins()) dbn += b.dbn();
+    for (const HistoBin1D& b : bins()) dbn += b.dbn();
     return dbn.xMean();
   }
 
@@ -90,7 +90,7 @@ namespace YODA {
   double Histo1D::xVariance(bool includeoverflows) const {
     if (includeoverflows) return _axis.totalDbn().xVariance();
     Dbn1D dbn;
-    BOOST_FOREACH (const HistoBin1D& b, bins()) dbn += b.dbn();
+    for (const HistoBin1D& b : bins()) dbn += b.dbn();
     return dbn.xVariance();
   }
 
@@ -98,7 +98,7 @@ namespace YODA {
   double Histo1D::xStdErr(bool includeoverflows) const {
     if (includeoverflows) return _axis.totalDbn().xStdErr();
     Dbn1D dbn;
-    BOOST_FOREACH (const HistoBin1D& b, bins()) dbn += b.dbn();
+    for (const HistoBin1D& b : bins()) dbn += b.dbn();
     return dbn.xStdErr();
   }
 
@@ -106,7 +106,7 @@ namespace YODA {
   double Histo1D::xRMS(bool includeoverflows) const {
     if (includeoverflows) return _axis.totalDbn().xRMS();
     Dbn1D dbn;
-    BOOST_FOREACH (const HistoBin1D& b, bins()) dbn += b.dbn();
+    for (const HistoBin1D& b : bins()) dbn += b.dbn();
     return dbn.xRMS();
   }
 
@@ -127,7 +127,7 @@ namespace YODA {
     : AnalysisObject("Histo1D", (path.size() == 0) ? s.path() : path, s, s.title())
   {
     std::vector<HistoBin1D> bins;
-    BOOST_FOREACH (const Scatter2D::Point& p, s.points()) {
+    for (const Scatter2D::Point& p : s.points()) {
       bins.push_back(HistoBin1D(p.xMin(), p.xMax()));
     }
     _axis = Histo1DAxis(bins);
@@ -139,7 +139,7 @@ namespace YODA {
     : AnalysisObject("Histo1D", (path.size() == 0) ? p.path() : path, p, p.title())
   {
     std::vector<HistoBin1D> bins;
-    BOOST_FOREACH (const ProfileBin1D& b, p.bins()) {
+    for (const ProfileBin1D& b : p.bins()) {
       bins.push_back(HistoBin1D(b.xMin(), b.xMax()));
     }
     _axis = Histo1DAxis(bins);
@@ -259,7 +259,7 @@ namespace YODA {
     const double integral_err = sqrt(integral);
 
     // Normalize and compute binomial errors
-    BOOST_FOREACH (Point2D& p, rtn.points()) {
+    for (Point2D& p : rtn.points()) {
       const double eff = p.y() / integral;
       const double ey = sqrt(abs( ((1-2*eff)*sqr(p.y()/p.yErrAvg()) + sqr(eff)*sqr(integral_err)) / sqr(integral) ));
       p.setY(eff, ey);

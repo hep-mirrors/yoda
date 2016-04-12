@@ -129,7 +129,7 @@ namespace YODA {
 
     /// Scaling of x axis
     void scaleX(double scalex) {
-      BOOST_FOREACH (Point1D& p, _points) p.scaleX(scalex);
+      for (Point1D& p : _points) p.scaleX(scalex);
     }
 
     //@}
@@ -205,7 +205,7 @@ namespace YODA {
 
     /// Insert a collection of new points
     void addPoints(const Points& pts) {
-      BOOST_FOREACH (const Point1D& pt, pts) addPoint(pt);
+      for (const Point1D& pt : pts) addPoint(pt);
     }
 
     //@}
@@ -222,7 +222,7 @@ namespace YODA {
     /// @todo Better name? Make this the add operation?
     /// @todo Convert/extend to accept a Range or generic
     void combineWith(const std::vector<Scatter1D>& others) {
-      BOOST_FOREACH (const Scatter1D& s, others) combineWith(s);
+      for (const Scatter1D& s : others) combineWith(s);
     }
 
     //@}

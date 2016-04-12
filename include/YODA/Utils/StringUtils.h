@@ -6,17 +6,57 @@
 #ifndef YODA_STRINGUTILS_H
 #define YODA_STRINGUTILS_H
 
+#include <vector>
 #include <sstream>
+#include <algorithm>
+#include <stdexcept>
 
 namespace YODA {
   namespace Utils {
 
 
+    /// Exception to be thrown by lexical_cast below
+    struct bad_lexical_cast : public std::runtime_error {
+      bad_lexical_cast(const std::string& what) : std::runtime_error(what) {}
+    };
+
+    /// Convert between any types via stringstream
+    template<typename T, typename U>
+    T lexical_cast(const U& in) {
+      try {
+        std::stringstream ss;
+        ss << in;
+        T out;
+        ss >> out;
+        return out;
+      } catch (const std::exception& e) {
+        throw bad_lexical_cast(e.what());
+      }
+    }
+
+
     /// Generic convenient conversion to string
     template <typename T>
     inline std::string toStr(const T& x) {
-      std::ostringstream ss; ss << x;
-      return ss.str();
+      // std::ostringstream ss; ss << x;
+      // return ss.str();
+      return lexical_cast<std::string>(x);
+    }
+
+
+    /// Convert a string to lower-case
+    inline std::string toLower(const std::string& s) {
+      std::string out = s;
+      std::transform(out.begin(), out.end(), out.begin(), (int(*)(int)) tolower);
+      return out;
+    }
+
+
+    /// Convert a string to upper-case
+    inline std::string toUpper(const std::string& s) {
+      std::string out = s;
+      std::transform(out.begin(), out.end(), out.begin(), (int(*)(int)) toupper);
+      return out;
     }
 
 
@@ -28,7 +68,6 @@ namespace YODA {
       cs2es.push_back(std::make_pair("&", "&amp;"));
       cs2es.push_back(std::make_pair("<", "&lt;"));
       cs2es.push_back(std::make_pair(">", "&gt;"));
-
       for (std::vector<CharsToEntities>::const_iterator c2e = cs2es.begin(); c2e != cs2es.end(); ++c2e) {
         std::string::size_type pos = -1;
         while ( ( pos = out.find(c2e->first, pos + 1) ) != std::string::npos ) {

@@ -7,11 +7,11 @@
 #define YODA_READER_H
 
 #include "YODA/AnalysisObject.h"
+#include "YODA/Utils/Traits.h"
 #include <string>
 #include <fstream>
 #include <vector>
-#include "boost/utility/enable_if.hpp"
-#include "YODA/Utils/Traits.h"
+#include <type_traits>
 #include <iostream>
 
 namespace YODA {
@@ -33,8 +33,8 @@ namespace YODA {
     /// This version fills (actually, appends to) a variable supplied container
     /// Note: SFINAE is used to check for a void push_back(const AnalysisObject*) method
     template<typename CONT>
-    typename boost::enable_if_c<YODA::Pushable<CONT,AnalysisObject*>::value>::type
-    read(std::istream& stream, CONT& aos){
+    typename std::enable_if<YODA::Pushable<CONT,AnalysisObject*>::value>::type
+    read(std::istream& stream, CONT& aos) {
       //if CONT==std::vector<AnalysisObject*>, the compiler should select
       //the virtual method below, since it prefers non-templated methods in the lookup
       //otherwise we would enter a endless recursion. Check in case of problems.

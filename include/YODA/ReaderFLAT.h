@@ -12,9 +12,6 @@
 #include <YODA/Scatter1D.h>
 #include <YODA/Scatter2D.h>
 #include <YODA/Scatter3D.h>
-#include <boost/spirit/include/qi.hpp>
-#include <boost/spirit/include/phoenix_operator.hpp>
-#include <boost/fusion/include/adapt_struct.hpp>
 
 namespace YODA {
 

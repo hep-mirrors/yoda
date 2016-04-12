@@ -7,7 +7,6 @@
 #include "YODA/WriterYODA.h"
 #include "YODA/WriterAIDA.h"
 #include "YODA/WriterFLAT.h"
-#include "boost/algorithm/string.hpp"
 #include <iostream>
 #include <typeinfo>
 #include <sstream>
@@ -19,7 +18,7 @@ namespace YODA {
 
   Writer& mkWriter(const std::string& name) {
     const size_t lastdot = name.find_last_of(".");
-    const string fmt = boost::to_lower_copy((lastdot == std::string::npos) ? name : name.substr(lastdot+1));
+    const string fmt = toLower((lastdot == std::string::npos) ? name : name.substr(lastdot+1));
     // cout << "File extension: " << fmt << endl;
     if (fmt == "yoda") return WriterYODA::create();
     if (fmt == "aida") return WriterAIDA::create();

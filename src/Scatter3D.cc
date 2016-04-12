@@ -8,7 +8,7 @@ namespace YODA {
 
   Scatter3D mkScatter(const Histo2D& h, bool usefocus) {
     Scatter3D rtn;
-    BOOST_FOREACH (const std::string& a, h.annotations())
+    for (const std::string& a : h.annotations())
       rtn.setAnnotation(a, h.annotation(a));
     rtn.setAnnotation("Type", h.type());
     for (size_t i = 0; i < h.numBins(); ++i) {
@@ -52,7 +52,7 @@ namespace YODA {
 
   Scatter3D mkScatter(const Profile2D& h, bool usefocus, bool usestddev) {
     Scatter3D rtn;
-    BOOST_FOREACH (const std::string& a, h.annotations())
+    for (const std::string& a : h.annotations())
       rtn.setAnnotation(a, h.annotation(a));
     rtn.setAnnotation("Type", h.type());
     for (size_t i = 0; i < h.numBins(); ++i) {

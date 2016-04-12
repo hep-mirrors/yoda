@@ -34,7 +34,7 @@ namespace YODA {
 
   void WriterFLAT::_writeAnnotations(std::ostream& os, const AnalysisObject& ao) {
     os << scientific << setprecision(_precision);
-    BOOST_FOREACH (const string& a, ao.annotations()) {
+    for (const string& a : ao.annotations()) {
       if (a.empty()) continue;
       if (a == "Type") continue;
       /// @todo Should write out floating point annotations as scientific notation...
@@ -95,7 +95,7 @@ namespace YODA {
     os << "# BEGIN VALUE " << s.path() << "\n";
     _writeAnnotations(os, s);
     os << "# value\t errminus\t errplus\n";
-    BOOST_FOREACH (const Point1D& pt, s.points()) {
+    for (const Point1D& pt : s.points()) {
       os << pt.x() << "\t" << pt.xErrMinus() << "\t" << pt.xErrPlus() << "\n";
     }
     os << "# END VALUE\n\n";
@@ -112,7 +112,7 @@ namespace YODA {
     os << "# BEGIN HISTO1D " << s.path() << "\n";
     _writeAnnotations(os, s);
     os << "# xlow\t xhigh\t val\t errminus\t errplus\n";
-    BOOST_FOREACH (const Point2D& pt, s.points()) {
+    for (const Point2D& pt : s.points()) {
       os << pt.x()-pt.xErrMinus() << "\t" << pt.x()+pt.xErrPlus() << "\t";
       os << pt.y() << "\t" << pt.yErrMinus() << "\t" << pt.yErrPlus() << "\n";
     }
@@ -132,15 +132,15 @@ namespace YODA {
 
     // if (asHist2D) { // Extension of what writeScatter2D does
     os << "# xlow\t xhigh\t ylow\t yhigh\t val\t errminus\t errplus\n";
-      BOOST_FOREACH (const Point3D& pt, s.points()) {
-        os << pt.x()-pt.xErrMinus() << "\t" << pt.x()+pt.xErrPlus() << "\t";
-        os << pt.y()-pt.yErrMinus() << "\t" << pt.y()+pt.yErrPlus() << "\t";
-        os << pt.z() << "\t" << pt.zErrMinus() << "\t" << pt.zErrPlus() << "\n";
-      }
+    for (const Point3D& pt : s.points()) {
+      os << pt.x()-pt.xErrMinus() << "\t" << pt.x()+pt.xErrPlus() << "\t";
+      os << pt.y()-pt.yErrMinus() << "\t" << pt.y()+pt.yErrPlus() << "\t";
+      os << pt.z() << "\t" << pt.zErrMinus() << "\t" << pt.zErrPlus() << "\n";
+    }
 
     // } else { // What writerYODA should do... let's just put this in there (generalised for multiple errs).
     //   os << "# xval\t xerr-\t xerr+\t yval\t yerr-\t yerr+\t zval\t zerr-\t zerr+\n";
-    //   BOOST_FOREACH (const Point3D& pt, s.points()) {
+    //   for (const Point3D& pt : s.points()) {
     //     os << pt.x() << "\t" << pt.xErrMinus() << "\t" << pt.xErrMinus() << "\t";
     //     os << pt.y() << "\t" << pt.yErrMinus() << "\t" << pt.yErrMinus() << "\t";
     //     os << pt.z() << "\t" << pt.zErrMinus() << "\t" << pt.zErrMinus() << "\n";

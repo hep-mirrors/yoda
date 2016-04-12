@@ -7,6 +7,7 @@
 #define YODA_AnalysisObject_h
 
 #include "YODA/Exceptions.h"
+#include "YODA/Utils/StringUtils.h"
 #include "YODA/Config/BuildConfig.h"
 #include <string>
 #include <map>
@@ -39,7 +40,7 @@ namespace YODA {
     /// Constructor giving a type, a path, another AO to copy annotation from, and an optional title
     AnalysisObject(const std::string& type, const std::string& path,
                    const AnalysisObject& ao, const std::string& title="") {
-      BOOST_FOREACH (const std::string& a, ao.annotations())
+      for (const std::string& a : ao.annotations())
         setAnnotation(a, ao.annotation(a));
       setAnnotation("Type", type); // might override the copied ones
       setPath(path);
@@ -86,7 +87,7 @@ namespace YODA {
     const std::vector<std::string> annotations() const {
       std::vector<std::string> rtn;
       rtn.reserve(_annotations.size());
-      BOOST_FOREACH (const Annotations::value_type& kv, _annotations) rtn.push_back(kv.first);
+      for (const Annotations::value_type& kv : _annotations) rtn.push_back(kv.first);
       return rtn;
     }
 
@@ -123,7 +124,7 @@ namespace YODA {
     template <typename T>
     const T annotation(const std::string& name) const {
       std::string s = annotation(name);
-      return boost::lexical_cast<T>(s);
+      return Utils::lexical_cast<T>(s);
     }
 
 
@@ -134,7 +135,7 @@ namespace YODA {
     const T annotation(const std::string& name, const T& defaultreturn) const {
       try {
         std::string s = annotation(name);
-        return boost::lexical_cast<T>(s);
+        return Utils::lexical_cast<T>(s);
       } catch (const AnnotationError& ae) {
         return defaultreturn;
       }
@@ -146,7 +147,7 @@ namespace YODA {
     /// @note Templated on arg type, but stored as a string.
     template <typename T>
     void setAnnotation(const std::string& name, const T& value) {
-      _annotations[name] = boost::lexical_cast<std::string>(value);
+      _annotations[name] = Utils::lexical_cast<std::string>(value);
       /// @todo Specialise for float, double, etc. with this safer recipe from the Boost docs:
       // std::stringstream ss;
       // ss << setprecison(std::numeric_limits<double>::max_digits10) << scientific << output_value;

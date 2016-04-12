@@ -151,22 +151,22 @@ namespace YODA {
 
     /// Scaling of x axis
     void scaleX(double scalex) {
-      BOOST_FOREACH (Point3D& p, _points) p.scaleX(scalex);
+      for (Point3D& p : _points) p.scaleX(scalex);
     }
 
     /// Scaling of y axis
     void scaleY(double scaley) {
-      BOOST_FOREACH (Point3D& p, _points) p.scaleY(scaley);
+      for (Point3D& p : _points) p.scaleY(scaley);
     }
 
     /// Scaling of z axis
     void scaleZ(double scalez) {
-      BOOST_FOREACH (Point3D& p, _points) p.scaleZ(scalez);
+      for (Point3D& p : _points) p.scaleZ(scalez);
     }
 
     /// Scaling of all three axes
     void scaleXYZ(double scalex, double scaley, double scalez) {
-      BOOST_FOREACH (Point3D& p, _points) p.scaleXYZ(scalex, scaley, scalez);
+      for (Point3D& p : _points) p.scaleXYZ(scalex, scaley, scalez);
     }
 
     /// Scaling of all three axes
@@ -250,7 +250,7 @@ namespace YODA {
 
     /// Insert a collection of new points
     void addPoints(const Points& pts) {
-      BOOST_FOREACH (const Point3D& pt, pts) addPoint(pt);
+      for (const Point3D& pt : pts) addPoint(pt);
     }
 
     //@}
@@ -266,7 +266,7 @@ namespace YODA {
     /// @todo Better name?
     /// @todo Convert to accept a Range or generic
     void combineWith(const std::vector<Scatter3D>& others) {
-      BOOST_FOREACH (const Scatter3D& s, others) combineWith(s);
+      for (const Scatter3D& s : others) combineWith(s);
       //return *this;
     }
 

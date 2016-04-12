@@ -9,7 +9,7 @@
 #include <vector>
 #include <algorithm>
 #include <sstream>
-#include "boost/array.hpp"
+#include <array>
 
 namespace YODA {
   namespace Utils {
@@ -39,8 +39,8 @@ namespace YODA {
       }
 
 
-      /// Conversion from Boost array
-      ndarray(const boost::array<T,N> arr) {
+      /// Conversion from C++11 array
+      ndarray(const std::array<T,N> arr) {
         _val = arr;
       }
 
@@ -82,7 +82,7 @@ namespace YODA {
 
     private:
 
-      boost::array<T,N> _val;
+      std::array<T,N> _val;
 
     };
 

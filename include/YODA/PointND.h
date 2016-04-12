@@ -135,23 +135,17 @@ namespace YODA {
 
     /// Uniform scaling
     void scale(const NdVal& scales) {
-      for (size_t i = 0; i < N; ++i) {
-        _pos[i] *= scales[i];
-      }
-      BOOST_FOREACH (Error<N>& e, errs()) {
-        e.scale(scales);
-      }
+      for (size_t i = 0; i < N; ++i) _pos[i] *= scales[i];
+      for (Error<N>& e : errs()) e.scale(scales);
     }
 
 
     // /// Generalised transformations with functors
     // void scale(const Trf<N>& trf) {
-    //   for (size_t i = 0; i < N; ++i) {
+    //   for (size_t i = 0; i < N; ++i)
     //     _pos = trf.transform(_pos);
-    //   }
-    //   BOOST_FOREACH (Error e, errs()) {
+    //   for (Error e : errs())
     //     rf.transformErrs(_pos, e);
-    //   }
     // }
 
     //@}

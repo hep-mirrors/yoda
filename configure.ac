@@ -38,27 +38,8 @@ if test "x$CXXFLAGS" = "x"; then CXXFLAGS="-O3"; fi
 AC_LANG(C++)
 AC_PROG_CXX
 
-dnl this block can go once we decide to have C++11 always on
-AC_MSG_CHECKING([whether to include C++11 flag for testing])
-AC_ARG_ENABLE(stdcxx11,
-        AC_HELP_STRING([--enable-stdcxx11],
-        [turn on C++11 flag (only for testing, do not use in production!)]),
-        [],
-        [enable_stdcxx11=no]
-        )
-
-
-if test "x$enable_stdcxx11" = "xyes"; then
-AC_MSG_RESULT([yes])
-dnl remove the wrapper if block and "optional" once we decide to have C++11 always on
-AX_CXX_COMPILE_STDCXX_11([noext],[optional])
-if test "x$HAVE_CXX11" != "x1"; then
-AC_MSG_ERROR([compiler does not recognize requested c++11 option])
-fi
-else
-AC_MSG_RESULT([no])
-fi
-
+## C++11 is now required
+AX_CXX_COMPILE_STDCXX_11([noext],[mandatory])
 
 
 AC_PROG_INSTALL
@@ -83,16 +64,6 @@ AC_ARG_ENABLE([debug], [AC_HELP_STRING(--enable-debug, [build with debugging sym
 if test x$enable_debug = xyes; then
   [AM_CXXFLAGS="$AM_CXXFLAGS -g"]
 fi
-
-
-## Required Boost C++ utility library
-BOOST_REQUIRE([1.48.0])
-BOOST_FOREACH
-BOOST_SMART_PTR
-BOOST_FIND_HEADER([boost/lexical_cast.hpp])
-BOOST_FIND_HEADER([boost/assign.hpp])
-BOOST_FIND_HEADER([boost/type_traits/has_dereference.hpp])
-BOOST_BUG_IN_FOREACH
 
 
 ## Optional ROOT compatibility
@@ -195,7 +166,6 @@ AM_CONDITIONAL(WITH_CYTHON, [test x$CYTHON_FOUND = xyes])
 
 ## Extend and substitute the default build flags after lib testing
 AM_CPPFLAGS="-I\$(top_srcdir)/include -I\$(top_builddir)/include"
-AM_CPPFLAGS="$AM_CPPFLAGS $BOOST_CPPFLAGS"
 AC_SUBST(AM_CPPFLAGS)
 AC_SUBST(AM_CXXFLAGS)
 

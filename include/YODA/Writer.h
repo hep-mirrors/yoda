@@ -16,10 +16,7 @@
 #include "YODA/Scatter2D.h"
 #include "YODA/Scatter3D.h"
 #include "YODA/Utils/Traits.h"
-
-#include "boost/range.hpp"
-#include "boost/utility/enable_if.hpp"
-
+#include <type_traits>
 #include <string>
 #include <fstream>
 
@@ -53,18 +50,16 @@ namespace YODA {
     /// Note: the enable_if call checks whether RANGE is const_iterable, if yes the return
     ///       type is void. If not, this template will not be a candidate in the lookup
     template <typename RANGE>
-    typename boost::enable_if_c<Iterable<RANGE>::value>::type
+    typename enable_if<Iterable<RANGE>::value>::type
     write(std::ostream& stream, const RANGE& aos) {
-      //typedef typename boost::range_iterator<const RANGE>::type const_iterator;
-      write(stream, boost::begin(aos), boost::end(aos));
+      write(stream, std::begin(aos), std::end(aos));
     }
 
     /// Write out a collection of objects @a objs to file @a filename.
     template <typename RANGE>
-    typename boost::enable_if_c<Iterable<RANGE>::value>::type
+    typename std::enable_if<Iterable<RANGE>::value>::type
     write(const std::string& filename, const RANGE& aos) {
-      //typedef typename boost::range_iterator<const RANGE>::type const_iterator;
-      write(filename, boost::begin(aos), boost::end(aos));
+      write(filename, std::begin(aos), std::end(aos));
     }
 
     //@}
@@ -123,14 +118,14 @@ namespace YODA {
     /// Main writer elements
     virtual void writeHeader(std::ostream& stream) = 0;
 
-    
-    //note: DerefAO<T> is a trait that's true if T has a derefence operator 
+
+    //note: DerefAO<T> is a trait that's true if T has a derefence operator
     //      that is convertible to an AnalysisObject
     template<typename T>
-    typename boost::enable_if_c<DerefAO<T>::value>::type writeBody(std::ostream& stream, const T& ao){
+    typename std::enable_if<DerefAO<T>::value>::type writeBody(std::ostream& stream, const T& ao){
       writeBody(stream,*ao);
     }
-  
+
     virtual void writeBody(std::ostream& stream, const AnalysisObject* ao);
     virtual void writeBody(std::ostream& stream, const AnalysisObject& ao);
     virtual void writeFooter(std::ostream& stream) = 0;

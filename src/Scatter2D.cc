@@ -8,10 +8,10 @@ namespace YODA {
   /// Make a Scatter2D representation of a Histo1D
   Scatter2D mkScatter(const Histo1D& h, bool usefocus) {
     Scatter2D rtn;
-    BOOST_FOREACH (const std::string& a, h.annotations())
+    for (const std::string& a : h.annotations())
       rtn.setAnnotation(a, h.annotation(a));
     rtn.setAnnotation("Type", h.type()); // might override the copied ones
-    BOOST_FOREACH (const HistoBin1D& b, h.bins()) {
+    for (const HistoBin1D& b : h.bins()) {
       const double x = usefocus ? b.xFocus() : b.xMid();
       const double ex_m = x - b.xMin();
       const double ex_p = b.xMax() - x;
@@ -40,10 +40,10 @@ namespace YODA {
   /// Make a Scatter2D representation of a Profile1D
   Scatter2D mkScatter(const Profile1D& p, bool usefocus, bool usestddev) {
     Scatter2D rtn;
-    BOOST_FOREACH (const std::string& a, p.annotations())
+    for (const std::string& a : p.annotations())
       rtn.setAnnotation(a, p.annotation(a));
     rtn.setAnnotation("Type", p.type());
-    BOOST_FOREACH (const ProfileBin1D& b, p.bins()) {
+    for (const ProfileBin1D& b : p.bins()) {
       const double x = usefocus ? b.xFocus() : b.xMid();
       const double ex_m = x - b.xMin();
       const double ex_p = b.xMax() - x;

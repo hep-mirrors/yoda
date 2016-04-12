@@ -202,7 +202,7 @@ namespace YODA {
       _dbn.reset();
       _underflow.reset();
       _overflow.reset();
-      BOOST_FOREACH(Bin& bin, _bins) bin.reset();
+      for (Bin& bin : _bins) bin.reset();
       _locked = false;
     }
 
@@ -305,7 +305,7 @@ namespace YODA {
       if (eshared.size() != newbs.size())
         throw BinningError("Requested rebinning to incompatible edges");
       // std::cout << "Before merging" << std::endl;
-      // BOOST_FOREACH (double x, _binsearcher.edges()) std::cout << x << std::endl;
+      // for (double x : _binsearcher.edges()) std::cout << x << std::endl;
       // If the new min finite edge isn't the same, merge it into the underflow
       // NB. Edge search match the *next* bin, so step back one unit... and note these are BinSearcher indices, i.e. i+1
       if (!fuzzyEquals(xMin(), newedges.front())) {
@@ -315,7 +315,7 @@ namespace YODA {
         eraseBin(0);
       }
       // std::cout << "Merged start bins" << std::endl;
-      // BOOST_FOREACH (double x, _binsearcher.edges()) std::cout << x << std::endl;
+      // for (double x : _binsearcher.edges()) std::cout << x << std::endl;
       // Now the same for the overflow
       if (!fuzzyEquals(xMax(), newedges.back())) {
         const size_t kmatch = _binsearcher.index(newedges.back()) - 1;
@@ -325,7 +325,7 @@ namespace YODA {
         eraseBin(_bins.size()-1);
       }
       // std::cout << "Merged end bins" << std::endl;
-      // BOOST_FOREACH (double x, _binsearcher.edges()) std::cout << x << std::endl;
+      // for (double x : _binsearcher.edges()) std::cout << x << std::endl;
       // Now merge the in-range bins
       size_t jcurr = 0;
       for (size_t i = 1; i < newedges.size(); ++i) { //< we already know that i=0 matches (until we support merging into overflows)
@@ -335,7 +335,7 @@ namespace YODA {
         jcurr += 1; //< The next bin to be merged, in the new numbering
       }
       // std::cout << "After merging" << std::endl;
-      // BOOST_FOREACH (double x, _binsearcher.edges()) std::cout << x << std::endl;
+      // for (double x : _binsearcher.edges()) std::cout << x << std::endl;
     }
 
     /// @brief Overloaded alias for rebinTo
@@ -391,7 +391,7 @@ namespace YODA {
     /// Add a list of Bin objects
     void addBins(const Bins& bins) {
       Bins newBins(_bins);
-      BOOST_FOREACH(const Bin& b, bins) newBins.push_back(b);
+      for (const Bin& b : bins) newBins.push_back(b);
       _updateAxis(newBins);
     }
 

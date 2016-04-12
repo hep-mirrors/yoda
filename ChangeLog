@@ -1,3 +1,7 @@
+2016-04-12  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Remove Boost dependency and require C++11 from YODA 1.6.0 onwards.
+
 2016-04-08  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Add a --guess-prefix flag to rivet-config, cf. fastjet-config.

@@ -139,17 +139,17 @@ namespace YODA {
 
     /// Scaling of x axis
     void scaleX(double scalex) {
-      BOOST_FOREACH (Point2D& p, _points) p.scaleX(scalex);
+      for (Point2D& p : _points) p.scaleX(scalex);
     }
 
     /// Scaling of y axis
     void scaleY(double scaley) {
-      BOOST_FOREACH (Point2D& p, _points) p.scaleY(scaley);
+      for (Point2D& p : _points) p.scaleY(scaley);
     }
 
     /// Scaling of both axes
     void scaleXY(double scalex, double scaley) {
-      BOOST_FOREACH (Point2D& p, _points) p.scaleXY(scalex, scaley);
+      for (Point2D& p : _points) p.scaleXY(scalex, scaley);
     }
 
     /// Scaling of both axes
@@ -235,7 +235,7 @@ namespace YODA {
 
     /// Insert a collection of new points
     void addPoints(const Points& pts) {
-      BOOST_FOREACH (const Point2D& pt, pts) addPoint(pt);
+      for (const Point2D& pt : pts) addPoint(pt);
     }
 
     //@}
@@ -253,7 +253,7 @@ namespace YODA {
     /// @todo Better name? Make this the add operation?
     /// @todo Convert/extend to accept a Range or generic
     void combineWith(const std::vector<Scatter2D>& others) {
-      BOOST_FOREACH (const Scatter2D& s, others) combineWith(s);
+      for (const Scatter2D& s : others) combineWith(s);
       //return *this;
     }
 

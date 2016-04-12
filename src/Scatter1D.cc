@@ -7,7 +7,7 @@ namespace YODA {
   /// Make a Scatter1D representation of a Histo1D
   Scatter1D mkScatter(const Counter& c) {
     Scatter1D rtn;
-    BOOST_FOREACH (const std::string& a, c.annotations())
+    for (const std::string& a : c.annotations())
       rtn.setAnnotation(a, c.annotation(a));
     rtn.setAnnotation("Type", c.type()); // might override the copied ones
     rtn.addPoint(c.val(), c.err());

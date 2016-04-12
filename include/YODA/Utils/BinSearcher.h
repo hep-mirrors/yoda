@@ -6,14 +6,13 @@
 #ifndef YODA_BINSEARCHER_H
 #define YODA_BINSEARCHER_H
 
+#include "YODA/Utils/fastlog.h"
+#include "YODA/Utils/MathUtils.h"
 #include <cstdlib>
 #include <cmath>
 #include <vector>
 #include <limits>
-#include "YODA/Utils/fastlog.h"
-#include "YODA/Utils/MathUtils.h"
-#include <boost/shared_ptr.hpp>
-#include <boost/shared_array.hpp>
+#include <memory>
 
 namespace YODA {
   namespace Utils {
@@ -370,7 +369,7 @@ namespace YODA {
     protected:
 
       /// Estimator object to be used for making fast bin index guesses
-      boost::shared_ptr<Estimator> _est;
+      std::shared_ptr<Estimator> _est;
 
       /// List of bin edges, including +- inf at either end
       std::vector<double> _edges;
