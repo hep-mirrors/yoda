@@ -8,11 +8,10 @@
 
 #include "YODA/AnalysisObject.h"
 #include "YODA/Writer.h"
-
 #include <vector>
-#include <string>
-#include <ostream>
-
+#include <list>
+#include <set>
+#include <deque>
 
 namespace YODA {
 

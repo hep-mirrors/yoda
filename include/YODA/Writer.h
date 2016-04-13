@@ -17,8 +17,9 @@
 #include "YODA/Scatter3D.h"
 #include "YODA/Utils/Traits.h"
 #include <type_traits>
-#include <string>
 #include <fstream>
+#include <ostream>
+#include <string>
 
 namespace YODA {
 
@@ -50,7 +51,7 @@ namespace YODA {
     /// Note: the enable_if call checks whether RANGE is const_iterable, if yes the return
     ///       type is void. If not, this template will not be a candidate in the lookup
     template <typename RANGE>
-    typename enable_if<Iterable<RANGE>::value>::type
+    typename std::enable_if<Iterable<RANGE>::value>::type
     write(std::ostream& stream, const RANGE& aos) {
       write(stream, std::begin(aos), std::end(aos));
     }

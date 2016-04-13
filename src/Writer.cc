@@ -18,7 +18,7 @@ namespace YODA {
 
   Writer& mkWriter(const std::string& name) {
     const size_t lastdot = name.find_last_of(".");
-    const string fmt = toLower((lastdot == std::string::npos) ? name : name.substr(lastdot+1));
+    const string fmt = Utils::toLower((lastdot == std::string::npos) ? name : name.substr(lastdot+1));
     // cout << "File extension: " << fmt << endl;
     if (fmt == "yoda") return WriterYODA::create();
     if (fmt == "aida") return WriterAIDA::create();
