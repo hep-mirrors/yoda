@@ -31,23 +31,16 @@ AC_CEDAR_OSX
 ## Set default compiler flags
 if test "x$CXXFLAGS" = "x"; then CXXFLAGS="-O3"; fi
 
-## Make compiler error messages more readable if gfilt is installed.
-#AC_CEDAR_CXXFILTER
-
-## Checks for programs.
+## Compiler setup
 AC_LANG(C++)
 AC_PROG_CXX
-
-## C++11 is now required
-AX_CXX_COMPILE_STDCXX_11([noext],[mandatory])
-
+AX_CXX_COMPILE_STDCXX([11], [noext], [mandatory])
 
 AC_PROG_INSTALL
 AC_PROG_LN_S
 AC_DISABLE_STATIC
 AC_LIBTOOL_DLOPEN
 AC_PROG_LIBTOOL
-
 
 ## Work out library suffix for the build
 LIB_SUFFIX=\\\"$shrext_cmds\\\"
