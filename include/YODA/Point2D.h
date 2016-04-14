@@ -118,7 +118,7 @@ namespace YODA {
     void setXY(double x, double y) { setX(x); setY(y); }
 
     /// Set x and y values
-    void setXY(std::pair<double,double>& xy) { setX(xy.first); setY(xy.second); }
+    void setXY(const std::pair<double,double>& xy) { setX(xy.first); setY(xy.second); }
 
     //@}
 
@@ -174,7 +174,7 @@ namespace YODA {
     }
 
     /// Set asymmetric x error
-    void setXErrs(std::pair<double,double>& ex) {
+    void setXErrs(const std::pair<double,double>& ex) {
       _ex = ex;
     }
 
@@ -244,7 +244,7 @@ namespace YODA {
     }
 
     /// Set asymmetric y error
-    void setYErrs(std::pair<double,double>& ey) {
+    void setYErrs(const std::pair<double,double>& ey) {
       _ey = ey;
     }
 

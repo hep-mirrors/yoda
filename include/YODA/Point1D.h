@@ -134,7 +134,7 @@ namespace YODA {
     }
 
     /// Set asymmetric x error
-    void setXErrs(std::pair<double,double>& ex) {
+    void setXErrs(const std::pair<double,double>& ex) {
       _ex = ex;
     }
 

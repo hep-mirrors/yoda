@@ -234,7 +234,7 @@ namespace YODA {
     _writeAnnotations(os, s);
     os << "# xval\t xerr-\t xerr+\n";
     for (const Point1D& pt : s.points()) {
-      os << pt.x() << "\t" << pt.xErrMinus() << "\t" << pt.xErrMinus() << "\n";
+      os << pt.x() << "\t" << pt.xErrMinus() << "\t" << pt.xErrPlus() << "\n";
     }
     os << "END YODA_SCATTER1D\n\n";
 
@@ -273,9 +273,9 @@ namespace YODA {
     os << "# xval\t xerr-\t xerr+\t yval\t yerr-\t yerr+\t zval\t zerr-\t zerr+\n";
     for (const Point3D& pt : s.points()) {
       /// @todo Change ordering to {vals} {errs} {errs} ...
-      os << pt.x() << "\t" << pt.xErrMinus() << "\t" << pt.xErrMinus() << "\t";
-      os << pt.y() << "\t" << pt.yErrMinus() << "\t" << pt.yErrMinus() << "\t";
-      os << pt.z() << "\t" << pt.zErrMinus() << "\t" << pt.zErrMinus() << "\n";
+      os << pt.x() << "\t" << pt.xErrMinus() << "\t" << pt.xErrPlus() << "\t";
+      os << pt.y() << "\t" << pt.yErrMinus() << "\t" << pt.yErrPlus() << "\t";
+      os << pt.z() << "\t" << pt.zErrMinus() << "\t" << pt.zErrPlus() << "\n";
     }
     os << "END YODA_SCATTER3D\n\n";
 
