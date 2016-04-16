@@ -38,8 +38,18 @@ namespace YODA {
     /// Write out object @a ao to output stream @a stream.
     void write(std::ostream& stream, const AnalysisObject& ao);
 
+    /// Write out pointer-like object @a ao to output stream @a stream.
+    template <typename T>
+    typename std::enable_if<DerefableToAO<T>::value>::type //< -> void if valid
+    write(std::ostream& stream, const T& ao) { write(stream, *ao); }
+
     /// Write out object @a ao to file @a filename.
     void write(const std::string& filename, const AnalysisObject& ao);
+
+    /// Write out pointer-like object @a ao to file @a filename.
+    template <typename T>
+    typename std::enable_if<DerefableToAO<T>::value>::type //< -> void if valid
+    write(const std::string& filename, const T& ao) { write(filename, *ao); }
 
     //@}
 
@@ -51,14 +61,14 @@ namespace YODA {
     /// Note: the enable_if call checks whether RANGE is const_iterable, if yes the return
     ///       type is void. If not, this template will not be a candidate in the lookup
     template <typename RANGE>
-    typename std::enable_if<Iterable<RANGE>::value>::type
+    typename std::enable_if<CIterable<RANGE>::value>::type
     write(std::ostream& stream, const RANGE& aos) {
       write(stream, std::begin(aos), std::end(aos));
     }
 
     /// Write out a collection of objects @a objs to file @a filename.
     template <typename RANGE>
-    typename std::enable_if<Iterable<RANGE>::value>::type
+    typename std::enable_if<CIterable<RANGE>::value>::type
     write(const std::string& filename, const RANGE& aos) {
       write(filename, std::begin(aos), std::end(aos));
     }
@@ -71,6 +81,8 @@ namespace YODA {
 
     /// Write out the objects specified by start iterator @a begin and end
     /// iterator @a end to output stream @a stream.
+    ///
+    /// @todo Add SFINAE trait checking for AOITER = DerefableToAO
     template <typename AOITER>
     void write(std::ostream& stream, const AOITER& begin, const AOITER& end) {
       writeHeader(stream);
@@ -87,8 +99,11 @@ namespace YODA {
       writeFooter(stream);
     }
 
+
     /// Write out the objects specified by start iterator @a begin and end
     /// iterator @a end to file @a filename.
+    ///
+    /// @todo Add SFINAE trait checking for AOITER = DerefableToAO
     template <typename AOITER>
     void write(const std::string& filename,
                const AOITER& begin,
@@ -104,7 +119,6 @@ namespace YODA {
       }
     }
 
-
     //@}
 
 
@@ -116,22 +130,33 @@ namespace YODA {
 
   protected:
 
-    /// Main writer elements
+    /// @name Main writer elements
+    //@{
+
+    /// Write any opening boilerplate required by the format to @a stream
     virtual void writeHeader(std::ostream& stream) = 0;
 
-
-    //note: DerefAO<T> is a trait that's true if T has a derefence operator
-    //      that is convertible to an AnalysisObject
-    template<typename T>
-    typename std::enable_if<DerefAO<T>::value>::type writeBody(std::ostream& stream, const T& ao){
-      writeBody(stream,*ao);
-    }
-
+    /// @brief Write the body elements corresponding to AnalysisObject @a ao to @a stream
     virtual void writeBody(std::ostream& stream, const AnalysisObject* ao);
+
+    /// @brief Write the body elements corresponding to AnalysisObject pointer @a ao to @a stream
     virtual void writeBody(std::ostream& stream, const AnalysisObject& ao);
+
+    /// @brief Write the body elements corresponding to AnalysisObject @a ao to @a stream
+    /// @note Requires that @a ao is dereferenceable to an AnalysisObject, via the DerefableToAO<T> trait,
+    template <typename T>
+    typename std::enable_if<DerefableToAO<T>::value>::type //< -> void if valid
+    writeBody(std::ostream& stream, const T& ao) { writeBody(stream, *ao); }
+
+    /// Write any closing boilerplate required by the format to @a stream
     virtual void writeFooter(std::ostream& stream) = 0;
 
-    /// Specific AO type writer implementations
+    //@}
+
+
+    /// @name Specific AO type writer implementations, to be implemented in derived classes
+    //@{
+
     virtual void writeCounter(std::ostream& stream, const Counter& c) = 0;
     virtual void writeHisto1D(std::ostream& os, const Histo1D& h) = 0;
     virtual void writeHisto2D(std::ostream& os, const Histo2D& h) = 0;
@@ -140,6 +165,9 @@ namespace YODA {
     virtual void writeScatter1D(std::ostream& os, const Scatter1D& s) = 0;
     virtual void writeScatter2D(std::ostream& os, const Scatter2D& s) = 0;
     virtual void writeScatter3D(std::ostream& os, const Scatter3D& s) = 0;
+
+    //@}
+
 
     /// Output precision
     int _precision;

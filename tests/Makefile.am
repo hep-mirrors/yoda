@@ -17,8 +17,10 @@ EXTRA_DIST = \
   merged12-ref.yoda merged12pi-ref.yoda
 
 check_PROGRAMS = \
+  testtraits \
   testweights \
   testbinsearcher \
+  testwriter \
   testhisto1Da testhisto1Db \
   testhisto2Da \
   testprofile1Da \
@@ -41,8 +43,10 @@ check_PROGRAMS = \
 
 AM_LDFLAGS = -L$(top_builddir)/src -lYODA
 
+testtraits_SOURCES = TestTraits.cc
 testweights_SOURCES = TestWeights.cc
 testbinsearcher_SOURCES = TestBinSearcher.cc
+testwriter_SOURCES = TestWriter.cc
 testhisto1Da_SOURCES = TestHisto1Da.cc
 testhisto1Db_SOURCES = TestHisto1Db.cc
 testprofile1Da_SOURCES = TestProfile1Da.cc
@@ -74,9 +78,12 @@ TESTS_ENVIRONMENT = \
   PATH=$(top_builddir)/bin:$(top_srcdir)/bin:$(PATH) \
   YODA_TESTS_SRC=$(srcdir)
 
+
 TESTS = \
+  testtraits \
   testweights \
   testbinsearcher \
+  testwriter \
   testhisto1Da \
   testhisto1Db \
   testhisto2Da \
@@ -113,6 +120,7 @@ CLEANFILES = \
   h2d.yoda h2d.dat \
   p2d.yoda p2d.dat \
   s1d.yoda s2d.yoda \
+  testwriter1.yoda testwriter2.yoda \
   counter.yoda \
   test.aida
 

@@ -16,38 +16,52 @@ namespace YODA {
     typedef char yes[1]; typedef char no[2];
 
     /// C++11 equivalent of C++17 std::void_t
-    template <class...>
+    template <typename ...>
     using void_t = void;
-}
+  }
 
 
-
-  // SFINAE definition of has_dereference traits structs, cf. Boost
-  template <class T, class = void>
-  struct has_dereference : std::false_type {};
+  /// SFINAE definition of dereferenceability trait, cf. Boost has_dereference
+  template <typename T, typename=void>
+  struct Derefable : std::false_type {};
   //
-  template <class T>
-  struct has_dereference<T, SFINAE::void_t<decltype(*std::declval<T>())>> : std::true_type {};
+  template <typename T>
+  struct Derefable<T, SFINAE::void_t< decltype(*std::declval<T>())> > : std::true_type {};
+
+
+  /// SFINAE struct to check for dereferencing to an AnalysisObject (reference) at compile time
+  template <typename T, typename=YODA::AnalysisObject>
+  struct DerefableToAO : std::false_type {};
+  //
+  template <typename T>
+  struct DerefableToAO<T, typename std::conditional<std::is_base_of<AnalysisObject, typename std::decay< decltype(*std::declval<T>()) >::type>::value,
+                                                    YODA::AnalysisObject, void>::type> : std::true_type {};
+  // The following would not be enough since it doesn't work with e.g. Histo1D*:
+  // struct DerefableToAO<T, typename std::decay< decltype(*std::declval<T>()) >::type > : std::true_type {};
 
 
   // SFINAE struct to check for iterator concept at compile time
-  /// @todo Replaceable with some C++11 std stuff?
+  /// @todo Replace with C++11 std stuff
   template<typename T>
   struct Iterable {
-    template <typename C> static SFINAE::yes& test(typename C::const_iterator*  c);
+    template <typename C> static SFINAE::yes& test(typename C::iterator* c);
     template <typename> static SFINAE::no& test(...);
     static const bool value = sizeof(test<T>(0)) == sizeof(SFINAE::yes);
   };
 
 
-  // SFINAE struct to check for dereferencing concept at compile time
+  // SFINAE struct to check for const_iterator concept at compile time
+  /// @todo Replace with C++11 std stuff
   template<typename T>
-  struct DerefAO {
-    static const bool value = has_dereference<T,const YODA::AnalysisObject&>::value;
+  struct CIterable {
+    template <typename C> static SFINAE::yes& test(typename C::const_iterator* c);
+    template <typename> static SFINAE::no& test(...);
+    static const bool value = sizeof(test<T>(0)) == sizeof(SFINAE::yes);
   };
 
 
   // SFINAE struct to check for pushing concept at compile time
+  /// @todo Replace with C++11 std stuff
   template<typename T,typename VAL>
   struct Pushable {
     template <typename SIG,SIG> struct has_sig;

@@ -1,3 +1,10 @@
+2016-04-16  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Extend SFINAE craziness to allow writing of any object
+	(e.g. smart pointer) that can be dereferenced to something that
+	has AnalysisObject as its base class... and also to any container
+	of them! Amazing what you can do with C++11!
+
 2016-04-14  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Add a few consts to the arguments in Scatter error setting via pairs.
