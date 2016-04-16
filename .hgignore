@@ -47,6 +47,8 @@ Doxyfile$
 ^test-driver$
 ^tests/.*\.(trs|log)$
 ^tests/test\.aida$
+^tests/testtraits$
+^tests/testwriter$
 ^tests/testhisto1Da$
 ^tests/testhisto1Db$
 ^tests/testhisto1Dcreate$

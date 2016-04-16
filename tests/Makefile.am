@@ -122,7 +122,7 @@ CLEANFILES = \
   s1d.yoda s2d.yoda \
   testwriter1.yoda testwriter2.yoda \
   counter.yoda \
-  test.aida
+  test.aida test.yoda
 
 if ENABLE_ROOT
   TESTS += shtest-yoda2root
