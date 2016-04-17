@@ -140,9 +140,9 @@ namespace YODA {
     public:
 
       /// Default constructor
-      /// @todo What's the point?
+      /// @todo What's the point? Remove?
       BinSearcher() {
-        _est.reset(new LinEstimator(0, 0, 1));
+        _est = std::make_shared<LinEstimator>(0, 0, 1);
       }
 
       /// Copy constructor
@@ -167,10 +167,9 @@ namespace YODA {
         _updateEdges(edges);
 
         if (edges.empty()) {
-          _est.reset(new LinEstimator(0, 0, 1));
+          _est = std::make_shared<LinEstimator>(0, 0, 1);
         } else if (edges.front() <= 0.0) {
-          _est.reset(new LinEstimator(edges.size()-1,
-				      edges.front(), edges.back()));
+          _est = std::make_shared<LinEstimator>(edges.size()-1, edges.front(), edges.back());
         } else {
           LinEstimator linEst(edges.size()-1, edges.front(), edges.back());
           LogEstimator logEst(edges.size()-1, edges.front(), edges.back());
@@ -188,9 +187,9 @@ namespace YODA {
           // subtle bug here if the if statement is the other way around, as
           // (nan < linsum) -> false always.  But (nan > linsum) -> false also.
           if (log_avg < lin_avg) { //< Use log estimator if its avg performance is better than lin
-            _est.reset(new LogEstimator(logEst));
+            _est = std::make_shared<LogEstimator>(logEst);
           } else { // Else use linear estimation
-            _est.reset(new LinEstimator(linEst));
+            _est = std::make_shared<LinEstimator>(linEst);
           }
         }
       }

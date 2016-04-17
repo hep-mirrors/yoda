@@ -40,9 +40,8 @@ namespace YODA {
     /// Constructor giving a type, a path, another AO to copy annotation from, and an optional title
     AnalysisObject(const std::string& type, const std::string& path,
                    const AnalysisObject& ao, const std::string& title="") {
-      // for (const std::string& a : ao.annotations()) //< hide C++11 from API for now
-      const std::vector<std::string> anames = ao.annotations();
-      for (size_t ia = 0; ia < anames.size(); ++ia) setAnnotation(anames[ia], ao.annotation(anames[ia]));
+      for (const std::string& a : ao.annotations())
+        setAnnotation(a, ao.annotation(a));
       setAnnotation("Type", type); // might override the copied ones
       setPath(path);
       setTitle(title);
@@ -88,8 +87,7 @@ namespace YODA {
     std::vector<std::string> annotations() const {
       std::vector<std::string> rtn;
       rtn.reserve(_annotations.size());
-      // for (const Annotations::value_type& kv : _annotations) rtn.push_back(kv.first); //< hide C++11 from API for now
-      for (Annotations::const_iterator it = _annotations.begin(); it != _annotations.end(); ++it) rtn.push_back(it->first);
+      for (const Annotations::value_type& kv : _annotations) rtn.push_back(kv.first);
       return rtn;
     }
 

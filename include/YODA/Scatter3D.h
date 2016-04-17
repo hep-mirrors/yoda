@@ -151,26 +151,22 @@ namespace YODA {
 
     /// Scaling of x axis
     void scaleX(double scalex) {
-      // for (Point3D& p : _points) p.scaleX(scalex); //< hide C++11 from API for now
-      for (size_t i = 0; i < _points.size(); ++i) _points[i].scaleX(scalex);
+      for (Point3D& p : _points) p.scaleX(scalex);
     }
 
     /// Scaling of y axis
     void scaleY(double scaley) {
-      // for (Point3D& p : _points) p.scaleY(scaley); //< hide C++11 from API for now
-      for (size_t i = 0; i < _points.size(); ++i) _points[i].scaleY(scaley);
+      for (Point3D& p : _points) p.scaleY(scaley);
     }
 
     /// Scaling of z axis
     void scaleZ(double scalez) {
-      // for (Point3D& p : _points) p.scaleZ(scalez); //< hide C++11 from API for now
-      for (size_t i = 0; i < _points.size(); ++i) _points[i].scaleZ(scalez);
+      for (Point3D& p : _points) p.scaleZ(scalez);
     }
 
     /// Scaling of all three axes
     void scaleXYZ(double scalex, double scaley, double scalez) {
-      // for (Point3D& p : _points) p.scaleXYZ(scalex, scaley, scalez); //< hide C++11 from API for now
-      for (size_t i = 0; i < _points.size(); ++i) _points[i].scaleXYZ(scalex, scaley, scalez);
+      for (Point3D& p : _points) p.scaleXYZ(scalex, scaley, scalez);
     }
 
     /// Scaling of all three axes
@@ -254,8 +250,7 @@ namespace YODA {
 
     /// Insert a collection of new points
     void addPoints(const Points& pts) {
-      // for (const Point3D& pt : pts) addPoint(pt); //< hide C++11 from API for now
-      for (size_t i = 0; i < pts.size(); ++i) addPoint(_points[i]);
+      for (const Point3D& pt : pts) addPoint(pt);
     }
 
     //@}
@@ -271,9 +266,7 @@ namespace YODA {
     /// @todo Better name?
     /// @todo Convert to accept a Range or generic
     void combineWith(const std::vector<Scatter3D>& others) {
-      // for (const Scatter3D& s : others) combineWith(s); //< hide C++11 from API for now
-      for (size_t i = 0; i < others.size(); ++i) combineWith(others[i]);
-      //return *this;
+      for (const Scatter3D& s : others) combineWith(s);
     }
 
 

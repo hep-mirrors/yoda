@@ -94,8 +94,7 @@ namespace YODA {
     void reset() {
       _dbn.reset();
       _outflows.assign(8, Outflow());
-      // for (Bin& bin : _bins) bin.reset(); //< hide C++11 from API for now
-      for (size_t i = 0; i < _bins.size(); ++i) _bins[i].reset();
+      for (Bin& bin : _bins) bin.reset();
       _locked = false;
     }
 
@@ -498,9 +497,7 @@ namespace YODA {
 
       // Create the edges
       std::vector<double> xedges, yedges, xwidths, ywidths;
-      // for (const Bin& bin : bins) { //< hide C++11 from API for now
-      for (size_t ib = 0; ib < bins.size(); ++ib) {
-        const Bin& bin = bins[ib];
+      for (const Bin& bin : bins) {
         xedges.push_back(bin.xMin());
         xedges.push_back(bin.xMax());
         xwidths.push_back(bin.xWidth());

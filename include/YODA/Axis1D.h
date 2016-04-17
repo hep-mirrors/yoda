@@ -202,8 +202,7 @@ namespace YODA {
       _dbn.reset();
       _underflow.reset();
       _overflow.reset();
-      // for (Bin& bin : _bins) bin.reset(); //< hide C++11 from API for now
-      for (size_t i = 0; i < _bins.size(); ++i) _bins[i].reset();
+      for (Bin& bin : _bins) bin.reset();
       _locked = false;
     }
 
@@ -392,8 +391,7 @@ namespace YODA {
     /// Add a list of Bin objects
     void addBins(const Bins& bins) {
       Bins newBins(_bins);
-      // for (const Bin& b : bins) newBins.push_back(b); //< hide C++11 from API for now
-      for (size_t i = 0; i < bins.size(); ++i) newBins.push_back(bins[i]);
+      for (const Bin& b : bins) newBins.push_back(b);
       _updateAxis(newBins);
     }
 
