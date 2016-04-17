@@ -21,9 +21,13 @@ int main() {
   WriterYODA::create().write("testwriter1.yoda", h);
   // WriterYODA::write("testwriter1.yoda", h);
 
-  // vector< shared_ptr<AnalysisObject> > hs;
-  // hs.push_back(h);
-  // WriterYODA::write("testwriter2.yoda", hs);
+  vector< shared_ptr<Histo1D> > hs;
+  hs.push_back(h);
+  WriterYODA::write("testwriter2.yoda", hs);
+
+  vector< shared_ptr<AnalysisObject> > aos;
+  aos.push_back( static_pointer_cast<AnalysisObject>(h) );
+  WriterYODA::write("testwriter2.yoda", aos);
 
   return EXIT_SUCCESS;
 }

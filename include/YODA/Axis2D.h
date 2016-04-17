@@ -94,7 +94,8 @@ namespace YODA {
     void reset() {
       _dbn.reset();
       _outflows.assign(8, Outflow());
-      for (Bin& bin : _bins) bin.reset();
+      // for (Bin& bin : _bins) bin.reset(); //< hide C++11 from API for now
+      for (size_t i = 0; i < _bins.size(); ++i) _bins[i].reset();
       _locked = false;
     }
 
@@ -157,11 +158,21 @@ namespace YODA {
     /// their respective factors.
     void scaleXY(double sx, double sy) {
       _dbn.scaleXY(sx, sy);
-      for (Outflow& outflow : _outflows)
-        for (DBN& dbn : outflow)
+      /// @todo Reinstate when C++11 allowed in API
+      // for (Outflow& outflow : _outflows)
+      //   for (DBN& dbn : outflow)
+      //     dbn.scaleXY(sx, sy);
+      for (size_t io = 0; io < _outflows.size(); ++io) {
+        Outflow& outflow = _outflows[io];
+        for (size_t id = 0; id < outflow.size(); ++id) {
+          DBN& dbn = outflow[id];
           dbn.scaleXY(sx, sy);
-      for (Bin& bin : _bins)
-        bin.scaleXY(sx, sy);
+        }
+      }
+      /// @todo Reinstate when C++11 allowed in API
+      // for (Bin& bin : _bins)
+      //   bin.scaleXY(sx, sy);
+      for (size_t ib = 0; ib < _bins.size(); ++ib) _bins[ib].scaleXY(sx, sy);
       _updateAxis(_bins);
     }
 
@@ -170,11 +181,21 @@ namespace YODA {
     /// scalefactor.
     void scaleW(double scalefactor) {
       _dbn.scaleW(scalefactor);
-      for (Outflow& outflow : _outflows)
-        for (DBN& dbn : outflow)
+      /// @todo Reinstate when C++11 allowed in API
+      // for (Outflow& outflow : _outflows)
+      //   for (DBN& dbn : outflow)
+      //     dbn.scaleW(scalefactor);
+      for (size_t io = 0; io < _outflows.size(); ++io) {
+        Outflow& outflow = _outflows[io];
+        for (size_t id = 0; id < outflow.size(); ++id) {
+          DBN& dbn = outflow[id];
           dbn.scaleW(scalefactor);
-      for (Bin& bin : _bins)
-        bin.scaleW(scalefactor);
+        }
+      }
+      /// @todo Reinstate when C++11 allowed in API
+      // for (Bin& bin : _bins)
+      //   bin.scaleW(scalefactor);
+      for (size_t ib = 0; ib < _bins.size(); ++ib) _bins[ib].scaleW(scalefactor);
       _updateAxis(_bins);
     }
 
@@ -309,8 +330,10 @@ namespace YODA {
       if (bins.size() == 0) return;
       _checkUnlocked();
       Bins newBins = _bins;
-      for (const Bin& b : bins)
-        newBins.push_back(b);
+      /// @todo Reinstate when C++11 allowed in API
+      // for (const Bin& b : bins)
+      //   newBins.push_back(b);
+      for (size_t ib = 0; ib < bins.size(); ++ib) newBins.push_back(bins[ib]);
       _updateAxis(newBins);
     }
 
@@ -475,7 +498,9 @@ namespace YODA {
 
       // Create the edges
       std::vector<double> xedges, yedges, xwidths, ywidths;
-      for (const Bin& bin : bins) {
+      // for (const Bin& bin : bins) { //< hide C++11 from API for now
+      for (size_t ib = 0; ib < bins.size(); ++ib) {
+        const Bin& bin = bins[ib];
         xedges.push_back(bin.xMin());
         xedges.push_back(bin.xMax());
         xwidths.push_back(bin.xWidth());

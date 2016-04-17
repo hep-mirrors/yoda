@@ -126,7 +126,8 @@ namespace YODA {
 
     /// Scaling
     void scale(const NdVal& scales) {
-      for (Point<N>& p : _points) p.scale(scales);
+      // for (Point<N>& p : _points) p.scale(scales); //< hide C++11 from API for now
+      for (size_t i = 0; i < _points.size(); ++i) _points[i].scale(scales);
     }
 
     //@}
@@ -189,7 +190,8 @@ namespace YODA {
 
     /// Insert a collection of new points
     Scatter<N>& addPoints(Points pts) {
-      for (const Point<N>& pt : pts) addPoint(pt);
+      // for (const Point<N>& pt : pts) addPoint(pt); //< hide C++11 from API for now
+      for (size_t i = 0; i < pts.size(); ++i) addPoint(pts[i]);
       return *this;
     }
 
@@ -207,7 +209,8 @@ namespace YODA {
 
     /// @todo Better name?
     Scatter<N>& combineWith(const std::vector< Scatter<N> >& others) {
-      for (const Scatter<N>& s : others) combineWith(s);
+      // for (const Scatter<N>& s : others) combineWith(s); //< hide C++11 from API for now
+      for (size_t i = 0; i < others.size(); ++i) combineWith(others[i]);
       return *this;
     }
 

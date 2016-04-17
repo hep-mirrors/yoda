@@ -136,7 +136,9 @@ namespace YODA {
     /// Uniform scaling
     void scale(const NdVal& scales) {
       for (size_t i = 0; i < N; ++i) _pos[i] *= scales[i];
-      for (Error<N>& e : errs()) e.scale(scales);
+      // for (Error<N>& e : errs()) e.scale(scales); //< hide C++11 from API for now
+      const Errors& es = errs();
+      for (size_t ie = 0; ie < es.size(); ++ie) es[ie].scale(scales);
     }
 
 
