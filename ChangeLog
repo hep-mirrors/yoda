@@ -18,7 +18,7 @@
 
 2016-04-08  Andy Buckley  <andy.buckley@cern.ch>
 
-	* Add a --guess-prefix flag to rivet-config, cf. fastjet-config.
+	* Add a --guess-prefix flag to yoda-config, cf. fastjet-config.
 
 2015-12-20  Andy Buckley  <andy.buckley@cern.ch>
 

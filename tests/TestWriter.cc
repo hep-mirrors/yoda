@@ -19,7 +19,7 @@ int main() {
     h->fill(num);
   }
   WriterYODA::create().write("testwriter1.yoda", h);
-  // WriterYODA::write("testwriter1.yoda", h);
+  WriterYODA::write("testwriter1.yoda", h);
 
   vector< shared_ptr<Histo1D> > hs;
   hs.push_back(h);
