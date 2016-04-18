@@ -30,12 +30,12 @@ namespace YODA {
 
 
   /// SFINAE struct to check for dereferencing to an AnalysisObject (reference) at compile time
-  template <typename T, typename=YODA::AnalysisObject>
+  template <typename T, typename=AnalysisObject>
   struct DerefableToAO : std::false_type {};
   //
   template <typename T>
   struct DerefableToAO<T, typename std::conditional<std::is_base_of<AnalysisObject, typename std::decay< decltype(*std::declval<T>()) >::type>::value,
-                                                    YODA::AnalysisObject, void>::type> : std::true_type {};
+                                                    AnalysisObject, void>::type> : std::true_type {};
   // The following would not be enough since it doesn't work with e.g. Histo1D*:
   // struct DerefableToAO<T, typename std::decay< decltype(*std::declval<T>()) >::type > : std::true_type {};
 
