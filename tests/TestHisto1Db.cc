@@ -39,8 +39,8 @@ int main() {
   vector<AnalysisObject*> hs;
   hs.push_back(&h1);
   hs.push_back(&h2);
-  WriterYODA::write("test.yoda", hs);
-  WriterYODA::write("test.yoda", hs.begin(), hs.end());
+  // WriterYODA::write("test.yoda", hs);
+  // WriterYODA::write("test.yoda", hs.begin(), hs.end());
   WriterAIDA::write("test.aida", hs);
   WriterAIDA::write("test.aida", hs.begin(), hs.end());
 
