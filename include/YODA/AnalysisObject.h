@@ -9,6 +9,7 @@
 #include "YODA/Exceptions.h"
 #include "YODA/Utils/StringUtils.h"
 #include "YODA/Config/BuildConfig.h"
+#include <iomanip>
 #include <string>
 #include <map>
 
@@ -142,15 +143,44 @@ namespace YODA {
     }
 
 
-    /// @brief Add or set an annotation by name
+    /// @brief Add or set a string-valued annotation by name
+    void setAnnotation(const std::string& name, const std::string& value) {
+      _annotations[name] = value;
+    }
+
+    /// @brief Add or set a double-valued annotation by name
+    /// @todo Can we cover all FP types in one function via SFINAE?
+    void setAnnotation(const std::string& name, double value) {
+      // Recipe from Boost docs
+      std::stringstream ss;
+      ss << std::setprecision(std::numeric_limits<double>::max_digits10) << std::scientific << value;
+      setAnnotation(name, ss.str());
+    }
+
+    /// @brief Add or set a float-valued annotation by name
+    /// @todo Can we cover all FP types in one function via SFINAE?
+    void setAnnotation(const std::string& name, float value) {
+      // Recipe from Boost docs
+      std::stringstream ss;
+      ss << std::setprecision(std::numeric_limits<double>::max_digits10) << std::scientific << value;
+      setAnnotation(name, ss.str());
+    }
+
+    /// @brief Add or set a long-double-valued annotation by name
+    /// @todo Can we cover all FP types in one function via SFINAE?
+    void setAnnotation(const std::string& name, long double value) {
+      // Recipe from Boost docs
+      std::stringstream ss;
+      ss << std::setprecision(std::numeric_limits<double>::max_digits10) << std::scientific << value;
+      setAnnotation(name, ss.str());
+    }
+
+    /// @brief Add or set an annotation by name (templated for remaining types)
     ///
     /// @note Templated on arg type, but stored as a string.
     template <typename T>
     void setAnnotation(const std::string& name, const T& value) {
-      _annotations[name] = Utils::lexical_cast<std::string>(value);
-      /// @todo Specialise for float, double, etc. with this safer recipe from the Boost docs:
-      // std::stringstream ss;
-      // ss << setprecison(std::numeric_limits<double>::max_digits10) << scientific << output_value;
+      setAnnotation(name, Utils::lexical_cast<std::string>(value));
     }
 
 
@@ -190,11 +220,7 @@ namespace YODA {
     ///
     /// Returns a null string if undefined, rather than throwing an exception cf. the annotation("Title").
     const std::string title() const {
-      try {
-        return annotation("Title");
-      } catch (AnnotationError& ae) {
-        return "";
-      }
+      return annotation("Title", "");
     }
 
     /// Set the AO title
@@ -205,13 +231,13 @@ namespace YODA {
     /// @brief Get the AO path.
     ///
     /// Returns a null string if undefined, rather than throwing an exception cf. annotation("Path").
+    /// @note A leading / will be prepended if not already set.
     const std::string path() const {
-      try {
-        const std::string p = annotation("Path");
-        return p.find("/") == 0 ? p : "/"+p; ///< @note A leading / will be prepended if not already set.
-      } catch (AnnotationError& ae) {
-        return "";
-      }
+      const std::string p = annotation("Path", "");
+      // If not set at all, return an empty string
+      if (p.empty()) return p;
+      // If missing a leading slash, one will be prepended
+      return p.find("/") == 0 ? p : ("/"+p);
     }
 
     /// Set the AO path
