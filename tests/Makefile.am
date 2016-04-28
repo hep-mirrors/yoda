@@ -18,6 +18,7 @@ EXTRA_DIST = \
 
 check_PROGRAMS = \
   testtraits \
+  testannotations \
   testweights \
   testbinsearcher \
   testwriter \
@@ -44,6 +45,7 @@ check_PROGRAMS = \
 AM_LDFLAGS = -L$(top_builddir)/src -lYODA
 
 testtraits_SOURCES = TestTraits.cc
+testannotations_SOURCES = TestAnnotations.cc
 testweights_SOURCES = TestWeights.cc
 testbinsearcher_SOURCES = TestBinSearcher.cc
 testwriter_SOURCES = TestWriter.cc
@@ -81,6 +83,7 @@ TESTS_ENVIRONMENT = \
 
 TESTS = \
   testtraits \
+  testannotations \
   testweights \
   testbinsearcher \
   testwriter \
