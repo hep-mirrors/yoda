@@ -1,3 +1,7 @@
+2016-06-06  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Re-enable the disabled-for-some-reason Scatter1D combineWith Python mappings.
+
 2016-04-28  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Version 1.6.1 release!
