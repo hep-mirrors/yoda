@@ -1,3 +1,7 @@
+2016-07-05  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Pass the toNewScatter3D() scalebyarea flag to the called toScatter3D() functions.
+
 2016-06-06  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Re-enable the disabled-for-some-reason Scatter1D combineWith Python mappings.
