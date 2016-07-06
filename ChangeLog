@@ -1,3 +1,7 @@
+2016-07-06  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Version 1.6.2 release!
+
 2016-07-05  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Pass the toNewScatter3D() scalebyarea flag to the called toScatter3D() functions.
