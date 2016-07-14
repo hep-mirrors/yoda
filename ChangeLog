@@ -1,3 +1,7 @@
+2016-07-14  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Try to build PyROOT interface by default, if root-config is found.
+
 2016-07-11  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Remove accidentally remaining reference to Boost flags in yoda-config.
