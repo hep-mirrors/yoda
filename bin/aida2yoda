@@ -5,7 +5,8 @@
 
 Convert an AIDA data file to the YODA data format.
 
-DEPRECATED SCRIPT -- IT WILL DIE WHEN AIDA DOES!
+WARNING: aida2yoda is DEPRECATED
+It will die when AIDA does! Which is *soon*...
 """
 
 import yoda, os, sys, optparse
