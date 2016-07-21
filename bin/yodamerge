@@ -103,15 +103,17 @@ import yoda, optparse, sys, math
 
 parser = optparse.OptionParser(usage=__doc__)
 parser.add_option("-o", "--output", default="-", dest="OUTPUT_FILE")
-parser.add_option("--s1dmode", default="assume_mean", dest="S1D_MODE",
+parser.add_option("--add", action="store_true", default=False, dest="STACK", help="force simple stacking")
+parser.add_option("--s1d-mode", "--s1dmode", default="assume_mean", dest="S1D_MODE",
                   help="choose strategy for combining Scatter1D objects: one of 'first', 'combine', 'assume_mean'")
-parser.add_option("--s2dmode", default="assume_mean", dest="S2D_MODE",
+parser.add_option("--s2d-mode", "--s2dmode", default="assume_mean", dest="S2D_MODE",
                   help="choose strategy for combining Scatter2D objects: one of 'first', 'combine', 'assume_mean'")
-parser.add_option("--s3dmode", default="assume_mean", dest="S3D_MODE",
+parser.add_option("--s3d-mode", "--s3dmode", default="assume_mean", dest="S3D_MODE",
                   help="choose strategy for combining Scatter3D objects: one of 'first', 'combine', 'assume_mean'")
+parser.add_option("--type-mismatch-mode", default="scatter", dest="TYPE_MISMATCH_MODE",
+                  help="choose strategy for combining objects whose types mismatch: one of 'first', 'scatter'")
 parser.add_option("--no-veto-empty", action="store_false", default=True, dest="VETO_EMPTY",
                   help="disable the removal of empty (sumW=0) data objects _before_ applying merge heuristics. You probably want the default!")
-parser.add_option("--add", action="store_true", default=False, dest="STACK", help="force simple stacking")
 parser.add_option("--assume-normalized", action="store_true", default=False, dest="ASSUME_NORMALIZED",
                   help="DEPRECATED, AND DOES NOTHING. This option _used_ to bypass the detection heuristic for unnormalized histograms")
 opts, fileargs = parser.parse_args()
@@ -141,9 +143,27 @@ for p, aos in analysisobjects_in.iteritems():
 
     ## Check that types match, and just output the first one if they don't
     if not all(type(ao) is aotype for ao in aos):
-        sys.stderr.write("WARNING: Several types of analysis object found at path %s: cannot be merged\n" % p)
-        analysisobjects_out[p] = aos[0]
-        continue
+        msg = "WARNING: cannot merge mismatched analysis object types for path %s: " % p
+        scatter_fail = False
+        if opts.TYPE_MISMATCH_MODE == "scatter":
+            saos = []
+            for ao in aos:
+                sao = ao.mkScatter()
+                sao.setAnnotation("yodamerge_scale", ao.annotation("yodamerge_scale"))
+                saos.append(sao)
+            saotype = type(saos[0])
+            msg += "converting to %ss" % saotype.__name__
+            if all(type(sao) is saotype for sao in saos):
+                sys.stderr.write(msg + "\n")
+                aos = saos
+                aotype = saotype
+            else:
+                msg += "... failed, "
+                scatter_fail = True
+        if opts.TYPE_MISMATCH_MODE == "first" or scatter_fail:
+            sys.stderr.write(msg + "returning first object\n")
+            analysisobjects_out[p] = aos[0]
+            continue
 
 
     ## Remove empty fillable data objects, to avoid gotchas where e.g. histos are normalised and hence

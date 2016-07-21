@@ -1,5 +1,7 @@
 2016-07-21  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Add --type-mismatch-mode flag and fallback logic to yodamerge.
+
 	* Fix yodamerge logic to handle cases where an AO only appears once.
 
 2016-07-19  Andy Buckley  <andy.buckley@cern.ch>
