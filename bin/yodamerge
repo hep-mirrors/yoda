@@ -102,17 +102,17 @@ See the source of this script (e.g. use 'less `which %prog`) for more discussion
 import yoda, optparse, sys, math
 
 parser = optparse.OptionParser(usage=__doc__)
-parser.add_option('-o', '--output', default='-', dest='OUTPUT_FILE')
-parser.add_option('--s1dmode', default="assume_mean", dest='S1D_MODE',
+parser.add_option("-o", "--output", default="-", dest="OUTPUT_FILE")
+parser.add_option("--s1dmode", default="assume_mean", dest="S1D_MODE",
                   help="choose strategy for combining Scatter1D objects: one of 'first', 'combine', 'assume_mean'")
-parser.add_option('--s2dmode', default="assume_mean", dest='S2D_MODE',
+parser.add_option("--s2dmode", default="assume_mean", dest="S2D_MODE",
                   help="choose strategy for combining Scatter2D objects: one of 'first', 'combine', 'assume_mean'")
-parser.add_option('--s3dmode', default="assume_mean", dest='S3D_MODE',
+parser.add_option("--s3dmode", default="assume_mean", dest="S3D_MODE",
                   help="choose strategy for combining Scatter3D objects: one of 'first', 'combine', 'assume_mean'")
-parser.add_option('--no-veto-empty', action="store_false", default=True, dest='VETO_EMPTY',
+parser.add_option("--no-veto-empty", action="store_false", default=True, dest="VETO_EMPTY",
                   help="disable the removal of empty (sumW=0) data objects _before_ applying merge heuristics. You probably want the default!")
-parser.add_option('--add', action="store_true", default=False, dest='STACK', help="force simple stacking")
-parser.add_option('--assume-normalized', action="store_true", default=False, dest='ASSUME_NORMALIZED',
+parser.add_option("--add", action="store_true", default=False, dest="STACK", help="force simple stacking")
+parser.add_option("--assume-normalized", action="store_true", default=False, dest="ASSUME_NORMALIZED",
                   help="DEPRECATED, AND DOES NOTHING. This option _used_ to bypass the detection heuristic for unnormalized histograms")
 opts, fileargs = parser.parse_args()
 
@@ -141,7 +141,7 @@ for p, aos in analysisobjects_in.iteritems():
 
     ## Check that types match, and just output the first one if they don't
     if not all(type(ao) is aotype for ao in aos):
-        sys.stderr.write("WARNING: Several types of analysis object found at path %s: cannot be merged\n")
+        sys.stderr.write("WARNING: Several types of analysis object found at path %s: cannot be merged\n" % p)
         analysisobjects_out[p] = aos[0]
         continue
 
@@ -199,9 +199,13 @@ for p, aos in analysisobjects_in.iteritems():
         ao_out.rmAnnotation("yodamerge_scale")
 
 
+        ## If there's only one object, there's no need to do any combining
+        if len(aos) == 1:
+            pass
+
         # TODO: compress code below by using numerical axis access to axis_index = ao_out.dim
 
-        if aotype is yoda.Scatter1D:
+        elif aotype is yoda.Scatter1D:
 
             ## Use asymptotic mean+stderr convergence statistics
             if opts.S1D_MODE == "assume_mean":
@@ -209,13 +213,14 @@ for p, aos in analysisobjects_in.iteritems():
                 msg = "WARNING: Scatter1D %s merge assumes asymptotic statistics and equal run sizes" % p
                 if any(float(ao.annotation("yodamerge_scale")) != 1.0 for ao in aos):
                     msg += " (+ user scaling)"
-                if len(aos) > 1:
-                    sys.stderr.write(msg + "\n")
+                sys.stderr.write(msg + "\n")
+
                 npoints = len(ao_out.points)
                 for i in xrange(npoints):
                     val_i = ep_i = em_i = scalesum = 0.0
                     for ao in aos[1:]:
                         scale = float(ao.annotation("yodamerge_scale"))
+                        print aos[0].path, scale
                         scalesum += scale
                         val_i += scale * ao.points[i].x
                         ep_i += (scale * ao.points[i].xErrs[0])**2
@@ -248,8 +253,8 @@ for p, aos in analysisobjects_in.iteritems():
                 msg = "WARNING: Scatter2D %s merge assumes asymptotic statistics and equal run sizes" % p
                 if any(float(ao.annotation("yodamerge_scale")) != 1.0 for ao in aos):
                     msg += " (+ user scaling)"
-                if len(aos) > 1:
-                    sys.stderr.write(msg + "\n")
+                sys.stderr.write(msg + "\n")
+
                 npoints = len(ao_out.points)
                 for i in xrange(npoints):
                     val_i = ep_i = em_i = scalesum = 0.0
@@ -287,8 +292,8 @@ for p, aos in analysisobjects_in.iteritems():
                 msg = "WARNING: Scatter3D %s merge assumes asymptotic statistics and equal run sizes" % p
                 if any(float(ao.annotation("yodamerge_scale")) != 1.0 for ao in aos):
                     msg += " (+ user scaling)"
-                if len(aos) > 1:
-                    sys.stderr.write(msg + "\n")
+                sys.stderr.write(msg + "\n")
+
                 npoints = len(ao_out.points)
                 for i in xrange(npoints):
                     val_i = ep_i = em_i = scalesum = 0.0

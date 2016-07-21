@@ -1,3 +1,7 @@
+2016-07-21  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Fix yodamerge logic to handle cases where an AO only appears once.
+
 2016-07-19  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Deprecate flat2yoda script and add warning output to it and the AIDA conversion scripts.
