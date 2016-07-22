@@ -102,21 +102,30 @@ See the source of this script (e.g. use 'less `which %prog`) for more discussion
 import yoda, optparse, sys, math
 
 parser = optparse.OptionParser(usage=__doc__)
-parser.add_option("-o", "--output", default="-", dest="OUTPUT_FILE")
-parser.add_option("--add", action="store_true", default=False, dest="STACK", help="force simple stacking")
-parser.add_option("--s1d-mode", "--s1dmode", default="assume_mean", dest="S1D_MODE",
-                  help="choose strategy for combining Scatter1D objects: one of 'first', 'combine', 'assume_mean'")
-parser.add_option("--s2d-mode", "--s2dmode", default="assume_mean", dest="S2D_MODE",
-                  help="choose strategy for combining Scatter2D objects: one of 'first', 'combine', 'assume_mean'")
-parser.add_option("--s3d-mode", "--s3dmode", default="assume_mean", dest="S3D_MODE",
-                  help="choose strategy for combining Scatter3D objects: one of 'first', 'combine', 'assume_mean'")
-parser.add_option("--type-mismatch-mode", default="scatter", dest="TYPE_MISMATCH_MODE",
+parser.add_option("-o", "--output", default="-", dest="OUTPUT_FILE", metavar="PATH",
+                  help="write output to specified path")
+parser.add_option("--s1d-mode", "--s1dmode", default="assume_mean", dest="S1D_MODE", metavar="MODE",
+                  help="choose strategy for combining Scatter1D objects: one of 'first', 'combine', 'assume_mean', 'add'")
+parser.add_option("--s2d-mode", "--s2dmode", default="assume_mean", dest="S2D_MODE", metavar="MODE",
+                  help="choose strategy for combining Scatter2D objects: one of 'first', 'combine', 'assume_mean', 'add'")
+parser.add_option("--s3d-mode", "--s3dmode", default="assume_mean", dest="S3D_MODE", metavar="MODE",
+                  help="choose strategy for combining Scatter3D objects: one of 'first', 'combine', 'assume_mean', 'add'")
+parser.add_option("--type-mismatch-mode", default="scatter", dest="TYPE_MISMATCH_MODE", metavar="MODE",
                   help="choose strategy for combining objects whose types mismatch: one of 'first', 'scatter'")
+parser.add_option("--add", "--stack", action="store_true", default=False, dest="STACK",
+                  help="force simple stacking (also forces all scatter modes to 'add')")
 parser.add_option("--no-veto-empty", action="store_false", default=True, dest="VETO_EMPTY",
                   help="disable the removal of empty (sumW=0) data objects _before_ applying merge heuristics. You probably want the default!")
 parser.add_option("--assume-normalized", action="store_true", default=False, dest="ASSUME_NORMALIZED",
                   help="DEPRECATED, AND DOES NOTHING. This option _used_ to bypass the detection heuristic for unnormalized histograms")
 opts, fileargs = parser.parse_args()
+
+
+## Include scatters in "add" mode
+if opts.STACK:
+    opts.S1D_MODE = "add"
+    opts.S2D_MODE = "add"
+    opts.S3D_MODE = "add"
 
 
 ## Put the incoming objects into a dict from each path to a list of histos and scalings
@@ -238,9 +247,9 @@ for p, aos in analysisobjects_in.iteritems():
                 npoints = len(ao_out.points)
                 for i in xrange(npoints):
                     val_i = ep_i = em_i = scalesum = 0.0
-                    for ao in aos[1:]:
+                    for ao in aos:
                         scale = float(ao.annotation("yodamerge_scale"))
-                        print aos[0].path, scale
+                        # print aos[0].path, scale
                         scalesum += scale
                         val_i += scale * ao.points[i].x
                         ep_i += (scale * ao.points[i].xErrs[0])**2
@@ -248,6 +257,25 @@ for p, aos in analysisobjects_in.iteritems():
                     val_i /= scalesum
                     ep_i = math.sqrt(ep_i) / scalesum
                     em_i = math.sqrt(em_i) / scalesum
+                    ao_out.points[i].x = val_i
+                    ao_out.points[i].xErrs = (ep_i, em_i)
+
+            elif opts.S1D_MODE == "add":
+
+                # msg = "WARNING: Scatter1D %s merge assumes asymptotic statistics and equal run sizes" % p
+                # if any(float(ao.annotation("yodamerge_scale")) != 1.0 for ao in aos):
+                #     msg += " (+ user scaling)"
+                # sys.stderr.write(msg + "\n")
+
+                npoints = len(ao_out.points)
+                for i in xrange(npoints):
+                    val_i = ep_i = em_i = 0.0
+                    for ao in aos:
+                        # TODO: skip scaling in stack mode?
+                        scale = float(ao.annotation("yodamerge_scale"))
+                        val_i += scale * ao.points[i].x
+                        ep_i += (scale * ao.points[i].xErrs[0])**2
+                        em_i += (scale * ao.points[i].xErrs[1])**2
                     ao_out.points[i].x = val_i
                     ao_out.points[i].xErrs = (ep_i, em_i)
 
@@ -278,7 +306,7 @@ for p, aos in analysisobjects_in.iteritems():
                 npoints = len(ao_out.points)
                 for i in xrange(npoints):
                     val_i = ep_i = em_i = scalesum = 0.0
-                    for ao in aos[1:]:
+                    for ao in aos:
                         scale = float(ao.annotation("yodamerge_scale"))
                         scalesum += scale
                         val_i += scale * ao.points[i].y
@@ -317,7 +345,7 @@ for p, aos in analysisobjects_in.iteritems():
                 npoints = len(ao_out.points)
                 for i in xrange(npoints):
                     val_i = ep_i = em_i = scalesum = 0.0
-                    for ao in aos[1:]:
+                    for ao in aos:
                         scale = float(ao.annotation("yodamerge_scale"))
                         scalesum += scale
                         val_i += scale * ao.points[i].z
