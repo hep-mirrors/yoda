@@ -1,3 +1,9 @@
+2016-07-22  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Add 'add' modes for scatter combination to yodamerge.
+
+	* Fix yodamerge scatter averaging to use the first AO.
+
 2016-07-21  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Add --type-mismatch-mode flag and fallback logic to yodamerge.
