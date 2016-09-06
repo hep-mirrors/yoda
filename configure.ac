@@ -108,30 +108,19 @@ fi
 AC_ARG_ENABLE(pyext, [AC_HELP_STRING(--disable-pyext,
   [don't build Python module (default=build)])],
   [], [enable_pyext=yes])
-AZ_PYTHON_DEFAULT
 ## Basic Python checks
 if test x$enable_pyext = xyes; then
-  AZ_PYTHON_PATH
-  AZ_PYTHON_VERSION_ENSURE([2.5])
-  PYTHON_VERSION=`$PYTHON -c "import sys; print '.'.join(map(str, sys.version_info@<:@:2@:>@));"`
+  AX_PYTHON_DEVEL([>= '2.5'])
   AC_SUBST(PYTHON_VERSION)
   YODA_PYTHONPATH=`$PYTHON -c "import distutils.sysconfig; print distutils.sysconfig.get_python_lib(prefix='$prefix', plat_specific=True);"`
   AC_SUBST(YODA_PYTHONPATH)
-  ## Test for Python header
-  if test -x "$PYTHON"; then
-    AC_MSG_CHECKING([for Python include path])
-    python_incpath=`$PYTHON -c "import distutils.sysconfig; print distutils.sysconfig.get_python_inc();"`
-    AC_MSG_RESULT([$python_incpath])
-    python_header="$python_incpath/Python.h"
-    if test -z "$python_incpath"; then
-     AC_MSG_ERROR([Can't build Python extension since include directory cannot be determined from distutils])
-      enable_pyext=no
-    elif test ! -e "$python_header"; then
-      AC_MSG_ERROR([Can't build Python extension since header file $python_header cannot be found])
-      enable_pyext=no
-    fi
-  else
+  #AC_MSG_NOTICE([$YODA_PYTHONPATH :: $PYTHON :: $PYTHON_SITE_PKG :: $PYTHON_CPPFLAGS])
+  if test -z "$PYTHON"; then
     AC_MSG_ERROR([Can't build Python extension since python can't be found])
+    enable_pyext=no
+  fi
+  if test -z "$PYTHON_CPPFLAGS"; then
+    AC_MSG_ERROR([Can't build Python extension since Python.h header file cannot be found])
     enable_pyext=no
   fi
 fi
