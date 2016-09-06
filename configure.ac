@@ -110,11 +110,10 @@ AC_ARG_ENABLE(pyext, [AC_HELP_STRING(--disable-pyext,
   [], [enable_pyext=yes])
 ## Basic Python checks
 if test x$enable_pyext = xyes; then
-  AX_PYTHON_DEVEL([>= '2.5'])
+  AX_PYTHON_DEVEL([>= '2.6'])
   AC_SUBST(PYTHON_VERSION)
   YODA_PYTHONPATH=`$PYTHON -c "import distutils.sysconfig; print distutils.sysconfig.get_python_lib(prefix='$prefix', plat_specific=True);"`
   AC_SUBST(YODA_PYTHONPATH)
-  #AC_MSG_NOTICE([$YODA_PYTHONPATH :: $PYTHON :: $PYTHON_SITE_PKG :: $PYTHON_CPPFLAGS])
   if test -z "$PYTHON"; then
     AC_MSG_ERROR([Can't build Python extension since python can't be found])
     enable_pyext=no
@@ -124,16 +123,6 @@ if test x$enable_pyext = xyes; then
     enable_pyext=no
   fi
 fi
-## Finish Python extension testing
-if test x$enable_pyext == xyes; then
-  ## Set extra Python extension build flags (to cope with Cython output code oddities)
-  PYEXT_CXXFLAGS=$CXXFLAGS
-  AC_CEDAR_CHECKCXXFLAG([-Wno-unused-but-set-variable], [PYEXT_CXXFLAGS="$PYEXT_CXXFLAGS -Wno-unused-but-set-variable"])
-  AC_CEDAR_CHECKCXXFLAG([-Wno-sign-compare], [PYEXT_CXXFLAGS="$PYEXT_CXXFLAGS -Wno-sign-compare"])
-  AC_CEDAR_CHECKCXXFLAG([-Wno-strict-prototypes], [PYEXT_CXXFLAGS="$PYEXT_CXXFLAGS -Wno-strict-prototypes"])
-  AC_SUBST(PYEXT_CXXFLAGS)
-  AC_MSG_NOTICE([All Python build checks successful: 'yoda' Python extension will be built])
-fi
 AM_CONDITIONAL(ENABLE_PYEXT, [test x$enable_pyext == xyes])
 
 
@@ -141,8 +130,15 @@ AM_CONDITIONAL(ENABLE_PYEXT, [test x$enable_pyext == xyes])
 if test x$enable_pyext == xyes; then
   AM_CHECK_CYTHON([0.20], [:], [:])
   if test x$CYTHON_FOUND = xyes; then
-    AC_MSG_NOTICE([Cython >= 0.18 found: Python extension source can be rebuilt (for developers)])
+    AC_MSG_NOTICE([Cython >= 0.20 found: Python extension source can be rebuilt (for developers)])
   fi
+  ## Set extra Python extension build flags (to cope with Cython output code oddities)
+  PYEXT_CXXFLAGS=$CXXFLAGS
+  AC_CEDAR_CHECKCXXFLAG([-Wno-unused-but-set-variable], [PYEXT_CXXFLAGS="$PYEXT_CXXFLAGS -Wno-unused-but-set-variable"])
+  AC_CEDAR_CHECKCXXFLAG([-Wno-sign-compare], [PYEXT_CXXFLAGS="$PYEXT_CXXFLAGS -Wno-sign-compare"])
+  AC_CEDAR_CHECKCXXFLAG([-Wno-strict-prototypes], [PYEXT_CXXFLAGS="$PYEXT_CXXFLAGS -Wno-strict-prototypes"])
+  AC_SUBST(PYEXT_CXXFLAGS)
+  AC_MSG_NOTICE([All Python build checks successful: 'yoda' Python extension will be built])
 fi
 AM_CONDITIONAL(WITH_CYTHON, [test x$CYTHON_FOUND = xyes])
 
