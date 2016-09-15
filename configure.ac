@@ -1,7 +1,7 @@
 ## Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.59)
-AC_INIT([YODA],[1.6.2],[yoda@projects.hepforge.org],[YODA])
+AC_INIT([YODA],[1.6.3],[yoda@projects.hepforge.org],[YODA])
 
 ## Check and block installation into the src/build dir
 if test "$prefix" = "$PWD"; then
@@ -108,42 +108,20 @@ fi
 AC_ARG_ENABLE(pyext, [AC_HELP_STRING(--disable-pyext,
   [don't build Python module (default=build)])],
   [], [enable_pyext=yes])
-AZ_PYTHON_DEFAULT
 ## Basic Python checks
 if test x$enable_pyext = xyes; then
-  AZ_PYTHON_PATH
-  AZ_PYTHON_VERSION_ENSURE([2.5])
-  PYTHON_VERSION=`$PYTHON -c "import sys; print '.'.join(map(str, sys.version_info@<:@:2@:>@));"`
+  AX_PYTHON_DEVEL([>= '2.6'])
   AC_SUBST(PYTHON_VERSION)
   YODA_PYTHONPATH=`$PYTHON -c "import distutils.sysconfig; print distutils.sysconfig.get_python_lib(prefix='$prefix', plat_specific=True);"`
   AC_SUBST(YODA_PYTHONPATH)
-  ## Test for Python header
-  if test -x "$PYTHON"; then
-    AC_MSG_CHECKING([for Python include path])
-    python_incpath=`$PYTHON -c "import distutils.sysconfig; print distutils.sysconfig.get_python_inc();"`
-    AC_MSG_RESULT([$python_incpath])
-    python_header="$python_incpath/Python.h"
-    if test -z "$python_incpath"; then
-     AC_MSG_ERROR([Can't build Python extension since include directory cannot be determined from distutils])
-      enable_pyext=no
-    elif test ! -e "$python_header"; then
-      AC_MSG_ERROR([Can't build Python extension since header file $python_header cannot be found])
-      enable_pyext=no
-    fi
-  else
+  if test -z "$PYTHON"; then
     AC_MSG_ERROR([Can't build Python extension since python can't be found])
     enable_pyext=no
   fi
-fi
-## Finish Python extension testing
-if test x$enable_pyext == xyes; then
-  ## Set extra Python extension build flags (to cope with Cython output code oddities)
-  PYEXT_CXXFLAGS=$CXXFLAGS
-  AC_CEDAR_CHECKCXXFLAG([-Wno-unused-but-set-variable], [PYEXT_CXXFLAGS="$PYEXT_CXXFLAGS -Wno-unused-but-set-variable"])
-  AC_CEDAR_CHECKCXXFLAG([-Wno-sign-compare], [PYEXT_CXXFLAGS="$PYEXT_CXXFLAGS -Wno-sign-compare"])
-  AC_CEDAR_CHECKCXXFLAG([-Wno-strict-prototypes], [PYEXT_CXXFLAGS="$PYEXT_CXXFLAGS -Wno-strict-prototypes"])
-  AC_SUBST(PYEXT_CXXFLAGS)
-  AC_MSG_NOTICE([All Python build checks successful: 'yoda' Python extension will be built])
+  if test -z "$PYTHON_CPPFLAGS"; then
+    AC_MSG_ERROR([Can't build Python extension since Python.h header file cannot be found])
+    enable_pyext=no
+  fi
 fi
 AM_CONDITIONAL(ENABLE_PYEXT, [test x$enable_pyext == xyes])
 
@@ -152,8 +130,15 @@ AM_CONDITIONAL(ENABLE_PYEXT, [test x$enable_pyext == xyes])
 if test x$enable_pyext == xyes; then
   AM_CHECK_CYTHON([0.20], [:], [:])
   if test x$CYTHON_FOUND = xyes; then
-    AC_MSG_NOTICE([Cython >= 0.18 found: Python extension source can be rebuilt (for developers)])
+    AC_MSG_NOTICE([Cython >= 0.20 found: Python extension source can be rebuilt (for developers)])
   fi
+  ## Set extra Python extension build flags (to cope with Cython output code oddities)
+  PYEXT_CXXFLAGS=$CXXFLAGS
+  AC_CEDAR_CHECKCXXFLAG([-Wno-unused-but-set-variable], [PYEXT_CXXFLAGS="$PYEXT_CXXFLAGS -Wno-unused-but-set-variable"])
+  AC_CEDAR_CHECKCXXFLAG([-Wno-sign-compare], [PYEXT_CXXFLAGS="$PYEXT_CXXFLAGS -Wno-sign-compare"])
+  AC_CEDAR_CHECKCXXFLAG([-Wno-strict-prototypes], [PYEXT_CXXFLAGS="$PYEXT_CXXFLAGS -Wno-strict-prototypes"])
+  AC_SUBST(PYEXT_CXXFLAGS)
+  AC_MSG_NOTICE([All Python build checks successful: 'yoda' Python extension will be built])
 fi
 AM_CONDITIONAL(WITH_CYTHON, [test x$CYTHON_FOUND = xyes])
 

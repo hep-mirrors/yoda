@@ -1,3 +1,29 @@
+2016-09-06  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Update configure scripts to use newer (Py3-safe) Python testing macros.
+
+2016-08-09  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Version 1.6.3 release!
+
+2016-07-22  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Add 'add' modes for scatter combination to yodamerge.
+
+	* Fix yodamerge scatter averaging to use the first AO.
+
+2016-07-21  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Add --type-mismatch-mode flag and fallback logic to yodamerge.
+
+	* Fix yodamerge logic to handle cases where an AO only appears once.
+
+2016-07-19  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Deprecate flat2yoda script and add warning output to it and the AIDA conversion scripts.
+
+	* Add a convenience yoda2yoda script.
+
 2016-07-14  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Try to build PyROOT interface by default, if root-config is found.
