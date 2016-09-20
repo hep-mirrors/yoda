@@ -23,8 +23,7 @@ cdef class ProfileBin2D(Bin2D_Dbn3D):
     @property
     def stdDev(self):
         return self.pb2ptr().stdDev()
-    stddev = stdDev
-
+    
     @property
     def variance(self):
         return self.pb2ptr().variance()
@@ -32,8 +31,7 @@ cdef class ProfileBin2D(Bin2D_Dbn3D):
     @property
     def stdErr(self):
         return self.pb2ptr().stdErr()
-    stderr = stdErr
-
+    
     @property
     def rms(self):
         return self.pb2ptr().rms()
