@@ -1,7 +1,7 @@
 ## Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.59)
-AC_INIT([YODA],[1.6.3],[yoda@projects.hepforge.org],[YODA])
+AC_INIT([YODA],[1.6.4],[yoda@projects.hepforge.org],[YODA])
 
 ## Check and block installation into the src/build dir
 if test "$prefix" = "$PWD"; then
@@ -128,10 +128,34 @@ AM_CONDITIONAL(ENABLE_PYEXT, [test x$enable_pyext == xyes])
 
 ## Cython checks
 if test x$enable_pyext == xyes; then
-  AM_CHECK_CYTHON([0.20], [:], [:])
+  AM_CHECK_CYTHON([0.23.5], [:], [:])
   if test x$CYTHON_FOUND = xyes; then
-    AC_MSG_NOTICE([Cython >= 0.20 found: Python extension source can be rebuilt (for developers)])
+    AS_VERSION_COMPARE([$CYTHON_VERSION], [0.24],
+          [AC_MSG_NOTICE([Cython >= 0.23.5 found: Python extension source can be rebuilt (for developers)])],
+          [AC_MSG_NOTICE([
+**************************************************
+Cython 0.24.x does not work for non-tarball builds
+  (https://github.com/cython/cython/issues/1465)
+
+You can install a personal copy of Cython with
+  pip install --user cython==0.23.5
+**************************************************]); CYTHON_FOUND="no"],
+          [AC_MSG_NOTICE([
+**************************************************
+Cython 0.24.x does not work for non-tarball builds
+  (https://github.com/cython/cython/issues/1465)
+
+You can install a personal copy of Cython with
+  pip install --user cython==0.23.5
+**************************************************]); CYTHON_FOUND="no"])
   fi
+
+  AC_CHECK_FILE([pyext/yoda/core.cpp],
+                [],
+                [if test "x$CYTHON_FOUND" != "xyes"; then
+                  AC_MSG_ERROR([Cython is required for --enable-pyext.])
+                fi])
+
   ## Set extra Python extension build flags (to cope with Cython output code oddities)
   PYEXT_CXXFLAGS=$CXXFLAGS
   AC_CEDAR_CHECKCXXFLAG([-Wno-unused-but-set-variable], [PYEXT_CXXFLAGS="$PYEXT_CXXFLAGS -Wno-unused-but-set-variable"])

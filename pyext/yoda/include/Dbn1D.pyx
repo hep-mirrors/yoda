@@ -65,37 +65,26 @@ cdef class Dbn1D(util.Base):
     def xMean(self):
         """Weighted mean of x"""
         return self.d1ptr().xMean()
-    # TODO: remove alias
-    mean = xMean
-
+    
     @property
     def xVariance(self):
         """Weighted variance of x"""
         return self.d1ptr().xVariance()
-    # TODO: remove alias
-    variance = xVariance
 
     @property
     def xStdDev(self):
         """Weighted standard deviation of x"""
         return self.d1ptr().xStdDev()
-    # TODO: remove alias
-    stdDev = xStdDev
 
     @property
     def xStdErr(self):
         """Weighted standard error on <x>"""
         return self.d1ptr().xStdErr()
-    # TODO: remove alias
-    stdErr = xStdErr
 
     @property
     def xRMS(self):
         """Weighted root mean squared (RMS) of x"""
         return self.d1ptr().xRMS()
-    # TODO: remove alias
-    rms = xRMS
-
 
     @property
     def numEntries(self):

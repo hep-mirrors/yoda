@@ -54,14 +54,12 @@ cdef class ProfileBin1D(Bin1D_Dbn2D):
     def stdDev(self):
         """The standard deviation of the y-values that have filled the bin."""
         return self.pb1ptr().stdDev()
-    stddev = stdDev
-
+    
     @property
     def stdErr(self):
         """The standard error of the y-values that have filled the bin."""
         return self.pb1ptr().stdErr()
-    stderr = stdErr
-
+    
     @property
     def rms(self):
         """The RMS of the y-values that have filled the bin."""
