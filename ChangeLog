@@ -1,6 +1,12 @@
 2016-09-28  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Version 1.6.5 release, for the benefit of ROOT fans.
+
 	* Fix handling of --enable/disable-root configure options.
+
+2016-09-26  David Grellscheid  <david.grellscheid@durham.ac.uk>
+
+	* Improvements to Cython version testing.
 
 2016-09-25  Andy Buckley  <andy.buckley@cern.ch>
 
