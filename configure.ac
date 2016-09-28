@@ -61,7 +61,7 @@ fi
 
 ## Optional ROOT compatibility
 AC_ARG_ENABLE([root], [AC_HELP_STRING(--disable-root,
-  [try to build YODA interface to PyROOT (needs root-config) @<:@default=yes@:>@])], [enable_root=no], [])
+  [don't try to build YODA interface to PyROOT (needs root-config) @<:@default=yes@:>@])], [], [enable_root=yes])
 if test "x$enable_root" = "xyes"; then
   AC_PATH_PROG(ROOTCONFIG, [root-config])
   if test "x$ROOTCONFIG" = "x"; then
