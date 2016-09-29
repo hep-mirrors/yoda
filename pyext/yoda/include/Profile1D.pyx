@@ -83,15 +83,15 @@ cdef class Profile1D(AnalysisObject):
         return cutil.new_owned_cls(Profile1D, self.p1ptr().newclone())
 
 
-    def fill(self, x, y, weight=1.0):
+    def fill(self, x, y, weight=1.0, fraction=1.0):
         """(x,y,[w]) -> None.
         Fill with given x & y values and optional weight."""
-        self.p1ptr().fill(x, y, weight)
+        self.p1ptr().fill(x, y, weight, fraction)
 
-    def fillBin(self, size_t ix, double y, weight=1.0):
+    def fillBin(self, size_t ix, double y, double weight=1.0, double fraction=1.0):
         """(ix,y,[w]) -> None.
         Fill bin ix with y value and optional weight."""
-        self.p1ptr().fillBin(ix, y, weight)
+        self.p1ptr().fillBin(ix, y, weight, fraction)
 
 
     @property

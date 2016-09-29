@@ -31,14 +31,14 @@ cdef class Dbn3D(util.Base):
         return cutil.new_owned_cls(Dbn3D, new c.Dbn3D(deref(self.d3ptr())))
 
 
-    def fill(self, x, y, z, weight=1.0):
+    def fill(self, x, y, z, weight=1.0, fraction=1.0):
         """
         (x, y, z, weight=1.0) -> None
 
         Fills the distribution with the given weight at given (x, y).
 
         """
-        self.d3ptr().fill(x, y, z, weight)
+        self.d3ptr().fill(x, y, z, weight, fraction)
 
     def reset(self):
         """

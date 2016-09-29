@@ -130,11 +130,11 @@ namespace YODA {
       _axis.reset();
     }
 
-    /// Fill histo by value and weight
-    void fill(double x, double weight=1.0);
+    /// Fill histo by value and weight, optionally as a fractional fill
+    virtual void fill(double x, double weight=1.0, double fraction=1.0);
 
-    /// Fill histo bin i with the given weight
-    void fillBin(size_t i, double weight=1.0);
+    /// Fill histo bin i with the given weight, optionally as a fractional fill
+    void fillBin(size_t i, double weight=1.0, double fraction=1.0);
 
 
     /// Rescale as if all fill weights had been different by factor @a scalefactor.

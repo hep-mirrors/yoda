@@ -10,11 +10,11 @@ cdef class ProfileBin2D(Bin2D_Dbn3D):
     def __init__(self, xlow, xhigh, ylow, yhigh):
         cutil.set_owned_ptr(self, new c.ProfileBin2D(xlow, xhigh, ylow, yhigh))
 
-    # def fill(self, x, y, z, weight=1.0):
-    #     self.pb2ptr().fill(x, y, z, weight)
+    # def fill(self, x, y, z, weight=1.0, fraction=1.0):
+    #     self.pb2ptr().fill(x, y, z, weight, fraction)
 
-    # def fill_bin(self, z, weight=1.0):
-    #     self.pb2ptr().fillBin(z, weight)
+    # def fill_bin(self, z, weight=1.0, fraction=1.0):
+    #     self.pb2ptr().fillBin(z, weight, fraction)
 
     @property
     def mean(self):

@@ -74,10 +74,10 @@ namespace YODA {
     //@{
 
     /// @brief Contribute a sample at @a val with weight @a weight.
-    void fill(double val, double weight=1.0) {
-      _dbnW.fill(weight);
-      _sumWX += weight*val;
-      _sumWX2 += weight*val*val;
+    void fill(double val, double weight=1.0, double fraction=1.0) {
+      _dbnW.fill(weight, fraction);
+      _sumWX += fraction*weight*val;
+      _sumWX2 += fraction*weight*val*val;
     }
 
 

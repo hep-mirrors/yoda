@@ -74,20 +74,20 @@ namespace YODA {
     //@{
 
     /// Fill, providing the fill coordinates as three different numbers.
-    void fill(double valX, double valY, double valZ, double weight=1.0) {
-      _dbnX.fill(valX, weight);
-      _dbnY.fill(valY, weight);
-      _dbnZ.fill(valZ, weight);
-      _sumWXY += weight*valX*valY;
-      _sumWXZ += weight*valX*valZ;
-      _sumWYZ += weight*valY*valZ;
+    void fill(double valX, double valY, double valZ, double weight=1.0, double fraction=1.0) {
+      _dbnX.fill(valX, weight, fraction);
+      _dbnY.fill(valY, weight, fraction);
+      _dbnZ.fill(valZ, weight, fraction);
+      _sumWXY += fraction*weight*valX*valY;
+      _sumWXZ += fraction*weight*valX*valZ;
+      _sumWYZ += fraction*weight*valY*valZ;
     }
 
 
     /// Fill, providing the fill coordinates as a vector.
-    void fill(std::vector<double> val, double weight=1.0) {
+    void fill(std::vector<double> val, double weight=1.0, double fraction=1.0) {
       assert (val.size() == 3);
-      fill(val[0], val[1], val[2], weight);
+      fill(val[0], val[1], val[2], weight, fraction);
     }
 
 

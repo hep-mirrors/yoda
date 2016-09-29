@@ -76,10 +76,10 @@ namespace YODA {
     /// @brief Contribute a weight @a weight.
     ///
     /// @todo Be careful about negative weights.
-    void fill(double weight=1.0) {
-      _numFills += 1;
-      _sumW += weight;
-      _sumW2 += weight*weight;
+    void fill(double weight=1.0, double fraction=1.0) {
+      _numFills += fraction;
+      _sumW += fraction*weight;
+      _sumW2 += fraction*weight*weight;
     }
 
 

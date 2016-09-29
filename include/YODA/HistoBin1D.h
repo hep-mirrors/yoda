@@ -69,15 +69,15 @@ namespace YODA {
     /// Fill this bin with weight @a weight at position @a x.
     ///
     /// @note This should not be used, since it breaks histogram consistency. It will be removed in a future version.
-    void fill(double x, double weight=1.0) {
-      _dbn.fill(x, weight);
+    void fill(double x, double weight=1.0, double fraction=1.0) {
+      _dbn.fill(x, weight, fraction);
     }
 
     /// Fill this bin with weight @a weight.
     ///
     /// @note This should not be used, since it breaks histogram consistency. It will be removed in a future version.
-    void fillBin(double weight=1.0) {
-      fill(xMid(), weight);
+    void fillBin(double weight=1.0, double fraction=1.0) {
+      fill(xMid(), weight, fraction);
     }
 
     //@}

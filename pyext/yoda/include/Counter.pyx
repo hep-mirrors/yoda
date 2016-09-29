@@ -36,10 +36,10 @@ cdef class Counter(AnalysisObject):
         return cutil.new_owned_cls(Counter, self.cptr().newclone())
 
 
-    def fill(self, weight=1.0):
+    def fill(self, weight=1.0, fraction=1.0):
         """([w]) -> None.
         Fill with given optional weight."""
-        self.cptr().fill(weight)
+        self.cptr().fill(weight, fraction)
 
 
     #@property

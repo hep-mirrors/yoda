@@ -63,16 +63,16 @@ namespace YODA {
     //@{
 
     /// Fill, providing the fill coordinates as two different numbers.
-    void fill(double valX, double valY, double weight=1.0) {
-      _dbnX.fill(valX, weight);
-      _dbnY.fill(valY, weight);
-      _sumWXY += weight*valX*valY;
+    void fill(double valX, double valY, double weight=1.0, double fraction=1.0) {
+      _dbnX.fill(valX, weight, fraction);
+      _dbnY.fill(valY, weight, fraction);
+      _sumWXY += fraction*weight*valX*valY;
     }
 
 
     /// Fill, providing the fill coordinates as a pair.
-    void fill(std::pair<double,double> val, double weight=1.0) {
-      fill(val.first, val.second, weight);
+    void fill(std::pair<double,double> val, double weight=1.0, double fraction=1.0) {
+      fill(val.first, val.second, weight, fraction);
     }
 
 

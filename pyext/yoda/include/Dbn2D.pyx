@@ -39,14 +39,14 @@ cdef class Dbn2D(util.Base):
         self.d2ptr().reset()
 
 
-    def fill(self, x, y, weight=1.0):
+    def fill(self, x, y, weight=1.0, fraction=1.0):
         """
         (x, y, weight=1.0) -> None
 
         Fills the distribution with the given weight at given (x, y).
 
         """
-        self.d2ptr().fill(x, y, weight)
+        self.d2ptr().fill(x, y, weight, fraction)
 
 
     def scaleW(self, w):

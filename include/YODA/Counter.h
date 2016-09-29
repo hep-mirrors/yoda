@@ -85,8 +85,8 @@ namespace YODA {
     //@{
 
     /// Fill histo by value and weight
-    void fill(double weight=1.0) {
-      _dbn.fill(weight);
+    void fill(double weight=1.0, double fraction=1.0) {
+      _dbn.fill(weight, fraction);
     }
 
 
