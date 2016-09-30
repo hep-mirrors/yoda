@@ -125,10 +125,10 @@ namespace YODA {
     //@{
 
     /// Fill histo by value and weight
-    void fill(double x, double y, double z, double weight=1.0, double fraction=1.0);
+    virtual void fill(double x, double y, double z, double weight=1.0, double fraction=1.0);
 
     /// Fill histo x-y bin i with the given z value and weight
-    void fillBin(size_t i, double z, double weight=1.0, double fraction=1.0);
+    virtual void fillBin(size_t i, double z, double weight=1.0, double fraction=1.0);
 
 
     /// @brief Reset the histogram
