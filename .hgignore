@@ -66,6 +66,7 @@ Doxyfile$
 ^tests/testsortedvector$
 ^tests/testweights$
 ^tests/testbinsearcher$
+^tests/testannotations$
 ^plots$
 ^a.out$
 ^testplotting$
