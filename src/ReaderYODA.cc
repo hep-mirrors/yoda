@@ -206,7 +206,7 @@ namespace YODA {
 
         // Populate the data lines for points, bins, etc.
         // string xoflow1, xoflow2, yoflow1, yoflow2; double xmin(0), xmax(0), ymin(0), ymax(0);
-        // double sumw(0), sumw2(0), sumwx(0), sumwx2(0), sumwy(0), sumwy2(0), sumwz(0), sumwz2(0), sumwxy(0), sumwxz(0), sumwyz(0); unsigned long n(0);
+        // double sumw(0), sumw2(0), sumwx(0), sumwx2(0), sumwy(0), sumwy2(0), sumwz(0), sumwz2(0), sumwxy(0), sumwxz(0), sumwyz(0), n(0);
         // double x(0), y(0), z(0), exm(0), exp(0), eym(0), eyp(0), ezm(0), ezp(0);
         //
         /// @todo Use a fast numeric parser cf. LHAPDF
@@ -215,7 +215,7 @@ namespace YODA {
 
         case COUNTER:
           {
-            double sumw(0), sumw2(0); unsigned long n(0);
+            double sumw(0), sumw2(0), n(0);
             iss >> sumw >> sumw2 >> n;
             cncurr->setDbn(Dbn0D(n, sumw, sumw2));
           }
@@ -224,7 +224,7 @@ namespace YODA {
         case HISTO1D:
           {
             string xoflow1, xoflow2; double xmin(0), xmax(0);
-            double sumw(0), sumw2(0), sumwx(0), sumwx2(0); unsigned long n(0);
+            double sumw(0), sumw2(0), sumwx(0), sumwx2(0), n(0);
             /// @todo Improve/factor this "bin" string-or-float parsing... esp for mixed case of 2D overflows
             /// @todo When outflows are treated as "infinity bins" and don't require a distinct type, string replace under/over -> -+inf
             if (s.find("Total") != string::npos || s.find("Underflow") != string::npos || s.find("Overflow") != string::npos) {
@@ -246,7 +246,7 @@ namespace YODA {
         case HISTO2D:
           {
             string xoflow1, xoflow2, yoflow1, yoflow2; double xmin(0), xmax(0), ymin(0), ymax(0);
-            double sumw(0), sumw2(0), sumwx(0), sumwx2(0), sumwy(0), sumwy2(0), sumwxy(0); unsigned long n(0);
+            double sumw(0), sumw2(0), sumwx(0), sumwx2(0), sumwy(0), sumwy2(0), sumwxy(0), n(0);
             /// @todo Improve/factor this "bin" string-or-float parsing... esp for mixed case of 2D overflows
             /// @todo When outflows are treated as "infinity bins" and don't require a distinct type, string replace under/over -> -+inf
             if (s.find("Total") != string::npos) {
@@ -273,7 +273,7 @@ namespace YODA {
         case PROFILE1D:
           {
             string xoflow1, xoflow2; double xmin(0), xmax(0);
-            double sumw(0), sumw2(0), sumwx(0), sumwx2(0), sumwy(0), sumwy2(0); unsigned long n(0);
+            double sumw(0), sumw2(0), sumwx(0), sumwx2(0), sumwy(0), sumwy2(0), n(0);
             /// @todo Improve/factor this "bin" string-or-float parsing... esp for mixed case of 2D overflows
             /// @todo When outflows are treated as "infinity bins" and don't require a distinct type, string replace under/over -> -+inf
             if (s.find("Total") != string::npos || s.find("Underflow") != string::npos || s.find("Overflow") != string::npos) {
@@ -296,7 +296,7 @@ namespace YODA {
         case PROFILE2D:
           {
             string xoflow1, xoflow2, yoflow1, yoflow2; double xmin(0), xmax(0), ymin(0), ymax(0);
-            double sumw(0), sumw2(0), sumwx(0), sumwx2(0), sumwy(0), sumwy2(0), sumwz(0), sumwz2(0), sumwxy(0), sumwxz(0), sumwyz(0); unsigned long n(0);
+            double sumw(0), sumw2(0), sumwx(0), sumwx2(0), sumwy(0), sumwy2(0), sumwz(0), sumwz2(0), sumwxy(0), sumwxz(0), sumwyz(0), n(0);
             /// @todo Improve/factor this "bin" string-or-float parsing... esp for mixed case of 2D overflows
             /// @todo When outflows are treated as "infinity bins" and don't require a distinct type, string replace under/over -> -+inf
             if (s.find("Total") != string::npos) {

@@ -309,8 +309,8 @@ namespace YODA {
     /// Get the total volume of the histogram
     double integral(bool includeoverflows=true) const { return sumW(includeoverflows); }
 
-    /// Get the number of fills
-    unsigned long numEntries(bool includeoverflows=true) const;
+    /// Get the number of fills (fractional fills are possible)
+    double numEntries(bool includeoverflows=true) const;
 
     /// Get the effective number of fills
     double effNumEntries(bool includeoverflows=true) const;

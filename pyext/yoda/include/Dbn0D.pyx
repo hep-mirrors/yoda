@@ -54,7 +54,7 @@ cdef class Dbn0D(util.Base):
     @property
     def numEntries(self):
         """The number of entries"""
-        return int(self.d0ptr().numEntries())
+        return self.d0ptr().numEntries()
 
     @property
     def effNumEntries(self):

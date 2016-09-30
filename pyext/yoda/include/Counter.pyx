@@ -44,9 +44,9 @@ cdef class Counter(AnalysisObject):
 
     #@property
     def numEntries(self):
-        """None -> int
+        """None -> float
         Number of times this counter was filled."""
-        return int(self.cptr().numEntries())
+        return self.cptr().numEntries()
 
     #@property
     def effNumEntries(self):

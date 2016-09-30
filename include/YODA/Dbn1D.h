@@ -40,7 +40,7 @@ namespace YODA {
     /// @brief Constructor to set a distribution with a pre-filled state.
     ///
     /// Principally designed for internal persistency use.
-    Dbn1D(unsigned long numEntries, double sumW, double sumW2, double sumWX, double sumWX2)
+    Dbn1D(double numEntries, double sumW, double sumW2, double sumWX, double sumWX2)
       : _dbnW(numEntries, sumW, sumW2),
         _sumWX(sumWX),
         _sumWX2(sumWX2)
@@ -139,7 +139,7 @@ namespace YODA {
     //@{
 
     /// Number of entries (number of times @c fill was called, ignoring weights)
-    unsigned long numEntries() const {
+    double numEntries() const {
       return _dbnW.numEntries();
     }
 

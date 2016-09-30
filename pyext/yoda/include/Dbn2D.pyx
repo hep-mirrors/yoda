@@ -113,7 +113,7 @@ cdef class Dbn2D(util.Base):
     @property
     def numEntries(self):
         """The number of entries"""
-        return int(self.d2ptr().numEntries())
+        return self.d2ptr().numEntries()
 
     @property
     def effNumEntries(self):

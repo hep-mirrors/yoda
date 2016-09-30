@@ -111,7 +111,7 @@ namespace YODA {
     //@{
 
     /// Get the number of fills
-    unsigned long numEntries() const { return _dbn.numEntries(); }
+    double numEntries() const { return _dbn.numEntries(); }
 
     /// Get the effective number of fills
     double effNumEntries() const { return _dbn.effNumEntries(); }

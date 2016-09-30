@@ -315,7 +315,7 @@ namespace YODA {
     }
 
     /// Get the number of fills
-    unsigned long numEntries(bool includeoverflows=true) const;
+    double numEntries(bool includeoverflows=true) const;
 
     /// Get the effective number of fills
     double effNumEntries(bool includeoverflows=true) const;

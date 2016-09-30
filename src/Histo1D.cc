@@ -45,7 +45,7 @@ namespace YODA {
 
   /////////////// COMMON TO ALL BINNED
 
-  unsigned long Histo1D::numEntries(bool includeoverflows) const {
+  double Histo1D::numEntries(bool includeoverflows) const {
     if (includeoverflows) return totalDbn().numEntries();
     unsigned long n = 0;
     for (const Bin& b : bins()) n += b.numEntries();

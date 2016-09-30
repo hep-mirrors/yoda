@@ -133,7 +133,7 @@ cdef class Histo1D(AnalysisObject):
 
 
     def numEntries(self, includeoverflows=True):
-        """([bool]) -> int
+        """([bool]) -> float
         Number of times this histogram was filled, optionally excluding the overflows."""
         return self.h1ptr().numEntries(includeoverflows)
 

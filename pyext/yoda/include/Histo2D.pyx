@@ -99,7 +99,7 @@ cdef class Histo2D(AnalysisObject):
 
 
     def numEntries(self, includeoverflows=True):
-        """([bool]) -> int
+        """([bool]) -> float
         Number of times this histogram was filled, optionally excluding overflows."""
         return self.h2ptr().numEntries(includeoverflows)
 

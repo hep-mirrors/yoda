@@ -117,7 +117,7 @@ cdef class Profile1D(AnalysisObject):
 
 
     def numEntries(self, includeoverflows=True):
-        """([bool]) -> int
+        """([bool]) -> float
         Number of times this histogram was filled, optionally excluding the overflows."""
         return self.p1ptr().numEntries(includeoverflows)
 
