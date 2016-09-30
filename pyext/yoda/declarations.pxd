@@ -52,8 +52,8 @@ cdef extern from "YODA/Dbn0D.h" namespace "YODA":
         double errW() except +yodaerr
         double relErrW() except +yodaerr
 
-        Dbn0D operator+ (Dbn0D) except +yodaerr
-        Dbn0D operator- (Dbn0D) except +yodaerr
+        Dbn0D operator+ (Dbn0D)
+        Dbn0D operator- (Dbn0D)
         # TODO: += and -= operators
 
 #}}} Dbn0D
@@ -87,8 +87,8 @@ cdef extern from "YODA/Dbn1D.h" namespace "YODA":
         double sumWX() except +yodaerr
         double sumWX2() except +yodaerr
 
-        Dbn1D operator+ (Dbn1D) except +yodaerr
-        Dbn1D operator- (Dbn1D) except +yodaerr
+        Dbn1D operator+ (Dbn1D)
+        Dbn1D operator- (Dbn1D)
         # TODO: += and -= operators
 
 #}}} Dbn1D
@@ -138,8 +138,8 @@ cdef extern from "YODA/Dbn2D.h" namespace "YODA":
         Dbn1D transformX() except +yodaerr
         Dbn1D transformY() except +yodaerr
 
-        Dbn2D operator + (Dbn2D) except +yodaerr
-        Dbn2D operator - (Dbn2D) except +yodaerr
+        Dbn2D operator + (Dbn2D)
+        Dbn2D operator - (Dbn2D)
         # TODO: += and -= operators
 
 #}}} Dbn2D
@@ -421,8 +421,8 @@ cdef extern from "YODA/Bin1D.h" namespace "YODA":
         double sumWX2() except +yodaerr
 
         void merge (Bin1D&) except +yodaerr
-        Bin1D operator + (Bin1D&) except +yodaerr
-        Bin1D operator - (Bin1D&) except +yodaerr
+        Bin1D operator + (Bin1D&)
+        Bin1D operator - (Bin1D&)
 
 ctypedef Bin1D[Dbn1D] Bin1D_Dbn1D
 ctypedef Bin1D[Dbn2D] Bin1D_Dbn2D
@@ -483,8 +483,8 @@ cdef extern from "YODA/Bin2D.h" namespace "YODA":
         double sumWY2() except +yodaerr
 
         #void merge(Bin2D) except +yodaerr
-        Bin2D operator + (Bin2D) except +yodaerr
-        Bin2D operator - (Bin2D) except +yodaerr
+        Bin2D operator + (Bin2D)
+        Bin2D operator - (Bin2D)
 
         int adjacentTo(Bin2D) except +yodaerr
 
@@ -508,8 +508,8 @@ cdef extern from "YODA/HistoBin1D.h" namespace "YODA":
         double heightErr() except +yodaerr
         double relErr() except +yodaerr
 
-        HistoBin1D operator+(HistoBin1D) except +yodaerr
-        HistoBin1D operator-(HistoBin1D) except +yodaerr
+        HistoBin1D operator+(HistoBin1D)
+        HistoBin1D operator-(HistoBin1D)
 
 #}}} HistoBin1D
 
@@ -540,8 +540,8 @@ cdef extern from "YODA/HistoBin2D.h" namespace "YODA":
         double heightErr() except +yodaerr
         double relErr() except +yodaerr
 
-        HistoBin2D operator+(HistoBin2D) except +yodaerr
-        HistoBin2D operator-(HistoBin2D) except +yodaerr
+        HistoBin2D operator+(HistoBin2D)
+        HistoBin2D operator-(HistoBin2D)
 
         #Bin2D_Dbn2D merge(HistoBin2D b)
 #}}} HistoBin2D
@@ -566,8 +566,8 @@ cdef extern from "YODA/ProfileBin1D.h" namespace "YODA":
 
         double sumWY() except +yodaerr
         double sumWY2() except +yodaerr
-        ProfileBin1D operator + (ProfileBin1D) except +yodaerr
-        ProfileBin1D operator - (ProfileBin1D) except +yodaerr
+        ProfileBin1D operator + (ProfileBin1D)
+        ProfileBin1D operator - (ProfileBin1D)
 
         # void scaleY(double) except +yodaerr
 
@@ -600,8 +600,8 @@ cdef extern from "YODA/ProfileBin2D.h" namespace "YODA":
 
         double sumWZ() except +yodaerr
         double sumWZ2() except +yodaerr
-        ProfileBin2D operator + (ProfileBin2D) except +yodaerr
-        ProfileBin2D operator - (ProfileBin2D) except +yodaerr
+        ProfileBin2D operator + (ProfileBin2D)
+        ProfileBin2D operator - (ProfileBin2D)
 
         # void scaleZ(double) except +yodaerr
 
