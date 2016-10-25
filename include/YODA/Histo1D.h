@@ -22,7 +22,6 @@ namespace YODA {
   /// Convenience typedef
   typedef Axis1D<HistoBin1D, Dbn1D> Histo1DAxis;
 
-
   /// A  one-dimensional histogram.
   class Histo1D : public AnalysisObject {
   public:
@@ -32,6 +31,8 @@ namespace YODA {
     typedef Axis::Bins Bins;
     typedef HistoBin1D Bin;
 
+    typedef double FillType;
+    typedef std::shared_ptr<Histo1D> Ptr;
 
     /// @name Constructors
     //@{
