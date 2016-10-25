@@ -38,6 +38,7 @@ namespace YODA {
     typedef Axis::Outflows Outflows;
 
     typedef std::tuple<double, double> FillType;
+    typedef FillType BinType;
     typedef std::shared_ptr<Histo2D> Ptr;
 
 
@@ -271,8 +272,12 @@ namespace YODA {
     /// Access a bin index by coordinate
     int binIndexAt(double x, double y) { return _axis.binIndexAt(x, y); }
 
+    int binIndexAt(const BinType& t) { return _axis.binIndexAt(std::get<0>(t), std::get<1>(t)); }
+
     /// Access a bin by coordinate (const version)
     const HistoBin2D& binAt(double x, double y) const { return _axis.binAt(x, y); }
+
+    const HistoBin2D& binAt(const BinType& t) { return _axis.binAt(std::get<0>(t), std::get<1>(t)); }
 
 
     /// Number of bins

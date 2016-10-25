@@ -39,6 +39,7 @@ namespace YODA {
     typedef ProfileBin1D Bin;
 
     typedef std::tuple<double, double> FillType;
+    typedef double BinType;
     typedef std::shared_ptr<Profile1D> Ptr;
 
 

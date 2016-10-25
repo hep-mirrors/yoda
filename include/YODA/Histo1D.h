@@ -32,6 +32,7 @@ namespace YODA {
     typedef HistoBin1D Bin;
 
     typedef double FillType;
+    typedef FillType BinType;
     typedef std::shared_ptr<Histo1D> Ptr;
 
     /// @name Constructors
