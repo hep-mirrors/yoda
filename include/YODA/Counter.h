@@ -94,10 +94,9 @@ namespace YODA {
       _dbn.fill(weight, fraction);
     }
 
-    virtual void fill(std::tuple<>, double weight=1.0, double fraction=1.0) {
+    virtual void fill(FillType, double weight=1.0, double fraction=1.0) {
       fill(weight, fraction);
     }
-
 
     /// @brief Reset the histogram.
     ///

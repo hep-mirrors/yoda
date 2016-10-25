@@ -130,7 +130,7 @@ namespace YODA {
 
     /// Fill histo by value and weight
     virtual void fill(double x, double y, double z, double weight=1.0, double fraction=1.0);
-    virtual void fill(const std::tuple<double, double, double>& xs, double weight=1.0, double fraction=1.0) {
+    virtual void fill(const FillType & xs, double weight=1.0, double fraction=1.0) {
         fill(std::get<0>(xs), std::get<1>(xs), std::get<2>(xs), weight, fraction);
     }
 
