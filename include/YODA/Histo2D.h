@@ -14,6 +14,7 @@
 #include "YODA/Exceptions.h"
 
 #include <vector>
+#include <tuple>
 
 namespace YODA {
 
@@ -35,6 +36,9 @@ namespace YODA {
     typedef Axis::Bins Bins;
     typedef HistoBin2D Bin;
     typedef Axis::Outflows Outflows;
+
+    typedef std::tuple<double, double> FillType;
+    typedef std::shared_ptr<Histo2D> Ptr;
 
 
     /// @name Constructors
@@ -126,6 +130,12 @@ namespace YODA {
 
     /// Fill histo with weight at (x,y)
     virtual void fill(double x, double y, double weight=1.0, double fraction=1.0);
+
+    ///
+    virtual void fill(const FillType & xs, double weight=1.0, double fraction=1.0) {
+        fill(std::get<0>(xs), std::get<1>(xs), weight, fraction);
+    }
+
 
     /// Fill histo x-y bin i with the given weight
     virtual void fillBin(size_t i, double weight=1.0, double fraction=1.0);

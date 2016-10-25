@@ -13,6 +13,7 @@
 #include <vector>
 #include <string>
 #include <map>
+#include <tuple>
 
 namespace YODA {
 
@@ -20,6 +21,10 @@ namespace YODA {
   /// A weighted counter.
   class Counter : public AnalysisObject {
   public:
+
+
+    typedef std::tuple<> FillType;
+    typedef std::shared_ptr<Counter> Ptr;
 
     /// @name Constructors
     //@{
@@ -89,6 +94,9 @@ namespace YODA {
       _dbn.fill(weight, fraction);
     }
 
+    virtual void fill(FillType, double weight=1.0, double fraction=1.0) {
+      fill(weight, fraction);
+    }
 
     /// @brief Reset the histogram.
     ///

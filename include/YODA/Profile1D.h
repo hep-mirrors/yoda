@@ -15,6 +15,7 @@
 #include <vector>
 #include <string>
 #include <map>
+#include <tuple>
 
 namespace YODA {
 
@@ -36,6 +37,9 @@ namespace YODA {
     typedef Profile1DAxis Axis;
     typedef Axis::Bins Bins;
     typedef ProfileBin1D Bin;
+
+    typedef std::tuple<double, double> FillType;
+    typedef std::shared_ptr<Profile1D> Ptr;
 
 
     /// @name Constructors
@@ -122,6 +126,9 @@ namespace YODA {
 
     /// Fill histo by value and weight
     virtual void fill(double x, double y, double weight=1.0, double fraction=1.0);
+    void fill(const FillType & xs, double weight=1.0, double fraction=1.0) {
+        fill(std::get<0>(xs), std::get<1>(xs), weight, fraction);
+    }
 
     /// Fill histo x bin i with the given y value and weight
     virtual void fillBin(size_t i, double y, double weight=1.0, double fraction=1.0);
