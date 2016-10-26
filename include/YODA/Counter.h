@@ -14,6 +14,7 @@
 #include <string>
 #include <map>
 #include <tuple>
+#include <memory>
 
 namespace YODA {
 
