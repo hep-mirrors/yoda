@@ -3,6 +3,7 @@ SUBDIRS = tinyxml .
 lib_LTLIBRARIES = libYODA.la
 
 libYODA_la_SOURCES = \
+    Exceptions.cc \
     Reader.cc \
     ReaderYODA.cc \
     ReaderFLAT.cc \
