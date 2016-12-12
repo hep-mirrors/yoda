@@ -255,10 +255,10 @@ cdef class Histo1D(AnalysisObject):
             self.h1ptr().addBins(cedges)
 
     def __addBins_bins(self, bins):
-        self.__addBins_tuples(imap(attrgetter('edges'), bins))
+        self.__addBins_tuples(imap(attrgetter('xEdges'), bins))
 
     def __addBins_points(self, points):
-        self.__addBins_tuples(imap(attrgetter('xRange'), points))
+        self.__addBins_tuples(imap(attrgetter('xWidth'), points))
 
     def __addBins_tuples(self, tuples):
         cdef double a, b
