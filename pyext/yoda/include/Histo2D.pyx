@@ -253,7 +253,7 @@ cdef class Histo2D(AnalysisObject):
     @property
     def bins(self):
         """Access the ordered bins list."""
-        return list(self)
+        return [self.bin(i) for i in xrange( self.h2ptr().numBins())]
 
     def bin(self, i):
         """Get the i'th bin"""
