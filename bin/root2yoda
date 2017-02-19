@@ -24,7 +24,15 @@ if not in_out:
 import ROOT
 for i, o in in_out:
     rf = ROOT.TFile(i)
-    rootobjects = [obj for (path, obj) in yoda.root.getall(rf)]
+    rootobjects_raw = [obj for (path, obj) in yoda.root.getall(rf)]
+    rootobjects     = [x for x in rootobjects_raw if not isinstance(x, ROOT.TH1F)]
+    th1f            = [x for x in rootobjects_raw if     isinstance(x, ROOT.TH1F)]
+    # Conversion of TH1F into TH1D
+    for ro in th1f:
+        temp = ROOT.TH1D()
+        ro.Copy(temp)
+        rootobjects.append(temp)
+
     analysisobjects = [yoda.root.to_yoda(ro) for ro in rootobjects]
     rf.Close()
 
