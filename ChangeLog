@@ -1,3 +1,8 @@
+2017-02-19  Holger Schulz <holger.schulz@durham.ac.uk>
+	
+	* Convert TH1F to TH1D in root2flat. Much simpler than duplicating
+        the TH1D stuff in pyext.
+
 2016-12-13  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Version 1.6.6 release.
