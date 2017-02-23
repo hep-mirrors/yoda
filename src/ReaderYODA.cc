@@ -250,7 +250,7 @@ namespace YODA {
             /// @todo Improve/factor this "bin" string-or-float parsing... esp for mixed case of 2D overflows
             /// @todo When outflows are treated as "infinity bins" and don't require a distinct type, string replace under/over -> -+inf
             if (s.find("Total") != string::npos) {
-              iss >> xoflow1 >> xoflow2 >> yoflow1 >> yoflow2;
+              iss >> xoflow1 >> xoflow2; // >> yoflow1 >> yoflow2;
             } else if (s.find("Underflow") != string::npos || s.find("Overflow") != string::npos) {
               throw ReadError("2D histogram overflow syntax is not yet defined / handled");
             } else {
@@ -300,7 +300,7 @@ namespace YODA {
             /// @todo Improve/factor this "bin" string-or-float parsing... esp for mixed case of 2D overflows
             /// @todo When outflows are treated as "infinity bins" and don't require a distinct type, string replace under/over -> -+inf
             if (s.find("Total") != string::npos) {
-              iss >> xoflow1 >> xoflow2 >> yoflow1 >> yoflow2;
+              iss >> xoflow1 >> xoflow2; // >> yoflow1 >> yoflow2;
             } else if (s.find("Underflow") != string::npos || s.find("Overflow") != string::npos) {
               throw ReadError("2D profile overflow syntax is not yet defined / handled");
             } else {
