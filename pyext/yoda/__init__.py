@@ -9,6 +9,7 @@ from yoda.search import match_aos
 
 
 ## Try to pull in plotting tools in a non-dependency-inducing way
+import yoda.plotting
 def plot(*args, **kwargs):
     from yoda.plotting import plot as p
     return p(*args, **kwargs)
