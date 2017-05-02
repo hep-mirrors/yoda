@@ -1,9 +1,13 @@
+2017-05-02  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Add static Reader methods to match the Writer ones.
+
 2017-02-23  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Fix Histo2D and Profile2D total distribution reading from YODA format.
 
 2017-02-19  Holger Schulz <holger.schulz@durham.ac.uk>
-	
+
 	* Convert TH1F to TH1D in root2flat. Much simpler than duplicating
         the TH1D stuff in pyext.
 

@@ -24,6 +24,8 @@ namespace YODA {
 
     void read(std::istream& stream, std::vector<AnalysisObject*>& aos);
 
+    // Include definitions of all read methods (all fulfilled by Reader::read(...))
+    #include "YODA/ReaderMethods.icc"
 
   private:
 
