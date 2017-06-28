@@ -24,13 +24,19 @@ if not filenames:
     print "ERROR! Please supply at least one data file for listing"
     sys.exit(1)
 
+try:
+    import natsort
+    ysorted = natsort.natsorted
+except:
+    ysorted = sorted
+
 for i, f in enumerate(filenames):
     if opts.VERBOSITY >= 1:
         if i > 0: print
         print "Data objects in %s:" % f
     aodict = yoda.read(f)
     filter_aos(aodict, opts.MATCH, opts.UNMATCH)
-    for p, ao in sorted(aodict.iteritems()):
+    for p, ao in ysorted(aodict.iteritems()):
         extrainfo = ""
         if opts.VERBOSITY >= 2 and hasattr(ao, "sumW"):
             extrainfo = " sumW={sumw:.3g}".format(sumw=ao.sumW())
