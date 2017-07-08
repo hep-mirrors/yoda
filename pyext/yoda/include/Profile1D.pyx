@@ -283,3 +283,50 @@ cdef class Profile1D(AnalysisObject):
 
     def __div__(Profile1D self, Profile1D other):
         return self.divideBy(other)
+
+
+    ## Functions for array-based plotting, chi2 calculations, etc.
+
+    # def sumWs(self):
+    #     """All sumWs of the histo."""
+    #     return [b.sumW for b in self.bins]
+
+    # TODO: xyVals,Errs properties should be in a common Drawable2D (?) type (hmm, need a consistent nD convention...)
+    # TODO: x bin properties should be in a common Binned1D type
+
+    def xMids(self):
+        """All x bin midpoints of the histo."""
+        return [b.xMid for b in self.bins]
+
+    def xFoci(self):
+        """All x bin foci of the histo."""
+        return [b.xFocus for b in self.bins]
+
+    def xVals(self, foci=False):
+        return self.xFoci() if foci else self.xMids()
+
+    def xErrs(self, foci=False):
+        if foci:
+            return [(b.xFocus-b.xMin, b.xMax-b.xFocus) for b in self.bins]
+        else:
+            return [(b.xMid-b.xMin, b.xMax-b.xMid) for b in self.bins]
+
+
+    def yMeans(self):
+        """All y heights y means."""
+        return [b.yMean for b in self.bins]
+
+    def yVals(self):
+        return self.yMeans()
+
+
+    def yStdErrs(self):
+        """All standard errors on the y means."""
+        return [b.yStdErr for b in self.bins]
+
+    def yStdDevs(self):
+        """All standard deviations of the y distributions."""
+        return [b.yStdDev for b in self.bins]
+
+    def yErrs(self, sd=False):
+        return self.yStdDevs() if sd else self.yStdErrs()

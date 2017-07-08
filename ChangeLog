@@ -1,3 +1,9 @@
+2017-07-08  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Add xyVals/Errs and other 'bin array property' accessors to the
+	Python Histo1D and Profile1D types: important for connection to
+	matplotlib.
+
 2017-06-28  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Use Python natsort library to sort yodals output if available.
