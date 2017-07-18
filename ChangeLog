@@ -1,3 +1,8 @@
+2017-07-18  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Add convenience aliases H1D, H2D, P1D, P2D, and S1D, S2D, S3D
+	for the HistoXD, ProfileXD, and ScatterXD classes respectively.
+
 2017-07-08  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Add xyVals/Errs and other 'bin array property' accessors to the

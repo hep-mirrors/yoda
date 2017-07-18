@@ -456,3 +456,6 @@ cdef class Histo1D(AnalysisObject):
 
     def yErrs(self, area=False):
         return self.areaErrs() if area else self.heightErrs()
+
+## Convenience alias
+H1D = Histo1D

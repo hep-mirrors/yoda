@@ -333,3 +333,6 @@ cdef class Profile2D(AnalysisObject):
 
     def __div__(Profile2D self, Profile2D other):
         return self.divideBy(other)
+
+## Convenience alias
+P2D = Profile2D

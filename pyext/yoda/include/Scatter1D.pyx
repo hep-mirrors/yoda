@@ -130,3 +130,6 @@ cdef class Scatter1D(AnalysisObject):
     # # TODO: remove?
     # def __sub__(Scatter1D self, Scatter1D other):
     #     return cutil.new_owned_cls(Scatter1D, c.Scatter1D_sub_Scatter1D(self.s1ptr(), other.s1ptr()))
+
+## Convenience alias
+S1D = Scatter1D

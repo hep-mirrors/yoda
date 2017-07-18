@@ -342,3 +342,6 @@ cdef class Histo2D(AnalysisObject):
 
     def __div__(Histo2D self, Histo2D other):
         return self.divideBy(other)
+
+## Convenience alias
+H2D = Histo2D

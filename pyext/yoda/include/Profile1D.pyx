@@ -330,3 +330,6 @@ cdef class Profile1D(AnalysisObject):
 
     def yErrs(self, sd=False):
         return self.yStdDevs() if sd else self.yStdErrs()
+
+## Convenience alias
+P1D = Profile1D
