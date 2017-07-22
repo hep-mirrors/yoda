@@ -1,3 +1,11 @@
+2017-07-22  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Add x,y,zMins and Maxs to all 1D data types and scatters (and
+	x,yMin/Max to the scatters) -- Python interface only.
+
+	* Rework some of the yoda.plotting tools, making it a bit more
+	compatible with user-scripted matplotlib.
+
 2017-07-18  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Add convenience aliases H1D, H2D, P1D, P2D, and S1D, S2D, S3D
