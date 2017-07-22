@@ -294,6 +294,14 @@ cdef class Profile1D(AnalysisObject):
     # TODO: xyVals,Errs properties should be in a common Drawable2D (?) type (hmm, need a consistent nD convention...)
     # TODO: x bin properties should be in a common Binned1D type
 
+    def xMins(self):
+        """All x low edges of the histo."""
+        return [b.xMin for b in self.bins]
+
+    def xMaxs(self):
+        """All x high edges of the histo."""
+        return [b.xMax for b in self.bins]
+
     def xMids(self):
         """All x bin midpoints of the histo."""
         return [b.xMid for b in self.bins]
@@ -330,6 +338,18 @@ cdef class Profile1D(AnalysisObject):
 
     def yErrs(self, sd=False):
         return self.yStdDevs() if sd else self.yStdErrs()
+
+
+    def yMins(self, sd=False):
+        ys = self.yVals()
+        es = self.yErrs(sd)
+        return [y-e for (y,e) in zip(ys,es)]
+
+    def yMaxs(self, sd=False):
+        ys = self.yVals()
+        es = self.yErrs(sd)
+        return [y+e for (y,e) in zip(ys,es)]
+
 
 ## Convenience alias
 P1D = Profile1D

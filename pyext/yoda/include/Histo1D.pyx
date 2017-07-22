@@ -405,6 +405,13 @@ cdef class Histo1D(AnalysisObject):
     #     """All sumWs of the histo."""
     #     return [b.sumW for b in self.bins]
 
+    def xMins(self):
+        """All x low edges of the histo."""
+        return [b.xMin for b in self.bins]
+
+    def xMaxs(self):
+        """All x high edges of the histo."""
+        return [b.xMax for b in self.bins]
 
     def xMids(self):
         """All x bin midpoints of the histo."""
@@ -422,6 +429,7 @@ cdef class Histo1D(AnalysisObject):
             return [(b.xFocus-b.xMin, b.xMax-b.xFocus) for b in self.bins]
         else:
             return [(b.xMid-b.xMin, b.xMax-b.xMid) for b in self.bins]
+
 
 
     def heights(self):
@@ -456,6 +464,18 @@ cdef class Histo1D(AnalysisObject):
 
     def yErrs(self, area=False):
         return self.areaErrs() if area else self.heightErrs()
+
+
+    def yMins(self, area=False):
+        ys = self.yVals(area)
+        es = self.yErrs(area)
+        return [y-e for (y,e) in zip(ys,es)]
+
+    def yMaxs(self, area=False):
+        ys = self.yVals(area)
+        es = self.yErrs(area)
+        return [y+e for (y,e) in zip(ys,es)]
+
 
 ## Convenience alias
 H1D = Histo1D
