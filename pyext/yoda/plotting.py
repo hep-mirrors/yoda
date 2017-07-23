@@ -271,9 +271,9 @@ def plot(hs, outfile=None, ratio=True, show=False, axmain=None, axratio=None, pl
         ratio = False
 
     ## Get data ranges (calculated or forced)
-    # TODO: Round up calc'd ymax to nearest round number within 10% of ydiff, to create a top tick label... sensitive to log/lin measure
+    # TODO: Tweak max-padding for top tick label... sensitive to log/lin measure
     xmin = float(plotkeys.get("XMin", min(h.xMin for h in hs)))
-    xmax = float(plotkeys.get("XMax", max(h.xMax for h in hs)))
+    xmax = float(plotkeys.get("XMax", 1.1*max(h.xMax for h in hs)))
     xdiff = xmax - xmin
     # print xmin, xmax, xdiff
     ymin = float(plotkeys.get("YMin", min(min(h.yVals()) for h in hs)))
@@ -380,8 +380,9 @@ def _plot1arg(args):
     return plot(*args)
 
 
-def mplot(hs, outfiles=None, ratio=True, show=False, plotkeys={}, nproc=None):
-    """Plot the given list of histogram(s) using the Python multiprocessing
+def mplot(hs, outfiles=None, ratio=True, show=False, plotkeys={}, nproc=1):
+    """
+    Plot the given list of histogram(s) using the Python multiprocessing
     module to distribute the work on to multiple parallel processes. This is
     just syntactic sugar for something fairly easily done by the user.
 
@@ -406,11 +407,12 @@ def mplot(hs, outfiles=None, ratio=True, show=False, plotkeys={}, nproc=None):
     for i, hs_arg in enumerate(hs):
         outfile_arg = outfiles[i] if outfiles else None
         ratio_arg = ratio[i] if hasattr(ratio, "__iter__") else ratio
-        show_arg = show[i] if hasattr(show, "__iter__") else show
+        show_arg = False #< we just do this once, at the end
         plotkeys_arg = plotkeys if type(plotkeys) is dict else plotkeys[i]
         argslist.append( (hs_arg, outfile_arg, ratio_arg, show_arg, None, None, plotkeys_arg) )
     #print argslist
 
+    # TODO: make the multiprocessing work
     import multiprocessing
     nproc = nproc or multiprocessing.cpu_count() or 1
     if nproc > 1:
@@ -420,5 +422,9 @@ def mplot(hs, outfiles=None, ratio=True, show=False, plotkeys={}, nproc=None):
     else:
         ## Run this way in the 1 proc case for easier debugging
         rtn = [_plot1arg(args) for args in argslist]
+
+    if show:
+        import matplotlib.pyplot as plt
+        plt.show()
 
     return rtn
