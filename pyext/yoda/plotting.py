@@ -11,7 +11,8 @@ import yoda
 import sys
 import numpy as np
 import matplotlib as mpl
-
+import matplotlib.pyplot as plt
+from matplotlib.pyplot import show, savefig
 
 # TODO: Move to core objects
 #     def same_binning_as(self, other):
@@ -271,13 +272,13 @@ def plot(hs, outfile=None, ratio=True, show=False, axmain=None, axratio=None, pl
         ratio = False
 
     ## Get data ranges (calculated or forced)
-    # TODO: Tweak max-padding for top tick label... sensitive to log/lin measure
     xmin = float(plotkeys.get("XMin", min(h.xMin for h in hs)))
-    xmax = float(plotkeys.get("XMax", 1.1*max(h.xMax for h in hs)))
+    xmax = float(plotkeys.get("XMax", max(h.xMax for h in hs)))
     xdiff = xmax - xmin
     # print xmin, xmax, xdiff
+    # TODO: Tweak max-padding for top tick label... sensitive to log/lin measure
     ymin = float(plotkeys.get("YMin", min(min(h.yVals()) for h in hs)))
-    ymax = float(plotkeys.get("YMax", max(max(h.yVals()) for h in hs)))
+    ymax = float(plotkeys.get("YMax", 1.1*max(max(h.yVals()) for h in hs)))
     ydiff = ymax - ymin
     # print ymin, ymax, ydiff
 
