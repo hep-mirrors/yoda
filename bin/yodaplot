@@ -4,6 +4,9 @@
 Usage: %prog 1.dat [2.dat ...]
 
 Make a plot from each of the given plot data files.
+
+TODO:
+ - Should be able to do default plotting of all plots loaded from a .yoda file
 """
 
 ################
@@ -30,11 +33,12 @@ if opts.QUIET:
     opts.VERBOSITY = 0
 
 
-import numpy as np
-import yoda, yoda.plotting
+import yoda
+mpl = yoda.mplinit(opts.ENGINE)
+# import matplotlib.pyplot as plt
+# import numpy as np
 
-mpl, plt = yoda.plotting.setup_mpl(opts.ENGINE)
-COLORS = [plt.cm.jet(i) for i in np.linspace(0.2, 0.8, len(args))]
+COLORS = [mpl.cm.jet(i) for i in yoda.linspace(0.2, 0.8, len(args))]
 STYLES = ["-", "--", ":", "-."]
 
 
@@ -64,7 +68,7 @@ def plot(plotargs):
 
     ## Load and sort data objects
     aos = yoda.read(datfile)
-    hs = sorted([yoda.plotting.NumpyHist(ao) for ao in aos.values()], key=lambda h: h.path)
+    hs = sorted(aos.values(), key=lambda h: h.path)
     # TODO: allow plotting order specification via PlotIndex (-ve = no plot)
 
     ## Do plotting
@@ -81,4 +85,4 @@ else:
     import multiprocessing
     nproc = opts.NPROC or multiprocessing.cpu_count()-1 or 1
     pool = multiprocessing.Pool(processes=nproc)
-    pool.map(plot, zip(xrange(len(args)), args))
+    pool.map(plot, zip(range(len(args)), args))

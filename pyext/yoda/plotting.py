@@ -11,8 +11,7 @@ import yoda
 import sys
 import numpy as np
 import matplotlib as mpl
-import matplotlib.pyplot as plt
-from matplotlib.pyplot import show, savefig
+
 
 # TODO: Move to core objects
 #     def same_binning_as(self, other):
@@ -98,6 +97,17 @@ def mplinit(engine="MPL", font="TeX Gyre Pagella", fontsize=17, mfont=None, text
 
 ## Alias
 setup_mpl = mplinit
+
+
+def show():
+    """
+    Convenience call to matplotlib.pyplot.show()
+
+    NOTE: done this way to avoid import of pyplot before mplinit()
+    or mpl.use() has been (optionally) called.
+    """
+    import matplotlib.pyplot as plt
+    plt.show()
 
 
 def mk_figaxes_1d(ratio=True, title=None, figsize=(8,6)):
@@ -287,7 +297,7 @@ def plot(hs, outfile=None, ratio=True, show=False, axmain=None, axratio=None, pl
     # TODO: Use ratio to setdefault RatioPlot in plotkeys, then use that to decide whether to look for href
     if ratio:
         for h in hs:
-            if yoda.util.as_bool(h.annotations.get("RatioRef", False)):
+            if yoda.util.as_bool(h.annotation("RatioRef", False)):
                 if href is None:
                     href = h
                 else:
