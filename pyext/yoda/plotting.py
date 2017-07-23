@@ -1,130 +1,19 @@
+# -*- python -*-
+
+"""
+Plotting utilities, particularly for interaction with matplotlib and Rivet make-plots
+
+TODO:
+ - # TODO: Parse plotkeys as lower-case, and handle as kwargs
+"""
+
 import yoda
-import numpy as np
 import sys
+import numpy as np
+import matplotlib as mpl
 
 
-# # TODO: need a better name... MiniHist, PlotData?
-# class NumpyHist(object):
-
-#     def __init__(self, ao):
-#         if not isinstance(ao, yoda.AnalysisObject):
-#             raise Exception("ao argument must be a YODA AnalysisObject; this is a %s" % type(ao))
-#         ## Get annotations
-#         self.path = ao.path
-#         #self.annotations = {aname : ao.annotation(aname) for aname in ao.annotations}
-#         self.annotations = {}
-#         for aname in ao.annotations:
-#             self.annotations[aname] = ao.annotation(aname)
-#         ## Convert to Scatter and set dimensionality & recarray column names
-#         s = ao.mkScatter()
-#         names = ['x', 'y', 'exminus', 'explus', 'eyminus', 'eyplus']
-#         # TODO: also Scatter1D
-#         if type(s) is yoda.Scatter2D:
-#             self.dim = 2
-#         elif type(s) is yoda.Scatter3D:
-#             self.dim = 3
-#             names.insert(2, "z")
-#             names += ['ezminus', 'ezplus']
-#         else:
-#             raise RuntimeError("Whoa! If ao doesn't convert to a 2D or 3D scatter, what is it?!")
-#         ## Put data points into numpy structure
-#         dtype = {"names": names, "formats": ["f4" for _ in names]}
-#         self.data = np.zeros(len(s.points), dtype).view(np.recarray)
-#         for i, p in enumerate(s.points):
-#             self.data.x[i] = p.x
-#             self.data.exminus[i] = p.xErrs[0]
-#             self.data.explus[i]  = p.xErrs[1]
-#             self.data.y[i] = p.y
-#             self.data.eyminus[i] = p.yErrs[0]
-#             self.data.eyplus[i]  = p.yErrs[1]
-#             if self.dim > 2:
-#                 self.data.z[i] = p.z
-#                 self.data.ezminus[i] = p.zErrs[0]
-#                 self.data.ezplus[i]  = p.zErrs[1]
-
-
-#     def __len__(self):
-#         return len(self.x)
-
-
-#     @property
-#     def xedges_sgl(self):
-#         return np.append(self.xmin, self.xmax[-1])
-
-#     @property
-#     def xedges_dbl(self):
-#         edges = np.empty((2*len(self.x),), dtype=self.x.dtype)
-#         edges[0::2] = self.xmin
-#         edges[1::2] = self.xmax
-#         return edges
-
-
-#     @property
-#     def xmin(self):
-#         return self.x - self.exminus
-
-#     @property
-#     def xmax(self):
-#         return self.x + self.explus
-
-
-#     @property
-#     def ymin(self):
-#         return self.y - self.eyminus
-
-#     @property
-#     def ymax(self):
-#         return self.y + self.eyplus
-
-
-#     # TODO: automate more with __get/setattr__?
-
-#     @property
-#     def x(self):
-#         return self.data.x
-
-#     @property
-#     def exminus(self):
-#         return self.data.exminus
-
-#     @property
-#     def explus(self):
-#         return self.data.explus
-
-
-#     @property
-#     def y(self):
-#         return self.data.y
-
-#     @property
-#     def eyminus(self):
-#         return self.data.eyminus
-
-#     @property
-#     def eyplus(self):
-#         return self.data.eyplus
-
-
-#     # TODO: don't provide these / throw helpful errors if only 2D
-
-#     @property
-#     def z(self):
-#         return self.data.z
-
-#     @property
-#     def ezminus(self):
-#         return self.data.ezminus
-
-#     @property
-#     def ezplus(self):
-#         return self.data.ezplus
-
-
-#     # def __getattr__(self, attr):
-#     #     "Fall back to the data array for attributes not defined on NumpyHist"
-#     #     return getattr(self.data, attr)
-
-
+# TODO: Move to core objects
 #     def same_binning_as(self, other):
 #         if self.dim != other.dim:
 #             return False
@@ -138,13 +27,6 @@ import sys
 #                (other.eyminus == self.eyminus).all() and \
 #                (other.eyplus == self.eyplus).all()
 
-
-
-# def mk_numpyhist(h):
-#     return h if type(h) is NumpyHist else NumpyHist(h)
-
-
-##########
 
 def read_plot_keys(datfile):
     import re
@@ -173,21 +55,16 @@ def read_plot_keys(datfile):
     return plotkeys
 
 
-# import matplotlib as mpl
-
-
-## Plotting helper functions
-
-def setup_mpl(engine="MPL", font="TeX Gyre Pagella", fontsize=17, mfont=None, textfigs=True):
+def mplinit(engine="MPL", font="TeX Gyre Pagella", fontsize=17, mfont=None, textfigs=True):
     """One-liner matplotlib (mpl) setup.
 
-    By default mpl will be configured with the TeX PGF rendering backend, and a
-    Palatino-like font for both text and math contexts, using 'lower-case
-    numerals' if supported. Setting the engine to 'TEX' will use standard mpl
-    rendering, with calls to LaTeX for axis labels and other text; setting it to
-    'MPL' will use the built-in mpl MathText renderer. MPL mode only supports a
-    limited set of LaTeX macros and does not render as well as TeX, but it is
-    faster and can be used to render to an interactive window.
+    By default mpl will be configured with its native MathText rendering
+    backend, and a Palatino-like font for both text and math contexts, using
+    'lower-case numerals' if supported. Setting the engine to 'TEX' will use
+    standard mpl rendering, with calls to LaTeX for axis labels and other text;
+    setting it to 'PGF' will use the TeX PGF renderer: both these modes are much
+    slower than MPL mode, but the latter only supports a limited set of LaTeX
+    macros and does not render as nicely as the TeX backends.
 
     The font and mfont optional arguments can be used to choose a different text
     font and math font respectively; if mfont is None, it defaults to the same
@@ -218,19 +95,19 @@ def setup_mpl(engine="MPL", font="TeX Gyre Pagella", fontsize=17, mfont=None, te
 
     return mpl #, plt
 
+## Alias
+setup_mpl = mplinit
+
 
 def mk_figaxes_1d(ratio=True, title=None, figsize=(8,6)):
-    "Make figure and subplot grid layout"
+    "Make a standard main+ratio plot figure and subplot layout"
 
     import matplotlib as mpl
     import matplotlib.pyplot as plt
-    # if "plt" not in dir():
-    #     mpl, plt = setup_mpl()
 
-    # TODO: Eliminate plt? Requires manual work to set up the backend-specific
-    # canvas, but would be better for 'more local' memory management
+    ## We need to use pyplot here to set up the backend-specific canvas
     fig = plt.figure(figsize=figsize)
-    # fig = mpl.figure.Figure(figsize=figsize, tight_layout=True)
+    #fig = mpl.figure.Figure(figsize=figsize, tight_layout=True)
 
     if title:
         fig.suptitle(title, horizontalalignment="left", x=0.13)
@@ -241,16 +118,16 @@ def mk_figaxes_1d(ratio=True, title=None, figsize=(8,6)):
         try:
             gs = mpl.gridspec.GridSpec(2, 1, height_ratios=[3,1], hspace=0)
             axmain = fig.add_subplot(gs[0])
-            axmain.hold(True)
+            #axmain.hold(True)
             axratio = fig.add_subplot(gs[1], sharex=axmain)
-            axratio.hold(True)
+            #axratio.hold(True)
             axratio.axhline(1.0, color="gray") #< Ratio = 1 marker line
         except:
             sys.stderr.write("matplotlib.gridspec not available: falling back to plotting without a ratio\n")
             ratio = False
     if not ratio:
         axmain = fig.add_subplot(1,1,1)
-        axmain.hold(True)
+        #axmain.hold(True)
 
     return fig, (axmain, axratio)
 
@@ -313,7 +190,6 @@ def setup_axes_1d(axmain, axratio, plotkeys):
     # TODO: Ratio plot manual ticks
 
 
-# TODO: rename to be more obviously an ~internal helper
 def plot_hist_on_axes_1d(axmain, axratio, h, href=None, default_color="black", default_linestyle="-"):
     import matplotlib as mpl
     import matplotlib.pyplot as plt
@@ -379,8 +255,7 @@ def plot_hist_on_axes_1d(axmain, axratio, h, href=None, default_color="black", d
     return artists
 
 
-# TODO: Parse plotkeys as lower-case, and handle as kwargs
-def plot_hists_1d(hs, outfile=None, ratio=True, show=False, axmain=None, axratio=None, plotkeys={}):
+def plot(hs, outfile=None, ratio=True, show=False, axmain=None, axratio=None, plotkeys={}):
     """
     Plot the given histograms on a single figure, returning (fig, (main_axis,
     ratio_axis)). Show to screen if the second arg is True, and saving to outfile
@@ -496,55 +371,54 @@ def plot_hists_1d(hs, outfile=None, ratio=True, show=False, axmain=None, axratio
 
 
 ## Aliases
-plot_hist_1d = plot_hists_1d
-plot = plot_hists_1d
+plot_hists_1d = plot
+plot_hist_1d = plot
 
 
-# def _plot1arg(args):
-#     "Helper function for mplot, until pool.starmap() is available"
-#     # hs, outfile, ratio, plotkeys = args
-#     return plot(*args)
+def _plot1arg(args):
+    "Helper function for mplot, until Py >= 3.3 multiprocessing.pool.starmap() is available"
+    return plot(*args)
 
 
-# def mplot(hs, outfiles=None, plotkeys={}, ratio=None, nproc=None):
-#     """Plot the given list of histogram(s) using the Python multiprocessing
-#     module to distribute the work on to multiple parallel processes. This is
-#     just syntactic sugar for something fairly easily done by the user.
+def mplot(hs, outfiles=None, ratio=True, show=False, plotkeys={}, nproc=None):
+    """Plot the given list of histogram(s) using the Python multiprocessing
+    module to distribute the work on to multiple parallel processes. This is
+    just syntactic sugar for something fairly easily done by the user.
 
-#     hs must be an iterable, each entry of which will be the content of a single
-#     plot: the entries can either be single histograms or lists of histograms,
-#     i.e. either kind of valid first argument to plot().
+    hs must be an iterable, each entry of which will be the content of a single
+    plot: the entries can either be single histograms or lists of histograms,
+    i.e. either kind of valid first argument to plot().
 
-#     The outfiles, plotkeys, and ratio arguments can either be iterables of valid
-#     corresponding plot() args, or single instances of such args to be applied to
-#     all the plots.
+    The outfiles, plotkeys, and ratio arguments can either be iterables of valid
+    corresponding plot() args, or single instances of such args to be applied to
+    all the plots.
 
-#     The nproc argument should be the integer number of parallel processes on
-#     which to distribute the plotting. nproc = None (the default value) will use
-#     Ncpu-1 or 1 process, whichever is larger. If nproc = 1, multiprocessing will
-#     not be used -- this may ease debugging.
+    The nproc argument should be the integer number of parallel processes on
+    which to distribute the plotting. nproc = None (the default value) will use
+    Ncpu-1 or 1 process, whichever is larger. If nproc = 1, multiprocessing will
+    not be used -- this may ease debugging.
 
-#     The return value is a list of the return tuples from each call to plot(), of
-#     the same length as the hs arg.
-#     """
+    The return value is a list of the return tuples from each call to plot(), of
+    the same length as the hs arg.
+    """
 
-#     argslist = []
-#     for i, hs_arg in enumerate(hs):
-#         hs_arg = [mk_numpyhist(h) for h in hs_arg] if type(hs_arg) in (list,tuple) else mk_numpyhist(hs_arg)
-#         outfile_arg = outfiles[i] if outfiles else None
-#         plotkeys_arg = plotkeys if type(plotkeys) is dict else plotkeys[i]
-#         ratio_arg = ratio[i] if hasattr(ratio, "__iter__") else ratio
-#         argslist.append( (hs_arg, outfile_arg, plotkeys_arg, ratio_arg) )
-#     #print argslist
+    argslist = []
+    for i, hs_arg in enumerate(hs):
+        outfile_arg = outfiles[i] if outfiles else None
+        ratio_arg = ratio[i] if hasattr(ratio, "__iter__") else ratio
+        show_arg = show[i] if hasattr(show, "__iter__") else show
+        plotkeys_arg = plotkeys if type(plotkeys) is dict else plotkeys[i]
+        argslist.append( (hs_arg, outfile_arg, ratio_arg, show_arg, None, None, plotkeys_arg) )
+    #print argslist
 
-#     import multiprocessing
-#     nproc = nproc or multiprocessing.cpu_count()-1 or 1
-#     if nproc > 1:
-#         pool = multiprocessing.Pool(processes=nproc)
-#         res = pool.map_async(_plot1arg, argslist)
-#         rtn = res.get()
-#     else:
-#         ## Run this way in the 1 proc case for easier debugging
-#         rtn = [_plot1arg(args) for args in argslist]
+    import multiprocessing
+    nproc = nproc or multiprocessing.cpu_count() or 1
+    if nproc > 1:
+        pool = multiprocessing.Pool(processes=nproc)
+        res = pool.map_async(_plot1arg, argslist)
+        rtn = res.get()
+    else:
+        ## Run this way in the 1 proc case for easier debugging
+        rtn = [_plot1arg(args) for args in argslist]
 
-#     return rtn
+    return rtn

@@ -8,12 +8,16 @@ __version__ = core.version()
 from yoda.search import match_aos
 
 
-## Pull in plotting tools
-# from yoda.plotting import setup_mpl, plot
-import yoda.plotting
-def plot(*args, **kwargs):
-    from yoda.plotting import plot as p
-    return p(*args, **kwargs)
+## Pull in plotting tools (if matplotlib and numpy are available)
+try:
+    import yoda.plotting
+    from yoda.plotting import mplinit, plot, mplot
+    HAS_PLOTTING = True
+    # def plot(*args, **kwargs):
+    #     from yoda.plotting import plot as p
+    #     return p(*args, **kwargs)
+except:
+    HAS_PLOTTING = False
 
 
 ## Try to pull in optional ROOT compatibility
