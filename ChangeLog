@@ -1,5 +1,8 @@
 2017-07-24  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Update yoda.plotting functions to treat plot-keys as args and AO
+	annotations via case-insensitive keys.
+
 	* Add annotationsDict to the Python AO interface.
 
 	* Add AO as an alias for AnalysisObject.

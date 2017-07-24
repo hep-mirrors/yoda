@@ -150,21 +150,29 @@ def set_axis_labels_1d(axmain, axratio, xlabel=None, ylabel=None, ratioylabel=No
         axmain.set_xlabel(xlabel, x=1, ha="right", labelpad=None)
 
 
+def mk_lowcase_dict(d):
+    "Convert the keys of a str->obj dict to lower-case"
+    return dict((k.lower(), v) for (k,v) in d.items())
+
+
 # TODO: Needs generalisation for 2D marginal axes)
 def setup_axes_1d(axmain, axratio, plotkeys):
 
+    ## Case-insensitize the plotkeys dict
+    plotkeys = mk_lowcase_dict(plotkeys)
+
     ## Axis labels first
-    xlabel = plotkeys.get("XLabel", "")
-    ylabel = plotkeys.get("YLabel", "")
-    ratioylabel = plotkeys.get("RatioYLabel", "Ratio")
+    xlabel = plotkeys.get("xlabel", "")
+    ylabel = plotkeys.get("xlabel", "")
+    ratioylabel = plotkeys.get("ratioylabel", "ratio")
     set_axis_labels_1d(axmain, axratio, xlabel, ylabel, ratioylabel)
 
     ## log/lin measures
     # TODO: Dynamic default based on data ranges?
     # TODO: take log axes and preference for round numbers into account in setting default axis limits
-    xmeasure = "log" if yoda.util.as_bool(plotkeys.get("LogX", False)) else "linear"
-    ymeasure = "log" if yoda.util.as_bool(plotkeys.get("LogY", False)) else "linear"
-    ratioymeasure = "log" if yoda.util.as_bool(plotkeys.get("RatioLogY", False)) else "linear"
+    xmeasure = "log" if yoda.util.as_bool(plotkeys.get("logX", False)) else "linear"
+    ymeasure = "log" if yoda.util.as_bool(plotkeys.get("logY", False)) else "linear"
+    ratioymeasure = "log" if yoda.util.as_bool(plotkeys.get("ratiology", False)) else "linear"
     axmain.set_xscale(xmeasure)
     axmain.set_yscale(ymeasure)
     if axratio:
@@ -172,45 +180,48 @@ def setup_axes_1d(axmain, axratio, plotkeys):
         axratio.set_yscale(ratioymeasure)
 
     ## Plot range limits
-    if plotkeys.has_key("YMin"):
-        axmain.set_ylim(bottom=float(plotkeys.get("YMin")))
-    if plotkeys.has_key("YMax"):
-        axmain.set_ylim(top=float(plotkeys.get("YMin")))
+    if plotkeys.has_key("ymin"):
+        axmain.set_ylim(bottom=float(plotkeys.get("ymin")))
+    if plotkeys.has_key("ymax"):
+        axmain.set_ylim(top=float(plotkeys.get("ymax")))
     #
-    if plotkeys.has_key("XMin"):
-        axmain.set_xlim(left=float(plotkeys.get("XMin")))
-    if plotkeys.has_key("XMax"):
-        axmain.set_xlim(right=float(plotkeys.get("XMin")))
+    if plotkeys.has_key("xmin"):
+        axmain.set_xlim(left=float(plotkeys.get("xmin")))
+    if plotkeys.has_key("xmax"):
+        axmain.set_xlim(right=float(plotkeys.get("xmax")))
     #
     if axratio:
         # TODO: RatioSymmRange option
         # axratio.set_xlim([xmin-0.001*xdiff, xmax+0.001*xdiff]) # <- TODO: bad on a log scale!
-        if plotkeys.has_key("XMin"):
-            axratio.set_xlim(left=float(plotkeys.get("XMin")))
-        if plotkeys.has_key("XMax"):
-            axratio.set_xlim(right=float(plotkeys.get("XMin")))
-        if plotkeys.has_key("RatioYMin"):
-            axratio.set_ylim(bottom=float(plotkeys.get("RatioYMin")))
-        if plotkeys.has_key("RatioYMax"):
-            axratio.set_ylim(top=float(plotkeys.get("RatioYMax")))
+        if plotkeys.has_key("xmin"):
+            axratio.set_xlim(left=float(plotkeys.get("xmin")))
+        if plotkeys.has_key("xmax"):
+            axratio.set_xlim(right=float(plotkeys.get("xmax")))
+        if plotkeys.has_key("ratioymin"):
+            axratio.set_ylim(bottom=float(plotkeys.get("ratioymin")))
+        if plotkeys.has_key("ratioymax"):
+            axratio.set_ylim(top=float(plotkeys.get("ratioymax")))
 
     # TODO: Ratio plot manual ticks
 
 
 def plot_hist_on_axes_1d(axmain, axratio, h, href=None, default_color="black", default_linestyle="-"):
 
+    ## Case-insensitize the plotkeys dict
+    plotkeys = mk_lowcase_dict(h.annotationDict)
+
     # TODO: Split into different plot styles: line/filled/range, step/diag/smooth, ...?
 
     ## Styles
-    default_color = h.annotation("Color", default_color)
-    marker = h.annotation("Marker", h.annotation("PolyMarker", None)) # <- make-plots translation
+    default_color = plotkeys.get("color", default_color)
+    marker = plotkeys.get("marker", plotkeys.get("polymarker", None)) # <- make-plots translation
     marker = {"*":"o"}.get(marker, marker) # <- make-plots translation
-    mcolor = h.annotation("LineColor", default_color)
-    errbar = h.annotation("ErrorBars", None)
-    ecolor = h.annotation("ErrorBarsColor", default_color)
-    line = h.annotation("Line", None)
-    lcolor = h.annotation("LineColor", default_color)
-    lstyle = h.annotation("LineStyle", default_linestyle)
+    mcolor = plotkeys.get("linecolor", default_color)
+    errbar = plotkeys.get("errorbars", None)
+    ecolor = plotkeys.get("errorbarscolor", default_color)
+    line = plotkeys.get("line", None)
+    lcolor = plotkeys.get("linecolor", default_color)
+    lstyle = plotkeys.get("linestyle", default_linestyle)
     lstyle = {"solid":"-", "dashed":"--", "dotdashed":"-.", "dashdotted":"-.", "dotted":":"}.get(lstyle, lstyle) # <- make-plots translation
     lwidth = 1.4
     msize = 7
@@ -219,7 +230,7 @@ def plot_hist_on_axes_1d(axmain, axratio, h, href=None, default_color="black", d
     if not any([marker, line, errbar]):
         line = "step"
 
-    ## Plotting
+    ## MPL plotting
     # TODO: Split this into different functions for each kind of data preparation (and smoothing as an extra function?)
     # TODO: First convert h to scatter
     artists = None
@@ -265,19 +276,22 @@ def plot(hs, outfile=None, ratio=True, show=False, axmain=None, axratio=None, pl
     if it is otherwise non-null.
     """
 
+    ## Case-insensitize the plotkeys dict
+    plotkeys = mk_lowcase_dict(plotkeys)
+
     ## Handle single histo args
     if isinstance(hs, yoda.AnalysisObject):
         hs = [hs,]
         ratio = False
 
     ## Get data ranges (calculated or forced)
-    xmin = float(plotkeys.get("XMin", min(h.xMin for h in hs)))
-    xmax = float(plotkeys.get("XMax", max(h.xMax for h in hs)))
+    xmin = float(plotkeys.get("xmin", min(h.xMin for h in hs)))
+    xmax = float(plotkeys.get("xmax", max(h.xMax for h in hs)))
     xdiff = xmax - xmin
     # print xmin, xmax, xdiff
     # TODO: Tweak max-padding for top tick label... sensitive to log/lin measure
-    ymin = float(plotkeys.get("YMin", min(min(h.yVals()) for h in hs)))
-    ymax = float(plotkeys.get("YMax", 1.1*max(max(h.yVals()) for h in hs)))
+    ymin = float(plotkeys.get("ymin", min(min(h.yVals()) for h in hs)))
+    ymax = float(plotkeys.get("ymax", 1.1*max(max(h.yVals()) for h in hs)))
     ydiff = ymax - ymin
     # print ymin, ymax, ydiff
 
@@ -286,7 +300,8 @@ def plot(hs, outfile=None, ratio=True, show=False, axmain=None, axratio=None, pl
     # TODO: Use ratio to setdefault RatioPlot in plotkeys, then use that to decide whether to look for href
     if ratio:
         for h in hs:
-            if yoda.util.as_bool(h.annotation("RatioRef", False)):
+            hkeys = mk_lowcase_dict(h.annotationDict)
+            if yoda.util.as_bool(hkeys.get("ratioref", False)):
                 if href is None:
                     href = h
                 else:
@@ -296,7 +311,7 @@ def plot(hs, outfile=None, ratio=True, show=False, axmain=None, axratio=None, pl
         ratio = False
 
     ## Make figure and subplot grid layout
-    title = plotkeys.get("Title", "")
+    title = plotkeys.get("title", "")
     if not axmain:
         fig, (axmain, axratio) = mk_figaxes_1d(ratio and not axratio, title)
     else:
@@ -327,7 +342,7 @@ def plot(hs, outfile=None, ratio=True, show=False, axmain=None, axratio=None, pl
             return edges
         def dbl_array(arr):
             return sum(([x,x] for x in arr), [])
-        ratioerrcolor = plotkeys.get("RatioErrColor", "yellow")
+        ratioerrcolor = plotkeys.get("ratioerrcolor", "yellow")
         axratio.fill_between(xedges_dbl(href), dbl_array(ref_ymin_ratios), dbl_array(ref_ymax_ratios),
                              edgecolor="none", facecolor=ratioerrcolor)
         # TODO: Smoothed: (needs -> limit handling at ends)
