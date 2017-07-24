@@ -82,11 +82,12 @@ def mplinit(engine="MPL", font="TeX Gyre Pagella", fontsize=17, mfont=None, text
     texpreamble.append( r"\setmainfont{fopts}{{{font}}}".format(fopts=fontopts, font=font) )
     texpreamble.append( r"\setmathsfont(Digits,Latin){fopts}{{{font}}}".format(fopts=mfontopts, font=mfont) )
 
-    if engine == "PGF":
+    if engine.upper() == "PGF":
         mpl.use("pgf")
         mpl.rcParams["pgf.preamble"] = texpreamble
-    elif engine == "TEX":
-        mpl.rcParams["tex.preamble"] = texpreamble
+    # TODO: Fix?
+    # elif engine.upper() == "TEX":
+    #     mpl.rcParams["text.latex.preamble"] = texpreamble
 
     return mpl
 

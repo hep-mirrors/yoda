@@ -73,6 +73,8 @@ def plot(plotargs):
     fig, (ax1, ax2) = yoda.plot(hists, **plotkeys)
     for of in outfiles:
         fig.savefig(of)
+    import matplotlib.pyplot as plt
+    plt.close()
 
 
 ## Assemble plotting arguments depending on mode
@@ -80,7 +82,7 @@ plotargs = []
 if opts.MODE.upper() == "CMP":
     hists, plotkeys = {}, {}
     for datfile in args:
-        aos = yoda.read(datfile)
+        aos = yoda.read(datfile, patterns=opts.MATCH, unpatterns=opts.UNMATCH)
         hists.update(aos)
         plotkeys.update(yoda.plotting.read_plot_keys(datfile))
     for i, (aopath, aos) in enumerate(sorted(hists.items())):
@@ -91,7 +93,7 @@ if opts.MODE.upper() == "CMP":
 elif opts.MODE.upper() == "FILE":
     for i, datfile in enumerate(args):
         import os
-        aos = yoda.read(datfile, asdict=False)
+        aos = yoda.read(datfile, asdict=False, patterns=opts.MATCH, unpatterns=opts.UNMATCH)
         name = os.path.splitext(os.path.basename(datfile))[0]
         plotkeys = yoda.plotting.read_plot_keys(datfile)
         plotargs.append([(i, len(args)), name, aos, plotkeys])
