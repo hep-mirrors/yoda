@@ -1,3 +1,66 @@
+2017-07-23  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Add parallel/compatibility yoda1 package to aid eventual transition to YODA v2.
+
+2017-07-22  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Add x,y,zMins and Maxs to all 1D data types and scatters (and
+	x,yMin/Max to the scatters) -- Python interface only.
+
+	* Rework some of the yoda.plotting tools, making it a bit more
+	compatible with user-scripted matplotlib.
+
+2017-07-18  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Add convenience aliases H1D, H2D, P1D, P2D, and S1D, S2D, S3D
+	for the HistoXD, ProfileXD, and ScatterXD classes respectively.
+
+2017-07-08  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Add xyVals/Errs and other 'bin array property' accessors to the
+	Python Histo1D and Profile1D types: important for connection to
+	matplotlib.
+
+2017-06-28  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Use Python natsort library to sort yodals output if available.
+
+2017-06-18  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Version 1.6.7 release.
+
+2017-05-12  Andy Buckley  <andy.buckley@cern.ch>
+
+	* pyext/yoda/rootcompat.pyx: Fix ordering of TH1 vs. TProfile
+	conversion -- TProfile *is* a TH1, so we have to test for the more
+	specific type-match first. Thanks to Dmitry Kalinkin for the
+	patch.
+
+2017-05-02  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Add static Reader methods to match the Writer ones.
+
+2017-02-23  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Fix Histo2D and Profile2D total distribution reading from YODA format.
+
+2017-02-19  Holger Schulz <holger.schulz@durham.ac.uk>
+
+	* Convert TH1F to TH1D in root2flat. Much simpler than duplicating
+        the TH1D stuff in pyext.
+
+2016-12-13  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Version 1.6.6 release.
+
+2016-12-12  Holger Schulz <holger.schulz@durham.ac.uk>
+
+	* Bugfixes in Cython bins accessors for Histo2D.
+
+2016-11-17  Leif Lonnblad <leif.lonnblad@thep.lu.se>
+
+	* Fixed warning messages about the obsoleteness of AIDA so that the scripts actually still work.
+
 2016-09-28  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Version 1.6.5 release, for the benefit of ROOT fans.

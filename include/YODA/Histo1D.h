@@ -411,6 +411,10 @@ namespace YODA {
   };
 
 
+  /// Convenience typedef
+  typedef Histo1D H1D;
+
+
   /// @name Combining histos: global operators
   //@{
 
