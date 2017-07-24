@@ -1,3 +1,9 @@
+2017-07-24  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Add annotationsDict to the Python AO interface.
+
+	* Add AO as an alias for AnalysisObject.
+
 2017-07-23  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Add parallel/compatibility yoda1 package to aid eventual transition to YODA v2.
