@@ -2,9 +2,6 @@
 
 """
 Plotting utilities, particularly for interaction with matplotlib and Rivet make-plots
-
-TODO:
- - # TODO: Parse plotkeys as lower-case, and handle as kwargs
 """
 
 import yoda
@@ -156,7 +153,7 @@ def mk_lowcase_dict(d):
 
 
 # TODO: Needs generalisation for 2D marginal axes)
-def setup_axes_1d(axmain, axratio, plotkeys):
+def setup_axes_1d(axmain, axratio, **plotkeys):
 
     ## Case-insensitize the plotkeys dict
     plotkeys = mk_lowcase_dict(plotkeys)
@@ -205,10 +202,12 @@ def setup_axes_1d(axmain, axratio, plotkeys):
     # TODO: Ratio plot manual ticks
 
 
-def plot_hist_on_axes_1d(axmain, axratio, h, href=None, default_color="black", default_linestyle="-"):
+def plot_hist_on_axes_1d(axmain, axratio, h, href=None, default_color="black", default_linestyle="-", **plotkeys):
 
     ## Case-insensitize the plotkeys dict
-    plotkeys = mk_lowcase_dict(h.annotationDict)
+    hkeys = mk_lowcase_dict(h.annotationsDict)
+    hkeys.update(plotkeys)
+    plotkeys = hkeys
 
     # TODO: Split into different plot styles: line/filled/range, step/diag/smooth, ...?
 
@@ -269,7 +268,7 @@ def plot_hist_on_axes_1d(axmain, axratio, h, href=None, default_color="black", d
     return artists
 
 
-def plot(hs, outfile=None, ratio=True, show=False, axmain=None, axratio=None, plotkeys={}):
+def plot(hs, outfile=None, ratio=True, show=False, axmain=None, axratio=None, **plotkeys):
     """
     Plot the given histograms on a single figure, returning (fig, (main_axis,
     ratio_axis)). Show to screen if the second arg is True, and saving to outfile
@@ -300,7 +299,7 @@ def plot(hs, outfile=None, ratio=True, show=False, axmain=None, axratio=None, pl
     # TODO: Use ratio to setdefault RatioPlot in plotkeys, then use that to decide whether to look for href
     if ratio:
         for h in hs:
-            hkeys = mk_lowcase_dict(h.annotationDict)
+            hkeys = mk_lowcase_dict(h.annotationsDict)
             if yoda.util.as_bool(hkeys.get("ratioref", False)):
                 if href is None:
                     href = h
@@ -323,7 +322,7 @@ def plot(hs, outfile=None, ratio=True, show=False, axmain=None, axratio=None, pl
     if axratio:
         axratio.set_xlim([xmin, xmax])
         axratio.set_ylim(auto=True)
-    setup_axes_1d(axmain, axratio, plotkeys)
+    setup_axes_1d(axmain, axratio, **plotkeys)
 
     # TODO: specify ratio display in log/lin, abs, or #sigma, and as x/r or (x-r)/r
 
@@ -396,27 +395,31 @@ def _plot1arg(args):
     return plot(*args)
 
 
-def mplot(hs, outfiles=None, ratio=True, show=False, plotkeys={}, nproc=1):
+def nplot(hs, outfiles=None, ratio=True, show=False, nproc=1, **plotkeys):
     """
-    Plot the given list of histogram(s) using the Python multiprocessing
-    module to distribute the work on to multiple parallel processes. This is
-    just syntactic sugar for something fairly easily done by the user.
+    Plot the given list of histogram(s), cf. many calls to plot().
 
     hs must be an iterable, each entry of which will be the content of a single
     plot: the entries can either be single histograms or lists of histograms,
     i.e. either kind of valid first argument to plot().
 
-    The outfiles, plotkeys, and ratio arguments can either be iterables of valid
-    corresponding plot() args, or single instances of such args to be applied to
-    all the plots.
+    Outfiles must be an iterable corresponding to hs, and ratio may either be a
+    bool or such an iterable.
+
+    The return value is a list of the return tuples from each call to plot(), of
+    the same length as the hs arg.
+
+
+    MULTIPROCESSING -- *WARNING* CURRENTLY BROKEN
+
+    The main point of this function, other than convenience, is that the Python
+    multiprocessing module can be used to distribute the work on to multiple
+    parallel processes.
 
     The nproc argument should be the integer number of parallel processes on
     which to distribute the plotting. nproc = None (the default value) will use
     Ncpu-1 or 1 process, whichever is larger. If nproc = 1, multiprocessing will
-    not be used -- this may ease debugging.
-
-    The return value is a list of the return tuples from each call to plot(), of
-    the same length as the hs arg.
+    not be used -- this avoids overhead and eases debugging.
     """
 
     argslist = []

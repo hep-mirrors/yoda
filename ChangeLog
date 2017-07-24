@@ -1,5 +1,9 @@
 2017-07-24  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Improvements to yodaplot, including two operating modes: the
+	default CMP mode is suitable for plotting histos by path, from raw
+	.yoda files.
+
 	* Update yoda.plotting functions to treat plot-keys as args and AO
 	annotations via case-insensitive keys.
 
