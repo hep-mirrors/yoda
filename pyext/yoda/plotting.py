@@ -72,7 +72,6 @@ def mplinit(engine="MPL", font="TeX Gyre Pagella", fontsize=17, mfont=None, text
     the lower-case/text/old-style numerals and use 'upper-case' numerals
     everywhere. These options do not currently apply to the MPL rendering engine.
     """
-    import matplotlib as mpl
     mpl.rcParams.update({
         "text.usetex" : (engine != "MPL"),
         "font.size"   : int(fontsize),
@@ -91,11 +90,11 @@ def mplinit(engine="MPL", font="TeX Gyre Pagella", fontsize=17, mfont=None, text
         mpl.rcParams["pgf.preamble"] = texpreamble
     elif engine == "TEX":
         mpl.rcParams["tex.preamble"] = texpreamble
-    from matplotlib import pyplot as plt #< needed to initialise stuff
 
-    return mpl #, plt
+    return mpl
 
 ## Alias
+initmpl = mplinit
 setup_mpl = mplinit
 
 
@@ -113,10 +112,8 @@ def show():
 def mk_figaxes_1d(ratio=True, title=None, figsize=(8,6)):
     "Make a standard main+ratio plot figure and subplot layout"
 
-    import matplotlib as mpl
-    import matplotlib.pyplot as plt
-
     ## We need to use pyplot here to set up the backend-specific canvas
+    import matplotlib.pyplot as plt
     fig = plt.figure(figsize=figsize)
     #fig = mpl.figure.Figure(figsize=figsize, tight_layout=True)
 
@@ -144,7 +141,6 @@ def mk_figaxes_1d(ratio=True, title=None, figsize=(8,6)):
 
 
 def set_axis_labels_1d(axmain, axratio, xlabel=None, ylabel=None, ratioylabel=None):
-    import matplotlib as mpl
     axmain.set_ylabel(ylabel, y=1, ha="right", labelpad=None)
     if axratio:
         axmain.xaxis.set_major_locator(mpl.ticker.NullLocator())
@@ -202,10 +198,6 @@ def setup_axes_1d(axmain, axratio, plotkeys):
 
 
 def plot_hist_on_axes_1d(axmain, axratio, h, href=None, default_color="black", default_linestyle="-"):
-    import matplotlib as mpl
-    import matplotlib.pyplot as plt
-    # if "plt" not in dir():
-    #     mpl, plt = setup_mpl()
 
     # TODO: Split into different plot styles: line/filled/range, step/diag/smooth, ...?
 
@@ -272,9 +264,6 @@ def plot(hs, outfile=None, ratio=True, show=False, axmain=None, axratio=None, pl
     ratio_axis)). Show to screen if the second arg is True, and saving to outfile
     if it is otherwise non-null.
     """
-
-    import matplotlib as mpl
-    import matplotlib.pyplot as plt
 
     ## Handle single histo args
     if isinstance(hs, yoda.AnalysisObject):
@@ -375,6 +364,7 @@ def plot(hs, outfile=None, ratio=True, show=False, axmain=None, axratio=None, pl
 
     ## Show to screen if requested
     if show:
+        import matplotlib.pyplot as plt
         plt.show()
 
     ## Return the figure objects
