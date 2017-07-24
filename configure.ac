@@ -1,7 +1,7 @@
 ## Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.59)
-AC_INIT([YODA],[1.6.5],[yoda@projects.hepforge.org],[YODA])
+AC_INIT([YODA],[1.7.0a1],[yoda@projects.hepforge.org],[YODA])
 
 ## Check and block installation into the src/build dir
 if test "$prefix" = "$PWD"; then
