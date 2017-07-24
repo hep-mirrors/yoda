@@ -482,6 +482,7 @@ namespace YODA {
   //@{
 
   /// Equality test of x characteristics only
+  /// @todo Need to add y comparisons, too
   inline bool operator==(const YODA::Point2D& a, const YODA::Point2D& b) {
     const bool same_val = YODA::fuzzyEquals(a.x(), b.x());
     const bool same_eminus = YODA::fuzzyEquals(a.xErrMinus(), b.xErrMinus());

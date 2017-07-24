@@ -280,6 +280,7 @@ namespace YODA {
 
     double _x;
     std::pair<double,double> _ex;
+    //std::vector<std::pair<double,double> > _ex;
 
     //@}
 
@@ -291,7 +292,6 @@ namespace YODA {
   //@{
 
   /// Equality test of x characteristics only
-  /// @todo AAARGH! Need to also test y. Maybe need named cmp operators for separate x/y and with/without metadata
   inline bool operator==(const YODA::Point1D& a, const YODA::Point1D& b) {
     const bool same_val = YODA::fuzzyEquals(a.x(), b.x());
     const bool same_eminus = YODA::fuzzyEquals(a.xErrMinus(), b.xErrMinus());
@@ -300,7 +300,6 @@ namespace YODA {
   }
 
   /// Equality test of x characteristics only
-  /// @todo AAARGH! Need to also test y. Maybe need named cmp operators for separate x/y and with/without metadata
   inline bool operator != (const YODA::Point1D& a, const YODA::Point1D& b) {
     return !(a == b);
   }
