@@ -1,3 +1,24 @@
+2017-08-16  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Fix setVal(i, x) numbered-axis methods on Point2D and Point3D:
+	switch break statements were missing.
+
+	* Explicitly load all ROOT objects as a list rather than
+	generator. Patch from Dmitry Kalinkin.
+
+2017-07-24  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Improvements to yodaplot, including two operating modes: the
+	default CMP mode is suitable for plotting histos by path, from raw
+	.yoda files.
+
+	* Update yoda.plotting functions to treat plot-keys as args and AO
+	annotations via case-insensitive keys.
+
+	* Add annotationsDict to the Python AO interface.
+
+	* Add AO as an alias for AnalysisObject.
+
 2017-07-23  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Add parallel/compatibility yoda1 package to aid eventual transition to YODA v2.

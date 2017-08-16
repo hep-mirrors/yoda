@@ -37,6 +37,13 @@ cdef class AnalysisObject(util.Base):
         A list of all annotation/metadata keys."""
         return self.aoptr().annotations()
 
+    @property
+    def annotationsDict(self):
+        """() -> dict[str->str]
+        A dict of all annotations/metadata entries."""
+        # TODO: add a map equivalent to C++?
+        return dict((k.lower(), self.annotation(k)) for k in self.annotations)
+
     def annotation(self, string k, default=None):
         """Get annotation k from this object (falling back to default if not set)."""
         try:
@@ -103,3 +110,7 @@ cdef class AnalysisObject(util.Base):
 
     def __repr__(self):
         return "<%s '%s'>" % (self.__class__.__name__, self.path)
+
+
+## Convenience alias
+AO = AnalysisObject
