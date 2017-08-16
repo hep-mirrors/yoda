@@ -1,5 +1,8 @@
 2017-08-16  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Fix setVal(i, x) numbered-axis methods on Point2D and Point3D:
+	switch break statements were missing.
+
 	* Explicitly load all ROOT objects as a list rather than
 	generator. Patch from Dmitry Kalinkin.
 

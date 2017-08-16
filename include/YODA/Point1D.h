@@ -202,71 +202,71 @@ namespace YODA {
     }
     /// Set the point value for direction @a i
     void setVal(size_t i, double val) {
-      if (i == 0 || i > 1) throw RangeError("Invalid axis int, must be in range 1..dim");
+      if (i != 1) throw RangeError("Invalid axis int, must be in range 1..dim");
       setX(val);
     }
 
     /// Get error values for direction @a i
     const std::pair<double,double>& errs(size_t i) const {
-      if (i == 0 || i > 1) throw RangeError("Invalid axis int, must be in range 1..dim");
+      if (i != 1) throw RangeError("Invalid axis int, must be in range 1..dim");
       return xErrs();
     }
     /// Get negative error value for direction @a i
     double errMinus(size_t i) const {
-      if (i == 0 || i > 1) throw RangeError("Invalid axis int, must be in range 1..dim");
+      if (i != 1) throw RangeError("Invalid axis int, must be in range 1..dim");
       return xErrMinus();
     }
     /// Get positive error value for direction @a i
     double errPlus(size_t i) const {
-      if (i == 0 || i > 1) throw RangeError("Invalid axis int, must be in range 1..dim");
+      if (i != 1) throw RangeError("Invalid axis int, must be in range 1..dim");
       return xErrPlus();
     }
     /// Get average error value for direction @a i
     double errAvg(size_t i) const {
-      if (i == 0 || i > 1) throw RangeError("Invalid axis int, must be in range 1..dim");
+      if (i != 1) throw RangeError("Invalid axis int, must be in range 1..dim");
       return xErrAvg();
     }
 
     /// Set negative error for direction @a i
     void setErrMinus(size_t i, double eminus) {
-      if (i == 0 || i > 1) throw RangeError("Invalid axis int, must be in range 1..dim");
+      if (i != 1) throw RangeError("Invalid axis int, must be in range 1..dim");
       setXErrMinus(eminus);
     }
     /// Set positive error for direction @a i
     void setErrPlus(size_t i, double eplus) {
-      if (i == 0 || i > 1) throw RangeError("Invalid axis int, must be in range 1..dim");
+      if (i != 1) throw RangeError("Invalid axis int, must be in range 1..dim");
       setXErrPlus(eplus);
     }
 
     /// Set symmetric error for direction @a i
     void setErr(size_t i, double e) {
-      if (i == 0 || i > 1) throw RangeError("Invalid axis int, must be in range 1..dim");
+      if (i != 1) throw RangeError("Invalid axis int, must be in range 1..dim");
       setXErr(e);
     }
     /// Set asymmetric error for direction @a i
     void setErrs(size_t i, double eminus, double eplus) {
-      if (i == 0 || i > 1) throw RangeError("Invalid axis int, must be in range 1..dim");
+      if (i != 1) throw RangeError("Invalid axis int, must be in range 1..dim");
       setXErrs(eminus, eplus);
     }
     /// Set asymmetric error for direction @a i
     void setErrs(size_t i, std::pair<double,double>& e) {
-      if (i == 0 || i > 1) throw RangeError("Invalid axis int, must be in range 1..dim");
+      if (i != 1) throw RangeError("Invalid axis int, must be in range 1..dim");
       setXErrs(e);
     }
 
     /// Set value and symmetric error for direction @a i
     void set(size_t i, double val, double e) {
-      if (i == 0 || i > 1) throw RangeError("Invalid axis int, must be in range 1..dim");
+      if (i != 1) throw RangeError("Invalid axis int, must be in range 1..dim");
       setX(val, e);
     }
     /// Set value and asymmetric error for direction @a i
     void set(size_t i, double val, double eminus, double eplus) {
-      if (i == 0 || i > 1) throw RangeError("Invalid axis int, must be in range 1..dim");
+      if (i != 1) throw RangeError("Invalid axis int, must be in range 1..dim");
       setX(val, eminus, eplus);
     }
     /// Set value and asymmetric error for direction @a i
     void set(size_t i, double val, std::pair<double,double>& e) {
-      if (i == 0 || i > 1) throw RangeError("Invalid axis int, must be in range 1..dim");
+      if (i != 1) throw RangeError("Invalid axis int, must be in range 1..dim");
       setX(val, e);
     }
 
