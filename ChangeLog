@@ -1,3 +1,8 @@
+2017-08-16  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Explicitly load all ROOT objects as a list rather than
+	generator. Patch from Dmitry Kalinkin.
+
 2017-07-24  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Improvements to yodaplot, including two operating modes: the
