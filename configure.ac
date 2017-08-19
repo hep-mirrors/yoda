@@ -59,6 +59,9 @@ if test x$enable_debug = xyes; then
 fi
 
 
+## Optional zlib support
+AX_CHECK_ZLIB
+
 ## Optional ROOT compatibility
 AC_ARG_ENABLE([root], [AC_HELP_STRING(--disable-root,
   [don't try to build YODA interface to PyROOT (needs root-config) @<:@default=yes@:>@])], [], [enable_root=yes])

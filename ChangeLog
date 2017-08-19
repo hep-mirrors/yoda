@@ -1,3 +1,8 @@
+2017-08-19  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Add optional zlib support via zstr -- massive thanks to Dmitry
+	Kalinkin for the lovely patch!
+
 2017-08-16  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Fix setVal(i, x) numbered-axis methods on Point2D and Point3D:

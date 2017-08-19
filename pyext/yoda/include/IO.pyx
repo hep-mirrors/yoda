@@ -53,8 +53,8 @@ cdef dict _aobjects_to_dict(vector[c.AnalysisObject*]* aobjects, patterns, unpat
     return out
 
 ## Set a istringstream's string from a C/Python string
-cdef void _make_iss(c.istringstream &iss, char* s):
-    iss.str(string(s))
+cdef void _make_iss(c.istringstream &iss, string s):
+    iss.str(s)
 
 ## Read a file's contents as a returned string
 ## The file argument can either be a file object, filename, or special "-" reference to stdin
@@ -64,7 +64,7 @@ def _str_from_file(file_or_filename):
     elif file_or_filename == "-":
         s = sys.stdin.read()
     else:
-        f = open(file_or_filename)
+        f = open(file_or_filename, "rb") # assume that linefeed conversion is to occur in C++ code
         s = f.read()
         f.close()
     return s
@@ -102,7 +102,7 @@ def read(filename, asdict=True, patterns=None, unpatterns=None):
     """
     cdef c.istringstream iss
     cdef vector[c.AnalysisObject*] aobjects
-    f = open(filename)
+    f = open(filename, "rb") # assume that linefeed conversion is to occur in C++ code
     s = f.read()
     f.close()
     _make_iss(iss, s)

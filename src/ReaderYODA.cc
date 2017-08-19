@@ -7,6 +7,7 @@
 #include "YODA/Utils/StringUtils.h"
 #include "YODA/Utils/getline.h"
 #include "YODA/Exceptions.h"
+#include "YODA/Config/DummyConfig.h"
 
 #include "YODA/Counter.h"
 #include "YODA/Histo1D.h"
@@ -20,10 +21,22 @@
 #include <iostream>
 using namespace std;
 
+#ifdef HAVE_LIBZ
+#define _XOPEN_SOURCE 700
+#include "zstr/src/zstr.hpp"
+#endif /* HAVE_LIBZ */
+
 namespace YODA {
 
 
-  void ReaderYODA::read(istream& stream, vector<AnalysisObject*>& aos) {
+  void ReaderYODA::read(istream& _stream, vector<AnalysisObject*>& aos) {
+
+    #ifdef HAVE_LIBZ
+    // zstr detects if file is deflated or plain-text
+    zstr::istream stream(_stream);
+    #else
+    auto& stream = _stream;
+    #endif /* HAVE_LIBZ */
 
     // Data format parsing states, representing current data type
     /// @todo Extension to e.g. "bar" or multi-counter or binned-value types, and new formats for extended Scatter types
