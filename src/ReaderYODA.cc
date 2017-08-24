@@ -18,9 +18,72 @@
 #include "YODA/Scatter3D.h"
 
 #include <iostream>
+#include <cstring>
 using namespace std;
 
 namespace YODA {
+
+
+  namespace {
+
+    // A wrapper for std::strtod and std::strtol, for fast tokenizing when all
+    // input is guaranteed to be numeric (as in this data block). Based very
+    // closely on FastIStringStream by Gavin Salam.
+    class NumParser {
+    public:
+      // Constructor from char*
+      NumParser(const char* line=0) { reset(line); }
+      // Constructor from std::string
+      NumParser(const string& line) { reset(line); }
+
+      // Re-init to new line as char*
+      void reset(const char* line=0) {
+        _next = const_cast<char*>(line);
+        _new_next = _next;
+        _error = false;
+      }
+      // Re-init to new line as std::string
+      void reset(const string& line) { reset(line.c_str()); }
+
+      // Tokenizing stream operator (forwards to specialisations)
+      template<class T>
+      NumParser& operator >> (T& value) {
+        _get(value);
+        if (_new_next == _next) _error = true; // handy error condition behaviour!
+        _next = _new_next;
+        return *this;
+      }
+
+      // Allow use of operator>> in a while loop
+      operator bool() const { return !_error; }
+
+    private:
+      void _get(double& x) { x = std::strtod(_next, &_new_next); }
+      void _get(float& x) { x = std::strtof(_next, &_new_next); }
+      void _get(int& i) { i = std::strtol(_next, &_new_next, 10); } // force base 10!
+      void _get(long& i) { i = std::strtol(_next, &_new_next, 10); } // force base 10!
+      void _get(unsigned int& i) { i = std::strtoul(_next, &_new_next, 10); } // force base 10!
+      void _get(long unsigned int& i) { i = std::strtoul(_next, &_new_next, 10); } // force base 10!
+      void _get(string& x) {
+        /// @todo If _next is null?
+        while (std::isspace(*_next)) {
+          cout << "??? '" << *_next << "'" << endl;
+          _next += 1;
+        }
+        _new_next = _next;
+        while (!std::isspace(*_new_next)) {
+          cout << "!!! '" << *_new_next << "'" << endl;
+          _new_next += 1;
+        }
+        cout << "+++ '" << _next << "' : '" << _new_next << "'" << endl;
+        x = string(_next, _new_next-_next);
+      }
+
+      char *_next, *_new_next;
+      bool _error;
+    };
+
+  }
 
 
   void ReaderYODA::read(istream& stream, vector<AnalysisObject*>& aos) {
@@ -56,6 +119,7 @@ namespace YODA {
     Scatter3D* s3curr = NULL;
 
     // Loop over all lines of the input file
+    NumParser nparser;
     while (Utils::getline(stream, s)) {
       nline += 1;
 
@@ -210,13 +274,15 @@ namespace YODA {
         // double x(0), y(0), z(0), exm(0), exp(0), eym(0), eyp(0), ezm(0), ezp(0);
         //
         /// @todo Use a fast numeric parser cf. LHAPDF
-        istringstream iss(s);
+        //istringstream iss(s);
+        nparser.reset(s);
+        cout << "*** " << s << endl;
         switch (context) {
 
         case COUNTER:
           {
             double sumw(0), sumw2(0); unsigned long n(0);
-            iss >> sumw >> sumw2 >> n;
+            nparser >> sumw >> sumw2 >> n;
             cncurr->setDbn(Dbn0D(n, sumw, sumw2));
           }
           break;
@@ -228,12 +294,13 @@ namespace YODA {
             /// @todo Improve/factor this "bin" string-or-float parsing... esp for mixed case of 2D overflows
             /// @todo When outflows are treated as "infinity bins" and don't require a distinct type, string replace under/over -> -+inf
             if (s.find("Total") != string::npos || s.find("Underflow") != string::npos || s.find("Overflow") != string::npos) {
-              iss >> xoflow1 >> xoflow2;
+              nparser >> xoflow1 >> xoflow2;
+              cout << "&&& '" << xoflow1 << "' : '" << xoflow2 << "'" << endl;
             } else {
-              iss >> xmin >> xmax;
+              nparser >> xmin >> xmax;
             }
             // The rest is the same for overflows and in-range bins
-            iss >> sumw >> sumw2 >> sumwx >> sumwx2 >> n;
+            nparser >> sumw >> sumw2 >> sumwx >> sumwx2 >> n;
             const Dbn1D dbn(n, sumw, sumw2, sumwx, sumwx2);
             if (xoflow1 == "Total") h1curr->setTotalDbn(dbn);
             else if (xoflow1 == "Underflow") h1curr->setUnderflow(dbn);
@@ -250,14 +317,14 @@ namespace YODA {
             /// @todo Improve/factor this "bin" string-or-float parsing... esp for mixed case of 2D overflows
             /// @todo When outflows are treated as "infinity bins" and don't require a distinct type, string replace under/over -> -+inf
             if (s.find("Total") != string::npos) {
-              iss >> xoflow1 >> xoflow2; // >> yoflow1 >> yoflow2;
+              nparser >> xoflow1 >> xoflow2; // >> yoflow1 >> yoflow2;
             } else if (s.find("Underflow") != string::npos || s.find("Overflow") != string::npos) {
               throw ReadError("2D histogram overflow syntax is not yet defined / handled");
             } else {
-              iss >> xmin >> xmax >> ymin >> ymax;
+              nparser >> xmin >> xmax >> ymin >> ymax;
             }
             // The rest is the same for overflows and in-range bins
-            iss >> sumw >> sumw2 >> sumwx >> sumwx2 >> sumwy >> sumwy2 >> sumwxy >> n;
+            nparser >> sumw >> sumw2 >> sumwx >> sumwx2 >> sumwy >> sumwy2 >> sumwxy >> n;
             const Dbn2D dbn(n, sumw, sumw2, sumwx, sumwx2, sumwy, sumwy2, sumwxy);
             if (xoflow1 == "Total") h2curr->setTotalDbn(dbn);
             // else if (xoflow1 == "Underflow") p1curr->setUnderflow(dbn);
@@ -277,12 +344,12 @@ namespace YODA {
             /// @todo Improve/factor this "bin" string-or-float parsing... esp for mixed case of 2D overflows
             /// @todo When outflows are treated as "infinity bins" and don't require a distinct type, string replace under/over -> -+inf
             if (s.find("Total") != string::npos || s.find("Underflow") != string::npos || s.find("Overflow") != string::npos) {
-              iss >> xoflow1 >> xoflow2;
+              nparser >> xoflow1 >> xoflow2;
             } else {
-              iss >> xmin >> xmax;
+              nparser >> xmin >> xmax;
             }
             // The rest is the same for overflows and in-range bins
-            iss >> sumw >> sumw2 >> sumwx >> sumwx2 >> sumwy >> sumwy2 >> n;
+            nparser >> sumw >> sumw2 >> sumwx >> sumwx2 >> sumwy >> sumwy2 >> n;
             const double DUMMYWXY = 0;
             const Dbn2D dbn(n, sumw, sumw2, sumwx, sumwx2, sumwy, sumwy2, DUMMYWXY);
             if (xoflow1 == "Total") p1curr->setTotalDbn(dbn);
@@ -300,14 +367,14 @@ namespace YODA {
             /// @todo Improve/factor this "bin" string-or-float parsing... esp for mixed case of 2D overflows
             /// @todo When outflows are treated as "infinity bins" and don't require a distinct type, string replace under/over -> -+inf
             if (s.find("Total") != string::npos) {
-              iss >> xoflow1 >> xoflow2; // >> yoflow1 >> yoflow2;
+              nparser >> xoflow1 >> xoflow2; // >> yoflow1 >> yoflow2;
             } else if (s.find("Underflow") != string::npos || s.find("Overflow") != string::npos) {
               throw ReadError("2D profile overflow syntax is not yet defined / handled");
             } else {
-              iss >> xmin >> xmax >> ymin >> ymax;
+              nparser >> xmin >> xmax >> ymin >> ymax;
             }
             // The rest is the same for overflows and in-range bins
-            iss >> sumw >> sumw2 >> sumwx >> sumwx2 >> sumwy >> sumwy2 >> sumwz >> sumwz2 >> sumwxy >> sumwxz >> sumwyz >> n;
+            nparser >> sumw >> sumw2 >> sumwx >> sumwx2 >> sumwy >> sumwy2 >> sumwz >> sumwz2 >> sumwxy >> sumwxz >> sumwyz >> n;
             const Dbn3D dbn(n, sumw, sumw2, sumwx, sumwx2, sumwy, sumwy2, sumwz, sumwz2, sumwxy, sumwxz, sumwyz);
             if (xoflow1 == "Total") p2curr->setTotalDbn(dbn);
             // else if (xoflow1 == "Underflow") p2curr->setUnderflow(dbn);
@@ -323,7 +390,7 @@ namespace YODA {
         case SCATTER1D:
           {
             double x(0), exm(0), exp(0);
-            iss >> x >> exm >> exp;
+            nparser >> x >> exm >> exp;
             // s1curr->addPoint(Point1D(x, exm, exp));
             pt1scurr.push_back(Point1D(x, exm, exp));
           }
@@ -333,7 +400,7 @@ namespace YODA {
           {
             double x(0), y(0), exm(0), exp(0), eym(0), eyp(0);
             /// @todo Need to improve this format for multi-err points
-            iss >> x >> exm >> exp >> y >> eym >> eyp;
+            nparser >> x >> exm >> exp >> y >> eym >> eyp;
             // s2curr->addPoint(Point2D(x, y, exm, exp, eym, eyp));
             pt2scurr.push_back(Point2D(x, y, exm, exp, eym, eyp));
           }
@@ -343,7 +410,7 @@ namespace YODA {
           {
             double x(0), y(0), z(0), exm(0), exp(0), eym(0), eyp(0), ezm(0), ezp(0);
             /// @todo Need to improve this format for multi-err points
-            iss >> x >> exm >> exp >> y >> eym >> eyp >> z >> ezm >> ezp;
+            nparser >> x >> exm >> exp >> y >> eym >> eyp >> z >> ezm >> ezp;
             // s3curr->addPoint(Point3D(x, y, z, exm, exp, eym, eyp, ezm, ezp));
             pt3scurr.push_back(Point3D(x, y, z, exm, exp, eym, eyp, ezm, ezp));
           }

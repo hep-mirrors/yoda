@@ -1,5 +1,8 @@
 2017-08-24  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Use a slightly enhanced fast numeric parser in ReaderYODA (taken
+	from LHAPDF, originally inspired by Gavin Salam).
+
 	* Add an UNSCALE spec option to yodascale, to undo ScaledBy effects.
 
 2017-08-16  Andy Buckley  <andy.buckley@cern.ch>

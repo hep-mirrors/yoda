@@ -23,6 +23,7 @@ The scaling specification syntax is a histogram path pattern followed by a
 definition of the scaling to be done on that histogram (or histograms). The path
 pattern consists of a regular expression, optionally followed by a range
 specifier. The best explanation is probably a few examples:
+
   /path/to/hist      (match all bins in that particular histogram)
   /.*pt              (match all bins in histograms ending in 'pt')
   /myhist@5          (match bins with high edge >= 5 in /myhist)
