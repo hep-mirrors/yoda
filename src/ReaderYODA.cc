@@ -65,17 +65,10 @@ namespace YODA {
       void _get(unsigned int& i) { i = std::strtoul(_next, &_new_next, 10); } // force base 10!
       void _get(long unsigned int& i) { i = std::strtoul(_next, &_new_next, 10); } // force base 10!
       void _get(string& x) {
-        /// @todo If _next is null?
-        while (std::isspace(*_next)) {
-          cout << "??? '" << *_next << "'" << endl;
-          _next += 1;
-        }
+        /// @todo If _next and _new_next become null?
+        while (std::isspace(*_next)) _next += 1;
         _new_next = _next;
-        while (!std::isspace(*_new_next)) {
-          cout << "!!! '" << *_new_next << "'" << endl;
-          _new_next += 1;
-        }
-        cout << "+++ '" << _next << "' : '" << _new_next << "'" << endl;
+        while (!std::isspace(*_new_next)) _new_next += 1;
         x = string(_next, _new_next-_next);
       }
 
@@ -273,10 +266,8 @@ namespace YODA {
         // double sumw(0), sumw2(0), sumwx(0), sumwx2(0), sumwy(0), sumwy2(0), sumwz(0), sumwz2(0), sumwxy(0), sumwxz(0), sumwyz(0); unsigned long n(0);
         // double x(0), y(0), z(0), exm(0), exp(0), eym(0), eyp(0), ezm(0), ezp(0);
         //
-        /// @todo Use a fast numeric parser cf. LHAPDF
         //istringstream iss(s);
         nparser.reset(s);
-        cout << "*** " << s << endl;
         switch (context) {
 
         case COUNTER:
@@ -295,7 +286,6 @@ namespace YODA {
             /// @todo When outflows are treated as "infinity bins" and don't require a distinct type, string replace under/over -> -+inf
             if (s.find("Total") != string::npos || s.find("Underflow") != string::npos || s.find("Overflow") != string::npos) {
               nparser >> xoflow1 >> xoflow2;
-              cout << "&&& '" << xoflow1 << "' : '" << xoflow2 << "'" << endl;
             } else {
               nparser >> xmin >> xmax;
             }
