@@ -47,7 +47,12 @@ cdef class AnalysisObject(util.Base):
     def annotation(self, string k, default=None):
         """Get annotation k from this object (falling back to default if not set)."""
         try:
-            return util._autotype(self.aoptr().annotation(string(k)))
+            astr = self.aoptr().annotation(string(k))
+            try:
+                import yaml
+                return yaml.load(astr)
+            except ImportError:
+                return util._autotype(astr)
         except:
             return default
 
