@@ -270,18 +270,6 @@ namespace YODA {
             YAML::Emitter em;
             em << it.second();
             val = em.c_str();
-            // try {
-            //   // Assume the value is a scalar type -- it'll throw an exception if not
-            //   it.second() >> val;
-            // } catch (const YAML::InvalidScalar& ex) {
-            //   cout << "OOPS" << endl;
-            //   // It's a list: process the entries individually into a comma-separated string
-            //   string subval;
-            //   for (size_t i = 0; i < it.second().size(); ++i) {
-            //     it.second()[i] >> subval;
-            //     val += subval + ((i < it.second().size()-1) ? "," : "");
-            //   }
-            // }
             // cout << "@@@ '" << key << "', '" << val << "'" << endl;
             aocurr->setAnnotation(key, val);
           }
