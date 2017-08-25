@@ -45,7 +45,11 @@ cdef class AnalysisObject(util.Base):
         return dict((k.lower(), self.annotation(k)) for k in self.annotations)
 
     def annotation(self, string k, default=None):
-        """Get annotation k from this object (falling back to default if not set)."""
+        """Get annotation k from this object (falling back to default if not set).
+
+        The annotation string will be automatically converted to Python
+        native types as far as possible -- more complex types are possible
+        if the yaml module is installed."""
         try:
             astr = self.aoptr().annotation(string(k))
             try:
