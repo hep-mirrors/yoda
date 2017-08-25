@@ -14,6 +14,7 @@
 #include <set>
 #include <string>
 #include <utility>
+#include <memory>
 
 namespace YODA {
 
@@ -27,6 +28,7 @@ namespace YODA {
     typedef Utils::ndarray<double, N> NdVal;
     typedef Utils::ndarray<std::pair<double,double>, N> NdValPair;
     typedef Utils::sortedvector< Point<N> > Points;
+    typedef std::shared_ptr<Scatter> Ptr;
 
 
     /// @name Constructors
