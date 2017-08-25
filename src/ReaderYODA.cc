@@ -18,14 +18,19 @@
 #include "YODA/Scatter2D.h"
 #include "YODA/Scatter3D.h"
 
-#include <iostream>
-#include <cstring>
-using namespace std;
+#include "yaml-cpp/yaml.h"
+#ifdef YAML_NAMESPACE
+#define YAML YAML_NAMESPACE
+#endif
 
 #ifdef HAVE_LIBZ
 #define _XOPEN_SOURCE 700
 #include "zstr/src/zstr.hpp"
-#endif /* HAVE_LIBZ */
+#endif
+
+#include <iostream>
+#include <cstring>
+using namespace std;
 
 namespace YODA {
 
@@ -90,7 +95,7 @@ namespace YODA {
     zstr::istream stream(_stream);
     #else
     auto& stream = _stream;
-    #endif /* HAVE_LIBZ */
+    #endif
 
     // Data format parsing states, representing current data type
     /// @todo Extension to e.g. "bar" or multi-counter or binned-value types, and new formats for extended Scatter types
@@ -121,6 +126,7 @@ namespace YODA {
     Scatter1D* s1curr = NULL;
     Scatter2D* s2curr = NULL;
     Scatter3D* s3curr = NULL;
+    string annscurr;
 
     // Loop over all lines of the input file
     aistringstream aiss;
@@ -217,7 +223,6 @@ namespace YODA {
 
         // Clear/reset context and register AO if END line is found
         /// @todo Throw error if mismatch between BEGIN (context) and END types
-        /// @todo More explicitly handle leading #'s?
         if (s.find("END ") != string::npos) {
           switch (context) {
           case COUNTER:
@@ -253,30 +258,53 @@ namespace YODA {
           case NONE:
             break;
           }
+          // Set all annotations
+          // YAML::Node anns = YAML::Load(annscurr);
+          istringstream iss(annscurr);
+          YAML::Parser parser(iss);
+          YAML::Node anns;
+          parser.GetNextDocument(anns);
+          for (YAML::Iterator it = anns.begin(); it != anns.end(); ++it) {
+            string key, val;
+            it.first() >> key;
+            try {
+              // Assume the value is a scalar type -- it'll throw an exception if not
+              it.second() >> val;
+            } catch (const YAML::InvalidScalar& ex) {
+              // It's a list: process the entries individually into a comma-separated string
+              string subval;
+              for (size_t i = 0; i < it.second().size(); ++i) {
+                it.second()[i] >> subval;
+                val += subval + ((i < it.second().size()-1) ? "," : "");
+              }
+            }
+            aocurr->setAnnotation(key, val);
+          }
+          // Put this AO in the completed stack
           aos.push_back(aocurr);
+          // Clear all current-object pointers
           aocurr = NULL;
           cncurr = NULL;
           h1curr = NULL; h2curr = NULL;
           p1curr = NULL; p2curr = NULL;
           s1curr = NULL; s2curr = NULL; s3curr = NULL;
+          annscurr.clear();
           context = NONE;
-          continue; ///< @todo Improve... would be good to avoid these continues
+          continue;
         }
 
-        // Extract annotations for all types
+        // Extract annotations (after converting to YAML syntax)
         const size_t ieq = s.find("=");
-        if (ieq != string::npos) {
-          const string akey = s.substr(0, ieq);
-          const string aval = s.substr(ieq+1);
-          aocurr->setAnnotation(akey, aval);
-          continue; ///< @todo Improve... would be good to avoid these continues
+        if (ieq != string::npos) s.replace(ieq, 1, ": ");
+        const size_t ico = s.find(":");
+        if (ico != string::npos) {
+          // cout << "@@@ '" << s << "'" << endl;
+          annscurr += (annscurr.empty() ? "" : "\n") + s;
+          // const string akey = s.substr(0, ieq);
+          // const string aval = s.substr(ieq+1);
+          continue;
         }
 
-        // Populate the data lines for points, bins, etc.
-        // string xoflow1, xoflow2, yoflow1, yoflow2; double xmin(0), xmax(0), ymin(0), ymax(0);
-        // double sumw(0), sumw2(0), sumwx(0), sumwx2(0), sumwy(0), sumwy2(0), sumwz(0), sumwz2(0), sumwxy(0), sumwxz(0), sumwyz(0); unsigned long n(0);
-        // double x(0), y(0), z(0), exm(0), exp(0), eym(0), eyp(0), ezm(0), ezp(0);
-        //
         //istringstream iss(s);
         aiss.reset(s);
         switch (context) {
