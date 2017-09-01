@@ -88,13 +88,13 @@ namespace YODA {
   }
 
 
-  void ReaderYODA::read(istream& _stream, vector<AnalysisObject*>& aos) {
+  void ReaderYODA::read(istream& stream_, vector<AnalysisObject*>& aos) {
 
     #ifdef HAVE_LIBZ
     // zstr detects if file is deflated or plain-text
-    zstr::istream stream(_stream);
+    zstr::istream stream(stream_);
     #else
-    auto& stream = _stream;
+    auto& stream = stream_;
     #endif
 
     // Data format parsing states, representing current data type
@@ -141,7 +141,6 @@ namespace YODA {
 
       // Ignore comments (whole-line only, without indent, and still allowed for compatibility on BEGIN/END lines)
       if (s.find("#") == 0 && s.find("BEGIN") == string::npos && s.find("END") == string::npos) continue;
-
 
       // Now the context-sensitive part
       if (context == NONE) {
@@ -215,6 +214,7 @@ namespace YODA {
         // cout << aocurr->path() << " " << nline << " " << context << endl;
 
       } else {
+
         /// @todo Flatten conditional blocks with more else-ifs?
 
         // Throw error if a BEGIN line is found
@@ -258,30 +258,40 @@ namespace YODA {
           case NONE:
             break;
           }
+
           // Set all annotations
-          // YAML::Node anns = YAML::Load(annscurr);
-          istringstream iss(annscurr);
-          YAML::Parser parser(iss);
-          YAML::Node anns;
-          parser.GetNextDocument(anns);
-          for (YAML::Iterator it = anns.begin(); it != anns.end(); ++it) {
-            string key, val;
-            it.first() >> key;
-            YAML::Emitter em;
-            em << it.second();
-            val = em.c_str();
-            // cout << "@@@ '" << key << "', '" << val << "'" << endl;
-            aocurr->setAnnotation(key, val);
+          try {
+            // YAML::Node anns = YAML::Load(annscurr);
+            istringstream iss(annscurr);
+            YAML::Parser parser(iss);
+            YAML::Node anns;
+            parser.GetNextDocument(anns);
+            for (YAML::Iterator it = anns.begin(); it != anns.end(); ++it) {
+              string key, val;
+              it.first() >> key;
+              YAML::Emitter em;
+              em << it.second();
+              val = em.c_str();
+              // cout << "@@@ '" << key << "', '" << val << "'" << endl;
+              aocurr->setAnnotation(key, val);
+            }
+          } catch (...) {
+            /// @todo Is there a case for just giving up on these annotations, printing the error msg, and keep going? As an option?
+            const string err = "Problem during annotation parsing of YAML block:\n'''\n" + annscurr + "\n'''";
+            // cerr << err << endl;
+            throw ReadError(err);
           }
+          annscurr.clear();
+
           // Put this AO in the completed stack
           aos.push_back(aocurr);
+
           // Clear all current-object pointers
-          aocurr = NULL;
-          cncurr = NULL;
-          h1curr = NULL; h2curr = NULL;
-          p1curr = NULL; p2curr = NULL;
-          s1curr = NULL; s2curr = NULL; s3curr = NULL;
-          annscurr.clear();
+          aocurr = nullptr;
+          cncurr = nullptr;
+          h1curr = nullptr; h2curr = nullptr;
+          p1curr = nullptr; p2curr = nullptr;
+          s1curr = nullptr; s2curr = nullptr; s3curr = nullptr;
           context = NONE;
           continue;
         }

@@ -23,7 +23,7 @@ namespace YODA {
     if (fmt == "yoda") return ReaderYODA::create();
     if (fmt == "aida") return ReaderAIDA::create();
     if (fmt == "dat" || fmt == "flat")  return ReaderFLAT::create();
-    if (fmtex == "yoda.gz") {
+    if (fmt == "yodz" || fmtex == "yoda.gz") {
       #ifdef HAVE_LIBZ
       return ReaderYODA::create();
       #else
