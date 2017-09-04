@@ -1,5 +1,7 @@
 2017-08-25  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Change license explicitly to GPLv3, cf. MCnet3 agreement.
+
 	* Parse YODA format AO headers as YAML (restriction to single-line dict entries for now).
 
 2017-08-24  Andy Buckley  <andy.buckley@cern.ch>
