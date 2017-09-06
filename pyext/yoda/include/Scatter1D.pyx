@@ -130,3 +130,29 @@ cdef class Scatter1D(AnalysisObject):
     # # TODO: remove?
     # def __sub__(Scatter1D self, Scatter1D other):
     #     return cutil.new_owned_cls(Scatter1D, c.Scatter1D_sub_Scatter1D(self.s1ptr(), other.s1ptr()))
+
+
+    def xVals(self):
+        return [p.x for p in self.points]
+
+    def xMins(self):
+        """All x low values."""
+        return [p.xMin for p in self.points]
+
+    def xMaxs(self):
+        """All x high values."""
+        return [p.xMax for p in self.points]
+
+    @property
+    def xMin(self):
+        """Lowest x value."""
+        return min(self.xMins())
+
+    @property
+    def xMax(self):
+        """Highest x value."""
+        return max(self.xMaxs())
+
+
+## Convenience alias
+S1D = Scatter1D

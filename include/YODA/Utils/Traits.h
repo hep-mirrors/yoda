@@ -12,7 +12,7 @@ namespace YODA {
 
 
   namespace SFINAE {
-    /// @todo Replaceable by C++11 std::false/true_type?
+    /// @todo Replace by C++11 std::false/true_type
     typedef char yes[1]; typedef char no[2];
 
     /// C++11 equivalent of C++17 std::void_t

@@ -255,10 +255,10 @@ cdef class Histo1D(AnalysisObject):
             self.h1ptr().addBins(cedges)
 
     def __addBins_bins(self, bins):
-        self.__addBins_tuples(imap(attrgetter('edges'), bins))
+        self.__addBins_tuples(imap(attrgetter('xEdges'), bins))
 
     def __addBins_points(self, points):
-        self.__addBins_tuples(imap(attrgetter('xRange'), points))
+        self.__addBins_tuples(imap(attrgetter('xWidth'), points))
 
     def __addBins_tuples(self, tuples):
         cdef double a, b
@@ -396,3 +396,86 @@ cdef class Histo1D(AnalysisObject):
 
     def __div__(Histo1D self, Histo1D other):
         return self.divideBy(other)
+
+
+
+    ## Functions for array-based plotting, chi2 calculations, etc.
+
+    # def sumWs(self):
+    #     """All sumWs of the histo."""
+    #     return [b.sumW for b in self.bins]
+
+    def xMins(self):
+        """All x low edges of the histo."""
+        return [b.xMin for b in self.bins]
+
+    def xMaxs(self):
+        """All x high edges of the histo."""
+        return [b.xMax for b in self.bins]
+
+    def xMids(self):
+        """All x bin midpoints of the histo."""
+        return [b.xMid for b in self.bins]
+
+    def xFoci(self):
+        """All x bin foci of the histo."""
+        return [b.xFocus for b in self.bins]
+
+    def xVals(self, foci=False):
+        return self.xFoci() if foci else self.xMids()
+
+    def xErrs(self, foci=False):
+        if foci:
+            return [(b.xFocus-b.xMin, b.xMax-b.xFocus) for b in self.bins]
+        else:
+            return [(b.xMid-b.xMin, b.xMax-b.xMid) for b in self.bins]
+
+
+
+    def heights(self):
+        """All y heights of the histo."""
+        return [b.height for b in self.bins]
+
+    def areas(self):
+        """All areas of the histo."""
+        return [b.area for b in self.bins]
+
+    def yVals(self, area=False):
+        return self.areas() if area else self.heights()
+
+
+    def heightErrs(self): #, asymm=False):
+        """All height errors of the histo.
+
+        TODO: asymm arg / heightErrsMinus/Plus?
+        """
+        return [b.heightErr for b in self.bins]
+
+    def areaErrs(self): #, asymm=False):
+        """All area errors of the histo.
+
+        TODO: asymm arg / areaErrsMinus/Plus?
+        """
+        # Use symmetrised errors by default, or return a list of (-,+) pairs if asymm is requested."""
+        # if asymm:
+        #    pass
+        #else:
+        return [b.areaErr for b in self.bins]
+
+    def yErrs(self, area=False):
+        return self.areaErrs() if area else self.heightErrs()
+
+
+    def yMins(self, area=False):
+        ys = self.yVals(area)
+        es = self.yErrs(area)
+        return [y-e for (y,e) in zip(ys,es)]
+
+    def yMaxs(self, area=False):
+        ys = self.yVals(area)
+        es = self.yErrs(area)
+        return [y+e for (y,e) in zip(ys,es)]
+
+
+## Convenience alias
+H1D = Histo1D

@@ -23,6 +23,7 @@ The scaling specification syntax is a histogram path pattern followed by a
 definition of the scaling to be done on that histogram (or histograms). The path
 pattern consists of a regular expression, optionally followed by a range
 specifier. The best explanation is probably a few examples:
+
   /path/to/hist      (match all bins in that particular histogram)
   /.*pt              (match all bins in histograms ending in 'pt')
   /myhist@5          (match bins with high edge >= 5 in /myhist)
@@ -81,14 +82,15 @@ opts, args = op.parse_args()
 from yoda.search import PointMatcher
 def parse_specstr(line):
     ## Strip comments
+    line = " " + line
     if " #" in line:
         line = line[:line.index(" #")]
     ## Split whitespace-separated target and ref parts
-    parts = line.split()
+    parts = line.strip().split()
     pathpatt, scalespec = parts[0], " ".join(parts[1:])
     ## Match and extract the spec command structure
     import re
-    re_scalespec = re.compile(r"([\d\.eE\+\-]+x?)?(.*)")
+    re_scalespec = re.compile(r"([\d\.eE\+\-]+x?|UNSCALE)?(.*)")
     m = re_scalespec.match(scalespec)
     if not m:
         raise Exception("Invalid scaling spec string: '%s'" % scalespec)
@@ -98,9 +100,10 @@ def parse_specstr(line):
         scalearg = "1x"
     if scalearg.endswith("x"):
         scaleop = "x"
-        scalearg = scalearg[:-1]
-    scalenum = float(scalearg)
-    rtn = (PointMatcher(pathpatt), PointMatcher(refpatt), scaleop, scalenum)
+        scalearg = float(scalearg[:-1])
+    elif scalearg == "UNSCALE":
+        scaleop = "x"
+    rtn = (PointMatcher(pathpatt), PointMatcher(refpatt), scaleop, scalearg)
     #print rtn
     return rtn
 
@@ -153,11 +156,13 @@ for infile in args:
             continue
 
 
-        ## Match specs to MC AO path, and thence ref AOs
+        ## Match specs to MC AO path
         aospecs = []
         for s in SPECS:
             if s[0].search_path(aopath):
                 aoref, (matcher, mode, factor) = None, s[1:]
+                # TODO: s[1] -> matcher?
+                ## Match to ref AOs if any were given
                 if s[1].path is not None:
                     refpaths = []
                     if s[1].path.pattern == "REF":
@@ -178,6 +183,7 @@ for infile in args:
 
                 aospecs.append( [aoref, s[1], mode, factor] )
 
+
         ## Identify and check spec to be used for scaling determination
         if not aospecs:
             if opts.VERBOSITY > 1:
@@ -192,7 +198,13 @@ for infile in args:
 
         ## Work out scalefactor
         if aoref is None and mode == "x":
-            sf = factor
+            if factor != "UNSCALE":
+                sf = factor
+            elif ao.hasAnnotation("ScaledBy"):
+                sf = 1/float(ao.annotation("ScaledBy"))
+            else:
+                sf = 1.0
+
         else:
 
             # TODO: check binning compatibility (between types... hmm, check via equiv scatters?)

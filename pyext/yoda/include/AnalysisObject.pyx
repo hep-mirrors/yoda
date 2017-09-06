@@ -37,10 +37,26 @@ cdef class AnalysisObject(util.Base):
         A list of all annotation/metadata keys."""
         return self.aoptr().annotations()
 
+    @property
+    def annotationsDict(self):
+        """() -> dict[str->str]
+        A dict of all annotations/metadata entries."""
+        # TODO: add a map equivalent to C++?
+        return dict((k.lower(), self.annotation(k)) for k in self.annotations)
+
     def annotation(self, string k, default=None):
-        """Get annotation k from this object (falling back to default if not set)."""
+        """Get annotation k from this object (falling back to default if not set).
+
+        The annotation string will be automatically converted to Python
+        native types as far as possible -- more complex types are possible
+        if the yaml module is installed."""
         try:
-            return util._autotype(self.aoptr().annotation(string(k)))
+            astr = self.aoptr().annotation(string(k))
+            try:
+                import yaml
+                return yaml.load(astr)
+            except ImportError:
+                return util._autotype(astr)
         except:
             return default
 
@@ -103,3 +119,7 @@ cdef class AnalysisObject(util.Base):
 
     def __repr__(self):
         return "<%s '%s'>" % (self.__class__.__name__, self.path)
+
+
+## Convenience alias
+AO = AnalysisObject

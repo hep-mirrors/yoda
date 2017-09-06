@@ -280,6 +280,10 @@ namespace YODA {
   };
 
 
+  /// Convenience typedef
+  typedef Scatter2D S2D;
+
+
   /// @name Combining scatters by merging sets of points
   //@{
 

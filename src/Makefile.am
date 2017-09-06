@@ -1,4 +1,4 @@
-SUBDIRS = tinyxml .
+SUBDIRS = tinyxml yamlcpp .
 
 lib_LTLIBRARIES = libYODA.la
 
@@ -23,7 +23,6 @@ libYODA_la_SOURCES = \
     Scatter2D.cc \
     Scatter3D.cc
 
-
 libYODA_la_LDFLAGS = -avoid-version
-libYODA_la_LIBADD = tinyxml/libtinyxml.la
-libYODA_la_CPPFLAGS = $(AM_CPPFLAGS) -DTIXML_USE_STL
+libYODA_la_LIBADD = $(builddir)/tinyxml/libyoda-tinyxml.la $(builddir)/yamlcpp/libyoda-yaml-cpp.la
+libYODA_la_CPPFLAGS = $(AM_CPPFLAGS) -DTIXML_USE_STL -I$(srcdir)/yamlcpp -DYAMLCPP_API=3 -DYAML_NAMESPACE=YODA_YAML

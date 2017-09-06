@@ -48,4 +48,4 @@ if os.environ.has_key("BUILD_ROOTCOMPAT"):
 setup(name="yoda",
       version="@PACKAGE_VERSION@",
       ext_modules=extns,
-      packages=["yoda"])
+      packages=["yoda", "yoda1"])

@@ -85,6 +85,7 @@ namespace YODA {
     //@{
 
     /// Get all the annotation names
+    /// @todo Change this to return the str->str map, with a separate annotationKeys, etc.
     std::vector<std::string> annotations() const {
       std::vector<std::string> rtn;
       rtn.reserve(_annotations.size());
@@ -289,6 +290,10 @@ namespace YODA {
     std::map<std::string,std::string> _annotations;
 
   };
+
+
+  // Convenience alias
+  using AO = AnalysisObject;
 
 
 }

@@ -173,3 +173,73 @@ cdef class Scatter3D(AnalysisObject):
     # # TODO: remove?
     # def __sub__(Scatter3D self, Scatter3D other):
     #     return cutil.new_owned_cls(Scatter3D, c.Scatter3D_sub_Scatter3D(self.s3ptr(), other.s3ptr()))
+
+
+    def xVals(self):
+        return [p.x for p in self.points]
+
+    def xMins(self):
+        """All x low values."""
+        return [p.xMin for p in self.points]
+
+    def xMaxs(self):
+        """All x high values."""
+        return [p.xMax for p in self.points]
+
+    @property
+    def xMin(self):
+        """Lowest x value."""
+        return min(self.xMins())
+
+    @property
+    def xMax(self):
+        """Highest x value."""
+        return max(self.xMaxs())
+
+
+    def yVals(self):
+        return [p.y for p in self.points]
+
+    def yMins(self):
+        """All x low values."""
+        return [p.yMin for p in self.points]
+
+    def yMaxs(self):
+        """All x high values."""
+        return [p.yMax for p in self.points]
+
+    @property
+    def yMin(self):
+        """Lowest x value."""
+        return min(self.yMins())
+
+    @property
+    def yMax(self):
+        """Highest y value."""
+        return max(self.yMaxs())
+
+
+    def zVals(self):
+        return [p.z for p in self.points]
+
+    def zMins(self):
+        """All z low values."""
+        return [p.zMin for p in self.points]
+
+    def zMaxs(self):
+        """All z high values."""
+        return [p.zMax for p in self.points]
+
+    @property
+    def zMin(self):
+        """Lowest z value."""
+        return min(self.zMins())
+
+    @property
+    def zMax(self):
+        """Highest z value."""
+        return max(self.zMaxs())
+
+
+## Convenience alias
+S3D = Scatter3D

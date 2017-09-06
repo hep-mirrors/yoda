@@ -75,11 +75,9 @@ namespace YODA {
 
 
     /// Constructor from values with completely explicit asymmetric errors
-    Scatter1D(const std::vector<double>& x, const std::vector<double>& y,
+    Scatter1D(const std::vector<double>& x,
               const std::vector<double>& exminus,
               const std::vector<double>& explus,
-              const std::vector<double>& eyminus,
-              const std::vector<double>& eyplus,
               const std::string& path="", const std::string& title="")
       : AnalysisObject("Scatter1D", path, title)
     {
@@ -246,6 +244,10 @@ namespace YODA {
     Points _points;
 
   };
+
+
+  /// Convenience typedef
+  typedef Scatter1D S1D;
 
 
   /// @name Combining scatters by merging sets of points

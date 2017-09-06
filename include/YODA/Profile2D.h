@@ -400,6 +400,10 @@ namespace YODA {
   };
 
 
+  /// Convenience typedef
+  typedef Profile2D P2D;
+
+
   /// @name Combining profile histos: global operators
   //@{
 
