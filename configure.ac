@@ -170,7 +170,11 @@ AM_CONDITIONAL(WITH_DOXYGEN, test "$DOXYGEN")
 AC_EMPTY_SUBST
 AC_CONFIG_FILES([Makefile Doxyfile])
 AC_CONFIG_FILES([include/Makefile include/YODA/Makefile])
-AC_CONFIG_FILES([src/Makefile src/tinyxml/Makefile src/yamlcpp/Makefile])
+AC_CONFIG_FILES([src/Makefile 
+                 src/tinyxml/Makefile 
+                 src/yamlcpp/Makefile
+                 src/zstr/Makefile
+])
 AC_CONFIG_FILES([tests/Makefile])
 AC_CONFIG_FILES([pyext/Makefile pyext/setup.py pyext/yoda/Makefile])
 AC_CONFIG_FILES([bin/Makefile bin/yoda-config])
