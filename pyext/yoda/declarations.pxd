@@ -455,6 +455,7 @@ cdef extern from "YODA/Bin2D.h" namespace "YODA":
         double yMid() except +yodaerr
         double xWidth() except +yodaerr
         double yWidth() except +yodaerr
+        double area() except +yodaerr
 
         double xFocus() except +yodaerr
         double yFocus() except +yodaerr

@@ -153,7 +153,6 @@ namespace YODA {
     void normalize(double normto=1.0, bool includeoverflows=true) {
       const double oldintegral = integral(includeoverflows);
       if (oldintegral == 0) throw WeightError("Attempted to normalize a histogram with null area");
-      /// @todo Check that this is the desired behaviour
       scaleW(normto / oldintegral);
     }
 
