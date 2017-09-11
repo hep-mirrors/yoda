@@ -204,7 +204,7 @@ cdef class Histo2D(AnalysisObject):
         Rescale the weights in this histogram by the factor w."""
         self.h2ptr().scaleW(w)
 
-    def normalize(self, double normto, bint includeoverflows=True):
+    def normalize(self, double normto=1.0, bint includeoverflows=True):
         """(float, bool) -> None.
         Normalize the histogram."""
         self.h2ptr().normalize(normto, includeoverflows)

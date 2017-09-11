@@ -113,6 +113,12 @@ cdef class Bin2D_${DBN}(Bin):
 
 
     @property
+    def area(self):
+        """The area of this bin in the x-y plane."""
+        return self.b2ptr().area()
+
+
+    @property
     def xFocus(self):
         """Focus of the bin in x"""
         return self.b2ptr().xFocus()

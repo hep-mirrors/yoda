@@ -60,7 +60,7 @@ namespace YODA {
     /// @name Modifiers
     //@{
 
-    /// A fill() function accepting coordinates as spearate numbers
+    /// A fill() function accepting coordinates as separate numbers
     ///
     /// @note This should not be used, since it breaks histogram consistency. It will be removed in a future version.
     void fill(double x, double y, double weight=1.0) {
