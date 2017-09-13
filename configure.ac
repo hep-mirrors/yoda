@@ -59,7 +59,7 @@ if test x$enable_debug = xyes; then
 fi
 
 
-## Optional zlib support
+## Optional zlib support for gzip-compressed data streams/files
 AX_CHECK_ZLIB
 
 ## Optional ROOT compatibility
@@ -156,7 +156,7 @@ AM_CONDITIONAL(WITH_CYTHON, [test x$CYTHON_FOUND = xyes])
 
 
 ## Extend and substitute the default build flags after lib testing
-AM_CPPFLAGS="-I\$(top_srcdir)/include -I\$(top_builddir)/include"
+AM_CPPFLAGS="-I\$(top_srcdir)/include -I\$(top_builddir)/include ${CPFLAGS}"
 AC_SUBST(AM_CPPFLAGS)
 AC_SUBST(AM_CXXFLAGS)
 

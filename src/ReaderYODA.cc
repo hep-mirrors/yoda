@@ -91,10 +91,10 @@ namespace YODA {
   void ReaderYODA::read(istream& stream_, vector<AnalysisObject*>& aos) {
 
     #ifdef HAVE_LIBZ
-    // zstr detects if file is deflated or plain-text
+    // NB. zstr auto-detects if file is deflated or plain-text
     zstr::istream stream(stream_);
     #else
-    auto& stream = stream_;
+    istream& stream = stream_;
     #endif
 
     // Data format parsing states, representing current data type

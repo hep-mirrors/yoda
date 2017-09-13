@@ -1,3 +1,9 @@
+2017-09-13  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Remove UNUSED macro in favour of anonymous args.
+
+	* Enable zipped writing... but only works from C++ so far.
+
 2017-09-11  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Add HistoBin2D::area(), and provide a default normto=1.0

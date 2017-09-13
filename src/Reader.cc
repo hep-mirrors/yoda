@@ -15,6 +15,7 @@ namespace YODA {
 
 
   Reader& mkReader(const string& name) {
+    /// @todo Handle possible double-extensions better
     const size_t lastdot = name.find_last_of(".");
     const size_t lastbutonedot = (lastdot == string::npos) ? string::npos : name.find_last_of(".", lastdot-1);
     const string fmt = Utils::toLower((lastdot == string::npos) ? name : name.substr(lastdot+1));
@@ -23,12 +24,12 @@ namespace YODA {
     if (fmt == "yoda") return ReaderYODA::create();
     if (fmt == "aida") return ReaderAIDA::create();
     if (fmt == "dat" || fmt == "flat")  return ReaderFLAT::create();
-    if (fmt == "yodz" || fmtex == "yoda.gz") {
+    if (fmtex == "yoda.gz") {
       #ifdef HAVE_LIBZ
       return ReaderYODA::create();
       #else
       throw UserError("YODA was compiled without zlib support");
-      #endif /* HAVE_LIBZ */
+      #endif
     }
     throw UserError("Format cannot be identified from string '" + name + "'");
   }
