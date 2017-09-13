@@ -23,18 +23,21 @@ namespace YODA {
 
 
   Writer& mkWriter(const string& name) {
-    /// @todo There's got to be a better way of handling possible double-extensions...
+    // Determine the format from the string (a file or file extension)
     const size_t lastdot = name.find_last_of(".");
-    const size_t lastbutonedot = (lastdot == string::npos) ? string::npos : name.find_last_of(".", lastdot-1);
-    const string fmt = Utils::toLower((lastdot == string::npos) ? name : name.substr(lastdot+1));
-    const string fmtex = Utils::toLower((lastbutonedot == string::npos) ? name : name.substr(lastbutonedot+1));
-
-    // cout << "File extension: " << fmt << endl;
-    #define FMTCHK(f) (fmt == f || Utils::startswith(fmtex, f))
-    if (FMTCHK("yoda")) return WriterYODA::create();
-    if (FMTCHK("aida")) return WriterAIDA::create();
-    if (FMTCHK("dat") || FMTCHK("flat")) return WriterFLAT::create();
-    #undef FMTCHK
+    string fmt = Utils::toLower(lastdot == string::npos ? name : name.substr(lastdot+1));
+    if (fmt == "gz") {
+      #ifndef HAVE_LIBZ
+      throw UserError("YODA was compiled without zlib support: can't write " + name);
+      #endif
+      const size_t lastbutonedot = (lastdot == string::npos) ? string::npos : name.find_last_of(".", lastdot-1);
+      fmt = Utils::toLower(lastbutonedot == string::npos ? name : name.substr(lastbutonedot+1));
+    }
+    // Create the appropriate Writer
+    if (Utils::startswith(fmt, "yoda")) return WriterYODA::create();
+    if (Utils::startswith(fmt, "aida")) return WriterAIDA::create();
+    if (Utils::startswith(fmt, "dat" )) return WriterFLAT::create();
+    if (Utils::startswith(fmt, "flat")) return WriterFLAT::create();
     throw UserError("Format cannot be identified from string '" + name + "'");
   }
 
