@@ -22,16 +22,6 @@ using namespace std;
 namespace YODA {
 
 
-  void WriterFLAT::writeHeader(std::ostream& os) {
-    os << flush;
-  }
-
-
-  void WriterFLAT::writeFooter(std::ostream& os) {
-    os << flush;
-  }
-
-
   void WriterFLAT::_writeAnnotations(std::ostream& os, const AnalysisObject& ao) {
     os << scientific << setprecision(_precision);
     for (const string& a : ao.annotations()) {

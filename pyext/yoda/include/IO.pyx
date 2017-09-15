@@ -190,6 +190,7 @@ def write(ana_objs, filename):
     for a in aolist:
         vec.push_back(a._AnalysisObject())
 
+    print filename
     c.Writer_create(filename).write(oss, vec)
     _str_to_file(oss.str().c_str(), filename)
 

@@ -26,7 +26,8 @@ namespace YODA {
     // Determine the format from the string (a file or file extension)
     const size_t lastdot = name.find_last_of(".");
     string fmt = Utils::toLower(lastdot == string::npos ? name : name.substr(lastdot+1));
-    if (fmt == "gz") {
+    const bool compress = (fmt == "gz");
+    if (compress) {
       #ifndef HAVE_LIBZ
       throw UserError("YODA was compiled without zlib support: can't write " + name);
       #endif
@@ -34,47 +35,50 @@ namespace YODA {
       fmt = Utils::toLower(lastbutonedot == string::npos ? name : name.substr(lastbutonedot+1));
     }
     // Create the appropriate Writer
-    if (Utils::startswith(fmt, "yoda")) return WriterYODA::create();
-    if (Utils::startswith(fmt, "aida")) return WriterAIDA::create();
-    if (Utils::startswith(fmt, "dat" )) return WriterFLAT::create();
-    if (Utils::startswith(fmt, "flat")) return WriterFLAT::create();
-    throw UserError("Format cannot be identified from string '" + name + "'");
+    Writer* w = nullptr;
+    if (Utils::startswith(fmt, "yoda")) w = &WriterYODA::create();
+    if (Utils::startswith(fmt, "aida")) w = &WriterAIDA::create();
+    if (Utils::startswith(fmt, "dat" )) w = &WriterFLAT::create(); ///< @todo Improve/remove... .ydat?
+    if (Utils::startswith(fmt, "flat")) w = &WriterFLAT::create();
+    if (!w) throw UserError("Format cannot be identified from string '" + name + "'");
+    w->useCompression(compress);
+    return *w;
   }
 
 
-  void Writer::write(ostream& stream, const AnalysisObject& ao) {
-    writeHeader(stream);
-    writeBody(stream, ao);
-    writeFooter(stream);
-  }
+  // Canonical writer function, including compression handling
+  void Writer::write(ostream& stream, const vector<const AnalysisObject*>& aos) {
+    cout << 3.1 << endl;
 
+    // Wrap the stream if needed
+    #ifdef HAVE_LIBZ
+    zstr::ostream zstream(stream);
+    ostream& os = _compress ? zstream : stream;
+    #else
+    if (_compress) throw UserError("YODA was compiled without zlib support: can't write to a compressed stream");
+    ostream& os = stream;
+    #endif
 
-  void Writer::write(const string& filename, const AnalysisObject& ao) {
-    ostream* stream = nullptr;
-    if (Utils::endswith(filename, ".gz")) {
-      #ifdef HAVE_LIBZ
-      stream = new zstr::ofstream(filename);
-      #else
-      throw WriteError("Not compiled with libz, so can't write compressed file " + filename);
-      #endif
-    } else {
-      ofstream* ofs = new ofstream();
-      ofs->open(filename.c_str());
-      stream = ofs;
+    // Write the data components
+    /// @todo Remove the head/body/foot distinction?
+    writeHead(os);
+    for (const AnalysisObject* aoptr : aos) {
+      try {
+        writeBody(os, aoptr);
+      } catch (const LowStatsError& ex) {
+        std::cerr << "LowStatsError in writing AnalysisObject " << aoptr->title() << ":\n" << ex.what() << "\n";
+      }
     }
-    stream->exceptions(ifstream::failbit | ifstream::badbit);
-    try {
-      write(*stream, ao);
-      //stream->close();
-      delete stream;
-    } catch(ifstream::failure e) {
-      throw WriteError("Writing to filename " + filename + " failed: " + e.what());
-    }
+    writeFoot(os);
+    os << flush;
+
+    cout << 3.2 << endl;
   }
+
 
   void Writer::writeBody(ostream& stream, const AnalysisObject* ao) {
-    if (!ao) throw WriteError("Attempting to write a null AnalysisObject");
-    writeBody(stream,*ao);
+    if (!ao) throw WriteError("Attempting to write a null AnalysisObject*");
+    writeBody(stream, *ao);
   }
 
   void Writer::writeBody(ostream& stream, const AnalysisObject& ao) {

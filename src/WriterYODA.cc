@@ -13,16 +13,6 @@ using namespace std;
 namespace YODA {
 
 
-  void WriterYODA::writeHeader(std::ostream& os) {
-    os << flush;
-  }
-
-
-  void WriterYODA::writeFooter(std::ostream& os) {
-    os << flush;
-  }
-
-
   void WriterYODA::_writeAnnotations(std::ostream& os, const AnalysisObject& ao) {
     os << scientific << setprecision(_precision);
     for (const string& a : ao.annotations()) {

@@ -30,9 +30,6 @@ namespace YODA {
 
   protected:
 
-    void writeHeader(std::ostream& stream);
-    void writeFooter(std::ostream& stream);
-
     void writeCounter(std::ostream& stream, const Counter& c);
     void writeHisto1D(std::ostream& stream, const Histo1D& h);
     void writeHisto2D(std::ostream& stream, const Histo2D& h);

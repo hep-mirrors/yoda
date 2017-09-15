@@ -28,7 +28,7 @@ namespace YODA {
     // Create the appropriate Reader
     if (Utils::startswith(fmt, "yoda")) return ReaderYODA::create();
     if (Utils::startswith(fmt, "aida")) return ReaderAIDA::create();
-    if (Utils::startswith(fmt, "dat" )) return ReaderFLAT::create();
+    if (Utils::startswith(fmt, "dat" )) return ReaderFLAT::create(); ///< @todo Improve/remove... .ydat?
     if (Utils::startswith(fmt, "flat")) return ReaderFLAT::create();
     throw UserError("Format cannot be identified from string '" + name + "'");
   }
