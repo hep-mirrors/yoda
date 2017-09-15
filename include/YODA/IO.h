@@ -44,19 +44,15 @@ namespace YODA {
 
   /// Write out object @a ao to stream @a os with format @a fmt
   void write(std::ostream& os, const AnalysisObject& ao, const std::string& fmt) {
-    std::cout << 1.1 << std::endl;
     Writer& w = mkWriter(fmt);
     w.write(os, ao);
-    std::cout << 1.2 << std::endl;
   }
 
   /// Write out a collection of objects @a objs to file @a filename.
   template <typename RANGE>
   void write(std::ostream& os, const RANGE& aos, const std::string& fmt) {
-    std::cout << 1.3 << std::endl;
     Writer& w = mkWriter(fmt);
     w.write(os, aos);
-    std::cout << 1.4 << std::endl;
   }
 
   /// Write out the objects specified by start iterator @a begin and end

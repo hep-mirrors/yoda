@@ -7,7 +7,6 @@
 
 #include <iostream>
 #include <iomanip>
-
 using namespace std;
 
 namespace YODA {
@@ -31,7 +30,7 @@ namespace YODA {
     _writeAnnotations(os, c);
     os << "# sumW\t sumW2\t numEntries\n";
     os << c.sumW()  << "\t" << c.sumW2() << "\t" << c.numEntries() << "\n";
-    os << "END YODA_COUNTER\n\n";
+    os << "END YODA_COUNTER\n";
 
     os.flags(oldflags);
   }
@@ -70,7 +69,7 @@ namespace YODA {
       os << b.sumWX()   << "\t" << b.sumWX2()   << "\t";
       os << b.numEntries() << "\n";
     }
-    os << "END YODA_HISTO1D\n\n";
+    os << "END YODA_HISTO1D\n";
 
     os.flags(oldflags);
   }
@@ -124,7 +123,7 @@ namespace YODA {
       os << b.sumWXY()   << "\t";
       os << b.numEntries() << "\n";
     }
-    os << "END YODA_HISTO2D\n\n";
+    os << "END YODA_HISTO2D\n";
 
     os.flags(oldflags);
   }
@@ -160,7 +159,7 @@ namespace YODA {
       os << b.sumWY()   << "\t" << b.sumWY2()   << "\t";
       os << b.numEntries() << "\n";
     }
-    os << "END YODA_PROFILE1D\n\n";
+    os << "END YODA_PROFILE1D\n";
 
     os.flags(oldflags);
   }
@@ -210,7 +209,7 @@ namespace YODA {
       os << b.sumWXY()   << "\t"; // << b.sumWXZ()    << "\t" << b.sumWYZ() << "\t";
       os << b.numEntries() << "\n";
     }
-    os << "END YODA_PROFILE2D\n\n";
+    os << "END YODA_PROFILE2D\n";
 
     os.flags(oldflags);
   }
@@ -226,7 +225,7 @@ namespace YODA {
     for (const Point1D& pt : s.points()) {
       os << pt.x() << "\t" << pt.xErrMinus() << "\t" << pt.xErrPlus() << "\n";
     }
-    os << "END YODA_SCATTER1D\n\n";
+    os << "END YODA_SCATTER1D\n";
 
     os << flush;
     os.flags(oldflags);
@@ -246,7 +245,7 @@ namespace YODA {
       os << pt.x() << "\t" << pt.xErrMinus() << "\t" << pt.xErrPlus() << "\t";
       os << pt.y() << "\t" << pt.yErrMinus() << "\t" << pt.yErrPlus() << "\n";
     }
-    os << "END YODA_SCATTER2D\n\n";
+    os << "END YODA_SCATTER2D\n";
 
     os << flush;
     os.flags(oldflags);
@@ -267,7 +266,7 @@ namespace YODA {
       os << pt.y() << "\t" << pt.yErrMinus() << "\t" << pt.yErrPlus() << "\t";
       os << pt.z() << "\t" << pt.zErrMinus() << "\t" << pt.zErrPlus() << "\n";
     }
-    os << "END YODA_SCATTER3D\n\n";
+    os << "END YODA_SCATTER3D\n";
 
     os << flush;
     os.flags(oldflags);

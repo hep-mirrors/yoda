@@ -48,31 +48,38 @@ namespace YODA {
 
   // Canonical writer function, including compression handling
   void Writer::write(ostream& stream, const vector<const AnalysisObject*>& aos) {
-    cout << 3.1 << endl;
+    std::unique_ptr<std::ostream> zos;
+    std::ostream* os = &stream;
 
     // Wrap the stream if needed
-    #ifdef HAVE_LIBZ
-    zstr::ostream zstream(stream);
-    ostream& os = _compress ? zstream : stream;
-    #else
-    if (_compress) throw UserError("YODA was compiled without zlib support: can't write to a compressed stream");
-    ostream& os = stream;
-    #endif
+    if (_compress) {
+      #ifdef HAVE_LIBZ
+      // Doesn't work to always create zstr wrapper: have to only create if compressing :-/
+      // zstr::ostream zstream(stream);
+      // ostream& os = _compress ? zstream : stream;
+      os = new zstr::ostream(stream);
+      zos.reset(os);
+      #else
+      throw UserError("YODA was compiled without zlib support: can't write to a compressed stream");
+      #endif
+    }
 
     // Write the data components
     /// @todo Remove the head/body/foot distinction?
-    writeHead(os);
+    writeHead(*os);
+    bool first = true;
     for (const AnalysisObject* aoptr : aos) {
       try {
-        writeBody(os, aoptr);
+        if (!first) *os << "\n"; //< blank line between items
+        writeBody(*os, aoptr);
+        first = false;
       } catch (const LowStatsError& ex) {
+        /// @todo Why specifically LowStatsError?
         std::cerr << "LowStatsError in writing AnalysisObject " << aoptr->title() << ":\n" << ex.what() << "\n";
       }
     }
-    writeFoot(os);
-    os << flush;
-
-    cout << 3.2 << endl;
+    writeFoot(*os);
+    *os << flush;
   }
 
 
