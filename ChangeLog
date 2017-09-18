@@ -1,3 +1,7 @@
+2017-09-18  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Patches for ROOT conversion from Robert Hatcher -- thanks!
+
 2017-09-16  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Add YODA format version annotation, at version 2, and update
