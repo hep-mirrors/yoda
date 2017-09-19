@@ -11,7 +11,7 @@
 
 #ifdef HAVE_LIBZ
 #define _XOPEN_SOURCE 700
-#include "zstr/src/zstr.hpp"
+#include "zstr/zstr.hpp"
 #endif
 
 #include <iostream>
