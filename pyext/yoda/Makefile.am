@@ -30,6 +30,7 @@ CYTHON_SRC = \
     include/HistoBin1D.pyx \
     include/HistoBin2D.pyx \
     include/IO.pyx \
+    include/Point.pyx \
     include/Point1D.pyx \
     include/Point2D.pyx \
     include/Point3D.pyx \
