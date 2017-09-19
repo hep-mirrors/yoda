@@ -14,11 +14,11 @@ static_files = ["yoda/errors.cpp"]
 BASE_COMPILE_ARGS = "@PYEXT_CXXFLAGS@ -I@prefix@/include -I../include".split()
 BASE_LINK_ARGS = ["-L@prefix@/lib"]
 
-# Dependencies used to trigger rebuild
+## Dependencies used to trigger rebuild
 header_files = glob("../include/YODA/*.h") + glob("../include/YODA/Utils/*.h")
 core_depends = glob("yoda/include/*.pyx") + glob("yoda/*.py") + header_files
 
-## A helper function (since we have two modules now...)
+## Helper function
 def ext(name, depends=[], statics=[], extra_compile_args=[], extra_link_args=[]):
     return Extension(
         "yoda.%s" % name,
