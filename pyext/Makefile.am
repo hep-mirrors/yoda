@@ -1,5 +1,4 @@
-SUBDIRS = yoda
-EXTRA_DIST = yoda1
+SUBDIRS = yoda yoda1
 
 if ENABLE_PYEXT
 PYEXT_ENV = CC="$(CXX)" CXX="$(CXX)" CXXFLAGS="$(PYEXT_CXXFLAGS)" ARCHFLAGS=""
@@ -11,7 +10,7 @@ endif
 ## Always force setup.py, it's not good at guessing what needs to rebuild
 all-local:
 #	test -d yoda1 || cp -r $(srcdir)/yoda1 .
-	$(PYEXT_ENV) $(PYTHON) setup.py install --install-lib=build/ --force
+	$(PYEXT_ENV) YODA_LOCAL=yes $(PYTHON) setup.py install --install-lib=build/ --force
 
 install-exec-local:
 	$(PYEXT_ENV) $(PYTHON) setup.py install --prefix=$(DESTDIR)$(prefix) --force

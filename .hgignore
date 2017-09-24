@@ -43,6 +43,7 @@ Doxyfile$
 ^pyext/yoda/util\.cpp$
 ^pyext/yoda/rootcompat\.cpp$
 ^pyext/yoda/fix-out-of-source$
+^pyext/yoda1/fix-out-of-source$
 ^pyext/yoda/include/Bin.D_.*\.pyx$
 ^pyext/yoda/made_pyx_templates$
 ^pyext/.*/generated$

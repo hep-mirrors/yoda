@@ -12,8 +12,12 @@ libdir = os.path.abspath("@top_builddir@/src/.libs")
 static_files = ["yoda/errors.cpp"]
 
 BASE_COMPILE_ARGS = "@PYEXT_CXXFLAGS@ -I@prefix@/include -I../include".split()
-BASE_LINK_ARGS = ["-L@prefix@/lib"]
 
+if os.environ.has_key("YODA_LOCAL"):
+  BASE_LINK_ARGS = ["-L@top_builddir@/src/.libs"]
+else:
+  BASE_LINK_ARGS = ["-L@prefix@/lib"]
+  
 ## Dependencies used to trigger rebuild
 header_files = glob("../include/YODA/*.h") + glob("../include/YODA/Utils/*.h")
 core_depends = glob("yoda/include/*.pyx") + glob("yoda/*.py") + header_files

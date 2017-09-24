@@ -169,7 +169,11 @@ AC_CONFIG_FILES([Makefile Doxyfile])
 AC_CONFIG_FILES([include/Makefile include/YODA/Makefile])
 AC_CONFIG_FILES([src/Makefile src/tinyxml/Makefile])
 AC_CONFIG_FILES([tests/Makefile])
-AC_CONFIG_FILES([pyext/Makefile pyext/setup.py pyext/yoda/Makefile])
+AC_CONFIG_FILES([pyext/Makefile 
+                 pyext/setup.py 
+                 pyext/yoda/Makefile
+                 pyext/yoda1/Makefile
+                 ])
 AC_CONFIG_FILES([bin/Makefile bin/yoda-config])
 AC_CONFIG_FILES([yodaenv.sh yoda.pc])
 
