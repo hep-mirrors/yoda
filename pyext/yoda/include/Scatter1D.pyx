@@ -1,3 +1,4 @@
+cimport util
 cdef class Scatter1D(AnalysisObject):
     """
     1D scatter plot, i.e. a collection of Point1D objects with positions and errors.

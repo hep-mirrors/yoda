@@ -1,3 +1,4 @@
+cimport util
 cdef class Histo2D(AnalysisObject):
     """
     2D histogram.

@@ -1,3 +1,4 @@
+cimport util
 cdef class Profile1D(AnalysisObject):
     """
     1D profile histogram, used to measure mean values of a y variable, binned in x.

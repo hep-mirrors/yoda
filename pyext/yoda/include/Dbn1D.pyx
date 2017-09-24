@@ -1,3 +1,4 @@
+cimport util
 cdef class Dbn1D(util.Base):
     """
     A 1D distribution 'counter', used and exposed by 1D histograms and their bins.
