@@ -74,9 +74,9 @@ testscatter2Dmodify_SOURCES = Scatter2D/S2DModify.cc
 
 
 TESTS_ENVIRONMENT = \
-  LD_LIBRARY_PATH=$(top_builddir)/src:$(top_builddir)/src/.libs:$(LD_LIBRARY_PATH) \
-  DYLD_LIBRARY_PATH=$(top_builddir)/src/.libs \
-  PYTHONPATH=$(top_builddir)/pyext/build/lib:$(PYTHONPATH) \
+  LD_LIBRARY_PATH=$(top_builddir)/src/.libs:$(LD_LIBRARY_PATH) \
+  DYLD_LIBRARY_PATH=$(top_builddir)/src/.libs:$(DYLD_LIBRARY_PATH) \
+  PYTHONPATH=$(top_builddir)/pyext/build/$(YODA_SETUP_PY_PATH):$(PYTHONPATH) \
   PATH=$(top_builddir)/bin:$(top_srcdir)/bin:$(PATH) \
   YODA_TESTS_SRC=$(srcdir)
 

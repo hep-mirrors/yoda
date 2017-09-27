@@ -157,6 +157,13 @@ AM_CPPFLAGS="-I\$(top_srcdir)/include -I\$(top_builddir)/include"
 AC_SUBST(AM_CPPFLAGS)
 AC_SUBST(AM_CXXFLAGS)
 
+dnl
+dnl setup.py puts its build artifacts into a labelled path
+dnl this helps the test scripts to find them locally instead of
+dnl having to install first
+dnl
+YODA_SETUP_PY_PATH=$(${PYTHON} -c 'import distutils.util as u, sys; vi=sys.version_info; print "lib.%s-%s.%s" % (u.get_platform(),vi.major, vi.minor)')
+AC_SUBST(YODA_SETUP_PY_PATH)
 
 ## Build Doxygen if possible
 AC_PATH_PROG(DOXYGEN, doxygen)
