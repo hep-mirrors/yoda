@@ -27,9 +27,13 @@ install-exec-local:
 	    --force 
 
 uninstall-local:
-	rm -rf $(DESTDIR)$(pythondir)/yoda
-	rm -rf $(DESTDIR)$(pythondir)/yoda1
-	rm -rf $(DESTDIR)$(pythondir)/yoda*.egg-info
+	dir1=$(DESTDIR)$(pythondir); \
+	dir2=$${dir1/lib/lib64}; \
+	for i in $$dir1 $$dir2; do \
+	 rm -rf $$i/yoda; \
+	 rm -rf $$i/yoda1; \
+	 rm -rf $$i/yoda*.egg-info; \
+	done
 
 clean-local:
 	rm -rf $(builddir)/build
