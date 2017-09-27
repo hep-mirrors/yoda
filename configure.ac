@@ -12,8 +12,8 @@ if test "$prefix" = "NONE"; then
    prefix=/usr/local
 fi
 
-dnl AC_CONFIG_SRCDIR([src/Bin1D.cc])
-AM_INIT_AUTOMAKE([subdir-objects -Wall dist-bzip2])
+AC_CONFIG_SRCDIR([src/Counter.cc])
+AM_INIT_AUTOMAKE([subdir-objects -Wall dist-bzip2 1.10])
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 m4_ifdef([AM_PROG_AR], [AM_PROG_AR])
 AC_CONFIG_MACRO_DIR([m4])
@@ -172,7 +172,6 @@ AC_CONFIG_FILES([tests/Makefile])
 AC_CONFIG_FILES([pyext/Makefile 
                  pyext/setup.py 
                  pyext/yoda/Makefile
-                 pyext/yoda1/Makefile
                  ])
 AC_CONFIG_FILES([bin/Makefile bin/yoda-config])
 AC_CONFIG_FILES([yodaenv.sh yoda.pc])

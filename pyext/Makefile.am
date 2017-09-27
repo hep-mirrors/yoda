@@ -1,4 +1,6 @@
-SUBDIRS = yoda yoda1
+SUBDIRS = yoda
+
+EXTRA_DIST = yoda1/__init__.py
 
 if ENABLE_PYEXT
 PYEXT_ENV = CC="$(CXX)" CXX="$(CXX)" CXXFLAGS="$(PYEXT_CXXFLAGS)" ARCHFLAGS=""
@@ -9,24 +11,42 @@ endif
 
 ## Always force setup.py, it's not good at guessing what needs to rebuild
 all-local:
-#	test -d yoda1 || cp -r $(srcdir)/yoda1 .
-	$(PYEXT_ENV) YODA_LOCAL=yes $(PYTHON) setup.py install --install-lib=build/ --force
+	cd $(srcdir); \
+	$(PYEXT_ENV) YODA_LOCAL=1 $(PYTHON) \
+	  $(abs_builddir)/setup.py build \
+	    --build-platlib $(abs_builddir)/build/lib \
+	    --build-temp $(abs_builddir)/build/tmp \
+        --build-base $(abs_builddir)/build \
+        --verbose \
+        --force
 
 install-exec-local:
-	$(PYEXT_ENV) $(PYTHON) setup.py install --prefix=$(DESTDIR)$(prefix) --force
+	cd $(srcdir); \
+	$(PYEXT_ENV) $(PYTHON) \
+	  $(abs_builddir)/setup.py install \
+	    --prefix $(DESTDIR)$(prefix) \
+	    --verbose \
+	    --force 
+
+#	$(PYEXT_ENV) $(PYTHON) \
+#	  $(abs_builddir)/setup.py install_lib \
+#	    --build-dir $(abs_builddir)/build \
+#	    --install-dir $(DESTDIR)$(prefix)/lib/python2.7/site-packages/lib \
+#	    --verbose \
+#	    --force 
+
 
 uninstall-local:
-	rm -rf $(DESTDIR)$(YODA_PYTHONPATH)/yoda
-	rm -rf $(DESTDIR)$(YODA_PYTHONPATH)/yoda1
-	rm -f $(DESTDIR)$(YODA_PYTHONPATH)/yoda-$(VERSION)-py$(PYTHON_VERSION).egg-info
+	cat $(DESTDIR)$(pkgpythondir)/install_files.txt | xargs rm -f
+	rm -rf $(DESTDIR)$(pkgpythondir)
 
 clean-local:
-	rm -f $(builddir)/*.pyc
 	rm -rf $(builddir)/build
-	rm -rf dist
+##	rm -f $(builddir)/*.pyc
+##	rm -rf dist
 
-distclean-local:
-	rm -f $(builddir)/yoda.egg-info
+#distclean-local:
+#	rm -f $(builddir)/yoda.egg-info
 #	rm -rf $(builddir)/yoda
 #	rm -rf $(builddir)/yoda1
 
