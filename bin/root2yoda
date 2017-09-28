@@ -34,8 +34,11 @@ for i, o in in_out:
         rootobjects.append((path, temp))
 
     def to_yoda(path, ro):
+        if path is None or ro is None:
+            return None
         ao = yoda.root.to_yoda(ro)
-        ao.path = path
+        if ao is not None:
+            ao.path = path
         return ao
 
     analysisobjects = [to_yoda(path, ro) for (path, ro) in rootobjects]

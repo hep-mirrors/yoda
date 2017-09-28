@@ -1,3 +1,4 @@
+cimport util
 cdef class Profile2D(AnalysisObject):
     """
     2D profile histogram, used to measure mean values of a z variable, binned in x and y.

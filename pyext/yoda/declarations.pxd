@@ -455,6 +455,7 @@ cdef extern from "YODA/Bin2D.h" namespace "YODA":
         double yMid() except +yodaerr
         double xWidth() except +yodaerr
         double yWidth() except +yodaerr
+        double area() except +yodaerr
 
         double xFocus() except +yodaerr
         double yFocus() except +yodaerr
@@ -1279,14 +1280,12 @@ cdef extern from "YODA/Scatter3D.h" namespace "YODA":
 # Streams {{{
 
 cdef extern from "<sstream>" namespace "std":
-    cdef cppclass ostringstream:
-        ostringstream()
-        string& str()
-
-cdef extern from "<sstream>" namespace "std":
     cdef cppclass istringstream:
         istringstream()
         string& str(string&)
+    cdef cppclass ostringstream:
+        ostringstream()
+        string& str()
 
 
 cdef extern from "YODA/Reader.h" namespace "YODA":
@@ -1308,7 +1307,8 @@ cdef extern from "YODA/Reader.h" namespace "YODA":
 
 cdef extern from "YODA/Writer.h" namespace "YODA":
     cdef cppclass Writer:
-        void write(ostringstream&, vector[AnalysisObject*]&)
+        void write(ostringstream&, vector[AnalysisObject*]&) except +yodaerr
+        void write(string&, vector[AnalysisObject*]&) except +yodaerr
 
 cdef extern from "YODA/WriterYODA.h" namespace "YODA":
     Writer& WriterYODA_create "YODA::WriterYODA::create" ()

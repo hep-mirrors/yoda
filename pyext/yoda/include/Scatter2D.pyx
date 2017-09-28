@@ -1,3 +1,4 @@
+cimport util
 cdef class Scatter2D(AnalysisObject):
     """
     2D scatter plot, i.e. a collection of Point2D objects with positions and errors.

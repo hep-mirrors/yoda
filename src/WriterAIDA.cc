@@ -1,7 +1,7 @@
 // -*- C++ -*-
 //
 // This file is part of YODA -- Yet more Objects for Data Analysis
-// Copyright (C) 2008-2016 The YODA collaboration (see AUTHORS for details)
+// Copyright (C) 2008-2017 The YODA collaboration (see AUTHORS for details)
 //
 #include "YODA/WriterAIDA.h"
 #include "YODA/Utils/StringUtils.h"
@@ -14,7 +14,7 @@ using namespace std;
 namespace YODA {
 
 
-  void WriterAIDA::writeHeader(std::ostream& stream) {
+  void WriterAIDA::writeHead(std::ostream& stream) {
     stream << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
     stream << "<!DOCTYPE aida SYSTEM \"http://aida.freehep.org/schemas/3.0/aida.dtd\">\n";
     stream << "<aida>\n";
@@ -22,8 +22,8 @@ namespace YODA {
   }
 
 
-  void WriterAIDA::writeFooter(std::ostream& stream) {
-    stream << "</aida>\n";
+  void WriterAIDA::writeFoot(std::ostream& stream) {
+    stream << "</aida>\n" << flush;
   }
 
 

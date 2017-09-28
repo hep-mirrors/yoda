@@ -1,4 +1,32 @@
-2017-08-25  Andy Buckley  <andy.buckley@cern.ch>
+2017-09-18  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Patches for ROOT conversion from Robert Hatcher -- thanks!
+
+2017-09-16  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Add YODA format version annotation, at version 2, and update
+	YODA reader to use version info and multiline YAML EOF marker.
+
+	* Write YODA annotations in YAML with a --- YAML break-line.
+
+2017-09-14  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Enable compressed writing from Python.
+
+2017-09-13  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Remove UNUSED macro in favour of anonymous args.
+
+	* Enable zipped writing... but only works from C++ so far.
+
+2017-09-11  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Add HistoBin2D::area(), and provide a default normto=1.0
+	argument on the Python Histo2D.normalize() method.
+
+2017-09-04  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Change license explicitly to GPLv3, cf. MCnet3 agreement.
 
 	* Parse YODA format AO headers as YAML (restriction to single-line dict entries for now).
 

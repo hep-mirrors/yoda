@@ -1,3 +1,4 @@
+cimport util
 
 cdef class AnalysisObject(util.Base):
     """

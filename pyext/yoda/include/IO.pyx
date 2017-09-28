@@ -31,7 +31,7 @@ cdef list _aobjects_to_list(vector[c.AnalysisObject*]* aobjects, patterns, unpat
     cdef list out = []
     cdef c.AnalysisObject* ao
     cdef size_t i
-    for i in xrange(aobjects.size()):
+    for i in range(aobjects.size()):
         ao = deref(aobjects)[i]
         ## NOTE: automatic type conversion by passing the type() as a key to globals()
         newao = cutil.new_owned_cls(globals()[ao.type()], ao)
@@ -44,7 +44,7 @@ cdef dict _aobjects_to_dict(vector[c.AnalysisObject*]* aobjects, patterns, unpat
     cdef dict out = {}
     cdef c.AnalysisObject* ao
     cdef size_t i
-    for i in xrange(aobjects.size()):
+    for i in range(aobjects.size()):
         ao = deref(aobjects)[i]
         ## NOTE: automatic type conversion by passing the type() as a key to globals()
         newao = cutil.new_owned_cls( globals()[ao.type()], ao)
@@ -185,13 +185,11 @@ def write(ana_objs, filename):
     cdef c.ostringstream oss
     cdef vector[c.AnalysisObject*] vec
     cdef AnalysisObject a
-
     aolist = ana_objs.values() if hasattr(ana_objs, "values") else ana_objs if hasattr(ana_objs, "__iter__") else [ana_objs]
     for a in aolist:
         vec.push_back(a._AnalysisObject())
-
     c.Writer_create(filename).write(oss, vec)
-    _str_to_file(oss.str().c_str(), filename)
+    _str_to_file(oss.str(), filename)
 
 
 def writeYODA(ana_objs, file_or_filename):
@@ -201,13 +199,11 @@ def writeYODA(ana_objs, file_or_filename):
     cdef c.ostringstream oss
     cdef vector[c.AnalysisObject*] vec
     cdef AnalysisObject a
-
     aolist = ana_objs.values() if hasattr(ana_objs, "values") else ana_objs if hasattr(ana_objs, "__iter__") else [ana_objs]
     for a in aolist:
         vec.push_back(a._AnalysisObject())
-
     c.WriterYODA_create().write(oss, vec)
-    _str_to_file(oss.str().c_str(), file_or_filename)
+    _str_to_file(oss.str(), file_or_filename)
 
 
 def writeFLAT(ana_objs, file_or_filename):
@@ -217,13 +213,11 @@ def writeFLAT(ana_objs, file_or_filename):
     cdef c.ostringstream oss
     cdef vector[c.AnalysisObject*] vec
     cdef AnalysisObject a
-
     aolist = ana_objs.values() if hasattr(ana_objs, "values") else ana_objs if hasattr(ana_objs, "__iter__") else [ana_objs]
     for a in aolist:
         vec.push_back(a._AnalysisObject())
-
     c.WriterFLAT_create().write(oss, vec)
-    _str_to_file(oss.str().c_str(), file_or_filename)
+    _str_to_file(oss.str(), file_or_filename)
 
 
 def writeAIDA(ana_objs, file_or_filename):
@@ -233,10 +227,8 @@ def writeAIDA(ana_objs, file_or_filename):
     cdef c.ostringstream oss
     cdef vector[c.AnalysisObject*] vec
     cdef AnalysisObject a
-
     aolist = ana_objs.values() if hasattr(ana_objs, "values") else ana_objs if hasattr(ana_objs, "__iter__") else [ana_objs]
     for a in aolist:
         vec.push_back(a._AnalysisObject())
-
     c.WriterAIDA_create().write(oss, vec)
-    _str_to_file(oss.str().c_str(), file_or_filename)
+    _str_to_file(oss.str(), file_or_filename)

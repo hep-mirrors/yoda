@@ -1,7 +1,7 @@
 // -*- C++ -*-
 //
 // This file is part of YODA -- Yet more Objects for Data Analysis
-// Copyright (C) 2008-2016 The YODA collaboration (see AUTHORS for details)
+// Copyright (C) 2008-2017 The YODA collaboration (see AUTHORS for details)
 //
 #ifndef YODA_Histo2D_h
 #define YODA_Histo2D_h
@@ -164,7 +164,6 @@ namespace YODA {
     void normalize(double normto=1.0, bool includeoverflows=true) {
       const double oldintegral = integral(includeoverflows);
       if (oldintegral == 0) throw WeightError("Attempted to normalize a histogram with null area");
-      /// @todo Check that this is the desired behaviour
       scaleW(normto / oldintegral);
     }
 

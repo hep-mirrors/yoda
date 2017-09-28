@@ -1,7 +1,7 @@
 // -*- C++ -*-
 //
 // This file is part of YODA -- Yet more Objects for Data Analysis
-// Copyright (C) 2008-2016 The YODA collaboration (see AUTHORS for details)
+// Copyright (C) 2008-2017 The YODA collaboration (see AUTHORS for details)
 //
 #ifndef YODA_WRITERAIDA_H
 #define YODA_WRITERAIDA_H
@@ -30,8 +30,8 @@ namespace YODA {
 
   protected:
 
-    void writeHeader(std::ostream& stream);
-    void writeFooter(std::ostream& stream);
+    void writeHead(std::ostream& stream);
+    void writeFoot(std::ostream& stream);
 
     void writeCounter(std::ostream& stream, const Counter& c);
     void writeHisto1D(std::ostream& stream, const Histo1D& h);

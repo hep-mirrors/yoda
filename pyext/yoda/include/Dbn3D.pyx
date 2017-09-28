@@ -1,3 +1,4 @@
+cimport util
 cdef class Dbn3D(util.Base):
     """
     A 3D distribution 'counter', used and exposed by 2D profiles and their bins.

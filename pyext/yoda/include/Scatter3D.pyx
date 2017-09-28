@@ -1,3 +1,4 @@
+cimport util
 cdef class Scatter3D(AnalysisObject):
     """
     3D scatter plot, i.e. a collection of Point3D objects with positions and errors.

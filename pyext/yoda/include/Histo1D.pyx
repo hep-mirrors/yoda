@@ -1,3 +1,4 @@
+cimport util
 cdef class Histo1D(AnalysisObject):
     """
     1D histogram, with distinction between bin areas and heights.
