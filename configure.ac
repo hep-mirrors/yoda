@@ -12,8 +12,8 @@ if test "$prefix" = "NONE"; then
    prefix=/usr/local
 fi
 
-dnl AC_CONFIG_SRCDIR([src/Bin1D.cc])
-AM_INIT_AUTOMAKE([subdir-objects -Wall dist-bzip2])
+AC_CONFIG_SRCDIR([src/Counter.cc])
+AM_INIT_AUTOMAKE([subdir-objects -Wall dist-bzip2 1.10])
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 m4_ifdef([AM_PROG_AR], [AM_PROG_AR])
 AC_CONFIG_MACRO_DIR([m4])
@@ -160,6 +160,13 @@ AM_CPPFLAGS="-I\$(top_srcdir)/include -I\$(top_builddir)/include ${CPFLAGS}"
 AC_SUBST(AM_CPPFLAGS)
 AC_SUBST(AM_CXXFLAGS)
 
+dnl
+dnl setup.py puts its build artifacts into a labelled path
+dnl this helps the test scripts to find them locally instead of
+dnl having to install first
+dnl
+YODA_SETUP_PY_PATH=$(${PYTHON} -c 'import distutils.util as u, sys; vi=sys.version_info; print "lib.%s-%s.%s" % (u.get_platform(),vi.major, vi.minor)')
+AC_SUBST(YODA_SETUP_PY_PATH)
 
 ## Build Doxygen if possible
 AC_PATH_PROG(DOXYGEN, doxygen)
@@ -172,7 +179,10 @@ AC_CONFIG_FILES([Makefile Doxyfile])
 AC_CONFIG_FILES([include/Makefile include/YODA/Makefile])
 AC_CONFIG_FILES([src/Makefile src/tinyxml/Makefile src/yamlcpp/Makefile])
 AC_CONFIG_FILES([tests/Makefile])
-AC_CONFIG_FILES([pyext/Makefile pyext/setup.py pyext/yoda/Makefile])
+AC_CONFIG_FILES([pyext/Makefile 
+                 pyext/setup.py 
+                 pyext/yoda/Makefile
+                 ])
 AC_CONFIG_FILES([bin/Makefile bin/yoda-config])
 AC_CONFIG_FILES([yodaenv.sh yoda.pc])
 

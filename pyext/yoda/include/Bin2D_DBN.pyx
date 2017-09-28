@@ -1,3 +1,4 @@
+cimport util
 # TODO: docstrings
 cdef class Bin2D_${DBN}(Bin):
     """2D Bin class templated on a ${DBN}"""

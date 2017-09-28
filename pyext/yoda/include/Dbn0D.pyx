@@ -1,3 +1,4 @@
+cimport util
 cdef class Dbn0D(util.Base):
     """
     A zero-dimensional 'counter', used and exposed by Counter.

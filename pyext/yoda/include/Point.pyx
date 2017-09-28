@@ -1,3 +1,4 @@
+cimport util
 cdef class Point(util.Base):
     """
     A generic point with errors, used by the Scatter classes.

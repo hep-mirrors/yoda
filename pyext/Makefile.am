@@ -1,5 +1,6 @@
 SUBDIRS = yoda
-EXTRA_DIST = yoda1
+
+EXTRA_DIST = yoda1/__init__.py
 
 if ENABLE_PYEXT
 PYEXT_ENV = CC="$(CXX)" CXX="$(CXX)" CXXFLAGS="$(PYEXT_CXXFLAGS)" ARCHFLAGS=""
@@ -10,25 +11,31 @@ endif
 
 ## Always force setup.py, it's not good at guessing what needs to rebuild
 all-local:
-#	test -d yoda1 || cp -r $(srcdir)/yoda1 .
-	$(PYEXT_ENV) $(PYTHON) setup.py install --install-lib=build/ --force
+	cd $(srcdir); \
+	$(PYEXT_ENV) YODA_LOCAL=1 $(PYTHON) \
+	  $(abs_builddir)/setup.py build \
+        --build-base $(abs_builddir)/build \
+        --verbose \
+        --force
 
 install-exec-local:
-	$(PYEXT_ENV) $(PYTHON) setup.py install --prefix=$(DESTDIR)$(prefix) --force
+	$(PYEXT_ENV) $(PYTHON) \
+	  $(abs_builddir)/setup.py install \
+	    --prefix $(DESTDIR)$(prefix) \
+	    --verbose \
+	    --skip-build \
+	    --force 
 
 uninstall-local:
-	rm -rf $(DESTDIR)$(YODA_PYTHONPATH)/yoda
-	rm -rf $(DESTDIR)$(YODA_PYTHONPATH)/yoda1
-	rm -f $(DESTDIR)$(YODA_PYTHONPATH)/yoda-$(VERSION)-py$(PYTHON_VERSION).egg-info
+	dir1=$(DESTDIR)$(pythondir); \
+	dir2=$${dir1/lib/lib64}; \
+	for i in $$dir1 $$dir2; do \
+	 rm -rf $$i/yoda; \
+	 rm -rf $$i/yoda1; \
+	 rm -rf $$i/yoda*.egg-info; \
+	done
 
 clean-local:
-	rm -f $(builddir)/*.pyc
 	rm -rf $(builddir)/build
-	rm -rf dist
-
-distclean-local:
-	rm -f $(builddir)/yoda.egg-info
-#	rm -rf $(builddir)/yoda
-#	rm -rf $(builddir)/yoda1
 
 endif

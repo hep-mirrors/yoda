@@ -1,3 +1,4 @@
+cimport util
 cdef class Dbn2D(util.Base):
     """
     A 2D distribution 'counter', used and exposed by 2D histograms and
