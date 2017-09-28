@@ -15,10 +15,7 @@ srcdir = os.path.abspath("@abs_top_srcdir@/src")
 libdir = os.path.abspath("@abs_top_builddir@/src/.libs")
 static_files = ["yoda/errors.cpp"]
 
-BASE_COMPILE_ARGS = "@PYEXT_CXXFLAGS@".split() #+ [
-#                     "-I@abs_top_srcdir@/include",
-#                     "-I@abs_srcdir@/include",
-#                     "-I@abs_builddir@/include"]
+BASE_COMPILE_ARGS = "@PYEXT_CXXFLAGS@".split()
 
 if os.environ.has_key("YODA_LOCAL"):
   BASE_LINK_ARGS = ["-L@abs_top_builddir@/src/.libs"]
@@ -26,6 +23,8 @@ else:
   BASE_LINK_ARGS = ["-L@prefix@/lib"]
   
 ## Dependencies used to trigger rebuild
+# couldn't get it to work reliably, use --force in Makefile.am
+# to always rebuild
 #header_files = glob(incdir+"/YODA/*.h") + glob(incdir+"/YODA/Utils/*.h")
 #core_depends = glob("yoda/include/*.pyx") + glob("yoda/*.py")# + header_files
 
@@ -34,19 +33,14 @@ def ext(name, depends=[], statics=[], extra_compile_args=[], extra_link_args=[])
 
 
     fullname = '@abs_builddir@/yoda/%s.cpp' % name
-
-#    print "\nTrying", fullname, os.getcwd(), os.path.isfile(fullname)
-
     if not os.path.isfile(fullname): # distcheck has it in srcdir
       fullname = os.path.relpath("@abs_srcdir@/yoda/%s.cpp" % name)
-
-#    print "\n\n Setting up with %s \n\n" % fullname
 
     return Extension(
         "yoda.%s" % name,
         [fullname] + statics,
         language="c++",
-#        depends=depends,
+ #        depends=depends,
         include_dirs=[incdir1, incdir2, incdir3, incdir4],
         extra_compile_args=BASE_COMPILE_ARGS + extra_compile_args,
         library_dirs=[libdir],

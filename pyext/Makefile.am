@@ -37,12 +37,5 @@ uninstall-local:
 
 clean-local:
 	rm -rf $(builddir)/build
-##	rm -f $(builddir)/*.pyc
-##	rm -rf dist
-
-#distclean-local:
-#	rm -f $(builddir)/yoda.egg-info
-#	rm -rf $(builddir)/yoda
-#	rm -rf $(builddir)/yoda1
 
 endif
