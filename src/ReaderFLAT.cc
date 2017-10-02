@@ -18,6 +18,12 @@ using namespace std;
 
 namespace YODA {
 
+  /// Singleton creation function
+  Reader& ReaderFLAT::create() {
+    static ReaderFLAT _instance;
+    return _instance;
+  }
+
 
   void ReaderFLAT::read(istream& stream, vector<AnalysisObject*>& aos) {
 

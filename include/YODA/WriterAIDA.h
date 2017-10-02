@@ -17,12 +17,7 @@ namespace YODA {
   public:
 
     /// Singleton creation function
-    static Writer& create() {
-      static WriterAIDA _instance;
-      _instance.setPrecision(6);
-      return _instance;
-    }
-
+    static Writer& create();
 
     // Include definitions of all write methods (all fulfilled by Writer::write(...))
     #include "YODA/WriterMethods.icc"

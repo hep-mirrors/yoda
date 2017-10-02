@@ -13,6 +13,13 @@ using namespace std;
 
 namespace YODA {
 
+  /// Singleton creation function
+  Writer& WriterAIDA::create() {
+    static WriterAIDA _instance;
+    _instance.setPrecision(6);
+    return _instance;
+  }
+
 
   void WriterAIDA::writeHead(std::ostream& stream) {
     stream << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";

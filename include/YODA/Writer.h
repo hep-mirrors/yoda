@@ -35,6 +35,9 @@ namespace YODA {
     /// @name Writing a single analysis object.
     //@{
 
+    /// Write out object @a ao to file @a filename.
+    void write(const std::string& filename, const AnalysisObject& ao);
+
     /// Write out object @a ao to output stream @a stream.
     void write(std::ostream& stream, const AnalysisObject& ao) {
       // std::vector<const AnalysisObject*> vec{&ao};
@@ -50,12 +53,6 @@ namespace YODA {
     typename std::enable_if<DerefableToAO<T>::value>::type //< -> void if valid
     write(std::ostream& stream, const T& ao) {
       write(stream, *ao);
-    }
-
-    /// Write out object @a ao to file @a filename.
-    void write(const std::string& filename, const AnalysisObject& ao) {
-      std::vector<const AnalysisObject*> vec{&ao};
-      write(filename, vec);
     }
 
     /// Write out pointer-like object @a ao to file @a filename.

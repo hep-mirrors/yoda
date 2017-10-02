@@ -45,6 +45,10 @@ namespace YODA {
     return *w;
   }
 
+    void Writer::write(const std::string& filename, const AnalysisObject& ao) {
+      std::vector<const AnalysisObject*> vec{&ao};
+      write(filename, vec);
+    }
 
   // Canonical writer function, including compression handling
   void Writer::write(ostream& stream, const vector<const AnalysisObject*>& aos) {

@@ -21,6 +21,12 @@ using namespace std;
 
 namespace YODA {
 
+  /// Singleton creation function
+  Writer& WriterFLAT::create() {
+    static WriterFLAT _instance;
+    _instance.setPrecision(6);
+    return _instance;
+  }
 
   void WriterFLAT::_writeAnnotations(std::ostream& os, const AnalysisObject& ao) {
     os << scientific << setprecision(_precision);

@@ -11,11 +11,18 @@ using namespace std;
 
 namespace YODA {
 
+  /// Singleton creation function
+  Writer& WriterYODA::create() {
+    static WriterYODA _instance;
+    _instance.setPrecision(6);
+    return _instance;
+  }
+
 
   // Format version:
   // - V1/empty = make-plots annotations style
   // - V2 = YAML annotations
-  const int YODA_FORMAT_VERSION = 2;
+  static const int YODA_FORMAT_VERSION = 2;
 
 
   void WriterYODA::_writeAnnotations(std::ostream& os, const AnalysisObject& ao) {
