@@ -21,11 +21,8 @@ namespace YODA {
   public:
 
     /// Singleton creation function
-    static Reader& create() {
-      static ReaderFLAT _instance;
-      return _instance;
-    }
-
+    static Reader& create();
+    
     void read(std::istream& stream, std::vector<AnalysisObject*>& aos);
 
   private:

@@ -34,6 +34,11 @@ using namespace std;
 
 namespace YODA {
 
+  /// Singleton creation function
+  Reader& ReaderYODA::create() {
+    static ReaderYODA _instance;
+    return _instance;
+  }
 
   namespace {
 

@@ -22,6 +22,11 @@ using namespace std;
 
 namespace YODA {
 
+  /// Singleton creation function
+  Reader& ReaderAIDA::create() {
+    static ReaderAIDA _instance;
+    return _instance;
+  }
 
   void ReaderAIDA::_readDoc(std::istream& stream, vector<AnalysisObject*>& aos) {
     TiXmlDocument doc;
