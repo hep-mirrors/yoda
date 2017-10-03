@@ -178,26 +178,26 @@ def setup_axes_1d(axmain, axratio, **plotkeys):
         axratio.set_yscale(ratioymeasure)
 
     ## Plot range limits
-    if plotkeys.has_key("ymin"):
+    if "ymin" in plotkeys:
         axmain.set_ylim(bottom=float(plotkeys.get("ymin")))
-    if plotkeys.has_key("ymax"):
+    if "ymax" in plotkeys:
         axmain.set_ylim(top=float(plotkeys.get("ymax")))
     #
-    if plotkeys.has_key("xmin"):
+    if "xmin" in plotkeys:
         axmain.set_xlim(left=float(plotkeys.get("xmin")))
-    if plotkeys.has_key("xmax"):
+    if "xmax" in plotkeys:
         axmain.set_xlim(right=float(plotkeys.get("xmax")))
     #
     if axratio:
         # TODO: RatioSymmRange option
         # axratio.set_xlim([xmin-0.001*xdiff, xmax+0.001*xdiff]) # <- TODO: bad on a log scale!
-        if plotkeys.has_key("xmin"):
+        if "xmin" in plotkeys:
             axratio.set_xlim(left=float(plotkeys.get("xmin")))
-        if plotkeys.has_key("xmax"):
+        if "xmax" in plotkeys:
             axratio.set_xlim(right=float(plotkeys.get("xmax")))
-        if plotkeys.has_key("ratioymin"):
+        if "ratioymin" in plotkeys:
             axratio.set_ylim(bottom=float(plotkeys.get("ratioymin")))
-        if plotkeys.has_key("ratioymax"):
+        if "ratioymax" in plotkeys:
             axratio.set_ylim(top=float(plotkeys.get("ratioymax")))
 
     # TODO: Ratio plot manual ticks
