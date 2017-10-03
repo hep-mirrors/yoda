@@ -139,13 +139,13 @@ for fa in fileargs:
         except:
             sys.stderr.write("Error processing arg '%s' with file:scale format\n" % fa)
     aos = yoda.read(filename)
-    for aopath, ao in aos.iteritems():
+    for aopath, ao in aos.items():
         ao.setAnnotation("yodamerge_scale", scale)
         analysisobjects_in.setdefault(aopath, []).append(ao)
 
 
 analysisobjects_out = {}
-for p, aos in analysisobjects_in.iteritems():
+for p, aos in analysisobjects_in.items():
 
     ## Identify the canonical aotype being handled from the type of the first entry in aos
     aotype = type(aos[0])
@@ -229,23 +229,23 @@ for p, aos in analysisobjects_in.iteritems():
         ## If there's only one object, there's no need to do any combining
         if len(aos) == 1:
             pass
-  
+
         elif aotype in (yoda.Scatter1D,yoda.Scatter2D,yoda.Scatter3D):
-            
+
             ## Retrieve dimensionality of the Scatter*D object
             dim=ao_out.dim
             SND_MODE=getattr(opts,"S%dD_MODE" % dim)
             axis=['','x','y','z']
-            
+
             ## Use asymptotic mean+stderr convergence statistics
             if SND_MODE in ("assume_mean", "add"):
-  
+
                 msg = "WARNING: Scatter%dD %s merge assumes asymptotic statistics and equal run sizes" % (dim, p)
                 if any(float(ao.annotation("yodamerge_scale")) != 1.0 for ao in aos):
                     msg += " (+ user scaling)"
                 sys.stderr.write(msg + "\n")
                 npoints = len(ao_out.points)
-                for i in xrange(npoints):
+                for i in range(npoints):
                     val_i = ep_i = em_i = scalesum = 0.0
                     for ao in aos:
                         scale = float(ao.annotation("yodamerge_scale"))
@@ -253,27 +253,27 @@ for p, aos in analysisobjects_in.iteritems():
                         val_i += scale * ao.points[i].val(dim)
                         ep_i += (scale * ao.points[i].errs(dim)[0])**2
                         em_i += (scale * ao.points[i].errs(dim)[1])**2
-                    ep_i = math.sqrt(ep_i) 
-                    em_i = math.sqrt(em_i) 
+                    ep_i = math.sqrt(ep_i)
+                    em_i = math.sqrt(em_i)
                     if SND_MODE == "assume_mean":
                         val_i /= scalesum
                         ep_i  /= scalesum
                         em_i  /= scalesum
                     setattr(ao_out.points[i],'%s' % axis[dim], val_i)
                     setattr(ao_out.points[i],'%sErrs' % axis[dim], (ep_i, em_i))
-            
+
             ## Add more points to the output scatter
             elif SND_MODE == "combine":
                 for ao in aos[1:]:
                     ao_out.combineWith(ao)
-  
+
             ## Just return the first AO unmodified & unmerged
             elif SND_MODE == "first":
                 pass
-  
+
             else:
                 raise Exception("Unknown Scatter%dD merging mode:" % dim + opts.SND_MODE)
-  
+
         ## Other data types (just warn, and write out the first object)
         else:
             sys.stderr.write("WARNING: Analysis object %s of type %s cannot be merged\n" % (p, str(aotype)))
