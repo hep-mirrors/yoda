@@ -39,7 +39,7 @@ cdef extern from "YODA/Dbn0D.h" namespace "YODA":
         Dbn0D ()
         Dbn0D (Dbn0D)
 
-        void fill(double weight)
+        void fill(double weight, double fraction)
         void reset()
         void scaleW(double)
 
@@ -65,7 +65,7 @@ cdef extern from "YODA/Dbn1D.h" namespace "YODA":
         Dbn1D ()
         Dbn1D (Dbn1D)
 
-        void fill(double val, double weight)
+        void fill(double val, double weight, double fraction)
         void reset()
         void scaleW(double)
         void scaleX(double)
@@ -100,7 +100,7 @@ cdef extern from "YODA/Dbn2D.h" namespace "YODA":
         Dbn2D ()
         Dbn2D (Dbn2D)
 
-        void fill(double x, double y, double weight) except +yodaerr
+        void fill(double x, double y, double weight, double fraction) except +yodaerr
         void reset() except +yodaerr
         void scaleW(double) except +yodaerr
         void scaleX(double) except +yodaerr
@@ -150,7 +150,7 @@ cdef extern from "YODA/Dbn3D.h" namespace "YODA":
     cdef cppclass Dbn3D:
         Dbn3D ()
         Dbn3D (Dbn3D)
-        void fill(double x, double y, double z, double weight)
+        void fill(double x, double y, double z, double weight, double fraction)
         void reset()
 
         void scaleW(double)
@@ -500,8 +500,8 @@ cdef extern from "YODA/HistoBin1D.h" namespace "YODA":
     cdef cppclass HistoBin1D(Bin1D_Dbn1D):
         HistoBin1D(double lowedge, double highedge) except +yodaerr
         HistoBin1D(HistoBin1D) except +yodaerr
-        # void fill(double x, double weight) except +yodaerr
-        # void fillBin(double weight) except +yodaerr
+        # void fill(double x, double weight, double fraction) except +yodaerr
+        # void fillBin(double weight, double fraction) except +yodaerr
 
         double area() except +yodaerr
         double height() except +yodaerr
@@ -530,8 +530,8 @@ cdef extern from "YODA/HistoBin2D.h" namespace "YODA":
         HistoBin2D(double xmin, double xmax, double ymin, double ymax) except +yodaerr
         HistoBin2D(HistoBin2D) except +yodaerr
 
-        # void fill(double x, double y, double weight) except +yodaerr
-        # void fillBin(double weight) except +yodaerr
+        # void fill(double x, double y, double weight, double fraction) except +yodaerr
+        # void fillBin(double weight, double fraction) except +yodaerr
         void reset()
 
         # Accessors
@@ -555,8 +555,8 @@ cdef extern from "YODA/ProfileBin1D.h" namespace "YODA":
     cdef cppclass ProfileBin1D(Bin1D_Dbn2D):
         ProfileBin1D(ProfileBin1D) except +yodaerr
         ProfileBin1D(double, double) except +yodaerr
-        #void fill(double x, double y, double weight) except +yodaerr
-        #void fillBin(double y, double weight) except +yodaerr
+        #void fill(double x, double y, double weight, double fraction) except +yodaerr
+        #void fillBin(double y, double weight, double fraction) except +yodaerr
         void reset() except +yodaerr
 
         double mean() except +yodaerr
@@ -590,8 +590,8 @@ cdef extern from "YODA/ProfileBin2D.h" namespace "YODA":
     cdef cppclass ProfileBin2D(Bin2D_Dbn3D):
         ProfileBin2D (ProfileBin2D h) except +yodaerr
         ProfileBin2D (double, double, double, double) except +yodaerr
-        # void fill(double x, double y, double z, double weight) except +yodaerr
-        # void fillBin(double z, double weight) except +yodaerr
+        # void fill(double x, double y, double z, double weight, double fraction) except +yodaerr
+        # void fillBin(double z, double weight, double fraction) except +yodaerr
 
         double mean() except +yodaerr
         double stdDev() except +yodaerr
@@ -669,7 +669,7 @@ cdef extern from "YODA/Counter.h" namespace "YODA":
 
         void reset() except +yodaerr
 
-        void fill(double weight) except +yodaerr
+        void fill(double weight, double fraction) except +yodaerr
 
         unsigned long numEntries() except +yodaerr
         double effNumEntries() except +yodaerr
@@ -906,8 +906,8 @@ cdef extern from "YODA/Histo1D.h" namespace "YODA":
 
         void reset() except +yodaerr
 
-        void fill(double x, double weight) except +yodaerr
-        void fillBin(size_t i, double weight) except +yodaerr
+        void fill(double x, double weight, double fraction) except +yodaerr
+        void fillBin(size_t i, double weight, double fraction) except +yodaerr
 
         void scaleW(double s) except +yodaerr
         void normalize(double normto, bool includeoverflows) except +yodaerr
@@ -1005,8 +1005,8 @@ cdef extern from "YODA/Histo2D.h" namespace "YODA":
 
         void reset() except +yodaerr
 
-        void fill(double x, double y, double weight) except +yodaerr
-        void fillBin(size_t i, double weight) except +yodaerr
+        void fill(double x, double y, double weight, double fraction) except +yodaerr
+        void fillBin(size_t i, double weight, double fraction) except +yodaerr
 
         void normalize(double normto, bool includeoverflows) except +yodaerr
 
@@ -1113,8 +1113,8 @@ cdef extern from "YODA/Profile1D.h" namespace "YODA":
 
         void reset() except +yodaerr
 
-        void fill(double x, double y, double weight) except +yodaerr
-        void fillBin(size_t i, double y, double weight) except +yodaerr
+        void fill(double x, double y, double weight, double fraction) except +yodaerr
+        void fillBin(size_t i, double y, double weight, double fraction) except +yodaerr
 
         void scaleW(double s) except +yodaerr
         void scaleY(double s) except +yodaerr
@@ -1205,8 +1205,8 @@ cdef extern from "YODA/Profile2D.h" namespace "YODA":
 
         void reset() except +yodaerr
 
-        void fill(double x, double y, double z, double weight) except +yodaerr
-        void fillBin(size_t i, double z, double weight) except +yodaerr
+        void fill(double x, double y, double z, double weight, double fraction) except +yodaerr
+        void fillBin(size_t i, double z, double weight, double fraction) except +yodaerr
 
         void scaleW(double s) except +yodaerr
         void scaleXY(double, double)

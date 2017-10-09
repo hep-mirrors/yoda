@@ -10,6 +10,7 @@
 #include "YODA/Point2D.h"
 #include "YODA/Utils/sortedvector.h"
 #include <utility>
+#include <memory>
 
 namespace YODA {
 
@@ -26,6 +27,7 @@ namespace YODA {
     /// Type of the native Point2D collection
     typedef Point2D Point;
     typedef Utils::sortedvector<Point2D> Points;
+    typedef std::shared_ptr<Scatter2D> Ptr;
 
 
     /// @name Constructors

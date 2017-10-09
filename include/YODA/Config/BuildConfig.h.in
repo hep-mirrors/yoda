@@ -1,7 +1,6 @@
 #ifndef YODA_BUILDCONFIG_H
 #define YODA_BUILDCONFIG_H
 
-
 /* Define to 1 if you have the <dlfcn.h> header file. */
 #undef HAVE_DLFCN_H
 
@@ -40,17 +39,5 @@
 
 /* Define to 1 if you have libz and its headers. */
 #undef HAVE_LIBZ
-
-
-// // Macro to help with overzealous compiler warnings
-// #ifdef UNUSED
-// #elif defined(__GNUC__)
-// # define UNUSED(x) UNUSED_ ## x __attribute__((unused))
-// #elif defined(__LCLINT__)
-// # define UNUSED(x) /*@unused@*/ x
-// #else
-// # define UNUSED(x) x
-// #endif
-
 
 #endif

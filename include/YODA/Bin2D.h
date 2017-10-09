@@ -295,7 +295,7 @@ namespace YODA {
     }
 
     /// The number of entries
-    unsigned long numEntries() const {
+    double numEntries() const {
       return _dbn.numEntries();
     }
 

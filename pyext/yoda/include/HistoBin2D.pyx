@@ -11,8 +11,8 @@ cdef class HistoBin2D(Bin2D_Dbn2D):
         cutil.set_owned_ptr(self, new c.HistoBin2D(xlow, xhigh, ylow, yhigh))
 
 
-    # def fill(self, x, y, weight=1.0):
-    #     self.hb2ptr().fill(x, y, weight)
+    # def fill(self, x, y, weight=1.0, fraction=1.0):
+    #     self.hb2ptr().fill(x, y, weight, fraction)
 
     @property
     def volume(self):

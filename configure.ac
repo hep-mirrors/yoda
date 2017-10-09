@@ -156,7 +156,7 @@ AM_CONDITIONAL(WITH_CYTHON, [test x$CYTHON_FOUND = xyes])
 
 
 ## Extend and substitute the default build flags after lib testing
-AM_CPPFLAGS="-I\$(top_srcdir)/include -I\$(top_builddir)/include ${CPFLAGS}"
+AM_CPPFLAGS="-I\$(top_srcdir)/include -I\$(top_builddir)/include"
 AC_SUBST(AM_CPPFLAGS)
 AC_SUBST(AM_CXXFLAGS)
 
@@ -177,7 +177,10 @@ AM_CONDITIONAL(WITH_DOXYGEN, test "$DOXYGEN")
 AC_EMPTY_SUBST
 AC_CONFIG_FILES([Makefile Doxyfile])
 AC_CONFIG_FILES([include/Makefile include/YODA/Makefile])
-AC_CONFIG_FILES([src/Makefile src/tinyxml/Makefile src/yamlcpp/Makefile])
+AC_CONFIG_FILES([src/Makefile 
+                 src/tinyxml/Makefile 
+                 src/yamlcpp/Makefile
+])
 AC_CONFIG_FILES([tests/Makefile])
 AC_CONFIG_FILES([pyext/Makefile 
                  pyext/setup.py 

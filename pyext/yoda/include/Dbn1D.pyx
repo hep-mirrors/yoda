@@ -37,13 +37,13 @@ cdef class Dbn1D(util.Base):
         self.d1ptr().reset()
 
 
-    def fill(self, x, weight=1.0):
+    def fill(self, x, weight=1.0, fraction=1.0):
         """
         (float x, float weight=1.0) -> None
 
         Fills the distribution with the given weight at given x.
         """
-        self.d1ptr().fill(x, weight)
+        self.d1ptr().fill(x, weight, fraction)
 
     def scaleW(self, w):
         """
@@ -90,7 +90,7 @@ cdef class Dbn1D(util.Base):
     @property
     def numEntries(self):
         """The number of entries"""
-        return int(self.d1ptr().numEntries())
+        return self.d1ptr().numEntries()
 
     @property
     def effNumEntries(self):

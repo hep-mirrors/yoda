@@ -86,16 +86,16 @@ cdef class Histo1D(AnalysisObject):
         return cutil.new_owned_cls(Histo1D, self.h1ptr().newclone())
 
 
-    def fill(self, x, weight=1.0):
+    def fill(self, x, weight=1.0, fraction=1.0):
         """(x,[w]) -> None.
         Fill with given x value and optional weight."""
-        self.h1ptr().fill(x, weight)
+        self.h1ptr().fill(x, weight, fraction)
 
 
-    def fillBin(self, size_t ix, weight=1.0):
+    def fillBin(self, size_t ix, weight=1.0, fraction=1.0):
         """(ix,[w]) -> None.
         Fill bin ix and optional weight."""
-        self.h1ptr().fillBin(ix, weight)
+        self.h1ptr().fillBin(ix, weight, fraction)
 
 
     @property
@@ -134,7 +134,7 @@ cdef class Histo1D(AnalysisObject):
 
 
     def numEntries(self, includeoverflows=True):
-        """([bool]) -> int
+        """([bool]) -> float
         Number of times this histogram was filled, optionally excluding the overflows."""
         return self.h1ptr().numEntries(includeoverflows)
 

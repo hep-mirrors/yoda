@@ -39,8 +39,8 @@ namespace YODA {
     /// @name Fill statistics
     //@{
 
-    /// The number of entries
-    virtual unsigned long numEntries() const = 0;
+    /// The number of entries (fractional fills are possible)
+    virtual double numEntries() const = 0;
 
     /// The effective number of entries
     virtual double effNumEntries() const = 0;

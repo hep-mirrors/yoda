@@ -70,15 +70,15 @@ cdef class Profile2D(AnalysisObject):
         return cutil.new_owned_cls(Profile2D, self.p2ptr().newclone())
 
 
-    def fill(self, double x, double y, double z, double weight=1.0):
+    def fill(self, double x, double y, double z, double weight=1.0, double fraction=1.0):
         """(x,y,z,[w]) -> None.
-        Fill with given x,y & z values and optional weight."""
-        self.p2ptr().fill(x, y, z, weight)
+        Fill with given x,y & z values and optional weight and fill fraction."""
+        self.p2ptr().fill(x, y, z, weight, fraction)
 
-    def fillBin(self, size_t i, double z, weight=1.0):
+    def fillBin(self, size_t i, double z, double weight=1.0, double fraction=1.0):
         """(i,z,[w]) -> None.
-        Fill bin i with value z and optional weight."""
-        self.p2ptr().fillBin(i, z, weight)
+        Fill bin i with value z and optional weight and fill fraction."""
+        self.p2ptr().fillBin(i, z, weight, fraction)
 
 
     @property
@@ -97,7 +97,7 @@ cdef class Profile2D(AnalysisObject):
 
 
     def numEntries(self, includeoverflows=True):
-        """([bool]) -> int
+        """([bool]) -> float
         Number of times this histogram was filled, optionally excluding the overflows."""
         return self.p2ptr().numEntries(includeoverflows)
 

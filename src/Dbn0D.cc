@@ -22,14 +22,14 @@ namespace YODA {
 
 
   Dbn0D& Dbn0D::add(const Dbn0D& d) {
-    _numFills += d._numFills;
+    _numEntries += d._numEntries;
     _sumW     += d._sumW;
     _sumW2    += d._sumW2;
     return *this;
   }
 
   Dbn0D& Dbn0D::subtract(const Dbn0D& d) {
-    _numFills += d._numFills; //< @todo Hmm, add or subtract?!?
+    _numEntries += d._numEntries; //< @todo Hmm, add or subtract?!?
     _sumW     -= d._sumW;
     _sumW2    += d._sumW2;
     return *this;

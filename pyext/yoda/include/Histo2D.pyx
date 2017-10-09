@@ -69,15 +69,15 @@ cdef class Histo2D(AnalysisObject):
         return cutil.new_owned_cls(Histo2D, self.h2ptr().newclone())
 
 
-    def fill(self, double x, double y, weight=1.0):
+    def fill(self, double x, double y, weight=1.0, fraction=1.0):
         """(x,y,[w]) -> None.
         Fill with given x,y values and optional weight."""
-        self.h2ptr().fill(x, y, weight)
+        self.h2ptr().fill(x, y, weight, fraction)
 
-    def fillBin(self, size_t i, weight=1.0):
+    def fillBin(self, size_t i, weight=1.0, fraction=1.0):
         """(i,[w]) -> None.
         Fill bin i and optional weight."""
-        self.h2ptr().fillBin(i, weight)
+        self.h2ptr().fillBin(i, weight, fraction)
 
 
     @property
@@ -100,7 +100,7 @@ cdef class Histo2D(AnalysisObject):
 
 
     def numEntries(self, includeoverflows=True):
-        """([bool]) -> int
+        """([bool]) -> float
         Number of times this histogram was filled, optionally excluding overflows."""
         return self.h2ptr().numEntries(includeoverflows)
 
