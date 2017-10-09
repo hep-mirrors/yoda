@@ -10,7 +10,7 @@ __version__ = core.version()
 from yoda.search import match_aos
 
 
-## Pull in plotting tools (if matplotlib and numpy are available)
+## Pull in plotting tools (requires matplotlib and numpy)
 try:
     import yoda.plotting
     from yoda.plotting import mplinit, plot

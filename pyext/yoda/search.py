@@ -129,8 +129,9 @@ class PointMatcher(object):
 
 if __name__ == "__main__":
 
-    import numpy as np
+    from . import linspace, logspace
     from pprint import pprint
+    import math
 
     class Point(object):
         def __init__(self, path, n, xmin, xmax, value=None):
@@ -144,13 +145,13 @@ if __name__ == "__main__":
             return "Point({} #{:d}  {:.2e}--{:.2e}{})".format(self.path, self.n, self.xmin, self.xmax, val)
 
     POINTS = []
-    xs = np.linspace(0, 10, 5)
+    xs = linspace(5, 0, 10)
     POINTS += [Point("/foo", i, xs[i], xs[i+1]) for i in range(len(xs)-1)]
-    xs = np.linspace(0, 100, 50)
+    xs = linspace(50, 0, 100)
     POINTS += [Point("/bar", i, xs[i], xs[i+1]) for i in range(len(xs)-1)]
-    xs = np.linspace(0, np.pi, 20)
+    xs = linspace(20, 0, math.pi)
     POINTS += [Point("/baz/pi", i, xs[i], xs[i+1]) for i in range(len(xs)-1)]
-    xs = np.logspace(0.1, 50, 20)
+    xs = logspace(20, 0.1, 50)
     POINTS += [Point("/baz/log", i, xs[i], xs[i+1]) for i in range(len(xs)-1)]
     pprint(POINTS)
 
