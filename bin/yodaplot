@@ -18,6 +18,8 @@ TODO:
 ################
 ## Command line args:
 
+from __future__ import print_function
+
 import os, optparse
 op = optparse.OptionParser(usage=__doc__)
 op.add_option("-f", "--format", dest="FORMAT", default="PDF",
@@ -66,7 +68,7 @@ def plot(plotargs):
     ## Print status update to terminal
     if opts.VERBOSITY > 0:
         outstr = " ".join(outfiles)
-        print "Plotting to {o} ({i:d}/{n:d})".format(o=outstr, i=i_n[0]+1, n=i_n[1])
+        print("Plotting to {o} ({i:d}/{n:d})".format(o=outstr, i=i_n[0]+1, n=i_n[1]))
 
     ## Do plotting
     # TODO: allow plotting order specification via PlotIndex (-ve = no plot)
@@ -107,6 +109,6 @@ for pa in plotargs:
 # else:
 #     import multiprocessing
 #     nproc = opts.NPROC or multiprocessing.cpu_count()-1 or 1
-#     print nproc
+#     print(nproc)
 #     pool = multiprocessing.Pool(processes=nproc)
 #     pool.map(plot, plotargs)

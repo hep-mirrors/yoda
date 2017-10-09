@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 ## Pull in core YODA C++/Python extension functionality
 from yoda.core import *
 
@@ -8,7 +10,7 @@ __version__ = core.version()
 from yoda.search import match_aos
 
 
-## Pull in plotting tools (if matplotlib and numpy are available)
+## Pull in plotting tools (requires matplotlib and numpy)
 try:
     import yoda.plotting
     from yoda.plotting import mplinit, plot
@@ -26,7 +28,7 @@ try:
     HAS_ROOT_SUPPORT = True
     # TODO: remove in v2
     def to_root(ao):
-        print "yoda.to_root() is deprecated: use yoda.root.to_root()"
+        print("yoda.to_root() is deprecated: use yoda.root.to_root()")
         return yoda.root.to_root(ao)
 except:
     HAS_ROOT_SUPPORT = False

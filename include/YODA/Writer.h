@@ -68,10 +68,14 @@ namespace YODA {
     /// @name Writing multiple analysis objects by collection.
     //@{
 
-    /// The canonical writing is implemented as a vector of AO pointers
+    /// Write out a vector of AO pointers (untemplated=exact type-match) to the given stream
     ///
-    /// @note Among other reasons, this is to hide zstr from the public API
+    /// @note This is the canonical function for implementing AO writing: all
+    /// others call this. Hence the specific AOs type.
+    ///
+    /// @note Among other reasons, this is non-inline to hide zstr from the public API
     void write(std::ostream& stream, const std::vector<const AnalysisObject*>& aos);
+
 
     /// Write out a collection of objects @a objs to output stream @a stream.
     ///
