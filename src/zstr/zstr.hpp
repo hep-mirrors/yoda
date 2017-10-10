@@ -15,6 +15,7 @@
 #include <zlib.h>
 #include "strict_fstream.hpp"
 
+namespace YODA {
 namespace zstr
 {
 
@@ -407,5 +408,6 @@ public:
 }; // class ofstream
 
 } // namespace zstr
+}
 
 #endif

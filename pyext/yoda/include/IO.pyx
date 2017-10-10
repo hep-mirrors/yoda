@@ -1,3 +1,5 @@
+# cython: c_string_type=unicode
+
 """Readers and writers
 
 The basic idea here is to provide Python IO semantics by using Python to do
