@@ -74,6 +74,7 @@ def _str_from_file(file_or_filename):
 ## Write a string to a file
 ## The file argument can either be a file object, filename, or special "-" reference to stdout
 def _str_to_file(s, file_or_filename):
+    s = unicode(s)
     if hasattr(file_or_filename, 'write'):
         file_or_filename.write(s)
     elif file_or_filename == "-":
