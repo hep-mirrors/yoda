@@ -34,27 +34,33 @@ cdef class Profile1D(AnalysisObject):
     def __init__(self, *args, **kwargs):
         util.try_loop([self.__init2, self.__init3, self.__init5], *args, **kwargs)
 
-    def __init2(self, char *path="", char *title=""):
+    def __init2(self, path="", title=""):
+        path  = path.encode('utf-8')
+        title = title.encode('utf-8')
         cutil.set_owned_ptr(
-            self, new c.Profile1D(string(path), string(title)))
+            self, new c.Profile1D(<string>path, <string>title))
 
     # TODO: Is Cython clever enough that we can make 3a and 3b versions and let it do the type inference?
-    def __init3(self, bins_or_edges, char *path="", char *title=""):
+    def __init3(self, bins_or_edges, path="", title=""):
         # TODO: Do this type-checking better
         cdef vector[double] edges
         try:
+            path  = path.encode('utf-8')
+            title = title.encode('utf-8')
             ## If float conversions work for all elements, it's a list of edges:
             edges = list(float(x) for x in bins_or_edges)
-            cutil.set_owned_ptr(self, new c.Profile1D(edges, string(path), string(title)))
+            cutil.set_owned_ptr(self, new c.Profile1D(edges, <string>path, <string>title))
         except:
             ## Assume it's a list of HistoBin1D
             bins = bins_or_edges
             self.__init2(path, title)
             self.addBins(bins)
 
-    def __init5(self, size_t nbins, double lower, double upper, char *path="", char *title=""):
+    def __init5(self, size_t nbins, double lower, double upper, path="", title=""):
+        path  = path.encode('utf-8')
+        title = title.encode('utf-8')
         cutil.set_owned_ptr(
-            self, new c.Profile1D(nbins, lower, upper, string(path), string(title)))
+            self, new c.Profile1D(nbins, lower, upper, <string>path, <string>title))
 
 
     def __len__(self):
@@ -283,6 +289,9 @@ cdef class Profile1D(AnalysisObject):
         return h
 
     def __div__(Profile1D self, Profile1D other):
+        return self.divideBy(other)
+
+    def __truediv__(Profile1D self, Profile1D other):
         return self.divideBy(other)
 
 

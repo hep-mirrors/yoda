@@ -21,8 +21,10 @@ cdef class Scatter3D(AnalysisObject):
     def __init__(self, *args, **kwargs):
         util.try_loop([self.__init_2, self.__init_3], *args, **kwargs)
 
-    def __init_2(self, char* path="", char* title=""):
-        cutil.set_owned_ptr(self, new c.Scatter3D(string(path), string(title)))
+    def __init_2(self, path="", title=""):
+        path  = path.encode('utf-8')
+        title = title.encode('utf-8')
+        cutil.set_owned_ptr(self, new c.Scatter3D(<string>path, <string>title))
 
     def __init_3(self, points, char* path="", char* title=""):
         self.__init_2(path, title)

@@ -45,14 +45,14 @@ cdef class AnalysisObject(util.Base):
         # TODO: add a map equivalent to C++?
         return dict((k.lower(), self.annotation(k)) for k in self.annotations)
 
-    def annotation(self, string k, default=None):
+    def annotation(self, k, default=None):
         """Get annotation k from this object (falling back to default if not set).
 
         The annotation string will be automatically converted to Python
         native types as far as possible -- more complex types are possible
         if the yaml module is installed."""
         try:
-            astr = self.aoptr().annotation(string(k))
+            astr = self.aoptr().annotation(<string>k.encode('utf-8'))
             try:
                 import yaml
                 return yaml.load(astr)
@@ -61,17 +61,18 @@ cdef class AnalysisObject(util.Base):
         except:
             return default
 
-    def setAnnotation(self, string k, v):
+    def setAnnotation(self, k, v):
         """Set annotation k on this object."""
-        self.aoptr().setAnnotation(k, util._autostr(v))
+        self.aoptr().setAnnotation(<string>k.encode('utf-8'), 
+                                   <string>util._autostr(v).encode('utf-8'))
 
-    def hasAnnotation(self, string k):
+    def hasAnnotation(self, k):
         """Check if this object has annotation k."""
-        return self.aoptr().hasAnnotation(string(k))
+        return self.aoptr().hasAnnotation(<string>k.encode('utf-8'))
 
-    def rmAnnotation(self, string k):
+    def rmAnnotation(self, k):
         """Remove annotation k from this object."""
-        self.aoptr().rmAnnotation(string(k))
+        self.aoptr().rmAnnotation(<string>k.encode('utf-8'))
 
     def clearAnnotations(self):
         """Clear the annotations dictionary."""
@@ -92,7 +93,7 @@ cdef class AnalysisObject(util.Base):
         """
         Return the histogram name, i.e. the last part of the path (which may be empty).
         """
-        return self.aoptr().name().c_str()
+        return self.aoptr().name().c_str().decode('utf-8')
 
 
     property path:
@@ -101,10 +102,10 @@ cdef class AnalysisObject(util.Base):
         a '/' if not the empty string.
         """
         def __get__(self):
-            return self.aoptr().path().c_str()
+            return self.aoptr().path().c_str().decode('utf-8')
 
-        def __set__(self, char *path):
-            self.aoptr().setPath(string(path))
+        def __set__(self, path):
+            self.aoptr().setPath(<string>path.encode('utf-8'))
 
 
     property title:
@@ -112,10 +113,10 @@ cdef class AnalysisObject(util.Base):
         Convenient access to the histogram title (optional).
         """
         def __get__(self):
-            return self.aoptr().title().c_str()
+            return self.aoptr().title().c_str().decode('utf-8')
 
         def __set__(self, char *title):
-            self.aoptr().setTitle(string(title))
+            self.aoptr().setTitle(<string>title.encode('utf-8'))
 
 
     def __repr__(self):

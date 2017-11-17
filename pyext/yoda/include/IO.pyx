@@ -13,15 +13,16 @@ import sys
 
 ## Check if a string matches any of the given patterns, and that it doesn't match any unpatterns (for path filtering)
 def _pattern_check(name, patterns, unpatterns):
+    print("INIT",name,patterns,unpatterns)
     import re
     if patterns:
-        if not hasattr(patterns, "__iter__"):
+        if not isinstance(patterns, (list,tuple)):
             patterns = [patterns]
         ## Compile on the fly: works because compile(compiled_re) -> compiled_re
         if not any(re.compile(patt).match(name) for patt in patterns):
             return False
     if unpatterns:
-        if not hasattr(unpatterns, "__iter__"):
+        if not isinstance(unpatterns, (list,tuple)):
             unpatterns = [unpatterns]
         ## Compile on the fly: works because compile(compiled_re) -> compiled_re
         if any(re.compile(patt).match(name) for patt in unpatterns):
@@ -36,7 +37,7 @@ cdef list _aobjects_to_list(vector[c.AnalysisObject*]* aobjects, patterns, unpat
     for i in range(aobjects.size()):
         ao = deref(aobjects)[i]
         ## NOTE: automatic type conversion by passing the type() as a key to globals()
-        newao = cutil.new_owned_cls(globals()[ao.type()], ao)
+        newao = cutil.new_owned_cls(globals()[ao.type().decode('utf-8')], ao)
         if _pattern_check(newao.path, patterns, unpatterns):
             out.append(newao)
     return out
@@ -49,7 +50,7 @@ cdef dict _aobjects_to_dict(vector[c.AnalysisObject*]* aobjects, patterns, unpat
     for i in range(aobjects.size()):
         ao = deref(aobjects)[i]
         ## NOTE: automatic type conversion by passing the type() as a key to globals()
-        newao = cutil.new_owned_cls( globals()[ao.type()], ao)
+        newao = cutil.new_owned_cls( globals()[ao.type().decode('utf-8')], ao)
         if _pattern_check(newao.path, patterns, unpatterns):
             out[newao.path] = newao
     return out
@@ -69,12 +70,12 @@ def _str_from_file(file_or_filename):
         f = open(file_or_filename, "rb") # assume that linefeed conversion is to occur in C++ code
         s = f.read()
         f.close()
-    return s
+    return s.encode('utf-8')
 
 ## Write a string to a file
 ## The file argument can either be a file object, filename, or special "-" reference to stdout
 def _str_to_file(s, file_or_filename):
-    s = unicode(s)
+    s = s.decode('utf-8')
     if hasattr(file_or_filename, 'write'):
         file_or_filename.write(s)
     elif file_or_filename == "-":
@@ -109,7 +110,7 @@ def read(filename, asdict=True, patterns=None, unpatterns=None):
     s = f.read()
     f.close()
     _make_iss(iss, s)
-    c.Reader_create(filename).read(iss, aobjects)
+    c.Reader_create(filename.encode('utf-8')).read(iss, aobjects)
     return _aobjects_to_dict(&aobjects, patterns, unpatterns) if asdict else _aobjects_to_list(&aobjects, patterns, unpatterns)
 
 
@@ -191,7 +192,7 @@ def write(ana_objs, filename):
     aolist = ana_objs.values() if hasattr(ana_objs, "values") else ana_objs if hasattr(ana_objs, "__iter__") else [ana_objs]
     for a in aolist:
         vec.push_back(a._AnalysisObject())
-    c.Writer_create(filename).write(oss, vec)
+    c.Writer_create(filename.encode('utf-8')).write(oss, vec)
     _str_to_file(oss.str(), filename)
 
 
