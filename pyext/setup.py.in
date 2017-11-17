@@ -17,7 +17,7 @@ static_files = ["yoda/errors.cpp"]
 
 BASE_COMPILE_ARGS = "@PYEXT_CXXFLAGS@".split()
 
-if os.environ.has_key("YODA_LOCAL"):
+if "YODA_LOCAL" in os.environ:
   BASE_LINK_ARGS = ["-L@abs_top_builddir@/src/.libs"]
 else:
   BASE_LINK_ARGS = ["-L@prefix@/lib"]
@@ -51,7 +51,7 @@ extns = [ext("util"),
          ext("core", statics=static_files)]#,depends=core_depends)]
 
 ## Enable building of ROOT extension if ROOT is present
-if os.environ.has_key("BUILD_ROOTCOMPAT"):
+if "BUILD_ROOTCOMPAT" in os.environ:
     try:
         # import ROOT
         # TODO: Need to test for and use root-config in configure

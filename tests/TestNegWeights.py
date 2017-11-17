@@ -1,5 +1,5 @@
 #! /usr/bin/env python
-
+from __future__ import print_function
 import sys
 from yoda import *
 
@@ -7,7 +7,7 @@ def testmatch(name, v1, v2, tolerance=1e-3):
     fracdiff = 2*abs(v1 - v2)/(v1 + v2)
     match = (fracdiff < 1e-3)
     passfail = "PASS" if match else "FAIL"
-    print "Testing %s: %f vs. %f => %e deviation. %s" % (name, v1, v2, fracdiff, passfail)
+    print("Testing %s: %f vs. %f => %e deviation. %s" % (name, v1, v2, fracdiff, passfail))
     return match
 
 h1 = Histo1D(5, 0.0, 100.0)
