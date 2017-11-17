@@ -108,7 +108,6 @@ TESTS = \
 ### when /usr/bin/env is called 
 ### (same for any other app in /usr/bin)
 ###
-if ! WITH_OSX
 TESTS += \
   pytest-unit \
   pytest-counter \
@@ -123,7 +122,6 @@ TESTS += \
   pytest-iofilter \
   pytest-operators \
   shtest-yodamerge
-endif
 
 CLEANFILES = \
   merged12.yoda merged12pi.yoda \
