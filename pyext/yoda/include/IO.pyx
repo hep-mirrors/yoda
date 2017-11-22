@@ -73,6 +73,7 @@ def _str_from_file(file_or_filename):
 ## Write a string to a file
 ## The file argument can either be a file object, filename, or special "-" reference to stdout
 def _str_to_file(s, file_or_filename):
+    s = s.decode('utf-8')
     if hasattr(file_or_filename, 'write'):
         file_or_filename.write(s)
     elif file_or_filename == "-":
@@ -187,7 +188,7 @@ def write(ana_objs, filename):
     for a in aolist:
         vec.push_back(a._AnalysisObject())
     c.Writer_create(filename.encode('utf-8')).write(oss, vec)
-    _str_to_file(oss.str().decode('utf-8'), filename)
+    _str_to_file(oss.str(), filename)
 
 
 def writeYODA(ana_objs, file_or_filename):
@@ -201,7 +202,7 @@ def writeYODA(ana_objs, file_or_filename):
     for a in aolist:
         vec.push_back(a._AnalysisObject())
     c.WriterYODA_create().write(oss, vec)
-    _str_to_file(oss.str().decode('utf-8'), file_or_filename)
+    _str_to_file(oss.str(), file_or_filename)
 
 
 def writeFLAT(ana_objs, file_or_filename):
@@ -215,7 +216,7 @@ def writeFLAT(ana_objs, file_or_filename):
     for a in aolist:
         vec.push_back(a._AnalysisObject())
     c.WriterFLAT_create().write(oss, vec)
-    _str_to_file(oss.str().decode('utf-8'), file_or_filename)
+    _str_to_file(oss.str(), file_or_filename)
 
 
 def writeAIDA(ana_objs, file_or_filename):
@@ -229,4 +230,4 @@ def writeAIDA(ana_objs, file_or_filename):
     for a in aolist:
         vec.push_back(a._AnalysisObject())
     c.WriterAIDA_create().write(oss, vec)
-    _str_to_file(oss.str().decode('utf-8'), file_or_filename)
+    _str_to_file(oss.str(), file_or_filename)
