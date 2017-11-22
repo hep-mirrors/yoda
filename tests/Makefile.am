@@ -1,4 +1,4 @@
-EXTRA_DIST = \
+PYTESTS = \
   pytest-unit \
   pytest-counter \
   pytest-h1d \
@@ -10,10 +10,27 @@ EXTRA_DIST = \
   pytest-div \
   pytest-rebin \
   pytest-iofilter \
-  pytest-operators \
+  pytest-operators
+
+SHTESTS = \
   shtest-yodamerge \
+  shtest-yodahist \
+  shtest-yodals \
+  shtest-yodacmp \
+  shtest-yoda2flat \
+  shtest-yodascale \
+  shtest-yodaplot \
+  shtest-yodacnv \
+  shtest-yoda2yoda
+
+EXTRA_DIST = $(PYTESTS) $(SHTESTS) \
   shtest-yoda2root \
   test1.yoda test2.yoda \
+  iofilter.yoda \
+  rivetexample.yoda \
+  yodals-ref.txt \
+  yodahist-ref.yoda \
+  yoda2flat-ref.dat \
   merged12-ref.yoda merged12pi-ref.yoda
 
 check_PROGRAMS = \
@@ -103,28 +120,17 @@ TESTS = \
   testscatter2Dmodify \
   testhisto2Dcreate
 
-### need a way to prevent the DYLD_LIBRARY_PATH setting
+### to make distcheck work on macOS, we need a
+### way to prevent the DYLD_LIBRARY_PATH setting
 ### from being removed by system integrity protection
 ### when /usr/bin/env is called 
 ### (same for any other app in /usr/bin)
 ###
-TESTS += \
-  pytest-unit \
-  pytest-counter \
-  pytest-h1d \
-  pytest-p1d \
-  pytest-h2d \
-  pytest-p2d \
-  pytest-s1d \
-  pytest-s2d \
-  pytest-div \
-  pytest-rebin \
-  pytest-iofilter \
-  pytest-operators \
-  shtest-yodamerge
+if ! WITH_OSX
+TESTS += $(PYTESTS) $(SHTESTS)
+endif
 
 CLEANFILES = \
-  merged12.yoda merged12pi.yoda \
   h1d.yoda h1d.dat \
   p1d.yoda p1d.dat \
   h2d.yoda h2d.dat \

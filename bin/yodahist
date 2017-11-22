@@ -223,6 +223,7 @@ if "ann" in cmds:
 INPUT = cmds.get("in", "-")
 import fileinput
 for line in fileinput.input(INPUT):
+    if not line.strip(): continue
     vals = [float(x) for x in line.strip().split()]
     if MODE == "scat2":
         # TODO: Multiple errors and asymm errors

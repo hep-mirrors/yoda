@@ -50,7 +50,7 @@ def try_loop(fs, *args, char *_msg='Invalid arguments', **kwargs):
         try:
             f(*args, **kwargs)
             return
-        except TypeError:
+        except (TypeError, AttributeError):
             pass
     raise TypeError(_msg)
 

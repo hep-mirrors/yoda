@@ -249,7 +249,7 @@ for infile in args:
                     print("ERROR: Normalisation of given range is 0; cannot rescale this to a finite value. Result will be unscaled")
                     sf = 1.0
                 elif mode == "=":
-                    sf = factor/norm
+                    sf = float(factor)/norm
                 elif mode == "x":
                     assert(all(len(p.xErrs) == 2 for p in sref.points))
                     refnorm = sum(p.y * sum(p.xErrs) for i, p in enumerate(sref.points) if matchpoint(i, p))

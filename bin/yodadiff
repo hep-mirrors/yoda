@@ -19,16 +19,20 @@ opts, filenames = parser.parse_args()
 
 if len(filenames) != 2:
     print("ERROR! Please supply *two* YODA files for comparison")
-    sys.exit(1)
+    sys.exit(7)
 
 ## Get data objects
 aodict1 = yoda.read(filenames[0])
 aodict2 = yoda.read(filenames[1])
 
+CLEAN = True
+
 ## Check number of data objects in each file
 if len(aodict1) != len(aodict2):
+    CLEAN = False
     print("Different numbers of data objects in %s and %s" % tuple(filenames[:2]))
 elif list(aodict1.keys()) != list(aodict2.keys()):
+    CLEAN = False
     print("Different data object paths in %s and %s" % tuple(filenames[:2]))
 
 ## A slightly tolerant numerical comparison function
@@ -65,16 +69,19 @@ for path in sorted(set(list(aodict1.keys()) + list(aodict2.keys()))):
     ## Get the object in file #1
     ao1 = aodict1.get(path, None)
     if ao1 is None:
+        CLEAN = False
         print("Data object '%s' not found in %s" % (path, filenames[0]))
         continue
     ## Get the object in file #2
     ao2 = aodict2.get(path, None)
     if ao2 is None:
+        CLEAN = False
         print("Data object '%s' not found in %s" % (path, filenames[1]))
         continue
 
     ## Compare the file #1 vs. #2 object types
     if type(ao1) is not type(ao2):
+        CLEAN = False
         print("Data objects with path '%s' have different types (%s and %s) in %s and %s" % \
               (path, str(type(ao1)), str(type(ao2)), filenames[0], filenames[1]))
         continue
@@ -88,12 +95,14 @@ for path in sorted(set(list(aodict1.keys()) + list(aodict2.keys()))):
 
     ## Check for compatible dimensionalities (should already be ok, but just making sure)
     if s1.dim != s2.dim:
+        CLEAN = False
         print("Data objects with path '%s' have different scatter dimensions (%d and %d) in %s and %s" % \
               (path, s1.dim, s2.dim, filenames[0], filenames[1]))
         continue
 
     ## Compare the numbers of points/bins
     if s1.numPoints != s2.numPoints:
+        CLEAN = False
         print("Data objects with path '%s' have different numbers of points (%d and %d) in %s and %s" % \
               (path, s1.numPoints, s2.numPoints, filenames[0], filenames[1]))
         continue
@@ -113,4 +122,10 @@ for path in sorted(set(list(aodict1.keys()) + list(aodict2.keys()))):
         if not ok:
             msgs.append("  Point #%d: %s vs. %s" % (i, ptstr(p1), ptstr(p2)))
     if msgs:
+        CLEAN = False
         print(premsg + "\n".join(msgs))
+
+if not CLEAN:
+    sys.exit(1)
+
+sys.exit(0)

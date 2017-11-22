@@ -13,19 +13,18 @@ import sys
 
 ## Check if a string matches any of the given patterns, and that it doesn't match any unpatterns (for path filtering)
 def _pattern_check(name, patterns, unpatterns):
-    print("INIT",name,patterns,unpatterns)
     import re
     if patterns:
         if not isinstance(patterns, (list,tuple)):
             patterns = [patterns]
         ## Compile on the fly: works because compile(compiled_re) -> compiled_re
-        if not any(re.compile(patt).match(name) for patt in patterns):
+        if not any(re.compile(patt).search(name) for patt in patterns):
             return False
     if unpatterns:
         if not isinstance(unpatterns, (list,tuple)):
             unpatterns = [unpatterns]
         ## Compile on the fly: works because compile(compiled_re) -> compiled_re
-        if any(re.compile(patt).match(name) for patt in unpatterns):
+        if any(re.compile(patt).search(name) for patt in unpatterns):
             return False
     return True
 
@@ -67,24 +66,20 @@ def _str_from_file(file_or_filename):
     elif file_or_filename == "-":
         s = sys.stdin.read()
     else:
-        f = open(file_or_filename, "rb") # assume that linefeed conversion is to occur in C++ code
-        s = f.read()
-        f.close()
-    return s.encode('utf-8')
+        with open(file_or_filename, "r") as f:
+            s = f.read()
+    return s
 
 ## Write a string to a file
 ## The file argument can either be a file object, filename, or special "-" reference to stdout
 def _str_to_file(s, file_or_filename):
-    s = s.decode('utf-8')
     if hasattr(file_or_filename, 'write'):
         file_or_filename.write(s)
     elif file_or_filename == "-":
         sys.stdout.write(s)
     else:
-        f = open(file_or_filename, "w")
-        s = f.write(s)
-        f.close()
-
+        with open(file_or_filename, "w") as f:
+            f.write(s)
 
 
 ##
@@ -106,10 +101,9 @@ def read(filename, asdict=True, patterns=None, unpatterns=None):
     """
     cdef c.istringstream iss
     cdef vector[c.AnalysisObject*] aobjects
-    f = open(filename, "rb") # assume that linefeed conversion is to occur in C++ code
-    s = f.read()
-    f.close()
-    _make_iss(iss, s)
+    with open(filename, "r") as f:
+        s = f.read()
+    _make_iss(iss, s.encode('utf-8'))
     c.Reader_create(filename.encode('utf-8')).read(iss, aobjects)
     return _aobjects_to_dict(&aobjects, patterns, unpatterns) if asdict else _aobjects_to_list(&aobjects, patterns, unpatterns)
 
@@ -129,7 +123,7 @@ def readYODA(file_or_filename, asdict=True, patterns=None, unpatterns=None):
     cdef c.istringstream iss
     cdef vector[c.AnalysisObject*] aobjects
     s = _str_from_file(file_or_filename)
-    _make_iss(iss, s)
+    _make_iss(iss, s.encode('utf-8'))
     c.ReaderYODA_create().read(iss, aobjects)
     # TODO: Add optional filter pattern in conversion to Python iterable (also for all other read functions)
     return _aobjects_to_dict(&aobjects, patterns, unpatterns) if asdict else _aobjects_to_list(&aobjects, patterns, unpatterns)
@@ -150,7 +144,7 @@ def readFLAT(file_or_filename, asdict=True, patterns=None, unpatterns=None):
     cdef c.istringstream iss
     cdef vector[c.AnalysisObject*] aobjects
     s = _str_from_file(file_or_filename)
-    _make_iss(iss, s)
+    _make_iss(iss, s.encode('utf-8'))
     c.ReaderFLAT_create().read(iss, aobjects)
     return _aobjects_to_dict(&aobjects, patterns, unpatterns) if asdict else _aobjects_to_list(&aobjects, patterns, unpatterns)
 
@@ -172,7 +166,7 @@ def readAIDA(file_or_filename, asdict=True, patterns=None, unpatterns=None):
     cdef c.istringstream iss
     cdef vector[c.AnalysisObject*] aobjects
     s = _str_from_file(file_or_filename)
-    _make_iss(iss, s)
+    _make_iss(iss, s.encode('utf-8'))
     c.ReaderAIDA_create().read(iss, aobjects)
     return _aobjects_to_dict(&aobjects, patterns, unpatterns) if asdict else _aobjects_to_list(&aobjects, patterns, unpatterns)
 
@@ -193,7 +187,7 @@ def write(ana_objs, filename):
     for a in aolist:
         vec.push_back(a._AnalysisObject())
     c.Writer_create(filename.encode('utf-8')).write(oss, vec)
-    _str_to_file(oss.str(), filename)
+    _str_to_file(oss.str().decode('utf-8'), filename)
 
 
 def writeYODA(ana_objs, file_or_filename):
@@ -207,7 +201,7 @@ def writeYODA(ana_objs, file_or_filename):
     for a in aolist:
         vec.push_back(a._AnalysisObject())
     c.WriterYODA_create().write(oss, vec)
-    _str_to_file(oss.str(), file_or_filename)
+    _str_to_file(oss.str().decode('utf-8'), file_or_filename)
 
 
 def writeFLAT(ana_objs, file_or_filename):
@@ -221,7 +215,7 @@ def writeFLAT(ana_objs, file_or_filename):
     for a in aolist:
         vec.push_back(a._AnalysisObject())
     c.WriterFLAT_create().write(oss, vec)
-    _str_to_file(oss.str(), file_or_filename)
+    _str_to_file(oss.str().decode('utf-8'), file_or_filename)
 
 
 def writeAIDA(ana_objs, file_or_filename):
@@ -235,4 +229,4 @@ def writeAIDA(ana_objs, file_or_filename):
     for a in aolist:
         vec.push_back(a._AnalysisObject())
     c.WriterAIDA_create().write(oss, vec)
-    _str_to_file(oss.str(), file_or_filename)
+    _str_to_file(oss.str().decode('utf-8'), file_or_filename)

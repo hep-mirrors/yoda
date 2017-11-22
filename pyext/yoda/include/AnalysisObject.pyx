@@ -25,7 +25,7 @@ cdef class AnalysisObject(util.Base):
     @property
     def type(self):
         "String identifier for this type"
-        return self.aoptr().type()
+        return self.aoptr().type().decode('utf-8')
 
     @property
     def dim(self):
@@ -36,7 +36,7 @@ cdef class AnalysisObject(util.Base):
     def annotations(self):
         """() -> list[str]
         A list of all annotation/metadata keys."""
-        return self.aoptr().annotations()
+        return [ a.decode('utf-8') for a in self.aoptr().annotations() ]
 
     @property
     def annotationsDict(self):
@@ -93,7 +93,7 @@ cdef class AnalysisObject(util.Base):
         """
         Return the histogram name, i.e. the last part of the path (which may be empty).
         """
-        return self.aoptr().name().c_str().decode('utf-8')
+        return self.aoptr().name().decode('utf-8')
 
 
     property path:
@@ -102,7 +102,7 @@ cdef class AnalysisObject(util.Base):
         a '/' if not the empty string.
         """
         def __get__(self):
-            return self.aoptr().path().c_str().decode('utf-8')
+            return self.aoptr().path().decode('utf-8')
 
         def __set__(self, path):
             self.aoptr().setPath(<string>path.encode('utf-8'))
@@ -113,9 +113,9 @@ cdef class AnalysisObject(util.Base):
         Convenient access to the histogram title (optional).
         """
         def __get__(self):
-            return self.aoptr().title().c_str().decode('utf-8')
+            return self.aoptr().title().decode('utf-8')
 
-        def __set__(self, char *title):
+        def __set__(self, title):
             self.aoptr().setTitle(<string>title.encode('utf-8'))
 
 
