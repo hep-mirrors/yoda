@@ -53,6 +53,9 @@ if opts.QUIET:
 import yoda
 mpl = yoda.mplinit(opts.ENGINE)
 
+import matplotlib
+matplotlib.use('Agg')
+
 from matplotlib import cm
 COLORS = [cm.jet(i) for i in yoda.linspace(0.2, 0.8, len(args))]
 STYLES = ["-", "--", ":", "-."]
