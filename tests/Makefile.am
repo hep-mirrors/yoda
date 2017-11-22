@@ -30,6 +30,7 @@ EXTRA_DIST = $(PYTESTS) $(SHTESTS) \
   rivetexample.yoda \
   yodals-ref.txt \
   yodahist-ref.yoda \
+  yodahist-fills.txt \
   yoda2flat-ref.dat \
   merged12-ref.yoda merged12pi-ref.yoda
 
