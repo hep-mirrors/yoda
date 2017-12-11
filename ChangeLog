@@ -1,3 +1,7 @@
+2017-12-11  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Add Nentries printout to yodals -v
+
 2017-09-18  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Patches for ROOT conversion from Robert Hatcher -- thanks!

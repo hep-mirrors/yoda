@@ -40,8 +40,11 @@ for i, f in enumerate(filenames):
     filter_aos(aodict, opts.MATCH, opts.UNMATCH)
     for p, ao in ysorted(aodict.items()):
         extrainfo = ""
-        if opts.VERBOSITY >= 2 and hasattr(ao, "sumW"):
-            extrainfo = " sumW={sumw:.3g}".format(sumw=ao.sumW())
+        if opts.VERBOSITY >= 2:
+            if hasattr(ao, "numEntries"):
+                extrainfo += " N={sumw:.3g}".format(sumw=ao.numEntries())
+            if hasattr(ao, "sumW"):
+                extrainfo += " sumW={sumw:.3g}".format(sumw=ao.sumW())
         try:
             nobjstr = "{n:4d}".format(n=len(ao))
         except:
