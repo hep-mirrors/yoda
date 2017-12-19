@@ -1,7 +1,7 @@
 ## Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.59)
-AC_INIT([YODA],[1.7.0a1],[yoda@projects.hepforge.org],[YODA])
+AC_INIT([YODA],[1.7.0],[yoda@projects.hepforge.org],[YODA])
 
 ## Check and block installation into the src/build dir
 if test "$prefix" = "$PWD"; then
@@ -177,13 +177,13 @@ AM_CONDITIONAL(WITH_DOXYGEN, test "$DOXYGEN")
 AC_EMPTY_SUBST
 AC_CONFIG_FILES([Makefile Doxyfile])
 AC_CONFIG_FILES([include/Makefile include/YODA/Makefile])
-AC_CONFIG_FILES([src/Makefile 
-                 src/tinyxml/Makefile 
+AC_CONFIG_FILES([src/Makefile
+                 src/tinyxml/Makefile
                  src/yamlcpp/Makefile
 ])
 AC_CONFIG_FILES([tests/Makefile])
-AC_CONFIG_FILES([pyext/Makefile 
-                 pyext/setup.py 
+AC_CONFIG_FILES([pyext/Makefile
+                 pyext/setup.py
                  pyext/yoda/Makefile
                  ])
 AC_CONFIG_FILES([bin/Makefile bin/yoda-config])
