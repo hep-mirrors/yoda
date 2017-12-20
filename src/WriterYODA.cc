@@ -24,6 +24,13 @@ namespace YODA {
   // - V2 = YAML annotations
   static const int YODA_FORMAT_VERSION = 2;
 
+  // Version-formatting helper function
+  inline string _iotypestr(const string& baseiotype) {
+    ostringstream os;
+    os << "YODA_" << Utils::toUpper(baseiotype) << "_V" << YODA_FORMAT_VERSION;
+    return os.str();
+  }
+
 
   void WriterYODA::_writeAnnotations(std::ostream& os, const AnalysisObject& ao) {
     os << scientific << setprecision(_precision);
@@ -40,11 +47,11 @@ namespace YODA {
     ios_base::fmtflags oldflags = os.flags();
     os << scientific << showpoint << setprecision(_precision);
 
-    os << "BEGIN YODA_COUNTER_V" << YODA_FORMAT_VERSION << " " << c.path() << "\n";
+    os << "BEGIN " << _iotypestr("COUNTER") << " " << c.path() << "\n";
     _writeAnnotations(os, c);
     os << "# sumW\t sumW2\t numEntries\n";
     os << c.sumW()  << "\t" << c.sumW2() << "\t" << c.numEntries() << "\n";
-    os << "END YODA_COUNTER\n";
+    os << "END " << _iotypestr("COUNTER") << "\n";
 
     os.flags(oldflags);
   }
@@ -54,7 +61,7 @@ namespace YODA {
     ios_base::fmtflags oldflags = os.flags();
     os << scientific << showpoint << setprecision(_precision);
 
-    os << "BEGIN YODA_HISTO1D_V" << YODA_FORMAT_VERSION << " " << h.path() << "\n";
+    os << "BEGIN " << _iotypestr("HISTO1D") << " " << h.path() << "\n";
     _writeAnnotations(os, h);
     try {
       //if ( h.totalDbn().effNumEntries() > 0 ) {
@@ -83,7 +90,7 @@ namespace YODA {
       os << b.sumWX()   << "\t" << b.sumWX2()   << "\t";
       os << b.numEntries() << "\n";
     }
-    os << "END YODA_HISTO1D\n";
+    os << "END " << _iotypestr("HISTO1D") << "\n";
 
     os.flags(oldflags);
   }
@@ -93,7 +100,7 @@ namespace YODA {
     ios_base::fmtflags oldflags = os.flags();
     os << scientific << showpoint << setprecision(_precision);
 
-    os << "BEGIN YODA_HISTO2D_V" << YODA_FORMAT_VERSION << " " << h.path() << "\n";
+    os << "BEGIN " << _iotypestr("HISTO2D") << " " << h.path() << "\n";
     _writeAnnotations(os, h);
     try {
       //if ( h.totalDbn().numEntries() > 0 )
@@ -137,7 +144,7 @@ namespace YODA {
       os << b.sumWXY()   << "\t";
       os << b.numEntries() << "\n";
     }
-    os << "END YODA_HISTO2D\n";
+    os << "END " << _iotypestr("HISTO2D") << "\n";
 
     os.flags(oldflags);
   }
@@ -147,7 +154,7 @@ namespace YODA {
     ios_base::fmtflags oldflags = os.flags();
     os << scientific << showpoint << setprecision(_precision);
 
-    os << "BEGIN YODA_PROFILE1D_V" << YODA_FORMAT_VERSION << " " << p.path() << "\n";
+    os << "BEGIN " << _iotypestr("PROFILE1D") << " " << p.path() << "\n";
     _writeAnnotations(os, p);
     os << "# ID\t ID\t sumw\t sumw2\t sumwx\t sumwx2\t sumwy\t sumwy2\t numEntries\n";
     os << "Total   \tTotal   \t";
@@ -173,7 +180,7 @@ namespace YODA {
       os << b.sumWY()   << "\t" << b.sumWY2()   << "\t";
       os << b.numEntries() << "\n";
     }
-    os << "END YODA_PROFILE1D\n";
+    os << "END " << _iotypestr("PROFILE1D") << "\n";
 
     os.flags(oldflags);
   }
@@ -183,7 +190,7 @@ namespace YODA {
     ios_base::fmtflags oldflags = os.flags();
     os << scientific << showpoint << setprecision(_precision);
 
-    os << "BEGIN YODA_PROFILE2D_V" << YODA_FORMAT_VERSION << " " << p.path() << "\n";
+    os << "BEGIN " << _iotypestr("PROFILE2D") << " " << p.path() << "\n";
     _writeAnnotations(os, p);
     os << "# sumw\t sumw2\t sumwx\t sumwx2\t sumwy\t sumwy2\t sumwz\t sumwz2\t sumwxy\t numEntries\n";
     // Total distribution
@@ -223,7 +230,7 @@ namespace YODA {
       os << b.sumWXY()   << "\t"; // << b.sumWXZ()    << "\t" << b.sumWYZ() << "\t";
       os << b.numEntries() << "\n";
     }
-    os << "END YODA_PROFILE2D\n";
+    os << "END " << _iotypestr("PROFILE2D") << "\n";
 
     os.flags(oldflags);
   }
@@ -233,13 +240,13 @@ namespace YODA {
     ios_base::fmtflags oldflags = os.flags();
     os << scientific << showpoint << setprecision(_precision);
 
-    os << "BEGIN YODA_SCATTER1D_V" << YODA_FORMAT_VERSION << " " << s.path() << "\n";
+    os << "BEGIN " << _iotypestr("SCATTER1D") << " " << s.path() << "\n";
     _writeAnnotations(os, s);
     os << "# xval\t xerr-\t xerr+\n";
     for (const Point1D& pt : s.points()) {
       os << pt.x() << "\t" << pt.xErrMinus() << "\t" << pt.xErrPlus() << "\n";
     }
-    os << "END YODA_SCATTER1D\n";
+    os << "END " << _iotypestr("SCATTER1D") << "\n";
 
     os << flush;
     os.flags(oldflags);
@@ -250,7 +257,7 @@ namespace YODA {
     ios_base::fmtflags oldflags = os.flags();
     os << scientific << showpoint << setprecision(_precision);
 
-    os << "BEGIN YODA_SCATTER2D_V" << YODA_FORMAT_VERSION << " " << s.path() << "\n";
+    os << "BEGIN " << _iotypestr("SCATTER2D") << " " << s.path() << "\n";
     _writeAnnotations(os, s);
     /// @todo Change ordering to {vals} {errs} {errs} ...
     os << "# xval\t xerr-\t xerr+\t yval\t yerr-\t yerr+\n";
@@ -259,7 +266,7 @@ namespace YODA {
       os << pt.x() << "\t" << pt.xErrMinus() << "\t" << pt.xErrPlus() << "\t";
       os << pt.y() << "\t" << pt.yErrMinus() << "\t" << pt.yErrPlus() << "\n";
     }
-    os << "END YODA_SCATTER2D\n";
+    os << "END " << _iotypestr("SCATTER2D") << "\n";
 
     os << flush;
     os.flags(oldflags);
@@ -270,7 +277,7 @@ namespace YODA {
     ios_base::fmtflags oldflags = os.flags();
     os << scientific << showpoint << setprecision(_precision);
 
-    os << "BEGIN YODA_SCATTER3D_V" << YODA_FORMAT_VERSION << " " << s.path() << "\n";
+    os << "BEGIN " << _iotypestr("SCATTER3D") << " " << s.path() << "\n";
     _writeAnnotations(os, s);
     /// @todo Change ordering to {vals} {errs} {errs} ...
     os << "# xval\t xerr-\t xerr+\t yval\t yerr-\t yerr+\t zval\t zerr-\t zerr+\n";
@@ -280,7 +287,7 @@ namespace YODA {
       os << pt.y() << "\t" << pt.yErrMinus() << "\t" << pt.yErrPlus() << "\t";
       os << pt.z() << "\t" << pt.zErrMinus() << "\t" << pt.zErrPlus() << "\n";
     }
-    os << "END YODA_SCATTER3D\n";
+    os << "END " << _iotypestr("SCATTER3D") << "\n";
 
     os << flush;
     os.flags(oldflags);
