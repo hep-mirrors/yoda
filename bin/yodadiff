@@ -31,7 +31,7 @@ CLEAN = True
 if len(aodict1) != len(aodict2):
     CLEAN = False
     print("Different numbers of data objects in %s and %s" % tuple(filenames[:2]))
-elif list(aodict1.keys()) != list(aodict2.keys()):
+elif sorted(list(aodict1.keys())) != sorted(list(aodict2.keys())):
     CLEAN = False
     print("Different data object paths in %s and %s" % tuple(filenames[:2]))
 
