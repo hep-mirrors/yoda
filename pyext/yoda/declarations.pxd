@@ -1288,6 +1288,9 @@ cdef extern from "<sstream>" namespace "std":
         string& str()
 
 
+cdef extern from "YODA/IO.h" namespace "YODA":
+    void IO_read_from_filename "YODA::read" (string&, vector[AnalysisObject*]&) except +yodaerr
+
 cdef extern from "YODA/Reader.h" namespace "YODA":
     cdef cppclass Reader:
         void read(istringstream&, vector[AnalysisObject*]&) except +yodaerr
@@ -1304,6 +1307,9 @@ cdef extern from "YODA/ReaderAIDA.h" namespace "YODA":
 cdef extern from "YODA/Reader.h" namespace "YODA":
     Reader& Reader_create "YODA::mkReader" (string& filename)
 
+
+cdef extern from "YODA/IO.h" namespace "YODA":
+    void IO_write_to_filename "YODA::write" (string&, vector[AnalysisObject*]&) except +yodaerr
 
 cdef extern from "YODA/Writer.h" namespace "YODA":
     cdef cppclass Writer:
