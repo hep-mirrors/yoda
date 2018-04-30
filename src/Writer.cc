@@ -27,6 +27,7 @@ namespace YODA {
     const size_t lastdot = name.find_last_of(".");
     string fmt = Utils::toLower(lastdot == string::npos ? name : name.substr(lastdot+1));
     const bool compress = (fmt == "gz");
+    cout << "***" << compress << endl;
     if (compress) {
       #ifndef HAVE_LIBZ
       throw UserError("YODA was compiled without zlib support: can't write " + name);

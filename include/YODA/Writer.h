@@ -125,6 +125,11 @@ namespace YODA {
 
       if (filename != "-") {
         try {
+          const size_t lastdot = filename.find_last_of(".");
+          std::string fmt = Utils::toLower(lastdot == std::string::npos ? filename : filename.substr(lastdot+1));
+          const bool compress = (fmt == "gz");
+          useCompression(compress);
+          //
           std::ofstream stream;
           stream.exceptions(std::ofstream::failbit | std::ofstream::badbit);
           stream.open(filename.c_str());
