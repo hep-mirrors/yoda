@@ -87,10 +87,22 @@ namespace YODA {
     /// and is hence CPU efficient.
     ///
     void read(const std::string& filename, std::vector<AnalysisObject*>& aos) {
-      std::ifstream instream;
-      instream.open(filename.c_str());
-      read(instream, aos);
-      instream.close();
+      if (filename != "-") {
+        try {
+          std::ifstream instream;
+          instream.open(filename.c_str());
+          read(instream, aos);
+          instream.close();
+        } catch (std::ifstream::failure& e) {
+          throw WriteError("Writing to filename " + filename + " failed: " + e.what());
+        }
+      } else {
+        try {
+          read(std::cin, aos);
+        } catch (std::runtime_error& e) {
+          throw ReadError("Writing to stdout failed: " + std::string(e.what()));
+        }
+      }
     }
 
     /// @brief Read in a collection of objects from output stream @a stream.

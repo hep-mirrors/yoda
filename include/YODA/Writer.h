@@ -123,14 +123,23 @@ namespace YODA {
       // vec.reserve(std::distance(begin, end));
       for (AOITER ipao = begin; ipao != end; ++ipao)  vec.push_back(&(**ipao));
 
-      std::ofstream stream;
-      stream.exceptions(std::ofstream::failbit | std::ofstream::badbit);
-      try {
-        stream.open(filename.c_str());
-        write(stream, vec);
-      } catch (std::ofstream::failure& e) {
-        throw WriteError("Writing to filename " + filename + " failed: " + e.what());
+      if (filename != "-") {
+        try {
+          std::ofstream stream;
+          stream.exceptions(std::ofstream::failbit | std::ofstream::badbit);
+          stream.open(filename.c_str());
+          write(stream, vec);
+        } catch (std::ofstream::failure& e) {
+          throw WriteError("Writing to filename " + filename + " failed: " + e.what());
+        }
+      } else {
+        try {
+          write(std::cout, vec);
+        } catch (std::runtime_error& e) {
+          throw WriteError("Writing to stdout failed: " + std::string(e.what()));
+        }
       }
+
     }
 
     //@}

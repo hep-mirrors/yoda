@@ -1,6 +1,10 @@
 2018-04-30  Andy Buckley  <andy.buckley@cern.ch>
 
-	* Convert Python read/methods with filename arguments to use the gzip-aware IO functions.
+	* Add "-" = stdin/stdout recognition to C++ IO functions.
+
+	* Convert remaining Python read/write methods to use the C++ IO functions.
+
+	* Convert Python read/write methods with filename arguments to use the gzip-aware IO functions.
 
 2018-04-27  Andy Buckley  <andy.buckley@cern.ch>
 
