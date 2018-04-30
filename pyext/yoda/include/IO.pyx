@@ -54,9 +54,9 @@ cdef dict _aobjects_to_dict(vector[c.AnalysisObject*]* aobjects, patterns, unpat
             out[newao.path] = newao
     return out
 
-## Set a istringstream's string from a C/Python string
-cdef void _make_iss(c.istringstream &iss, string s):
-    iss.str(s)
+# ## Set a istringstream's string from a C/Python string
+# cdef void _make_iss(c.istringstream &iss, string s):
+#     iss.str(s)
 
 # ## Read a file's contents as a returned string
 # ## The file argument can either be a file object, filename, or special "-" reference to stdin
