@@ -24,6 +24,8 @@ if not in_out:
     sys.stderr.write("You must specify the YODA input and output file names\n")
     sys.exit(1)
 
+print in_out
+
 for i, o in in_out:
     analysisobjects = yoda.readYODA(i)
     filter_aos(analysisobjects, opts.MATCH, opts.UNMATCH)

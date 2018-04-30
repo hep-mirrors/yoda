@@ -1289,11 +1289,12 @@ cdef extern from "<sstream>" namespace "std":
 
 
 cdef extern from "YODA/IO.h" namespace "YODA":
-    void IO_read_from_filename "YODA::read" (string&, vector[AnalysisObject*]&) except +yodaerr
+    void IO_read_from_file "YODA::read" (string&, vector[AnalysisObject*]&) except +yodaerr
 
 cdef extern from "YODA/Reader.h" namespace "YODA":
     cdef cppclass Reader:
         void read(istringstream&, vector[AnalysisObject*]&) except +yodaerr
+        void read_from_file "YODA::Reader::read" (string&, vector[AnalysisObject*]&) except +yodaerr
 
 cdef extern from "YODA/ReaderYODA.h" namespace "YODA":
     Reader& ReaderYODA_create "YODA::ReaderYODA::create" ()
@@ -1309,12 +1310,12 @@ cdef extern from "YODA/Reader.h" namespace "YODA":
 
 
 cdef extern from "YODA/IO.h" namespace "YODA":
-    void IO_write_to_filename "YODA::write" (string&, vector[AnalysisObject*]&) except +yodaerr
+    void IO_write_to_file "YODA::write" (string&, vector[AnalysisObject*]&) except +yodaerr
 
 cdef extern from "YODA/Writer.h" namespace "YODA":
     cdef cppclass Writer:
         void write(ostringstream&, vector[AnalysisObject*]&) except +yodaerr
-        void write(string&, vector[AnalysisObject*]&) except +yodaerr
+        void write_to_file "YODA::Writer::write" (string&, vector[AnalysisObject*]&) except +yodaerr
 
 cdef extern from "YODA/WriterYODA.h" namespace "YODA":
     Writer& WriterYODA_create "YODA::WriterYODA::create" ()
