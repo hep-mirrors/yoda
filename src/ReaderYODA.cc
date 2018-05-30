@@ -131,6 +131,7 @@ namespace YODA {
     Scatter1D* s1curr = NULL;
     Scatter2D* s2curr = NULL;
     Scatter3D* s3curr = NULL;
+    std::vector<std::string> variationscurr;
     string annscurr;
 
     // Loop over all lines of the input file
@@ -302,6 +303,7 @@ namespace YODA {
             throw ReadError(err);
           }
           annscurr.clear();
+          variationscurr.clear();
           in_anns = false;
 
           // Put this AO in the completed stack
@@ -333,6 +335,22 @@ namespace YODA {
             in_anns = false;
           } else {
             annscurr += (annscurr.empty() ? "" : "\n") + s;
+            // in order to handle multi-error points in scatters, we need to know which variations are stored, if any
+            // can't wait until we process the annotations at the end, since need to know when filling points
+            // this is a little inelegant tough...
+            if (s.find("variations") != string::npos) {
+              istringstream iss(s);
+              YAML::Parser parser(iss);
+              YAML::Node anns;
+              parser.GetNextDocument(anns);
+              for (YAML::Iterator it = anns.begin(); it != anns.end(); ++it) {
+                for (YAML::Iterator it2 = it.second().begin(); it2 != it.second().end(); ++it2) {
+                  string val;
+                  *it2 >> val;
+                  variationscurr.push_back(val);
+                }
+              }
+            }
           }
           continue;
         }
@@ -454,8 +472,20 @@ namespace YODA {
           {
             double x(0), exm(0), exp(0);
             aiss >> x >> exm >> exp;
+            // set nominal point
+            Point1D thispoint=Point1D(x, exm, exp);
+            // check if we stored variations of this point
+            if (variationscurr.size()>0){
+              // for each variation, store the alt errors.
+              // start at 1 since we have already filled nominal !
+              for (unsigned int ivar=1; ivar<variationscurr.size(); ivar++){
+                 std::string thisvariation=variationscurr[ivar];
+                 aiss >> exm >> exp;
+                 thispoint.setXErrs(exm,exp,thisvariation);
+              }
+            }
             // s1curr->addPoint(Point1D(x, exm, exp));
-            pt1scurr.push_back(Point1D(x, exm, exp));
+            pt1scurr.push_back(thispoint);
           }
           break;
 

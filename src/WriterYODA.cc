@@ -242,9 +242,20 @@ namespace YODA {
 
     os << "BEGIN " << _iotypestr("SCATTER1D") << " " << s.path() << "\n";
     _writeAnnotations(os, s);
-    os << "# xval\t xerr-\t xerr+\n";
+    
+    std::vector<std::string> variations= s.variations();
     for (const Point1D& pt : s.points()) {
-      os << pt.x() << "\t" << pt.xErrMinus() << "\t" << pt.xErrPlus() << "\n";
+      // fill central value
+      os << pt.x();
+      // fill errors for variations. The first should always be "" which is nominal.
+      // Assumes here that all points in the Scatter have the same
+      // variations... if not a range error will get thrown from
+      // the point when the user tries to access a variation it
+      // doesn't have... @todo maybe better way to do this?
+      for (const auto   &source : variations){
+        os << "\t" << pt.xErrMinus(source) << "\t" << pt.xErrPlus(source) ;
+      }
+      os <<  "\n";
     }
     os << "END " << _iotypestr("SCATTER1D") << "\n";
 

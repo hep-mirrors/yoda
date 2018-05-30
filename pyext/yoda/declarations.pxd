@@ -16,6 +16,7 @@ cdef extern from "errors.hh":
 
 ctypedef map[string, string] Annotations
 ctypedef double (*dbl_dbl_fptr) (double)
+ctypedef map[string, pair[double,double]] errMap 
 
 
 # Math utils {{{
@@ -231,20 +232,31 @@ cdef extern from "YODA/Point.h" namespace "YODA":
         void setVal(size_t i, double val) except +yodaerr
 
         pair[double,double] errs(size_t i) except +yodaerr
+        pair[double,double] errs(size_t i, string source) except +yodaerr
         double errMinus(size_t i) except +yodaerr
+        double errMinus(size_t i, string source) except +yodaerr
         void setErrMinus(size_t i, double eminus) except +yodaerr
+        void setErrMinus(size_t i, double eminus, string source) except +yodaerr
         double errPlus(size_t i) except +yodaerr
+        double errPlus(size_t i, string source) except +yodaerr
         void setErrPlus(size_t i, double eplus) except +yodaerr
+        void setErrPlus(size_t i, double eplus, string source) except +yodaerr
         double errAvg(size_t i) except +yodaerr
+        double errAvg(size_t i, string source) except +yodaerr
 
         void setErr(size_t i, double e) except +yodaerr
+        void setErr(size_t i, double e, string source) except +yodaerr
         # void setErrs(size_t i, double e) except +yodaerr
         # void setErrs(size_t i, double eminus, double eplus) except +yodaerr
         void setErrs(size_t i, pair[double,double]& e) except +yodaerr
+        void setErrs(size_t i, pair[double,double]& e, string source) except +yodaerr
 
         # void set(size_t i, double val, double e) except +yodaerr
         # void set(size_t i, double val, double eminus, double eplus) except +yodaerr
         void set(size_t i, double val, pair[double,double]& e) except +yodaerr
+        void set(size_t i, double val, pair[double,double]& e, string source) except +yodaerr
+        
+        errMap errMap() except +yodaerr
 
 #}}} Point
 
@@ -255,16 +267,22 @@ cdef extern from "YODA/Point1D.h" namespace "YODA":
         Point1D () except +yodaerr
         Point1D (Point1D p) except +yodaerr
         Point1D (double x, double exminus, double explus) except +yodaerr
+        Point1D (double x, double exminus, double explus, string source) except +yodaerr
 
         double x() except +yodaerr
         void setX(double x) except +yodaerr
 
         pair[double,double] xErrs() except +yodaerr
+        pair[double,double] xErrs(string source) except +yodaerr
         void setXErrs(pair[double, double]&) except +yodaerr
+        void setXErrs(pair[double, double]&, string source) except +yodaerr
         double xErrAvg() except +yodaerr
+        double xErrAvg(string source) except +yodaerr
 
         double xMin() except +yodaerr
+        double xMin(string source) except +yodaerr
         double xMax() except +yodaerr
+        double xMax(string source) except +yodaerr
 
         void scaleX(double) except +yodaerr
 
@@ -742,6 +760,8 @@ cdef extern from "YODA/Scatter1D.h" namespace "YODA":
         void combineWith(const vector[Scatter1D]&) #except +yodaerr
 
         void scaleX(double) except +yodaerr
+        
+        vector[string] variations() except +yodaerr
 
     void Scatter1D_transformX "YODA::transformX" (Scatter1D&, dbl_dbl_fptr)
 
