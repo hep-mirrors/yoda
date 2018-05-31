@@ -58,29 +58,29 @@ cdef dict _aobjects_to_dict(vector[c.AnalysisObject*]* aobjects, patterns, unpat
 # cdef void _make_iss(c.istringstream &iss, string s):
 #     iss.str(s)
 
-# ## Read a file's contents as a returned string
-# ## The file argument can either be a file object, filename, or special "-" reference to stdin
-# def _str_from_file(file_or_filename):
-#     if hasattr(file_or_filename, 'read'):
-#         s = file_or_filename.read()
-#     elif file_or_filename == "-":
-#         s = sys.stdin.read()
-#     else:
-#         with open(file_or_filename, "r") as f:
-#             s = f.read()
-#     return s
+## Read a file's contents as a returned string
+## The file argument can either be a file object, filename, or special "-" reference to stdin
+def _str_from_file(file_or_filename):
+    if hasattr(file_or_filename, 'read'):
+        s = file_or_filename.read()
+    elif file_or_filename == "-":
+        s = sys.stdin.read()
+    else:
+        with open(file_or_filename, "r") as f:
+            s = f.read()
+    return s
 
-# ## Write a string to a file
-# ## The file argument can either be a file object, filename, or special "-" reference to stdout
-# def _str_to_file(s, file_or_filename):
-#     s = s.decode('utf-8')
-#     if hasattr(file_or_filename, 'write'):
-#         file_or_filename.write(s)
-#     elif file_or_filename == "-":
-#         sys.stdout.write(s)
-#     else:
-#         with open(file_or_filename, "w") as f:
-#             f.write(s)
+## Write a string to a file
+## The file argument can either be a file object, filename, or special "-" reference to stdout
+def _str_to_file(s, file_or_filename):
+    s = s.decode('utf-8')
+    if hasattr(file_or_filename, 'write'):
+        file_or_filename.write(s)
+    elif file_or_filename == "-":
+        sys.stdout.write(s)
+    else:
+        with open(file_or_filename, "w") as f:
+            f.write(s)
 
 
 ##
@@ -200,52 +200,58 @@ def write(ana_objs, filename):
     for a in aolist:
         vec.push_back(a._AnalysisObject())
     c.IO_write_to_file(filename.encode('utf-8'), vec)
-    # _str_to_file(oss.str(), filename)
+    #_str_to_file(oss.str(), filename)
 
 
-def writeYODA(ana_objs, filename):
+def writeYODA(ana_objs, file_or_filename):
     """
     Write data objects to the provided file in YODA format.
     """
-    # cdef c.ostringstream oss
+    cdef c.ostringstream oss
     cdef vector[c.AnalysisObject*] vec
     cdef AnalysisObject a
     aolist = ana_objs.values() if hasattr(ana_objs, "values") else ana_objs \
              if hasattr(ana_objs, "__iter__") else [ana_objs]
     for a in aolist:
         vec.push_back(a._AnalysisObject())
-    c.WriterYODA_create().write_to_file(filename, vec)
-    # c.WriterYODA_create().write(oss, vec)
-    # _str_to_file(oss.str(), file_or_filename)
+    if type(file_or_filename) is str:
+        c.WriterYODA_create().write_to_file(file_or_filename, vec)
+    else:
+        c.WriterYODA_create().write(oss, vec)
+        _str_to_file(oss.str(), file_or_filename)
 
 
-def writeFLAT(ana_objs, filename):
+def writeFLAT(ana_objs, file_or_filename):
     """
     Write data objects to the provided file in FLAT format.
     """
-    # cdef c.ostringstream oss
+    cdef c.ostringstream oss
     cdef vector[c.AnalysisObject*] vec
     cdef AnalysisObject a
     aolist = ana_objs.values() if hasattr(ana_objs, "values") else ana_objs \
              if hasattr(ana_objs, "__iter__") else [ana_objs]
     for a in aolist:
         vec.push_back(a._AnalysisObject())
-    c.WriterFLAT_create().write_to_file(filename, vec)
-    # c.WriterFLAT_create().write(oss, vec)
-    # _str_to_file(oss.str(), file_or_filename)
+    if type(file_or_filename) is str:
+        c.WriterFLAT_create().write_to_file(file_or_filename, vec)
+    else:
+        c.WriterFLAT_create().write(oss, vec)
+        _str_to_file(oss.str(), file_or_filename)
 
 
-def writeAIDA(ana_objs, filename):
+def writeAIDA(ana_objs, file_or_filename):
     """
     Write data objects to the provided file in AIDA format.
     """
-    # cdef c.ostringstream oss
+    cdef c.ostringstream oss
     cdef vector[c.AnalysisObject*] vec
     cdef AnalysisObject a
     aolist = ana_objs.values() if hasattr(ana_objs, "values") else ana_objs \
              if hasattr(ana_objs, "__iter__") else [ana_objs]
     for a in aolist:
         vec.push_back(a._AnalysisObject())
-    c.WriterYODA_create().write_to_file(filename, vec)
-    # c.WriterAIDA_create().write(oss, vec)
-    # _str_to_file(oss.str(), file_or_filename)
+    if type(file_or_filename) is str:
+        c.WriterAIDA_create().write_to_file(file_or_filename, vec)
+    else:
+        c.WriterAIDA_create().write(oss, vec)
+        _str_to_file(oss.str(), file_or_filename)
