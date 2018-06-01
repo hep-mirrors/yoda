@@ -1,3 +1,10 @@
+2018-06-01  Louie Corpe  <lcorpe@cern.ch>
+
+	* Point1,2,3D now support multiple error sources for the highest dimension.
+	
+	* Scatter1,2,3D now read in/out with additional columns for the extra error
+	sources, with a variations() method to check with sources are available
+
 2018-05-02  Andy Buckley  <andy.buckley@cern.ch>
 
 	* StringUtils.h: Replace std::ptr_fun (removed in C++17) with a lambda function. Thanks to Stefan Richter.

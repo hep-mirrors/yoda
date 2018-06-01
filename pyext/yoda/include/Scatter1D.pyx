@@ -84,7 +84,10 @@ cdef class Scatter1D(AnalysisObject):
     def addPoints(self, iterable):
         """Add several new points."""
         for row in iterable:
+          try:
             self.addPoint(*row)
+          except TypeError:
+            self.addPoint(row)
 
     def combineWith(self, others):
         """Try to add points from other Scatter1Ds into this one."""
@@ -124,6 +127,11 @@ cdef class Scatter1D(AnalysisObject):
             raise RuntimeError("Callback is not of type (double) -> double")
         fptr = (<c.dbl_dbl_fptr*><size_t>ctypes.addressof(callback))[0]
         c.Scatter1D_transformX(deref(self.s1ptr()), fptr)
+    
+    def variations(self):
+        """None -> vector[string]
+        Get the list of variations stored in the poins of the Scatter"""
+        return self.s1ptr().variations()
 
 
     # # TODO: remove?

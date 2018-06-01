@@ -83,7 +83,10 @@ cdef class Scatter3D(AnalysisObject):
     def addPoints(self, iterable):
         """Add several new points."""
         for row in iterable:
+          try:
             self.addPoint(*row)
+          except TypeError:
+            self.addPoint(row)
 
     def combineWith(self, others):
         """Try to add points from other Scatter3Ds into this one."""
@@ -177,6 +180,10 @@ cdef class Scatter3D(AnalysisObject):
     # def __sub__(Scatter3D self, Scatter3D other):
     #     return cutil.new_owned_cls(Scatter3D, c.Scatter3D_sub_Scatter3D(self.s3ptr(), other.s3ptr()))
 
+    def variations(self):
+        """None -> vector[string]
+        Get the list of variations stored in the poins of the Scatter"""
+        return self.s3ptr().variations()
 
     def xVals(self):
         return [p.x for p in self.points]

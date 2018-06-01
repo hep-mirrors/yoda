@@ -11,6 +11,10 @@
 #include "YODA/Utils/sortedvector.h"
 #include <utility>
 #include <memory>
+#include "yaml-cpp/yaml.h"
+#ifdef YAML_NAMESPACE
+#define YAML YAML_NAMESPACE
+#endif
 
 namespace YODA {
 
@@ -104,7 +108,11 @@ namespace YODA {
     Scatter2D(const Scatter2D& s2, const std::string& path="")
       : AnalysisObject("Scatter2D", (path.size() == 0) ? s2.path() : path, s2, s2.title()),
         _points(s2._points)
-    {  }
+    { 
+      for ( auto &ann : annotations()){
+        setAnnotation(ann, annotation(ann));
+      }
+    }
 
 
     /// Assignment operator
@@ -165,6 +173,8 @@ namespace YODA {
 
     ///////////////////////////////////////////////////
 
+    /// Get the list of variations stored in the points 
+    const std::vector<std::string> variations() const;
 
     /// @name Point accessors
     //@{
@@ -272,6 +282,9 @@ namespace YODA {
       return ! operator == (other);
     }
 
+  
+    //////////////////////////////////
+  
 
   private:
 
