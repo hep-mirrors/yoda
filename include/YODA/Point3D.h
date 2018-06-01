@@ -47,6 +47,7 @@ namespace YODA {
     {
       _ex = std::make_pair(exminus, explus);
       _ey = std::make_pair(eyminus, eyplus);
+      _ez[source] = std::make_pair(ezminus, ezplus);
     }
 
     /// Constructor from asymmetric errors given as vectors
@@ -58,7 +59,7 @@ namespace YODA {
         _ex(ex), _ey(ey)
     {  
       _ez[source] = ez; 
-		}
+    }
 
 
     /// Copy constructor
@@ -263,38 +264,40 @@ namespace YODA {
     /// @name z error accessors
     //@{
     
-		/// Get error map for direction @a i
-    const std::map< std::string, std::pair<double,double>> & errMap() const {
-      return _ez;
-    }
 
     /// Get z-error values
     const std::pair<double,double>& zErrs( std::string source="") const {
+      if (!_ez.count(source)) throw RangeError("zErrs has no such key: "+source);
       return _ez.at(source);
     }
 
     /// Get negative z-error value
     double zErrMinus( std::string source="") const {
+      if (!_ez.count(source)) throw RangeError("zErrs has no such key: "+source);
       return _ez.at(source).first;
     }
 
     /// Get positive z-error value
     double zErrPlus( std::string source="") const {
+      if (!_ez.count(source)) throw RangeError("zErrs has no such key: "+source);
       return _ez.at(source).second;
     }
 
     /// Get average z-error value
     double zErrAvg( std::string source="") const {
+      if (!_ez.count(source)) throw RangeError("zErrs has no such key: "+source);
       return (_ez.at(source).first + _ez.at(source).second)/2.0;
     }
 
     /// Set negative z error
     void setZErrMinus(double ezminus,  std::string source="") {
+      if (!_ez.count(source)) _ez[source] = std::make_pair(0.,0.);
       _ez.at(source).first = ezminus;
     }
 
     /// Set positive z error
     void setZErrPlus(double ezplus,  std::string source="") {
+      if (!_ez.count(source)) _ez[source] = std::make_pair(0.,0.);
       _ez.at(source).second = ezplus;
     }
 
@@ -322,11 +325,13 @@ namespace YODA {
 
     /// Get value minus negative z-error
     double zMin( std::string source="") const {
+      if (!_ez.count(source)) throw RangeError("zErrs has no such key: "+source);
       return _z - _ez.at(source).first;
     }
 
     /// Get value plus positive z-error
     double zMax( std::string source="") const {
+      if (!_ez.count(source)) throw RangeError("zErrs has no such key: "+source);
       return _z + _ez.at(source).second;
     }
 
@@ -413,9 +418,9 @@ namespace YODA {
     /// Scaling of z axis
     void scaleZ(double scalez) {
       setZ(z()*scalez);
-      for (const auto 	&source : _ez){
+      for (const auto   &source : _ez){
         setZErrs(zErrMinus()*scalez, zErrPlus()*scalez, source.first);
-			}
+      }
     }
 
     /// Scaling of all three axes
@@ -454,6 +459,11 @@ namespace YODA {
       case 3: setZ(val); break;
       default: throw RangeError("Invalid axis int, must be in range 1..dim");
       }
+    }
+    
+    /// Get error map for direction @a i
+    const std::map< std::string, std::pair<double,double>> & errMap() const {
+      return _ez;
     }
 
     /// Get error values for direction @a i
@@ -581,6 +591,8 @@ namespace YODA {
     double _z;
     std::pair<double,double> _ex;
     std::pair<double,double> _ey;
+    // a map of the errors for each source. Nominal stored under ""
+    // to ensure backward compatibility
     std::map< std::string, std::pair<double,double> >_ez;
 
     //@}

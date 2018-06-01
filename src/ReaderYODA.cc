@@ -291,10 +291,14 @@ namespace YODA {
               string key, val;
               it.first() >> key;
               YAML::Emitter em;
+              em << YAML::Flow ;
               em << it.second();
               val = em.c_str();
               // cout << "@@@ '" << key << "', '" << val << "'" << endl;
-              aocurr->setAnnotation(key, val);
+              // The Variations annotation is just a placeholder to help collect the right columns
+              // Don't want to be saving it to the actual AO, since the method variations()
+              // provides the info that's needed without needing to keep the annotation up to date
+              if (!(key.find("Variations") != string::npos)) aocurr->setAnnotation(key, val);
             }
           } catch (...) {
             /// @todo Is there a case for just giving up on these annotations, printing the error msg, and keep going? As an option?
@@ -338,7 +342,7 @@ namespace YODA {
             // in order to handle multi-error points in scatters, we need to know which variations are stored, if any
             // can't wait until we process the annotations at the end, since need to know when filling points
             // this is a little inelegant tough...
-            if (s.find("variations") != string::npos) {
+            if (s.find("Variations") != string::npos) {
               istringstream iss(s);
               YAML::Parser parser(iss);
               YAML::Node anns;
@@ -484,7 +488,6 @@ namespace YODA {
                  thispoint.setXErrs(exm,exp,thisvariation);
               }
             }
-            // s1curr->addPoint(Point1D(x, exm, exp));
             pt1scurr.push_back(thispoint);
           }
           break;
@@ -492,20 +495,40 @@ namespace YODA {
         case SCATTER2D:
           {
             double x(0), y(0), exm(0), exp(0), eym(0), eyp(0);
-            /// @todo Need to improve this format for multi-err points
             aiss >> x >> exm >> exp >> y >> eym >> eyp;
-            // s2curr->addPoint(Point2D(x, y, exm, exp, eym, eyp));
-            pt2scurr.push_back(Point2D(x, y, exm, exp, eym, eyp));
+            // set nominal point
+            Point2D thispoint=Point2D(x, y, exm, exp, eym, eyp);
+            // check if we stored variations of this point
+            if (variationscurr.size()>0){
+              // for each variation, store the alt errors.
+              // start at 1 since we have already filled nominal !
+              for (unsigned int ivar=1; ivar<variationscurr.size(); ivar++){
+                 std::string thisvariation=variationscurr[ivar];
+                 aiss >> eym >> eyp;
+                 thispoint.setYErrs(eym,eyp,thisvariation);
+              }
+            }
+            pt2scurr.push_back(thispoint);
           }
           break;
 
         case SCATTER3D:
           {
             double x(0), y(0), z(0), exm(0), exp(0), eym(0), eyp(0), ezm(0), ezp(0);
-            /// @todo Need to improve this format for multi-err points
             aiss >> x >> exm >> exp >> y >> eym >> eyp >> z >> ezm >> ezp;
-            // s3curr->addPoint(Point3D(x, y, z, exm, exp, eym, eyp, ezm, ezp));
-            pt3scurr.push_back(Point3D(x, y, z, exm, exp, eym, eyp, ezm, ezp));
+            // set nominal point
+            Point3D thispoint=Point3D(x, y, z, exm, exp, eym, eyp, ezm, ezp);
+            // check if we stored variations of this point
+            if (variationscurr.size()>0){
+              // for each variation, store the alt errors.
+              // start at 1 since we have already filled nominal !
+              for (unsigned int ivar=1; ivar<variationscurr.size(); ivar++){
+                 std::string thisvariation=variationscurr[ivar];
+                 aiss >> ezm >> ezp;
+                 thispoint.setZErrs(ezm,ezp,thisvariation);
+              }
+            }
+            pt3scurr.push_back(thispoint);
           }
           break;
 

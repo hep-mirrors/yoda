@@ -69,7 +69,7 @@ namespace YODA {
     {  
       _ex = ex;
       _ey[source] = ey;
-	  }
+    }
 
 
     /// Copy constructor
@@ -78,7 +78,7 @@ namespace YODA {
     {  
       _ex = p._ex;
       _ey = p._ey;
-		}
+    }
 
 
     /// Copy assignment
@@ -131,10 +131,6 @@ namespace YODA {
     /// @name x error accessors
     //@{
     
-		/// Get error map for direction @a i
-    const std::map< std::string, std::pair<double,double>> & errMap() const {
-      return _ey;
-    }
 
     /// Get x-error values
     const std::pair<double,double>& xErrs() const {
@@ -191,12 +187,16 @@ namespace YODA {
 
     /// Get value minus negative x-error
     /// @todo Remove (or extend) when multiple errors are supported
+    /// No: doesn't need to change since (for now) we only store multiple
+    /// errors for the highest dimentsion
     double xMin() const {
       return _x - _ex.first;
     }
 
     /// Get value plus positive x-error
     /// @todo Remove (or extend) when multiple errors are supported
+    /// No: doesn't need to change since (for now) we only store multiple
+    /// errors for the highest dimentsion
     double xMax() const {
       return _x + _ex.second;
     }
@@ -209,31 +209,37 @@ namespace YODA {
 
     /// Get y-error values
     const std::pair<double,double>& yErrs(std::string source="") const {
+      if (!_ey.count(source)) throw RangeError("yErrs has no such key: "+source);
       return _ey.at(source);
     }
 
     /// Get negative y-error value
     double yErrMinus(std::string source="") const {
+      if (!_ey.count(source)) throw RangeError("yErrs has no such key: "+source);
       return _ey.at(source).first;
     }
 
     /// Get positive y-error value
     double yErrPlus(std::string source="") const {
+      if (!_ey.count(source)) throw RangeError("yErrs has no such key: "+source);
       return _ey.at(source).second;
     }
 
     /// Get average y-error value
     double yErrAvg(std::string source="") const {
+      if (!_ey.count(source)) throw RangeError("yErrs has no such key: "+source);
       return (_ey.at(source).first + _ey.at(source).second)/2.0;
     }
 
     /// Set negative y error
     void setYErrMinus(double eyminus, std::string source="") {
+      if (!_ey.count(source)) _ey[source] = std::make_pair(0.,0.);
       _ey.at(source).first = eyminus;
     }
 
     /// Set positive y error
     void setYErrPlus(double eyplus, std::string source="") {
+      if (!_ey.count(source)) _ey[source] = std::make_pair(0.,0.);
       _ey.at(source).second = eyplus;
     }
 
@@ -256,25 +262,24 @@ namespace YODA {
 
     /// Set asymmetric y error
     void setYErrs(const std::pair<double,double>& ey, std::string source="") {
-      _ey.at(source) = ey;
+      _ey[source] = ey;
     }
 
     /// Get value minus negative y-error
-    /// @todo Remove (or extend) when multiple errors are supported
     double yMin(std::string source="") const {
+      if (!_ey.count(source)) throw RangeError("yErrs has no such key: "+source);
       return _y - _ey.at(source).first;
     }
 
     /// Get value plus positive y-error
-    /// @todo Remove (or extend) when multiple errors are supported
     double yMax(std::string source="") const {
+      if (!_ey.count(source)) throw RangeError("yErrs has no such key: "+source);
       return _y + _ey.at(source).second;
     }
 
     //@}
 
 
-    /// @todo Support multiple errors
 
 
     /// @name Combined x/y value and error setters
@@ -332,9 +337,9 @@ namespace YODA {
     /// Scaling of y axis
     void scaleY(double scaley) {
       setY(y()*scaley);
-      for (const auto 	&source : _ey){
-			  setYErrs(yErrMinus()*scaley, yErrPlus()*scaley, source.first);
-			}
+      for (const auto   &source : _ey){
+        setYErrs(yErrMinus()*scaley, yErrPlus()*scaley, source.first);
+      }
     }
 
     /// Scaling of both axes
@@ -370,6 +375,11 @@ namespace YODA {
       case 2: setY(val); break;
       default: throw RangeError("Invalid axis int, must be in range 1..dim");
       }
+    }
+    
+    /// Get error map for direction @a i
+    const std::map< std::string, std::pair<double,double>> & errMap() const {
+      return _ey;
     }
 
     /// Get error values for direction @a i
@@ -483,9 +493,9 @@ namespace YODA {
     double _x;
     double _y;
     std::pair<double,double> _ex;
-    //std::pair<double,double> _ey;
-		//std::map< std::string, std::pair<double,double> > _ex;
-		std::map< std::string, std::pair<double,double> > _ey;
+    // a map of the errors for each source. Nominal stored under ""
+    // to ensure backward compatibility
+    std::map< std::string, std::pair<double,double> > _ey;
 
     //@}
 

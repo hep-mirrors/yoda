@@ -49,21 +49,30 @@ cdef class Point(util.Base):
         """(int, float) -> None
         Set symmetric errors on axis i"""
         if source==None: source=""
+        print "LC DEBUG setErr ", e, source
         self.pptr().setErr(i, e, source)
 
-    def setErrs(self, i, *es, source=""):
+    def setErrs(self, i, *es):
         """(int, float) -> None
            (int, [float, float]) -> None
            (int, float, float) -> None
         Set asymmetric errors on axis i"""
-        if source==None: source=""
+        source=None
+        es=list(es)
+        if type(es[-1]) is str:
+          source=es[-1]
+          es=es[:-1]
+        else:
+          pass
         errs = es
-        if len(es) == 1:
-            if not hasattr(es[0], "__iter__"):
-                self.setErr(es[0], source)
-            errs = es[0]
+        if source==None: source=""
+        if len(errs) == 1:
+            if not hasattr(errs[0], "__iter__"):
+                self.setErr(i,errs[0], source)
+                return
+            errs=errs[0]
         # assert len(errs) == 2:
-        self.pptr().setErrs(i, errs, source)
+        self.pptr().setErrs(i, tuple(errs), source)
 
 
     def errMinus(self, i, source=""):

@@ -303,6 +303,9 @@ cdef extern from "YODA/Point2D.h" namespace "YODA":
         Point2D (double x, double y,
                  double exminus, double explus,
                  double eyminus, double eyplus) except +yodaerr
+        Point2D (double x, double y,
+                 double exminus, double explus,
+                 double eyminus, double eyplus, string source) except +yodaerr
 
         double x() except +yodaerr
         double y() except +yodaerr
@@ -313,15 +316,20 @@ cdef extern from "YODA/Point2D.h" namespace "YODA":
 
         pair[double,double] xErrs() except +yodaerr
         pair[double,double] yErrs() except +yodaerr
+        pair[double,double] yErrs(string source) except +yodaerr
         void setXErrs(pair[double, double]&) except +yodaerr
         void setYErrs(pair[double, double]&) except +yodaerr
+        void setYErrs(pair[double, double]&, string source) except +yodaerr
         double xErrAvg() except +yodaerr
         double yErrAvg() except +yodaerr
+        double yErrAvg(string source) except +yodaerr
 
         double xMin() except +yodaerr
         double xMax() except +yodaerr
         double yMin() except +yodaerr
+        double yMin(string source) except +yodaerr
         double yMax() except +yodaerr
+        double yMax(string source) except +yodaerr
 
         void scaleX(double) except +yodaerr
         void scaleY(double) except +yodaerr
@@ -346,6 +354,10 @@ cdef extern from "YODA/Point3D.h" namespace "YODA":
                  double exminus, double explus,
                  double eyminus, double eyplus,
                  double ezminus, double ezplus) except +yodaerr
+        Point3D (double x, double y, double z,
+                 double exminus, double explus,
+                 double eyminus, double eyplus,
+                 double ezminus, double ezplus, string source) except +yodaerr
 
         double x() except +yodaerr
         double y() except +yodaerr
@@ -357,19 +369,24 @@ cdef extern from "YODA/Point3D.h" namespace "YODA":
         pair[double,double] xErrs() except +yodaerr
         pair[double,double] yErrs() except +yodaerr
         pair[double,double] zErrs() except +yodaerr
+        pair[double,double] zErrs(string source) except +yodaerr
         void setXErrs(pair[double, double]&) except +yodaerr
         void setYErrs(pair[double, double]&) except +yodaerr
         void setZErrs(pair[double, double]&) except +yodaerr
+        void setZErrs(pair[double, double]&, string source) except +yodaerr
         double xErrAvg()
         double yErrAvg()
         double zErrAvg()
+        double zErrAvg(string source)
 
         double xMin() except +yodaerr
         double xMax() except +yodaerr
         double yMin() except +yodaerr
         double yMax() except +yodaerr
         double zMin() except +yodaerr
+        double zMin(string source) except +yodaerr
         double zMax() except +yodaerr
+        double zMax(string source) except +yodaerr
 
         void scaleX(double) except +yodaerr
         void scaleY(double) except +yodaerr
@@ -818,6 +835,7 @@ cdef extern from "YODA/Scatter2D.h" namespace "YODA":
         void scaleXY(double, double) except +yodaerr
         #void scale(double, double) except +yodaerr
 
+        vector[string] variations() except +yodaerr
 
     void Scatter2D_transformX "YODA::transformX" (Scatter2D&, dbl_dbl_fptr)
     void Scatter2D_transformY "YODA::transformY" (Scatter2D&, dbl_dbl_fptr)
@@ -877,6 +895,8 @@ cdef extern from "YODA/Scatter3D.h" namespace "YODA":
         void scaleZ(double) except +yodaerr
         void scaleXYZ(double, double, double) except +yodaerr
         #void scale(double, double, double) except +yodaerr
+        
+        vector[string] variations() except +yodaerr
 
     void Scatter3D_transformX "YODA::transformX" (Scatter3D&, dbl_dbl_fptr)
     void Scatter3D_transformY "YODA::transformY" (Scatter3D&, dbl_dbl_fptr)

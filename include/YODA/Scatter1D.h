@@ -39,9 +39,7 @@ namespace YODA {
     /// Empty constructor
     Scatter1D(const std::string& path="", const std::string& title="")
       : AnalysisObject("Scatter1D", path, title)
-    {  
-      updateVariations(_points);
-    }
+    {  }
 
 
     /// Constructor from a set of points
@@ -49,9 +47,7 @@ namespace YODA {
               const std::string& path="", const std::string& title="")
       : AnalysisObject("Scatter1D", path, title),
         _points(points)
-    {  
-      updateVariations(_points);
-    }
+    {  }
 
 
     /// Constructor from a vector of x values with no errors
@@ -60,7 +56,6 @@ namespace YODA {
       : AnalysisObject("Scatter1D", path, title)
     {
       for (size_t i = 0; i < x.size(); ++i) addPoint(x[i]);
-      updateVariations(_points);
     }
 
 
@@ -71,7 +66,6 @@ namespace YODA {
     {
       if (x.size() != ex.size()) throw UserError("x and ex vectors must have same length");
       for (size_t i = 0; i < x.size(); ++i) addPoint(x[i], ex[i]);
-      updateVariations(_points);
     }
 
     /// Constructor from x values with asymmetric errors
@@ -81,7 +75,6 @@ namespace YODA {
     {
       if (x.size() != ex.size()) throw UserError("x and ex vectors must have same length");
       for (size_t i = 0; i < x.size(); ++i) addPoint(Point1D(x[i], ex[i]));
-      updateVariations(_points);
     }
 
 
@@ -95,7 +88,6 @@ namespace YODA {
       if (x.size() != exminus.size()) throw UserError("x and ex vectors must have same length");
       if (exminus.size() != explus.size()) throw UserError("ex plus and minus vectors must have same length");
       for (size_t i = 0; i < x.size(); ++i) addPoint(Point1D(x[i], exminus[i], explus[i]));
-      updateVariations(_points);
     }
 
 
@@ -154,7 +146,7 @@ namespace YODA {
     ///////////////////////////////////////////////////
 
     /// Get the list of variations stored in the points 
-    const std::vector<std::string> variations() const;
+    const std::vector<std::string> variations() const ;
 
     /// @name Point accessors
     //@{
@@ -199,31 +191,26 @@ namespace YODA {
     /// Insert a new point
     void addPoint(const Point1D& pt) {
       _points.insert(pt);
-      updateVariations(_points);
     }
 
     /// Insert a new point, defined as the x value and no errors
     void addPoint(double x) {
       _points.insert(Point1D(x));
-      updateVariations(_points);
     }
 
     /// Insert a new point, defined as the x value and symmetric errors
     void addPoint(double x, double ex) {
       _points.insert(Point1D(x, ex));
-      updateVariations(_points);
     }
 
     /// Insert a new point, defined as the x value and an asymmetric error pair
     void addPoint(double x, const std::pair<double,double>& ex) {
       _points.insert(Point1D(x, ex));
-      updateVariations(_points);
     }
 
     /// Insert a new point, defined as the x value and explicit asymmetric errors
     void addPoint(double x, double exminus, double explus) {
       _points.insert(Point1D(x, exminus, explus));
-      updateVariations(_points);
     }
 
     /// Insert a collection of new points
@@ -240,7 +227,6 @@ namespace YODA {
     /// @todo Better name? Make this the add operation?
     void combineWith(const Scatter1D& other) {
       addPoints(other.points());
-      updateVariations(_points);
     }
 
     /// @todo Better name? Make this the add operation?
@@ -265,12 +251,6 @@ namespace YODA {
   
     //////////////////////////////////
   
-  
-    /// @name Update the annotation which holds the names of the variations (the OR of the variations of all points)
-    //@{
-  
-    void updateVariations( Points& points);
-    //@}
 
 
   private:

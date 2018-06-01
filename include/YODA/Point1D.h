@@ -114,13 +114,13 @@ namespace YODA {
 
     /// Set negative x error
     void setXErrMinus(double exminus,  std::string source="") {
-      if (!_ex.count(source))_ex[source] = std::make_pair(0.,0.);
+      if (!_ex.count(source)) _ex[source] = std::make_pair(0.,0.);
       _ex.at(source).first = exminus;
     }
 
     /// Set positive x error
     void setXErrPlus(double explus,  std::string source="") {
-      if (!_ex.count(source))_ex[source] = std::make_pair(0.,0.);
+      if (!_ex.count(source)) _ex[source] = std::make_pair(0.,0.);
       _ex.at(source).second = explus;
     }
 
@@ -147,14 +147,12 @@ namespace YODA {
     }
 
     /// Get value minus negative x-error
-    /// @todo Remove (or extend) when multiple errors are supported
     double xMin(std::string source="") const {
       if (!_ex.count(source)) throw RangeError("xErrs has no such key: "+source);
       return _x - _ex.at(source).first;
     }
 
     /// Get value plus positive x-error
-    /// @todo Remove (or extend) when multiple errors are supported
     double xMax(std::string source="") const {
       if (!_ex.count(source)) throw RangeError("xErrs has no such key: "+source);
       return _x + _ex.at(source).second;
