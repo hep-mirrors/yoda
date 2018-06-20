@@ -5,6 +5,11 @@
 //
 #include "YODA/WriterYODA.h"
 
+#include "yaml-cpp/yaml.h"
+#ifdef YAML_NAMESPACE
+#define YAML YAML_NAMESPACE
+#endif
+
 #include <iostream>
 #include <iomanip>
 using namespace std;

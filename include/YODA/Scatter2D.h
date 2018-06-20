@@ -11,10 +11,6 @@
 #include "YODA/Utils/sortedvector.h"
 #include <utility>
 #include <memory>
-#include "yaml-cpp/yaml.h"
-#ifdef YAML_NAMESPACE
-#define YAML YAML_NAMESPACE
-#endif
 
 namespace YODA {
 
