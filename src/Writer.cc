@@ -27,7 +27,7 @@ namespace YODA {
     const size_t lastdot = name.find_last_of(".");
     string fmt = Utils::toLower(lastdot == string::npos ? name : name.substr(lastdot+1));
     const bool compress = (fmt == "gz");
-    cout << "***" << compress << endl;
+    //cout << "***" << compress << endl;
     if (compress) {
       #ifndef HAVE_LIBZ
       throw UserError("YODA was compiled without zlib support: can't write " + name);
@@ -107,7 +107,7 @@ namespace YODA {
     } else if (aotype == "Profile2D") {
       writeProfile2D(stream, dynamic_cast<const Profile2D&>(ao));
     } else if (aotype == "Scatter1D") {
-      writeScatter1D(stream, dynamic_cast<const Scatter1D&>(ao));
+			writeScatter1D(stream, dynamic_cast<const Scatter1D&>(ao));
     } else if (aotype == "Scatter2D") {
       writeScatter2D(stream, dynamic_cast<const Scatter2D&>(ao));
     } else if (aotype == "Scatter3D") {

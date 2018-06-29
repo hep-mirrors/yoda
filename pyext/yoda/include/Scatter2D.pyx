@@ -83,7 +83,10 @@ cdef class Scatter2D(AnalysisObject):
     def addPoints(self, iterable):
         """Add several new points."""
         for row in iterable:
+          try:
             self.addPoint(*row)
+          except TypeError:
+            self.addPoint(row)
 
     def combineWith(self, others):
         """Try to add points from other Scatter2Ds into this one."""
@@ -152,6 +155,10 @@ cdef class Scatter2D(AnalysisObject):
         fptr = (<c.dbl_dbl_fptr*><size_t>ctypes.addressof(callback))[0]
         c.Scatter2D_transformY(deref(self.s2ptr()), fptr)
 
+    def variations(self):
+        """None -> vector[string]
+        Get the list of variations stored in the poins of the Scatter"""
+        return self.s2ptr().variations()
 
     # # TODO: remove?
     # def __add__(Scatter2D self, Scatter2D other):
