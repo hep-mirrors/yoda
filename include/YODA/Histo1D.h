@@ -153,7 +153,7 @@ namespace YODA {
     /// be less than @a normto. This is probably what you want.
     void normalize(double normto=1.0, bool includeoverflows=true) {
       const double oldintegral = integral(includeoverflows);
-      if (oldintegral == 0) MSG_WARNING("Attempted to normalize a histogram with null area");
+      if (oldintegral == 0) std::cerr << "Attempted to normalize a histogram with null area" << std::endl;
       else                  scaleW(normto / oldintegral);
     }
 
