@@ -329,6 +329,13 @@ namespace YODA {
           // First convert to one-key-per-line YAML syntax
           const size_t ieq = s.find("=");
           if (ieq != string::npos) s.replace(ieq, 1, ": ");
+          // Special-case treatment for syntax clashes
+          const size_t icost = s.find(": *");
+          if (icost != string::npos) {
+            s.replace(icost, 1, ": '*");
+            s += "'";
+          }
+          // Store reformatted annotation
           const size_t ico = s.find(":");
           if (ico != string::npos) {
             annscurr += (annscurr.empty() ? "" : "\n") + s;
@@ -341,7 +348,7 @@ namespace YODA {
             annscurr += (annscurr.empty() ? "" : "\n") + s;
             // in order to handle multi-error points in scatters, we need to know which variations are stored, if any
             // can't wait until we process the annotations at the end, since need to know when filling points
-            // this is a little inelegant tough...
+            // this is a little inelegant though...
             if (s.find("Variations") != string::npos) {
               istringstream iss(s);
               YAML::Parser parser(iss);
