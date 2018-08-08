@@ -1,7 +1,11 @@
+2018-08-08  Andy Buckley  <andy.buckley@cern.ch>
+
+	* yodadiff now supports quiet (-q) and list (-l) modes.
+
 2018-06-01  Louie Corpe  <lcorpe@cern.ch>
 
 	* Point1,2,3D now support multiple error sources for the highest dimension.
-	
+
 	* Scatter1,2,3D now read in/out with additional columns for the extra error
 	sources, with a variations() method to check with sources are available
 
