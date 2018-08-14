@@ -140,7 +140,7 @@ CLEANFILES = \
   h2d.yoda h2d.dat \
   p2d.yoda p2d.dat \
   s1d.yoda s2d.yoda \
-  testwriter1.yoda testwriter2.yoda \
+  testwriter1.yoda testwriter2.yoda testwriter2.yoda.gz \
   foo_bar_baz.dat \
   counter.yoda \
   test.aida
