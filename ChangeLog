@@ -1,3 +1,7 @@
+2018-08-14  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Release 1.7.1
+
 2018-08-08  Andy Buckley  <andy.buckley@cern.ch>
 
 	* yodadiff now supports quiet (-q) and list (-l) modes.
