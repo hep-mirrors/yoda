@@ -434,7 +434,7 @@ namespace YODA {
   protected:
 
     /// Access a bin by coordinate (non-const version)
-    HistoBin2D& binAt(double x, double y) { return _axis.binAt(x, y); }
+    HistoBin2D& _binAt(double x, double y) { return _axis.binAt(x, y); }
 
 
   private:

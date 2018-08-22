@@ -25,7 +25,7 @@ namespace YODA {
     if (inRange(x, _axis.xMin(), _axis.xMax())) {
       try {
         /// @todo Replace try block with a check that there is a bin at x
-        binAt(x).fill(x, y, weight, fraction);
+        _binAt(x).fill(x, y, weight, fraction);
       } catch (const RangeError& re) {    }
     } else if (x < _axis.xMin()) {
       _axis.underflow().fill(x, y, weight, fraction);

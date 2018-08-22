@@ -59,7 +59,7 @@ namespace YODA {
     if (inRange(x, _axis.xMin(), _axis.xMax()) && inRange(y, _axis.yMin(), _axis.yMax())) {
       try {
         /// @todo Replace try block with a check that there is a bin at x, y
-        binAt(x, y).fill(x, y, weight, fraction);
+        _binAt(x, y).fill(x, y, weight, fraction);
       } catch (const RangeError& re) {    }
     }
     /// @todo Reinstate! With outflow axis bin lookup

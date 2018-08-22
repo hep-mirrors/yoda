@@ -1,3 +1,7 @@
+2018-08-22  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Avoid const-overloading clash for binAt functions.
+
 2018-08-14  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Release 1.7.1

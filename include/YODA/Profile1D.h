@@ -343,7 +343,7 @@ namespace YODA {
   protected:
 
     /// Access a bin by x-coordinate (non-const version)
-    ProfileBin1D& binAt(double x) { return _axis.binAt(x); }
+    ProfileBin1D& _binAt(double x) { return _axis.binAt(x); }
 
 
   private:
