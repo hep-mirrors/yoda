@@ -19,6 +19,8 @@ parser.add_option("-l", "--list", action="store_true", default=False, dest="LIST
                   help="only print paths of mismatching objects, skip diff details (default: %default)")
 parser.add_option("-q", "--quiet", action="store_true", default=False, dest="QUIET",
                   help="print nothing, only express comparison result via return code (default: %default)")
+parser.add_option("-a", "--annotations", action="store_true", default=False, dest="ANNOTATIONS",
+                  help="also compare annotations (not done by default)")
 opts, filenames = parser.parse_args()
 
 if len(filenames) != 2:
@@ -55,13 +57,16 @@ def eq(a, b):
     ## Recursively call on pairs of components if a and b are iterables
     if hasattr(a, "__iter__"):
         return all(eq(*pair) for pair in zip(a, b))
+    ## Check if a and b have equal magnitude but opposite sign
+    if a == -b:
+        return False
     ## Finally apply a tolerant numerical comparison on numeric types
     # TODO: Be careful with values on either side of zero -- abs(float(a)) etc. on denom?
     return abs(float(a) - float(b))/(float(a) + float(b)) < opts.TOL
 
 def ptstr(pt):
-    vstr1 = "{x:.2g} + {ex[0]:.2g} - {ex[1]:.2g}"
-    vstr2 = "{x:.2g} +- {ex[0]:.2g}"
+    vstr1 = "{x:.5g} + {ex[0]:.5g} - {ex[1]:.5g}"
+    vstr2 = "{x:.5g} +- {ex[0]:.5g}"
     vstrs = []
     if pt.dim >= 1:
         vstrs.append( (vstr2 if eq(*pt.xErrs) else vstr1).format(x=pt.x, ex=pt.xErrs) )
@@ -124,18 +129,30 @@ for path in sorted(set(list(aodict1.keys()) + list(aodict2.keys()))):
         for i, (p1, p2) in enumerate(zip(s1.points, s2.points)):
             # TODO: do this more nicely when point.val(int) and point.err(int) are mapped into Python
             ok = True
+            diffaxis = []
             if p1.dim >= 1 and not (eq(p1.x, p2.x) and eq(p1.xErrs, p2.xErrs)):
                 ok = False
-            elif p1.dim >= 2 and not (eq(p1.y, p2.y) and eq(p1.yErrs, p2.yErrs)):
+                diffaxis.append('x')
+            if p1.dim >= 2 and not (eq(p1.y, p2.y) and eq(p1.yErrs, p2.yErrs)):
                 ok = False
-            elif p1.dim >= 3 and not (eq(p1.z, p2.z) and eq(p1.zErrs, p2.zErrs)):
+                diffaxis.append('y')
+            if p1.dim >= 3 and not (eq(p1.z, p2.z) and eq(p1.zErrs, p2.zErrs)):
                 ok = False
+                diffaxis.append('z')
             if not ok:
-                msgs.append("  Point #%d: %s vs. %s" % (i, ptstr(p1), ptstr(p2)))
+                msgs.append("  Point #%d (different %s): %s vs. %s" % (i, diffaxis, ptstr(p1), ptstr(p2)))
         if msgs:
             THISCLEAN = False
             log(premsg + "\n".join(msgs))
             break
+
+        ## Compare the annotations (not done by default)
+        if opts.ANNOTATIONS:
+            for annotation in set(ao1.annotations + ao2.annotations):
+                if ao1.annotation(annotation) != ao2.annotation(annotation):
+                    THISCLEAN = False
+                    log("Data objects with path '%s' have different '%s' annotations ('%s' and '%s') in %s and %s" %
+                        (path, annotation, ao1.annotation(annotation), ao2.annotation(annotation), filenames[0], filenames[1]))
 
         ## Make sure to exit the hack while-loop if clean
         break
