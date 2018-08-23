@@ -2,6 +2,8 @@
 
 	* Release 1.7.2
 
+	* Add missing bin(i) method to Python profile1D interface.
+
 2018-08-22  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Avoid const-overloading clash for binAt functions.

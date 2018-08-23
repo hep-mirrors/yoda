@@ -208,6 +208,11 @@ cdef class Profile1D(AnalysisObject):
         """Access the ordered bins list."""
         return list(self)
 
+    def bin(self, i):
+        """Get the i'th bin"""
+        # cdef size_t ii = cutil.pythonic_index(i, self.p2ptr().numBins())
+        return cutil.new_borrowed_cls(ProfileBin1D, & self.p1ptr().bin(i), self)
+
     def binIndexAt(self, x):
         """Get the bin index containing position x"""
         return self.p1ptr().binIndexAt(x)
