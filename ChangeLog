@@ -1,6 +1,14 @@
+2018-08-23  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Release 1.7.2
+
 2018-08-22  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Avoid const-overloading clash for binAt functions.
+
+2018-08-14  Chris Gutschow  <chris.g@cern.ch>
+
+	* Merge Graeme Watt's modifications to yodadiff.
 
 2018-08-14  Andy Buckley  <andy.buckley@cern.ch>
 
