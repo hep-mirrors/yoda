@@ -1,8 +1,14 @@
+2018-08-30  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Convert xyzMin/Max properties to functions in the Python interfaces.
+
+	* Return numpy arrays if possible in Python interface array methods.
+
 2018-08-23  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Release 1.7.2
 
-	* Add missing bin(i) method to Python profile1D interface.
+	* Add missing bin(i) method to Python Profile1D interface.
 
 2018-08-22  Andy Buckley  <andy.buckley@cern.ch>
 

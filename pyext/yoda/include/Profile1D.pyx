@@ -309,21 +309,28 @@ cdef class Profile1D(AnalysisObject):
     # TODO: xyVals,Errs properties should be in a common Drawable2D (?) type (hmm, need a consistent nD convention...)
     # TODO: x bin properties should be in a common Binned1D type
 
+    def _mknp(self, xs):
+        try:
+            import numpy
+            return numpy.array(xs)
+        except ImportError:
+            return xs
+
     def xMins(self):
         """All x low edges of the histo."""
-        return [b.xMin for b in self.bins]
+        return self._mknp([b.xMin for b in self.bins])
 
     def xMaxs(self):
         """All x high edges of the histo."""
-        return [b.xMax for b in self.bins]
+        return self._mknp([b.xMax for b in self.bins])
 
     def xMids(self):
         """All x bin midpoints of the histo."""
-        return [b.xMid for b in self.bins]
+        return self._mknp([b.xMid for b in self.bins])
 
     def xFoci(self):
         """All x bin foci of the histo."""
-        return [b.xFocus for b in self.bins]
+        return self._mknp([b.xFocus for b in self.bins])
 
     def xVals(self, foci=False):
         return self.xFoci() if foci else self.xMids()
@@ -334,10 +341,18 @@ cdef class Profile1D(AnalysisObject):
         else:
             return [(b.xMid-b.xMin, b.xMax-b.xMid) for b in self.bins]
 
+    def xMin(self):
+        """Lowest x value."""
+        return min(self.xMins())
+
+    def xMax(self):
+        """Highest x value."""
+        return max(self.xMaxs())
+
 
     def yMeans(self):
         """All y heights y means."""
-        return [b.yMean for b in self.bins]
+        return self._mknp([b.yMean for b in self.bins])
 
     def yVals(self):
         return self.yMeans()
@@ -345,11 +360,11 @@ cdef class Profile1D(AnalysisObject):
 
     def yStdErrs(self):
         """All standard errors on the y means."""
-        return [b.yStdErr for b in self.bins]
+        return self._mknp([b.yStdErr for b in self.bins])
 
     def yStdDevs(self):
         """All standard deviations of the y distributions."""
-        return [b.yStdDev for b in self.bins]
+        return self._mknp([b.yStdDev for b in self.bins])
 
     def yErrs(self, sd=False):
         return self.yStdDevs() if sd else self.yStdErrs()
@@ -358,12 +373,20 @@ cdef class Profile1D(AnalysisObject):
     def yMins(self, sd=False):
         ys = self.yVals()
         es = self.yErrs(sd)
-        return [y-e for (y,e) in zip(ys,es)]
+        return self._mknp([y-e for (y,e) in zip(ys,es)])
 
     def yMaxs(self, sd=False):
         ys = self.yVals()
         es = self.yErrs(sd)
-        return [y+e for (y,e) in zip(ys,es)]
+        return self._mknp([y+e for (y,e) in zip(ys,es)])
+
+    def yMin(self):
+        """Lowest x value."""
+        return min(self.yMins())
+
+    def yMax(self):
+        """Highest y value."""
+        return max(self.yMaxs())
 
 
 ## Convenience alias

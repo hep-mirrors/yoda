@@ -169,45 +169,52 @@ cdef class Scatter2D(AnalysisObject):
     #     return cutil.new_owned_cls(Scatter2D, c.Scatter2D_sub_Scatter2D(self.s2ptr(), other.s2ptr()))
 
 
+    def _mknp(self, xs):
+        try:
+            import numpy
+            return numpy.array(xs)
+        except ImportError:
+            return xs
+
     def xVals(self):
-        return [p.x for p in self.points]
+        return self._mknp([p.x for p in self.points])
 
     def xMins(self):
         """All x low values."""
-        return [p.xMin for p in self.points]
+        return self._mknp([p.xMin for p in self.points])
 
     def xMaxs(self):
         """All x high values."""
-        return [p.xMax for p in self.points]
+        return self._mknp([p.xMax for p in self.points])
 
-    @property
+    # TODO: xErrs
+
     def xMin(self):
         """Lowest x value."""
         return min(self.xMins())
 
-    @property
     def xMax(self):
         """Highest x value."""
         return max(self.xMaxs())
 
 
     def yVals(self):
-        return [p.y for p in self.points]
+        return self._mknp([p.y for p in self.points])
 
     def yMins(self):
         """All y low values."""
-        return [p.yMin for p in self.points]
+        return self._mknp([p.yMin for p in self.points])
 
     def yMaxs(self):
         """All y high values."""
-        return [p.yMax for p in self.points]
+        return self._mknp([p.yMax for p in self.points])
 
-    @property
+    # TODO: yErrs
+
     def yMin(self):
         """Lowest x value."""
         return min(self.yMins())
 
-    @property
     def yMax(self):
         """Highest y value."""
         return max(self.yMaxs())
