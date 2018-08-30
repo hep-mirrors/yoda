@@ -282,19 +282,15 @@ namespace YODA {
 
           // Set all annotations
           try {
-            // YAML::Node anns = YAML::Load(annscurr);
-            istringstream iss(annscurr);
-            YAML::Parser parser(iss);
-            YAML::Node anns;
-            parser.GetNextDocument(anns);
-            for (YAML::Iterator it = anns.begin(); it != anns.end(); ++it) {
-              string key, val;
-              it.first() >> key;
+            YAML::Node anns = YAML::Load(annscurr);
+            // for (YAML::const_iterator it = anns.begin(); it != anns.end(); ++it) {
+            for (const auto& it : anns) {
+              const string key = it.first.as<string>();
+              // const string val = it.second.as<string>();
               YAML::Emitter em;
-              em << YAML::Flow ;
-              em << it.second();
-              val = em.c_str();
-              // cout << "@@@ '" << key << "', '" << val << "'" << endl;
+              em << YAML::Flow << it.second; //< use single-line formatting, for lists & maps
+              const string val = em.c_str();
+              //
               // The Variations annotation is just a placeholder to help collect the right columns
               // Don't want to be saving it to the actual AO, since the method variations()
               // provides the info that's needed without needing to keep the annotation up to date
@@ -346,18 +342,14 @@ namespace YODA {
             in_anns = false;
           } else {
             annscurr += (annscurr.empty() ? "" : "\n") + s;
-            // in order to handle multi-error points in scatters, we need to know which variations are stored, if any
-            // can't wait until we process the annotations at the end, since need to know when filling points
-            // this is a little inelegant though...
+            // In order to handle multi-error points in scatters, we need to know which variations are stored, if any
+            // can't wait until we process the annotations at the end, since need to know when filling points.
+            // This is a little inelegant though...
             if (s.find("Variations") != string::npos) {
-              istringstream iss(s);
-              YAML::Parser parser(iss);
-              YAML::Node anns;
-              parser.GetNextDocument(anns);
-              for (YAML::Iterator it = anns.begin(); it != anns.end(); ++it) {
-                for (YAML::Iterator it2 = it.second().begin(); it2 != it.second().end(); ++it2) {
-                  string val;
-                  *it2 >> val;
+              YAML::Node anns = YAML::Load(s);
+              for (const auto& it : anns) {
+                for (const auto& it2 : it.second) {
+                  const string val = it2.second.as<string>();
                   variationscurr.push_back(val);
                 }
               }

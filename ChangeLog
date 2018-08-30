@@ -1,5 +1,7 @@
 2018-08-30  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Update embedded yaml-cpp to v0.6.0.
+
 	* Convert xyzMin/Max properties to functions in the Python interfaces.
 
 	* Return numpy arrays if possible in Python interface array methods.
