@@ -380,13 +380,13 @@ cdef class Profile1D(AnalysisObject):
         es = self.yErrs(sd)
         return self._mknp([y+e for (y,e) in zip(ys,es)])
 
-    def yMin(self):
-        """Lowest x value."""
-        return min(self.yMins())
+    def yMin(self, sd=False):
+        """Lowest y value."""
+        return min(self.yMins(sd))
 
-    def yMax(self):
+    def yMax(self, sd=False):
         """Highest y value."""
-        return max(self.yMaxs())
+        return max(self.yMaxs(sd))
 
 
 ## Convenience alias

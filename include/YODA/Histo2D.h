@@ -12,7 +12,6 @@
 #include "YODA/Axis2D.h"
 #include "YODA/Scatter3D.h"
 #include "YODA/Exceptions.h"
-
 #include <vector>
 #include <tuple>
 
