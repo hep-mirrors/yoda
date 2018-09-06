@@ -92,7 +92,7 @@ namespace YODA {
     Scatter1D(const Scatter1D& s1, const std::string& path="")
       : AnalysisObject("Scatter1D", (path.size() == 0) ? s1.path() : path, s1, s1.title()),
         _points(s1._points)
-    {  
+    {
       for ( auto &ann : annotations()){
         setAnnotation(ann, annotation(ann));
       }
@@ -141,7 +141,7 @@ namespace YODA {
 
     ///////////////////////////////////////////////////
 
-    /// Get the list of variations stored in the points 
+    /// Get the list of variations stored in the points
     const std::vector<std::string> variations() const ;
 
     /// @name Point accessors
@@ -220,7 +220,7 @@ namespace YODA {
     /// @name Combining sets of scatter points
     //@{
 
-    /// @todo Better name? Make this the add operation?
+    /// @todo Better name?
     void combineWith(const Scatter1D& other) {
       addPoints(other.points());
     }
@@ -244,9 +244,9 @@ namespace YODA {
       return ! operator == (other);
     }
 
-  
+
     //////////////////////////////////
-  
+
 
 
   private:

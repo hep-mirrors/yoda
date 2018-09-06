@@ -66,7 +66,7 @@ namespace YODA {
     /// Constructor from values with asymmetric errors on both x and y
     Point2D(double x, double y, const std::pair<double,double>& ex, const std::pair<double,double>& ey, std::string source="")
       : _x(x), _y(y)
-    {  
+    {
       _ex = ex;
       _ey[source] = ey;
     }
@@ -75,7 +75,7 @@ namespace YODA {
     /// Copy constructor
     Point2D(const Point2D& p)
       : _x(p._x), _y(p._y)
-    {  
+    {
       _ex = p._ex;
       _ey = p._ey;
     }
@@ -130,7 +130,7 @@ namespace YODA {
 
     /// @name x error accessors
     //@{
-    
+
 
     /// Get x-error values
     const std::pair<double,double>& xErrs() const {
@@ -376,7 +376,7 @@ namespace YODA {
       default: throw RangeError("Invalid axis int, must be in range 1..dim");
       }
     }
-    
+
     /// Get error map for direction @a i
     const std::map< std::string, std::pair<double,double>> & errMap() const {
       return _ey;
@@ -506,13 +506,16 @@ namespace YODA {
   /// @name Comparison operators
   //@{
 
-  /// Equality test of x characteristics only
-  /// @todo Need to add y comparisons, too
+  /// Equality test of x & y characteristics only
+  /// @todo Base on a named fuzzyEquals(a,b,tol=1e-3) unbound function
   inline bool operator==(const YODA::Point2D& a, const YODA::Point2D& b) {
-    const bool same_val = YODA::fuzzyEquals(a.x(), b.x());
-    const bool same_eminus = YODA::fuzzyEquals(a.xErrMinus(), b.xErrMinus());
-    const bool same_eplus = YODA::fuzzyEquals(a.xErrPlus(), b.xErrPlus());
-    return same_val && same_eminus && same_eplus;
+    if (!YODA::fuzzyEquals(a.x(), b.x()) ||
+        !YODA::fuzzyEquals(a.xErrMinus(), b.xErrMinus()) ||
+        !YODA::fuzzyEquals(a.xErrPlus(),  b.xErrPlus()) ) return false;
+    if (!YODA::fuzzyEquals(a.y(), b.y()) ||
+        !YODA::fuzzyEquals(a.yErrMinus(), b.yErrMinus()) ||
+        !YODA::fuzzyEquals(a.yErrPlus(),  b.yErrPlus()) ) return false;
+    return true;
   }
 
   /// Equality test of x characteristics only

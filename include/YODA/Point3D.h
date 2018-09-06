@@ -57,8 +57,8 @@ namespace YODA {
             const std::pair<double,double>& ez,  std::string source="")
       : _x(x), _y(y), _z(z),
         _ex(ex), _ey(ey)
-    {  
-      _ez[source] = ez; 
+    {
+      _ez[source] = ez;
     }
 
 
@@ -263,7 +263,7 @@ namespace YODA {
 
     /// @name z error accessors
     //@{
-    
+
 
     /// Get z-error values
     const std::pair<double,double>& zErrs( std::string source="") const {
@@ -460,7 +460,7 @@ namespace YODA {
       default: throw RangeError("Invalid axis int, must be in range 1..dim");
       }
     }
-    
+
     /// Get error map for direction @a i
     const std::map< std::string, std::pair<double,double>> & errMap() const {
       return _ez;
@@ -604,8 +604,21 @@ namespace YODA {
   /// @name Comparison operators
   //@{
 
-  /// Equality operator
-  inline bool operator==(const  Point3D& a, const YODA::Point3D& b) {
+  /// Equality test of x, y & z characteristics only
+  /// @todo Base on a named fuzzyEquals(a,b,tol=1e-3) unbound function
+  inline bool operator==(const Point3D& a, const YODA::Point3D& b) {
+    if (!YODA::fuzzyEquals(a.x(), b.x()) ||
+        !YODA::fuzzyEquals(a.xErrMinus(), b.xErrMinus()) ||
+        !YODA::fuzzyEquals(a.xErrPlus(),  b.xErrPlus()) ) return false;
+    if (!YODA::fuzzyEquals(a.y(), b.y()) ||
+        !YODA::fuzzyEquals(a.yErrMinus(), b.yErrMinus()) ||
+        !YODA::fuzzyEquals(a.yErrPlus(),  b.yErrPlus()) ) return false;
+    if (!YODA::fuzzyEquals(a.z(), b.z()) ||
+        !YODA::fuzzyEquals(a.zErrMinus(), b.zErrMinus()) ||
+        !YODA::fuzzyEquals(a.zErrPlus(),  b.zErrPlus()) ) return false;
+    return true;
+
+
     const bool same_val =  fuzzyEquals(a.x(), b.x()) && fuzzyEquals(a.y(), b.y());
     const bool same_eminus =  fuzzyEquals(a.xErrMinus(), b.xErrMinus()) &&
                               fuzzyEquals(a.yErrMinus(), b.yErrMinus());
