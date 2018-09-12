@@ -348,8 +348,10 @@ namespace YODA {
             if (s.find("Variations") != string::npos) {
               YAML::Node anns = YAML::Load(s);
               for (const auto& it : anns) {
+                assert(it.second.isSequence());
                 for (const auto& it2 : it.second) {
-                  const string val = it2.second.as<string>();
+                  const string val = it2.as<string>();
+                  //const string val="";
                   variationscurr.push_back(val);
                 }
               }
