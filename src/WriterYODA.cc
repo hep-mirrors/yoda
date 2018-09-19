@@ -261,7 +261,7 @@ namespace YODA {
     //write headers
     std::string headers="# xval\t ";
     for (const auto   &source : variations){
-         headers+=" xerr-"+source+"\t xerr-"+source+"\t";
+         headers+=" xerr-"+source+"\t xerr+"+source+"\t";
     }
     os << headers << "\n";
     
@@ -306,7 +306,7 @@ namespace YODA {
     /// @todo Change ordering to {vals} {errs} {errs} ...
     std::string headers="# xval\t xerr-\t xerr+\t yval\t";
     for (const auto   &source : variations){
-         headers+=" yerr-"+source+"\t yerr-"+source+"\t";
+         headers+=" yerr-"+source+"\t yerr+"+source+"\t";
     }
     os << headers << "\n";
     
@@ -353,7 +353,7 @@ namespace YODA {
     /// @todo Change ordering to {vals} {errs} {errs} ...
     std::string headers="# xval\t xerr-\t xerr+\t yval\t yerr-\t yerr+\t zval\t ";
     for (const auto   &source : variations){
-         headers+=" zerr-"+source+"\t zerr-"+source+"\t";
+         headers+=" zerr-"+source+"\t zerr+"+source+"\t";
     }
     os << headers << "\n";
     
