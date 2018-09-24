@@ -1,3 +1,12 @@
+2018-09-24  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Release 1.7.3
+
+2018-09-12 Louie Corpe  <lcorpe@cern.ch>
+
+	* Fix bug in multi-err point reader which was not parsing Variations correctly,
+	and a minor typo where the err- was duplicated for the additional columns.
+
 2018-09-06  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Fix missing y and z components of Point2D and Point3D equality testing.
