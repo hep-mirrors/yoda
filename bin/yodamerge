@@ -206,9 +206,9 @@ for p, aos in analysisobjects_in.items():
 
         ## Now that the normalization-identifying heuristic is done, apply user scalings and undo the normalization scaling if appropriate
         for ao in aos:
-            ao.scaleW( float(ao.annotation("yodamerge_scale")) )
             if rescale:
                 ao.scaleW( 1.0/float(ao.annotation("ScaledBy")) )
+            ao.scaleW( float(ao.annotation("yodamerge_scale")) )
 
         ## Make a copy of the (scaled & unnormalized) first object as the basis for the output
         ## and merge for histograms (including weights, normalization, and user scaling)
