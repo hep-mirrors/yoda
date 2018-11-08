@@ -255,6 +255,11 @@ namespace YODA {
     double yMax() const { return _axis.yMax(); }
 
 
+    /// check if binning is the same as different Histo2D
+    bool sameBinning(const Histo2D& h2) {
+      return _axis == h2._axis;
+    }
+
     /// Access the bin vector (non-const version)
     std::vector<YODA::HistoBin2D>& bins() { return _axis.bins(); }
     /// Access the bin vector (const version)
