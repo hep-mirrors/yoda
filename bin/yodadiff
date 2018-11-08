@@ -17,10 +17,14 @@ parser.add_option("-t", "--tol", type=float, default=1e-5, dest="TOL",
                   help="relative tolerance of numerical difference permitted before complaining (default: %default)")
 parser.add_option("-l", "--list", action="store_true", default=False, dest="LIST",
                   help="only print paths of mismatching objects, skip diff details (default: %default)")
-parser.add_option("-q", "--quiet", action="store_true", default=False, dest="QUIET",
-                  help="print nothing, only express comparison result via return code (default: %default)")
 parser.add_option("-a", "--annotations", action="store_true", default=False, dest="ANNOTATIONS",
                   help="also compare annotations (not done by default)")
+parser.add_option("--ignore-missing", action="store_true", default=False, dest="IGNORE_MISSING",
+                  help="don't complain if an object in file #1 is not found in file #2")
+parser.add_option("--ignore-new", action="store_true", default=False, dest="IGNORE_NEW",
+                  help="don't complain if an object in file #2 is not found in file #1")
+parser.add_option("-q", "--quiet", action="store_true", default=False, dest="QUIET",
+                  help="print nothing, only express comparison result via return code (default: %default)")
 opts, filenames = parser.parse_args()
 
 if len(filenames) != 2:
@@ -39,10 +43,12 @@ def log(msg):
 ## Check number of data objects in each file
 if len(aodict1) != len(aodict2):
     CLEAN = False
-    log("Different numbers of data objects in %s and %s" % tuple(filenames[:2]))
+    if not (opts.IGNORE_MISSING or opts.IGNORE_NEW):
+        log("Different numbers of data objects in %s and %s" % tuple(filenames[:2]))
 elif sorted(list(aodict1.keys())) != sorted(list(aodict2.keys())):
     CLEAN = False
-    log("Different data object paths in %s and %s" % tuple(filenames[:2]))
+    if not (opts.IGNORE_MISSING or opts.IGNORE_NEW):
+        log("Different data object paths in %s and %s" % tuple(filenames[:2]))
 
 ## A slightly tolerant numerical comparison function
 def eq(a, b):
@@ -86,13 +92,15 @@ for path in sorted(set(list(aodict1.keys()) + list(aodict2.keys()))):
         ao1 = aodict1.get(path, None)
         if ao1 is None:
             THISCLEAN = False
-            log("Data object '%s' not found in %s" % (path, filenames[0]))
+            if not opts.IGNORE_NEW:
+                log("Data object '%s' not found in %s" % (path, filenames[0]))
             break
         ## Get the object in file #2
         ao2 = aodict2.get(path, None)
         if ao2 is None:
             THISCLEAN = False
-            log("Data object '%s' not found in %s" % (path, filenames[1]))
+            if not opts.IGNORE_MISSING:
+                log("Data object '%s' not found in %s" % (path, filenames[1]))
             break
 
         ## Compare the file #1 vs. #2 object types
@@ -140,7 +148,7 @@ for path in sorted(set(list(aodict1.keys()) + list(aodict2.keys()))):
                 ok = False
                 diffaxis.append('z')
             if not ok:
-                msgs.append("  Point #%d (different %s): %s vs. %s" % (i, diffaxis, ptstr(p1), ptstr(p2)))
+                msgs.append("  Point #%d (different %s): %s vs. %s" % (i, ", ".join(diffaxis), ptstr(p1), ptstr(p2)))
         if msgs:
             THISCLEAN = False
             log(premsg + "\n".join(msgs))

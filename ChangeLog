@@ -1,3 +1,11 @@
+2018-11-08  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Remove debug couts from single-AO Writer::write() function.
+
+	* Add --ignore-missing and --ignore-new flags to yodadiff.
+
+	* Tidy up point-comparison output of yodadiff.
+
 2018-09-24  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Release 1.7.3
