@@ -41,11 +41,8 @@ namespace YODA {
     /// Write out object @a ao to output stream @a stream.
     void write(std::ostream& stream, const AnalysisObject& ao) {
       // std::vector<const AnalysisObject*> vec{&ao};
-      std::vector<const AnalysisObject*> vec;
-      vec.push_back(&ao);
-      std::cout << std::endl;
+      std::vector<const AnalysisObject*> vec{&ao};
       write(stream, vec);
-      std::cout << std::endl;
     }
 
     /// Write out pointer-like object @a ao to output stream @a stream.
