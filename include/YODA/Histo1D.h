@@ -200,6 +200,11 @@ namespace YODA {
     /// High edge of this histo's axis
     double xMax() const { return _axis.xMax(); }
 
+    /// check if binning is the same as different Histo1D
+    bool sameBinning(const Histo1D& h1) {
+      return _axis == h1._axis;
+    }
+
     /// All bin edges on this histo's axis
     ///
     /// @note This only returns the finite edges, i.e. -inf and +inf are removed
