@@ -91,15 +91,15 @@ for path in sorted(set(list(aodict1.keys()) + list(aodict2.keys()))):
         ## Get the object in file #1
         ao1 = aodict1.get(path, None)
         if ao1 is None:
-            THISCLEAN = False
             if not opts.IGNORE_NEW:
+                THISCLEAN = False
                 log("Data object '%s' not found in %s" % (path, filenames[0]))
             break
         ## Get the object in file #2
         ao2 = aodict2.get(path, None)
         if ao2 is None:
-            THISCLEAN = False
             if not opts.IGNORE_MISSING:
+                THISCLEAN = False
                 log("Data object '%s' not found in %s" % (path, filenames[1]))
             break
 
