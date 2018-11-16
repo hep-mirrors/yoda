@@ -207,6 +207,11 @@ namespace YODA {
       _axis.addBins(bins);
     }
 
+    /// check if binning is the same as different Profile2D
+    bool sameBinning(const Profile2D& p2) {
+      return _axis == p2._axis;
+    }
+
 
     /// @todo TODO
     // /// @brief Bin addition operator

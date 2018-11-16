@@ -164,6 +164,10 @@ namespace YODA {
       _axis.mergeBins(from, to);
     }
 
+    /// check if binning is the same as different Profile1D
+    bool sameBinning(const Profile1D& p1) {
+      return _axis == p1._axis;
+    }
 
     /// Merge every group of n bins, starting from the LHS
     void rebinBy(unsigned int n, size_t begin=0, size_t end=UINT_MAX) {
