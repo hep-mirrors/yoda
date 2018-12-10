@@ -2,15 +2,11 @@
 
 	* Release 1.7.4
 
-2018-10-16 Christian Gutschow <chris.g@cern.ch>
+2018-11-16 Christian Gutschow <chris.g@cern.ch>
 
 	* Roll out sameBinning methods for Profile1D and Profile2D.
 
-2018-10-13 Christian Gutschow <chris.g@cern.ch>
-
-	* Fix additional weighting in yodamerge
-
-2018-10-08 Christian Gutschow <chris.g@cern.ch>
+2018-11-08 Christian Gutschow <chris.g@cern.ch>
 
 	* Add sameBinning methods for Histo1D and Histo2D.
 
