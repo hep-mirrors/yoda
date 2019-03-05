@@ -1,3 +1,7 @@
+2019-03-05  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Add -m/-M filtering to yodadiff.
+
 2019-02-27  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Fix HistoBin2D printing in Python interface.
