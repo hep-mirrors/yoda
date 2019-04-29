@@ -10,6 +10,10 @@
 
 	* Fix HistoBin2D printing in Python interface.
 
+2019-02-17  Jon Butterworth  <j.butterworth@ucl.ac.uk>
+
+	* Protect yodamerge against zero-valued (?!) ScaledBy attributes.
+
 2018-12-10  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Release 1.7.4

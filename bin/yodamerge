@@ -198,7 +198,10 @@ for p, aos in analysisobjects_in.items():
         if len(aos) > 1 and opts.STACK:
             pass # we're in dumb stacking mode
         elif all("ScaledBy" in ao.annotations for ao in aos):
-            rescale = 1.0 / sum(float(ao.annotation("yodamerge_scale"))/float(ao.annotation("ScaledBy")) for ao in aos)
+            try:
+                rescale = 1.0 / sum(float(ao.annotation("yodamerge_scale"))/float(ao.annotation("ScaledBy")) for ao in aos)
+            except ZeroDivisionError:
+                sys.stderr.write("WARNING: Abandoning normalized merge of path %s because ScaledBy attributes are zero.\n" % p)
         elif all("ScaledBy" not in ao.annotations for ao in aos):
             pass
         else:
