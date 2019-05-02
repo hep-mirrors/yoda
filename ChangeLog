@@ -1,3 +1,6 @@
+2019-05-02 Christian Gutschow <chris.g@cern.ch>
+	* indexRange should include bin corresponding to binindex2
+
 2019-03-05  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Add -m/-M filtering to yodadiff.

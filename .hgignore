@@ -77,3 +77,4 @@ Doxyfile$
 ^test.*
 ^tmp.*
 ^plot.*
+^local/.*$
