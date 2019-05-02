@@ -1,6 +1,10 @@
 2019-05-02 Christian Gutschow <chris.g@cern.ch>
 	* indexRange should include bin corresponding to binindex2
 
+2019-04-29  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Fix Python3 StringIO import compatibility -- thanks to Tom Neep for the patch!
+
 2019-03-05  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Add -m/-M filtering to yodadiff.
@@ -8,6 +12,10 @@
 2019-02-27  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Fix HistoBin2D printing in Python interface.
+
+2019-02-17  Jon Butterworth  <j.butterworth@ucl.ac.uk>
+
+	* Protect yodamerge against zero-valued (?!) ScaledBy attributes.
 
 2018-12-10  Andy Buckley  <andy.buckley@cern.ch>
 

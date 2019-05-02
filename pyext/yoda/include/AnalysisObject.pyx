@@ -63,7 +63,7 @@ cdef class AnalysisObject(util.Base):
 
     def setAnnotation(self, k, v):
         """Set annotation k on this object."""
-        self.aoptr().setAnnotation(<string>k.encode('utf-8'), 
+        self.aoptr().setAnnotation(<string>k.encode('utf-8'),
                                    <string>util._autostr(v).encode('utf-8'))
 
     def hasAnnotation(self, k):
@@ -81,7 +81,10 @@ cdef class AnalysisObject(util.Base):
 
     def dump(self):
         """A human readable representation of this object."""
-        from cStringIO import StringIO
+        try:
+            from cStringIO import StringIO
+        except ImportError:
+            from io import StringIO
         f = StringIO()
         writeFLAT([self], f)
         f.seek(0)
