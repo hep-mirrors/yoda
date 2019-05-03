@@ -1,5 +1,6 @@
 2019-05-02 Christian Gutschow <chris.g@cern.ch>
-	* indexRange should include bin corresponding to binindex2
+
+	* Fix Histo1D::integralRange to include the second-argument bin content as described in the docstring.
 
 2019-04-29  Andy Buckley  <andy.buckley@cern.ch>
 
