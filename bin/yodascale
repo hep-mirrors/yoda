@@ -89,7 +89,7 @@ def parse_specstr(line):
     line = " " + line
     if " #" in line:
         line = line[:line.index(" #")]
-        ## Split whitespace-separated target and ref parts
+    ## Split whitespace-separated target and ref parts
     parts = line.strip().split()
     pathpatt, scalespec = parts[0], " ".join(parts[1:])
     ## Match and extract the spec command structure
@@ -107,8 +107,8 @@ def parse_specstr(line):
         scalearg = float(scalearg[:-1])
     elif scalearg == "UNSCALE":
         scaleop = "x"
-        rtn = (PointMatcher(pathpatt), PointMatcher(refpatt), scaleop, scalearg)
-        #print(rtn)
+    rtn = (PointMatcher(pathpatt), PointMatcher(refpatt), scaleop, scalearg)
+    #print(rtn)
     return rtn
 
 
@@ -121,7 +121,7 @@ if args.SPECFILE:
             if line.startswith("#"):
                 continue
             SPECS.append( parse_specstr(line) )
-            SPECS += [parse_specstr(s) for s in args.SPECS]
+SPECS += [parse_specstr(s) for s in args.SPECS]
 
 
 ## Read reference histograms
@@ -132,14 +132,14 @@ for r in args.REFS:
         reffiles += glob.glob( os.path.join(r, "*.yoda") ) #< TODO: Add a yoda.util function for finding files that it can read
     elif r.endswith(".yoda"):
         reffiles.append(r)
-        aos_ref = {}
+aos_ref = {}
 for r in reffiles:
     aos = yoda.read(r)
     for aopath, ao in aos.items():
         ## Use /REF_PREFIX/foo as a ref plot for /foo, if the ref prefix is set
         if args.REF_PREFIX and aopath.startswith("/%s/" % args.REF_PREFIX):
             aopath = aopath.replace("/%s/" % args.REF_PREFIX, "/", 1) # NB. ao.path is unchanged
-            aos_ref[aopath] = ao
+        aos_ref[aopath] = ao
 if args.VERBOSITY > 1:
     print("DEBUG: %d reference histos" % len(aos_ref))
 
@@ -183,21 +183,20 @@ for infile in args.INFILES:
                     if len(refpaths) > 1:
                         if args.VERBOSITY > 0:
                             print("WARNING: Multiple reference histograms found for '%s'. Using first: '%s'" % (aopath, refpaths[0]))
-                            aoref = aos_ref[refpaths[0]]
+                    aoref = aos_ref[refpaths[0]]
 
                 aospecs.append( [aoref, s[1], mode, factor] )
 
 
         ## Identify and check spec to be used for scaling determination
         if not aospecs:
+            aoref, matcher, mode, factor = None, None, "x", 1.0
             if args.VERBOSITY > 1:
                 print("DEBUG: No scaling spec found for '%s'. Output is unscaled" % aopath)
-                aoref, matcher, mode, factor = None, None, "x", 1.0
         else:
-            if len(aospecs) > 1:
-                if args.VERBOSITY > 0:
-                    print("WARNING: Multiple scaling specs found for '%s'. Using first: '%r'" % (aopath, aospecs[0]))
-                    aoref, matcher, mode, factor = aospecs[0]
+            aoref, matcher, mode, factor = aospecs[0]
+            if args.VERBOSITY > 0:
+                print("WARNING: Multiple scaling specs found for '%s'. Using first: '%r'" % (aopath, aospecs[0]))
 
 
         ## Work out scalefactor
@@ -236,9 +235,10 @@ for infile in args.INFILES:
                         self.n    = n
                         self.xmin = xmin
                         self.xmax = xmax
-                        pt = Pt(i, p.xMin, p.xMax)
-                        result = matcher.match_pos(pt)
-                        #print(result)
+
+                pt = Pt(i, p.xMin, p.xMax)
+                result = matcher.match_pos(pt)
+                #print(result)
                 return result
 
 
@@ -258,7 +258,7 @@ for infile in args.INFILES:
                     assert(all(len(p.xErrs) == 2 for p in sref.points))
                     refnorm = sum(p.y * sum(p.xErrs) for i, p in enumerate(sref.points) if matchpoint(i, p))
                     sf = factor*refnorm/norm
-                    #
+            #
             elif type(s) is yoda.Scatter3D:
                 ## NOTE: sum(errs) only works if there's only one +- pair
                 # TODO: only loop over specified bins/points
@@ -304,4 +304,5 @@ for infile in args.INFILES:
         outfile = infileparts[0] + "-scaled.yoda"
     else:
         outfile = infile
-        yoda.write(sorted(aos_out.values()), outfile)
+    #
+    yoda.write(sorted(aos_out.values()), outfile)

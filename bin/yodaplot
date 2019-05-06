@@ -84,8 +84,9 @@ def plot(plotargs):
     fig, (ax1, ax2) = yoda.plot(hists, **plotkeys)
     for of in outfiles:
         fig.savefig(of)
-        import matplotlib.pyplot as plt
-        plt.close()
+
+    import matplotlib.pyplot as plt
+    plt.close()
 
 
 ## Assemble plotting arguments depending on mode
@@ -115,9 +116,9 @@ elif args.MODE.upper() == "FILE":
 # if args.DEBUG:
 for pa in plotargs:
     plot(pa)
-    # else:
-    #     import multiprocessing
-    #     nproc = args.NPROC or multiprocessing.cpu_count()-1 or 1
-    #     print(nproc)
-    #     pool = multiprocessing.Pool(processes=nproc)
-    #     pool.map(plot, plotargs)
+# else:
+#     import multiprocessing
+#     nproc = args.NPROC or multiprocessing.cpu_count()-1 or 1
+#     print(nproc)
+#     pool = multiprocessing.Pool(processes=nproc)
+#     pool.map(plot, plotargs)

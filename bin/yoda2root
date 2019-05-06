@@ -6,7 +6,7 @@
 Convert a YODA data file to the ROOT data format.
 """
 
-import yoda, os, sys, parse
+import yoda, os, sys, argparse
 from yoda.script_helpers import parse_x2y_args, filter_aos
 
 parser = argparse.ArgumentParser(usage=__doc__)

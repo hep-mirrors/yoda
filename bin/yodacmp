@@ -23,7 +23,7 @@ def main():
     #                   default=["."], help="directory which may contain plot header information (in addition "
     #                   "to standard Rivet search paths)")
 
-    stygroup = argparse.ArgumentGroup(parser, "Plot style")
+    stygroup = parser.add_argument_group("Plot style")
     # stygroup.add_argument("--refid", dest="REF_ID",
     #                     default="REF", help="ID of reference data set (file path for non-REF data)")
     # stygroup.add_argument("--linear", action="store_true", dest="LINEAR",
@@ -41,7 +41,7 @@ def main():
 
     # TODO: re-enable the pattern matching, and _maybe_ the variants on ref-only plotting if we don't have a plotting system via YODA soon
     #
-    selgroup = argparse.ArgumentGroup(parser, "Selective plotting")
+    selgroup = parser.add_argument_group("Selective plotting")
     # selgroup.add_argument("--show-single", dest="SHOW_SINGLE", choices=("no", "ref", "mc", "all"),
     #                     default="mc", help="control if a plot file is made if there is only one dataset to be plotted "
     #                     "[default=%default]. If the value is 'no', single plots are always skipped, for 'ref' and 'mc', "
