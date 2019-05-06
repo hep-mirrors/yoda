@@ -1,3 +1,7 @@
+2019-05-06  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Convert bin/* scripts to use Python3-compatible argparse rather than old optparse.
+
 2019-05-02 Christian Gutschow <chris.g@cern.ch>
 
 	* Fix Histo1D::integralRange to include the second-argument bin content as described in the docstring.

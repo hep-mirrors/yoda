@@ -53,12 +53,13 @@ TODO:
 from __future__ import print_function
 
 import yoda
-import optparse, sys
-import math, numbers
+import sys, math, numbers
 
-parser = optparse.OptionParser(usage=__doc__)
+import argparse
+parser = argparse.ArgumentParser(usage=__doc__)
+parser.add_argument("CMDS", nargs="+", help="list of histogram-specification commands")
 #parser.add_option('-o', '--output', default='-', dest='OUTPUT_FILE')
-opts, args = parser.parse_args()
+args = parser.parse_args()
 
 class Binning:
 
@@ -110,7 +111,7 @@ def error(msg, rtncode=1):
 
 
 ## Copy the args: we're going to modify them
-tmpargs = list(args)
+tmpargs = list(args.CMDS)
 
 
 ## First arg must be the run mode, so we detect and normalize that first
