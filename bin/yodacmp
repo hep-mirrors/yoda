@@ -37,7 +37,6 @@ def main():
     #                     help="change plotting style: default|bw|talk")
     stygroup.add_argument("-c", "--config", dest="CONFIGFILES", action="append", default=[], #["~/.make-plots"],
                         help="additional plot config file(s). Settings will be included in the output configuration.")
-    parser.add_argument_group(stygroup)
 
     # TODO: re-enable the pattern matching, and _maybe_ the variants on ref-only plotting if we don't have a plotting system via YODA soon
     #
@@ -63,7 +62,6 @@ def main():
     selgroup.add_argument("-M", "--unmatch", action="append",
                         help="exclude histograms whose $path/$name string matches these regexes",
                         dest="PATHUNPATTERNS")
-    parser.add_argument_group(selgroup)
 
 
     ## Parse command line args into filenames and associated annotations
