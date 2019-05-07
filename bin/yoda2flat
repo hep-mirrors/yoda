@@ -1,7 +1,7 @@
 #! /usr/bin/env python
 
 """\
-%prog yodafile [flatfile]
+%(prog)s yodafile [flatfile]
 
 Convert a YODA data file to a 'flat', more human-readable data format.
 """

@@ -1,7 +1,7 @@
 #! /usr/bin/env python
 
 """\
-%prog flatfile [yodafile]
+%(prog)s flatfile [yodafile]
 
 Convert a FLAT data file to the YODA data format.
 

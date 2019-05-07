@@ -1,7 +1,7 @@
 #! /usr/bin/env python
 
 """\
-%prog aidafile [flatfile]
+%(prog)s aidafile [flatfile]
 
 Convert an AIDA data file to a 'flat', human-readable data format.
 

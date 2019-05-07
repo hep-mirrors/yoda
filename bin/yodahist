@@ -1,13 +1,13 @@
 #! /usr/bin/env python
 
 """\
-%prog <cmds>
+%(prog)s <cmds>
 
 Make and fill a YODA histogram from plain text file/stream input.
 
 e.g.
-cat foo.dat | %prog h1 10 0. 100. out foo.yoda
-cat foo2.dat | %prog prof2 10 0. 100. 5 -10 10 show
+cat foo.dat | %(prog)s h1 10 0. 100. out foo.yoda
+cat foo2.dat | %(prog)s prof2 10 0. 100. 5 -10 10 show
 
 
 Command syntax:

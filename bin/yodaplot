@@ -1,7 +1,7 @@
 #! /usr/bin/env python
 
 """\
-Usage: %prog data1 [data2 ...]
+%(prog)s data1 [data2 ...]
 
 Make a plot from each of the given plot data files (can be .yoda or make-plots .dat).
 
@@ -25,10 +25,10 @@ parser = argparse.ArgumentParser(usage=__doc__)
 parser.add_argument("DATFILES", nargs="+",
                     help=".dat plot-specification files")
 parser.add_argument("-f", "--format", dest="FORMAT", default="PDF",
-                    help="output format string consisting of desired output formats separated by commas [default=%default]")
+                    help="output format string consisting of desired output formats separated by commas [default=%(default)s]")
 parser.add_argument("--mode", dest="MODE", default="CMP",
                     help="mode of plot combination: CMP=compare same histograms across files -> one file per histo path; "
-                    + "FILE=overlay all histograms per file arg -> one file per arg  [default=%default]")
+                    + "FILE=overlay all histograms per file arg -> one file per arg  [default=%(default)s]")
 parser.add_argument("-m", "--match", dest="MATCH", metavar="PATT", default=None,
                     help="only use histograms whose path matches this regex")
 parser.add_argument("-M", "--unmatch", dest="UNMATCH", metavar="PATT", default=None,

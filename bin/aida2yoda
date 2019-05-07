@@ -1,7 +1,7 @@
 #! /usr/bin/env python
 
 """\
-%prog aidafile [yodafile]
+%(prog)s aidafile [yodafile]
 
 Convert an AIDA data file to the YODA data format.
 

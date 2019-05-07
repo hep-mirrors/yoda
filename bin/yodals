@@ -1,7 +1,7 @@
 #! /usr/bin/env python
 
 """\
-%prog <datafile1> [<datafile2> ...]
+%(prog)s <datafile1> [<datafile2> ...]
 
 List the contents of YODA-readable data files (sorted by path name).
 """

@@ -1,7 +1,7 @@
 #! /usr/bin/env python
 
 """\
-%prog yodafile [yodafile2]
+%(prog)s yodafile [yodafile2]
 
 Convert a YODA data file to another YODA file (for convenient tidying and filtering).
 Like yodacnv, but allows output to stdout since the output format isn't auto-detected.

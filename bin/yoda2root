@@ -1,7 +1,7 @@
 #! /usr/bin/env python
 
 """\
-%prog yodafile [rootfile]
+%(prog)s yodafile [rootfile]
 
 Convert a YODA data file to the ROOT data format.
 """

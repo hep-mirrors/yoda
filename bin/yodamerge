@@ -1,9 +1,9 @@
 #! /usr/bin/env python
 
 """\
-%prog [-o outfile] <yodafile1>[:<scale1>] <yodafile2>[:<scale1>] ...
-  e.g. %prog run1.yoda run2.yoda run3.yoda  (unweighted merging of three runs)
-    or %prog run1.yoda:2.0 run2.yoda:3.142  (weighted merging of two runs)
+%(prog)s [-o outfile] <yodafile1>[:<scale1>] <yodafile2>[:<scale1>] ...
+  e.g. %(prog)s run1.yoda run2.yoda run3.yoda  (unweighted merging of three runs)
+    or %(prog)s run1.yoda:2.0 run2.yoda:3.142  (weighted merging of two runs)
 
 Merge analysis objects from multiple YODA files, combining the statistics of
 objects whose names are found in multiple files. May be used either to merge
@@ -55,7 +55,7 @@ NORMALIZED, UNNORMALIZED, OR A MIX?
   script or program to do the merging: the merging machinery of this script is
   available directly in the yoda Python module.
 
-See the source of this script (e.g. use 'less `which %prog`) for more discussion.
+See the source of this script (e.g. use 'less `which %(prog)s`) for more discussion.
 """
 
 # MORE NOTES
