@@ -236,7 +236,7 @@ for p, aos in analysisobjects_in.items():
 
             ## Retrieve dimensionality of the Scatter*D object
             dim = ao_out.dim
-            SND_MODE = getattr(args.INFILES, "S%dD_MODE" % dim)
+            SND_MODE = getattr(args, "S%dD_MODE" % dim)
             axis = ['','x','y','z']
 
             ## Use asymptotic mean+stderr convergence statistics
