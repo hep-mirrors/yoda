@@ -192,12 +192,6 @@ cdef class Profile1D(AnalysisObject):
         return self.p1ptr().xMax()
 
     @property
-    def xEdges(self):
-        """All x edges of the histo."""
-        return self.p1ptr().xEdges()
-
-
-    @property
     def numBins(self):
         """() -> int
         Number of bins (not including overflows)."""
@@ -315,6 +309,11 @@ cdef class Profile1D(AnalysisObject):
             return numpy.array(xs)
         except ImportError:
             return xs
+
+    #@property
+    def xEdges(self):
+        """All x edges of the histo."""
+        return self._mknp(self.p1ptr().xEdges())
 
     def xMins(self):
         """All x low edges of the histo."""
