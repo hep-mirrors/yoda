@@ -318,6 +318,9 @@ namespace YODA {
     void _setLock(bool locked) { _locked = locked; }
 
 
+    /// @todo Add xMins, xMaxs, xMids, xFoci, and y-versions
+
+
     /// Return the lowest-valued bin edge along the x-axis
     double xMin() const { return _xRange.first; }
 

@@ -232,6 +232,9 @@ namespace YODA {
     /// @name Bin accessors
     //@{
 
+    /// @todo Add xMins, xMaxs, xMids, xFoci, and y-versions
+
+
     /// Low x edge of this histo's axis
     double xMin() const { return _axis.xMin(); }
 
