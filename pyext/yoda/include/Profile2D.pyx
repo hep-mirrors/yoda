@@ -356,6 +356,10 @@ cdef class Profile2D(AnalysisObject):
         except ImportError:
             return xs
 
+    def xEdges(self):
+        """All x edges of the histo."""
+        return self._mknp(self.p2ptr().xEdges())
+
     def xMins(self):
         """All x low edges of the histo."""
         return self._mknp([b.xMin for b in self.bins])
@@ -389,6 +393,10 @@ cdef class Profile2D(AnalysisObject):
     #     """Highest x value."""
     #     return max(self.xMaxs())
 
+
+    def yEdges(self):
+        """All y edges of the histo."""
+        return self._mknp(self.p2ptr().yEdges())
 
     def yMins(self):
         """All y low edges of the histo."""

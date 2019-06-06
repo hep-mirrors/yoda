@@ -1,3 +1,9 @@
+2019-06-06  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Add xEdges and yEdges methods to the 2D Histo and Profile classes, in C++ and Python.
+
+	* Remove @property attributes from Python xEdges methods. More to come...
+
 2019-05-26  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Fix Python3/argparse attribute access bug in yodamerge.

@@ -335,6 +335,25 @@ namespace YODA {
     double yMax() const { return _yRange.second; }
 
 
+    /// Return all the NbinX+1 bin edges on the x-axis
+    ///
+    /// @note This only returns the finite edges, i.e. -inf and +inf are removed
+    /// @todo Make the +-inf stripping controllable by a default-valued bool arg
+    std::vector<double> xEdges() const {
+      std::vector<double> rtn(_binSearcherX.edges().begin()+1, _binSearcherX.edges().end()-1);
+      return rtn;
+    }
+
+    /// Return all the NbinY+1 bin edges on the y-axis
+    ///
+    /// @note This only returns the finite edges, i.e. -inf and +inf are removed
+    /// @todo Make the +-inf stripping controllable by a default-valued bool arg
+    std::vector<double> yEdges() const {
+      std::vector<double> rtn(_binSearcherY.edges().begin()+1, _binSearcherY.edges().end()-1);
+      return rtn;
+    }
+
+
     /// Add a bin, providing its x- and y- edge ranges
     void addBin(EdgePair1D xrange, EdgePair1D yrange) {
       _checkUnlocked();
