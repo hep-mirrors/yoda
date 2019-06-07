@@ -1,8 +1,12 @@
+2019-06-07  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Release 1.7.6
+
 2019-06-06  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Add xEdges and yEdges methods to the 2D Histo and Profile classes, in C++ and Python.
 
-	* Remove @property attributes from Python xEdges methods. More to come...
+	* Remove @property attributes from Python xEdges methods. More of that to come in version 1.8.0.
 
 2019-05-26  Andy Buckley  <andy.buckley@cern.ch>
 
