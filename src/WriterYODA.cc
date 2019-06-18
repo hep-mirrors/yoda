@@ -42,7 +42,11 @@ namespace YODA {
     for (const string& a : ao.annotations()) {
       if (a.empty()) continue;
       /// @todo Write out floating point annotations as scientific notation
-      os << a << ": " << ao.annotation(a) << "\n";
+      string ann = ao.annotation(a);
+      // remove stpurious line returns at the end of a string so that we don't
+      // end up with two line returns.
+      ann.erase(std::remove(ann.begin(), ann.end(), '\n'), ann.end());
+      os << a << ": " << ann << "\n";
     }
     os << "---\n";
   }
@@ -56,7 +60,7 @@ namespace YODA {
     _writeAnnotations(os, c);
     os << "# sumW\t sumW2\t numEntries\n";
     os << c.sumW()  << "\t" << c.sumW2() << "\t" << c.numEntries() << "\n";
-    os << "END " << _iotypestr("COUNTER") << "\n";
+    os << "END " << _iotypestr("COUNTER") << "\n\n";
 
     os.flags(oldflags);
   }
@@ -95,7 +99,7 @@ namespace YODA {
       os << b.sumWX()   << "\t" << b.sumWX2()   << "\t";
       os << b.numEntries() << "\n";
     }
-    os << "END " << _iotypestr("HISTO1D") << "\n";
+    os << "END " << _iotypestr("HISTO1D") << "\n\n";
 
     os.flags(oldflags);
   }
@@ -149,7 +153,7 @@ namespace YODA {
       os << b.sumWXY()   << "\t";
       os << b.numEntries() << "\n";
     }
-    os << "END " << _iotypestr("HISTO2D") << "\n";
+    os << "END " << _iotypestr("HISTO2D") << "\n\n";
 
     os.flags(oldflags);
   }
@@ -185,7 +189,7 @@ namespace YODA {
       os << b.sumWY()   << "\t" << b.sumWY2()   << "\t";
       os << b.numEntries() << "\n";
     }
-    os << "END " << _iotypestr("PROFILE1D") << "\n";
+    os << "END " << _iotypestr("PROFILE1D") << "\n\n";
 
     os.flags(oldflags);
   }
@@ -235,7 +239,7 @@ namespace YODA {
       os << b.sumWXY()   << "\t"; // << b.sumWXZ()    << "\t" << b.sumWYZ() << "\t";
       os << b.numEntries() << "\n";
     }
-    os << "END " << _iotypestr("PROFILE2D") << "\n";
+    os << "END " << _iotypestr("PROFILE2D") << "\n\n";
 
     os.flags(oldflags);
   }
@@ -279,7 +283,7 @@ namespace YODA {
       }
       os <<  "\n";
     }
-    os << "END " << _iotypestr("SCATTER1D") << "\n";
+    os << "END " << _iotypestr("SCATTER1D") << "\n\n";
 
     os << flush;
     os.flags(oldflags);
@@ -326,7 +330,7 @@ namespace YODA {
       }
       os <<  "\n";
     }
-    os << "END " << _iotypestr("SCATTER2D") << "\n";
+    os << "END " << _iotypestr("SCATTER2D") << "\n\n";
 
     os << flush;
     os.flags(oldflags);
@@ -374,7 +378,7 @@ namespace YODA {
       }
       os <<  "\n";
     }
-    os << "END " << _iotypestr("SCATTER3D") << "\n";
+    os << "END " << _iotypestr("SCATTER3D") << "\n\n";
 
     os << flush;
     os.flags(oldflags);

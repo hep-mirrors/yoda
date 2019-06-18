@@ -43,13 +43,16 @@ cdef class Point(util.Base):
         """int -> float
         Errors on axis i"""
         if source is None: source = ""
+        if isinstance(source, str):
+           source = source.encode('utf-8')
         return util.read_error_pair(self.pptr().errs(i,source))
 
     def setErr(self, i, e, source=""):
         """(int, float) -> None
         Set symmetric errors on axis i"""
         if source is None: source = ""
-        print "LC DEBUG setErr ", e, source
+        if isinstance(source, str):
+           source = source.encode('utf-8')
         self.pptr().setErr(i, e, source)
 
     def setErrs(self, i, *es):
@@ -72,6 +75,8 @@ cdef class Point(util.Base):
                 return
             errs=errs[0]
         # assert len(errs) == 2:
+        if isinstance(source, str):
+           source = source.encode('utf-8')
         self.pptr().setErrs(i, tuple(errs), source)
 
 
@@ -79,12 +84,16 @@ cdef class Point(util.Base):
         """int -> float
         Minus error on axis i"""
         if source is None: source = ""
+        if isinstance(source, str):
+           source = source.encode('utf-8')
         return self.pptr().errMinus(i ,source)
 
     def setErrMinus(self, i, e, source=""):
         """(int, float) -> None
         Set minus error on axis i"""
         if source is None: source = ""
+        if isinstance(source, str):
+           source = source.encode('utf-8')
         self.pptr().setErrMinus(i, e, source)
 
 
@@ -92,12 +101,16 @@ cdef class Point(util.Base):
         """int -> float
         Plus error on axis i"""
         if source is None: source = ""
+        if isinstance(source, str):
+           source = source.encode('utf-8')
         return self.pptr().errPlus(i, source)
 
     def setErrPlus(self, i, e, source=""):
         """(int, float) -> None
         Set plus error on axis i"""
         if source is None: source = ""
+        if isinstance(source, str):
+           source = source.encode('utf-8')
         self.pptr().setErrPlus(i, e, source)
 
 
@@ -105,6 +118,8 @@ cdef class Point(util.Base):
         """int -> float
         Average error on axis i"""
         if source is None: source = ""
+        if isinstance(source, str):
+           source = source.encode('utf-8')
         return self.pptr().errAvg(i, source)
 
 
@@ -121,6 +136,8 @@ cdef class Point(util.Base):
             else:
                 errs = es[0]
         # assert len(errs) == 2:
+        if isinstance(source, str):
+           source = source.encode('utf-8')
         self.pptr().set(i, val, errs, source)
 
     def errMap(self):
