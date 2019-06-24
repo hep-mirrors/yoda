@@ -224,20 +224,32 @@ cdef class Scatter2D(AnalysisObject):
 
     def xMins(self):
         """All x low values."""
+        # TODO: add extra dimensionality for multiple errors?
         return self._mknp([p.xMin for p in self.points])
 
     def xMaxs(self):
         """All x high values."""
+        # TODO: add extra dimensionality for multiple errors?
         return self._mknp([p.xMax for p in self.points])
 
-    # TODO: xErrs
+    def xErrs(self):
+        """All x error pairs"""
+        # TODO: add extra dimensionality for multiple errors?
+        return self._mknp([p.xErrs for p in self.points])
+
+    def xErrAvgs(self):
+        """All x average errors"""
+        # TODO: add extra dimensionality for multiple errors?
+        return self._mknp([p.xAvgErr for p in self.points])
 
     def xMin(self):
         """Lowest x value."""
+        # TODO: add extra dimensionality for multiple errors?
         return min(self.xMins())
 
     def xMax(self):
         """Highest x value."""
+        # TODO: add extra dimensionality for multiple errors?
         return max(self.xMaxs())
 
 
@@ -246,20 +258,32 @@ cdef class Scatter2D(AnalysisObject):
 
     def yMins(self):
         """All y low values."""
+        # TODO: add extra dimensionality for multiple errors?
         return self._mknp([p.yMin for p in self.points])
 
     def yMaxs(self):
         """All y high values."""
+        # TODO: add extra dimensionality for multiple errors?
         return self._mknp([p.yMax for p in self.points])
 
-    # TODO: yErrs
+    def yErrs(self):
+        """All y error pairs"""
+        # TODO: add extra dimensionality for multiple errors?
+        return self._mknp([p.yErrs for p in self.points])
+
+    def yErrAvgs(self):
+        """All y average errors"""
+        # TODO: add extra dimensionality for multiple errors?
+        return self._mknp([p.yAvgErr for p in self.points])
 
     def yMin(self):
         """Lowest x value."""
+        # TODO: add extra dimensionality for multiple errors?
         return min(self.yMins())
 
     def yMax(self):
         """Highest y value."""
+        # TODO: add extra dimensionality for multiple errors?
         return max(self.yMaxs())
 
 
