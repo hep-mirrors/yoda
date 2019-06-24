@@ -171,6 +171,9 @@ namespace YODA {
 
     /// Get the list of variations stored in the points
     const std::vector<std::string> variations() const;
+    
+    // Construct a covariance matrix from the error breakdown
+    std::vector<std::vector<double> > covarianceMatrix(bool ignoreOffDiagonalTerms=false) ;
 
     /// @name Point accessors
     //@{

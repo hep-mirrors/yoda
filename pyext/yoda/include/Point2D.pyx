@@ -20,6 +20,30 @@ cdef class Point2D(Point):
         return cutil.new_owned_cls(Point2D, new c.Point2D(deref(self.p2ptr())))
 
     # TODO: add clone() as mapping to (not yet existing) C++ newclone()?
+    
+    def setYErrs(self, *es):
+        """(int, float) -> None
+           (int, [float, float]) -> None
+           (int, float, float) -> None
+        Set asymmetric errors on axis i"""
+        source=None
+        es=list(es)
+        if type(es[-1]) is str:
+          source=es[-1]
+          es=es[:-1]
+        else:
+          pass
+        errs = es
+        if source is None: source=""
+        if len(errs) == 1:
+            if not hasattr(errs[0], "__iter__"):
+                self.setErr(2,errs[0], source)
+                return
+            errs=errs[0]
+        # assert len(errs) == 2:
+        if isinstance(source, str):
+           source = source.encode('utf-8')
+        self.pptr().setErrs(2, tuple(errs), source)
 
     def setYErrs(self, val, source):
         if source==None: source=""

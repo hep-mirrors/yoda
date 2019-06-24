@@ -159,6 +159,23 @@ cdef class Scatter2D(AnalysisObject):
         """None -> vector[string]
         Get the list of variations stored in the poins of the Scatter"""
         return self.s2ptr().variations()
+    
+    def _mknp(self, xs):
+        try:
+            import numpy
+            return numpy.array(xs)
+        except ImportError:
+            return xs
+    
+    def covarianceMatrix(self):
+        """
+        Construct the covariance matrix"""
+        return self._mknp(self.s2ptr().covarianceMatrix(False))
+
+    def covarianceMatrix(self, ignoreOffDiagonalTerms):
+        """bool -> vector[vector[float]]
+        Construct the covariance matrix"""
+        return self._mknp(self.s2ptr().covarianceMatrix(ignoreOffDiagonalTerms))
 
     # # TODO: remove?
     # def __add__(Scatter2D self, Scatter2D other):
@@ -167,14 +184,40 @@ cdef class Scatter2D(AnalysisObject):
     # # TODO: remove?
     # def __sub__(Scatter2D self, Scatter2D other):
     #     return cutil.new_owned_cls(Scatter2D, c.Scatter2D_sub_Scatter2D(self.s2ptr(), other.s2ptr()))
+     
+    def hasValidErrorBreakdown(self):
+        """
+        check if the AO's error breakdown is not empty and has no bins withh 0 uncertainty
+        """
+        counter=-1
+        for p in self.points:
+          counter+=1
+          binErrs=p.errMap()
+          binTotal=[0.,0.]
+          for sys,err in binErrs.iteritems():
+            binTotal[0]=(binTotal[0]**2 + err[0]**2)**0.5
+            binTotal[1]=(binTotal[1]**2 + err[1]**2)**0.5
+          if binTotal[0]==0 and binTotal[1]==0 : 
+            return False
+        return True
+            
 
+    def correlationMatrix(self):
+        """
+        `covMatrix` numpy matrix  
+         Convert a covariance matrix to a correlation matrix (ie normalise entry in i,j by uncertainty of bin i * uncertainty in bin j)  
+        """
+        covMatrix=self.covarianceMatrix()
+        nbins = len (covMatrix)
+        corr=[[0 for i in range(nbins)] for j in range (nbins)]
+        for i  in range(nbins):
+         sigma_i = covMatrix[i][i]
+         for j in range(nbins):
+           sigma_j  = covMatrix[j][j]
+           corr[i][j] = covMatrix[i][j] / (sigma_i * sigma_j)**0.5
 
-    def _mknp(self, xs):
-        try:
-            import numpy
-            return numpy.array(xs)
-        except ImportError:
-            return xs
+        return self._mknp(corr)
+
 
     def xVals(self):
         return self._mknp([p.x for p in self.points])

@@ -131,8 +131,9 @@ namespace YODA {
     Scatter1D* s1curr = NULL;
     Scatter2D* s2curr = NULL;
     Scatter3D* s3curr = NULL;
-    std::vector<std::string> variationscurr;
+    //std::vector<std::string> variationscurr;
     string annscurr;
+    YAML::Node errorBreakdown;
 
     // Loop over all lines of the input file
     aistringstream aiss;
@@ -294,7 +295,9 @@ namespace YODA {
               // The Variations annotation is just a placeholder to help collect the right columns
               // Don't want to be saving it to the actual AO, since the method variations()
               // provides the info that's needed without needing to keep the annotation up to date
-              if (!(key.find("Variations") != string::npos)) aocurr->setAnnotation(key, val);
+              // LC: Not using the column representation of multiple errors right now. 
+              //if (!(key.find("Variations") != string::npos)) aocurr->setAnnotation(key, val);
+              if (!(key.find("ErrorBreakdown") != string::npos)) aocurr->setAnnotation(key, val);
             }
           } catch (...) {
             /// @todo Is there a case for just giving up on these annotations, printing the error msg, and keep going? As an option?
@@ -303,7 +306,7 @@ namespace YODA {
             throw ReadError(err);
           }
           annscurr.clear();
-          variationscurr.clear();
+          //variationscurr.clear();
           in_anns = false;
 
           // Put this AO in the completed stack
@@ -345,16 +348,14 @@ namespace YODA {
             // In order to handle multi-error points in scatters, we need to know which variations are stored, if any
             // can't wait until we process the annotations at the end, since need to know when filling points.
             // This is a little inelegant though...
-            if (s.find("Variations") != string::npos) {
-              YAML::Node anns = YAML::Load(s);
-              for (const auto& it : anns) {
-                assert(it.second.IsSequence());
-                for (const auto& it2 : it.second) {
-                  const string val = it2.as<string>();
-                  //const string val="";
-                  variationscurr.push_back(val);
-                }
-              }
+            if (s.find("ErrorBreakdown") != string::npos) {
+              errorBreakdown = YAML::Load(s)["ErrorBreakdown"];
+              //for (const auto& it : errorBreakdown) {
+              //  const string val0 = it.first.as<string>();
+                //for (const auto& it2 : it.second) {
+                //  const string val = it2.as<string>();
+                //}
+             // }
             }
           }
           continue;
@@ -365,7 +366,7 @@ namespace YODA {
         aiss.reset(s);
         // double sumw(0), sumw2(0), sumwx(0), sumwx2(0), sumwy(0), sumwy2(0), sumwz(0), sumwz2(0), sumwxy(0), sumwxz(0), sumwyz(0), n(0);
         switch (context) {
-
+        
         case COUNTER:
           {
             double sumw(0), sumw2(0), n(0);
@@ -373,7 +374,7 @@ namespace YODA {
             cncurr->setDbn(Dbn0D(n, sumw, sumw2));
           }
           break;
-
+        
         case HISTO1D:
           {
             string xoflow1, xoflow2; double xmin(0), xmax(0);
@@ -395,7 +396,7 @@ namespace YODA {
             else h1binscurr.push_back(HistoBin1D(std::make_pair(xmin,xmax), dbn));
           }
           break;
-
+        
         case HISTO2D:
           {
             string xoflow1, xoflow2, yoflow1, yoflow2; double xmin(0), xmax(0), ymin(0), ymax(0);
@@ -422,7 +423,7 @@ namespace YODA {
             }
           }
           break;
-
+        
         case PROFILE1D:
           {
             string xoflow1, xoflow2; double xmin(0), xmax(0);
@@ -445,7 +446,7 @@ namespace YODA {
             else p1binscurr.push_back(ProfileBin1D(std::make_pair(xmin,xmax), dbn));
           }
           break;
-
+        
         case PROFILE2D:
           {
             string xoflow1, xoflow2, yoflow1, yoflow2; double xmin(0), xmax(0), ymin(0), ymax(0);
@@ -472,7 +473,7 @@ namespace YODA {
             }
           }
           break;
-
+        
         case SCATTER1D:
           {
             double x(0), exm(0), exp(0);
@@ -480,72 +481,68 @@ namespace YODA {
             // set nominal point
             Point1D thispoint=Point1D(x, exm, exp);
             // check if we stored variations of this point
-            if (variationscurr.size()>0){
-              // for each variation, store the alt errors.
-              // start at 1 since we have already filled nominal !
-              for (unsigned int ivar=1; ivar<variationscurr.size(); ivar++){
-                 std::string thisvariation=variationscurr[ivar];
-                 aiss >> exm >> exp;
-                 thispoint.setXErrs(exm,exp,thisvariation);
-              }
-            }
+            //if (variationscurr.size()>0){
+            //  // for each variation, store the alt errors.
+            //  // start at 1 since we have already filled nominal !
+            //  for (unsigned int ivar=1; ivar<variationscurr.size(); ivar++){
+            //   std::string thisvariation=variationscurr[ivar];
+            //    aiss >> exm >> exp;
+            //    thispoint.setXErrs(exm,exp,thisvariation);
+            //  }
+            //}
             pt1scurr.push_back(thispoint);
           }
           break;
-
+        
         case SCATTER2D:
           {
             double x(0), y(0), exm(0), exp(0), eym(0), eyp(0);
             aiss >> x >> exm >> exp >> y >> eym >> eyp;
             // set nominal point
             Point2D thispoint=Point2D(x, y, exm, exp, eym, eyp);
+            int thisPointIndex =pt2scurr.size();
             // check if we stored variations of this point
-            if (variationscurr.size()>0){
-              // for each variation, store the alt errors.
-              // start at 1 since we have already filled nominal !
-              for (unsigned int ivar=1; ivar<variationscurr.size(); ivar++){
-                 std::string thisvariation=variationscurr[ivar];
-                 aiss >> eym >> eyp;
-                 thispoint.setYErrs(eym,eyp,thisvariation);
+            // for each variation, store the alt errors.
+            // start at 1 since we have already filled nominal !
+            if (errorBreakdown.size()) {
+              YAML::Node variations = errorBreakdown[thisPointIndex];
+              for (const auto& variation : variations) {
+                const string variationName = variation.first.as<string>();
+                double eyp = variation.second["up"].as<double>();
+                double eym = variation.second["dn"].as<double>();
+                thispoint.setYErrs(eym,eyp,variationName);
               }
+        
+              // LC: Not using the column representation of multiple errors right now. 
+              //for (unsigned int ivar=1; ivar<variationscurr.size(); ivar++){
+              //  std::string thisvariation=variationscurr[ivar];
+              //  aiss >> eym >> eyp;
+              //  thispoint.setYErrs(eym,eyp,thisvariation);
+              //}
             }
             pt2scurr.push_back(thispoint);
           }
           break;
-
+        
         case SCATTER3D:
           {
             double x(0), y(0), z(0), exm(0), exp(0), eym(0), eyp(0), ezm(0), ezp(0);
             aiss >> x >> exm >> exp >> y >> eym >> eyp >> z >> ezm >> ezp;
             // set nominal point
             Point3D thispoint=Point3D(x, y, z, exm, exp, eym, eyp, ezm, ezp);
-            // check if we stored variations of this point
-            if (variationscurr.size()>0){
-              // for each variation, store the alt errors.
-              // start at 1 since we have already filled nominal !
-              for (unsigned int ivar=1; ivar<variationscurr.size(); ivar++){
-                 std::string thisvariation=variationscurr[ivar];
-                 aiss >> ezm >> ezp;
-                 thispoint.setZErrs(ezm,ezp,thisvariation);
-              }
-            }
             pt3scurr.push_back(thispoint);
           }
           break;
 
         default:
           throw ReadError("Unknown context in YODA format parsing: how did this happen?");
-        }
 
+          }
         // cout << "AO CONTENT " << nline << endl;
         // cout << "  " << xmin << " " << xmax << " " << ymin << " " << ymax << " / '" << xoflow1 << "' '" << xoflow2 << "' '" << yoflow1 << "' '" << yoflow2 << "'" << endl;
         // cout << "  " << sumw << " " << sumw2 << " " << sumwx << " " << sumwx2 << " " << sumwy << " " << sumwy2 << " " << sumwz << " " << sumwz2 << " " << sumwxy << " " << sumwxz << " " << sumwyz << " " << n << endl;
         // cout << "  " << x << " " << y << " " << z << " " << exm << " " << exp << " " << eym << " " << eyp << " " << ezm << " " << ezp << endl;
-
-      }
-    }
-
+        }
+     }
   }
-
-
 }

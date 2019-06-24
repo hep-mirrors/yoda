@@ -252,7 +252,7 @@ namespace YODA {
     YAML::Emitter out; 
     out << YAML::Flow ;
     out << s.variations();
-    os << "Variations" << ": " << out.c_str() << "\n";
+    //os << "Variations" << ": " << out.c_str() << "\n";
     // then write the regular annotations
     _writeAnnotations(os, s);
      
@@ -295,19 +295,34 @@ namespace YODA {
     //contains the additional columns which will be written out
     //for sytematic variations
     YAML::Emitter out; 
-    out << YAML::Flow ;
-    out << s.variations();
-    os << "Variations" << ": " << out.c_str() << "\n";
+    out << YAML::Flow << YAML::BeginMap;
+    int counter=0;
+    std::vector<std::string> variations= s.variations();
+    //write ErrBreakdown Annotation
+    for (const Point2D& pt : s.points()) {
+      out << YAML::Key << counter;
+      out << YAML::Value << YAML::BeginMap;
+      for (const auto   &source : variations){
+        if (source.length()==0) continue;
+        out << YAML::Key << source;
+        out << YAML::Value << YAML::BeginMap;
+        out << YAML::Key << "dn" << YAML::Value <<  pt.yErrMinus(source);
+        out << YAML::Key << "up" << YAML::Value <<  pt.yErrPlus(source);
+        out << YAML::EndMap;
+      }
+      out << YAML::EndMap;
+    }
+    out << YAML::EndMap;
+    os << "ErrorBreakdown" << ": " << out.c_str() << "\n";
     // then write the regular annotations
     _writeAnnotations(os, s);
     
-    std::vector<std::string> variations= s.variations();
     //write headers
     /// @todo Change ordering to {vals} {errs} {errs} ...
-    std::string headers="# xval\t xerr-\t xerr+\t yval\t";
-    for (const auto   &source : variations){
-         headers+=" yerr-"+source+"\t yerr+"+source+"\t";
-    }
+    std::string headers="# xval\t xerr-\t xerr+\t yval\t yerr-\t yerr+\t";
+    //for (const auto   &source : variations){
+    //     headers+=" yerr-"+source+"\t yerr+"+source+"\t";
+    //}
     os << headers << "\n";
     
     //write points
@@ -321,12 +336,12 @@ namespace YODA {
       // variations... if not a range error will get thrown from
       // the point when the user tries to access a variation it
       // doesn't have... @todo maybe better way to do this?
-      for (const auto   &source : variations){
-        os << "\t" << pt.yErrMinus(source) << "\t" << pt.yErrPlus(source) ;
-      }
+      //for (const auto   &source : variations){
+       os << "\t" << pt.yErrMinus() << "\t" << pt.yErrPlus() ;
+     // }
       os <<  "\n";
     }
-    os << "END " << _iotypestr("SCATTER2D") << "\n";
+    os << "END " << _iotypestr("SCATTER2D") << "\n\n";
 
     os << flush;
     os.flags(oldflags);
@@ -344,7 +359,6 @@ namespace YODA {
     YAML::Emitter out; 
     out << YAML::Flow ;
     out << s.variations();
-    os << "Variations" << ": " << out.c_str() << "\n";
     // then write the regular annotations
     _writeAnnotations(os, s);
     

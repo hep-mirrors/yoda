@@ -70,16 +70,64 @@ namespace YODA {
   }
   
   const std::vector<std::string> Scatter2D::variations() const  {
-    std::vector<std::string> vecvariations;
+    std::vector<std::string> vecVariations;
     for (auto &point : this->_points){
       for (auto &it : point.errMap()){
         //if the variation is not already in the vector, add it !
-        if (std::find(vecvariations.begin(), vecvariations.end(), it.first) == vecvariations.end()){
-          vecvariations.push_back(it.first);
+        if (std::find(vecVariations.begin(), vecVariations.end(), it.first) == vecVariations.end()){
+          vecVariations.push_back(it.first);
         }
       }
     }
-    return vecvariations;
+    return vecVariations;
+  }
+  
+
+  std::vector<std::vector<double> > Scatter2D::covarianceMatrix( bool ignoreOffDiagonalTerms)   {
+    int nPoints= this->numPoints();
+    //double covM[nPoints][nPoints] ={};
+    std::vector<std::vector<double> > covM;
+
+
+    // initialose cov matrix to be the right shape!
+    for (int i=0; i<nPoints ; i++) {
+      std::vector< double> row;
+      row.resize(nPoints);
+      covM.push_back(row);
+    }
+
+    // case where only have nominal, ie total uncertainty, labelled "" (empty string)
+    if (this->variations().size()==1) { 
+      for (int i=0; i<nPoints ; i++) {
+        covM[i][i]= pow(((this->_points[i].yErrs().first+this->_points[i].yErrs().second)/2),2);
+        if (covM[i][i]==0 )  covM[i][i]=1;
+      }
+      return covM;
+    }
+    //more interesting case where we actually have some uncertainty breakdown!
+    auto  systList= this->variations();
+    for (auto sname : systList){
+      if (sname.length()==0) continue;
+      std::vector< double> systErrs; 
+      systErrs.resize(nPoints);
+      for (int i=0; i<nPoints ; i++) {
+        auto point = this->_points[i];
+        auto variations=point.errMap().at(sname);
+        systErrs[i]=(fabs(variations.first)+fabs(variations.second))*0.5 ;//up/dn are symmetrized since this method can't handle asymmetric errors
+      }
+      if (ignoreOffDiagonalTerms ||  sname.find("stat") != std::string::npos ||  sname.find("uncor") != std::string::npos){
+        for (int i=0; i<nPoints ; i++) {
+          covM[i][i] += systErrs[i]*systErrs[i]; // just the diagonal, bins are considered uncorrelated
+        }
+      }else{
+        for (int i=0; i<nPoints ; i++) {
+          for (int j=0; j<nPoints ; j++) {
+            covM[i][j] += systErrs[i]*systErrs[j];
+          }
+        }
+      }
+    }
+    return covM;
   }
 
 }
