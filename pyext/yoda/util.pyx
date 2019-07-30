@@ -17,16 +17,22 @@ def _autotype(var, autobool=True):
     """Automatically convert strings to numerical types if possible."""
     if type(var) is not str:
         return var
-    if var.isdigit() or (var.startswith("-") and var[1:].isdigit()):
-        return int(var)
     try:
-        return float(var)
-    except: pass
-    if autobool:
-        try:
-            return as_bool(var)
-        except: pass
-    return var
+        import ast
+        return ast.literal_eval(var)
+    except:
+        return var
+    #
+    # if var.isdigit() or (var.startswith("-") and var[1:].isdigit()):
+    #     return int(var)
+    # try:
+    #     return float(var)
+    # except: pass
+    # if autobool:
+    #     try:
+    #         return as_bool(var)
+    #     except: pass
+    # return var
 
 
 # def _autonp(var):

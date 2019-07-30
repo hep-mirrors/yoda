@@ -1,3 +1,7 @@
+2019-07-30  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Improve Python annotation parsing to preferentially use ast rather than yaml.
+
 2019-06-21  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Add x/yErrs and x/yErrAvgs functions to Scatter2D Python.

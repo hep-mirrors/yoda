@@ -51,15 +51,17 @@ cdef class AnalysisObject(util.Base):
         The annotation string will be automatically converted to Python
         native types as far as possible -- more complex types are possible
         if the yaml module is installed."""
+        rtn = default
         try:
-            astr = self.aoptr().annotation(<string>k.encode('utf-8'))
+            rtn = self.aoptr().annotation(<string>k.encode('utf-8'))
             try:
                 import yaml
-                return yaml.load(astr)
+                rtn = yaml.load(rtn)
             except ImportError:
-                return util._autotype(astr)
+                rtn = util._autotype(rtn)
         except:
-            return default
+            pass
+        return rtn
 
     def setAnnotation(self, k, v):
         """Set annotation k on this object."""
