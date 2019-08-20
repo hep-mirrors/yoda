@@ -86,7 +86,7 @@ cdef class Histo2D(AnalysisObject):
         self.h2ptr().fillBin(i, weight, fraction)
 
 
-    @property
+    #@property
     def totalDbn(self):
         """() -> Dbn2D
         The Dbn2D representing the total distribution."""
@@ -217,47 +217,47 @@ cdef class Histo2D(AnalysisObject):
         self.h2ptr().normalize(normto, includeoverflows)
 
 
-    @property
+    #@property
     def xMin(self):
         """Low x edge of the histo."""
         return self.h2ptr().xMin()
 
-    @property
+    #@property
     def xMax(self):
         """High x edge of the histo."""
         return self.h2ptr().xMax()
 
-    @property
+    #@property
     def yMin(self):
         """Low y edge of the histo."""
         return self.h2ptr().yMin()
 
-    @property
+    #@property
     def yMax(self):
         """High y edge of the histo."""
         return self.h2ptr().yMax()
 
 
-    @property
+    #@property
     def numBins(self):
         """() -> int
         Number of bins (not including overflows)."""
         return self.h2ptr().numBins()
 
-    @property
+    #@property
     def numBinsX(self):
         """() -> int
         Number of bins (edges) along the x axis."""
         return self.h2ptr().numBinsX()
 
-    @property
+    #@property
     def numBinsY(self):
         """() -> int
         Number of bins (edges) along the y axis."""
         return self.h2ptr().numBinsY()
 
 
-    @property
+    #@property
     def bins(self):
         """Access the ordered bins list."""
         return [self.bin(i) for i in xrange( self.h2ptr().numBins())]

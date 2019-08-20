@@ -87,7 +87,7 @@ cdef class Profile2D(AnalysisObject):
         self.p2ptr().fillBin(i, z, weight, fraction)
 
 
-    @property
+    #@property
     def totalDbn(self):
         """() -> Dbn3D
         The Dbn3D representing the total distribution."""
@@ -215,47 +215,47 @@ cdef class Profile2D(AnalysisObject):
         self.p1ptr().scaleZ(f)
 
 
-    @property
+    #@property
     def xMin(self):
         """Low x edge of the histo."""
         return self.p2ptr().xMin()
 
-    @property
+    #@property
     def xMax(self):
         """High x edge of the histo."""
         return self.p2ptr().xMax()
 
-    @property
+    #@property
     def yMin(self):
         """Low y edge of the histo."""
         return self.p2ptr().yMin()
 
-    @property
+    #@property
     def yMax(self):
         """High y edge of the histo."""
         return self.p2ptr().yMax()
 
 
-    @property
+    #@property
     def numBins(self):
         """() -> int
         Number of bins (not including overflows)."""
         return self.p2ptr().numBins()
 
-    @property
+    #@property
     def numBinsX(self):
         """() -> int
         Number of bins (edges) along the x axis."""
         return self.p2ptr().numBinsX()
 
-    @property
+    #@property
     def numBinsY(self):
         """() -> int
         Number of bins (edges) along the y axis."""
         return self.p2ptr().numBinsY()
 
 
-    @property
+    #@property
     def bins(self):
         """Access the ordered bins list."""
         return list(self)

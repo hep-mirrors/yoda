@@ -20,7 +20,7 @@ cdef class Point2D(Point):
         return cutil.new_owned_cls(Point2D, new c.Point2D(deref(self.p2ptr())))
 
     # TODO: add clone() as mapping to (not yet existing) C++ newclone()?
-    
+
     def setYErrs(self, *es):
         """(int, float) -> None
            (int, [float, float]) -> None
@@ -82,7 +82,7 @@ cdef class Point2D(Point):
 
     # TODO: How does this fit into the multi-error API? Still useful, but just reports first errs... how to get _all_ +- err pairs?
     # LC: I think it's Ok to leave this like this, for most users the nominal is what they want anyway,
-    # and for those who want multi-errs, they can set using a method eg setErrs(dim,(ed,eu),source) and access using errs(dim,(ed,eu),source) 
+    # and for those who want multi-errs, they can set using a method eg setErrs(dim,(ed,eu),source) and access using errs(dim,(ed,eu),source)
     property yErrs:
         """The y errors"""
         def __get__(self):
@@ -91,21 +91,21 @@ cdef class Point2D(Point):
             self.p2ptr().setYErrs(util.read_symmetric(val))
 
 
-    @property
+    #@property
     def xMin(self):
         """The minimum x position, i.e. lowest error"""
         return self.p2ptr().xMin()
-    @property
+    #@property
     def xMax(self):
         """The maximum x position, i.e. highest error"""
         return self.p2ptr().xMax()
 
 
-    @property
+    #@property
     def yMin(self):
         """The minimum y position, i.e. lowest error"""
         return self.p2ptr().yMin()
-    @property
+    #@property
     def yMax(self):
         """The maximum y position, i.e. highest error"""
         return self.p2ptr().yMax()

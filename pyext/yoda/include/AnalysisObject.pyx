@@ -22,23 +22,23 @@ cdef class AnalysisObject(util.Base):
             del p
 
 
-    @property
+    #@property
     def type(self):
         "String identifier for this type"
         return self.aoptr().type().decode('utf-8')
 
-    @property
+    #@property
     def dim(self):
         "Fill dimension or plot dimension of this object, for fillables and scatters respectively"
         return self.aoptr().dim()
 
-    @property
+    #@property
     def annotations(self):
         """() -> list[str]
         A list of all annotation/metadata keys."""
         return [ a.decode('utf-8') for a in self.aoptr().annotations() ]
 
-    @property
+    #@property
     def annotationsDict(self):
         """() -> dict[str->str]
         A dict of all annotations/metadata entries."""
@@ -93,7 +93,7 @@ cdef class AnalysisObject(util.Base):
         return f.read().strip()
 
 
-    @property
+    #@property
     def name(self):
         """
         Return the histogram name, i.e. the last part of the path (which may be empty).
@@ -101,27 +101,53 @@ cdef class AnalysisObject(util.Base):
         return self.aoptr().name().decode('utf-8')
 
 
-    property path:
+    def path(self):
         """
         Used for persistence and as a unique identifier. Must begin with
         a '/' if not the empty string.
         """
-        def __get__(self):
-            return self.aoptr().path().decode('utf-8')
+        return self.aoptr().path().decode('utf-8')
 
-        def __set__(self, path):
-            self.aoptr().setPath(<string>path.encode('utf-8'))
-
-
-    property title:
+    def setPath(self, path):
         """
-        Convenient access to the histogram title (optional).
+        Used for persistence and as a unique identifier. Must begin with
+        a '/' if not the empty string.
         """
-        def __get__(self):
-            return self.aoptr().title().decode('utf-8')
+        self.aoptr().setPath(<string>path.encode('utf-8'))
 
-        def __set__(self, title):
-            self.aoptr().setTitle(<string>title.encode('utf-8'))
+    # property path:
+    #     """
+    #     Used for persistence and as a unique identifier. Must begin with
+    #     a '/' if not the empty string.
+    #     """
+    #     def __get__(self):
+    #         return self.aoptr().path().decode('utf-8')
+
+    #     def __set__(self, path):
+    #         self.aoptr().setPath(<string>path.encode('utf-8'))
+
+
+    # def title(self):
+    #     """
+    #     Histogram title
+    #     """
+    #     return self.aoptr().title().decode('utf-8')
+
+    # def setTitle(self, title):
+    #     """
+    #     Set the histogram title (optional)
+    #     """
+    #     self.aoptr().setTitle(<string>title.encode('utf-8'))
+
+    # property title:
+    #     """
+    #     Convenient access to the histogram title (optional).
+    #     """
+    #     def __get__(self):
+    #         return self.aoptr().title().decode('utf-8')
+
+    #     def __set__(self, title):
+    #         self.aoptr().setTitle(<string>title.encode('utf-8'))
 
 
     def __repr__(self):

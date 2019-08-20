@@ -21,7 +21,7 @@ cdef class Point(util.Base):
     # TODO: add clone() as mapping to (not yet existing) C++ newclone()?
 
 
-    @property
+    #@property
     def dim(self):
         """None -> int
         Space dimension of the point (should match containing Scatter)"""

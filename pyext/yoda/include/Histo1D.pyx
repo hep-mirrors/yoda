@@ -103,19 +103,19 @@ cdef class Histo1D(AnalysisObject):
         self.h1ptr().fillBin(ix, weight, fraction)
 
 
-    @property
+    #@property
     def totalDbn(self):
         """None -> Dbn1D
         The Dbn1D representing the total distribution."""
         return cutil.new_borrowed_cls(Dbn1D, &self.h1ptr().totalDbn(), self)
 
-    @property
+    #@property
     def underflow(self):
         """None -> Dbn1D
         The Dbn1D representing the underflow distribution."""
         return cutil.new_borrowed_cls(Dbn1D, &self.h1ptr().underflow(), self)
 
-    @property
+    #@property
     def overflow(self):
         """None -> Dbn1D
         The Dbn1D representing the overflow distribution."""
@@ -196,23 +196,23 @@ cdef class Histo1D(AnalysisObject):
         self.h1ptr().normalize(normto, includeoverflows)
 
 
-    @property
+    #@property
     def xMin(self):
         """Low x edge of the histo."""
         return self.h1ptr().xMin()
 
-    @property
+    #@property
     def xMax(self):
         """High x edge of the histo."""
         return self.h1ptr().xMax()
 
-    @property
+    #@property
     def numBins(self):
         """() -> int
         Number of bins (not including overflows)."""
         return self.h1ptr().numBins()
 
-    @property
+    #@property
     def bins(self):
         """Access the ordered bins list."""
         return list(self)

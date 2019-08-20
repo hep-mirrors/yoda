@@ -18,7 +18,7 @@ cdef class Point1D(Point):
         return cutil.new_owned_cls(Point1D, new c.Point1D(deref(self.p1ptr())))
 
     # TODO: add clone() as mapping to (not yet existing) C++ newclone()?
-    
+
     def setXErrs(self, val, source):
         if source==None: source=""
         self.p1ptr().setXErrs(util.read_symmetric(val))
@@ -38,11 +38,11 @@ cdef class Point1D(Point):
             self.p1ptr().setXErrs(util.read_symmetric(val))
 
 
-    @property
+    #@property
     def xMin(self):
         """The minimum x position, i.e. lowest error"""
         return self.p1ptr().xMin()
-    @property
+    #@property
     def xMax(self):
         """The maximum x position, i.e. highest error"""
         return self.p1ptr().xMax()

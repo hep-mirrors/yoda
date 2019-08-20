@@ -19,7 +19,7 @@ cdef class Point3D(Point):
     def copy(self):
         return cutil.new_owned_cls(Point3D, new c.Point3D(deref(self.p3ptr())))
 
-    
+
     def setZErrs(self, val, source):
         if source==None: source=""
         self.p3ptr().setZErrs(util.read_symmetric(val))
@@ -70,7 +70,7 @@ cdef class Point3D(Point):
 
     # TODO: How does this fit into the multi-error API? Still useful, but just reports first errs... how to get _all_ +- err pairs?
     # LC: I think it's Ok to leave this like this, for most users the nominal is what they want anyway,
-    # and for those who want multi-errs, they can set using a method eg setErrs(dim,(ed,eu),source) and access using errs(dim,(ed,eu),source) 
+    # and for those who want multi-errs, they can set using a method eg setErrs(dim,(ed,eu),source) and access using errs(dim,(ed,eu),source)
     property zErrs:
         def __get__(self):
             return util.read_error_pair(self.p3ptr().zErrs())
@@ -78,29 +78,29 @@ cdef class Point3D(Point):
             self.p3ptr().setZErrs(util.read_symmetric(val))
 
 
-    @property
+    #@property
     def xMin(self):
         """The minimum x position, i.e. lowest error"""
         return self.p3ptr().xMin()
-    @property
+    #@property
     def xMax(self):
         """The maximum x position, i.e. highest error"""
         return self.p3ptr().xMax()
 
-    @property
+    #@property
     def yMin(self):
         """The minimum y position, i.e. lowest error"""
         return self.p3ptr().yMin()
-    @property
+    #@property
     def yMax(self):
         """The maximum y position, i.e. highest error"""
         return self.p3ptr().yMax()
 
-    @property
+    #@property
     def zMin(self):
         """The minimum z position, i.e. lowest error"""
         return self.p3ptr().zMin()
-    @property
+    #@property
     def zMax(self):
         """The maximum z position, i.e. highest error"""
         return self.p3ptr().zMax()

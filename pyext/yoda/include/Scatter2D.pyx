@@ -39,7 +39,7 @@ cdef class Scatter2D(AnalysisObject):
         return "<%s '%s' %d points>" % (self.__class__.__name__, self.path, len(self.points))
 
 
-    @property
+    #@property
     def numPoints(self):
         """() -> int
         Number of points in this scatter."""
@@ -49,7 +49,7 @@ cdef class Scatter2D(AnalysisObject):
         return self.numPoints
 
 
-    @property
+    #@property
     def points(self):
         """Access the ordered list of points."""
         return [self.point(i) for i in xrange(self.numPoints)]
@@ -159,14 +159,14 @@ cdef class Scatter2D(AnalysisObject):
         """None -> vector[string]
         Get the list of variations stored in the poins of the Scatter"""
         return self.s2ptr().variations()
-    
+
     def _mknp(self, xs):
         try:
             import numpy
             return numpy.array(xs)
         except ImportError:
             return xs
-    
+
     def covarianceMatrix(self):
         """
         Construct the covariance matrix"""
@@ -184,7 +184,7 @@ cdef class Scatter2D(AnalysisObject):
     # # TODO: remove?
     # def __sub__(Scatter2D self, Scatter2D other):
     #     return cutil.new_owned_cls(Scatter2D, c.Scatter2D_sub_Scatter2D(self.s2ptr(), other.s2ptr()))
-     
+
     def hasValidErrorBreakdown(self):
         """
         check if the AO's error breakdown is not empty and has no bins withh 0 uncertainty
@@ -197,15 +197,15 @@ cdef class Scatter2D(AnalysisObject):
           for sys,err in binErrs.iteritems():
             binTotal[0]=(binTotal[0]**2 + err[0]**2)**0.5
             binTotal[1]=(binTotal[1]**2 + err[1]**2)**0.5
-          if binTotal[0]==0 and binTotal[1]==0 : 
+          if binTotal[0]==0 and binTotal[1]==0 :
             return False
         return True
-            
+
 
     def correlationMatrix(self):
         """
-        `covMatrix` numpy matrix  
-         Convert a covariance matrix to a correlation matrix (ie normalise entry in i,j by uncertainty of bin i * uncertainty in bin j)  
+        `covMatrix` numpy matrix
+         Convert a covariance matrix to a correlation matrix (ie normalise entry in i,j by uncertainty of bin i * uncertainty in bin j)
         """
         covMatrix=self.covarianceMatrix()
         nbins = len (covMatrix)

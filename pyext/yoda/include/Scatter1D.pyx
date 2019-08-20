@@ -40,7 +40,7 @@ cdef class Scatter1D(AnalysisObject):
         return "<%s '%s' %d points>" % (self.__class__.__name__, self.path, len(self.points))
 
 
-    @property
+    #@property
     def numPoints(self):
         """() -> int
         Number of points in this scatter."""
@@ -50,7 +50,7 @@ cdef class Scatter1D(AnalysisObject):
         return self.numPoints
 
 
-    @property
+    #@property
     def points(self):
         """Access the ordered list of points."""
         return [self.point(i) for i in xrange(self.numPoints)]

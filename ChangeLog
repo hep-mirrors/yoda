@@ -1,3 +1,7 @@
+2019-08-20  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Remove ALL uses of @property in the Python interfaces: all methods must have call-parentheses now.
+
 2019-07-30  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Improve Python annotation parsing to preferentially use ast rather than yaml.

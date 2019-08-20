@@ -101,21 +101,21 @@ cdef class Profile1D(AnalysisObject):
         self.p1ptr().fillBin(ix, y, weight, fraction)
 
 
-    @property
+    #@property
     def totalDbn(self):
         """() -> Dbn2D
         The Dbn2D representing the total distribution."""
         return cutil.new_borrowed_cls(
             Dbn2D, &self.p1ptr().totalDbn(), self)
 
-    @property
+    #@property
     def underflow(self):
         """() -> Dbn2D
         The Dbn2D representing the underflow distribution."""
         return cutil.new_borrowed_cls(
             Dbn2D, &self.p1ptr().underflow(), self)
 
-    @property
+    #@property
     def overflow(self):
         """() -> Dbn2D
         The Dbn2D representing the overflow distribution."""
@@ -181,23 +181,23 @@ cdef class Profile1D(AnalysisObject):
         self.p1ptr().scaleY(f)
 
 
-    @property
+    #@property
     def xMin(self):
         """Low x edge of the histo."""
         return self.p1ptr().xMin()
 
-    @property
+    #@property
     def xMax(self):
         """High x edge of the histo."""
         return self.p1ptr().xMax()
 
-    @property
+    #@property
     def numBins(self):
         """() -> int
         Number of bins (not including overflows)."""
         return self.p1ptr().numBins()
 
-    @property
+    #@property
     def bins(self):
         """Access the ordered bins list."""
         return list(self)
