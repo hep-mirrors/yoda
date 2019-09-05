@@ -24,7 +24,7 @@ cdef class Counter(AnalysisObject):
 
 
     def __repr__(self):
-        return "<%s '%s' sumw=%0.2g, err=%s>" % (self.__class__.__name__, self.path, self.val, self.err)
+        return "<%s '%s' sumw=%0.2g, err=%s>" % (self.__class__.__name__, self.path(), self.val(), self.err())
 
 
     def reset(self):

@@ -36,7 +36,7 @@ cdef class Scatter3D(AnalysisObject):
         return cutil.new_owned_cls(Scatter3D, self.s3ptr().newclone())
 
     def __repr__(self):
-        return "<%s '%s' %d points>" % (self.__class__.__name__, self.path, len(self.points))
+        return "<%s '%s' %d points>" % (self.__class__.__name__, self.path(), len(self.points()))
 
 
     #@property
@@ -46,20 +46,20 @@ cdef class Scatter3D(AnalysisObject):
         return self.s3ptr().numPoints()
 
     def __len__(self):
-        return self.numPoints
+        return self.numPoints()
 
 
     #@property
     def points(self):
         """Access the ordered list of points."""
-        return [self.point(i) for i in xrange(self.numPoints)]
+        return [self.point(i) for i in xrange(self.numPoints())]
 
     def point(self, size_t i):
         """Access the i'th point."""
         return cutil.new_borrowed_cls(Point3D, &self.s3ptr().point(i), self)
 
     def __getitem__(self, py_ix):
-        cdef size_t i = cutil.pythonic_index(py_ix, self.s3ptr().numPoints())
+        cdef size_t i = cutil.pythonic_index(py_ix, self.numPoints())
         return cutil.new_borrowed_cls(Point3D, &self.s3ptr().point(i), self)
 
 
@@ -194,15 +194,15 @@ cdef class Scatter3D(AnalysisObject):
             return xs
 
     def xVals(self):
-        return self._mknp([p.x for p in self.points])
+        return self._mknp([p.x for p in self.points()])
 
     def xMins(self):
         """All x low values."""
-        return self._mknp([p.xMin for p in self.points])
+        return self._mknp([p.xMin for p in self.points()])
 
     def xMaxs(self):
         """All x high values."""
-        return self._mknp([p.xMax for p in self.points])
+        return self._mknp([p.xMax for p in self.points()])
 
     # TODO: xErrs
 
@@ -216,15 +216,15 @@ cdef class Scatter3D(AnalysisObject):
 
 
     def yVals(self):
-        return self._mknp([p.y for p in self.points])
+        return self._mknp([p.y for p in self.points()])
 
     def yMins(self):
         """All x low values."""
-        return self._mknp([p.yMin for p in self.points])
+        return self._mknp([p.yMin for p in self.points()])
 
     def yMaxs(self):
         """All x high values."""
-        return self._mknp([p.yMax for p in self.points])
+        return self._mknp([p.yMax for p in self.points()])
 
     # TODO: yErrs
 
@@ -238,15 +238,15 @@ cdef class Scatter3D(AnalysisObject):
 
 
     def zVals(self):
-        return self._mknp([p.z for p in self.points])
+        return self._mknp([p.z for p in self.points()])
 
     def zMins(self):
         """All z low values."""
-        return self._mknp([p.zMin for p in self.points])
+        return self._mknp([p.zMin for p in self.points()])
 
     def zMaxs(self):
         """All z high values."""
-        return self._mknp([p.zMax for p in self.points])
+        return self._mknp([p.zMax for p in self.points()])
 
     # TODO: zErrs
 

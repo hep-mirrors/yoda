@@ -36,7 +36,7 @@ cdef class Scatter2D(AnalysisObject):
         return cutil.new_owned_cls(Scatter2D, self.s2ptr().newclone())
 
     def __repr__(self):
-        return "<%s '%s' %d points>" % (self.__class__.__name__, self.path, len(self.points))
+        return "<%s '%s' %d points>" % (self.__class__.__name__, self.path(), len(self.points()))
 
 
     #@property
@@ -46,20 +46,20 @@ cdef class Scatter2D(AnalysisObject):
         return self.s2ptr().numPoints()
 
     def __len__(self):
-        return self.numPoints
+        return self.numPoints()
 
 
     #@property
     def points(self):
         """Access the ordered list of points."""
-        return [self.point(i) for i in xrange(self.numPoints)]
+        return [self.point(i) for i in xrange(self.numPoints())]
 
     def point(self, size_t i):
         """Access the i'th point."""
         return cutil.new_borrowed_cls(Point2D, &self.s2ptr().point(i), self)
 
     def __getitem__(self, py_ix):
-        cdef size_t i = cutil.pythonic_index(py_ix, self.s2ptr().numPoints())
+        cdef size_t i = cutil.pythonic_index(py_ix, self.numPoints())
         return cutil.new_borrowed_cls(Point2D, &self.s2ptr().point(i), self)
 
 
@@ -187,18 +187,18 @@ cdef class Scatter2D(AnalysisObject):
 
     def hasValidErrorBreakdown(self):
         """
-        check if the AO's error breakdown is not empty and has no bins withh 0 uncertainty
+        Check if the AO's error breakdown is not empty and has no bins withh 0 uncertainty
         """
-        counter=-1
-        for p in self.points:
-          counter+=1
-          binErrs=p.errMap()
-          binTotal=[0.,0.]
-          for sys,err in binErrs.iteritems():
-            binTotal[0]=(binTotal[0]**2 + err[0]**2)**0.5
-            binTotal[1]=(binTotal[1]**2 + err[1]**2)**0.5
-          if binTotal[0]==0 and binTotal[1]==0 :
-            return False
+        counter = -1
+        for p in self.points():
+            counter += 1
+            binErrs = p.errMap()
+            binTotal = [0.,0.]
+            for sys, err in binErrs.iteritems():
+                binTotal[0] = (binTotal[0]**2 + err[0]**2)**0.5
+                binTotal[1] = (binTotal[1]**2 + err[1]**2)**0.5
+            if binTotal[0] == 0 and binTotal[1] == 0:
+                return False
         return True
 
 
@@ -207,40 +207,39 @@ cdef class Scatter2D(AnalysisObject):
         `covMatrix` numpy matrix
          Convert a covariance matrix to a correlation matrix (ie normalise entry in i,j by uncertainty of bin i * uncertainty in bin j)
         """
-        covMatrix=self.covarianceMatrix()
-        nbins = len (covMatrix)
-        corr=[[0 for i in range(nbins)] for j in range (nbins)]
-        for i  in range(nbins):
-         sigma_i = covMatrix[i][i]
-         for j in range(nbins):
-           sigma_j  = covMatrix[j][j]
-           corr[i][j] = covMatrix[i][j] / (sigma_i * sigma_j)**0.5
-
+        covMatrix = self.covarianceMatrix()
+        nbins = len(covMatrix)
+        corr = [[0 for i in range(nbins)] for j in range (nbins)]
+        for i in range(nbins):
+            sigma_i = covMatrix[i][i]
+            for j in range(nbins):
+                sigma_j = covMatrix[j][j]
+                corr[i][j] = covMatrix[i][j] / (sigma_i * sigma_j)**0.5
         return self._mknp(corr)
 
 
     def xVals(self):
-        return self._mknp([p.x for p in self.points])
+        return self._mknp([p.x for p in self.points()])
 
     def xMins(self):
         """All x low values."""
         # TODO: add extra dimensionality for multiple errors?
-        return self._mknp([p.xMin for p in self.points])
+        return self._mknp([p.xMin for p in self.points()])
 
     def xMaxs(self):
         """All x high values."""
         # TODO: add extra dimensionality for multiple errors?
-        return self._mknp([p.xMax for p in self.points])
+        return self._mknp([p.xMax for p in self.points()])
 
     def xErrs(self):
         """All x error pairs"""
         # TODO: add extra dimensionality for multiple errors?
-        return self._mknp([p.xErrs for p in self.points])
+        return self._mknp([p.xErrs for p in self.points()])
 
     def xErrAvgs(self):
         """All x average errors"""
         # TODO: add extra dimensionality for multiple errors?
-        return self._mknp([p.xAvgErr for p in self.points])
+        return self._mknp([p.xAvgErr for p in self.points()])
 
     def xMin(self):
         """Lowest x value."""
@@ -254,27 +253,27 @@ cdef class Scatter2D(AnalysisObject):
 
 
     def yVals(self):
-        return self._mknp([p.y for p in self.points])
+        return self._mknp([p.y for p in self.points()])
 
     def yMins(self):
         """All y low values."""
         # TODO: add extra dimensionality for multiple errors?
-        return self._mknp([p.yMin for p in self.points])
+        return self._mknp([p.yMin for p in self.points()])
 
     def yMaxs(self):
         """All y high values."""
         # TODO: add extra dimensionality for multiple errors?
-        return self._mknp([p.yMax for p in self.points])
+        return self._mknp([p.yMax for p in self.points()])
 
     def yErrs(self):
         """All y error pairs"""
         # TODO: add extra dimensionality for multiple errors?
-        return self._mknp([p.yErrs for p in self.points])
+        return self._mknp([p.yErrs for p in self.points()])
 
     def yErrAvgs(self):
         """All y average errors"""
         # TODO: add extra dimensionality for multiple errors?
-        return self._mknp([p.yAvgErr for p in self.points])
+        return self._mknp([p.yAvgErr for p in self.points()])
 
     def yMin(self):
         """Lowest x value."""
