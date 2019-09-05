@@ -37,7 +37,7 @@ cdef list _aobjects_to_list(vector[c.AnalysisObject*]* aobjects, patterns, unpat
         ao = deref(aobjects)[i]
         ## NOTE: automatic type conversion by passing the type() as a key to globals()
         newao = cutil.new_owned_cls(globals()[ao.type().decode('utf-8')], ao)
-        if _pattern_check(newao.path, patterns, unpatterns):
+        if _pattern_check(newao.path(), patterns, unpatterns):
             out.append(newao)
     return out
 
@@ -50,8 +50,8 @@ cdef dict _aobjects_to_dict(vector[c.AnalysisObject*]* aobjects, patterns, unpat
         ao = deref(aobjects)[i]
         ## NOTE: automatic type conversion by passing the type() as a key to globals()
         newao = cutil.new_owned_cls( globals()[ao.type().decode('utf-8')], ao)
-        if _pattern_check(newao.path, patterns, unpatterns):
-            out[newao.path] = newao
+        if _pattern_check(newao.path(), patterns, unpatterns):
+            out[newao.path()] = newao
     return out
 
 # ## Set a istringstream's string from a C/Python string
