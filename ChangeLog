@@ -1,3 +1,7 @@
+2019-09-05  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Final conversion to use ast module not just in autotype but as first choice in AO.annotation.
+
 2019-08-20  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Remove ALL uses of @property in the Python interfaces: all methods must have call-parentheses now.
