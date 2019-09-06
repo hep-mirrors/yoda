@@ -43,7 +43,7 @@ cdef class AnalysisObject(util.Base):
         """() -> dict[str->str]
         A dict of all annotations/metadata entries."""
         # TODO: add a map equivalent to C++?
-        return dict((k.lower(), self.annotation(k)) for k in self.annotations)
+        return dict((k.lower(), self.annotation(k)) for k in self.annotations())
 
     def annotation(self, k, default=None):
         """Get annotation k from this object (falling back to default if not set).
