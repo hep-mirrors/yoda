@@ -72,7 +72,7 @@ cdef class Point1D(Point):
 
 
     def __repr__(self):
-        return '<Point1D(x=%g)>' % self.x
+        return '<Point1D(x=%g)>' % self.x()
 
     def __richcmp__(Point1D self, Point1D other, int op):
         if op == 0:
