@@ -130,33 +130,33 @@ for path in sorted(set(list(aodict1.keys()) + list(aodict2.keys()))):
             print("WARNING! Could not create a '%s' scatter for comparison (%s)" % (path, type(e).__name__))
 
         ## Check for compatible dimensionalities (should already be ok, but just making sure)
-        if s1.dim != s2.dim:
+        if s1.dim() != s2.dim():
             THISCLEAN = False
             log("Data objects with path '%s' have different scatter dimensions (%d and %d) in %s and %s" % \
-                (path, s1.dim, s2.dim, filenames[0], filenames[1]))
+                (path, s1.dim(), s2.dim(), filenames[0], filenames[1]))
             break
 
         ## Compare the numbers of points/bins
-        if s1.numPoints != s2.numPoints:
+        if s1.numPoints() != s2.numPoints():
             THISCLEAN = False
             log("Data objects with path '%s' have different numbers of points (%d and %d) in %s and %s" % \
-                (path, s1.numPoints, s2.numPoints, filenames[0], filenames[1]))
+                (path, s1.numPoints(), s2.numPoints(), filenames[0], filenames[1]))
             break
 
         ## Compare the numeric values of each point
         premsg = "Data points differ for data objects with path '%s' in %s and %s:\n" % (path, filenames[0], filenames[1])
         msgs = []
-        for i, (p1, p2) in enumerate(zip(s1.points, s2.points)):
+        for i, (p1, p2) in enumerate(zip(s1.points(), s2.points())):
             # TODO: do this more nicely when point.val(int) and point.err(int) are mapped into Python
             ok = True
             diffaxis = []
-            if p1.dim >= 1 and not (eq(p1.x, p2.x) and eq(p1.xErrs, p2.xErrs)):
+            if p1.dim() >= 1 and not (eq(p1.x(), p2.x()) and eq(p1.xErrs(), p2.xErrs())):
                 ok = False
                 diffaxis.append('x')
-            if p1.dim >= 2 and not (eq(p1.y, p2.y) and eq(p1.yErrs, p2.yErrs)):
+            if p1.dim() >= 2 and not (eq(p1.y(), p2.y()) and eq(p1.yErrs(), p2.yErrs())):
                 ok = False
                 diffaxis.append('y')
-            if p1.dim >= 3 and not (eq(p1.z, p2.z) and eq(p1.zErrs, p2.zErrs)):
+            if p1.dim() >= 3 and not (eq(p1.z(), p2.z()) and eq(p1.zErrs(), p2.zErrs())):
                 ok = False
                 diffaxis.append('z')
             if not ok:
@@ -168,7 +168,7 @@ for path in sorted(set(list(aodict1.keys()) + list(aodict2.keys()))):
 
         ## Compare the annotations (not done by default)
         if args.ANNOTATIONS:
-            for annotation in set(ao1.annotations + ao2.annotations):
+            for annotation in set(ao1.annotations() + ao2.annotations()):
                 if ao1.annotation(annotation) != ao2.annotation(annotation):
                     THISCLEAN = False
                     log("Data objects with path '%s' have different '%s' annotations ('%s' and '%s') in %s and %s" %

@@ -196,12 +196,12 @@ for p, aos in analysisobjects_in.items():
         rescale = None
         if len(aos) > 1 and args.STACK:
             pass # we're in dumb stacking mode
-        elif all("ScaledBy" in ao.annotations for ao in aos):
+        elif all("ScaledBy" in ao.annotations() for ao in aos):
             try:
                 rescale = 1.0 / sum(float(ao.annotation("yodamerge_scale"))/float(ao.annotation("ScaledBy")) for ao in aos)
             except ZeroDivisionError:
                 sys.stderr.write("WARNING: Abandoning normalized merge of path %s because ScaledBy attributes are zero.\n" % p)
-        elif all("ScaledBy" not in ao.annotations for ao in aos):
+        elif all("ScaledBy" not in ao.annotations() for ao in aos):
             pass
         else:
             sys.stderr.write("WARNING: Abandoning normalized merge of path %s because some but not all inputs have ScaledBy attributes\n" % p)
@@ -246,7 +246,7 @@ for p, aos in analysisobjects_in.items():
                 if any(float(ao.annotation("yodamerge_scale")) != 1.0 for ao in aos):
                     msg += " (+ user scaling)"
                 sys.stderr.write(msg + "\n")
-                npoints = len(ao_out.points)
+                npoints = len(ao_out.points())
                 for i in range(npoints):
                     val_i = scalesum = 0.0
                     ep_i = {} # will hold the values of the multiple error sources
@@ -255,13 +255,13 @@ for p, aos in analysisobjects_in.items():
                         scale = float(ao.annotation("yodamerge_scale"))
                         variations = ao.variations()
                         scalesum += scale
-                        val_i += scale * ao.points[i].val(dim)
+                        val_i += scale * ao.point(i).val(dim)
                         for var in variations:
                             if not var in ep_i.keys():
                                 ep_i[var] = 0.
                                 em_i[var] = 0.
-                            ep_i[var] += (scale * ao.points[i].errs(dim,var)[0])**2
-                            em_i[var] += (scale * ao.points[i].errs(dim,var)[1])**2
+                            ep_i[var] += (scale * ao.point(i).errs(dim,var)[0])**2
+                            em_i[var] += (scale * ao.point(i).errs(dim,var)[1])**2
                     for var in ep_i.keys():
                         ep_i[var] = math.sqrt(ep_i[var])
                         em_i[var] = math.sqrt(em_i[var])
@@ -270,10 +270,10 @@ for p, aos in analysisobjects_in.items():
                         for var in ep_i.keys():
                             ep_i[var] /= scalesum
                             em_i[var] /= scalesum
-                    setattr(ao_out.points[i],'%s' % axis[dim], val_i)
+                    setattr(ao_out.point(i),'%s' % axis[dim], val_i)
                     for var in ep_i.keys():
-                        #setattr(ao_out.points[i],'set%sErrs' % axis[dim].upper(), ((ep_i[var], em_i[var]),var))
-                        ao_out.points[i].setErrs(dim , (ep_i[var], em_i[var]),var)
+                        #setattr(ao_out.point(i),'set%sErrs' % axis[dim].upper(), ((ep_i[var], em_i[var]),var))
+                        ao_out.point(i).setErrs(dim , (ep_i[var], em_i[var]),var)
 
             ## Add more points to the output scatter
             elif SND_MODE == "combine":

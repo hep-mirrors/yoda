@@ -247,16 +247,16 @@ for infile in args.INFILES:
             if type(s) is yoda.Scatter2D:
                 ## NOTE: sum(errs) only works if there's only one +- pair
                 # TODO: only loop over specified bins/points
-                assert(all(len(p.xErrs) == 2 for p in s.points))
-                norm = sum(p.y * sum(p.xErrs) for i, p in enumerate(s.points) if matchpoint(i, p))
+                assert(all(len(p.xErrs()) == 2 for p in s.points()))
+                norm = sum(p.y() * sum(p.xErrs()) for i, p in enumerate(s.points()) if matchpoint(i, p))
                 if norm == 0:
                     print("ERROR: Normalisation of given range is 0; cannot rescale this to a finite value. Result will be unscaled")
                     sf = 1.0
                 elif mode == "=":
                     sf = float(factor)/norm
                 elif mode == "x":
-                    assert(all(len(p.xErrs) == 2 for p in sref.points))
-                    refnorm = sum(p.y * sum(p.xErrs) for i, p in enumerate(sref.points) if matchpoint(i, p))
+                    assert(all(len(p.xErrs()) == 2 for p in sref.points()))
+                    refnorm = sum(p.y * sum(p.xErrs()) for i, p in enumerate(sref.points()) if matchpoint(i, p))
                     sf = factor*refnorm/norm
             #
             elif type(s) is yoda.Scatter3D:
@@ -264,16 +264,16 @@ for infile in args.INFILES:
                 # TODO: only loop over specified bins/points
                 if args.VERBOSITY > 0:
                     print("WARNING: Point/bin range restrictions are not yet implemented for 2D scatter / 3D histo types")
-                    assert(all(len(p.xErrs) == 2 and len(p.yErrs) == 2) for p in s.points)
-                    norm = sum(p.z * sum(p.xErrs) * sum(p.yErrs) for p in s.points)
+                    assert(all(len(p.xErrs()) == 2 and len(p.yErrs()) == 2) for p in s.points())
+                    norm = sum(p.z() * sum(p.xErrs()) * sum(p.yErrs()) for p in s.points())
                 if norm == 0:
                     print("ERROR: Normalisation of given range is 0; cannot rescale this to a finite value. Result will be unscaled")
                     sf = 1.0
                 elif mode == "=":
                     sf = factor/norm
                 elif mode == "x":
-                    assert(all(len(p.xErrs) == 2 and len(p.yErrs) == 2) for p in sref.points)
-                    refnorm = sum(p.z * sum(p.xErrs) * sum(p.yErrs) for p in sref.points)
+                    assert(all(len(p.xErrs()) == 2 and len(p.yErrs()) == 2) for p in sref.points())
+                    refnorm = sum(p.z * sum(p.xErrs()) * sum(p.yErrs()) for p in sref.points())
                     sf = factor*refnorm/norm
 
 

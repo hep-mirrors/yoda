@@ -96,7 +96,7 @@ def main():
         aos = [ ao.mkScatter() for ao in yoda.read(fname, asdict=False) ]
         for ao in aos:
             # TODO: Allow Rivet to strip /REF prefixes in its use of this API
-            p = ao.path.replace("/REF", "")
+            p = ao.path().replace("/REF", "")
             ## Apply .plot patterns first
             for patt, keys in plotkeys.keys():
                 if re.match(patt, p):
@@ -107,7 +107,7 @@ def main():
                 ao.setAnnotation(k, v)
             ## Obsfucate the path for uniqueness
             # TODO: Tidy fname slashes etc. for this purpose
-            ao.path = p + "@" + fname
+            ao.setPath(p + "@" + fname)
             ## The first file is used as the reference
             # TODO: Use arg[0] or --refid for identifying the ref histo (if there is one)
             if i == 0:

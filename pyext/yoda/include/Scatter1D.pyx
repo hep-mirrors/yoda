@@ -151,15 +151,15 @@ cdef class Scatter1D(AnalysisObject):
             return xs
 
     def xVals(self):
-        return self._mknp([p.x for p in self.points()])
+        return self._mknp([p.x() for p in self.points()])
 
     def xMins(self):
         """All x low values."""
-        return self._mknp([p.xMin for p in self.points()])
+        return self._mknp([p.xMin() for p in self.points()])
 
     def xMaxs(self):
         """All x high values."""
-        return self._mknp([p.xMax for p in self.points()])
+        return self._mknp([p.xMax() for p in self.points()])
 
     # TODO: xErrs
 

@@ -11,8 +11,8 @@ cdef class Point1D(Point):
     def __init__(self, x=0, xerrs=0, source=""):
         if source==None: source=""
         cutil.set_owned_ptr(self, new c.Point1D())
-        self.x = x
-        self.setXErrs(xerrs,source)
+        self.setX(x)
+        self.setXErrs(xerrs, source)
 
     def copy(self):
         return cutil.new_owned_cls(Point1D, new c.Point1D(deref(self.p1ptr())))
@@ -23,20 +23,34 @@ cdef class Point1D(Point):
         if source==None: source=""
         self.p1ptr().setXErrs(util.read_symmetric(val))
 
-    property x:
-        """x coordinate"""
-        def __get__(self):
-            return self.p1ptr().x()
-        def __set__(self, x):
-            self.p1ptr().setX(x)
+    # property x:
+    #     """x coordinate"""
+    #     def __get__(self):
+    #         return self.p1ptr().x()
+    #     def __set__(self, x):
+    #         self.p1ptr().setX(x)
 
-    property xErrs:
+    # property xErrs:
+    #     """The x errors"""
+    #     def __get__(self):
+    #         return util.read_error_pair(self.p1ptr().xErrs())
+    #     def __set__(self, val):
+    #         self.p1ptr().setXErrs(util.read_symmetric(val))
+
+    def x(self):
+        """The x value"""
+        return self.p1ptr().x()
+    def setX(self, x):
+        """Set the x value"""
+        self.p1ptr().setX(x)
+
+    def xErrs(self):
         """The x errors"""
-        def __get__(self):
-            return util.read_error_pair(self.p1ptr().xErrs())
+        return util.read_error_pair(self.p1ptr().xErrs())
+    def setXErrs(self, val):
+        """Set the x errors"""
         def __set__(self, val):
             self.p1ptr().setXErrs(util.read_symmetric(val))
-
 
     #@property
     def xMin(self):
@@ -47,10 +61,8 @@ cdef class Point1D(Point):
         """The maximum x position, i.e. highest error"""
         return self.p1ptr().xMax()
 
-
-    property xErrAvg:
-        def __get__(self):
-            return self.p1ptr().xErrAvg()
+    def xErrAvg(self):
+        return self.p1ptr().xErrAvg()
 
 
     def scaleX(self, a):

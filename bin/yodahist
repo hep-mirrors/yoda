@@ -200,9 +200,9 @@ else:
 
 
 ## Set more annotations, etc.
-h.path = cmds.get("path", "/hist1")
+h.setPath(cmds.get("path", "/hist1"))
 if "title" in cmds:
-    h.title = cmds.get("title")
+    h.setAnnotation("Title", cmds.get("title"))
 if "xlabel" in cmds:
     h.setAnnotation("XLabel", cmds.get("xlabel"))
 if "ylabel" in cmds:

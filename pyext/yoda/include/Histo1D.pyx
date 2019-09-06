@@ -422,28 +422,28 @@ cdef class Histo1D(AnalysisObject):
 
     def xMins(self):
         """All x low edges of the histo."""
-        return self._mknp([b.xMin for b in self.bins()])
+        return self._mknp([b.xMin() for b in self.bins()])
 
     def xMaxs(self):
         """All x high edges of the histo."""
-        return self._mknp([b.xMax for b in self.bins()])
+        return self._mknp([b.xMax() for b in self.bins()])
 
     def xMids(self):
         """All x bin midpoints of the histo."""
-        return self._mknp([b.xMid for b in self.bins()])
+        return self._mknp([b.xMid() for b in self.bins()])
 
     def xFoci(self):
         """All x bin foci of the histo."""
-        return self._mknp([b.xFocus for b in self.bins()])
+        return self._mknp([b.xFocus() for b in self.bins()])
 
     def xVals(self, foci=False):
         return self.xFoci() if foci else self.xMids()
 
     def xErrs(self, foci=False):
         if foci:
-            return [(b.xFocus-b.xMin, b.xMax-b.xFocus) for b in self.bins()]
+            return [(b.xFocus()-b.xMin(), b.xMax()-b.xFocus()) for b in self.bins()]
         else:
-            return [(b.xMid-b.xMin, b.xMax-b.xMid) for b in self.bins()]
+            return [(b.xMid()-b.xMin(), b.xMax()-b.xMid()) for b in self.bins()]
 
     def xMin(self):
         """Lowest x value."""
@@ -457,11 +457,11 @@ cdef class Histo1D(AnalysisObject):
 
     def heights(self):
         """All y heights of the histo."""
-        return self._mknp([b.height for b in self.bins()])
+        return self._mknp([b.height() for b in self.bins()])
 
     def areas(self):
         """All areas of the histo."""
-        return self._mknp([b.area for b in self.bins()])
+        return self._mknp([b.area() for b in self.bins()])
 
     def yVals(self, area=False):
         return self.areas() if area else self.heights()
@@ -472,7 +472,7 @@ cdef class Histo1D(AnalysisObject):
 
         TODO: asymm arg / heightErrsMinus/Plus?
         """
-        return self._mknp([b.heightErr for b in self.bins()])
+        return self._mknp([b.heightErr() for b in self.bins()])
 
     def areaErrs(self): #, asymm=False):
         """All area errors of the histo.
@@ -483,7 +483,7 @@ cdef class Histo1D(AnalysisObject):
         # if asymm:
         #    pass
         #else:
-        return self._mknp([b.areaErr for b in self.bins()])
+        return self._mknp([b.areaErr() for b in self.bins()])
 
     def yErrs(self, area=False):
         return self.areaErrs() if area else self.heightErrs()

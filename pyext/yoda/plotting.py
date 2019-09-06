@@ -290,8 +290,11 @@ def plot(hs, outfile=None, ratio=True, show=False, axmain=None, axratio=None, **
     xdiff = xmax - xmin
     # print xmin, xmax, xdiff
     # TODO: Tweak max-padding for top tick label... sensitive to log/lin measure
-    ymin = float(plotkeys.get("ymin", min(min(h.yVals()) for h in hs)))
-    ymax = float(plotkeys.get("ymax", 1.1*max(max(h.yVals()) for h in hs)))
+    ymin = plotkeys.get("ymin", min(min(h.yVals()) for h in hs))
+    print( max(max(h.yVals()) for h in hs) )
+    ymax = plotkeys.get("ymax", 1.1*max(max(h.yVals()) for h in hs))
+    ymin = float(ymin)
+    ymax = float(ymax)
     ydiff = ymax - ymin
     # print ymin, ymax, ydiff
 

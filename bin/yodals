@@ -51,4 +51,4 @@ for i, f in enumerate(filenames):
             nobjstr = "{n:4d}".format(n=len(ao))
         except:
             nobjstr = "   -"
-        print("{path:<50} {type:<10} {nobjs} bins/pts".format(path=p, type=ao.type, nobjs=nobjstr) + extrainfo)
+        print("{path:<50} {type:<10} {nobjs} bins/pts".format(path=p, type=ao.type(), nobjs=nobjstr) + extrainfo)
