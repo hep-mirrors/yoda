@@ -60,7 +60,7 @@ cdef class AnalysisObject(util.Base):
             except:
                 try:
                     import yaml
-                    rtn = yaml.load(rtn)
+                    rtn = yaml.full_load(rtn)
                 except:
                     pass
                     #rtn = util._autotype(rtn)
