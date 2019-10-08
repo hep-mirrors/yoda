@@ -167,12 +167,8 @@ cdef class Scatter2D(AnalysisObject):
         except ImportError:
             return xs
 
-    def covarianceMatrix(self):
-        """
-        Construct the covariance matrix"""
-        return self._mknp(self.s2ptr().covarianceMatrix(False))
 
-    def covarianceMatrix(self, ignoreOffDiagonalTerms):
+    def covarianceMatrix(self, *ignoreOffDiagonalTerms):
         """bool -> vector[vector[float]]
         Construct the covariance matrix"""
         return self._mknp(self.s2ptr().covarianceMatrix(ignoreOffDiagonalTerms))
@@ -193,6 +189,8 @@ cdef class Scatter2D(AnalysisObject):
         for p in self.points():
             counter += 1
             binErrs = p.errMap()
+            if len(binErrs) < 2:
+                return False	      
             binTotal = [0.,0.]
             for sys, err in binErrs.iteritems():
                 binTotal[0] = (binTotal[0]**2 + err[0]**2)**0.5

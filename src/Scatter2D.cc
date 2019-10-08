@@ -112,8 +112,12 @@ namespace YODA {
       systErrs.resize(nPoints);
       for (int i=0; i<nPoints ; i++) {
         auto point = this->_points[i];
-        auto variations=point.errMap().at(sname);
-        systErrs[i]=(fabs(variations.first)+fabs(variations.second))*0.5 ;//up/dn are symmetrized since this method can't handle asymmetric errors
+	try {
+	  auto variations=point.errMap().at(sname);
+	  systErrs[i]=(fabs(variations.first)+fabs(variations.second))*0.5 ;//up/dn are symmetrized since this method can't handle asymmetric errors
+	} catch (const std::exception e) { // Missing bin.
+	  systErrs[i]=0.0;
+	}
       }
       if (ignoreOffDiagonalTerms ||  sname.find("stat") != std::string::npos ||  sname.find("uncor") != std::string::npos){
         for (int i=0; i<nPoints ; i++) {
