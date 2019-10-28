@@ -66,7 +66,9 @@ namespace YODA {
     Point3D(const Point3D& p)
       : _x(p._x), _y(p._y), _z(p._z),
         _ex(p._ex), _ey(p._ey), _ez(p._ez)
-    {  }
+    {  
+      this->setParentAO( p.getParentAO());
+    }
 
 
     /// Copy assignment
@@ -77,6 +79,7 @@ namespace YODA {
       _ex = p._ex;
       _ey = p._ey;
       _ez = p._ez;
+      this->setParentAO( p.getParentAO());
       return *this;
     }
 
@@ -267,36 +270,42 @@ namespace YODA {
 
     /// Get z-error values
     const std::pair<double,double>& zErrs( std::string source="") const {
+      if (source!="") getVariationsFromParent();
       if (!_ez.count(source)) throw RangeError("zErrs has no such key: "+source);
       return _ez.at(source);
     }
 
     /// Get negative z-error value
     double zErrMinus( std::string source="") const {
+      if (source!="") getVariationsFromParent();
       if (!_ez.count(source)) throw RangeError("zErrs has no such key: "+source);
       return _ez.at(source).first;
     }
 
     /// Get positive z-error value
     double zErrPlus( std::string source="") const {
+      if (source!="") getVariationsFromParent();
       if (!_ez.count(source)) throw RangeError("zErrs has no such key: "+source);
       return _ez.at(source).second;
     }
 
     /// Get average z-error value
     double zErrAvg( std::string source="") const {
+      if (source!="") getVariationsFromParent();
       if (!_ez.count(source)) throw RangeError("zErrs has no such key: "+source);
       return (_ez.at(source).first + _ez.at(source).second)/2.0;
     }
 
     /// Set negative z error
     void setZErrMinus(double ezminus,  std::string source="") {
+      if (source!="") getVariationsFromParent();
       if (!_ez.count(source)) _ez[source] = std::make_pair(0.,0.);
       _ez.at(source).first = ezminus;
     }
 
     /// Set positive z error
     void setZErrPlus(double ezplus,  std::string source="") {
+      if (source!="") getVariationsFromParent();
       if (!_ez.count(source)) _ez[source] = std::make_pair(0.,0.);
       _ez.at(source).second = ezplus;
     }
@@ -320,17 +329,20 @@ namespace YODA {
 
     /// Set asymmetric z error
     void setZErrs(const std::pair<double,double>& ez,  std::string source="") {
+      if (source!="") getVariationsFromParent();
       _ez[source] = ez;
     }
 
     /// Get value minus negative z-error
     double zMin( std::string source="") const {
+      if (source!="") getVariationsFromParent();
       if (!_ez.count(source)) throw RangeError("zErrs has no such key: "+source);
       return _z - _ez.at(source).first;
     }
 
     /// Get value plus positive z-error
     double zMax( std::string source="") const {
+      if (source!="") getVariationsFromParent();
       if (!_ez.count(source)) throw RangeError("zErrs has no such key: "+source);
       return _z + _ez.at(source).second;
     }

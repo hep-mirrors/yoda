@@ -264,6 +264,7 @@ namespace YODA {
             p2binscurr.clear();
             break;
           case SCATTER1D:
+            for (auto &p : pt1scurr)  { p.setParentAO(s1curr); }
             s1curr->addPoints(pt1scurr);
             pt1scurr.clear();
             break;
@@ -273,6 +274,7 @@ namespace YODA {
             pt2scurr.clear();
             break;
           case SCATTER3D:
+            for (auto &p : pt3scurr)  { p.setParentAO(s3curr); }
             s3curr->addPoints(pt3scurr);
             pt3scurr.clear();
             break;

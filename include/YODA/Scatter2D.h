@@ -219,31 +219,30 @@ namespace YODA {
 
     /// Insert a new point
     void addPoint(const Point2D& pt) {
-      //pt.setParentAO(this); // how to avoid const-ness ?
       _points.insert(pt);
     }
 
     /// Insert a new point, defined as the x/y value pair and no errors
     void addPoint(double x, double y) {
       Point2D thisPoint= Point2D(x, y);
-      _points.insert(thisPoint);
       thisPoint.setParentAO(this);
+      _points.insert(thisPoint);
     }
 
     /// Insert a new point, defined as the x/y value pair and symmetric errors
     void addPoint(double x, double y,
                   double ex, double ey) {
       Point2D thisPoint= Point2D(x, y, ex, ey);
-      _points.insert(thisPoint);
       thisPoint.setParentAO(this);
+      _points.insert(thisPoint);
     }
 
     /// Insert a new point, defined as the x/y value pair and asymmetric error pairs
     void addPoint(double x, double y,
                   const std::pair<double,double>& ex, const std::pair<double,double>& ey) {
       Point2D thisPoint= Point2D(x, y, ex, ey);
-      _points.insert(thisPoint);
       thisPoint.setParentAO(this);
+      _points.insert(thisPoint);
     }
 
     /// Insert a new point, defined as the x/y value pair and asymmetric errors
@@ -251,8 +250,8 @@ namespace YODA {
                   double exminus, double explus,
                   double eyminus, double eyplus) {
       Point2D thisPoint=Point2D(x, y, exminus, explus, eyminus, eyplus);
-      _points.insert(thisPoint);
       thisPoint.setParentAO(this);
+      _points.insert(thisPoint);
     }
 
     /// Insert a collection of new points

@@ -238,19 +238,25 @@ namespace YODA {
 
     /// Insert a new point, defined as the x/y/z value triplet and no errors
     void addPoint(double x, double y, double z) {
-      _points.insert(Point3D(x, y, z));
+      Point3D thisPoint=Point3D(x, y, z);
+      thisPoint.setParentAO(this); 
+      _points.insert(thisPoint);
     }
 
     /// Insert a new point, defined as the x/y/z value triplet and symmetric errors
     void addPoint(double x, double y, double z,
                   double ex, double ey, double ez) {
-      _points.insert(Point3D(x, y, z, ex, ey, ez));
+      Point3D thisPoint=Point3D(x, y, z, ex, ey, ez);
+      thisPoint.setParentAO(this); 
+      _points.insert(thisPoint);
     }
 
     /// Insert a new point, defined as the x/y/z value triplet and asymmetric error pairs
     void addPoint(double x, double y, double z,
                   const std::pair<double,double>& ex, const std::pair<double,double>& ey, const std::pair<double,double>& ez) {
-      _points.insert(Point3D(x, y, z, ex, ey, ez));
+      Point3D thisPoint= Point3D(x, y, z, ex, ey, ez);
+      thisPoint.setParentAO(this); 
+      _points.insert(thisPoint);
     }
 
     /// Insert a new point, defined as the x/y/z value triplet and asymmetric errors
@@ -258,7 +264,9 @@ namespace YODA {
                   double exminus, double explus,
                   double eyminus, double eyplus,
                   double ezminus, double ezplus) {
-      _points.insert(Point3D(x, y, z, exminus, explus, eyminus, eyplus, ezminus, ezplus));
+      Point3D thisPoint = Point3D(x, y, z, exminus, explus, eyminus, eyplus, ezminus, ezplus);
+      thisPoint.setParentAO(this); 
+      _points.insert(thisPoint);
     }
 
     /// Insert a collection of new points

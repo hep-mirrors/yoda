@@ -27,7 +27,7 @@ namespace YODA {
     //get the error map for the highest dimension
     virtual const std::map< std::string, std::pair<double,double>> & errMap() const =0;
     
-    //Parse the annotation from the parent AO which contains any vaariaitoms
+    //Parse the annotation from the parent AO which contains any variations
     virtual void getVariationsFromParent() const =0;
 
     /// Get the point value for direction @a i

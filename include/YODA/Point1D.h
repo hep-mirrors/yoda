@@ -52,13 +52,16 @@ namespace YODA {
     /// Copy constructor
     Point1D(const Point1D& p)
       : _x(p._x), _ex(p._ex)
-    {  }
+    {  
+      this->setParentAO( p.getParentAO());
+    }
 
 
     /// Copy assignment
     Point1D& operator = (const Point1D& p) {
       _x = p._x;
       _ex = p._ex;
+      this->setParentAO( p.getParentAO());
       return *this;
     }
 
@@ -114,12 +117,14 @@ namespace YODA {
 
     /// Set negative x error
     void setXErrMinus(double exminus,  std::string source="") {
+      if (source!="") getVariationsFromParent();
       if (!_ex.count(source)) _ex[source] = std::make_pair(0.,0.);
       _ex.at(source).first = exminus;
     }
 
     /// Set positive x error
     void setXErrPlus(double explus,  std::string source="") {
+      if (source!="") getVariationsFromParent();
       if (!_ex.count(source)) _ex[source] = std::make_pair(0.,0.);
       _ex.at(source).second = explus;
     }
@@ -143,6 +148,7 @@ namespace YODA {
 
     /// Set asymmetric x error
     void setXErrs(const std::pair<double,double>& ex,  std::string source="") {
+      if (source!="") getVariationsFromParent();
       _ex[source] = ex;
     }
 
