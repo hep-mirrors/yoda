@@ -168,6 +168,8 @@ namespace YODA {
 
 
     ///////////////////////////////////////////////////
+    
+    void parseVariations() ;
 
     /// Get the list of variations stored in the points
     const std::vector<std::string> variations() const;
@@ -217,36 +219,47 @@ namespace YODA {
 
     /// Insert a new point
     void addPoint(const Point2D& pt) {
+      //pt.setParentAO(this); // how to avoid const-ness ?
       _points.insert(pt);
     }
 
     /// Insert a new point, defined as the x/y value pair and no errors
     void addPoint(double x, double y) {
-      _points.insert(Point2D(x, y));
+      Point2D thisPoint= Point2D(x, y);
+      _points.insert(thisPoint);
+      thisPoint.setParentAO(this);
     }
 
     /// Insert a new point, defined as the x/y value pair and symmetric errors
     void addPoint(double x, double y,
                   double ex, double ey) {
-      _points.insert(Point2D(x, y, ex, ey));
+      Point2D thisPoint= Point2D(x, y, ex, ey);
+      _points.insert(thisPoint);
+      thisPoint.setParentAO(this);
     }
 
     /// Insert a new point, defined as the x/y value pair and asymmetric error pairs
     void addPoint(double x, double y,
                   const std::pair<double,double>& ex, const std::pair<double,double>& ey) {
-      _points.insert(Point2D(x, y, ex, ey));
+      Point2D thisPoint= Point2D(x, y, ex, ey);
+      _points.insert(thisPoint);
+      thisPoint.setParentAO(this);
     }
 
     /// Insert a new point, defined as the x/y value pair and asymmetric errors
     void addPoint(double x, double y,
                   double exminus, double explus,
                   double eyminus, double eyplus) {
-      _points.insert(Point2D(x, y, exminus, explus, eyminus, eyplus));
+      Point2D thisPoint=Point2D(x, y, exminus, explus, eyminus, eyplus);
+      _points.insert(thisPoint);
+      thisPoint.setParentAO(this);
     }
 
     /// Insert a collection of new points
     void addPoints(const Points& pts) {
-      for (const Point2D& pt : pts) addPoint(pt);
+      for (const Point2D& pt : pts) {
+        addPoint(pt);
+        }
     }
 
     //@}
@@ -281,6 +294,7 @@ namespace YODA {
       return ! operator == (other);
     }
 
+    
 
     //////////////////////////////////
 
@@ -288,6 +302,8 @@ namespace YODA {
   private:
 
     Points _points;
+
+    bool _variationsParsed =false ;
 
   };
 

@@ -154,6 +154,12 @@ cdef class Scatter2D(AnalysisObject):
             raise RuntimeError("Callback is not of type (double) -> double")
         fptr = (<c.dbl_dbl_fptr*><size_t>ctypes.addressof(callback))[0]
         c.Scatter2D_transformY(deref(self.s2ptr()), fptr)
+    
+    def parseVariations(self):
+        """None -> None
+        Parse the YAML which contains the variations stored in the poins of the Scatter.
+        Only needs to be done once!"""
+        return self.s2ptr().parseVariations()
 
     def variations(self):
         """None -> vector[string]

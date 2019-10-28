@@ -184,6 +184,8 @@ namespace YODA {
     //@}
 
     ///////////////////////////////////////////////////
+    
+    void parseVariations() ;
 
     /// Get the list of variations stored in the points 
     const std::vector<std::string> variations() const;
@@ -299,6 +301,8 @@ namespace YODA {
   private:
 
     Points _points;
+    
+    bool _variationsParsed =false ;
 
   };
 
@@ -429,6 +433,7 @@ namespace YODA {
   /// @todo Add external scale, scaleX, scaleY, scaleZ functions
 
   //@}
+  
 
 
 }

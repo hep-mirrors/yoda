@@ -215,8 +215,12 @@ namespace YODA {
 
     /// Get error map for direction @a i
     const std::map< std::string, std::pair<double,double>> & errMap() const {
+      getVariationsFromParent();
       return _ex;
     }
+    
+    // Parse the variations from the parent AO if it exists
+    void getVariationsFromParent() const;
 
     /// Get error values for direction @a i
     const std::pair<double,double>& errs(size_t i, std::string source="") const {

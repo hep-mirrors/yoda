@@ -778,6 +778,8 @@ cdef extern from "YODA/Scatter1D.h" namespace "YODA":
 
         void scaleX(double) except +yodaerr
 
+        void parseVariations() except +yodaerr
+        
         vector[string] variations() except +yodaerr
         
         vector[vector[double]] covarianceMatrix(bool) except +yodaerr
@@ -837,6 +839,7 @@ cdef extern from "YODA/Scatter2D.h" namespace "YODA":
         void scaleXY(double, double) except +yodaerr
         #void scale(double, double) except +yodaerr
 
+        void parseVariations() except +yodaerr
         vector[string] variations() except +yodaerr
         
         vector[vector[double]] covarianceMatrix(bool) except +yodaerr
@@ -900,6 +903,7 @@ cdef extern from "YODA/Scatter3D.h" namespace "YODA":
         void scaleXYZ(double, double, double) except +yodaerr
         #void scale(double, double, double) except +yodaerr
 
+        void parseVariations() except +yodaerr
         vector[string] variations() except +yodaerr
         
         vector[vector[double]] covarianceMatrix() except +yodaerr

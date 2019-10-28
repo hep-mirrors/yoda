@@ -101,7 +101,6 @@ namespace YODA {
     #else
     istream& stream = stream_;
     #endif
-
     // Data format parsing states, representing current data type
     /// @todo Extension to e.g. "bar" or multi-counter or binned-value types, and new formats for extended Scatter types
     enum Context { NONE, //< outside any data block
@@ -133,7 +132,6 @@ namespace YODA {
     Scatter3D* s3curr = NULL;
     //std::vector<std::string> variationscurr;
     string annscurr;
-    YAML::Node errorBreakdown;
 
     // Loop over all lines of the input file
     aistringstream aiss;
@@ -270,6 +268,7 @@ namespace YODA {
             pt1scurr.clear();
             break;
           case SCATTER2D:
+            for (auto &p : pt2scurr)  { p.setParentAO(s2curr); }
             s2curr->addPoints(pt2scurr);
             pt2scurr.clear();
             break;
@@ -291,13 +290,8 @@ namespace YODA {
               YAML::Emitter em;
               em << YAML::Flow << it.second; //< use single-line formatting, for lists & maps
               const string val = em.c_str();
-              //
-              // The Variations annotation is just a placeholder to help collect the right columns
-              // Don't want to be saving it to the actual AO, since the method variations()
-              // provides the info that's needed without needing to keep the annotation up to date
-              // LC: Not using the column representation of multiple errors right now. 
-              //if (!(key.find("Variations") != string::npos)) aocurr->setAnnotation(key, val);
-              if (!(key.find("ErrorBreakdown") != string::npos)) aocurr->setAnnotation(key, val);
+             // if (!(key.find("ErrorBreakdown") != string::npos)) 
+              aocurr->setAnnotation(key, val);
             }
           } catch (...) {
             /// @todo Is there a case for just giving up on these annotations, printing the error msg, and keep going? As an option?
@@ -348,15 +342,15 @@ namespace YODA {
             // In order to handle multi-error points in scatters, we need to know which variations are stored, if any
             // can't wait until we process the annotations at the end, since need to know when filling points.
             // This is a little inelegant though...
-            if (s.find("ErrorBreakdown") != string::npos) {
-              errorBreakdown = YAML::Load(s)["ErrorBreakdown"];
+            //if (s.find("ErrorBreakdown") != string::npos) {
+             // errorBreakdown = YAML::Load(s)["ErrorBreakdown"];
               //for (const auto& it : errorBreakdown) {
               //  const string val0 = it.first.as<string>();
                 //for (const auto& it2 : it.second) {
                 //  const string val = it2.as<string>();
                 //}
              // }
-            }
+           // }
           }
           continue;
         }
@@ -500,26 +494,9 @@ namespace YODA {
             aiss >> x >> exm >> exp >> y >> eym >> eyp;
             // set nominal point
             Point2D thispoint=Point2D(x, y, exm, exp, eym, eyp);
-            int thisPointIndex =pt2scurr.size();
             // check if we stored variations of this point
             // for each variation, store the alt errors.
             // start at 1 since we have already filled nominal !
-            if (errorBreakdown.size()) {
-              YAML::Node variations = errorBreakdown[thisPointIndex];
-              for (const auto& variation : variations) {
-                const string variationName = variation.first.as<string>();
-                double eyp = variation.second["up"].as<double>();
-                double eym = variation.second["dn"].as<double>();
-                thispoint.setYErrs(eym,eyp,variationName);
-              }
-        
-              // LC: Not using the column representation of multiple errors right now. 
-              //for (unsigned int ivar=1; ivar<variationscurr.size(); ivar++){
-              //  std::string thisvariation=variationscurr[ivar];
-              //  aiss >> eym >> eyp;
-              //  thispoint.setYErrs(eym,eyp,thisvariation);
-              //}
-            }
             pt2scurr.push_back(thispoint);
           }
           break;
@@ -546,3 +523,4 @@ namespace YODA {
      }
   }
 }
+

@@ -12,6 +12,7 @@
 #include <iomanip>
 #include <string>
 #include <map>
+#include <iostream>
 
 namespace YODA {
 
@@ -76,6 +77,12 @@ namespace YODA {
 
     /// Reset this analysis object
     virtual void reset() = 0;
+    
+    // variation parser
+    void parseVariations(){ 
+      std::cout<< "LC DEBUG - using the analysis object parseVariations" << std:: endl;
+      return ;
+    }
 
     //@}
 

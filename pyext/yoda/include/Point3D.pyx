@@ -86,6 +86,12 @@ cdef class Point3D(Point):
     def zErrs(self):
         """The z errors"""
         return util.read_error_pair(self.p3ptr().zErrs())
+    
+    def zErrsFromSource(self, source):
+        """The z errors"""
+        if isinstance(source, str):
+           source = source.encode('utf-8')
+        return util.read_error_pair(self.p3ptr().zErrs(source))
     # def setZErrs(self, val):
     #     """Set the z errors"""
     #     self.p3ptr().setZErrs(util.read_symmetric(val))

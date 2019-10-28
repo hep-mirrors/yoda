@@ -2,6 +2,10 @@
 #include "YODA/Histo1D.h"
 #include "YODA/Profile1D.h"
 #include <sstream>
+#include "yaml-cpp/yaml.h"
+#ifdef YAML_NAMESPACE
+#define YAML YAML_NAMESPACE
+#endif
 
 namespace YODA {
 
@@ -30,7 +34,8 @@ namespace YODA {
         ey = std::numeric_limits<double>::quiet_NaN();
       }
 
-      const Point2D pt(x, y, ex_m, ex_p, ey, ey);
+      Point2D pt(x, y, ex_m, ex_p, ey, ey);
+      pt.setParentAO(&rtn);
       rtn.addPoint(pt);
     }
     assert(h.numBins() == rtn.numPoints());
@@ -62,13 +67,37 @@ namespace YODA {
         ey = std::numeric_limits<double>::quiet_NaN();
       }
 
-      const Point2D pt(x, y, ex_m, ex_p, ey, ey);
+      //const Point2D pt(x, y, ex_m, ex_p, ey, ey);
+      Point2D pt(x, y, ex_m, ex_p, ey, ey);
+      pt.setParentAO(&rtn);
       rtn.addPoint(pt);
     }
     assert(p.numBins() == rtn.numPoints());
     return rtn;
   }
   
+  // retrieve variations from annoation, parse them as YAML, and update the points
+  void Scatter2D::parseVariations()  {
+    if (this-> _variationsParsed) { return; }
+    if (!(this->hasAnnotation("ErrorBreakdown"))) { return; }
+    YAML::Node errorBreakdown;
+    errorBreakdown = YAML::Load(this->annotation("ErrorBreakdown"));
+
+    if (errorBreakdown.size()) {
+      for (unsigned int thisPointIndex=0 ; thisPointIndex< this->numPoints() ; ++thisPointIndex){
+        Point2D &thispoint = this->_points[thisPointIndex];
+        YAML::Node variations = errorBreakdown[thisPointIndex];
+        for (const auto& variation : variations) {
+          const std::string variationName = variation.first.as<std::string>();
+          double eyp = variation.second["up"].as<double>();
+          double eym = variation.second["dn"].as<double>();
+          thispoint.setYErrs(eym,eyp,variationName);
+        }
+      }
+      this-> _variationsParsed =true;
+    }
+  }
+
   const std::vector<std::string> Scatter2D::variations() const  {
     std::vector<std::string> vecVariations;
     for (auto &point : this->_points){
@@ -81,7 +110,7 @@ namespace YODA {
     }
     return vecVariations;
   }
-  
+
 
   std::vector<std::vector<double> > Scatter2D::covarianceMatrix( bool ignoreOffDiagonalTerms)   {
     int nPoints= this->numPoints();
@@ -112,12 +141,12 @@ namespace YODA {
       systErrs.resize(nPoints);
       for (int i=0; i<nPoints ; i++) {
         auto point = this->_points[i];
-	try {
-	  auto variations=point.errMap().at(sname);
-	  systErrs[i]=(fabs(variations.first)+fabs(variations.second))*0.5 ;//up/dn are symmetrized since this method can't handle asymmetric errors
-	} catch (const std::exception e) { // Missing bin.
-	  systErrs[i]=0.0;
-	}
+        try {
+          auto variations=point.errMap().at(sname);
+          systErrs[i]=(fabs(variations.first)+fabs(variations.second))*0.5 ;//up/dn are symmetrized since this method can't handle asymmetric errors
+        } catch (const std::exception e) { // Missing bin.
+          systErrs[i]=0.0;
+        }
       }
       if (ignoreOffDiagonalTerms ||  sname.find("stat") != std::string::npos ||  sname.find("uncor") != std::string::npos){
         for (int i=0; i<nPoints ; i++) {

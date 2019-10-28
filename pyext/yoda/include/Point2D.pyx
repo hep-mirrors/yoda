@@ -59,6 +59,12 @@ cdef class Point2D(Point):
     def yErrs(self):
         """The y errors"""
         return util.read_error_pair(self.p2ptr().yErrs())
+    
+    def yErrsFromSource(self, source):
+        """The y errors"""
+        if isinstance(source, str):
+           source = source.encode('utf-8')
+        return util.read_error_pair(self.p2ptr().yErrs(source))
     # def setYErrs(self, val):
     #     """Set the y errors"""
     #     self.p2ptr().setYErrs(util.read_symmetric(val))
@@ -86,6 +92,7 @@ cdef class Point2D(Point):
         if isinstance(source, str):
            source = source.encode('utf-8')
         self.pptr().setErrs(2, tuple(errs), source)
+    
     def setYErrs(self, val, source):
         if source is None:
             source = ""

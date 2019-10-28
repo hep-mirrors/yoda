@@ -47,11 +47,43 @@ cdef class Point1D(Point):
     def xErrs(self):
         """The x errors"""
         return util.read_error_pair(self.p1ptr().xErrs())
-    def setXErrs(self, val):
-        """Set the x errors"""
-        def __set__(self, val):
-            self.p1ptr().setXErrs(util.read_symmetric(val))
-
+    
+    def xErrsFromSource(self, source):
+        """The y errors"""
+        if isinstance(source, str):
+           source = source.encode('utf-8')
+        return util.read_error_pair(self.p1ptr().xErrs(source))
+    
+    def setXErrs(self, *es):
+        """(int, float) -> None
+           (int, [float, float]) -> None
+           (int, float, float) -> None
+        Set asymmetric errors on axis i"""
+        source = None
+        es = list(es)
+        if type(es[-1]) is str:
+            source = es[-1]
+            es = es[:-1]
+        else:
+            pass
+        errs = es
+        if source is None:
+            source = ""
+        if len(errs) == 1:
+            if not hasattr(errs[0], "__iter__"):
+                self.setErr(1,errs[0], source)
+                return
+            errs = errs[0]
+        # assert len(errs) == 2:
+        if isinstance(source, str):
+           source = source.encode('utf-8')
+        self.pptr().setErrs(1, tuple(errs), source)
+    
+    def setYErrs(self, val, source):
+        if source is None:
+            source = ""
+        self.p1ptr().setXErrs(util.read_symmetric(val))
+    
     #@property
     def xMin(self):
         """The minimum x position, i.e. lowest error"""

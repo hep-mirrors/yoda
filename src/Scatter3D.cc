@@ -3,6 +3,10 @@
 #include "YODA/Profile2D.h"
 #include "YODA/Exceptions.h"
 #include <sstream>
+#include "yaml-cpp/yaml.h"
+#ifdef YAML_NAMESPACE
+#define YAML YAML_NAMESPACE
+#endif
 
 namespace YODA {
 
@@ -103,6 +107,26 @@ namespace YODA {
     }
 
     return rtn;
+  }
+  
+  void Scatter3D::parseVariations()   {
+    if (this-> _variationsParsed) { return; }
+    if (!(this->hasAnnotation("ErrorBreakdown"))) { return;}
+    YAML::Node errorBreakdown;
+    errorBreakdown = YAML::Load(this->annotation("ErrorBreakdown"));
+    if (errorBreakdown.size()) {
+      for (unsigned int thisPointIndex=0 ; thisPointIndex< this->numPoints() ; ++thisPointIndex){
+        Point3D &thispoint = this->_points[thisPointIndex];
+        YAML::Node variations = errorBreakdown[thisPointIndex];
+        for (const auto& variation : variations) {
+          const std::string variationName = variation.first.as<std::string>();
+          double eyp = variation.second["up"].as<double>();
+          double eym = variation.second["dn"].as<double>();
+          thispoint.setZErrs(eym,eyp,variationName);
+        }
+      }
+      this-> _variationsParsed =true;
+    }
   }
   
   
