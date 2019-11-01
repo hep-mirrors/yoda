@@ -1,5 +1,8 @@
 2019-11-01  Andy Buckley  <andy.buckley@cern.ch>
 
+	* Add extra optional bool arguments to the mkScatter converter
+	functions for Histo1D and Histo2D types.
+
 	* Force rebuild of the Python interface if a sufficient Cython is
 	found, even if the generated .cpp file is present at
 	configure-time.

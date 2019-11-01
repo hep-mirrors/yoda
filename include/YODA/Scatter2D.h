@@ -168,12 +168,12 @@ namespace YODA {
 
 
     ///////////////////////////////////////////////////
-    
+
     void parseVariations() ;
 
     /// Get the list of variations stored in the points
     const std::vector<std::string> variations() const;
-    
+
     // Construct a covariance matrix from the error breakdown
     std::vector<std::vector<double> > covarianceMatrix(bool ignoreOffDiagonalTerms=false) ;
 
@@ -293,7 +293,7 @@ namespace YODA {
       return ! operator == (other);
     }
 
-    
+
 
     //////////////////////////////////
 
@@ -338,8 +338,10 @@ namespace YODA {
   /// Make a Scatter2D representation of a Histo1D
   ///
   /// Optional @c usefocus argument can be used to position the point at the bin
-  /// focus rather than geometric midpoint.
-  Scatter2D mkScatter(const Histo1D& h, bool usefocus=false);
+  /// focus rather than geometric midpoint. Optional @c binwidthdiv argument can be
+  /// used to disable the default (physical, differential!) scaling of y values and
+  /// errors by 1/bin-width.
+  Scatter2D mkScatter(const Histo1D& h, bool usefocus=false, bool binwidthdiv=true);
 
   /// Make a Scatter2D representation of a Profile1D
   ///

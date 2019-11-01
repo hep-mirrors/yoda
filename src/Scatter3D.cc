@@ -11,11 +11,11 @@
 namespace YODA {
 
 
-  Scatter3D mkScatter(const Histo2D& h, bool usefocus) {
+  Scatter3D mkScatter(const Histo2D& h, bool usefocus, bool binareadiv) {
     Scatter3D rtn;
-    for (const std::string& a : h.annotations())
-      rtn.setAnnotation(a, h.annotation(a));
+    for (const std::string& a : h.annotations()) rtn.setAnnotation(a, h.annotation(a));
     rtn.setAnnotation("Type", h.type());
+
     for (size_t i = 0; i < h.numBins(); ++i) {
       const HistoBin2D& b = h.bin(i);
 
@@ -45,12 +45,20 @@ namespace YODA {
 
       /// END SAME FOR ALL 2D BINS
 
-      const double z = b.height();
-      const double ez = b.heightErr();
+      double z;
+      try {
+        z = b.sumW();
+      } catch (const Exception&) { // LowStatsError or WeightError
+        z = std::numeric_limits<double>::quiet_NaN();
+      }
+      if (binareadiv) z /= b.xWidth()*b.yWidth();
+      const double ez = b.relErr() * z;
 
+      /// @todo Set up parent link cf. Scatter2D
       rtn.addPoint(x, y, z, exminus, explus, eyminus, eyplus, ez, ez);
     }
 
+    assert(h.numBins() == rtn.numPoints());
     return rtn;
   }
 
@@ -108,7 +116,7 @@ namespace YODA {
 
     return rtn;
   }
-  
+
   void Scatter3D::parseVariations()   {
     if (this-> _variationsParsed) { return; }
     if (!(this->hasAnnotation("ErrorBreakdown"))) { return;}
@@ -128,8 +136,8 @@ namespace YODA {
       this-> _variationsParsed =true;
     }
   }
-  
-  
+
+
   const std::vector<std::string> Scatter3D::variations() const  {
     std::vector<std::string> vecvariations;
     for (auto &point : this->_points){

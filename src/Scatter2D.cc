@@ -11,11 +11,11 @@ namespace YODA {
 
 
   /// Make a Scatter2D representation of a Histo1D
-  Scatter2D mkScatter(const Histo1D& h, bool usefocus) {
+  Scatter2D mkScatter(const Histo1D& h, bool usefocus, bool binwidthdiv) {
     Scatter2D rtn;
-    for (const std::string& a : h.annotations())
-      rtn.setAnnotation(a, h.annotation(a));
+    for (const std::string& a : h.annotations()) rtn.setAnnotation(a, h.annotation(a));
     rtn.setAnnotation("Type", h.type()); // might override the copied ones
+
     for (const HistoBin1D& b : h.bins()) {
       const double x = usefocus ? b.xFocus() : b.xMid();
       const double ex_m = x - b.xMin();
@@ -23,21 +23,19 @@ namespace YODA {
 
       double y;
       try {
-        y = b.height();
+        y = b.sumW();
       } catch (const Exception&) { // LowStatsError or WeightError
         y = std::numeric_limits<double>::quiet_NaN();
       }
-      double ey;
-      try {
-        ey = b.heightErr();
-      } catch (const Exception&) { // LowStatsError or WeightError
-        ey = std::numeric_limits<double>::quiet_NaN();
-      }
+      if (binwidthdiv) y /= b.xWidth();
+      const double ey = b.relErr() * y;
 
+      // Attach the point to its parent
       Point2D pt(x, y, ex_m, ex_p, ey, ey);
       pt.setParentAO(&rtn);
       rtn.addPoint(pt);
     }
+
     assert(h.numBins() == rtn.numPoints());
     return rtn;
   }
@@ -75,7 +73,7 @@ namespace YODA {
     assert(p.numBins() == rtn.numPoints());
     return rtn;
   }
-  
+
   // retrieve variations from annoation, parse them as YAML, and update the points
   void Scatter2D::parseVariations()  {
     if (this-> _variationsParsed) { return; }
@@ -126,7 +124,7 @@ namespace YODA {
     }
 
     // case where only have nominal, ie total uncertainty, labelled "" (empty string)
-    if (this->variations().size()==1) { 
+    if (this->variations().size()==1) {
       for (int i=0; i<nPoints ; i++) {
         covM[i][i]= pow(((this->_points[i].yErrs().first+this->_points[i].yErrs().second)/2),2);
         if (covM[i][i]==0 )  covM[i][i]=1;
@@ -137,7 +135,7 @@ namespace YODA {
     auto  systList= this->variations();
     for (auto sname : systList){
       if (sname.length()==0) continue;
-      std::vector< double> systErrs; 
+      std::vector< double> systErrs;
       systErrs.resize(nPoints);
       for (int i=0; i<nPoints ; i++) {
         auto point = this->_points[i];

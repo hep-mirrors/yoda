@@ -117,7 +117,7 @@ namespace YODA {
     Scatter3D(const Scatter3D& s3, const std::string& path="")
       : AnalysisObject("Scatter3D", (path.size() == 0) ? s3.path() : path, s3, s3.title()),
         _points(s3._points)
-    { 
+    {
       for ( auto &ann : annotations()){
         setAnnotation(ann, annotation(ann));
       }
@@ -184,10 +184,10 @@ namespace YODA {
     //@}
 
     ///////////////////////////////////////////////////
-    
+
     void parseVariations() ;
 
-    /// Get the list of variations stored in the points 
+    /// Get the list of variations stored in the points
     const std::vector<std::string> variations() const;
 
 
@@ -239,7 +239,7 @@ namespace YODA {
     /// Insert a new point, defined as the x/y/z value triplet and no errors
     void addPoint(double x, double y, double z) {
       Point3D thisPoint=Point3D(x, y, z);
-      thisPoint.setParentAO(this); 
+      thisPoint.setParentAO(this);
       _points.insert(thisPoint);
     }
 
@@ -247,7 +247,7 @@ namespace YODA {
     void addPoint(double x, double y, double z,
                   double ex, double ey, double ez) {
       Point3D thisPoint=Point3D(x, y, z, ex, ey, ez);
-      thisPoint.setParentAO(this); 
+      thisPoint.setParentAO(this);
       _points.insert(thisPoint);
     }
 
@@ -255,7 +255,7 @@ namespace YODA {
     void addPoint(double x, double y, double z,
                   const std::pair<double,double>& ex, const std::pair<double,double>& ey, const std::pair<double,double>& ez) {
       Point3D thisPoint= Point3D(x, y, z, ex, ey, ez);
-      thisPoint.setParentAO(this); 
+      thisPoint.setParentAO(this);
       _points.insert(thisPoint);
     }
 
@@ -265,7 +265,7 @@ namespace YODA {
                   double eyminus, double eyplus,
                   double ezminus, double ezplus) {
       Point3D thisPoint = Point3D(x, y, z, exminus, explus, eyminus, eyplus, ezminus, ezplus);
-      thisPoint.setParentAO(this); 
+      thisPoint.setParentAO(this);
       _points.insert(thisPoint);
     }
 
@@ -301,15 +301,15 @@ namespace YODA {
       return ! operator == (other);
     }
 
-  
+
     //////////////////////////////////
-  
-  
+
+
 
   private:
 
     Points _points;
-    
+
     bool _variationsParsed =false ;
 
   };
@@ -347,7 +347,7 @@ namespace YODA {
   ///
   /// Optional @c usefocus argument can be used to position the point at the bin
   /// focus rather than geometric midpoint.
-  Scatter3D mkScatter(const Histo2D& h, bool usefocus=false);
+  Scatter3D mkScatter(const Histo2D& h, bool usefocus=false, bool binareadiv=true);
 
   /// Make a Scatter3D representation of a Profile2D
   ///
@@ -441,7 +441,7 @@ namespace YODA {
   /// @todo Add external scale, scaleX, scaleY, scaleZ functions
 
   //@}
-  
+
 
 
 }
