@@ -1,3 +1,9 @@
+2019-11-01  Andy Buckley  <andy.buckley@cern.ch>
+
+	* Force rebuild of the Python interface if a sufficient Cython is
+	found, even if the generated .cpp file is present at
+	configure-time.
+
 2019-09-05  Andy Buckley  <andy.buckley@cern.ch>
 
 	* Final conversion to use ast module not just in autotype but as first choice in AO.annotation.
