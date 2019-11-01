@@ -75,8 +75,8 @@ cdef class Profile1D(AnalysisObject):
 
     def __repr__(self):
         return "<%s '%s' %d bins, sumw=%0.2g>" % \
-               (self.__class__.__name__, self.path,
-                len(self.bins), self.sumW())
+               (self.__class__.__name__, self.path(),
+                len(self.bins()), self.sumW())
 
 
     def reset(self):
@@ -101,21 +101,21 @@ cdef class Profile1D(AnalysisObject):
         self.p1ptr().fillBin(ix, y, weight, fraction)
 
 
-    @property
+    #@property
     def totalDbn(self):
         """() -> Dbn2D
         The Dbn2D representing the total distribution."""
         return cutil.new_borrowed_cls(
             Dbn2D, &self.p1ptr().totalDbn(), self)
 
-    @property
+    #@property
     def underflow(self):
         """() -> Dbn2D
         The Dbn2D representing the underflow distribution."""
         return cutil.new_borrowed_cls(
             Dbn2D, &self.p1ptr().underflow(), self)
 
-    @property
+    #@property
     def overflow(self):
         """() -> Dbn2D
         The Dbn2D representing the overflow distribution."""
@@ -181,32 +181,31 @@ cdef class Profile1D(AnalysisObject):
         self.p1ptr().scaleY(f)
 
 
-    @property
+    #@property
     def xMin(self):
         """Low x edge of the histo."""
         return self.p1ptr().xMin()
 
-    @property
+    #@property
     def xMax(self):
         """High x edge of the histo."""
         return self.p1ptr().xMax()
 
-    @property
-    def xEdges(self):
-        """All x edges of the histo."""
-        return self.p1ptr().xEdges()
-
-
-    @property
+    #@property
     def numBins(self):
         """() -> int
         Number of bins (not including overflows)."""
         return self.p1ptr().numBins()
 
-    @property
+    #@property
     def bins(self):
         """Access the ordered bins list."""
         return list(self)
+
+    def bin(self, i):
+        """Get the i'th bin"""
+        # cdef size_t ii = cutil.pythonic_index(i, self.numBins())
+        return cutil.new_borrowed_cls(ProfileBin1D, & self.p1ptr().bin(i), self)
 
     def binIndexAt(self, x):
         """Get the bin index containing position x"""
@@ -243,7 +242,7 @@ cdef class Profile1D(AnalysisObject):
         """(n) -> None.
         Merge every group of n bins together (between begin and end, if specified)."""
         if end is None:
-            end = self.numBins
+            end = self.numBins()
         self.p1ptr().rebinBy(int(n), begin, end)
 
     def rebinTo(self, edges):
@@ -299,40 +298,60 @@ cdef class Profile1D(AnalysisObject):
 
     # def sumWs(self):
     #     """All sumWs of the histo."""
-    #     return [b.sumW for b in self.bins]
+    #     return [b.sumW() for b in self.bins()]
 
     # TODO: xyVals,Errs properties should be in a common Drawable2D (?) type (hmm, need a consistent nD convention...)
     # TODO: x bin properties should be in a common Binned1D type
 
+    def _mknp(self, xs):
+        try:
+            import numpy
+            return numpy.array(xs)
+        except ImportError:
+            return xs
+
+    #@property
+    def xEdges(self):
+        """All x edges of the histo."""
+        return self._mknp(self.p1ptr().xEdges())
+
     def xMins(self):
         """All x low edges of the histo."""
-        return [b.xMin for b in self.bins]
+        return self._mknp([b.xMin() for b in self.bins()])
 
     def xMaxs(self):
         """All x high edges of the histo."""
-        return [b.xMax for b in self.bins]
+        return self._mknp([b.xMax() for b in self.bins()])
 
     def xMids(self):
         """All x bin midpoints of the histo."""
-        return [b.xMid for b in self.bins]
+        return self._mknp([b.xMid() for b in self.bins()])
 
     def xFoci(self):
         """All x bin foci of the histo."""
-        return [b.xFocus for b in self.bins]
+        return self._mknp([b.xFocus() for b in self.bins()])
 
     def xVals(self, foci=False):
         return self.xFoci() if foci else self.xMids()
 
     def xErrs(self, foci=False):
         if foci:
-            return [(b.xFocus-b.xMin, b.xMax-b.xFocus) for b in self.bins]
+            return [(b.xFocus()-b.xMin(), b.xMax()-b.xFocus()) for b in self.bins()]
         else:
-            return [(b.xMid-b.xMin, b.xMax-b.xMid) for b in self.bins]
+            return [(b.xMid()-b.xMin(), b.xMax()-b.xMid()) for b in self.bins()]
+
+    def xMin(self):
+        """Lowest x value."""
+        return min(self.xMins())
+
+    def xMax(self):
+        """Highest x value."""
+        return max(self.xMaxs())
 
 
     def yMeans(self):
         """All y heights y means."""
-        return [b.yMean for b in self.bins]
+        return self._mknp([b.yMean() for b in self.bins()])
 
     def yVals(self):
         return self.yMeans()
@@ -340,11 +359,11 @@ cdef class Profile1D(AnalysisObject):
 
     def yStdErrs(self):
         """All standard errors on the y means."""
-        return [b.yStdErr for b in self.bins]
+        return self._mknp([b.yStdErr() for b in self.bins()])
 
     def yStdDevs(self):
         """All standard deviations of the y distributions."""
-        return [b.yStdDev for b in self.bins]
+        return self._mknp([b.yStdDev() for b in self.bins()])
 
     def yErrs(self, sd=False):
         return self.yStdDevs() if sd else self.yStdErrs()
@@ -353,12 +372,20 @@ cdef class Profile1D(AnalysisObject):
     def yMins(self, sd=False):
         ys = self.yVals()
         es = self.yErrs(sd)
-        return [y-e for (y,e) in zip(ys,es)]
+        return self._mknp([y-e for (y,e) in zip(ys,es)])
 
     def yMaxs(self, sd=False):
         ys = self.yVals()
         es = self.yErrs(sd)
-        return [y+e for (y,e) in zip(ys,es)]
+        return self._mknp([y+e for (y,e) in zip(ys,es)])
+
+    def yMin(self, sd=False):
+        """Lowest y value."""
+        return min(self.yMins(sd))
+
+    def yMax(self, sd=False):
+        """Highest y value."""
+        return max(self.yMaxs(sd))
 
 
 ## Convenience alias

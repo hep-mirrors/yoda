@@ -1,7 +1,7 @@
 // -*- C++ -*-
 //
 // This file is part of YODA -- Yet more Objects for Data Analysis
-// Copyright (C) 2008-2017 The YODA collaboration (see AUTHORS for details)
+// Copyright (C) 2008-2018 The YODA collaboration (see AUTHORS for details)
 //
 #ifndef YODA_SCATTER2D_H
 #define YODA_SCATTER2D_H
@@ -104,7 +104,11 @@ namespace YODA {
     Scatter2D(const Scatter2D& s2, const std::string& path="")
       : AnalysisObject("Scatter2D", (path.size() == 0) ? s2.path() : path, s2, s2.title()),
         _points(s2._points)
-    {  }
+    {
+      for ( auto &ann : annotations()){
+        setAnnotation(ann, annotation(ann));
+      }
+    }
 
 
     /// Assignment operator
@@ -165,6 +169,13 @@ namespace YODA {
 
     ///////////////////////////////////////////////////
 
+    void parseVariations() ;
+
+    /// Get the list of variations stored in the points
+    const std::vector<std::string> variations() const;
+
+    // Construct a covariance matrix from the error breakdown
+    std::vector<std::vector<double> > covarianceMatrix(bool ignoreOffDiagonalTerms=false) ;
 
     /// @name Point accessors
     //@{
@@ -213,31 +224,41 @@ namespace YODA {
 
     /// Insert a new point, defined as the x/y value pair and no errors
     void addPoint(double x, double y) {
-      _points.insert(Point2D(x, y));
+      Point2D thisPoint= Point2D(x, y);
+      thisPoint.setParentAO(this);
+      _points.insert(thisPoint);
     }
 
     /// Insert a new point, defined as the x/y value pair and symmetric errors
     void addPoint(double x, double y,
                   double ex, double ey) {
-      _points.insert(Point2D(x, y, ex, ey));
+      Point2D thisPoint= Point2D(x, y, ex, ey);
+      thisPoint.setParentAO(this);
+      _points.insert(thisPoint);
     }
 
     /// Insert a new point, defined as the x/y value pair and asymmetric error pairs
     void addPoint(double x, double y,
                   const std::pair<double,double>& ex, const std::pair<double,double>& ey) {
-      _points.insert(Point2D(x, y, ex, ey));
+      Point2D thisPoint= Point2D(x, y, ex, ey);
+      thisPoint.setParentAO(this);
+      _points.insert(thisPoint);
     }
 
     /// Insert a new point, defined as the x/y value pair and asymmetric errors
     void addPoint(double x, double y,
                   double exminus, double explus,
                   double eyminus, double eyplus) {
-      _points.insert(Point2D(x, y, exminus, explus, eyminus, eyplus));
+      Point2D thisPoint=Point2D(x, y, exminus, explus, eyminus, eyplus);
+      thisPoint.setParentAO(this);
+      _points.insert(thisPoint);
     }
 
     /// Insert a collection of new points
     void addPoints(const Points& pts) {
-      for (const Point2D& pt : pts) addPoint(pt);
+      for (const Point2D& pt : pts) {
+        addPoint(pt);
+        }
     }
 
     //@}
@@ -252,7 +273,7 @@ namespace YODA {
       //return *this;
     }
 
-    /// @todo Better name? Make this the add operation?
+    /// @todo Better name?
     /// @todo Convert/extend to accept a Range or generic
     void combineWith(const std::vector<Scatter2D>& others) {
       for (const Scatter2D& s : others) combineWith(s);
@@ -273,9 +294,15 @@ namespace YODA {
     }
 
 
+
+    //////////////////////////////////
+
+
   private:
 
     Points _points;
+
+    bool _variationsParsed =false ;
 
   };
 
@@ -311,8 +338,10 @@ namespace YODA {
   /// Make a Scatter2D representation of a Histo1D
   ///
   /// Optional @c usefocus argument can be used to position the point at the bin
-  /// focus rather than geometric midpoint.
-  Scatter2D mkScatter(const Histo1D& h, bool usefocus=false);
+  /// focus rather than geometric midpoint. Optional @c binwidthdiv argument can be
+  /// used to disable the default (physical, differential!) scaling of y values and
+  /// errors by 1/bin-width.
+  Scatter2D mkScatter(const Histo1D& h, bool usefocus=false, bool binwidthdiv=true);
 
   /// Make a Scatter2D representation of a Profile1D
   ///

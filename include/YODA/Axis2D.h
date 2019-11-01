@@ -72,7 +72,9 @@ namespace YODA {
     }
 
     /// Constructor accepting a list of bins
-    Axis2D(const Bins& bins) {
+    Axis2D(const Bins& bins)
+      : _locked(false)
+    {
       addBins(bins);
       reset();
     }
@@ -316,6 +318,9 @@ namespace YODA {
     void _setLock(bool locked) { _locked = locked; }
 
 
+    /// @todo Add xMins, xMaxs, xMids, xFoci, and y-versions
+
+
     /// Return the lowest-valued bin edge along the x-axis
     double xMin() const { return _xRange.first; }
 
@@ -328,6 +333,25 @@ namespace YODA {
 
     /// Return the highest-valued bin edge along the y-axis
     double yMax() const { return _yRange.second; }
+
+
+    /// Return all the NbinX+1 bin edges on the x-axis
+    ///
+    /// @note This only returns the finite edges, i.e. -inf and +inf are removed
+    /// @todo Make the +-inf stripping controllable by a default-valued bool arg
+    std::vector<double> xEdges() const {
+      std::vector<double> rtn(_binSearcherX.edges().begin()+1, _binSearcherX.edges().end()-1);
+      return rtn;
+    }
+
+    /// Return all the NbinY+1 bin edges on the y-axis
+    ///
+    /// @note This only returns the finite edges, i.e. -inf and +inf are removed
+    /// @todo Make the +-inf stripping controllable by a default-valued bool arg
+    std::vector<double> yEdges() const {
+      std::vector<double> rtn(_binSearcherY.edges().begin()+1, _binSearcherY.edges().end()-1);
+      return rtn;
+    }
 
 
     /// Add a bin, providing its x- and y- edge ranges
@@ -490,7 +514,7 @@ namespace YODA {
     void _checkUnlocked(void) {
       // Ensure that axis is not locked
       if (_locked)
-        throw LockError("Attempting to update a locked axis");
+        throw LockError("Attempting to update a locked 2D axis");
     }
 
 

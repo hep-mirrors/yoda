@@ -1,7 +1,7 @@
 // -*- C++ -*-
 //
 // This file is part of YODA -- Yet more Objects for Data Analysis
-// Copyright (C) 2008-2017 The YODA collaboration (see AUTHORS for details)
+// Copyright (C) 2008-2018 The YODA collaboration (see AUTHORS for details)
 //
 #ifndef YODA_AnalysisObject_h
 #define YODA_AnalysisObject_h
@@ -76,6 +76,9 @@ namespace YODA {
 
     /// Reset this analysis object
     virtual void reset() = 0;
+    
+    // variation parser
+    void parseVariations(){ return ; }
 
     //@}
 

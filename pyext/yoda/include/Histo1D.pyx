@@ -30,7 +30,6 @@ cdef class Histo1D(AnalysisObject):
     cdef inline c.Histo1D* h1ptr(self) except NULL:
         return <c.Histo1D*> self.ptr()
 
-
     def __init__(self, *args, **kwargs):
         util.try_loop([self.__init2, self.__init5, self.__init3], *args, **kwargs)
 
@@ -63,11 +62,11 @@ cdef class Histo1D(AnalysisObject):
 
     def __len__(self):
         "Number of bins"
-        return self.numBins
+        return self.numBins()
 
     def __getitem__(self, i):
         "Direct access to bins"
-        cdef size_t ii = cutil.pythonic_index(i, self.h1ptr().numBins())
+        cdef size_t ii = cutil.pythonic_index(i, self.numBins())
         return cutil.new_borrowed_cls(HistoBin1D, & self.h1ptr().bin(ii), self)
 
 
@@ -76,8 +75,8 @@ cdef class Histo1D(AnalysisObject):
         if self.sumW() != 0:
             xmean = "%0.2e" % self.xMean()
         return "<%s '%s' %d bins, sumw=%0.2g, xmean=%s>" % \
-               (self.__class__.__name__, self.path,
-                len(self.bins), self.sumW(), xmean)
+               (self.__class__.__name__, self.path(),
+                len(self.bins()), self.sumW(), xmean)
 
 
     def reset(self):
@@ -104,19 +103,19 @@ cdef class Histo1D(AnalysisObject):
         self.h1ptr().fillBin(ix, weight, fraction)
 
 
-    @property
+    #@property
     def totalDbn(self):
         """None -> Dbn1D
         The Dbn1D representing the total distribution."""
         return cutil.new_borrowed_cls(Dbn1D, &self.h1ptr().totalDbn(), self)
 
-    @property
+    #@property
     def underflow(self):
         """None -> Dbn1D
         The Dbn1D representing the underflow distribution."""
         return cutil.new_borrowed_cls(Dbn1D, &self.h1ptr().underflow(), self)
 
-    @property
+    #@property
     def overflow(self):
         """None -> Dbn1D
         The Dbn1D representing the overflow distribution."""
@@ -197,29 +196,23 @@ cdef class Histo1D(AnalysisObject):
         self.h1ptr().normalize(normto, includeoverflows)
 
 
-    @property
+    #@property
     def xMin(self):
         """Low x edge of the histo."""
         return self.h1ptr().xMin()
 
-    @property
+    #@property
     def xMax(self):
         """High x edge of the histo."""
         return self.h1ptr().xMax()
 
-    @property
-    def xEdges(self):
-        """All x edges of the histo."""
-        return self.h1ptr().xEdges()
-
-
-    @property
+    #@property
     def numBins(self):
         """() -> int
         Number of bins (not including overflows)."""
         return self.h1ptr().numBins()
 
-    @property
+    #@property
     def bins(self):
         """Access the ordered bins list."""
         return list(self)
@@ -282,7 +275,7 @@ cdef class Histo1D(AnalysisObject):
         """(n) -> None.
         Merge every group of n bins together (between begin and end, if specified)."""
         if end is None:
-            end = self.numBins
+            end = self.numBins()
         self.h1ptr().rebinBy(int(n), begin, end)
 
     def rebinTo(self, edges):
@@ -415,40 +408,60 @@ cdef class Histo1D(AnalysisObject):
     #     """All sumWs of the histo."""
     #     return [b.sumW for b in self.bins]
 
+    def _mknp(self, xs):
+        try:
+            import numpy
+            return numpy.array(xs)
+        except ImportError:
+            return xs
+
+    #@property
+    def xEdges(self):
+        """All x edges of the histo."""
+        return self._mknp(self.h1ptr().xEdges())
+
     def xMins(self):
         """All x low edges of the histo."""
-        return [b.xMin for b in self.bins]
+        return self._mknp([b.xMin() for b in self.bins()])
 
     def xMaxs(self):
         """All x high edges of the histo."""
-        return [b.xMax for b in self.bins]
+        return self._mknp([b.xMax() for b in self.bins()])
 
     def xMids(self):
         """All x bin midpoints of the histo."""
-        return [b.xMid for b in self.bins]
+        return self._mknp([b.xMid() for b in self.bins()])
 
     def xFoci(self):
         """All x bin foci of the histo."""
-        return [b.xFocus for b in self.bins]
+        return self._mknp([b.xFocus() for b in self.bins()])
 
     def xVals(self, foci=False):
         return self.xFoci() if foci else self.xMids()
 
     def xErrs(self, foci=False):
         if foci:
-            return [(b.xFocus-b.xMin, b.xMax-b.xFocus) for b in self.bins]
+            return [(b.xFocus()-b.xMin(), b.xMax()-b.xFocus()) for b in self.bins()]
         else:
-            return [(b.xMid-b.xMin, b.xMax-b.xMid) for b in self.bins]
+            return [(b.xMid()-b.xMin(), b.xMax()-b.xMid()) for b in self.bins()]
+
+    def xMin(self):
+        """Lowest x value."""
+        return min(self.xMins())
+
+    def xMax(self):
+        """Highest x value."""
+        return max(self.xMaxs())
 
 
 
     def heights(self):
         """All y heights of the histo."""
-        return [b.height for b in self.bins]
+        return self._mknp([b.height() for b in self.bins()])
 
     def areas(self):
         """All areas of the histo."""
-        return [b.area for b in self.bins]
+        return self._mknp([b.area() for b in self.bins()])
 
     def yVals(self, area=False):
         return self.areas() if area else self.heights()
@@ -459,7 +472,7 @@ cdef class Histo1D(AnalysisObject):
 
         TODO: asymm arg / heightErrsMinus/Plus?
         """
-        return [b.heightErr for b in self.bins]
+        return self._mknp([b.heightErr() for b in self.bins()])
 
     def areaErrs(self): #, asymm=False):
         """All area errors of the histo.
@@ -470,7 +483,7 @@ cdef class Histo1D(AnalysisObject):
         # if asymm:
         #    pass
         #else:
-        return [b.areaErr for b in self.bins]
+        return self._mknp([b.areaErr() for b in self.bins()])
 
     def yErrs(self, area=False):
         return self.areaErrs() if area else self.heightErrs()
@@ -479,12 +492,20 @@ cdef class Histo1D(AnalysisObject):
     def yMins(self, area=False):
         ys = self.yVals(area)
         es = self.yErrs(area)
-        return [y-e for (y,e) in zip(ys,es)]
+        return self._mknp([y-e for (y,e) in zip(ys,es)])
 
     def yMaxs(self, area=False):
         ys = self.yVals(area)
         es = self.yErrs(area)
-        return [y+e for (y,e) in zip(ys,es)]
+        return self._mknp([y+e for (y,e) in zip(ys,es)])
+
+    def yMin(self):
+        """Lowest x value."""
+        return min(self.yMins())
+
+    def yMax(self):
+        """Highest y value."""
+        return max(self.yMaxs())
 
 
 ## Convenience alias

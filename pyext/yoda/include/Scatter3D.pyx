@@ -36,30 +36,30 @@ cdef class Scatter3D(AnalysisObject):
         return cutil.new_owned_cls(Scatter3D, self.s3ptr().newclone())
 
     def __repr__(self):
-        return "<%s '%s' %d points>" % (self.__class__.__name__, self.path, len(self.points))
+        return "<%s '%s' %d points>" % (self.__class__.__name__, self.path(), len(self.points()))
 
 
-    @property
+    #@property
     def numPoints(self):
         """() -> int
         Number of points in this scatter."""
         return self.s3ptr().numPoints()
 
     def __len__(self):
-        return self.numPoints
+        return self.numPoints()
 
 
-    @property
+    #@property
     def points(self):
         """Access the ordered list of points."""
-        return [self.point(i) for i in xrange(self.numPoints)]
+        return [self.point(i) for i in xrange(self.numPoints())]
 
     def point(self, size_t i):
         """Access the i'th point."""
         return cutil.new_borrowed_cls(Point3D, &self.s3ptr().point(i), self)
 
     def __getitem__(self, py_ix):
-        cdef size_t i = cutil.pythonic_index(py_ix, self.s3ptr().numPoints())
+        cdef size_t i = cutil.pythonic_index(py_ix, self.numPoints())
         return cutil.new_borrowed_cls(Point3D, &self.s3ptr().point(i), self)
 
 
@@ -83,7 +83,10 @@ cdef class Scatter3D(AnalysisObject):
     def addPoints(self, iterable):
         """Add several new points."""
         for row in iterable:
+          try:
             self.addPoint(*row)
+          except TypeError:
+            self.addPoint(row)
 
     def combineWith(self, others):
         """Try to add points from other Scatter3Ds into this one."""
@@ -177,68 +180,80 @@ cdef class Scatter3D(AnalysisObject):
     # def __sub__(Scatter3D self, Scatter3D other):
     #     return cutil.new_owned_cls(Scatter3D, c.Scatter3D_sub_Scatter3D(self.s3ptr(), other.s3ptr()))
 
+    def variations(self):
+        """None -> vector[string]
+        Get the list of variations stored in the points of the Scatter"""
+        return self.s3ptr().variations()
+
+
+    def _mknp(self, xs):
+        try:
+            import numpy
+            return numpy.array(xs)
+        except ImportError:
+            return xs
 
     def xVals(self):
-        return [p.x for p in self.points]
+        return self._mknp([p.x() for p in self.points()])
 
     def xMins(self):
         """All x low values."""
-        return [p.xMin for p in self.points]
+        return self._mknp([p.xMin() for p in self.points()])
 
     def xMaxs(self):
         """All x high values."""
-        return [p.xMax for p in self.points]
+        return self._mknp([p.xMax() for p in self.points()])
 
-    @property
+    # TODO: xErrs
+
     def xMin(self):
         """Lowest x value."""
         return min(self.xMins())
 
-    @property
     def xMax(self):
         """Highest x value."""
         return max(self.xMaxs())
 
 
     def yVals(self):
-        return [p.y for p in self.points]
+        return self._mknp([p.y() for p in self.points()])
 
     def yMins(self):
         """All x low values."""
-        return [p.yMin for p in self.points]
+        return self._mknp([p.yMin() for p in self.points()])
 
     def yMaxs(self):
         """All x high values."""
-        return [p.yMax for p in self.points]
+        return self._mknp([p.yMax() for p in self.points()])
 
-    @property
+    # TODO: yErrs
+
     def yMin(self):
         """Lowest x value."""
         return min(self.yMins())
 
-    @property
     def yMax(self):
         """Highest y value."""
         return max(self.yMaxs())
 
 
     def zVals(self):
-        return [p.z for p in self.points]
+        return self._mknp([p.z() for p in self.points()])
 
     def zMins(self):
         """All z low values."""
-        return [p.zMin for p in self.points]
+        return self._mknp([p.zMin() for p in self.points()])
 
     def zMaxs(self):
         """All z high values."""
-        return [p.zMax for p in self.points]
+        return self._mknp([p.zMax() for p in self.points()])
 
-    @property
+    # TODO: zErrs
+
     def zMin(self):
         """Lowest z value."""
         return min(self.zMins())
 
-    @property
     def zMax(self):
         """Highest z value."""
         return max(self.zMaxs())

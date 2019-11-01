@@ -1,7 +1,7 @@
 // -*- C++ -*-
 //
 // This file is part of YODA -- Yet more Objects for Data Analysis
-// Copyright (C) 2008-2017 The YODA collaboration (see AUTHORS for details)
+// Copyright (C) 2008-2018 The YODA collaboration (see AUTHORS for details)
 //
 #ifndef YODA_SCATTER1D_H
 #define YODA_SCATTER1D_H
@@ -92,7 +92,11 @@ namespace YODA {
     Scatter1D(const Scatter1D& s1, const std::string& path="")
       : AnalysisObject("Scatter1D", (path.size() == 0) ? s1.path() : path, s1, s1.title()),
         _points(s1._points)
-    {  }
+    {
+      for ( auto &ann : annotations()){
+        setAnnotation(ann, annotation(ann));
+      }
+    }
 
 
     /// Assignment operator
@@ -136,7 +140,11 @@ namespace YODA {
 
 
     ///////////////////////////////////////////////////
+    
+    void parseVariations() ;
 
+    /// Get the list of variations stored in the points
+    const std::vector<std::string> variations() const ;
 
     /// @name Point accessors
     //@{
@@ -185,22 +193,30 @@ namespace YODA {
 
     /// Insert a new point, defined as the x value and no errors
     void addPoint(double x) {
-      _points.insert(Point1D(x));
+      Point1D thisPoint=Point1D(x);
+      thisPoint.setParentAO(this); 
+      _points.insert(thisPoint);
     }
 
     /// Insert a new point, defined as the x value and symmetric errors
     void addPoint(double x, double ex) {
-      _points.insert(Point1D(x, ex));
+      Point1D thisPoint=Point1D(x, ex);
+      thisPoint.setParentAO(this); 
+      _points.insert(thisPoint);
     }
 
     /// Insert a new point, defined as the x value and an asymmetric error pair
     void addPoint(double x, const std::pair<double,double>& ex) {
-      _points.insert(Point1D(x, ex));
+      Point1D thisPoint=Point1D(x, ex);
+      thisPoint.setParentAO(this); 
+      _points.insert(thisPoint);
     }
 
     /// Insert a new point, defined as the x value and explicit asymmetric errors
     void addPoint(double x, double exminus, double explus) {
-      _points.insert(Point1D(x, exminus, explus));
+      Point1D thisPoint=Point1D(x, exminus, explus);
+      thisPoint.setParentAO(this); 
+      _points.insert(thisPoint);
     }
 
     /// Insert a collection of new points
@@ -214,7 +230,7 @@ namespace YODA {
     /// @name Combining sets of scatter points
     //@{
 
-    /// @todo Better name? Make this the add operation?
+    /// @todo Better name?
     void combineWith(const Scatter1D& other) {
       addPoints(other.points());
     }
@@ -239,9 +255,15 @@ namespace YODA {
     }
 
 
+    //////////////////////////////////
+
+
+
   private:
 
     Points _points;
+    
+    bool _variationsParsed =false ;
 
   };
 
@@ -267,7 +289,6 @@ namespace YODA {
 
   //@}
 
-
   //////////////////////////////////
 
 
@@ -284,7 +305,7 @@ namespace YODA {
   }
 
   //@}
-
+   
 
   /////////////////////////////////
 
@@ -314,7 +335,7 @@ namespace YODA {
   }
 
   //@}
-
+  
 
 }
 
