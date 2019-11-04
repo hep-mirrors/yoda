@@ -48,7 +48,10 @@ namespace YODA {
       const double z = b.height();
       const double ez = b.heightErr();
 
-      rtn.addPoint(x, y, z, exminus, explus, eyminus, eyplus, ez, ez);
+
+      Point3D pt(x, y, z, exminus, explus, eyminus, eyplus, ez, ez);
+      pt.setParentAO(&rtn);
+      rtn.addPoint(pt);
     }
 
     return rtn;
