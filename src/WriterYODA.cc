@@ -293,7 +293,6 @@ namespace YODA {
   void WriterYODA::writeScatter2D(std::ostream& os, const Scatter2D& s) {
     ios_base::fmtflags oldflags = os.flags();
     os << scientific << showpoint << setprecision(_precision);
-
     os << "BEGIN " << _iotypestr("SCATTER2D") << " " << s.path() << "\n";
     //first write the Variations, a dummy annotation which
     //contains the additional columns which will be written out
@@ -302,23 +301,7 @@ namespace YODA {
     out << YAML::Flow << YAML::BeginMap;
     int counter=0;
     std::vector<std::string> variations= s.variations();
-    //write ErrBreakdown Annotation
-    for (const Point2D& pt : s.points()) {
-      out << YAML::Key << counter;
-      out << YAML::Value << YAML::BeginMap;
-      for (const auto   &source : variations){
-        if (source.length()==0) continue;
-        out << YAML::Key << source;
-        out << YAML::Value << YAML::BeginMap;
-        out << YAML::Key << "dn" << YAML::Value <<  pt.yErrMinus(source);
-        out << YAML::Key << "up" << YAML::Value <<  pt.yErrPlus(source);
-        out << YAML::EndMap;
-      }
-      out << YAML::EndMap;
-    }
-    out << YAML::EndMap;
-    os << "ErrorBreakdown" << ": " << out.c_str() << "\n";
-    // then write the regular annotations
+    //  write annotations
     _writeAnnotations(os, s);
     
     //write headers

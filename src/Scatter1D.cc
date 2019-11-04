@@ -15,7 +15,9 @@ namespace YODA {
     for (const std::string& a : c.annotations())
       rtn.setAnnotation(a, c.annotation(a));
     rtn.setAnnotation("Type", c.type()); // might override the copied ones
-    rtn.addPoint(c.val(), c.err());
+    Point1D pt(c.val(), c.err());
+    pt.setParentAO(&rtn);
+    rtn.addPoint(pt);
     return rtn;
   }
   
