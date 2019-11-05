@@ -93,38 +93,40 @@ namespace YODA {
 
     /// Get x-error values
     const std::pair<double,double>& xErrs(  std::string source="") const {
+      if (source!="") getVariationsFromParent();
       if (!_ex.count(source)) throw RangeError("xErrs has no such key: "+source);
       return _ex.at(source);
     }
 
     /// Get negative x-error value
     double xErrMinus( std::string source="") const {
+      if (source!="") getVariationsFromParent();
       if (!_ex.count(source)) throw RangeError("xErrs has no such key: "+source);
       return _ex.at(source).first;
     }
 
     /// Get positive x-error value
     double xErrPlus( std::string source="") const {
+      if (source!="") getVariationsFromParent();
       if (!_ex.count(source)) throw RangeError("xErrs has no such key: "+source);
       return _ex.at(source).second;
     }
 
     /// Get average x-error value
     double xErrAvg( std::string source="") const {
+      if (source!="") getVariationsFromParent();
       if (!_ex.count(source)) throw RangeError("xErrs has no such key: "+source);
       return (_ex.at(source).first + _ex.at(source).second)/2.0;
     }
 
     /// Set negative x error
     void setXErrMinus(double exminus,  std::string source="") {
-      if (source!="") getVariationsFromParent();
       if (!_ex.count(source)) _ex[source] = std::make_pair(0.,0.);
       _ex.at(source).first = exminus;
     }
 
     /// Set positive x error
     void setXErrPlus(double explus,  std::string source="") {
-      if (source!="") getVariationsFromParent();
       if (!_ex.count(source)) _ex[source] = std::make_pair(0.,0.);
       _ex.at(source).second = explus;
     }
@@ -148,18 +150,19 @@ namespace YODA {
 
     /// Set asymmetric x error
     void setXErrs(const std::pair<double,double>& ex,  std::string source="") {
-      if (source!="") getVariationsFromParent();
       _ex[source] = ex;
     }
 
     /// Get value minus negative x-error
     double xMin(std::string source="") const {
+      if (source!="") getVariationsFromParent();
       if (!_ex.count(source)) throw RangeError("xErrs has no such key: "+source);
       return _x - _ex.at(source).first;
     }
 
     /// Get value plus positive x-error
     double xMax(std::string source="") const {
+      if (source!="") getVariationsFromParent();
       if (!_ex.count(source)) throw RangeError("xErrs has no such key: "+source);
       return _x + _ex.at(source).second;
     }

@@ -54,8 +54,10 @@ namespace YODA {
       if (binareadiv) z /= b.xWidth()*b.yWidth();
       const double ez = b.relErr() * z;
 
-      /// @todo Set up parent link cf. Scatter2D
-      rtn.addPoint(x, y, z, exminus, explus, eyminus, eyplus, ez, ez);
+
+      Point3D pt(x, y, z, exminus, explus, eyminus, eyplus, ez, ez);
+      pt.setParentAO(&rtn);
+      rtn.addPoint(pt);
     }
 
     assert(h.numBins() == rtn.numPoints());

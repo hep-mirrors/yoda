@@ -298,14 +298,12 @@ namespace YODA {
 
     /// Set negative z error
     void setZErrMinus(double ezminus,  std::string source="") {
-      if (source!="") getVariationsFromParent();
       if (!_ez.count(source)) _ez[source] = std::make_pair(0.,0.);
       _ez.at(source).first = ezminus;
     }
 
     /// Set positive z error
     void setZErrPlus(double ezplus,  std::string source="") {
-      if (source!="") getVariationsFromParent();
       if (!_ez.count(source)) _ez[source] = std::make_pair(0.,0.);
       _ez.at(source).second = ezplus;
     }
@@ -329,7 +327,6 @@ namespace YODA {
 
     /// Set asymmetric z error
     void setZErrs(const std::pair<double,double>& ez,  std::string source="") {
-      if (source!="") getVariationsFromParent();
       _ez[source] = ez;
     }
 
