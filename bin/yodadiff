@@ -86,12 +86,12 @@ def ptstr(pt):
     vstr1 = "{x:.5g} + {ex[0]:.5g} - {ex[1]:.5g}"
     vstr2 = "{x:.5g} +- {ex[0]:.5g}"
     vstrs = []
-    if pt.dim >= 1:
-        vstrs.append( (vstr2 if eq(*pt.xErrs) else vstr1).format(x=pt.x, ex=pt.xErrs) )
-    if pt.dim >= 2:
-        vstrs.append( (vstr2 if eq(*pt.yErrs) else vstr1).format(x=pt.y, ex=pt.yErrs) )
-    if pt.dim >= 3:
-        vstrs.append( (vstr2 if eq(*pt.zErrs) else vstr1).format(x=pt.z, ex=pt.zErrs) )
+    if pt.dim() >= 1:
+        vstrs.append( (vstr2 if eq(*pt.xErrs()) else vstr1).format(x=pt.x(), ex=pt.xErrs()) )
+    if pt.dim() >= 2:
+        vstrs.append( (vstr2 if eq(*pt.yErrs()) else vstr1).format(x=pt.y(), ex=pt.yErrs()) )
+    if pt.dim() >= 3:
+        vstrs.append( (vstr2 if eq(*pt.zErrs()) else vstr1).format(x=pt.z(), ex=pt.zErrs()) )
     return "(" + ", ".join(vstrs) + ")"
 
 ## Compare each object pair
